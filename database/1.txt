@@ -1,0 +1,46 @@
+create table public.teams (
+  id integer primary key generated always as identity,
+  number integer,
+  name text
+);
+
+create table public.user_attributes (
+  id uuid not null references auth.users on delete cascade,
+  team integer references public.teams(id),
+  scouter boolean,
+  admin boolean,
+
+  primary key (id)
+);
+
+alter table public.user_attributes enable row level security;
+
+create table public.profiles (
+  id uuid not null references auth.users on delete cascade,
+  firstname text,
+  lastname text,
+
+  primary key (id)
+);
+
+alter table public.profiles enable row level security;
+
+-- inserts a row into public.profiles
+create function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.user_attributes (id)
+  values (new.id);
+  insert into public.profiles (id)
+  values (new.id);
+  return new;
+end;
+$$;
+
+-- trigger the function every time a user is created
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();

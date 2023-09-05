@@ -1,0 +1,10 @@
+create policy "Profiles are viewable by users who created them and others in the team."
+  on profiles for select
+  using (
+    auth.uid() = id OR
+    (select team from user_attributes where id = id) = (select team from user_attributes where id = auth.uid())
+  );
+
+create policy "Users can update own profile."
+  on profiles for update
+  using ( auth.uid() = id );
