@@ -177,7 +177,7 @@ const MyStack = () => {
       <Drawer.Navigator
         initialRouteName="Login"
         screenOptions={{
-          drawerType: 'front',
+          drawerType: 'slide',
           drawerLabelStyle: {
             marginLeft: -16,
           },
