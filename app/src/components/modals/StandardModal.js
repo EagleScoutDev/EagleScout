@@ -13,7 +13,7 @@ function StandardModal({visible, title, children}) {
           alignItems: 'center',
           top: '30%',
           borderRadius: 20,
-          borderColor: 'black',
+          borderColor: colors.border,
           borderWidth: 1,
           padding: 35,
           elevation: 5,
