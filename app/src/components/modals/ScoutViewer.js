@@ -13,7 +13,7 @@ import {useEffect, useState} from 'react';
 import RadioButtons from '../form/RadioButtons';
 import StandardButton from '../StandardButton';
 import Checkbox from '../form/Checkbox';
-import { supabase } from '../../lib/supabase';
+import {supabase} from '../../lib/supabase';
 
 const DEBUG = false;
 
@@ -118,7 +118,11 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
      * @returns {Promise<void>}
      */
     const getUserName = async () => {
-      const res = await supabase.from('profiles').select('name').eq('id', data.user_id).single();
+      const res = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', data.user_id)
+        .single();
       if (res.error) {
         console.error(res.error);
       } else if (data) {
@@ -188,9 +192,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
           <Text style={styles.report_info}>Round {data ? data.match : ''}</Text>
           <Text style={styles.report_info}>By: {userName}</Text>
           <Text style={styles.report_info}>
-            {new Date(
-              data !== null ? data.created_at : 0,
-            ).toLocaleString()}
+            {new Date(data !== null ? data.created_at : 0).toLocaleString()}
           </Text>
         </View>
         <ScrollView>

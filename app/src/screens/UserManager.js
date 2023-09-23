@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
-import { supabase } from '../lib/supabase';
+import {supabase} from '../lib/supabase';
 
 function SortOption({onPress, title, colors, isActive}) {
   return (
@@ -62,10 +62,13 @@ function UserManager({navigation}) {
 
   const fetchUsers = async () => {
     console.log('fetching');
-    const { data, error } = await supabase.rpc('get_user_profiles_with_email');
+    const {data, error} = await supabase.rpc('get_user_profiles_with_email');
     const users = data;
     users.forEach(user => {
-      user.name = (user.first_name || 'UNKNOWN_FIRSTNAME') + ' ' + (user.last_name || 'UNKNOWN_LASTNAME');
+      user.name =
+        (user.first_name || 'UNKNOWN_FIRSTNAME') +
+        ' ' +
+        (user.last_name || 'UNKNOWN_LASTNAME');
     });
     if (error) {
       console.log(error);
@@ -85,7 +88,10 @@ function UserManager({navigation}) {
   };
 
   async function updateApproveStatus(user, b) {
-    const { data, error } = await supabase.from('user_attributes').update({ scouter: b }).eq('id', user.id);
+    const {data, error} = await supabase
+      .from('user_attributes')
+      .update({scouter: b})
+      .eq('id', user.id);
     if (error) {
       console.error(error);
       Alert.alert('Error updating user status', JSON.stringify(error));
@@ -95,7 +101,10 @@ function UserManager({navigation}) {
   }
 
   async function updateAdminStatus(user, b) {
-    const { data, error } = await supabase.from('user_attributes').update({ admin: b }).eq('id', user.id);
+    const {data, error} = await supabase
+      .from('user_attributes')
+      .update({admin: b})
+      .eq('id', user.id);
     if (error) {
       console.error(error);
       Alert.alert('Error updating user status', JSON.stringify(error));

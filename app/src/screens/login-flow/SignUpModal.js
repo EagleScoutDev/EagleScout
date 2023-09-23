@@ -4,11 +4,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
 } from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import { supabase } from '../../lib/supabase';
+import {supabase} from '../../lib/supabase';
 
 function InputLabel(props) {
   return (
@@ -165,14 +165,25 @@ function SignUpModal({setVisible, navigation}) {
             marginHorizontal: 30,
           }}
           onPress={async () => {
-            const { data, error } = await supabase.from('teams').select('*').eq('number', team).limit(1);
+            const {data, error} = await supabase
+              .from('teams')
+              .select('*')
+              .eq('number', team)
+              .limit(1);
             if (error) {
               console.error(error);
-              Alert.alert('Error signing up', 'An error occured while checking if the team you entered exists. ' + error.toString());
+              Alert.alert(
+                'Error signing up',
+                'An error occured while checking if the team you entered exists. ' +
+                  error.toString(),
+              );
             } else if (data.length === 0) {
-              Alert.alert('Invalid team', 'The team you entered is not registered on EagleScout.');
+              Alert.alert(
+                'Invalid team',
+                'The team you entered is not registered on EagleScout.',
+              );
             } else {
-              const { error } = await supabase.auth.signUp({
+              const {error} = await supabase.auth.signUp({
                 email: email,
                 password: password,
               });
@@ -180,12 +191,19 @@ function SignUpModal({setVisible, navigation}) {
                 console.error(error);
                 Alert.alert('Error signing up', error.toString());
               } else {
-                const { data, error } = await supabase.rpc('register_user_with_team', {
-                  team_number: team
-                });
+                const {data, error} = await supabase.rpc(
+                  'register_user_with_team',
+                  {
+                    team_number: team,
+                  },
+                );
                 if (error) {
-                  Alert.alert('Error signing up', 'An error was encountered while registering ' + 
-                    'you with the team entered. Please contact EagleScout developers.\n' + error.toString());
+                  Alert.alert(
+                    'Error signing up',
+                    'An error was encountered while registering ' +
+                      'you with the team entered. Please contact EagleScout developers.\n' +
+                      error.toString(),
+                  );
                 } else {
                   navigation.navigate('Login');
                 }

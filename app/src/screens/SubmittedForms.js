@@ -21,7 +21,7 @@ import DBManager from '../DBManager';
 import React from 'react-native';
 import StandardButton from '../components/StandardButton';
 import {Toast} from 'react-native-toast-message/';
-import { supabase } from '../lib/supabase';
+import {supabase} from '../lib/supabase';
 
 const DEBUG = false;
 
@@ -59,7 +59,7 @@ function SubmittedForms() {
         competition_id: reportData.competition_arg,
         form_id: reportData.form_id_arg,
         timestamp: reportData.timestamp,
-      }
+      };
       formsFoundParseable.push(reportParseable);
     }
     setOfflineReports(formsFound);
@@ -186,11 +186,11 @@ function SubmittedForms() {
                   const report = offlineReports[i];
                   const {seconds} = report.timestamp;
 
-                  const { error } = await supabase.rpc('add_scout_report', {
+                  const {error} = await supabase.rpc('add_scout_report', {
                     ...report,
                     timestamp: undefined,
                     competition: undefined,
-                    form: undefined
+                    form: undefined,
                   });
                   if (error) {
                     console.error(error);

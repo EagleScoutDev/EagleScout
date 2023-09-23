@@ -125,10 +125,7 @@ function ReportList({forms}) {
                 setSort('date');
                 setDataCopy(
                   dataCopy.sort((a, b) => {
-                    return (
-                      new Date(a.created_at) -
-                      new Date(b.created_at)
-                    );
+                    return new Date(a.created_at) - new Date(b.created_at);
                   }),
                 );
               }}>
@@ -190,14 +187,11 @@ function ReportList({forms}) {
                   flex: 2,
                   textAlign: 'right',
                 }}>
-                {new Date(item.created_at).toLocaleDateString(
-                  'en-US',
-                  {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  },
-                )}
+                {new Date(item.created_at).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
               </Text>
             </View>
           </TouchableOpacity>

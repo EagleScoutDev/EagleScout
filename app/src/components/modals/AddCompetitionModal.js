@@ -1,5 +1,4 @@
 import React, {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -11,7 +10,6 @@ import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import StandardModal from './StandardModal';
-import {Toast} from 'react-native-toast-message/';
 
 function Spacer() {
   // eslint-disable-next-line react-native/no-inline-styles
@@ -155,29 +153,29 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
           color={colors.primary}
           onPress={() => {
             /*console.log(firestore.Timestamp.fromDate(startDate));
-            if (startDate.getTime() >= endDate.getTime()) {
-              Alert.alert('Start Date cannot be past end date.');
-              return;
-            }
+                        if (startDate.getTime() >= endDate.getTime()) {
+                          Alert.alert('Start Date cannot be past end date.');
+                          return;
+                        }
 
-            firestore()
-              .collection('competitions')
-              .add({
-                name: name,
-                startdate: firestore.Timestamp.fromDate(startDate),
-                enddate: firestore.Timestamp.fromDate(endDate),
-              })
-              .then(() => {
-                Toast.show({
-                  type: 'success',
-                  text1: 'Competition Added!',
-                });
-                setVisible(false);
-                onRefresh();
-              })
-              .catch(error => {
-                Alert.alert('Error adding competition: ' + error);
-              });*/
+                        firestore()
+                          .collection('competitions')
+                          .add({
+                            name: name,
+                            startdate: firestore.Timestamp.fromDate(startDate),
+                            enddate: firestore.Timestamp.fromDate(endDate),
+                          })
+                          .then(() => {
+                            Toast.show({
+                              type: 'success',
+                              text1: 'Competition Added!',
+                            });
+                            setVisible(false);
+                            onRefresh();
+                          })
+                          .catch(error => {
+                            Alert.alert('Error adding competition: ' + error);
+                          });*/
           }}
           text={'Submit'}
           width={'40%'}

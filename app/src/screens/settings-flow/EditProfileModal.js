@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
-import { supabase } from '../../lib/supabase';
+import {supabase} from '../../lib/supabase';
 
 function EditProfileModal({navigation, route, getUser}) {
   const {initialFirstName, initialLastName, initialEmail} = route.params;
@@ -29,7 +29,7 @@ function EditProfileModal({navigation, route, getUser}) {
   return (
     <View>
       <View style={{width: '80%', alignSelf: 'center', marginTop: '5%'}}>
-      <MinimalSectionHeader title={'First Name'} />
+        <MinimalSectionHeader title={'First Name'} />
         <TextInput
           style={styles.text_input}
           onChangeText={text => setFirstName(text)}
@@ -57,13 +57,17 @@ function EditProfileModal({navigation, route, getUser}) {
           onPress={async () => {
             // this needs to do three things:
             // 1) update the user's name and email in the database
-            const { data: { user } } = await supabase.auth.getUser();
-            const { data, error } = await supabase.from('profiles').update({first_name: firstName, last_name: lastName}).eq('id', user.id);
+            const {
+              data: {user},
+            } = await supabase.auth.getUser();
+            const {data, error} = await supabase
+              .from('profiles')
+              .update({first_name: firstName, last_name: lastName})
+              .eq('id', user.id);
             if (error) {
               console.error(error);
               Alert.alert('Error updating your profile');
             }
-
 
             // 2) update the user's name and email in the firebase auth
             /*auth()
@@ -94,7 +98,11 @@ function EditProfileModal({navigation, route, getUser}) {
               );
             }*/
 
-            const res = await supabase.from('profiles').select('first_name, last_name').eq('id', user.id).single();
+            const res = await supabase
+              .from('profiles')
+              .select('first_name, last_name')
+              .eq('id', user.id)
+              .single();
             let data2 = res.data;
             const error2 = res.error;
             if (error2) {
@@ -102,11 +110,16 @@ function EditProfileModal({navigation, route, getUser}) {
               console.error("Couldn't get user profile");
               data2 = {};
             }
-            const currentUserObj = JSON.parse(await AsyncStorage.getItem('user'));
-            await AsyncStorage.setItem('user', JSON.stringify({
-              ...currentUserObj,
-              ...data2
-            }));
+            const currentUserObj = JSON.parse(
+              await AsyncStorage.getItem('user'),
+            );
+            await AsyncStorage.setItem(
+              'user',
+              JSON.stringify({
+                ...currentUserObj,
+                ...data2,
+              }),
+            );
 
             setFirstName('');
             setLastName('');

@@ -19,7 +19,7 @@ import DatePicker from 'react-native-date-picker';
 import DBManager from '../DBManager';
 //import InAppBrowser from 'react-native-inappbrowser-reborn';
 //import {v4 as uuid} from 'uuid';
-import { supabase } from '../lib/supabase';
+import {supabase} from '../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DEBUG = true;
@@ -88,7 +88,7 @@ const CompetitionsView = ({navigate}) => {
       console.log('Starting to look for competitions');
     }
 
-    const { data, error } = await supabase.from('competitions').select('*');
+    const {data, error} = await supabase.from('competitions').select('*');
     if (error) {
       console.error(error);
       setInternetError(true);
@@ -164,22 +164,16 @@ const CompetitionsView = ({navigate}) => {
               textAlign: 'center',
               paddingBottom: '5%',
             }}>
-            {new Date(chosenComp.start_time).toLocaleDateString(
-              'en-US',
-              {
-                month: 'short',
-                day: 'numeric',
-                // year: 'numeric',
-              },
-            )}{' '}
+            {new Date(chosenComp.start_time).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              // year: 'numeric',
+            })}{' '}
             -{' '}
-            {new Date(chosenComp.end_time).toLocaleDateString(
-              'en-US',
-              {
-                month: 'short',
-                day: 'numeric',
-              },
-            )}{' '}
+            {new Date(chosenComp.end_time).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+            })}{' '}
             ({new Date(chosenComp.end_time).getFullYear()})
           </Text>
         </View>
@@ -251,7 +245,7 @@ const CompetitionsView = ({navigate}) => {
                       /*r[0].form.map(form => {
                         console.log(form);
                       });*/
-                      
+
                       console.log(JSON.stringify(r[0].form));
                       setScoutData(r);
                       setLoadingCompetitionReports(false);
@@ -272,8 +266,7 @@ const CompetitionsView = ({navigate}) => {
                     textAlign: 'center',
                     fontSize: 16,
                   }}>
-                  {comp.name} (
-                  {new Date(comp.start_time).getFullYear()})
+                  {comp.name} ({new Date(comp.start_time).getFullYear()})
                 </Text>
               </TouchableOpacity>
             ))}
@@ -360,13 +353,14 @@ const CompetitionsView = ({navigate}) => {
                         fontWeight: '600',
                         textAlign: 'center',
                       }}>
-                      {new Date(
-                        tempComp.start_time,
-                      ).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
+                      {new Date(tempComp.start_time).toLocaleDateString(
+                        'en-US',
+                        {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        },
+                      )}
                     </Text>
                   </TouchableOpacity>
                   <DatePicker
@@ -425,9 +419,7 @@ const CompetitionsView = ({navigate}) => {
                         fontWeight: '600',
                         textAlign: 'center',
                       }}>
-                      {new Date(
-                        tempComp.end_time,
-                      ).toLocaleDateString('en-US', {
+                      {new Date(tempComp.end_time).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
@@ -494,7 +486,10 @@ const CompetitionsView = ({navigate}) => {
                             onPress: async () => {
                               // deleteCompetition(tempComp.id);
 
-                              const { data, error } = await supabase.from('competitions').delete().eq('id', tempComp.id);
+                              const {data, error} = await supabase
+                                .from('competitions')
+                                .delete()
+                                .eq('id', tempComp.id);
                               if (error) {
                                 console.error(error);
                                 Alert.alert(
@@ -537,11 +532,14 @@ const CompetitionsView = ({navigate}) => {
                         setEditingMode(false);
                         return;
                       }
-                      const { data, error } = await supabase.from('competitions').update({
-                        name: tempComp.name,
-                        start_time: tempComp.start_time,
-                        end_time: tempComp.end_time
-                      }).eq('id', tempComp.id);
+                      const {data, error} = await supabase
+                        .from('competitions')
+                        .update({
+                          name: tempComp.name,
+                          start_time: tempComp.start_time,
+                          end_time: tempComp.end_time,
+                        })
+                        .eq('id', tempComp.id);
 
                       if (error) {
                         console.error(error);
