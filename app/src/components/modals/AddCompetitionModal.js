@@ -7,9 +7,10 @@ import React, {
 } from 'react-native';
 import StandardButton from '../StandardButton';
 import {useTheme} from '@react-navigation/native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import StandardModal from './StandardModal';
+import {supabase} from '../../lib/supabase';
 
 function Spacer() {
   // eslint-disable-next-line react-native/no-inline-styles
@@ -23,6 +24,40 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [endDate, setEndDate] = useState(new Date());
   const [editEndDate, setEditEndDate] = useState(false);
   const {colors} = useTheme();
+
+  const submitCompetition = async () => {
+    // console.log('competition name: ' + name);
+    // console.log('start date: ' + startDate);
+    // console.log('end date: ' + endDate);
+
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
+    // console.log('user', user.id);
+
+    let {data: user_attributes, error} = await supabase
+      .from('user_attributes')
+      .select('team_id')
+      .eq('id', user.id);
+
+    // console.log('user_attributes', user_attributes);
+    const {team_id} = user_attributes[0];
+    // console.log('final team id: ', team_id);
+
+    const res = await supabase.from('competitions').insert({
+      team_id: team_id,
+      name: name,
+      start_time: startDate,
+      end_time: endDate,
+    });
+    const error2 = res.error;
+  };
+
+  useEffect(() => {
+    setName('');
+    setStartDate(new Date());
+    setEndDate(new Date());
+  }, [visible]);
 
   const styles = StyleSheet.create({
     competition_name_input: {
@@ -38,7 +73,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
     },
     label: {
       color: colors.text,
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: '600',
       textAlign: 'center',
     },
@@ -152,30 +187,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         <StandardButton
           color={colors.primary}
           onPress={() => {
-            /*console.log(firestore.Timestamp.fromDate(startDate));
-                        if (startDate.getTime() >= endDate.getTime()) {
-                          Alert.alert('Start Date cannot be past end date.');
-                          return;
-                        }
-
-                        firestore()
-                          .collection('competitions')
-                          .add({
-                            name: name,
-                            startdate: firestore.Timestamp.fromDate(startDate),
-                            enddate: firestore.Timestamp.fromDate(endDate),
-                          })
-                          .then(() => {
-                            Toast.show({
-                              type: 'success',
-                              text1: 'Competition Added!',
-                            });
-                            setVisible(false);
-                            onRefresh();
-                          })
-                          .catch(error => {
-                            Alert.alert('Error adding competition: ' + error);
-                          });*/
+            submitCompetition().then(() => onRefresh());
+            setVisible(false);
           }}
           text={'Submit'}
           width={'40%'}
