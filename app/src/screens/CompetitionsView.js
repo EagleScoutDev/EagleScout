@@ -1,26 +1,14 @@
-import {
-  Alert,
-  Modal,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ActivityIndicator,
-  Linking,
-} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from 'react';
-import ReportList from '../components/ReportList';
 import {useTheme} from '@react-navigation/native';
 import NoInternet from '../components/NoInternet';
 import AddCompetitionModal from '../components/modals/AddCompetitionModal';
-import StandardButton from '../components/StandardButton';
-import DatePicker from 'react-native-date-picker';
 import DBManager from '../DBManager';
 //import InAppBrowser from 'react-native-inappbrowser-reborn';
 //import {v4 as uuid} from 'uuid';
 import {supabase} from '../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditCompetitionModal from '../components/modals/EditCompetitionModal';
 
 const DEBUG = true;
 
@@ -31,6 +19,10 @@ const CompetitionsView = ({navigate}) => {
   const [editingMode, setEditingMode] = useState(false);
   const [addCompetitionModalVisible, setAddCompetitionModalVisible] =
     useState(false);
+  const [editCompetitionModalVisible, setEditCompetitionModalVisible] =
+    useState(false);
+
+  const [competitionToEdit, setCompetitionToEdit] = useState(null);
 
   // checking if user has permission to edit competitions
   const [admin, setAdmin] = useState(false);
@@ -68,6 +60,11 @@ const CompetitionsView = ({navigate}) => {
     }
 
     const {data, error} = await supabase.from('competitions').select('*');
+
+    // sort the data by start time
+    data.sort((a, b) => {
+      return new Date(a.start_time) - new Date(b.start_time);
+    });
     setCompetitionList(data);
   };
 
@@ -141,13 +138,17 @@ const CompetitionsView = ({navigate}) => {
             <TouchableOpacity
               key={comp.id}
               onPress={() => {
-                DBManager.getReportsForCompetition(comp).then(r => {
-                  /*r[0].form.map(form => {
-                        console.log(form);
-                      });*/
-
-                  console.log(JSON.stringify(r[0].form));
-                });
+                if (editingMode) {
+                  setCompetitionToEdit(comp);
+                  setEditCompetitionModalVisible(true);
+                }
+                // DBManager.getReportsForCompetition(comp).then(r => {
+                //   /*r[0].form.map(form => {
+                //         console.log(form);
+                //       });*/
+                //
+                //   console.log(JSON.stringify(r[0].form));
+                // });
               }}
               style={{
                 padding: 20,
@@ -207,6 +208,15 @@ const CompetitionsView = ({navigate}) => {
         setVisible={setAddCompetitionModalVisible}
         onRefresh={getCompetitions}
       />
+      {competitionToEdit !== null &&
+        editingMode &&
+        editCompetitionModalVisible && (
+          <EditCompetitionModal
+            setVisible={setEditCompetitionModalVisible}
+            onRefresh={getCompetitions}
+            tempComp={competitionToEdit}
+          />
+        )}
     </View>
   );
 };
