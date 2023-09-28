@@ -10,7 +10,8 @@ import DBManager from '../../DBManager';
 import FormHelper from '../../FormHelper';
 import StandardButton from '../../components/StandardButton';
 import Toast from 'react-native-toast-message';
-import { supabase } from '../../lib/supabase';
+import CompetitionsDB from '../../database/Competitions';
+import ScoutReportsDB from '../../database/ScoutReports';
 
 const defaultValues = {
   radio: '',
@@ -39,13 +40,12 @@ function ScoutingView({navigation, route}) {
    * @param tempArray an array containing just the values
    */
   function initData(dataToSubmit, tempArray) {
-    dataToSubmit.data_arg = tempArray;
-    dataToSubmit.match_number_arg = match; //
-    dataToSubmit.team_arg = team;
-    dataToSubmit.competition_id_arg = competition.id;
+    dataToSubmit.data = tempArray;
+    dataToSubmit.matchNumber = match; //
+    dataToSubmit.teamNumber = team;
+    dataToSubmit.competitionId = competition.id;
     //dataToSubmit.form = formStructure;
-    dataToSubmit.form_id_arg = formId;
-    //const { data: { user } } = await supabase.auth.getUser();
+    //dataToSubmit.form_id_arg = formId;
     //dataToSubmit.user_id = user.id;
     //dataToSubmit.competition = competition.id;
   }
@@ -77,9 +77,9 @@ function ScoutingView({navigation, route}) {
    * @returns {Promise<void>}
    */
   const loadFormStructure = async () => {
-    const dbForm = await DBManager.getFormFromDatabase();
-    const dbFormId = await DBManager.getFormIdFromDatabase();
-    const dbCompetition = await DBManager.getCompetitionFromDatabase();
+    const dbCompetition = await CompetitionsDB.getCurrentCompetition();
+    const dbForm = dbCompetition.form;
+    const dbFormId = dbCompetition.formId;
     console.log('dbCompetition: ' + JSON.stringify(dbCompetition));
     if (dbForm !== null || dbCompetition !== null) {
       if (DEBUG) {
@@ -349,7 +349,7 @@ function ScoutingView({navigation, route}) {
           );
 
           if (!googleResponse) {
-            FormHelper.saveFormOffline(dataToSubmit, competition).then(() => {
+            FormHelper.saveFormOffline(dataToSubmit).then(() => {
               console.log('cbbbb');
               Toast.show({
                 type: 'success',
@@ -361,9 +361,8 @@ function ScoutingView({navigation, route}) {
 
             //dataToSubmit.timestamp = firestore.FieldValue.serverTimestamp();
 
-            const { error } = await supabase.rpc('add_scout_report', dataToSubmit);
-
-            if (!error) {
+            try {
+              await ScoutReportsDB.createOnlineScoutReport(dataToSubmit);
               Toast.show({
                 type: 'success',
                 text1: 'Scouting report submitted!',
@@ -372,7 +371,8 @@ function ScoutingView({navigation, route}) {
               setMatch('');
               setTeam('');
               setArrayData([]);
-            } else {
+            } catch (error) {
+              console.error(error);
               Alert.alert(
                 'Error',
                 'There was an error submitting your scouting report.',

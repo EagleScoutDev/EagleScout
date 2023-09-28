@@ -167,7 +167,7 @@ function ReportList({forms}) {
                   fontWeight: 'bold',
                   flex: 1.5,
                 }}>
-                {item.team}
+                {item.teamNumber}
               </Text>
               <Text
                 style={{
@@ -177,7 +177,7 @@ function ReportList({forms}) {
                   flex: 1,
                   textAlign: 'center',
                 }}>
-                {item.match_number}
+                {item.matchNumber}
               </Text>
               <Text
                 style={{
@@ -187,11 +187,14 @@ function ReportList({forms}) {
                   flex: 2,
                   textAlign: 'right',
                 }}>
-                {new Date(item.created_at).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
+                {new Date(item.createdAt).toLocaleDateString(
+                  'en-US',
+                  {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  },
+                )}
               </Text>
             </View>
           </TouchableOpacity>
