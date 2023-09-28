@@ -1,6 +1,7 @@
 import {Text, TouchableOpacity, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
+import ScoutingReportsList from './ScoutingReportsList';
 
 const CompetitionViewer = ({resetCompID, competition}) => {
   const {colors} = useTheme();
@@ -50,6 +51,8 @@ const CompetitionViewer = ({resetCompID, competition}) => {
         })}{' '}
         ({new Date(competition.end_time).getFullYear()})
       </Text>
+
+      <ScoutingReportsList competition={competition} />
     </View>
   );
 };
