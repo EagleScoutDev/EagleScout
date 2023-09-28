@@ -24,7 +24,7 @@ import SignUpModal from './screens/login-flow/SignUpModal';
 import CustomDrawerContent from './CustomDrawer';
 import Gamification from './screens/scouting-flow/Gamification';
 import FormHelper from './FormHelper';
-import UpcomingRoundsView from './screens/UpcomingRoundsView';
+// import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
 import {
   ClipboardWithGraph,
@@ -215,13 +215,13 @@ const MyStack = () => {
           </>
         ) : (
           <>
-            <Drawer.Screen
-              name="Upcoming Rounds"
-              component={UpcomingRoundsView}
-              options={{
-                drawerIcon: () => ClipboardWithGraph(),
-              }}
-            />
+            {/*<Drawer.Screen*/}
+            {/*  name="Upcoming Rounds"*/}
+            {/*  component={UpcomingRoundsView}*/}
+            {/*  options={{*/}
+            {/*    drawerIcon: () => ClipboardWithGraph(),*/}
+            {/*  }}*/}
+            {/*/>*/}
             <Drawer.Screen
               name="Search"
               component={SearchScreen}
