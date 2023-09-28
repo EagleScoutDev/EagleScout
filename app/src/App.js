@@ -11,7 +11,7 @@ import {
 } from '@react-navigation/native';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import CompetitionsView from './screens/CompetitionsView';
+import CompetitionsView from './screens/competitions-flow/CompetitionsView';
 import UserManager from './screens/UserManager';
 import {useEffect, useState} from 'react';
 import SubmittedForms from './screens/SubmittedForms';
