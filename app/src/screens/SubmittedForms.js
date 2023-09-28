@@ -20,15 +20,14 @@ import SegmentedOption from '../components/pickers/SegmentedOption';
 import DBManager from '../DBManager';
 import React from 'react-native';
 import StandardButton from '../components/StandardButton';
-import {Toast} from 'react-native-toast-message/';
-import { supabase } from '../lib/supabase';
+import Toast from 'react-native-toast-message';
+import ScoutReportsDB from '../database/ScoutReports';
 
 const DEBUG = false;
 
 function SubmittedForms() {
   const [reports, setReports] = useState([]);
   const [offlineReports, setOfflineReports] = useState([]);
-  const [parseableReports, setParseableReports] = useState([]); // [data, match_number, team, competition_id, form_id
   const {colors} = useTheme();
   const [selectedTheme, setSelectedTheme] = useState('Offline');
   const [loading, setLoading] = useState(false);
@@ -44,31 +43,19 @@ function SubmittedForms() {
     }
 
     const formsFound = [];
-    const formsFoundParseable = [];
     for (let i = 0; i < offReports.length; i++) {
       const report = await AsyncStorage.getItem(offReports[i]);
       if (DEBUG) {
         console.log('report: ' + report);
       }
       formsFound.push(JSON.parse(report));
-      const reportData = JSON.parse(report);
-      const reportParseable = {
-        data: reportData.data_arg,
-        match_number: reportData.match_number_arg,
-        team: reportData.team_arg,
-        competition_id: reportData.competition_arg,
-        form_id: reportData.form_id_arg,
-        timestamp: reportData.timestamp,
-      }
-      formsFoundParseable.push(reportParseable);
     }
     setOfflineReports(formsFound);
-    setParseableReports(formsFoundParseable);
   }
 
   useEffect(() => {
     setLoading(true);
-    DBManager.getReportsForSelf().then(result => {
+    ScoutReportsDB.getReportsForSelf().then(result => {
       setReports(result);
     });
     getOfflineReports().then(() => setLoading(false));
@@ -131,7 +118,7 @@ function SubmittedForms() {
           onPress={() => {
             setSelectedTheme('In Database');
             setLoading(true);
-            DBManager.getReportsForSelf().then(results => {
+            ScoutReportsDB.getReportsForSelf().then(results => {
               setReports(results);
               console.log('reports found: ' + results);
               setLoading(false);
@@ -184,26 +171,27 @@ function SubmittedForms() {
                     );
                   }
                   const report = offlineReports[i];
-                  const {seconds} = report.timestamp;
+                  const seconds = new Date(report.createdAt).getSeconds();
 
-                  const { error } = await supabase.rpc('add_scout_report', {
-                    ...report,
-                    timestamp: undefined,
-                    competition: undefined,
-                    form: undefined
-                  });
-                  if (error) {
+                  try {
+                    await ScoutReportsDB.createOfflineScoutReport(report);
+                    Toast.show({
+                      type: 'success',
+                      text1: 'Scouting report submitted!',
+                      visibilityTime: 3000,
+                    });
+                  } catch (error) {
                     console.error(error);
                     break;
                   }
 
                   await AsyncStorage.removeItem('form-' + seconds);
+                  
                 }
                 // clear the offline reports
                 setOfflineReports([]);
-                setParseableReports([]);
                 // refresh the reports
-                DBManager.getReportsForSelf().then(results => {
+                ScoutReportsDB.getReportsForSelf().then(results => {
                   setReports(results);
                   Toast.show({
                     type: 'success',
@@ -212,7 +200,7 @@ function SubmittedForms() {
                 });
               }}
             />
-            <ReportList forms={parseableReports} />
+            <ReportList forms={offlineReports} />
           </View>
         )}
 

@@ -11,7 +11,8 @@ import DBManager from '../../DBManager';
 import FormHelper from '../../FormHelper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Toast from 'react-native-toast-message';
-import { supabase } from '../../lib/supabase';
+import CompetitionsDB from '../../database/Competitions';
+import ScoutReportsDB from '../../database/ScoutReports';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();
@@ -53,13 +54,12 @@ function Gamification({navigation, route}) {
    * @param tempArray an array containing just the values
    */
   async function initData(dataToSubmit, tempArray) {
-    dataToSubmit.data_arg = tempArray;
-    dataToSubmit.match_number_arg = match; //
-    dataToSubmit.team_arg = team;
-    dataToSubmit.competition_id_arg = competition.id;
+    dataToSubmit.data = tempArray;
+    dataToSubmit.matchNumber = match; //
+    dataToSubmit.teamNumber = team;
+    dataToSubmit.competitionId = competition.id;
     //dataToSubmit.form = formStructure;
-    dataToSubmit.form_id_arg = formId;
-    //const { data: { user } } = await supabase.auth.getUser();
+    //dataToSubmit.form_id_arg = formId;
     //dataToSubmit.user_id = user.id;
     //dataToSubmit.competition = competition.id;
   }
@@ -114,9 +114,9 @@ function Gamification({navigation, route}) {
    * @returns {Promise<void>}
    */
   const loadFormStructure = async () => {
-    const dbForm = await DBManager.getFormFromDatabase();
-    const dbFormId = await DBManager.getFormIdFromDatabase();
-    const dbCompetition = await DBManager.getCompetitionFromDatabase();
+    const dbCompetition = await CompetitionsDB.getCurrentCompetition();
+    const dbForm = await dbCompetition.form;
+    const dbFormId = await dbCompetition.formId;
     console.log('dbCompetition: ' + JSON.stringify(dbCompetition));
     if (dbForm !== null || dbCompetition !== null) {
       if (DEBUG) {
@@ -510,10 +510,7 @@ function Gamification({navigation, route}) {
                           ).catch(() => {});
 
                           if (!googleResponse) {
-                            FormHelper.saveFormOffline(
-                              dataToSubmit,
-                              competition,
-                            ).then(() => {
+                            FormHelper.saveFormOffline(dataToSubmit).then(() => {
                               Toast.show({
                                 type: 'success',
                                 text1: 'Saved offline successfully!',
@@ -529,9 +526,8 @@ function Gamification({navigation, route}) {
                           } else {
                             console.log(dataToSubmit);
 
-                            const { error } = await supabase.rpc('add_scout_report', dataToSubmit);
-
-                            if (!error) {
+                            try {
+                              await ScoutReportsDB.createOnlineScoutReport(dataToSubmit);
                               Toast.show({
                                 type: 'success',
                                 text1: 'Scouting report submitted!',
@@ -541,7 +537,7 @@ function Gamification({navigation, route}) {
                               setTeam('');
                               initForm(formStructure);
                               navigation.navigate('Match');
-                            } else {
+                            } catch (error) {
                               console.error(error);
                               Alert.alert(
                                 'Error',

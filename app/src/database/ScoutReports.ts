@@ -44,7 +44,7 @@ class ScoutReportsDB {
     return res;
   }
 
-  static async getReportsForSelf(userId: string) : Promise<ScoutReportReturnData[]> {
+  static async getReportsForSelf() : Promise<ScoutReportReturnData[]> {
     const { data: { user } } = await supabase.auth.getUser();
     if (user == null) {
       throw new Error('User not logged in');

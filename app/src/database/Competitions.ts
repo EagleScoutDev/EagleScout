@@ -13,6 +13,24 @@ interface CompetitionReturnData extends Competition {
 }
 
 class CompetitionsDB {
+  static async getCompetitions() : Promise<CompetitionReturnData[]> {
+    const { data, error } = await supabase.from('competitions').select('*, forms( form_structure )');
+    if (error) {
+      throw error;
+    } else {
+      return data.map((competition) => {
+        return {
+          id: competition.id,
+          name: competition.name,
+          startTime: competition.start_time,
+          endTime: competition.end_time,
+          formId: competition.form_id,
+          form: competition.forms.form_structure
+        };
+      });
+    }
+  }
+
   static async getCurrentCompetition() : Promise<CompetitionReturnData | null> {
     // select the competiton from supabase where the current time is between the start and end time
     const currentTime = new Date().toISOString();
