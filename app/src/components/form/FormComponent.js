@@ -1,4 +1,4 @@
-import {Text, TextInput, View} from 'react-native';
+import {TextInput, View} from 'react-native';
 import RadioButtons from './RadioButtons';
 import React from 'react';
 import Stepper from './Stepper';

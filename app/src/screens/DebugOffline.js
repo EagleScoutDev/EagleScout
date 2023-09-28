@@ -15,6 +15,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 function DebugOffline({navigation}) {
   const [keys, setKeys] = useState([]);
@@ -91,8 +92,25 @@ function DebugOffline({navigation}) {
             marginBottom: 10,
           }}
         />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 10,
+            borderRadius: 10,
+            // margin: 10,
+            // marginHorizontal: 30,
+            borderBottomColor: colors.border,
+            borderBottomWidth: 4,
+          }}>
+          <Text style={{color: colors.text}}>DATA</Text>
+          <Button
+            title={'Copy to Clipboard'}
+            onPress={() => Clipboard.setString(value)}
+          />
+        </View>
         <ScrollView style={{paddingBottom: 30}}>
-          <Text style={{color: colors.text}}>DATA:</Text>
           <Text style={{color: colors.text}}>{value}</Text>
         </ScrollView>
       </View>

@@ -1,4 +1,4 @@
-import { supabase } from './lib/supabase';
+import {supabase} from './lib/supabase';
 
 /**
  * This class provides common methods to scout reports and competitions from the database.
@@ -10,8 +10,10 @@ class DBManager {
    * @returns {Promise<[]>} resolves when the reports are found
    */
   static async getReportsForTeam(team) {
-    const { data, error } = await supabase.from('scout_reports')
-    .select('*, match:match_id(number, competition_id), matches(*)').eq('team', team);
+    const {data, error} = await supabase
+      .from('scout_reports')
+      .select('*, match:match_id(number, competition_id), matches(*)')
+      .eq('team', team);
     if (error) {
       console.error(error);
       return [];
@@ -44,7 +46,7 @@ class DBManager {
           data: doc.data,
           competition_name: compname,
           user_id: doc.user_id,
-          form: await this.getFormFromDatabase()
+          form: await this.getFormFromDatabase(),
         });
       }
 
@@ -60,9 +62,13 @@ class DBManager {
    * @returns {Promise<[]>} resolves when the reports are found
    */
   static async getReportsForSelf() {
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data, error } = await supabase.from('scout_reports')
-      .select('*, match:match_id(number, competition_id), matches(*)').eq('user_id', user.id);
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
+    const {data, error} = await supabase
+      .from('scout_reports')
+      .select('*, match:match_id(number, competition_id), matches(*)')
+      .eq('user_id', user.id);
     if (error) {
       console.error(error);
       return [];
@@ -95,7 +101,7 @@ class DBManager {
           data: doc.data,
           competition_name: compname,
           user_id: doc.user_id,
-          form: await this.getFormFromDatabase()
+          form: await this.getFormFromDatabase(),
         });
       }
 
@@ -118,8 +124,10 @@ class DBManager {
       console.log('Chosen comp id: ' + chosenComp.id);
     }
 
-    const { data, error } = await supabase.from('scout_reports')
-      .select('*, match:match_id(number, competition_id), matches(*)').eq('matches.competition_id', chosenComp.id);
+    const {data, error} = await supabase
+      .from('scout_reports')
+      .select('*, match:match_id(number, competition_id), matches(*)')
+      .eq('matches.competition_id', chosenComp.id);
     if (error) {
       console.error(error);
       return [];
@@ -152,7 +160,7 @@ class DBManager {
           data: doc.data,
           competition_name: compname,
           user_id: doc.user_id,
-          form: await this.getFormFromDatabase()
+          form: await this.getFormFromDatabase(),
         });
       }
 
@@ -169,7 +177,11 @@ class DBManager {
    */
   static async getCompetitionFromDatabase() {
     console.log('beginning getCompetitionFromDatabase');
-    const { data, error } = await supabase.from('competitions').select('*').order('start_time', { ascending: false }).single();
+    const {data, error} = await supabase
+      .from('competitions')
+      .select('*')
+      .order('start_time', {ascending: false})
+      .single();
     if (error) {
       console.error(error);
       return null;
@@ -183,29 +195,27 @@ class DBManager {
    * @returns {Promise<any|null>}
    */
   static async getFormFromDatabase() {
-    const { data, error } = await supabase.from('forms').select('*').eq('id', 1);
+    const {data, error} = await supabase.from('forms').select('*').eq('id', 1);
     if (error) {
       console.error(error);
       return null;
     } else {
       console.log('hereeee' + typeof data[0].scout_data.questions);
       console.log('hereeee' + JSON.stringify(data[0].scout_data.questions));
-      data[0].scout_data.questions.map((question) => {
+      data[0].scout_data.questions.map(question => {
         console.log(question);
       });
       return data[0].scout_data.questions;
-      
     }
   }
 
   static async getFormIdFromDatabase() {
-    const { data, error } = await supabase.from('forms').select('*').eq('id', 1);
+    const {data, error} = await supabase.from('forms').select('*').eq('id', 1);
     if (error) {
       console.error(error);
       return null;
     } else {
       return data[0].id;
-      
     }
   }
 }

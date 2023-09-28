@@ -19,6 +19,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import EditProfileModal from './EditProfileModal';
 import ChangePasswordModal from './ChangePasswordModal';
 import DebugOffline from '../DebugOffline';
+import {CaretRight} from '../../SVGIcons';
 
 const Stack = createStackNavigator();
 const VERSION = '3.0.1';
@@ -27,27 +28,6 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
   const {colors} = useTheme();
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
-
-  const caret = (
-    <Svg
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      stroke="gray"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{
-        position: 'absolute',
-        right: 20,
-        top: 20,
-      }}>
-      <Path
-        fill-rule="evenodd"
-        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-      />
-    </Svg>
-  );
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
@@ -109,7 +89,7 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
         borderBottomColor: colors.border,
       }}>
       <Text style={styles.list_item}>{text}</Text>
-      {caretVisible && caret}
+      {caretVisible && CaretRight()}
     </TouchableOpacity>
   );
 

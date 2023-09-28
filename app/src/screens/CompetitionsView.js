@@ -19,7 +19,7 @@ import DatePicker from 'react-native-date-picker';
 import DBManager from '../DBManager';
 //import InAppBrowser from 'react-native-inappbrowser-reborn';
 //import {v4 as uuid} from 'uuid';
-import { supabase } from '../lib/supabase';
+import {supabase} from '../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CompetitionsDB from '../database/Competitions';
 import ScoutReportsDB from '../database/ScoutReports';
@@ -498,7 +498,10 @@ const CompetitionsView = ({navigate}) => {
                             onPress: async () => {
                               // deleteCompetition(tempComp.id);
 
-                              const { data, error } = await supabase.from('competitions').delete().eq('id', tempComp.id);
+                              const {data, error} = await supabase
+                                .from('competitions')
+                                .delete()
+                                .eq('id', tempComp.id);
                               if (error) {
                                 console.error(error);
                                 Alert.alert(

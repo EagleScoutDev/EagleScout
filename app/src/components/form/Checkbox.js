@@ -1,5 +1,4 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import {useState} from 'react';
 import Question from './Question';
 
 // TODO: this should set the value of which items are selected one level higher.

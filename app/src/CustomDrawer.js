@@ -6,9 +6,9 @@ import {
 } from '@react-navigation/drawer';
 import {Linking, View, Text, TouchableOpacity} from 'react-native';
 import * as React from 'react';
-import Svg, {Path} from 'react-native-svg';
 import {useEffect, useState} from 'react';
 import DBManager from './DBManager';
+import {PencilNotepad, QuestionMarkCircle} from './SVGIcons';
 
 function CustomDrawerContent(props) {
   const [pitScoutURL, setPitScoutURL] = useState(null);
@@ -76,17 +76,7 @@ function CustomDrawerContent(props) {
               alignItems: 'center',
               marginBottom: '10%',
             }}>
-            <Svg width={'8%'} height="100%" viewBox="0 0 16 16">
-              <Path
-                fill={'grey'}
-                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
-              />
-              <Path
-                fill={'grey'}
-                fill-rule="evenodd"
-                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-              />
-            </Svg>
+            <PencilNotepad />
             <Text
               style={{
                 color: 'gray',
@@ -106,16 +96,7 @@ function CustomDrawerContent(props) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Svg width={'8%'} height="100%" viewBox="0 0 16 16">
-            <Path
-              fill={'gray'}
-              d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-            />
-            <Path
-              fill="gray"
-              d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"
-            />
-          </Svg>
+          <QuestionMarkCircle />
           <Text style={{color: 'gray', marginLeft: '4%', fontSize: 16}}>
             Feedback
           </Text>

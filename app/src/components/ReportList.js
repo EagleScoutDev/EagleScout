@@ -125,10 +125,7 @@ function ReportList({forms}) {
                 setSort('date');
                 setDataCopy(
                   dataCopy.sort((a, b) => {
-                    return (
-                      new Date(a.created_at) -
-                      new Date(b.created_at)
-                    );
+                    return new Date(a.created_at) - new Date(b.created_at);
                   }),
                 );
               }}>
