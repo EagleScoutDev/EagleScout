@@ -204,7 +204,6 @@ function Gamification({navigation, route}) {
   }, [navigation, route.params]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     loadFormStructure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -510,7 +509,11 @@ function Gamification({navigation, route}) {
                           ).catch(() => {});
 
                           if (!googleResponse) {
-                            FormHelper.saveFormOffline(dataToSubmit).then(() => {
+                            FormHelper.saveFormOffline({
+                              ...dataToSubmit,
+                              form: formStructure,
+                              formId: formId,
+                            }).then(() => {
                               Toast.show({
                                 type: 'success',
                                 text1: 'Saved offline successfully!',
@@ -527,7 +530,9 @@ function Gamification({navigation, route}) {
                             console.log(dataToSubmit);
 
                             try {
-                              await ScoutReportsDB.createOnlineScoutReport(dataToSubmit);
+                              await ScoutReportsDB.createOnlineScoutReport(
+                                dataToSubmit,
+                              );
                               Toast.show({
                                 type: 'success',
                                 text1: 'Scouting report submitted!',

@@ -1,16 +1,21 @@
 import React, {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import StandardButton from '../StandardButton';
+import StandardButton from '../../components/StandardButton';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-import StandardModal from './StandardModal';
+import StandardModal from '../../components/modals/StandardModal';
 import {supabase} from '../../lib/supabase';
+import SegmentedOption from '../../components/pickers/SegmentedOption';
+import UserAttributes from '../../database/UserAttributes';
+import ProfilesDB from '../../database/Profiles';
+import UserAttributesDB from '../../database/UserAttributes';
 
 function Spacer() {
   // eslint-disable-next-line react-native/no-inline-styles
@@ -25,15 +30,37 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [editEndDate, setEditEndDate] = useState(false);
   const {colors} = useTheme();
 
+  const [selectedFormID, setSelectedFormID] = useState(null);
+
+  const [formIDs, setFormIDs] = useState([]);
+
+  const getFormIDs = async () => {
+    const current_team_id = (await UserAttributesDB.getCurrentUserAttribute())
+      .team_id;
+
+    // get form ids
+    let {data: forms, error} = await supabase
+      .from('forms')
+      .select('id')
+      .eq('team_id', current_team_id);
+
+    let form_ids = [];
+    forms.forEach(form => {
+      form_ids.push(form.id);
+    });
+    setFormIDs(form_ids);
+  };
+
   const submitCompetition = async () => {
-    // console.log('competition name: ' + name);
-    // console.log('start date: ' + startDate);
-    // console.log('end date: ' + endDate);
+    // if no form is selected, alert the user
+    if (selectedFormID === null) {
+      Alert.alert('Error', 'Please select a form to use for this competition.');
+      return;
+    }
 
     const {
       data: {user},
     } = await supabase.auth.getUser();
-    // console.log('user', user.id);
 
     let {data: user_attributes, error} = await supabase
       .from('user_attributes')
@@ -49,6 +76,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       name: name,
       start_time: startDate,
       end_time: endDate,
+      form_id: selectedFormID,
     });
     const error2 = res.error;
   };
@@ -57,6 +85,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
     setName('');
     setStartDate(new Date());
     setEndDate(new Date());
+    setSelectedFormID(null);
+    getFormIDs();
   }, [visible]);
 
   const styles = StyleSheet.create({
@@ -174,6 +204,30 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
             setEditEndDate(false);
           }}
         />
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          margin: 20,
+          backgroundColor: colors.border,
+          padding: 2,
+          borderRadius: 10,
+          alignContent: 'center',
+        }}>
+        {formIDs.map(f_id => {
+          return (
+            <SegmentedOption
+              title={f_id}
+              selected={selectedFormID}
+              colors={colors}
+              onPress={() => {
+                console.log('pressed');
+                setSelectedFormID(f_id);
+              }}
+            />
+          );
+        })}
       </View>
 
       <Spacer />

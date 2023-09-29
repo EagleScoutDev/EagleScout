@@ -49,6 +49,7 @@ function SubmittedForms() {
         console.log('report: ' + report);
       }
       formsFound.push(JSON.parse(report));
+      console.log(JSON.parse(report));
     }
     setOfflineReports(formsFound);
   }
@@ -171,10 +172,16 @@ function SubmittedForms() {
                     );
                   }
                   const report = offlineReports[i];
-                  const seconds = new Date(report.createdAt).getSeconds();
+                  const utcMilliseconds = new Date(
+                    report.createdAt,
+                  ).getUTCMilliseconds();
 
                   try {
-                    await ScoutReportsDB.createOfflineScoutReport(report);
+                    await ScoutReportsDB.createOfflineScoutReport({
+                      ...report,
+                      form: undefined,
+                      formId: undefined,
+                    });
                     Toast.show({
                       type: 'success',
                       text1: 'Scouting report submitted!',
@@ -185,8 +192,7 @@ function SubmittedForms() {
                     break;
                   }
 
-                  await AsyncStorage.removeItem('form-' + seconds);
-                  
+                  await AsyncStorage.removeItem('form-' + utcMilliseconds);
                 }
                 // clear the offline reports
                 setOfflineReports([]);

@@ -1,21 +1,24 @@
-import { supabase } from '../lib/supabase';
+import {supabase} from '../lib/supabase';
 
 interface UserAttributeReturnData {
-  id: string,
-  team_id: number,
-  scouter: boolean,
-  admin: boolean
+  id: string;
+  team_id: number;
+  scouter: boolean;
+  admin: boolean;
 }
 
 interface UserAttributeWithProfile extends UserAttributeReturnData {
-  firstName: string,
-  lastName: string,
-  name: string
+  firstName: string;
+  lastName: string;
+  name: string;
 }
 
-class ProfilesDB {
-  static async getUserAttribute(id: string) : Promise<UserAttributeReturnData> {
-    const { data, error } = await supabase.from('user_attributes').select('*').eq('id', id);
+class UserAttributesDB {
+  static async getUserAttribute(id: string): Promise<UserAttributeReturnData> {
+    const {data, error} = await supabase
+      .from('user_attributes')
+      .select('*')
+      .eq('id', id);
     if (error) {
       throw error;
     } else {
@@ -26,34 +29,45 @@ class ProfilesDB {
           id: data[0].id,
           team_id: data[0].team_id,
           scouter: data[0].scouter,
-          admin: data[0].admin
+          admin: data[0].admin,
         };
       }
     }
   }
 
-  static async getCurrentUserAttribute() : Promise<UserAttributeReturnData> {
-    const { data: { user } } = await supabase.auth.getUser();
+  static async getCurrentUserAttribute(): Promise<UserAttributeReturnData> {
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
     if (user == null) {
       throw new Error('User not logged in');
     }
     return this.getUserAttribute(user.id);
   }
 
-  static async setUserAttributes(userId: number, scouter: boolean, admin: boolean) : Promise<void> {
-    const { data, error } = await supabase.from('user_attributes').update({
-      scouter: scouter,
-      admin: admin
-    }).eq('id', userId);
+  static async setUserAttributes(
+    userId: number,
+    scouter: boolean,
+    admin: boolean,
+  ): Promise<void> {
+    const {data, error} = await supabase
+      .from('user_attributes')
+      .update({
+        scouter: scouter,
+        admin: admin,
+      })
+      .eq('id', userId);
     if (error) {
       throw error;
     }
   }
 
-  static async getAllTeamUsers() : Promise<UserAttributeWithProfile[]> {
-    const res : UserAttributeWithProfile[] = [];
-    const { data, error } = await supabase.from('user_attributes').select('*');
-    const { data: data2, error: error2  } = await supabase.from('profiles').select('*');
+  static async getAllTeamUsers(): Promise<UserAttributeWithProfile[]> {
+    const res: UserAttributeWithProfile[] = [];
+    const {data, error} = await supabase.from('user_attributes').select('*');
+    const {data: data2, error: error2} = await supabase
+      .from('profiles')
+      .select('*');
     if (error) {
       throw error;
     } else if (error2) {
@@ -76,7 +90,7 @@ class ProfilesDB {
           admin: data[i].admin,
           firstName: profile.first_name,
           lastName: profile.last_name,
-          name: profile.name
+          name: profile.name,
         });
       }
     }
@@ -84,4 +98,4 @@ class ProfilesDB {
   }
 }
 
-export default ProfilesDB;
+export default UserAttributesDB;

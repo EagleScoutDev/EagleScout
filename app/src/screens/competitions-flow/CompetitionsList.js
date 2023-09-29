@@ -2,19 +2,20 @@ import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import NoInternet from '../../components/NoInternet';
-import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
+import AddCompetitionModal from './AddCompetitionModal';
 import DBManager from '../../DBManager';
 //import InAppBrowser from 'react-native-inappbrowser-reborn';
 //import {v4 as uuid} from 'uuid';
 import {supabase} from '../../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditCompetitionModal from '../../components/modals/EditCompetitionModal';
+import CompetitionsDB from '../../database/Competitions';
 
 const DEBUG = true;
 
 const CompetitionsList = ({setChosenComp}) => {
   const {colors} = useTheme();
-  const internetError = false;
+  const [internetError, setInternetError] = useState(false);
   const [competitionList, setCompetitionList] = useState([]);
   const [editingMode, setEditingMode] = useState(false);
   const [addCompetitionModalVisible, setAddCompetitionModalVisible] =
@@ -59,13 +60,18 @@ const CompetitionsList = ({setChosenComp}) => {
       console.log('Starting to look for competitions');
     }
 
-    const {data, error} = await supabase.from('competitions').select('*');
-
-    // sort the data by start time
-    data.sort((a, b) => {
-      return new Date(a.start_time) - new Date(b.start_time);
-    });
-    setCompetitionList(data);
+    try {
+      const data = await CompetitionsDB.getCompetitions();
+      // sort the data by start time
+      data.sort((a, b) => {
+        return new Date(a.startTime) - new Date(b.startTime);
+      });
+      setCompetitionList(data);
+      setInternetError(false);
+    } catch (error) {
+      console.error(error);
+      setInternetError(true);
+    }
   };
 
   useEffect(() => {
@@ -165,7 +171,7 @@ const CompetitionsList = ({setChosenComp}) => {
                   textAlign: 'center',
                   fontSize: 16,
                 }}>
-                {comp.name} ({new Date(comp.start_time).getFullYear()})
+                {comp.name} ({new Date(comp.startTime).getFullYear()})
               </Text>
             </TouchableOpacity>
           ))}

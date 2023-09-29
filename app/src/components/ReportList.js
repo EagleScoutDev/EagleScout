@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, FlatList} from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
 
@@ -7,8 +7,12 @@ function ReportList({forms}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [sort, setSort] = useState('');
-  const [dataCopy, setDataCopy] = useState([...forms]);
+  const [dataCopy, setDataCopy] = useState([]);
   const {colors} = useTheme();
+
+  useEffect(() => {
+    setDataCopy(forms);
+  }, [forms]);
 
   if (forms == null) {
     return (
@@ -50,7 +54,7 @@ function ReportList({forms}) {
         setVisible={setModalVisible}
         data={chosenScoutForm}
         // TODO: add accurate competition name
-        chosenComp={chosenScoutForm.competition_name}
+        chosenComp={chosenScoutForm.competitionName}
       />
     );
   } else {
@@ -187,14 +191,11 @@ function ReportList({forms}) {
                   flex: 2,
                   textAlign: 'right',
                 }}>
-                {new Date(item.createdAt).toLocaleDateString(
-                  'en-US',
-                  {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  },
-                )}
+                {new Date(item.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
               </Text>
             </View>
           </TouchableOpacity>

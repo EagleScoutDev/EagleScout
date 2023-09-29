@@ -39,17 +39,17 @@ const CompetitionViewer = ({resetCompID, competition}) => {
           textAlign: 'center',
           paddingBottom: '5%',
         }}>
-        {new Date(competition.start_time).toLocaleDateString('en-US', {
+        {new Date(competition.startTime).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
           // year: 'numeric',
         })}{' '}
         -{' '}
-        {new Date(competition.end_time).toLocaleDateString('en-US', {
+        {new Date(competition.endTime).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
         })}{' '}
-        ({new Date(competition.end_time).getFullYear()})
+        ({new Date(competition.endTime).getFullYear()})
       </Text>
 
       <ScoutingReportsList competition={competition} />

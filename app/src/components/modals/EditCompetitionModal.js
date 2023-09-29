@@ -18,20 +18,20 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
   const {colors} = useTheme();
 
   const [name, setName] = useState(tempComp.name);
-  const [startDate, setStartDate] = useState(new Date(tempComp.start_time));
+  const [startDate, setStartDate] = useState(new Date(tempComp.startTime));
   const [editStartDate, setEditStartDate] = useState(false);
 
-  const [endDate, setEndDate] = useState(new Date(tempComp.end_time));
+  const [endDate, setEndDate] = useState(new Date(tempComp.endTime));
   const [editEndDate, setEditEndDate] = useState(false);
 
   const changesMade = () => {
     if (name !== tempComp.name) {
       return true;
     }
-    if (startDate !== tempComp.start_time) {
+    if (startDate !== tempComp.startTime) {
       return true;
     }
-    if (endDate !== tempComp.end_time) {
+    if (endDate !== tempComp.endTime) {
       return true;
     }
     return false;

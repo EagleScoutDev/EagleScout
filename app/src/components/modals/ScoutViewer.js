@@ -121,7 +121,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
       const res = await supabase
         .from('profiles')
         .select('name')
-        .eq('id', data.user_id)
+        .eq('id', data.userId)
         .single();
       if (res.error) {
         console.error(res.error);
@@ -136,7 +136,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
         console.log('creator of scout report found');
       }
     });
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (DEBUG) {
@@ -158,7 +158,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
       <View style={styles.modal_container}>
         <TouchableOpacity onPress={() => setVisible(false)}>
           <Text style={styles.breadcrumbs}>
-            {chosenComp} / Round {data ? data.match : ''}{' '}
+            {chosenComp} / Round {data ? data.matchNumber : ''}{' '}
           </Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
@@ -188,11 +188,13 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
             borderRadius: 10,
             padding: '5%',
           }}>
-          <Text style={styles.team_title}>Team #{data.team}</Text>
-          <Text style={styles.report_info}>Round {data ? data.match : ''}</Text>
+          <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
+          <Text style={styles.report_info}>
+            Round {data ? data.matchNumber : ''}
+          </Text>
           <Text style={styles.report_info}>By: {userName}</Text>
           <Text style={styles.report_info}>
-            {new Date(data !== null ? data.created_at : 0).toLocaleString()}
+            {new Date(data.createdAt).toLocaleString()}
           </Text>
         </View>
         <ScrollView>

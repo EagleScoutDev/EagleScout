@@ -34,15 +34,11 @@ class FormHelper {
    * Saves a form offline
    */
 
-  static async saveFormOffline(dataToSubmit, competition) {
-    dataToSubmit.timestamp = {
-      seconds: Math.floor(Date.now() / 1000),
-      nanoseconds: Date.now(),
-    };
-    dataToSubmit.competition = competition;
+  static async saveFormOffline(dataToSubmit) {
+    dataToSubmit.createdAt = new Date();
 
     await AsyncStorage.setItem(
-      'form-' + dataToSubmit.timestamp.seconds,
+      'form-' + dataToSubmit.createdAt.getUTCMilliseconds(),
       JSON.stringify(dataToSubmit),
     );
   }

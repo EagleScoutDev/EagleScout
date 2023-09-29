@@ -1,7 +1,8 @@
 import {View, Text} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import DBManager from '../../DBManager';
+import ScoutReportsDB from '../../database/ScoutReports';
+import ReportList from '../../components/ReportList';
 
 const ScoutingReportsList = ({navigation, competition}) => {
   const {colors} = useTheme();
@@ -17,25 +18,16 @@ const ScoutingReportsList = ({navigation, competition}) => {
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
-    DBManager.getReportsForCompetition(competition).then(reports => {
+    console.log('HERE');
+    ScoutReportsDB.getReportsForCompetition(competition.id).then(reports => {
       console.log('reports found!');
       console.log(reports);
+      console.log('number of reports: ' + reports.length);
+      setReports(reports);
     });
-  }, []);
+  }, [competition]);
 
-  return (
-    <View
-      style={{
-        borderWidth: 1,
-        borderColor: colors.border,
-      }}>
-      <Text style={{color: colors.text}}>Scouting Reports List</Text>
-      {/*<Text style={{color: colors.text}}>{competition.name}</Text>*/}
-      {reports.map(report => (
-        <Text style={{color: colors.text}}>{report.team}</Text>
-      ))}
-    </View>
-  );
+  return <ReportList forms={reports} />;
 };
 
 export default ScoutingReportsList;

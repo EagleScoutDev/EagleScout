@@ -51,6 +51,22 @@ function ScoutingView({navigation, route}) {
   }
 
   /**
+   * initializes the form array with the correct value per question type
+   * @param dbForm
+   */
+  const initForm = dbForm => {
+    let tempArray = new Array(dbForm.length);
+    for (let i = 0; i < dbForm.length; i++) {
+      if (dbForm[i].type === 'heading') {
+        tempArray[i] = null;
+      } else {
+        tempArray[i] = defaultValues[dbForm[i].type];
+      }
+    }
+    setArrayData(tempArray);
+  };
+
+  /**
    * Checks if all questions marked as required were filled out
    * @param tempArray
    * @returns {boolean} true if all are filled out, false if there are some left unanswered.
@@ -97,15 +113,17 @@ function ScoutingView({navigation, route}) {
         JSON.stringify(dbCompetition),
       );
 
-      let tempArray = new Array(dbForm.length);
-      for (let i = 0; i < dbForm.length; i++) {
-        if (dbForm[i].type === 'heading') {
-          tempArray[i] = null;
-        } else {
-          tempArray[i] = defaultValues[dbForm[i].type];
-        }
-      }
-      setArrayData(tempArray);
+      initForm(dbForm);
+
+      // let tempArray = new Array(dbForm.length);
+      // for (let i = 0; i < dbForm.length; i++) {
+      //   if (dbForm[i].type === 'heading') {
+      //     tempArray[i] = null;
+      //   } else {
+      //     tempArray[i] = defaultValues[dbForm[i].type];
+      //   }
+      // }
+      // setArrayData(tempArray);
     } else {
       if (DEBUG) {
         console.warn('No internet connection, reading offline form');
@@ -124,15 +142,7 @@ function ScoutingView({navigation, route}) {
       if (objectStoredForm !== null && objectStoredCompetition !== null) {
         setFormStructure(objectStoredForm);
         setCompetition(objectStoredCompetition);
-        let tempArray = new Array(objectStoredForm.length);
-        for (let i = 0; i < objectStoredForm.length; i++) {
-          if (objectStoredForm[i].type === 'heading') {
-            tempArray[i] = null;
-          } else {
-            tempArray[i] = defaultValues[objectStoredForm[i].type];
-          }
-        }
-        setArrayData(tempArray);
+        initForm(dbForm);
       } else {
         if (DEBUG) {
           console.error(
@@ -170,7 +180,6 @@ function ScoutingView({navigation, route}) {
         console.log('loadFormStructure() finished');
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -349,16 +358,23 @@ function ScoutingView({navigation, route}) {
           );
 
           if (!googleResponse) {
-            FormHelper.saveFormOffline(dataToSubmit).then(() => {
+            FormHelper.saveFormOffline({
+              ...dataToSubmit,
+              form: formStructure,
+              formId: formId,
+            }).then(() => {
               console.log('cbbbb');
               Toast.show({
                 type: 'success',
                 text1: 'Saved offline successfully!',
                 visibilityTime: 3000,
               });
+              setMatch('');
+              setTeam('');
+              setArrayData([]);
+              initForm(formStructure);
             });
           } else {
-
             //dataToSubmit.timestamp = firestore.FieldValue.serverTimestamp();
 
             try {
@@ -371,6 +387,7 @@ function ScoutingView({navigation, route}) {
               setMatch('');
               setTeam('');
               setArrayData([]);
+              initForm(formStructure);
             } catch (error) {
               console.error(error);
               Alert.alert(
