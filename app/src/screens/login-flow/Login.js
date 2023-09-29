@@ -61,7 +61,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
           borderRadius: 10,
           margin: '5%',
           padding: '5%',
-          top: '30%',
+          top: '15%',
           borderWidth: 3,
           borderColor: colors.primary,
           shadowColor: colors.primary,

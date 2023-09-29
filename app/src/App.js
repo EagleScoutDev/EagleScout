@@ -83,6 +83,22 @@ const MyStack = () => {
         data: {user},
       } = await supabase.auth.getUser();
       console.log('user: ' + user.id);
+      if (await AsyncStorage.getItem('nameSet')) {
+        const nameSet = JSON.parse(await AsyncStorage.getItem('nameSet'));
+        const {data, error} = await supabase
+          .from('profiles')
+          .update({
+            first_name: nameSet.firstName,
+            last_name: nameSet.lastName,
+          })
+          .eq('id', user.id);
+        if (error) {
+          console.error('Error setting name: ' + error);
+        } else {
+          console.log('name set');
+          await AsyncStorage.removeItem('nameSet');
+        }
+      }
       //const { data, error } = await supabase.from('user_attributes').select('team_id, admin').eq('id', user.id);
       //console.log('data: ' + data);
       const {data, error} = await supabase

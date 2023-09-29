@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {supabase} from '../../lib/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function InputLabel(props) {
   return (
@@ -17,7 +18,6 @@ function InputLabel(props) {
         color: 'gray',
         fontWeight: 'bold',
         fontSize: 12,
-        paddingLeft: '10%',
         paddingTop: 10,
       }}>
       {props.visible ? props.title.toUpperCase() : ''}
@@ -26,7 +26,8 @@ function InputLabel(props) {
 }
 
 function SignUpModal({setVisible, navigation}) {
-  const [name, setName] = React.useState('');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [team, setTeam] = React.useState('');
@@ -96,7 +97,7 @@ function SignUpModal({setVisible, navigation}) {
           borderRadius: 10,
           margin: '5%',
           padding: '5%',
-          top: '30%',
+          top: '13%',
           borderWidth: 3,
           borderColor: colors.primary,
           // add drop shadow
@@ -118,15 +119,37 @@ function SignUpModal({setVisible, navigation}) {
           Sign Up
         </Text>
         <View>
-          <InputLabel title="Name" visible={name !== ''} />
-          <TextInput
-            onChangeText={setName}
-            value={name}
-            placeholder="Name"
+          <View
             style={{
-              ...styles.input,
-            }}
-          />
+              flexDirection: 'row',
+            }}>
+            <View
+              style={{
+                flex: 1,
+              }}>
+              <InputLabel title="First Name" visible={firstName !== ''} />
+              <TextInput
+                onChangeText={setFirstName}
+                value={firstName}
+                placeholder="First Name"
+                style={{
+                  ...styles.input,
+                }}
+              />
+            </View>
+            <View style={{flex: 1}}>
+              <InputLabel title="Last Name" visible={lastName !== ''} />
+              <TextInput
+                onChangeText={setLastName}
+                value={lastName}
+                placeholder="Last Name"
+                style={{
+                  ...styles.input,
+                }}
+              />
+            </View>
+          </View>
+
           <InputLabel title="Email" visible={email !== ''} />
           <TextInput
             onChangeText={setEmail}
@@ -191,6 +214,13 @@ function SignUpModal({setVisible, navigation}) {
                 console.error(error);
                 Alert.alert('Error signing up', error.toString());
               } else {
+                AsyncStorage.setItem(
+                  'nameSet',
+                  JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                  }),
+                );
                 const {data, error} = await supabase.rpc(
                   'register_user_with_team',
                   {
