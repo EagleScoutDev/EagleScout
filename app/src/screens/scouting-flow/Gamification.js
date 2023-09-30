@@ -348,7 +348,7 @@ function Gamification({navigation, route}) {
 
           tabBarStyle: {
             backgroundColor: colors.background,
-            paddingTop: '2%',
+            paddingTop: '10%',
           },
         }}
         children={() => (
@@ -410,7 +410,7 @@ function Gamification({navigation, route}) {
 
                 tabBarStyle: {
                   backgroundColor: colors.background,
-                  paddingTop: '2%',
+                  paddingTop: '10%',
                 },
               }}
               children={() => (
