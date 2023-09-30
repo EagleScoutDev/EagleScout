@@ -314,6 +314,7 @@ const MyStack = () => {
           </>
         )}
       </Drawer.Navigator>
+      <Toast />
     </NavigationContainer>
   );
   // return <ScoutingViewJSON2 />;
