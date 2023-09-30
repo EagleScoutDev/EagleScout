@@ -339,7 +339,7 @@ function UserManager({navigation}) {
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -378,12 +378,13 @@ function UserManager({navigation}) {
           isActive={sort === 'Captain'}
         />
       </View>
-      <ScrollView>
+      <ScrollView style={{flex: 1}}>
         <View
           style={{
             flexDirection: 'column',
             justifyContent: 'space-around',
             padding: 10,
+            flex: 1,
           }}>
           {sortedUsers.map(user => (
             <View

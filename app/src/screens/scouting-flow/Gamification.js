@@ -1,4 +1,14 @@
-import {Alert, Modal, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import FullScreenIncrementer from '../../components/form/FullScreenIncrementer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -329,45 +339,59 @@ function Gamification({navigation, route}) {
       }}>
       <Tab.Screen
         name={'Match'}
+        options={{
+          headerTintColor: colors.text,
+          tabBarLabelStyle: {
+            fontSize: 7.5,
+            fontWeight: 'bold',
+          },
+
+          tabBarStyle: {
+            backgroundColor: colors.background,
+            paddingTop: '2%',
+          },
+        }}
         children={() => (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View
               style={{
-                width: '100%',
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}>
-              {competition !== undefined && (
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontWeight: 'bold',
-                    fontSize: 20,
-                    textAlign: 'center',
-                    margin: '5%',
-                  }}>
-                  {competition.name}
-                </Text>
-              )}
-              <MatchInformation
-                match={match}
-                setMatch={setMatch}
-                team={team}
-                setTeam={setTeam}
-                disabled={true}
-              />
+              <View
+                style={{
+                  width: '100%',
+                }}>
+                {competition !== undefined && (
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      fontSize: 20,
+                      textAlign: 'center',
+                      margin: '5%',
+                    }}>
+                    {competition.name}
+                  </Text>
+                )}
+                <MatchInformation
+                  match={match}
+                  setMatch={setMatch}
+                  team={team}
+                  setTeam={setTeam}
+                  disabled={true}
+                />
+              </View>
+              <View style={{width: '100%', marginBottom: '5%'}}>
+                <StandardButton
+                  text={'Next'}
+                  onPress={() => navigation.navigate('Autonomous')}
+                  color={colors.primary}
+                />
+              </View>
             </View>
-            <View style={{width: '100%', marginBottom: '5%'}}>
-              <StandardButton
-                text={'Next'}
-                onPress={() => navigation.navigate('Autonomous')}
-                color={colors.primary}
-              />
-            </View>
-          </View>
+          </TouchableWithoutFeedback>
         )}
       />
 
@@ -379,9 +403,19 @@ function Gamification({navigation, route}) {
               options={{
                 // change font color in header
                 headerTintColor: colors.text,
+                tabBarLabelStyle: {
+                  fontSize: 7.5,
+                  fontWeight: 'bold',
+                },
+
+                tabBarStyle: {
+                  backgroundColor: colors.background,
+                  paddingTop: '2%',
+                },
               }}
               children={() => (
-                <ScrollView>
+                // <KeyboardAvoidingView behavior={'height'}>
+                <ScrollView keyboardShouldPersistTaps="handled">
                   {auto_scored !== undefined && teleop_scored !== undefined && (
                     <Modal
                       visible={modalVisible}
@@ -452,7 +486,7 @@ function Gamification({navigation, route}) {
                   )}
                   {/*  if the index is the last one, show a touchable opacity*/}
                   {index === Object.keys(data).length - 1 && (
-                    <View style={{width: '100%', marginBottom: '5%'}}>
+                    <View style={{width: '100%', marginBottom: '50%'}}>
                       <StandardButton
                         text={'Submit'}
                         width={'85%'}
@@ -555,6 +589,7 @@ function Gamification({navigation, route}) {
                     </View>
                   )}
                 </ScrollView>
+                // </KeyboardAvoidingView>
               )}
             />
           );
