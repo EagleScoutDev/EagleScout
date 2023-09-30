@@ -55,6 +55,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
       color: 'red',
       fontWeight: 'bold',
       fontSize: 17,
+      padding: '2%',
     },
     team_title: {
       fontSize: 30,
@@ -183,21 +184,22 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
             <Text style={styles.close}>Close</Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            borderRadius: 10,
-            padding: '5%',
-          }}>
-          <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
-          <Text style={styles.report_info}>
-            Round {data ? data.matchNumber : ''}
-          </Text>
-          <Text style={styles.report_info}>By: {userName}</Text>
-          <Text style={styles.report_info}>
-            {new Date(data.createdAt).toLocaleString()}
-          </Text>
-        </View>
         <ScrollView>
+          <View
+            style={{
+              borderRadius: 10,
+              padding: '5%',
+            }}>
+            <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
+            <Text style={styles.report_info}>
+              Round {data ? data.matchNumber : ''}
+            </Text>
+            <Text style={styles.report_info}>By: {userName}</Text>
+            <Text style={styles.report_info}>
+              {new Date(data.createdAt).toLocaleString()}
+            </Text>
+          </View>
+
           {data.form.map((field, index) => (
             <View key={index}>
               {/*If the entry has a text property, this indicates that it is a header, or section divider*/}
