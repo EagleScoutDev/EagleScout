@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
@@ -351,44 +352,46 @@ function Gamification({navigation, route}) {
           },
         }}
         children={() => (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View
               style={{
-                width: '100%',
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}>
-              {competition !== undefined && (
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontWeight: 'bold',
-                    fontSize: 20,
-                    textAlign: 'center',
-                    margin: '5%',
-                  }}>
-                  {competition.name}
-                </Text>
-              )}
-              <MatchInformation
-                match={match}
-                setMatch={setMatch}
-                team={team}
-                setTeam={setTeam}
-                disabled={true}
-              />
+              <View
+                style={{
+                  width: '100%',
+                }}>
+                {competition !== undefined && (
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      fontSize: 20,
+                      textAlign: 'center',
+                      margin: '5%',
+                    }}>
+                    {competition.name}
+                  </Text>
+                )}
+                <MatchInformation
+                  match={match}
+                  setMatch={setMatch}
+                  team={team}
+                  setTeam={setTeam}
+                  disabled={true}
+                />
+              </View>
+              <View style={{width: '100%', marginBottom: '5%'}}>
+                <StandardButton
+                  text={'Next'}
+                  onPress={() => navigation.navigate('Autonomous')}
+                  color={colors.primary}
+                />
+              </View>
             </View>
-            <View style={{width: '100%', marginBottom: '5%'}}>
-              <StandardButton
-                text={'Next'}
-                onPress={() => navigation.navigate('Autonomous')}
-                color={colors.primary}
-              />
-            </View>
-          </View>
+          </TouchableWithoutFeedback>
         )}
       />
 
