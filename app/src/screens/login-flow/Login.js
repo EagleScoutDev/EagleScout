@@ -58,6 +58,22 @@ const Login = ({onSubmit, error, ifAuth}) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={{flexDirection: 'column'}}>
         <Text style={styles.titleText}>EagleScout</Text>
+        {error !== '' && (
+          <View
+            style={{
+              backgroundColor: 'red',
+              padding: '5%',
+              margin: '3%',
+              borderRadius: 10,
+              position: 'absolute',
+              top: '20%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+            }}>
+            <Text style={{color: 'white', textAlign: 'center'}}>{error}</Text>
+          </View>
+        )}
         <View
           style={{
             backgroundColor: colors.card,
@@ -136,22 +152,6 @@ const Login = ({onSubmit, error, ifAuth}) => {
             </TouchableOpacity>
           </View>
         </View>
-        {error !== '' && (
-          <View
-            style={{
-              backgroundColor: 'red',
-              padding: '5%',
-              margin: '3%',
-              borderRadius: 10,
-              position: 'absolute',
-              top: '130%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'center',
-            }}>
-            <Text style={{color: 'white', textAlign: 'center'}}>{error}</Text>
-          </View>
-        )}
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
