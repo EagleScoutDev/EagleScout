@@ -94,6 +94,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
                 ? 'red'
                 : colors.text,
           }}
+          inputMode={'email'}
         />
         <TextInput
           onChangeText={setPassword}

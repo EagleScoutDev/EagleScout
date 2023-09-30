@@ -158,6 +158,7 @@ function SignUpModal({setVisible, navigation}) {
             style={{
               ...styles.input,
             }}
+            inputMode={'email'}
           />
           <InputLabel title="Password" visible={password !== ''} />
           <TextInput
