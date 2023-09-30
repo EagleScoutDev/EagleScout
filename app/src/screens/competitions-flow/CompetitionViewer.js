@@ -7,7 +7,7 @@ const CompetitionViewer = ({resetCompID, competition}) => {
   const {colors} = useTheme();
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <TouchableOpacity onPress={resetCompID}>
         <Text
           style={{
