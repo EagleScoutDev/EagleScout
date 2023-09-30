@@ -1,4 +1,4 @@
-import {Text, ScrollView, TouchableOpacity, Alert} from 'react-native';
+import {Text, ScrollView, TouchableOpacity, Alert, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormSection from '../../components/form/FormSection';
@@ -398,6 +398,7 @@ function ScoutingView({navigation, route}) {
           }
         }}
       />
+      <View style={{marginBottom: 300}} />
     </ScrollView>
   );
 }
