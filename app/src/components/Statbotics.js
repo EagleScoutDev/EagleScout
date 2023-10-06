@@ -140,32 +140,6 @@ function Statbotics({team}) {
     },
   });
 
-  // empty team number
-  if (team === '') {
-    return (
-      <View style={styles.formSection}>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: 20,
-            color: colors.text,
-          }}
-          onPress={() => setVisible(!visible)}>
-          Team Statistics
-        </Text>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontStyle: 'italic',
-            color: colors.text,
-          }}>
-          Get started by entering a team number.
-        </Text>
-      </View>
-    );
-  }
-
   // team number is not in the database
   if (!isTeam) {
     return (
@@ -223,27 +197,11 @@ function Statbotics({team}) {
 
   return (
     <View style={styles.formSection}>
-      <Text
-        style={{
-          textAlign: 'center',
-          fontWeight: 'bold',
-          fontSize: 20,
-          color: colors.text,
-        }}
-        onPress={() => setVisible(!visible)}>
-        Team {team} Statistics
-      </Text>
-      <Text
-        style={{textAlign: 'center', fontStyle: 'italic', color: colors.text}}>
-        {overall ? overall.name : 'Loading...'}
-      </Text>
-
       <View>
         <Text
           style={{
             fontWeight: 'bold',
             fontSize: 15,
-            marginTop: 20,
             color: colors.text,
           }}>
           Overall Statistics
