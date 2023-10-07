@@ -1,4 +1,5 @@
 export interface SimpleEvent {
+  rank: number | null;
   key: string;
   name: string;
   event_code: string;
@@ -122,5 +123,22 @@ export class TBA {
     }
     // else, return the last one
     return data[data.length - 1];
+  }
+
+  static async getAllCompetitionsForTeam(
+    team_number: number,
+  ): Promise<SimpleEvent[]> {
+    const current_year = new Date().getFullYear();
+    const response = await fetch(
+      `https://www.thebluealliance.com/api/v3/team/frc${team_number}/events/${current_year}/simple`,
+      {
+        headers: {
+          'X-TBA-Auth-Key':
+            'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq',
+        },
+      },
+    );
+    const data = await response.json();
+    return data;
   }
 }

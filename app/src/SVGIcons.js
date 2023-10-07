@@ -109,13 +109,13 @@ export const PencilNotepad = () => {
   );
 };
 
-export const CaretRight = () => {
+export const CaretRight = ({color = 'gray'}) => {
   return (
     <Svg
       width={20}
       height={20}
       viewBox="0 0 24 24"
-      stroke="gray"
+      stroke={color}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -123,6 +123,30 @@ export const CaretRight = () => {
         position: 'absolute',
         right: 20,
         top: 20,
+      }}>
+      <Path
+        fill-rule="evenodd"
+        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+      />
+    </Svg>
+  );
+};
+
+export const CaretDown = ({color = 'gray'}) => {
+  return (
+    <Svg
+      width={20}
+      height={20}
+      viewBox="0 0 24 24"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{
+        position: 'absolute',
+        right: 20,
+        top: 20,
+        transform: [{rotate: '90deg'}],
       }}>
       <Path
         fill-rule="evenodd"
