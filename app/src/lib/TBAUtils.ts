@@ -79,6 +79,12 @@ export class TBA {
     return await response.json();
   }
 
+  /**
+   * Returns the rank of the team at the competition
+   * @param comp_id the competition id
+   * @param team_number the team number
+   * @returns the rank of the team at the competition, or -1 if the competition has not taken place yet
+   */
   static async getTeamRank(
     comp_id: string,
     team_number: number,
@@ -93,9 +99,19 @@ export class TBA {
         },
       },
     );
-    const data = await response.json();
 
     // looks sketch, but it's not
+    if (!response.ok) {
+      console.error('Network response was not ok:', response.status);
+      return -1;
+    }
+    const data = await response.json();
+
+    // this means that the competition has not taken place yet
+    if (data === null) {
+      return -1;
+    }
+
     return data.qual.ranking.rank;
   }
 
@@ -139,6 +155,13 @@ export class TBA {
       },
     );
     const data = await response.json();
+
+    // sort by start date
+    data.sort((a: SimpleEvent, b: SimpleEvent) => {
+      const a_date = new Date(a.start_date);
+      const b_date = new Date(b.start_date);
+      return a_date.getTime() - b_date.getTime();
+    });
     return data;
   }
 }

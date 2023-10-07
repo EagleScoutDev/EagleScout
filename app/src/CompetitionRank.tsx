@@ -183,7 +183,10 @@ function CompetitionRank({team_number}: {team_number: number}) {
                     textAlign: 'center',
                     flex: 1,
                   }}>
-                  Rank {item.rank}
+                  {item.rank === -1
+                    ? 'Future Competition'
+                    : 'Rank #' + item.rank}
+                  {/*Rank {item.rank}*/}
                 </Text>
               </View>
             );
