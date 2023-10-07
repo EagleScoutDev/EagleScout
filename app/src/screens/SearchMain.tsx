@@ -39,7 +39,8 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
       setFilteredTeams(
         listOfTeams.filter(t => {
           return (
-            t.team_number.toString().includes(team) || t.nickname.includes(team)
+            t.team_number.toString().includes(team) ||
+            t.nickname.toLowerCase().includes(team.toLowerCase())
           );
         }),
       );
