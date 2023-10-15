@@ -254,7 +254,6 @@ const MyStack = () => {
               }
               options={{
                 drawerIcon: () => DocumentWithPlus(),
-                headerShown: scoutStylePreference === 'Scrolling',
               }}
             />
             {/*<Drawer.Screen name="Gamified" component={Gamified} />*/}
