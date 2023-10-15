@@ -10,7 +10,6 @@ import Question from './Question';
 /**
  * A component that renders the appropriate data input type based on a string passed in.
  * @param item -
- * @param uniqueKey - a key for rendering the data
  * @param styles - styling passed in by the parent
  * @param colors - the color scheme associated with the device scheme (light or dark)
  * @param arrayData - an array containing the raw data per question
@@ -20,7 +19,6 @@ import Question from './Question';
  */
 function FormComponent({
   item,
-  uniqueKey,
   styles,
   colors,
   arrayData,
@@ -32,7 +30,7 @@ function FormComponent({
 
   if (item.type === 'radio') {
     return (
-      <View style={styles.standardView} key={uniqueKey}>
+      <View style={styles.standardView}>
         <RadioButtons
           disabled={false}
           title={item.question}
@@ -50,7 +48,7 @@ function FormComponent({
     );
   } else if (item.type === 'textbox') {
     return (
-      <View style={styles.standardView} key={uniqueKey}>
+      <View style={styles.standardView}>
         <Question title={item.question} required={item.required} />
         <TextInput
           style={styles.textInput}
@@ -85,7 +83,6 @@ function FormComponent({
       return (
         <Stepper
           colors={colors}
-          key={uniqueKey}
           title={item.question + (item.required ? '*' : '')}
           value={arrayData[item.indice]}
           onValueChange={newValue => {
@@ -100,7 +97,6 @@ function FormComponent({
     return (
       <Checkbox
         colors={colors}
-        key={uniqueKey}
         title={item.question}
         required={item.required}
         options={item.labels}

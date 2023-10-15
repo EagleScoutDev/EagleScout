@@ -386,7 +386,7 @@ function Gamification({navigation, route}) {
               <View style={{width: '100%', marginBottom: '5%'}}>
                 <StandardButton
                   text={'Next'}
-                  onPress={() => navigation.navigate('Autonomous')}
+                  onPress={() => navigation.navigate(Object.keys(data)[0])}
                   color={colors.primary}
                 />
               </View>
@@ -399,6 +399,7 @@ function Gamification({navigation, route}) {
         Object.entries(data).map(([key, value], index) => {
           return (
             <Tab.Screen
+              key={key}
               name={key}
               options={{
                 // change font color in header
@@ -461,10 +462,10 @@ function Gamification({navigation, route}) {
                     {value.map((item, vIndex) => {
                       return (
                         <FormComponent
+                          key={item.question}
                           colors={colors}
                           item={item}
                           styles={styles}
-                          uniqueKey={item.question}
                           arrayData={arrayData}
                           setArrayData={setArrayData}
                         />

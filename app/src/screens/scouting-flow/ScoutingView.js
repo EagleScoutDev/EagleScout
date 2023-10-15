@@ -289,10 +289,10 @@ function ScoutingView({navigation, route}) {
               {value.map((item, vIndex) => {
                 return (
                   <FormComponent
+                    key={item.question}
                     colors={colors}
                     item={item}
                     styles={styles}
-                    uniqueKey={item.question}
                     arrayData={arrayData}
                     setArrayData={setArrayData}
                   />
