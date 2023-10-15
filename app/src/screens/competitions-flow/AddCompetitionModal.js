@@ -218,6 +218,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         {formIDs.map(f_id => {
           return (
             <SegmentedOption
+              key={f_id}
               title={f_id}
               selected={selectedFormID}
               colors={colors}
