@@ -386,7 +386,7 @@ function Gamification({navigation, route}) {
               <View style={{width: '100%', marginBottom: '5%'}}>
                 <StandardButton
                   text={'Next'}
-                  onPress={() => navigation.navigate('Autonomous')}
+                  onPress={() => navigation.navigate(Object.keys(data)[0])}
                   color={colors.primary}
                 />
               </View>
