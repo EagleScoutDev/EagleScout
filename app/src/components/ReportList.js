@@ -24,6 +24,7 @@ if (
 function CompetitionFlatList({
   compName,
   data,
+  overrideCollapsed,
   setChosenScoutForm,
   setModalVisible,
 }) {
@@ -32,9 +33,16 @@ function CompetitionFlatList({
   const [dataCopy, setDataCopy] = useState(data);
   const {colors} = useTheme();
 
+  useEffect(() => {
+    setIsCollapsed(overrideCollapsed);
+  }, [overrideCollapsed]);
+
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, [isCollapsed]);
+
   const onPress = () => {
     setIsCollapsed(!isCollapsed);
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
   const handleSort = (sortName, sortFunc) => {
@@ -210,7 +218,7 @@ function CompetitionFlatList({
           </View>
         </TouchableOpacity>
       )}
-      // keyExtractor={item => item.id}
+      keyExtractor={item => item.id}
     />
   );
 }
@@ -219,6 +227,7 @@ function ReportList({forms}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [dataCopy, setDataCopy] = useState([]);
+  const [isCollapsedAll, setIsCollapsedAll] = useState(false);
   const {colors} = useTheme();
 
   useEffect(() => {
@@ -272,12 +281,30 @@ function ReportList({forms}) {
 
   return (
     <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
+      <TouchableOpacity
+        onPress={() => setIsCollapsedAll(!isCollapsedAll)}
+        style={{
+          alignSelf: 'flex-end',
+          // backgroundColor: colors.primary,
+          paddingHorizontal: 10,
+          // borderRadius: 10,
+        }}>
+        <Text
+          style={{
+            color: colors.primary,
+            fontWeight: 'bold',
+            fontSize: 17,
+          }}>
+          {isCollapsedAll ? 'Expand All' : 'Collapse All'}
+        </Text>
+      </TouchableOpacity>
       <FlatList
         data={dataCopy}
         renderItem={({item, index, separators}) => (
           <CompetitionFlatList
             compName={item.title}
             data={item.data}
+            overrideCollapsed={isCollapsedAll}
             setChosenScoutForm={item => {
               console.log('set scout form', item);
               setChosenScoutForm(item);
