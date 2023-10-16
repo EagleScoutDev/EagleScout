@@ -270,34 +270,34 @@ function ReportList({forms}) {
     );
   }
 
-  if (modalVisible) {
-    return (
-      <ScoutViewer
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        data={chosenScoutForm}
-        // TODO: add accurate competition name
-        chosenComp={chosenScoutForm.competitionName}
+  return (
+    <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
+      <FlatList
+        data={dataCopy}
+        renderItem={({item, index, separators}) => (
+          <CompetitionFlatList
+            compName={item.title}
+            data={item.data}
+            setChosenScoutForm={item => {
+              console.log('set scout form', item);
+              setChosenScoutForm(item);
+            }}
+            setModalVisible={setModalVisible}
+          />
+        )}
+        keyExtractor={item => item.index}
       />
-    );
-  } else {
-    return (
-      <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
-        <FlatList
-          data={dataCopy}
-          renderItem={({item, index, separators}) => (
-            <CompetitionFlatList
-              compName={item.title}
-              data={item.data}
-              setChosenScoutForm={setChosenScoutForm}
-              setModalVisible={setModalVisible}
-            />
-          )}
-          keyExtractor={item => item.index}
+      {modalVisible && (
+        <ScoutViewer
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          data={chosenScoutForm}
+          // TODO: add accurate competition name
+          chosenComp={chosenScoutForm.competitionName}
         />
-      </KeyboardAvoidingView>
-    );
-  }
+      )}
+    </KeyboardAvoidingView>
+  );
 }
 
 export default ReportList;
