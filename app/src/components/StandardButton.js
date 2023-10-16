@@ -1,14 +1,29 @@
-import React, {Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 
-function StandardButton({color, onPress, width = '80%', text}) {
+function StandardButton({color, onPress, width = '80%', text, isLoading}) {
+  const baseButtonStyle = {
+    backgroundColor: color,
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+    width: width,
+    alignSelf: 'center',
+  };
   const styles = StyleSheet.create({
-    button: {
-      backgroundColor: color,
-      padding: 10,
-      margin: 10,
-      borderRadius: 10,
-      width: width,
-      alignSelf: 'center',
+    button: baseButtonStyle,
+    button_loading: {
+      ...baseButtonStyle,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 10,
+      backgroundColor: 'gray',
     },
     button_text: {
       fontSize: 20,
@@ -18,7 +33,11 @@ function StandardButton({color, onPress, width = '80%', text}) {
     },
   });
   return (
-    <TouchableOpacity style={styles.button} onPress={() => onPress()}>
+    <TouchableOpacity
+      style={isLoading ? styles.button_loading : styles.button}
+      onPress={onPress}
+      disabled={isLoading}>
+      {isLoading && <ActivityIndicator size="small" color="#ffffff" />}
       <Text style={styles.button_text}>{text}</Text>
     </TouchableOpacity>
   );

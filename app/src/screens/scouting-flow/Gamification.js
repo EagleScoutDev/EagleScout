@@ -42,6 +42,7 @@ function Gamification({navigation, route}) {
   const [competition, setCompetition] = useState();
   const [formStructure, setFormStructure] = useState();
   const [formId, setFormId] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
@@ -492,6 +493,7 @@ function Gamification({navigation, route}) {
                         text={'Submit'}
                         width={'85%'}
                         color={colors.primary}
+                        isLoading={isSubmitting}
                         onPress={async () => {
                           let dataToSubmit = {};
                           if (match > 100 || !match) {
@@ -511,6 +513,7 @@ function Gamification({navigation, route}) {
                             navigation.navigate('Match');
                             return;
                           }
+                          setIsSubmitting(true);
 
                           // array containing the raw values of the form
                           let tempArray = [...arrayData];
@@ -533,6 +536,7 @@ function Gamification({navigation, route}) {
                           }
 
                           if (!checkRequiredFields(tempArray)) {
+                            setIsSubmitting(false);
                             return;
                           }
 
@@ -559,8 +563,6 @@ function Gamification({navigation, route}) {
                               initForm(formStructure);
                               navigation.navigate('Match');
                             });
-
-                            return;
                           } else {
                             console.log(dataToSubmit);
 
@@ -585,6 +587,7 @@ function Gamification({navigation, route}) {
                               );
                             }
                           }
+                          setIsSubmitting(false);
                         }}
                       />
                     </View>

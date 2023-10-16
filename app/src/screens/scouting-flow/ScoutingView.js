@@ -30,6 +30,7 @@ function ScoutingView({navigation, route}) {
   const [competition, setCompetition] = useState();
   const [formStructure, setFormStructure] = useState();
   const [formId, setFormId] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
@@ -305,6 +306,7 @@ function ScoutingView({navigation, route}) {
         text={'Submit'}
         color={colors.primary}
         width={'85%'}
+        isLoading={isSubmitting}
         onPress={async () => {
           let dataToSubmit = {};
           //   Idea: on submit, it will collapse every section, and literally
@@ -325,6 +327,7 @@ function ScoutingView({navigation, route}) {
             );
             return;
           }
+          setIsSubmitting(true);
 
           // convert each item in an array to a key-value pair in a dictionary.
           let tempArray = [...arrayData];
@@ -347,6 +350,7 @@ function ScoutingView({navigation, route}) {
 
           // ensuring each required question is filled out
           if (!checkRequiredFields(tempArray)) {
+            setIsSubmitting(false);
             return;
           }
 
@@ -396,6 +400,7 @@ function ScoutingView({navigation, route}) {
               );
             }
           }
+          setIsSubmitting(false);
         }}
       />
       <View style={{marginBottom: 300}} />
