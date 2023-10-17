@@ -42,6 +42,17 @@ class FormHelper {
       JSON.stringify(dataToSubmit),
     );
   }
+
+  /**
+   * Edits an offline form
+   */
+  static async editFormOffline(report) {
+    const utcMilliseconds = new Date(report.createdAt).getUTCMilliseconds();
+    await AsyncStorage.setItem(
+      'form-' + utcMilliseconds,
+      JSON.stringify(report),
+    );
+  }
 }
 
 export default FormHelper;

@@ -14,6 +14,9 @@ import RadioButtons from '../form/RadioButtons';
 import StandardButton from '../StandardButton';
 import Checkbox from '../form/Checkbox';
 import {supabase} from '../../lib/supabase';
+import FormHelper from '../../FormHelper';
+import Toast from 'react-native-toast-message';
+import UserAttributes from '../../database/UserAttributes';
 
 const DEBUG = false;
 
@@ -23,9 +26,10 @@ const DEBUG = false;
  * @param setVisible - function to set the visibility of the modal
  * @param data - the data to display
  * @param chosenComp - the competition that the data is from
+ * @param isOfflineForm - whether the data is from an offline form
  * @returns {JSX.Element} - the scout viewer
  */
-function ScoutViewer({visible, setVisible, data, chosenComp}) {
+function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
   const {colors} = useTheme();
   const [userName, setUserName] = useState('');
 
@@ -34,6 +38,21 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
 
   // this only holds the data of the form, since the form questions should remain the same
   const [tempData, setTempData] = useState({});
+
+  const [authUserId, setAuthUserId] = useState(null);
+  const [authUserAttributes, setAuthUserAttributes] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const {
+        data: {user},
+      } = await supabase.auth.getUser();
+      setAuthUserId(user.id);
+      const att = await UserAttributes.getCurrentUserAttribute();
+      setAuthUserAttributes(att);
+      console.log('auth user id: ', user.id);
+      console.log('auth user attributes: ', att);
+    })();
+  }, []);
 
   const styles = StyleSheet.create({
     modal_container: {
@@ -163,23 +182,27 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
           </Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-          {/*<TouchableOpacity*/}
-          {/*  onPress={() => {*/}
-          {/*    setEditingActive(!editingActive);*/}
-          {/*    if (editingActive) {*/}
-          {/*      setTempData(data.data);*/}
-          {/*    }*/}
-          {/*  }}>*/}
-          {/*  <Text*/}
-          {/*    style={{*/}
-          {/*      textAlign: 'right',*/}
-          {/*      color: editingActive ? colors.primary : 'gray',*/}
-          {/*      fontWeight: 'bold',*/}
-          {/*      fontSize: 17,*/}
-          {/*    }}>*/}
-          {/*    {editingActive ? 'Cancel' : 'Edit'}*/}
-          {/*  </Text>*/}
-          {/*</TouchableOpacity>*/}
+          {(authUserId === data.userId ||
+            (authUserAttributes && authUserAttributes.admin)) && (
+            <TouchableOpacity
+              onPress={() => {
+                setEditingActive(!editingActive);
+                if (editingActive) {
+                  setTempData(data.data);
+                }
+              }}>
+              <Text
+                style={{
+                  textAlign: 'right',
+                  padding: '2%',
+                  color: editingActive ? colors.primary : 'gray',
+                  fontWeight: 'bold',
+                  fontSize: 17,
+                }}>
+                {editingActive ? 'Cancel' : 'Edit'}
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={() => setVisible(false)}>
             <Text style={styles.close}>Close</Text>
           </TouchableOpacity>
@@ -254,10 +277,14 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
                         }
-                        value={tempData[index]}
+                        value={tempData[index].toString()}
                         onChangeText={value => {
                           let a = [...tempData];
-                          a[index] = value;
+                          if (field.type === 'number') {
+                            a[index] = Number.parseInt(value, 10);
+                          } else {
+                            a[index] = value;
+                          }
                           setTempData(a);
                         }}
                       />
@@ -337,9 +364,19 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                     },
                     {
                       text: 'Save',
-                      onPress: () => {
+                      onPress: async () => {
                         console.log('Save Pressed');
-                        // TODO: update the scouting form using updateDoc
+                        if (isOfflineForm) {
+                          await FormHelper.editFormOffline(tempData);
+                          setEditingActive(false);
+                          Toast.show({
+                            type: 'success',
+                            text1: 'Success',
+                            text2: 'Form successfully updated!',
+                          });
+                        } else {
+                          // todo: save to database
+                        }
                       },
                     },
                   ],
