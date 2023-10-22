@@ -326,11 +326,24 @@ function ScoutViewer({
                             field.type === 'textbox' ? 'left' : 'center',
                           alignSelf:
                             field.type === 'textbox' ? 'flex-start' : 'center',
+                          // make text box seem editable
+                          backgroundColor: colors.card,
+                          borderColor: colors.border,
+                          borderWidth: 1,
+                          borderRadius: 5,
+                          padding: 5,
+                          width: '100%',
                         }}
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
                         }
                         value={tempData[index].toString()}
+                        placeholder={
+                          tempData[index] === null || tempData[index] === ''
+                            ? 'N/A'
+                            : ''
+                        }
+                        placeholderTextColor={colors.notification}
                         onChangeText={value => {
                           let a = [...tempData];
                           if (field.type === 'number') {
@@ -412,10 +425,10 @@ function ScoutViewer({
                         {data.data[index].toString()}
                       </Text>
                     )}
-                  {tempData[index] === null ||
-                    (tempData[index] === '' && (
+                  {!editingActive &&
+                    (tempData[index] === null || tempData[index] === '') && (
                       <Text style={styles.no_info}>N/A</Text>
-                    ))}
+                    )}
                 </View>
               )}
             </View>
