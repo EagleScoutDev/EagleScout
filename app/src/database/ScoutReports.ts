@@ -140,6 +140,21 @@ class ScoutReportsDB {
       return data;
     }
   }
+
+  static async editOnlineScoutReport(
+    competitionId: number,
+    matchNumber: number,
+    newData: [],
+  ): Promise<void> {
+    const {error} = await supabase.rpc('edit_online_scout_report', {
+      competition_id_arg: competitionId,
+      match_number_arg: matchNumber,
+      data_arg: newData,
+    });
+    if (error) {
+      throw error;
+    }
+  }
 }
 
 export default ScoutReportsDB;

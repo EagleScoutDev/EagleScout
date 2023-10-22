@@ -17,6 +17,8 @@ import {supabase} from '../../lib/supabase';
 import FormHelper from '../../FormHelper';
 import Toast from 'react-native-toast-message';
 import UserAttributes from '../../database/UserAttributes';
+import ScoutReportsDB from '../../database/ScoutReports';
+import SliderType from '../form/SliderType';
 
 const DEBUG = false;
 
@@ -26,10 +28,18 @@ const DEBUG = false;
  * @param setVisible - function to set the visibility of the modal
  * @param data - the data to display
  * @param chosenComp - the competition that the data is from
+ * @param updateFormData - function to update the form data visually
  * @param isOfflineForm - whether the data is from an offline form
  * @returns {JSX.Element} - the scout viewer
  */
-function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
+function ScoutViewer({
+  visible,
+  setVisible,
+  data,
+  chosenComp,
+  updateFormData,
+  isOfflineForm,
+}) {
   const {colors} = useTheme();
   const [userName, setUserName] = useState('');
 
@@ -38,6 +48,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
 
   // this only holds the data of the form, since the form questions should remain the same
   const [tempData, setTempData] = useState({});
+  const [formData, setFormData] = useState(null);
 
   const [authUserId, setAuthUserId] = useState(null);
   const [authUserAttributes, setAuthUserAttributes] = useState(null);
@@ -119,6 +130,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
     if (data !== null) {
       console.log('updating temp data!');
       setTempData(data.data);
+      setFormData(data);
       console.log('finished updating temp data!');
       console.log('printing out temp data: ');
       console.log(tempData);
@@ -186,9 +198,37 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
             (authUserAttributes && authUserAttributes.admin)) && (
             <TouchableOpacity
               onPress={() => {
-                setEditingActive(!editingActive);
                 if (editingActive) {
-                  setTempData(data.data);
+                  // if the data is different than the temp data, then we should alert the user
+                  if (
+                    !tempData.every(
+                      (value, index) => value === data.data[index],
+                    )
+                  ) {
+                    Alert.alert(
+                      'Unsaved Changes',
+                      'You have unsaved changes. Are you sure you want to cancel?',
+                      [
+                        {
+                          text: 'No',
+                          onPress: () => {},
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'Yes',
+                          onPress: () => {
+                            console.log('Yes Pressed');
+                            setEditingActive(false);
+                            setTempData(data.data);
+                          },
+                        },
+                      ],
+                    );
+                  } else {
+                    setEditingActive(false);
+                  }
+                } else {
+                  setEditingActive(true);
                 }
               }}>
               <Text
@@ -236,7 +276,8 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
                     flexDirection:
                       field.type === 'radio' ||
                       field.type === 'textbox' ||
-                      field.type === 'checkbox'
+                      field.type === 'checkbox' ||
+                      (editingActive && field.type === 'number' && field.slider)
                         ? 'column'
                         : 'row',
                     justifyContent: 'space-between',
@@ -247,7 +288,12 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
                     margin: 5,
                     borderRadius: 10,
                   }}>
-                  <Text style={styles.question}>{field.question}</Text>
+                  {/*SliderType renders its own custom question text, so we shouldn't render a question here
+                  if the field is a slider*/}
+                  {/*SliderType is only used when editing is active*/}
+                  {(!editingActive || !field.slider) && (
+                    <Text style={styles.question}>{field.question}</Text>
+                  )}
                   {field.type === 'radio' && (
                     <View>
                       <RadioButtons
@@ -270,10 +316,17 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
                       />
                     </View>
                   )}
-                  {field.type !== 'radio' &&
-                    field.type !== 'checkbox' &&
-                    editingActive && (
+                  {editingActive &&
+                    ((field.type === 'number' && !field.slider) ||
+                      field.type === 'textbox') && (
                       <TextInput
+                        style={{
+                          flex: 1,
+                          textAlign:
+                            field.type === 'textbox' ? 'left' : 'center',
+                          alignSelf:
+                            field.type === 'textbox' ? 'flex-start' : 'center',
+                        }}
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
                         }
@@ -287,8 +340,27 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
                           }
                           setTempData(a);
                         }}
+                        multiline={true}
                       />
                     )}
+                  {editingActive && field.type === 'number' && field.slider && (
+                    // it is a number slider
+                    <View>
+                      <SliderType
+                        low={field.low ? Number.parseInt(field.low, 10) : 0}
+                        high={field.high ? Number.parseInt(field.high, 10) : 10}
+                        step={field.step ? Number.parseInt(field.step, 10) : 1}
+                        question={field.question}
+                        value={tempData[index]}
+                        onValueChange={value => {
+                          let a = [...tempData];
+                          a[index] = value;
+                          setTempData(a);
+                        }}
+                        disabled={!editingActive}
+                      />
+                    </View>
+                  )}
                   {field.type === 'checkbox' && (
                     <Checkbox
                       title={''}
@@ -359,7 +431,9 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
                   [
                     {
                       text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
+                      onPress: () => {
+                        console.log('Cancel Pressed');
+                      },
                       style: 'cancel',
                     },
                     {
@@ -375,8 +449,14 @@ function ScoutViewer({visible, setVisible, data, chosenComp, isOfflineForm}) {
                             text2: 'Form successfully updated!',
                           });
                         } else {
-                          // todo: save to database
+                          await ScoutReportsDB.editOnlineScoutReport(
+                            formData.competitionId,
+                            formData.matchNumber,
+                            tempData,
+                          );
                         }
+                        setEditingActive(false);
+                        updateFormData(tempData);
                       },
                     },
                   ],

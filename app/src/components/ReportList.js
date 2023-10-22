@@ -13,6 +13,7 @@ import {useTheme} from '@react-navigation/native';
 function ReportList({forms}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
+  const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
   const [sort, setSort] = useState('');
   const [dataCopy, setDataCopy] = useState([]);
   const {colors} = useTheme();
@@ -20,6 +21,16 @@ function ReportList({forms}) {
   useEffect(() => {
     setDataCopy(forms);
   }, [forms]);
+
+  /**
+   * Locally updates the dataCopy array with the new data, so we don't have to re-fetch the db after a report edit
+   * @param newData - the new data to update the array with
+   */
+  const updateFormData = newData => {
+    const newForms = [...dataCopy];
+    newForms[chosenScoutFormIndex].data = newData;
+    setDataCopy(newForms);
+  };
 
   if (forms == null) {
     return (
@@ -60,6 +71,7 @@ function ReportList({forms}) {
         visible={modalVisible}
         setVisible={setModalVisible}
         data={chosenScoutForm}
+        updateFormData={updateFormData}
         // TODO: add accurate competition name
         chosenComp={chosenScoutForm.competitionName}
       />
@@ -157,6 +169,7 @@ function ReportList({forms}) {
             <TouchableOpacity
               onPress={() => {
                 setChosenScoutForm(item);
+                setChosenScoutFormIndex(index);
                 setModalVisible(true);
               }}>
               <View

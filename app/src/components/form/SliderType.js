@@ -4,7 +4,15 @@ import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import Question from './Question';
 
-function SliderType({low, high, step, question, value, onValueChange}) {
+function SliderType({
+  low,
+  high,
+  step,
+  question,
+  value,
+  onValueChange,
+  disabled = false,
+}) {
   const {colors} = useTheme();
   const [localValue, setLocalValue] = useState(value);
 
@@ -18,7 +26,7 @@ function SliderType({low, high, step, question, value, onValueChange}) {
         flexDirection: 'column',
         marginVertical: 10,
       }}>
-      <Question title={question + ' (' + low + '-' + high + ')'} />
+      <Question title={`${question} (${low} - ${high})`} />
       <View
         style={{
           flexDirection: 'row',
@@ -27,6 +35,7 @@ function SliderType({low, high, step, question, value, onValueChange}) {
         }}>
         <Text style={{color: colors.text}}>Value: {localValue}</Text>
         <Slider
+          disabled={disabled}
           style={{width: 200, height: 40}}
           value={localValue}
           maximumValue={Number.parseInt(high)}
