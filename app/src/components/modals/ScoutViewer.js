@@ -193,7 +193,7 @@ function ScoutViewer({
             {chosenComp} / Round {data ? data.matchNumber : ''}{' '}
           </Text>
         </TouchableOpacity>
-        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           {(authUserId === data.userId ||
             (authUserAttributes && authUserAttributes.admin)) && (
             <TouchableOpacity
@@ -371,6 +371,8 @@ function ScoutViewer({
                           setTempData(a);
                         }}
                         disabled={!editingActive}
+                        minLabel={field.minLabel}
+                        maxLabel={field.maxLabel}
                       />
                     </View>
                   )}

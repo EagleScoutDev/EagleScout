@@ -4,6 +4,19 @@ import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import Question from './Question';
 
+function SliderLabel({text}) {
+  const {colors} = useTheme();
+  return (
+    <Text
+      style={{
+        color: colors.text,
+        fontSize: 12,
+      }}>
+      {text}
+    </Text>
+  );
+}
+
 function SliderType({
   low,
   high,
@@ -12,6 +25,8 @@ function SliderType({
   value,
   onValueChange,
   disabled = false,
+  minLabel,
+  maxLabel,
 }) {
   const {colors} = useTheme();
   const [localValue, setLocalValue] = useState(value);
@@ -27,16 +42,9 @@ function SliderType({
         marginVertical: 10,
       }}>
       <Question title={`${question} (${low} - ${high})`} />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-        <Text style={{color: colors.text}}>Value: {localValue}</Text>
+      <View>
         <Slider
           disabled={disabled}
-          style={{width: 200, height: 40}}
           value={localValue}
           maximumValue={Number.parseInt(high)}
           minimumValue={Number.parseInt(low)}
@@ -46,6 +54,25 @@ function SliderType({
           onValueChange={setLocalValue}
           onSlidingComplete={onValueChange}
         />
+        {/*Label the min/max values and current value*/}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <SliderLabel text={minLabel ? minLabel : low} />
+          <Text
+            style={{
+              color: colors.primary,
+              fontSize: 13,
+              alignSelf: 'center',
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}>
+            {localValue}
+          </Text>
+          <SliderLabel text={maxLabel ? maxLabel : high} />
+        </View>
       </View>
     </View>
   );
