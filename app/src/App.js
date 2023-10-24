@@ -242,7 +242,11 @@ const MyStack = () => {
               name="Search"
               component={SearchScreen}
               options={{
-                drawerIcon: () => MagnifyingGlass(),
+                drawerIcon: () =>
+                  MagnifyingGlass({
+                    width: '8%',
+                    height: '100%',
+                  }),
               }}
             />
             <Drawer.Screen

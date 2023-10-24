@@ -12,13 +12,11 @@ import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import StandardModal from '../../components/modals/StandardModal';
 import {supabase} from '../../lib/supabase';
-import SegmentedOption from '../../components/pickers/SegmentedOption';
-import UserAttributes from '../../database/UserAttributes';
 import ProfilesDB from '../../database/Profiles';
 import UserAttributesDB from '../../database/UserAttributes';
+import SelectMenu from '../../components/form/SelectMenu';
 
 function Spacer() {
-  // eslint-disable-next-line react-native/no-inline-styles
   return <View style={{height: '2%'}} />;
 }
 
@@ -32,7 +30,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
   const [selectedFormID, setSelectedFormID] = useState(null);
 
-  const [formIDs, setFormIDs] = useState([]);
+  const [formList, setFormList] = useState([]);
 
   const getFormIDs = async () => {
     const current_team_id = (await UserAttributesDB.getCurrentUserAttribute())
@@ -41,14 +39,9 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
     // get form ids
     let {data: forms, error} = await supabase
       .from('forms')
-      .select('id')
+      .select('id, name')
       .eq('team_id', current_team_id);
-
-    let form_ids = [];
-    forms.forEach(form => {
-      form_ids.push(form.id);
-    });
-    setFormIDs(form_ids);
+    setFormList(forms);
   };
 
   const submitCompetition = async () => {
@@ -209,26 +202,23 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       <View
         style={{
           flexDirection: 'row',
-          margin: 20,
-          backgroundColor: colors.border,
-          padding: 2,
-          borderRadius: 10,
-          alignContent: 'center',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: '5%',
+          marginBottom: '5%',
+          width: '100%',
+          zIndex: 100,
         }}>
-        {formIDs.map(f_id => {
-          return (
-            <SegmentedOption
-              key={f_id}
-              title={f_id}
-              selected={selectedFormID}
-              colors={colors}
-              onPress={() => {
-                console.log('pressed');
-                setSelectedFormID(f_id);
-              }}
-            />
-          );
-        })}
+        <SelectMenu
+          setSelected={setSelectedFormID}
+          data={formList.map(f => ({
+            value: f.name,
+            key: f.id,
+          }))}
+          searchPlaceholder={'Search for a form...'}
+          placeholder={'Select a form...'}
+          maxHeight={100}
+        />
       </View>
 
       <Spacer />
