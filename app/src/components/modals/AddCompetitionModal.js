@@ -7,15 +7,14 @@ import React, {
   TouchableOpacity,
   View,
 } from 'react-native';
-import StandardButton from '../../components/StandardButton';
+import StandardButton from '../StandardButton';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-import StandardModal from '../../components/modals/StandardModal';
+import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
-import ProfilesDB from '../../database/Profiles';
 import UserAttributesDB from '../../database/UserAttributes';
-import SelectMenu from '../../components/form/SelectMenu';
+import SelectMenu from '../form/SelectMenu';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
