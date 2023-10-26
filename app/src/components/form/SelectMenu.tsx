@@ -49,6 +49,11 @@ export interface SelectListProps {
   defaultOption?: Data;
 
   /**
+   * Enable search functionality
+   */
+  searchEnabled?: boolean;
+
+  /**
    * Placeholder text for search input
    */
   searchPlaceholder?: string;
@@ -70,6 +75,7 @@ const SelectList: FC<SelectListProps> = ({
   maxHeight,
   data,
   defaultOption,
+  searchEnabled = false,
   searchPlaceholder = 'Search',
   notFoundText = 'No data found',
   onSelect = () => {},
@@ -142,19 +148,27 @@ const SelectList: FC<SelectListProps> = ({
       {dropdownOpen ? (
         <View style={styles.wrapper}>
           <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-            <MagnifyingGlass width={20} height={20} marginRight={7} />
-            <TextInput
-              placeholder={searchPlaceholder}
-              onChangeText={val => {
-                let result = data.filter((item: Data) => {
-                  val.toLowerCase();
-                  let row = item.value.toLowerCase();
-                  return row.search(val.toLowerCase()) > -1;
-                });
-                setFilteredData(result);
-              }}
-              style={{padding: 0, height: 20, flex: 1}}
-            />
+            {searchEnabled ? (
+              <>
+                <MagnifyingGlass width={20} height={20} marginRight={7} />
+                <TextInput
+                  placeholder={searchPlaceholder}
+                  onChangeText={val => {
+                    let result = data.filter((item: Data) => {
+                      val.toLowerCase();
+                      let row = item.value.toLowerCase();
+                      return row.search(val.toLowerCase()) > -1;
+                    });
+                    setFilteredData(result);
+                  }}
+                  style={{padding: 0, height: 20, flex: 1}}
+                />
+              </>
+            ) : (
+              <View style={{flex: 1}}>
+                <Text>{placeholder ? placeholder : 'Select'}</Text>
+              </View>
+            )}
             <TouchableOpacity onPress={() => closeDropdown()}>
               <X width={20} height={20} />
             </TouchableOpacity>

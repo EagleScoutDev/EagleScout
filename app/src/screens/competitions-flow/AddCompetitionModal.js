@@ -1,5 +1,6 @@
 import React, {
   Alert,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
@@ -50,6 +51,16 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       Alert.alert('Error', 'Please select a form to use for this competition.');
       return;
     }
+    // if the start date is after (or equal to) the end date, alert the user
+    if (startDate >= endDate) {
+      Alert.alert('Error', 'Start date must be before end date.');
+      return;
+    }
+    // if the name is empty, alert the user
+    if (name === '') {
+      Alert.alert('Error', 'Please enter a name for this competition.');
+      return;
+    }
 
     const {
       data: {user},
@@ -84,7 +95,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
   const styles = StyleSheet.create({
     competition_name_input: {
-      height: 50,
+      // height: 50,
       borderColor: 'gray',
       borderWidth: 1,
       width: '100%',
@@ -92,7 +103,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       padding: 10,
       marginBottom: 10,
       color: colors.text,
-      fontSize: 20,
+      fontSize: 18,
     },
     label: {
       color: colors.text,
@@ -204,10 +215,10 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: '5%',
-          marginBottom: '5%',
           width: '100%',
           zIndex: 100,
+          // align with competition name input
+          marginTop: 10,
         }}>
         <SelectMenu
           setSelected={setSelectedFormID}
@@ -215,6 +226,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
             value: f.name,
             key: f.id,
           }))}
+          searchEnabled={false}
           searchPlaceholder={'Search for a form...'}
           placeholder={'Select a form...'}
           maxHeight={100}
