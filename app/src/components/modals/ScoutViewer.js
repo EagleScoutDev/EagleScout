@@ -19,6 +19,8 @@ import Toast from 'react-native-toast-message';
 import UserAttributes from '../../database/UserAttributes';
 import ScoutReportsDB from '../../database/ScoutReports';
 import SliderType from '../form/SliderType';
+import {ClockHistory, PencilSquare, X} from '../../SVGIcons';
+import {HistorySelectorModal} from './HistorySelectorModal';
 
 const DEBUG = false;
 
@@ -42,13 +44,44 @@ function ScoutViewer({
 }) {
   const {colors} = useTheme();
   const [userName, setUserName] = useState('');
+  const [formData, setFormData] = useState(data.data);
 
-  // variables for editing forms
+  // editing state:
   const [editingActive, setEditingActive] = useState(false);
 
+  // history state:
+  const [historySelectorModalVisible, setHistorySelectorModalVisible] =
+    useState(false);
+  // this controls the color of the history button - true: blue, false: grey
+  const [historyButtonEnabled, setHistoryButtonEnabled] = useState(false);
+  // this will be false if there is no history to show (i.e. the report has never been edited)
+  const [historyButtonVisible, setHistoryButtonVisible] = useState(true);
+  const [selectedHistoryId, setSelectedHistoryId] = useState(0);
+
   // this only holds the data of the form, since the form questions should remain the same
-  const [tempData, setTempData] = useState({});
-  const [formData, setFormData] = useState(null);
+  // this is a writable copy of the data
+  const [tempData, setTempData] = useState([]);
+  // this holds the metadata of the form (comp id, match id, etc)
+  const [formMetaData, setFormMetaData] = useState(null);
+  // this is the history of the form fetched from scout_edit_reports
+  const [formHistory, setFormHistory] = useState([]);
+
+  const refreshHistory = async () => {
+    const history = await ScoutReportsDB.getReportHistory(data.reportId);
+    console.log('form history: ', history);
+    if (!history.length) {
+      setHistoryButtonVisible(false);
+    } else {
+      setFormHistory(history);
+    }
+  };
+  useEffect(() => {
+    (async () => {
+      if (data) {
+        await refreshHistory();
+      }
+    })();
+  }, [data, userName]);
 
   const [authUserId, setAuthUserId] = useState(null);
   const [authUserAttributes, setAuthUserAttributes] = useState(null);
@@ -130,7 +163,7 @@ function ScoutViewer({
     if (data !== null) {
       console.log('updating temp data!');
       setTempData(data.data);
-      setFormData(data);
+      setFormMetaData(data);
       console.log('finished updating temp data!');
       console.log('printing out temp data: ');
       console.log(tempData);
@@ -187,64 +220,131 @@ function ScoutViewer({
       visible={visible}
       transparent={true}
       presentationStyle={'overFullScreen'}>
+      <HistorySelectorModal
+        formHistory={formHistory}
+        selectedHistoryId={selectedHistoryId}
+        visible={historySelectorModalVisible}
+        setVisible={setHistorySelectorModalVisible}
+        onHistorySelect={id => {
+          setHistorySelectorModalVisible(false);
+          if (id === null) {
+            // user dismissed the modal
+            return;
+          }
+          console.log(
+            'selected history id:',
+            id,
+            'current history:',
+            formHistory,
+            'form data:',
+            formHistory.find(history => history.historyId === id).data,
+          );
+          setSelectedHistoryId(id);
+          setFormData(
+            formHistory.find(history => history.historyId === id).data,
+          );
+          // this is a very crude way of detecting if this is the first/current form
+          // todo: should probably improve if/once a better method is devised
+          if (formHistory.length && id === formHistory[0].historyId) {
+            setHistoryButtonEnabled(false);
+            setSelectedHistoryId(null);
+          }
+        }}
+      />
       <View style={styles.modal_container}>
         <TouchableOpacity onPress={() => setVisible(false)}>
           <Text style={styles.breadcrumbs}>
             {chosenComp} / Round {data ? data.matchNumber : ''}{' '}
           </Text>
         </TouchableOpacity>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
           {(authUserId === data.userId ||
             (authUserAttributes && authUserAttributes.admin)) && (
-            <TouchableOpacity
-              onPress={() => {
-                if (editingActive) {
-                  // if the data is different than the temp data, then we should alert the user
-                  if (
-                    !tempData.every(
-                      (value, index) => value === data.data[index],
-                    )
-                  ) {
-                    Alert.alert(
-                      'Unsaved Changes',
-                      'You have unsaved changes. Are you sure you want to cancel?',
-                      [
-                        {
-                          text: 'No',
-                          onPress: () => {},
-                          style: 'cancel',
-                        },
-                        {
-                          text: 'Yes',
-                          onPress: () => {
-                            console.log('Yes Pressed');
-                            setEditingActive(false);
-                            setTempData(data.data);
-                          },
-                        },
-                      ],
-                    );
-                  } else {
-                    setEditingActive(false);
-                  }
-                } else {
-                  setEditingActive(true);
-                }
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 20,
               }}>
-              <Text
-                style={{
-                  textAlign: 'right',
-                  padding: '2%',
-                  color: editingActive ? colors.primary : 'gray',
-                  fontWeight: 'bold',
-                  fontSize: 17,
-                }}>
-                {editingActive ? 'Cancel' : 'Edit'}
-              </Text>
-            </TouchableOpacity>
+              {!selectedHistoryId && (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (!editingActive) {
+                      setEditingActive(true);
+                      return;
+                    }
+                    // if the data is different than the temp data, then we should alert the user
+                    if (
+                      !tempData.every(
+                        (value, index) => value === data.data[index],
+                      )
+                    ) {
+                      Alert.alert(
+                        'Unsaved Changes',
+                        'You have unsaved changes. Are you sure you want to cancel?',
+                        [
+                          {
+                            text: 'No',
+                            onPress: () => {},
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Yes',
+                            onPress: () => {
+                              console.log('Yes Pressed');
+                              setEditingActive(false);
+                              setTempData(data.data);
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      setEditingActive(false);
+                    }
+                  }}>
+                  <PencilSquare
+                    style={{
+                      padding: '2%',
+                      fill: editingActive ? colors.primary : 'gray',
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+              {!editingActive && historyButtonVisible && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setHistorySelectorModalVisible(true);
+                    setHistoryButtonEnabled(true);
+                  }}>
+                  <ClockHistory
+                    style={{
+                      padding: '2%',
+                      fill: historyButtonEnabled ? colors.primary : 'gray',
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
           )}
           <TouchableOpacity onPress={() => setVisible(false)}>
-            <Text style={styles.close}>Close</Text>
+            <X
+              style={{
+                padding: '2%',
+                width: 40,
+                height: 40,
+                fill: colors.notification,
+              }}
+            />
           </TouchableOpacity>
         </View>
         <ScrollView>
@@ -270,7 +370,7 @@ function ScoutViewer({
                 <Text style={styles.section_title}>{field.text}</Text>
               )}
               {/*If the entry has a question property, this indicates that it is a question*/}
-              {field.question && data.data[index] !== null && (
+              {field.question && formData[index] !== null && (
                 <View
                   style={{
                     flexDirection:
@@ -424,7 +524,7 @@ function ScoutViewer({
                           alignSelf:
                             field.type === 'textbox' ? 'flex-start' : 'center',
                         }}>
-                        {data.data[index].toString()}
+                        {formData[index].toString()}
                       </Text>
                     )}
                   {!editingActive &&
@@ -435,7 +535,7 @@ function ScoutViewer({
               )}
             </View>
           ))}
-          {tempData !== data.data && editingActive && (
+          {tempData !== formData && editingActive && (
             <StandardButton
               color={'blue'}
               text={'Save'}
@@ -465,13 +565,14 @@ function ScoutViewer({
                           });
                         } else {
                           await ScoutReportsDB.editOnlineScoutReport(
-                            formData.competitionId,
-                            formData.matchNumber,
+                            formMetaData.reportId,
                             tempData,
                           );
                         }
                         setEditingActive(false);
                         updateFormData(tempData);
+                        setFormData(tempData);
+                        await refreshHistory();
                       },
                     },
                   ],

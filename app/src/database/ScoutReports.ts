@@ -1,6 +1,7 @@
 import {supabase} from '../lib/supabase';
 
 interface ScoutReport {
+  reportId: number;
   matchNumber: number;
   teamNumber: number;
   data: [];
@@ -15,6 +16,17 @@ interface ScoutReportReturnData extends ScoutReportWithDate {
   form: [];
   userId: string;
   competitionName: string;
+}
+
+interface ScoutReportHistory {
+  // id col in db
+  historyId: number;
+  editedAt: Date;
+  // the editor's uuid
+  editedById: string;
+  data: [];
+  // the editor's name
+  name: string;
 }
 
 class ScoutReportsDB {
@@ -34,6 +46,7 @@ class ScoutReportsDB {
       console.log(data);
       for (let i = 0; i < data.length; i += 1) {
         res.push({
+          reportId: data[i].id,
           matchNumber: data[i].matches.number,
           teamNumber: data[i].team,
           data: data[i].data,
@@ -67,6 +80,7 @@ class ScoutReportsDB {
     } else {
       for (let i = 0; i < data.length; i += 1) {
         res.push({
+          reportId: data[i].id,
           matchNumber: data[i].matches.number,
           teamNumber: data[i].team,
           data: data[i].data,
@@ -96,6 +110,7 @@ class ScoutReportsDB {
     } else {
       for (let i = 0; i < data.length; i += 1) {
         res.push({
+          reportId: data[i].id,
           matchNumber: data[i].matches.number,
           teamNumber: data[i].team,
           data: data[i].data,
@@ -142,18 +157,41 @@ class ScoutReportsDB {
   }
 
   static async editOnlineScoutReport(
-    competitionId: number,
-    matchNumber: number,
+    reportId: number,
     newData: [],
   ): Promise<void> {
+    console.log('editing report with id: ', reportId);
     const {error} = await supabase.rpc('edit_online_scout_report', {
-      competition_id_arg: competitionId,
-      match_number_arg: matchNumber,
+      report_id_arg: reportId,
       data_arg: newData,
     });
     if (error) {
       throw error;
     }
+  }
+
+  static async getReportHistory(
+    reportId: number,
+  ): Promise<ScoutReportHistory[]> {
+    const res: ScoutReportHistory[] = [];
+    const {data, error} = await supabase.rpc('get_scout_report_history', {
+      report_id_arg: reportId,
+    });
+    console.log('got report history from db: ', data, 'report_id: ', reportId);
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        res.push({
+          historyId: data[i].id,
+          editedAt: data[i].edited_at,
+          editedById: data[i].edited_by_id,
+          data: data[i].data,
+          name: data[i].name,
+        });
+      }
+    }
+    return res;
   }
 }
 
