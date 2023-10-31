@@ -11,7 +11,7 @@ interface ScoutReportWithDate extends ScoutReport {
   createdAt: Date;
 }
 
-interface ScoutReportReturnData extends ScoutReportWithDate {
+export interface ScoutReportReturnData extends ScoutReportWithDate {
   form: [];
   userId: string;
   competitionName: string;

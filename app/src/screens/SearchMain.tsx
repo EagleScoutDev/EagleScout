@@ -85,32 +85,32 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
           }}
         />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: '3%',
-          justifyContent: 'space-between',
+      {/*<View*/}
+      {/*  style={{*/}
+      {/*    flexDirection: 'row',*/}
+      {/*    alignItems: 'center',*/}
+      {/*    marginTop: '3%',*/}
+      {/*    justifyContent: 'space-between',*/}
 
-          padding: '4%',
-          paddingHorizontal: '6%',
-          marginHorizontal: '5%',
+      {/*    padding: '4%',*/}
+      {/*    paddingHorizontal: '6%',*/}
+      {/*    marginHorizontal: '5%',*/}
 
-          backgroundColor: colors.card,
-          borderColor: colors.border,
-          borderWidth: 1,
-          borderRadius: 10,
-        }}>
-        <Text style={{color: colors.text, fontWeight: 'bold', fontSize: 15}}>
-          Filter by current competition
-        </Text>
-        <Switch
-          onValueChange={() =>
-            setCurrentCompetitionOnly(!currentCompetitionOnly)
-          }
-          value={currentCompetitionOnly}
-        />
-      </View>
+      {/*    backgroundColor: colors.card,*/}
+      {/*    borderColor: colors.border,*/}
+      {/*    borderWidth: 1,*/}
+      {/*    borderRadius: 10,*/}
+      {/*  }}>*/}
+      {/*  <Text style={{color: colors.text, fontWeight: 'bold', fontSize: 15}}>*/}
+      {/*    Filter by current competition*/}
+      {/*  </Text>*/}
+      {/*  <Switch*/}
+      {/*    onValueChange={() =>*/}
+      {/*      setCurrentCompetitionOnly(!currentCompetitionOnly)*/}
+      {/*    }*/}
+      {/*    value={currentCompetitionOnly}*/}
+      {/*  />*/}
+      {/*</View>*/}
       <View
         style={{
           height: 1,

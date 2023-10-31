@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {SimpleEvent, TBA} from './lib/TBAUtils';
 import {useTheme} from '@react-navigation/native';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 
 // TODO: Add a loading indicator
@@ -30,21 +30,48 @@ function CompetitionRank({team_number}: {team_number: number}) {
         console.error('Error fetching data:', error);
       }
     };
-    console.log('fetching the data!!!!!');
-
-    const fetchTeamRankings = async () => {
-      TBA.getAllCompetitionsForTeam(team_number).then(events => {
-        for (let i = 0; i < events.length; i++) {
-          TBA.getTeamRank(events[i].key, team_number).then(rank => {
-            events[i].rank = rank;
-          });
-        }
-        setAllCompetitions(events);
-      });
-    };
 
     fetchData();
-    fetchTeamRankings();
+  }, [team_number]);
+
+  useEffect(() => {
+    let all_competitions: SimpleEvent[] = [];
+
+    const fetchTeamRankings = async () => {
+      try {
+        const events = await TBA.getAllCompetitionsForTeam(team_number);
+        const rankPromises = events.map(async event => {
+          const rank = await TBA.getTeamRank(event.key, team_number);
+          console.log(event.name + ' ' + rank);
+          return {...event, rank}; // return a new object with the rank property added
+        });
+
+        const updatedEvents = await Promise.all(rankPromises);
+        all_competitions = updatedEvents;
+        setAllCompetitions(updatedEvents);
+      } catch (error) {
+        console.error('An error occurred while fetching team rankings:', error);
+      }
+    };
+
+    fetchTeamRankings()
+      .then(() => {
+        const sorted = [...all_competitions].sort((a, b) => {
+          const dateA = new Date(a.start_date).getTime();
+          const dateB = new Date(b.start_date).getTime();
+          return dateA - dateB;
+        });
+
+        setAllCompetitions(sorted);
+        const last_event = sorted[sorted.length - 1];
+        console.log('last event: ' + Object.entries(last_event));
+
+        setCurrentCompetition(last_event);
+        setCurrentCompetitionRank(last_event.rank);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }, [team_number]);
 
   const rankToColor = (rank: number) => {

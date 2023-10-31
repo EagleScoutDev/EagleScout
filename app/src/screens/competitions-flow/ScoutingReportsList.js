@@ -20,8 +20,8 @@ const ScoutingReportsList = ({navigation, competition}) => {
   useEffect(() => {
     console.log('HERE');
     ScoutReportsDB.getReportsForCompetition(competition.id).then(reports => {
-      console.log('reports found!');
-      console.log(reports);
+      // console.log('reports found!');
+      // console.log(reports);
       console.log('number of reports: ' + reports.length);
       setReports(reports);
     });
