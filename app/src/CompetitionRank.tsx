@@ -67,7 +67,11 @@ function CompetitionRank({team_number}: {team_number: number}) {
         console.log('last event: ' + Object.entries(last_event));
 
         setCurrentCompetition(last_event);
+        console.log('detected last rank: ' + last_event.rank);
         setCurrentCompetitionRank(last_event.rank);
+        // the following line is used to trigger a rerender
+        // there is probably a better way to accomplish this
+        setCurrentCompetition(last_event);
       })
       .catch(error => {
         console.log(error);
