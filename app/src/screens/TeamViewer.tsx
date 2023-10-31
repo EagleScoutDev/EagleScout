@@ -28,6 +28,8 @@ const TeamViewer: React.FC<TeamViewerProps> = ({team, goBack}) => {
             padding: '4%',
             alignSelf: 'flex-start',
             maxHeight: '10%',
+            justifyContent: 'center',
+            flex: 1,
           }}
           onPress={() => {
             goBack();

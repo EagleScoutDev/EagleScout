@@ -61,7 +61,7 @@ function QuestionSummary({item, index, data}: Props) {
       }}>
       <Text
         style={{
-          color: colors.text,
+          color: 'red',
           fontWeight: 'bold',
           textAlign: 'left',
           // flex: 2,
@@ -71,7 +71,7 @@ function QuestionSummary({item, index, data}: Props) {
       </Text>
       <Text
         style={{
-          color: colors.text,
+          color: 'blue',
           fontWeight: 'bold',
           textAlign: 'center',
           // flex: 1,
@@ -116,7 +116,9 @@ function QuestionSummary({item, index, data}: Props) {
         </View>
       )}
 
-      <Text>{data.map(datum => datum.data + ', ')}</Text>
+      <Text style={{color: colors.text}}>
+        {data.map(datum => datum.data + ', ')}
+      </Text>
     </View>
   );
 }
