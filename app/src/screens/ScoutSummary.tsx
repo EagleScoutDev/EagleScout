@@ -29,7 +29,7 @@ function ScoutSummary({team_number}: {team_number: number}) {
   }, []);
 
   return (
-    <ScrollView style={{marginTop: '10%'}}>
+    <View style={{marginTop: '10%'}}>
       {formStructure && responses ? (
         formStructure.map((item, index) => {
           return (
@@ -48,7 +48,7 @@ function ScoutSummary({team_number}: {team_number: number}) {
       ) : (
         <ActivityIndicator />
       )}
-    </ScrollView>
+    </View>
   );
 }
 
