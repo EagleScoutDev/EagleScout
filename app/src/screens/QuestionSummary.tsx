@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {ScoutReportReturnData} from '../database/ScoutReports';
 import RadioButtons from '../components/form/RadioButtons';
+import {useState} from 'react';
+import {OpenAI} from '../lib/OpenAI';
 
 interface Props {
   item: any;
@@ -13,9 +15,26 @@ interface Props {
       match: number;
     },
   ];
+  generate_ai_summary: boolean;
 }
-function QuestionSummary({item, index, data}: Props) {
+function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const {colors} = useTheme();
+  const [response, setResponse] = useState<String | null>('');
+
+  useEffect(() => {
+    if (item.type === 'textbox' && generate_ai_summary) {
+      // console.log('question: ' + item.question);
+      // console.log('question type: ' + item.type);
+
+      let filteredData = data.filter(datum => datum.data !== '');
+      let joinedData = filteredData.map(datum => datum.data).join('. ');
+      OpenAI.getOpenAIResponse(item.question, joinedData).then(summary => {
+        setResponse(summary);
+      });
+      // console.log('summary: ' + summary);
+      // setResponse(summary);
+    }
+  }, [generate_ai_summary]);
 
   if (item.type === 'heading') {
     return (
@@ -116,9 +135,10 @@ function QuestionSummary({item, index, data}: Props) {
         </View>
       )}
 
-      <Text style={{color: colors.text}}>
-        {data.map(datum => datum.data + ', ')}
+      <Text style={{color: 'green'}}>
+        raw data - {data.map(datum => datum.data + ', ')}
       </Text>
+      <Text style={{color: 'blue'}}>{response}</Text>
     </View>
   );
 }
