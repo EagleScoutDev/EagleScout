@@ -1,8 +1,6 @@
 import React, {useEffect} from 'react';
-import {View, Text, Modal, Button, Pressable} from 'react-native';
+import {View, Text, Button, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import {ScoutReportReturnData} from '../database/ScoutReports';
-import RadioButtons from '../components/form/RadioButtons';
 import {useState} from 'react';
 import {OpenAI} from '../lib/OpenAI';
 import {LineChart} from 'react-native-chart-kit';
@@ -26,18 +24,6 @@ interface Statistics {
   max: number;
   min: number;
 }
-
-const data2 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [
-    {
-      data: [20, 45, 28, 80, 99, 43],
-      color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-      strokeWidth: 2, // optional
-    },
-  ],
-  legend: ['Rainy Days'], // optional
-};
 
 function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const {colors, dark} = useTheme();
