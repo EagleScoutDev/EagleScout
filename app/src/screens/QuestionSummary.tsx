@@ -27,9 +27,12 @@ interface Statistics {
 
 function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const {colors, dark} = useTheme();
-  const [response, setResponse] = useState<String | null>('');
-  const [stats, setStats] = useState<Statistics | null>(null);
 
+  // holds the response from the OpenAI API
+  const [response, setResponse] = useState<String | null>('');
+
+  // used for number-type questions
+  const [stats, setStats] = useState<Statistics | null>(null);
   const [modalActive, setModalActive] = useState<boolean>(false);
 
   const chartConfig = {
@@ -45,6 +48,9 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
     useShadowColorFromDataset: false, // optional
     fillShadowGradient: 'blue',
   };
+
+  // for radio-type questions
+  const [indexOfGreatestValue, setIndexOfGreatestValue] = useState<number>(0);
 
   useEffect(() => {
     if (item.type === 'textbox' && generate_ai_summary) {
@@ -63,6 +69,21 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       const max = Math.max(...data.map(datum => datum.data));
       const min = Math.min(...data.map(datum => datum.data));
       setStats({average: avg, max: max, min: min});
+    }
+
+    if (item.type === 'radio') {
+      let counts: number[] = [];
+      for (let i = 0; i < item.labels.length; i++) {
+        counts.push(data.filter(datum => datum.data === i).length);
+      }
+      const index = counts.indexOf(Math.max(...counts));
+
+      // if the largest value appears multiple times, set the index to -1
+      if (counts.filter(count => count === counts[index]).length > 1) {
+        setIndexOfGreatestValue(-1);
+        return;
+      }
+      setIndexOfGreatestValue(index);
     }
   }, []);
 
@@ -151,20 +172,35 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                     }}>
                     {label}
                   </Text>
-                  <Text
+                  <View
                     style={{
-                      color: colors.text,
-                      fontWeight: 'bold',
-                      textAlign: 'center',
                       flex: 1,
+                      backgroundColor:
+                        index === indexOfGreatestValue
+                          ? colors.primary
+                          : colors.card,
+                      paddingVertical:
+                        index === indexOfGreatestValue ? '2%' : 0,
+                      borderCurve: 'continuous',
+                      borderRadius: 12,
                     }}>
-                    {(
-                      (data.filter(datum => datum.data === index).length /
-                        data.length) *
-                      100
-                    ).toFixed(2)}
-                    %
-                  </Text>
+                    <Text
+                      style={{
+                        color:
+                          index === indexOfGreatestValue
+                            ? 'white'
+                            : colors.text,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                      }}>
+                      {(
+                        (data.filter(datum => datum.data === index).length /
+                          data.length) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </Text>
+                  </View>
                 </View>
                 <View
                   style={{
