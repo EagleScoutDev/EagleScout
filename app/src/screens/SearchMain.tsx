@@ -27,13 +27,19 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
 
+  // initial data fetch
   useEffect(() => {
-    TBA.getTeamsAtCompetition('2020idbo').then(teams => {
+    TBA.getTeamsAtCompetition('2023cc').then(teams => {
+      // sort teams by team number
+      teams.sort((a, b) => {
+        return a.team_number - b.team_number;
+      });
       setListOfTeams(teams);
     });
     console.log(listOfTeams);
   }, []);
 
+  // when user starts searching, filter the results displayed
   useEffect(() => {
     if (team.length > 0 && listOfTeams.length > 0) {
       setFilteredTeams(
@@ -79,7 +85,7 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
           onChangeText={text => setTeam(text)}
           value={team}
           // keyboardType={'numeric'}
-          placeholder={'Team Number'}
+          placeholder={'Try "114" or "Eaglestrike"'}
           onEndEditing={() => {
             console.log('onEndEditing');
           }}
@@ -169,7 +175,7 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
                   color: colors.text,
                   fontWeight: 'bold',
                   textAlign: 'right',
-                  flex: 3,
+                  flex: 5,
                 }}>
                 {item.nickname}
               </Text>
