@@ -69,6 +69,13 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       const max = Math.max(...data.map(datum => datum.data));
       const min = Math.min(...data.map(datum => datum.data));
       setStats({average: avg, max: max, min: min});
+
+      // sort data by match number
+      data.sort((a, b) => {
+        return a.match - b.match;
+      });
+
+      // TODO: remove duplicate data points (determined by match number)
     }
 
     if (item.type === 'radio') {
