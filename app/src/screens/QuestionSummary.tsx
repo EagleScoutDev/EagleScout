@@ -110,7 +110,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       }}>
       <Text
         style={{
-          color: 'red',
+          color: colors.text,
           fontWeight: 'bold',
           textAlign: 'left',
           // flex: 2,
@@ -120,7 +120,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       </Text>
       <Text
         style={{
-          color: 'blue',
+          color: colors.text,
           fontWeight: 'bold',
           textAlign: 'center',
           // flex: 1,
@@ -132,36 +132,54 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         <View>
           {item.labels.map((label: string, index: number) => {
             return (
-              <View
-                key={index}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginVertical: '2%',
-                  backgroundColor: colors.border,
-                }}>
-                <Text
+              <View>
+                <View
+                  key={index}
                   style={{
-                    color: colors.text,
-                    fontWeight: 'bold',
-                    textAlign: 'left',
-                    flex: 2,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: '2%',
+                    // backgroundColor: colors.border,
                   }}>
-                  {label}
-                </Text>
-                <Text
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                      flex: 2,
+                    }}>
+                    {label}
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      flex: 1,
+                    }}>
+                    {(
+                      (data.filter(datum => datum.data === index).length /
+                        data.length) *
+                      100
+                    ).toFixed(2)}
+                    %
+                  </Text>
+                </View>
+                <View
                   style={{
-                    color: colors.text,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    flex: 1,
-                  }}>
-                  {data.filter(datum => datum.data === index).length}
-                </Text>
+                    height: 1,
+                    width: '100%',
+                    backgroundColor: colors.border,
+                    marginVertical: '3%',
+                  }}
+                />
               </View>
             );
           })}
+          <Text style={{color: 'gray', textAlign: 'center'}}>
+            {data.length} total responses
+          </Text>
         </View>
       )}
 
