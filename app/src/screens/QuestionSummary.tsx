@@ -139,16 +139,16 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         }}>
         {item.question}
       </Text>
-      <Text
-        style={{
-          color: colors.text,
-          fontWeight: 'bold',
-          textAlign: 'center',
-          // flex: 1,
-        }}>
-        {item.type}
-        {/*Rank {item.rank}*/}
-      </Text>
+      {/*<Text*/}
+      {/*  style={{*/}
+      {/*    color: colors.text,*/}
+      {/*    fontWeight: 'bold',*/}
+      {/*    textAlign: 'center',*/}
+      {/*    // flex: 1,*/}
+      {/*  }}>*/}
+      {/*  {item.type}*/}
+      {/*  /!*Rank {item.rank}*!/*/}
+      {/*</Text>*/}
       {item.type === 'radio' && (
         <View>
           {item.labels.map((label: string, index: number) => {
@@ -219,9 +219,9 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         </View>
       )}
 
-      <Text style={{color: 'green'}}>
-        raw data - {data.map(datum => datum.data + '(' + datum.match + ')')}
-      </Text>
+      {/*<Text style={{color: 'green'}}>*/}
+      {/*  raw data - {data.map(datum => datum.data + '(' + datum.match + ')')}*/}
+      {/*</Text>*/}
       {item.type === 'number' && (
         <Pressable
           style={{flexDirection: 'row', justifyContent: 'space-around'}}
@@ -261,7 +261,44 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
           </View>
         </Pressable>
       )}
-      <Text style={{color: 'blue'}}>{response}</Text>
+      {response && (
+        <View
+          style={{
+            marginVertical: '2%',
+            backgroundColor: colors.card,
+            padding: '5%',
+            borderRadius: 12,
+            borderColor: colors.border,
+          }}>
+          <Text style={{color: 'gray', fontWeight: 'bold'}}>AI SUMMARY</Text>
+          <Text style={{color: colors.primary, fontWeight: 'bold'}}>
+            {response}
+          </Text>
+        </View>
+      )}
+
+      {item.type === 'textbox' && (
+        <View>
+          {data
+            .map(datum => {
+              if (datum.data === '') {
+                return null;
+              }
+              return (
+                <View
+                  style={{
+                    marginVertical: '2%',
+                  }}>
+                  <Text style={{color: colors.text, fontWeight: 'bold'}}>
+                    Match {datum.match}
+                  </Text>
+                  <Text style={{color: 'gray'}}>{datum.data}</Text>
+                </View>
+              );
+            })
+            .reverse()}
+        </View>
+      )}
 
       {modalActive && (
         <StandardModal title={item.question} visible={modalActive}>
