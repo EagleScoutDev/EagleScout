@@ -1,10 +1,13 @@
 import React, {useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Modal, Button, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {ScoutReportReturnData} from '../database/ScoutReports';
 import RadioButtons from '../components/form/RadioButtons';
 import {useState} from 'react';
 import {OpenAI} from '../lib/OpenAI';
+import {LineChart} from 'react-native-chart-kit';
+import {Dimensions} from 'react-native';
+import StandardModal from '../components/modals/StandardModal';
 
 interface Props {
   item: any;
@@ -24,10 +27,38 @@ interface Statistics {
   min: number;
 }
 
+const data2 = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  datasets: [
+    {
+      data: [20, 45, 28, 80, 99, 43],
+      color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+      strokeWidth: 2, // optional
+    },
+  ],
+  legend: ['Rainy Days'], // optional
+};
+
 function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
-  const {colors} = useTheme();
+  const {colors, dark} = useTheme();
   const [response, setResponse] = useState<String | null>('');
   const [stats, setStats] = useState<Statistics | null>(null);
+
+  const [modalActive, setModalActive] = useState<boolean>(false);
+
+  const chartConfig = {
+    backgroundGradientFrom: colors.card,
+    backgroundGradientFromOpacity: 1.0,
+    backgroundGradientTo: colors.card,
+    backgroundGradientToOpacity: 1.0,
+    color: (opacity = 1) =>
+      dark ? `rgba(255, 255, 255, ${opacity})` : 'rgba(0, 0, 0, 1)',
+    backgroundColor: 'blue',
+    strokeWidth: 2, // optional, default 3
+    // barPercentage: 0.5,
+    useShadowColorFromDataset: false, // optional
+    fillShadowGradient: 'blue',
+  };
 
   useEffect(() => {
     if (item.type === 'textbox' && generate_ai_summary) {
@@ -149,10 +180,12 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       )}
 
       <Text style={{color: 'green'}}>
-        raw data - {data.map(datum => datum.data + ', ')}
+        raw data - {data.map(datum => datum.data + '(' + datum.match + ')')}
       </Text>
-      {item.type == 'number' && (
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+      {item.type === 'number' && (
+        <Pressable
+          style={{flexDirection: 'row', justifyContent: 'space-around'}}
+          onPress={() => setModalActive(true)}>
           <View
             style={{
               flexDirection: 'column',
@@ -186,9 +219,44 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
             </Text>
             <Text style={{color: 'gray', fontWeight: 'bold'}}>MAXIMUM</Text>
           </View>
-        </View>
+        </Pressable>
       )}
       <Text style={{color: 'blue'}}>{response}</Text>
+
+      {modalActive && (
+        <StandardModal title={item.question} visible={modalActive}>
+          <View>
+            <LineChart
+              data={{
+                labels: data.map(datum => String(datum.match)),
+                datasets: [
+                  {
+                    data: data.map(datum => datum.data),
+                    strokeWidth: 2, // optional
+                  },
+                ],
+                legend: ['Points Earned'], // optional
+              }}
+              width={Dimensions.get('window').width * 0.85} // from react-native
+              height={Dimensions.get('window').height / 4}
+              // verticalLabelRotation={30}
+              chartConfig={chartConfig}
+              bezier
+            />
+            <Text
+              style={{
+                color: colors.text,
+                textAlign: 'center',
+                marginVertical: '3%',
+              }}>
+              Match Number
+            </Text>
+          </View>
+          <Button title={'Close'} onPress={() => setModalActive(false)}>
+            <Text style={{color: colors.text}}>Close</Text>
+          </Button>
+        </StandardModal>
+      )}
     </View>
   );
 }
