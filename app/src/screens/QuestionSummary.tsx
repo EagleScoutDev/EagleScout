@@ -292,7 +292,9 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                   <Text style={{color: colors.text, fontWeight: 'bold'}}>
                     Match {datum.match}
                   </Text>
-                  <Text style={{color: 'gray'}}>{datum.data}</Text>
+                  <Text style={{color: 'gray'}}>
+                    {datum.data.replace(/(\r\n|\n|\r)/gm, '')}
+                  </Text>
                 </View>
               );
             })
