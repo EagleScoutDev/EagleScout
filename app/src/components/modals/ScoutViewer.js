@@ -428,7 +428,10 @@ function ScoutViewer({
                             field.type === 'textbox' ? 'flex-start' : 'center',
                           // make text box seem editable
                           backgroundColor: colors.card,
-                          borderColor: colors.border,
+                          borderColor:
+                            field.required && !tempData[index]
+                              ? 'red'
+                              : colors.border,
                           borderWidth: 1,
                           borderRadius: 5,
                           padding: 5,
@@ -437,7 +440,9 @@ function ScoutViewer({
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
                         }
-                        value={tempData[index].toString()}
+                        value={
+                          tempData[index] ? tempData[index].toString() : null
+                        }
                         placeholder={
                           tempData[index] === null || tempData[index] === ''
                             ? 'N/A'
@@ -447,6 +452,11 @@ function ScoutViewer({
                         onChangeText={value => {
                           let a = [...tempData];
                           if (field.type === 'number') {
+                            if (value === '') {
+                              a[index] = null;
+                              setTempData(a);
+                              return;
+                            }
                             a[index] = Number.parseInt(value, 10);
                           } else {
                             a[index] = value;
@@ -555,6 +565,27 @@ function ScoutViewer({
                       text: 'Save',
                       onPress: async () => {
                         console.log('Save Pressed');
+                        for (let i = 0; i < tempData.length; i++) {
+                          if (
+                            data.form[i].required &&
+                            (tempData[i] === null ||
+                              tempData[i] === undefined ||
+                              tempData[i] === '')
+                          ) {
+                            Alert.alert(
+                              'Missing Required Fields',
+                              'Please fill in all required fields.',
+                              [
+                                {
+                                  text: 'OK',
+                                  onPress: () => {},
+                                  style: 'cancel',
+                                },
+                              ],
+                            );
+                            return;
+                          }
+                        }
                         if (isOfflineForm) {
                           await FormHelper.editFormOffline(tempData);
                           setEditingActive(false);
