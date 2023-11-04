@@ -20,7 +20,7 @@ function ThemePicker({colors, setTheme}) {
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
-      if (r !== null && r !== undefined) {
+      if (r != null) {
         console.log('theme found: ' + r);
         setSelectedTheme(r);
       }
