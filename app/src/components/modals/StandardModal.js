@@ -8,27 +8,35 @@ function StandardModal({visible, title, children}) {
     <Modal animationType="slide" transparent={true} visible={visible}>
       <View
         style={{
-          backgroundColor: colors.card,
+          flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          top: '30%',
-          borderRadius: 20,
-          borderColor: colors.border,
-          borderWidth: 1,
-          padding: 35,
-          elevation: 5,
-          margin: 20,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          padding: 20,
         }}>
-        <Text
+        <View
           style={{
-            fontSize: 30,
-            color: colors.text,
-            fontWeight: '600',
-            paddingBottom: 20,
+            width: '100%',
+            backgroundColor: colors.card,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 20,
+            borderColor: colors.border,
+            borderWidth: 1,
+            padding: 35,
+            elevation: 5,
           }}>
-          {title}
-        </Text>
-        {children}
+          <Text
+            style={{
+              fontSize: 30,
+              color: colors.text,
+              fontWeight: '600',
+              paddingBottom: 20,
+            }}>
+            {title}
+          </Text>
+          {children}
+        </View>
       </View>
     </Modal>
   );
