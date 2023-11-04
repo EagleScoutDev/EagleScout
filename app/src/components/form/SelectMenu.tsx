@@ -77,7 +77,7 @@ const SelectList: FC<SelectListProps> = ({
   defaultOption,
   searchEnabled = false,
   searchPlaceholder = 'Search',
-  notFoundText = 'No data found',
+  notFoundText = 'No forms found',
   onSelect = () => {},
 }) => {
   const oldOption = useRef(null);

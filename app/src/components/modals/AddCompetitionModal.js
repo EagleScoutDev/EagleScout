@@ -1,6 +1,5 @@
 import React, {
   Alert,
-  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
@@ -13,7 +12,6 @@ import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
-import UserAttributesDB from '../../database/UserAttributes';
 import SelectMenu from '../form/SelectMenu';
 
 function Spacer() {
@@ -33,55 +31,42 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [formList, setFormList] = useState([]);
 
   const getFormIDs = async () => {
-    const current_team_id = (await UserAttributesDB.getCurrentUserAttribute())
-      .team_id;
-
     // get form ids
     let {data: forms, error} = await supabase
       .from('forms')
-      .select('id, name')
-      .eq('team_id', current_team_id);
-    setFormList(forms);
+      .select('id, name');
+    if (error) {
+      console.error('Failed to get forms');
+      console.error(error);
+    } else {
+      setFormList(forms);
+    }
   };
 
   const submitCompetition = async () => {
     // if no form is selected, alert the user
     if (selectedFormID === null) {
       Alert.alert('Error', 'Please select a form to use for this competition.');
-      return;
+      return false;
     }
     // if the start date is after (or equal to) the end date, alert the user
     if (startDate >= endDate) {
       Alert.alert('Error', 'Start date must be before end date.');
-      return;
+      return false;
     }
     // if the name is empty, alert the user
     if (name === '') {
       Alert.alert('Error', 'Please enter a name for this competition.');
-      return;
+      return false;
     }
 
-    const {
-      data: {user},
-    } = await supabase.auth.getUser();
-
-    let {data: user_attributes, error} = await supabase
-      .from('user_attributes')
-      .select('team_id')
-      .eq('id', user.id);
-
-    // console.log('user_attributes', user_attributes);
-    const {team_id} = user_attributes[0];
-    // console.log('final team id: ', team_id);
-
-    const res = await supabase.from('competitions').insert({
-      team_id: team_id,
+    const {error} = await supabase.from('competitions').insert({
       name: name,
       start_time: startDate,
       end_time: endDate,
       form_id: selectedFormID,
     });
-    const error2 = res.error;
+    return error == null;
   };
 
   useEffect(() => {
@@ -243,8 +228,12 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         <StandardButton
           color={colors.primary}
           onPress={() => {
-            submitCompetition().then(() => onRefresh());
-            setVisible(false);
+            submitCompetition().then(success => {
+              if (success) {
+                setVisible(false);
+                onRefresh();
+              }
+            });
           }}
           text={'Submit'}
           width={'40%'}
