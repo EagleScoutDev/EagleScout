@@ -44,6 +44,7 @@ function ScoutingFlow({
   const [arrayData, setArrayData] = useState();
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // for the full-screen incrementer
   const [teleop_scored, setTeleop_scored] = useState({
@@ -181,6 +182,7 @@ function ScoutingFlow({
       }
       return;
     }
+    setIsSubmitting(true);
 
     // array containing the raw values of the form
     let tempArray = [...arrayData];
@@ -203,6 +205,7 @@ function ScoutingFlow({
     }
 
     if (!checkRequiredFields(tempArray)) {
+      setIsSubmitting(false);
       return;
     }
 
@@ -253,6 +256,7 @@ function ScoutingFlow({
         );
       }
     }
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
@@ -349,6 +353,7 @@ function ScoutingFlow({
               arrayData={arrayData}
               setArrayData={setArrayData}
               submitForm={submitForm}
+              isSubmitting={isSubmitting}
             />
           ) : (
             <Gamification
@@ -368,6 +373,7 @@ function ScoutingFlow({
               arrayData={arrayData}
               setArrayData={setArrayData}
               submitForm={submitForm}
+              isSubmitting={isSubmitting}
             />
           )}
         </>

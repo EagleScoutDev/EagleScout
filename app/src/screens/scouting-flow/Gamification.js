@@ -34,6 +34,7 @@ function Gamification({
   arrayData,
   setArrayData,
   submitForm,
+  isSubmitting,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -256,6 +257,7 @@ function Gamification({
                           text={'Submit'}
                           width={'85%'}
                           color={colors.primary}
+                          isLoading={isSubmitting}
                           onPress={submitForm}
                         />
                       </View>

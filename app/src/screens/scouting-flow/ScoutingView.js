@@ -17,6 +17,7 @@ function ScoutingView({
   arrayData,
   setArrayData,
   submitForm,
+  isSubmitting,
 }) {
   return (
     <ScrollView>
@@ -79,6 +80,7 @@ function ScoutingView({
         text={'Submit'}
         color={colors.primary}
         width={'85%'}
+        isLoading={isSubmitting}
         onPress={submitForm}
       />
       <View style={{marginBottom: 300}} />
