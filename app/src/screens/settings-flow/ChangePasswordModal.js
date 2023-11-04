@@ -8,12 +8,11 @@ import React, {
 } from 'react-native';
 import {useState} from 'react';
 import StandardButton from '../../components/StandardButton';
-import {Svg, Path} from 'react-native-svg';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import {supabase} from '../../lib/supabase';
 
 function ChangePasswordModal({navigation}) {
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const {colors} = useTheme();
@@ -35,14 +34,6 @@ function ChangePasswordModal({navigation}) {
   return (
     <View>
       <View style={{width: '80%', alignSelf: 'center', marginTop: '5%'}}>
-        <MinimalSectionHeader title={'Current Password'} />
-        <TextInput
-          style={styles.text_input}
-          // placeholder="Current Password"
-          onChangeText={text => setCurrentPassword(text)}
-          value={currentPassword}
-          secureTextEntry={true}
-        />
         <MinimalSectionHeader title={'New Password'} />
         <TextInput
           style={styles.text_input}
@@ -63,71 +54,68 @@ function ChangePasswordModal({navigation}) {
       <StandardButton
         color={colors.primary}
         onPress={async () => {
-          auth()
-            .signInWithEmailAndPassword(
-              auth().currentUser.email,
-              currentPassword,
-            )
-            .then(() => {
-              if (newPassword === '' || confirmNewPassword === '') {
-                console.log('New password cannot be blank.');
-                Alert.alert(
-                  'New password cannot be blank.',
-                  'Please try again',
-                  [
-                    {
-                      text: 'OK',
-                      onPress: () => console.log('OK Pressed'),
-                    },
-                  ],
-                  {cancelable: false},
-                );
-                return;
-              }
-              if (newPassword === confirmNewPassword) {
-                auth()
-                  .currentUser.updatePassword(newPassword)
-                  .then(() => {
-                    setCurrentPassword('');
-                    setNewPassword('');
-                    setConfirmNewPassword('');
-                    Alert.alert(
-                      'Password Updated',
-                      'Your password has been updated!',
-                      [
-                        {
-                          text: 'OK',
-                          onPress: () => console.log('OK Pressed'),
-                        },
-                      ],
-                      {cancelable: false},
-                    );
-                    navigation.goBack();
-                  });
-              } else {
-                console.log('Passwords do not match');
-                Alert.alert(
-                  'Passwords do not match',
-                  'Please try again',
-                  [
-                    {
-                      text: 'OK',
-                      onPress: () => console.log('OK Pressed'),
-                    },
-                  ],
-                  {cancelable: false},
-                );
-              }
-            })
-            .catch(e => {
-              console.log(e);
-              Alert.alert(
-                'Incorrect Current Password',
-                'Please try again',
-                [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-                {cancelable: false},
-              );
-            });
+          if (newPassword === '' || confirmNewPassword === '') {
+            console.log('New password cannot be blank.');
+            Alert.alert(
+              'New password cannot be blank.',
+              'Please try again',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => console.log('OK Pressed'),
+                },
+              ],
+              {cancelable: false},
+            );
+            return;
+          }
+          if (newPassword === confirmNewPassword) {
+            supabase.auth
+              .updateUser({password: newPassword})
+              .then(({error}) => {
+                if (error) {
+                  Alert.alert(
+                    'Error',
+                    error.message,
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                } else {
+                  setNewPassword('');
+                  setConfirmNewPassword('');
+                  Alert.alert(
+                    'Password Updated',
+                    'Your password has been updated!',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                  navigation.goBack();
+                }
+              });
+          } else {
+            console.log('Passwords do not match');
+            Alert.alert(
+              'Passwords do not match',
+              'Please try again',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => console.log('OK Pressed'),
+                },
+              ],
+              {cancelable: false},
+            );
+          }
         }}
         text={'Save'}
         width={'60%'}
