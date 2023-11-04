@@ -77,8 +77,8 @@ const MyStack = () => {
       password: password,
     });
     if (error) {
-      console.error(error);
-      setError(error.toString());
+      console.log(error);
+      setError(error.message);
     } else {
       const {
         data: {user},
