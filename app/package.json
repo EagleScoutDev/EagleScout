@@ -23,6 +23,7 @@
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-date-picker": "^4.3.0",
     "react-native-dotenv": "^3.4.9",
+    "react-native-draggable-flatlist": "^4.0.1",
     "react-native-gesture-handler": "^2.12.1",
     "react-native-haptic-feedback": "^2.2.0",
     "react-native-pager-view": "^6.2.1",
