@@ -23,24 +23,32 @@ function PicklistCreator() {
   const {colors} = useTheme();
 
   const [name, setName] = useState<string | undefined>(undefined);
-  const [possibleTeams, setPossibleTeams] = useState<SimpleTeam[]>([]);
+  const [possibleTeams, setPossibleTeams] = useState<number[]>([]);
   const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
   const [filter_by_added, setFilterByAdded] = useState(false);
-  const [teams_list, setTeamsList] = useState<SimpleTeam[]>([]);
+  const [teams_list, setTeamsList] = useState<number[]>([]);
 
   const [dragging_active, setDraggingActive] = useState(false);
 
   const [shareModalVisible, setShareModalVisible] = useState(false);
 
   useEffect(() => {
-    PicklistsDB.getTeamsAtCompetition('2023cc').then(setPossibleTeams);
+    PicklistsDB.getTeamsAtCompetition('2023cc')
+      .then(teams => {
+        // set teams to just the numbers of the returned teams
+        console.info(teams);
+        setPossibleTeams(teams.map(team => team.team_number));
+      })
+      .catch(error => {
+        console.error('Error getting teams at competition:', error);
+      });
   }, []);
 
   const renderItemDraggable = ({
     item,
     drag,
     isActive,
-  }: RenderItemParams<SimpleTeam>) => {
+  }: RenderItemParams<number>) => {
     return (
       <ScaleDecorator>
         <Pressable onPressIn={drag} style={styles.team_item_in_list}>
@@ -51,33 +59,38 @@ function PicklistCreator() {
               color: isActive ? 'blue' : colors.text,
               fontWeight: isActive ? 'bold' : 'normal',
             }}>
-            {item.team_number}
+            {item}
           </Text>
         </Pressable>
       </ScaleDecorator>
     );
   };
 
+  const savePicklistToDB = () => {
+    console.log('saving picklist to db');
+    PicklistsDB.createPicklist(name ?? '', teams_list).then(r => {
+      console.log('response after submitting picklist to db: ' + r);
+    });
+  };
+
   const renderItemStandard = ({item}) => {
     return (
       <Pressable style={styles.team_item_in_list}>
         <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
-        <Text style={styles.team_number_displayed}>{item.team_number}</Text>
+        <Text style={styles.team_number_displayed}>{item}</Text>
       </Pressable>
     );
   };
 
-  const addTeam = (team: SimpleTeam) => {
-    if (teams_list.some(t => t.team_number === team.team_number)) {
+  const addTeam = (team: number) => {
+    if (teams_list.includes(team)) {
       return;
     }
     setTeamsList(prevTeams => [...prevTeams, team]);
   };
 
-  const removeTeam = (team: SimpleTeam) => {
-    setTeamsList(prevTeams =>
-      prevTeams.filter(t => t.team_number !== team.team_number),
-    );
+  const removeTeam = (team: number) => {
+    setTeamsList(prevTeams => prevTeams.filter(t => t !== team));
   };
 
   const styles = StyleSheet.create({
@@ -168,17 +181,17 @@ function PicklistCreator() {
                 size={40}
                 fillColor="blue"
                 unfillColor="#FFFFFF"
-                text={String(item.team_number)}
+                text={String(item)}
                 textStyle={styles.team_item}
                 isChecked={teams_list.includes(item)}
                 onPress={isChecked => {
                   // console.log(item);
                   if (isChecked) {
                     addTeam(item);
-                    console.log('adding team ' + item.team_number);
+                    console.log('adding team ' + item);
                   } else {
                     removeTeam(item);
-                    console.log('removing team ' + item.team_number);
+                    console.log('removing team ' + item);
                   }
                 }}
               />
@@ -192,7 +205,15 @@ function PicklistCreator() {
           text={'Cancel'}
           onPress={() => setShareModalVisible(false)}
         />
-        <StandardButton color={'blue'} text={'Save'} onPress={() => {}} />
+        <StandardButton
+          color={'blue'}
+          text={'Save'}
+          onPress={() => {
+            console.log('saving');
+            console.info(teams_list);
+            savePicklistToDB();
+          }}
+        />
         <StandardButton
           color={'blue'}
           text={'Publish to Team'}
@@ -204,14 +225,14 @@ function PicklistCreator() {
         <DraggableFlatList
           data={teams_list}
           onDragEnd={({data}) => setTeamsList(data)}
-          keyExtractor={item => String(item.team_number)}
+          keyExtractor={item => String(item)}
           renderItem={renderItemDraggable}
         />
       ) : (
         <FlatList
           data={teams_list}
           renderItem={renderItemStandard}
-          keyExtractor={item => String(item.team_number)}
+          keyExtractor={item => String(item)}
         />
       )}
       <View
