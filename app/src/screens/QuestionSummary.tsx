@@ -102,6 +102,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
           flexDirection: 'column',
           justifyContent: 'space-between',
           marginHorizontal: '5%',
+          marginTop: '10%',
         }}>
         <Text
           style={{
