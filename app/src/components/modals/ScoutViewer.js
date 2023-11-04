@@ -147,7 +147,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
     }
   }, [data]);
 
-  if (data === null) {
+  if (data == null) {
     return <View />;
   }
   return (
@@ -312,7 +312,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                         {data.data[index].toString()}
                       </Text>
                     )}
-                  {tempData[index] === null ||
+                  {tempData[index] == null ||
                     (tempData[index] === '' && (
                       <Text style={styles.no_info}>N/A</Text>
                     ))}

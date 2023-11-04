@@ -40,7 +40,7 @@ function Gamification({
   useEffect(() => {
     // set arraydata to a copy of the arraydata, and
     // set the index of 10 in the array to the cube count
-    if (arrayData === undefined || arrayData.length === 0) {
+    if (arrayData == null || arrayData.length === 0) {
       console.log('arrayData is undefined or empty');
       return;
     }

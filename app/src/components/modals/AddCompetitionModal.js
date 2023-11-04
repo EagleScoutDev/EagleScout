@@ -45,7 +45,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
   const submitCompetition = async () => {
     // if no form is selected, alert the user
-    if (selectedFormID === null) {
+    if (selectedFormID == null) {
       Alert.alert('Error', 'Please select a form to use for this competition.');
       return false;
     }
