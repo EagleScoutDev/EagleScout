@@ -157,6 +157,10 @@ function SignUpModal({setVisible, navigation}) {
                 console.error(error);
                 Alert.alert('Error signing up', error.toString());
               } else {
+                Alert.alert(
+                  'Success!',
+                  'You received an email to confirm your account. Please follow the instructions in the email for next steps.',
+                );
                 navigation.navigate('Login');
               }
             }}>
