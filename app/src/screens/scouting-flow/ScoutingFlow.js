@@ -277,7 +277,7 @@ function ScoutingFlow({
   }, [loadFormStructure]);
 
   useEffect(() => {
-    if (formStructure === undefined) {
+    if (formStructure == null) {
       return;
     }
 

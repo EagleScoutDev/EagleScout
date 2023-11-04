@@ -46,7 +46,7 @@ const MyStack = () => {
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
-      if (value !== null) {
+      if (value != null) {
         setScoutStylePreference(value);
       }
     });
@@ -58,7 +58,7 @@ const MyStack = () => {
   const checkAdmin = async () => {
     // use async storage
     const user = await AsyncStorage.getItem('user');
-    if (user !== null) {
+    if (user != null) {
       console.log('user: ' + user);
       const userObj = JSON.parse(user);
       if (userObj.admin) {
@@ -144,7 +144,7 @@ const MyStack = () => {
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(value => {
-      if (value !== null) {
+      if (value != null) {
         console.log('[useEffect] data: ' + value);
         setThemePreference(value);
       }

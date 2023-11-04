@@ -44,7 +44,7 @@ const CompetitionsList = ({setChosenComp}) => {
   const checkAdmin = async () => {
     // use async storage
     const user = await AsyncStorage.getItem('user');
-    if (user !== null) {
+    if (user != null) {
       console.log('user: ' + user);
       const userObj = JSON.parse(user);
       if (userObj.admin) {
@@ -84,7 +84,7 @@ const CompetitionsList = ({setChosenComp}) => {
   }, []);
 
   // useEffect(() => {
-  //   if (chosenComp !== null) {
+  //   if (chosenComp != null) {
   //     DBManager.getReportsForCompetition(chosenComp).then(r => {
   //       setScoutData(r);
   //     });
@@ -216,7 +216,7 @@ const CompetitionsList = ({setChosenComp}) => {
         setVisible={setAddCompetitionModalVisible}
         onRefresh={getCompetitions}
       />
-      {competitionToEdit !== null &&
+      {competitionToEdit != null &&
         editingMode &&
         editCompetitionModalVisible && (
           <EditCompetitionModal

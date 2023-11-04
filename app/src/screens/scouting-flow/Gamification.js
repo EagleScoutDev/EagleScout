@@ -41,7 +41,7 @@ function Gamification({
   useEffect(() => {
     // set arraydata to a copy of the arraydata, and
     // set the index of 10 in the array to the cube count
-    if (arrayData === undefined || arrayData.length === 0) {
+    if (arrayData == null || arrayData.length === 0) {
       console.log('arrayData is undefined or empty');
       return;
     }
@@ -177,30 +177,29 @@ function Gamification({
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
-                    {auto_scored !== undefined &&
-                      teleop_scored !== undefined && (
-                        <Modal
-                          visible={modalVisible}
-                          transparent={true}
-                          animationType={'slide'}>
-                          <FullScreenIncrementer
-                            setVisible={setModalVisible}
-                            cones={
-                              index === 0
-                                ? auto_scored.cones
-                                : teleop_scored.cones
-                            }
-                            cubes={
-                              index === 0
-                                ? auto_scored.cubes
-                                : teleop_scored.cubes
-                            }
-                            setScored={
-                              index === 0 ? setAuto_scored : setTeleop_scored
-                            }
-                          />
-                        </Modal>
-                      )}
+                    {auto_scored != null && teleop_scored != null && (
+                      <Modal
+                        visible={modalVisible}
+                        transparent={true}
+                        animationType={'slide'}>
+                        <FullScreenIncrementer
+                          setVisible={setModalVisible}
+                          cones={
+                            index === 0
+                              ? auto_scored.cones
+                              : teleop_scored.cones
+                          }
+                          cubes={
+                            index === 0
+                              ? auto_scored.cubes
+                              : teleop_scored.cubes
+                          }
+                          setScored={
+                            index === 0 ? setAuto_scored : setTeleop_scored
+                          }
+                        />
+                      </Modal>
+                    )}
                     {/*if the index is 1 or 2, add a button to activate a modal*/}
                     {(index === 0 || index === 1) && (
                       <View style={{width: '100%'}}>
