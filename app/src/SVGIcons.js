@@ -109,13 +109,12 @@ export const PencilNotepad = () => {
   );
 };
 
-export const CaretRight = ({color = 'gray'}) => {
+export const CaretRight = (color = 'gray') => {
   return (
     <Svg
       width={20}
       height={20}
       viewBox="0 0 24 24"
-      stroke={color}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -126,19 +125,19 @@ export const CaretRight = ({color = 'gray'}) => {
       }}>
       <Path
         fill-rule="evenodd"
+        fill={color}
         d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
       />
     </Svg>
   );
 };
 
-export const CaretDown = ({color = 'gray'}) => {
+export const CaretDown = (color = 'gray') => {
   return (
     <Svg
       width={20}
       height={20}
       viewBox="0 0 24 24"
-      stroke={color}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -150,13 +149,14 @@ export const CaretDown = ({color = 'gray'}) => {
       }}>
       <Path
         fill-rule="evenodd"
+        fill={color}
         d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
       />
     </Svg>
   );
 };
 
-export const XCircle = ({color = 'gray'}) => {
+export const XCircle = (color = 'gray') => {
   return (
     <Svg width={'30%'} height="30%" viewBox="0 0 16 16">
       <Path
