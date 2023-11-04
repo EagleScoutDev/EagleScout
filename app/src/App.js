@@ -35,6 +35,7 @@ import {
   TwoPeople,
   Gear,
 } from './SVGIcons';
+import PicklistsManager from './screens/PicklistsManager';
 
 const Drawer = createDrawerNavigator();
 
@@ -264,6 +265,13 @@ const MyStack = () => {
               component={CompetitionsView}
               options={{
                 drawerIcon: () => Trophy(),
+              }}
+            />
+            <Drawer.Screen
+              name={'Picklists'}
+              component={PicklistsManager}
+              options={{
+                drawerIcon: () => ListWithDots(),
               }}
             />
             <Drawer.Screen
