@@ -19,11 +19,10 @@ import SubmittedForms from './screens/SubmittedForms';
 import DebugOffline from './screens/DebugOffline';
 import SearchScreen from './screens/SearchScreen';
 import {useColorScheme} from 'react-native';
-import ScoutingView from './screens/scouting-flow/ScoutingView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import CustomDrawerContent from './CustomDrawer';
-import Gamification from './screens/scouting-flow/Gamification';
+import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import FormHelper from './FormHelper';
 // import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
@@ -43,6 +42,7 @@ const MyStack = () => {
   const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState('System');
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
+  const [scoutingFlowHeaderShown, setScoutingFlowHeaderShown] = useState(true);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
@@ -133,6 +133,14 @@ const MyStack = () => {
     console.log('redirecting to login');
     setAdmin('0');
   };
+
+  const ScoutReportComponent = props => (
+    <ScoutingFlow
+      {...props}
+      setDisplayNavigationHeader={setScoutingFlowHeaderShown}
+      isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
+    />
+  );
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(value => {
@@ -227,14 +235,10 @@ const MyStack = () => {
             />
             <Drawer.Screen
               name="Scout Report"
-              component={
-                scoutStylePreference === 'Scrolling'
-                  ? ScoutingView
-                  : Gamification
-              }
+              component={ScoutReportComponent}
               options={{
                 drawerIcon: () => DocumentWithPlus(),
-                headerShown: scoutStylePreference === 'Scrolling',
+                headerShown: scoutingFlowHeaderShown,
               }}
             />
             {/*<Drawer.Screen name="Gamified" component={Gamified} />*/}
