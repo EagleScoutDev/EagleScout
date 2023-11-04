@@ -1,16 +1,17 @@
+import { useNavigation, useTheme } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import {
-  StyleSheet,
+  Keyboard,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Alert,
   TouchableWithoutFeedback,
-  Keyboard,
+  View,
+  Alert
 } from 'react-native';
-import React from 'react';
-import {useTheme} from '@react-navigation/native';
-import {supabase} from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function InputLabel(props) {
@@ -27,10 +28,12 @@ function InputLabel(props) {
   );
 }
 
-function SignUpModal({setVisible, navigation}) {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+const CompleteSignup = () => {
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [team, setTeam] = React.useState('');
   const {colors} = useTheme();
+  const navigation = useNavigation();
 
   const styles = StyleSheet.create({
     input: {
@@ -63,6 +66,20 @@ function SignUpModal({setVisible, navigation}) {
       color: 'red',
     },
   });
+
+  const checkFields = () => {
+    if (firstName == '') {
+      Alert.alert('First name cannot be empty');
+      return false;
+    } else if (lastName == '') {
+      Alert.alert('Last name cannot be empty');
+      return false;
+    } else if (team == '') {
+      Alert.alert('Team cannot be empty');
+      return false;
+    }
+    return true;
+  }
 
   return (
     // <Modal animationType={'slide'} visible={visible} transparent={false}>
@@ -116,28 +133,47 @@ function SignUpModal({setVisible, navigation}) {
               color: colors.text,
               padding: 10,
             }}>
-            Sign Up
+            Complete Sign Up
           </Text>
           <View>
-            <InputLabel title="Email" visible={email !== ''} />
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                }}>
+                <InputLabel title="First Name" visible={firstName !== ''} />
+                <TextInput
+                  onChangeText={setFirstName}
+                  value={firstName}
+                  placeholder="First Name"
+                  style={{
+                    ...styles.input,
+                  }}
+                />
+              </View>
+              <View style={{flex: 1}}>
+                <InputLabel title="Last Name" visible={lastName !== ''} />
+                <TextInput
+                  onChangeText={setLastName}
+                  value={lastName}
+                  placeholder="Last Name"
+                  style={{
+                    ...styles.input,
+                  }}
+                />
+              </View>
+            </View>
+            <InputLabel title="Team" visible={team !== ''} />
             <TextInput
-              onChangeText={setEmail}
-              value={email}
-              placeholder="Email"
+              onChangeText={setTeam}
+              value={team}
+              placeholder="Team"
               style={{
                 ...styles.input,
               }}
-              inputMode={'email'}
-            />
-            <InputLabel title="Password" visible={password !== ''} />
-            <TextInput
-              onChangeText={setPassword}
-              value={password}
-              placeholder="Password"
-              style={{
-                ...styles.input,
-              }}
-              secureTextEntry={true}
             />
           </View>
           <TouchableOpacity
@@ -149,29 +185,41 @@ function SignUpModal({setVisible, navigation}) {
               marginHorizontal: 30,
             }}
             onPress={async () => {
-              const {error} = await supabase.auth.signUp({
-                email: email,
-                password: password,
-              });
-              if (error) {
-                console.error(error);
-                Alert.alert('Error signing up', error.toString());
-              } else {
-                Alert.alert(
-                  'Success!',
-                  'You received an email to confirm your account. Please follow the instructions in the email for next steps.',
+              if (checkFields()) {
+                const {
+                  data: {user}
+                } = await supabase.auth.getUser();
+                const {error: profilesSetError} = await supabase.from('profiles').update({
+                  first_name: firstName,
+                  last_name: lastName,
+                }).eq('id', user.id);
+                if (profilesSetError) {
+                  console.error(profilesSetError);
+                  Alert.alert('Unable to set porofile information. Please try logging in again.');
+                }
+                const {error: registerUserWithTeamError} = await supabase.rpc(
+                  'register_user_with_team',
+                  {
+                    team_number: team,
+                  },
                 );
-                navigation.navigate('Login');
+                if (registerUserWithTeamError) {
+                  console.error(registerUserWithTeamError);
+                  Alert.alert('Unable to register you with the team provided. Please check if the team number is correct.');
+                } else {
+                  await supabase.auth.signOut();
+                  Alert.alert("You have completed sign up. You will be able to log in when one of the team's captains approve you.");
+                  navigation.navigate('Login');
+                }
               }
             }}>
             <Text style={{textAlign: 'center', color: 'white', fontSize: 20}}>
-              Register
+              Complete sign up
             </Text>
           </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>
-  );
-}
+)};
 
-export default SignUpModal;
+export default CompleteSignup;

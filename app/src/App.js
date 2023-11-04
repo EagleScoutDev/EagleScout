@@ -13,16 +13,16 @@ import {
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CompetitionsView from './screens/competitions-flow/CompetitionsView';
 import UserManager from './screens/UserManager';
+import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SubmittedForms from './screens/SubmittedForms';
 import DebugOffline from './screens/DebugOffline';
 import SearchScreen from './screens/SearchScreen';
 import {useColorScheme} from 'react-native';
-import ScoutingView from './screens/scouting-flow/ScoutingView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import CustomDrawerContent from './CustomDrawer';
-import Gamification from './screens/scouting-flow/Gamification';
+import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import FormHelper from './FormHelper';
 // import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
@@ -42,6 +42,7 @@ const MyStack = () => {
   const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState('System');
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
+  const [scoutingFlowHeaderShown, setScoutingFlowHeaderShown] = useState(true);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
@@ -68,7 +69,7 @@ const MyStack = () => {
     }
   };
 
-  const submitForm = async (username, password) => {
+  const submitForm = async (username, password, navigation) => {
     console.log('[login] username: ' + username);
     console.log('[login] password: ' + password);
     const {error} = await supabase.auth.signInWithPassword({
@@ -83,79 +84,42 @@ const MyStack = () => {
         data: {user},
       } = await supabase.auth.getUser();
       console.log('user: ' + user.id);
-      if (await AsyncStorage.getItem('nameSet')) {
-        const nameSet = JSON.parse(await AsyncStorage.getItem('nameSet'));
-        const {data, error} = await supabase
-          .from('profiles')
-          .update({
-            first_name: nameSet.firstName,
-            last_name: nameSet.lastName,
-          })
-          .eq('id', user.id);
-        if (error) {
-          console.error('Error setting name: ' + error);
-        } else {
-          console.log('name set');
-          await AsyncStorage.removeItem('nameSet');
-        }
-      }
-      //const { data, error } = await supabase.from('user_attributes').select('team_id, admin').eq('id', user.id);
-      //console.log('data: ' + data);
-      const {data, error} = await supabase
+      const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
         .select('team_id, scouter, admin')
         .eq('id', user.id)
         .single();
-      const res = await supabase
+      const {data: profilesData, error: profilesError} = await supabase
         .from('profiles')
         .select('first_name, last_name')
         .eq('id', user.id)
         .single();
-      let data2 = res.data;
-      const error2 = res.error;
-      if (error2) {
-        console.error(error2);
-        console.error("Couldn't get user profile");
-        data2 = {};
-      }
-      if (error) {
-        console.error(error);
-      } else if (data) {
-        console.log('User attributes' + JSON.stringify(data));
-        if (!data.team_id) {
-          console.error('Error: user is not registered with a team.');
-          setError(
-            'You are not registered with a team. This should not normally happen ' +
-              'as the app should register you with a team on signup. Please contact the app develoers.',
-          );
-        } else if (!data.scouter) {
+      if (userAttribError) {
+        console.error(userAttribError);
+        setError('Cannot access user attributes');
+      } else if (profilesError) {
+        console.error(profilesError);
+        setError('Cannot acccess profiles');
+      } else {
+        if (!userAttribData.team_id) {
+          setError('');
+          navigation.navigate('CompleteSignUp');
+        } else if (!userAttribData.scouter) {
           setError(
             'Your account has not been approved yet.\n Please contact a captain for approval.',
           );
         } else {
-          console.log('are they an admin ' + data.admin);
-          if (data.admin) {
-            console.log('admin detected');
-            setAdmin(true);
-          } else {
-            console.log('not an admin');
-            setAdmin(false);
-          }
+          setAdmin(userAttribData.admin);
           setError('');
           await AsyncStorage.setItem(
             'user',
             JSON.stringify({
-              ...data,
-              ...data2,
+              ...userAttribData,
+              ...profilesData,
             }),
           );
           await AsyncStorage.setItem('authenticated', 'true');
         }
-      } else {
-        console.error('Error: unable to access user attributes.');
-        setError(
-          'Unable to access your user attributes. This should not happen. Please contact the app developers.',
-        );
       }
     }
   };
@@ -169,6 +133,14 @@ const MyStack = () => {
     console.log('redirecting to login');
     setAdmin('0');
   };
+
+  const ScoutReportComponent = props => (
+    <ScoutingFlow
+      {...props}
+      setDisplayNavigationHeader={setScoutingFlowHeaderShown}
+      isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
+    />
+  );
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(value => {
@@ -228,6 +200,18 @@ const MyStack = () => {
                 },
               }}
             />
+            <Drawer.Screen
+              name="CompleteSignUp"
+              component={CompleteSignup}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  display: 'none',
+                },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
+              }}
+            />
           </>
         ) : (
           <>
@@ -242,19 +226,19 @@ const MyStack = () => {
               name="Search"
               component={SearchScreen}
               options={{
-                drawerIcon: () => MagnifyingGlass(),
+                drawerIcon: () =>
+                  MagnifyingGlass({
+                    width: '8%',
+                    height: '100%',
+                  }),
               }}
             />
             <Drawer.Screen
               name="Scout Report"
-              component={
-                scoutStylePreference === 'Scrolling'
-                  ? ScoutingView
-                  : Gamification
-              }
+              component={ScoutReportComponent}
               options={{
                 drawerIcon: () => DocumentWithPlus(),
-                headerShown: scoutStylePreference === 'Scrolling',
+                headerShown: scoutingFlowHeaderShown,
               }}
             />
             {/*<Drawer.Screen name="Gamified" component={Gamified} />*/}

@@ -2,7 +2,7 @@ import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import NoInternet from '../../components/NoInternet';
-import AddCompetitionModal from './AddCompetitionModal';
+import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
 import DBManager from '../../DBManager';
 //import InAppBrowser from 'react-native-inappbrowser-reborn';
 //import {v4 as uuid} from 'uuid';
