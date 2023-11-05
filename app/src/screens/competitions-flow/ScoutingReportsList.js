@@ -27,7 +27,7 @@ const ScoutingReportsList = ({navigation, competition}) => {
     });
   }, [competition]);
 
-  return <ReportList forms={reports} />;
+  return <ReportList reports={reports} />;
 };
 
 export default ScoutingReportsList;

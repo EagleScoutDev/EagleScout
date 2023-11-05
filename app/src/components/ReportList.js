@@ -231,6 +231,9 @@ function ReportList({reports}) {
   const {colors} = useTheme();
 
   useEffect(() => {
+    if (!reports) {
+      return;
+    }
     const comps = {};
     for (const form of reports) {
       if (!comps[form.competitionName]) {
@@ -246,15 +249,7 @@ function ReportList({reports}) {
     );
   }, [reports]);
 
-  if (reports == null) {
-    return (
-      <View>
-        <Text style={{paddingHorizontal: '10%'}}>Waiting for input...</Text>
-      </View>
-    );
-  }
-
-  if (reports.length === 0) {
+  if (!reports || reports.length === 0) {
     return (
       <View
         style={{
@@ -265,6 +260,7 @@ function ReportList({reports}) {
           alignSelf: 'center',
           borderRadius: 15,
           padding: 20,
+          marginTop: 20,
         }}>
         <Text
           style={{
@@ -298,10 +294,14 @@ function ReportList({reports}) {
           {isCollapsedAll ? 'Expand All' : 'Collapse All'}
         </Text>
       </TouchableOpacity>
-      <FlatList
-        data={dataCopy}
-        renderItem={({item}) => (
+      {/* instead of a FlatList, use a view*/}
+      <View
+        style={{
+          paddingBottom: 20,
+        }}>
+        {dataCopy.map(item => (
           <CompetitionFlatList
+            key={item.index}
             compName={item.title}
             data={item.data}
             overrideCollapsed={isCollapsedAll}
@@ -311,9 +311,8 @@ function ReportList({reports}) {
             }}
             setModalVisible={setModalVisible}
           />
-        )}
-        keyExtractor={item => item.index}
-      />
+        ))}
+      </View>
       {modalVisible && (
         <ScoutViewer
           visible={modalVisible}
