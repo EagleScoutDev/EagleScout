@@ -1,4 +1,11 @@
 {
   "name": "EagleScout",
-  "displayName": "EagleScout"
+  "displayName": "EagleScout",
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "ae24884f-5287-4511-a273-641824be5675"
+      }
+    }
+  }
 }
