@@ -13,6 +13,7 @@ import {useEffect, useState} from 'react';
 import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
 import {ChevronDown, ChevronUp} from '../SVGIcons';
+import Competitions from '../database/Competitions';
 
 if (
   Platform.OS === 'android' &&
@@ -25,6 +26,7 @@ function CompetitionFlatList({
   compName,
   data,
   overrideCollapsed,
+  isCurrentlyRunning,
   setChosenScoutForm,
   setModalVisible,
 }) {
@@ -77,7 +79,7 @@ function CompetitionFlatList({
               }}>
               <Text
                 style={{
-                  color: colors.text,
+                  color: isCurrentlyRunning ? colors.primary : colors.text,
                   fontSize: 30,
                   fontWeight: 'bold',
                 }}>
@@ -234,19 +236,31 @@ function ReportList({reports}) {
     if (!reports) {
       return;
     }
-    const comps = {};
-    for (const form of reports) {
-      if (!comps[form.competitionName]) {
-        comps[form.competitionName] = [];
+    const effect = async () => {
+      const currComp = await Competitions.getCurrentCompetition();
+      console.log('currComp', currComp);
+      const comps = {};
+      for (const form of reports) {
+        if (!comps[form.competitionName]) {
+          comps[form.competitionName] = [];
+        }
+        comps[form.competitionName].push(form);
       }
-      comps[form.competitionName].push(form);
-    }
-    setDataCopy(
-      Object.keys(comps).map(comp => ({
-        title: comp,
-        data: comps[comp],
-      })),
-    );
+      if (currComp && Object.keys(comps).some(comp => comp === currComp.name)) {
+        setIsCollapsedAll(true);
+      }
+      setDataCopy(
+        Object.keys(comps)
+          .map(comp => ({
+            title: comp,
+            data: comps[comp],
+            // currently checks by name, but might want to change to ID in future if needed.
+            isCurrentlyRunning: currComp && comp === currComp.name,
+          }))
+          .sort((a, b) => (a.isCurrentlyRunning ? -1 : 1)),
+      );
+    };
+    effect().catch(console.log);
   }, [reports]);
 
   if (!reports || reports.length === 0) {
@@ -294,7 +308,7 @@ function ReportList({reports}) {
           {isCollapsedAll ? 'Expand All' : 'Collapse All'}
         </Text>
       </TouchableOpacity>
-      {/* instead of a FlatList, use a view*/}
+      {/* instead of a FlatList, use a view to avoid the weird error when removing from DOM */}
       <View
         style={{
           paddingBottom: 20,
@@ -304,7 +318,8 @@ function ReportList({reports}) {
             key={item.index}
             compName={item.title}
             data={item.data}
-            overrideCollapsed={isCollapsedAll}
+            isCurrentlyRunning={item.isCurrentlyRunning}
+            overrideCollapsed={isCollapsedAll || item.isCurrentlyRunning}
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
               setChosenScoutForm(chosenForm);
