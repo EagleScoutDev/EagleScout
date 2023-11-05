@@ -279,27 +279,66 @@ function ScoutViewer({
                       setEditingActive(true);
                       return;
                     }
-                    // if the data is different than the temp data, then we should alert the user
+                    // if the data is different than the temp data, then we should ask the user to save
                     if (
                       !tempData.every(
                         (value, index) => value === data.data[index],
                       )
                     ) {
                       Alert.alert(
-                        'Unsaved Changes',
-                        'You have unsaved changes. Are you sure you want to cancel?',
+                        'Save Changes?',
+                        'Are you sure you want to save these changes?',
                         [
                           {
-                            text: 'No',
-                            onPress: () => {},
+                            text: 'Cancel',
+                            onPress: () => {
+                              console.log('Cancel Pressed');
+                            },
                             style: 'cancel',
                           },
                           {
-                            text: 'Yes',
-                            onPress: () => {
-                              console.log('Yes Pressed');
+                            text: 'Save',
+                            onPress: async () => {
+                              console.log('Save Pressed');
+                              for (let i = 0; i < tempData.length; i++) {
+                                if (
+                                  data.form[i].required &&
+                                  (tempData[i] === null ||
+                                    tempData[i] === undefined ||
+                                    tempData[i] === '')
+                                ) {
+                                  Alert.alert(
+                                    'Missing Required Fields',
+                                    'Please fill in all required fields.',
+                                    [
+                                      {
+                                        text: 'OK',
+                                        onPress: () => {},
+                                        style: 'cancel',
+                                      },
+                                    ],
+                                  );
+                                  return;
+                                }
+                              }
+                              if (isOfflineForm) {
+                                await FormHelper.editFormOffline(tempData);
+                                setEditingActive(false);
+                                Toast.show({
+                                  type: 'success',
+                                  text1: 'Success',
+                                  text2: 'Form successfully updated!',
+                                });
+                              } else {
+                                await ScoutReportsDB.editOnlineScoutReport(
+                                  formMetaData.reportId,
+                                  tempData,
+                                );
+                              }
                               setEditingActive(false);
-                              setTempData(data.data);
+                              updateFormData(tempData);
+                              setFormData(tempData);
+                              await refreshHistory();
                             },
                           },
                         ],
@@ -336,7 +375,37 @@ function ScoutViewer({
               )}
             </View>
           )}
-          <TouchableOpacity onPress={() => setVisible(false)}>
+          <TouchableOpacity
+            onPress={() => {
+              if (
+                !tempData.every((value, index) => value === data.data[index])
+              ) {
+                Alert.alert(
+                  'Cancel Changes?',
+                  'Are you sure you want to cancel these changes?',
+                  [
+                    {
+                      text: 'No',
+                      onPress: () => {
+                        console.log('Cancel Pressed');
+                      },
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Yes',
+                      onPress: () => {
+                        console.log('Yes Pressed');
+                        setEditingActive(false);
+                        setTempData(data.data);
+                        setVisible(false);
+                      },
+                    },
+                  ],
+                );
+                return;
+              }
+              setVisible(false);
+            }}>
             <X
               style={{
                 padding: '2%',
@@ -545,72 +614,6 @@ function ScoutViewer({
               )}
             </View>
           ))}
-          {tempData !== formData && editingActive && (
-            <StandardButton
-              color={'blue'}
-              text={'Save'}
-              onPress={() => {
-                Alert.alert(
-                  'Save Changes?',
-                  'Are you sure you want to save these changes?',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => {
-                        console.log('Cancel Pressed');
-                      },
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Save',
-                      onPress: async () => {
-                        console.log('Save Pressed');
-                        for (let i = 0; i < tempData.length; i++) {
-                          if (
-                            data.form[i].required &&
-                            (tempData[i] === null ||
-                              tempData[i] === undefined ||
-                              tempData[i] === '')
-                          ) {
-                            Alert.alert(
-                              'Missing Required Fields',
-                              'Please fill in all required fields.',
-                              [
-                                {
-                                  text: 'OK',
-                                  onPress: () => {},
-                                  style: 'cancel',
-                                },
-                              ],
-                            );
-                            return;
-                          }
-                        }
-                        if (isOfflineForm) {
-                          await FormHelper.editFormOffline(tempData);
-                          setEditingActive(false);
-                          Toast.show({
-                            type: 'success',
-                            text1: 'Success',
-                            text2: 'Form successfully updated!',
-                          });
-                        } else {
-                          await ScoutReportsDB.editOnlineScoutReport(
-                            formMetaData.reportId,
-                            tempData,
-                          );
-                        }
-                        setEditingActive(false);
-                        updateFormData(tempData);
-                        setFormData(tempData);
-                        await refreshHistory();
-                      },
-                    },
-                  ],
-                );
-              }}
-            />
-          )}
         </ScrollView>
       </View>
     </Modal>
