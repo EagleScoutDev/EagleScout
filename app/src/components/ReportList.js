@@ -223,7 +223,7 @@ function CompetitionFlatList({
   );
 }
 
-function ReportList({forms}) {
+function ReportList({reports}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [dataCopy, setDataCopy] = useState([]);
@@ -232,7 +232,7 @@ function ReportList({forms}) {
 
   useEffect(() => {
     const comps = {};
-    for (const form of forms) {
+    for (const form of reports) {
       if (!comps[form.competitionName]) {
         comps[form.competitionName] = [];
       }
@@ -244,9 +244,9 @@ function ReportList({forms}) {
         data: comps[comp],
       })),
     );
-  }, [forms]);
+  }, [reports]);
 
-  if (forms == null) {
+  if (reports == null) {
     return (
       <View>
         <Text style={{paddingHorizontal: '10%'}}>Waiting for input...</Text>
@@ -254,7 +254,7 @@ function ReportList({forms}) {
     );
   }
 
-  if (forms.length === 0) {
+  if (reports.length === 0) {
     return (
       <View
         style={{
@@ -300,14 +300,14 @@ function ReportList({forms}) {
       </TouchableOpacity>
       <FlatList
         data={dataCopy}
-        renderItem={({item, index, separators}) => (
+        renderItem={({item}) => (
           <CompetitionFlatList
             compName={item.title}
             data={item.data}
             overrideCollapsed={isCollapsedAll}
-            setChosenScoutForm={item => {
-              console.log('set scout form', item);
-              setChosenScoutForm(item);
+            setChosenScoutForm={chosenForm => {
+              console.log('set scout form', chosenForm);
+              setChosenScoutForm(chosenForm);
             }}
             setModalVisible={setModalVisible}
           />
