@@ -10,7 +10,7 @@ function ScoutingStylePicker({colors, setScoutingStyle}) {
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(r => {
-      if (r !== null) {
+      if (r != null) {
         setSelected(r);
       }
     });

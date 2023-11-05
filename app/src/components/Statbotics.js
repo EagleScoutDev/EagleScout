@@ -48,6 +48,8 @@ function Statbotics({team}) {
   const [competitions, setCompetitions] = useState(null);
   const [visible, setVisible] = useState(true);
   const [isTeam, setIsTeam] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isTeamValid, setIsTeamValid] = useState(false);
   const {colors} = useTheme();
 
   /**
@@ -56,6 +58,7 @@ function Statbotics({team}) {
    * @returns {Promise<void>} A promise that resolves when the data is fetched.
    */
   async function fetchTeam() {
+    setIsLoading(true);
     const url =
       'https://api.statbotics.io/v2/team_year/' + team + '/' + YEAR + '/';
     fetch(url, {
@@ -68,9 +71,9 @@ function Statbotics({team}) {
       .then(data => {
         // do something with the data
         if (DEBUG) {
-          console.log('[fetchTeam]: ' + data);
+          console.log(data);
         }
-        if (data) {
+        if (data && Object.entries(data).length !== 0) {
           setIsTeam(true);
           setOverall(data);
           if (DEBUG) {
@@ -79,6 +82,7 @@ function Statbotics({team}) {
         } else {
           setIsTeam(false);
         }
+        setIsLoading(false);
       })
       .catch(error => {
         if (DEBUG) {
@@ -118,13 +122,18 @@ function Statbotics({team}) {
     setOverall(null);
     // setCompetitions(null);
 
-    fetchTeam(team).then(() => {
-      fetchTeamEvent().then(() => {
-        if (DEBUG) {
-          console.log('done');
-        }
+    if (/^\d+$/.test(team) && Number(team) < 100000) {
+      setIsTeamValid(true);
+      fetchTeam(team).then(() => {
+        fetchTeamEvent().then(() => {
+          if (DEBUG) {
+            console.log('done');
+          }
+        });
       });
-    });
+    } else {
+      setIsTeamValid(false);
+    }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [team]);
 
@@ -166,8 +175,33 @@ function Statbotics({team}) {
     );
   }
 
+  if (!isTeamValid) {
+    return (
+      <View style={styles.formSection}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: 20,
+            color: colors.text,
+          }}
+          onPress={() => setVisible(!visible)}>
+          Team Statistics
+        </Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontStyle: 'italic',
+            color: colors.text,
+          }}>
+          Please enter a valid team number.
+        </Text>
+      </View>
+    );
+  }
+
   // team number is not in the database
-  if (!isTeam) {
+  if (isLoading) {
     return (
       <View style={styles.formSection}>
         <Text
@@ -187,6 +221,24 @@ function Statbotics({team}) {
             color: colors.text,
           }}>
           Loading...
+        </Text>
+      </View>
+    );
+  }
+
+  // team number is not in the database
+  if (!isTeam) {
+    return (
+      <View style={styles.formSection}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: 20,
+            color: colors.text,
+          }}
+          onPress={() => setVisible(!visible)}>
+          Team {team} Statistics
         </Text>
         <Text style={{textAlign: 'center', color: 'red'}}>
           This team is not in the database. Please check your team number.
@@ -277,7 +329,7 @@ function Statbotics({team}) {
           Past Competition Stats
         </Text>
         <ScrollView>
-          {competitions[0] !== undefined &&
+          {competitions[0] != null &&
             competitions.map(comp => (
               <View style={{paddingVertical: 10}}>
                 <Text style={{fontWeight: '500', color: colors.text}}>
