@@ -179,7 +179,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
     },
     team_item: {
       color: colors.text,
-      padding: '5%',
+      padding: '2%',
       fontSize: 20,
       borderWidth: 1,
       borderColor: colors.text,
@@ -278,7 +278,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           renderItem={({item}) => {
             return (
               <BouncyCheckbox
-                size={40}
+                size={30}
                 fillColor="blue"
                 unfillColor="#FFFFFF"
                 text={String(item)}
