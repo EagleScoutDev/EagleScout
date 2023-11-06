@@ -36,11 +36,23 @@ function PicklistCreator({route}) {
 
   const {picklist_id} = route.params;
 
+  const [teamNumberToNameMap, setTeamNumberToNameMap] = useState<
+    Map<number, string>
+  >(new Map());
+
   useEffect(() => {
     PicklistsDB.getTeamsAtCompetition('2023cc')
       .then(teams => {
         // set teams to just the numbers of the returned teams
         setPossibleTeams(teams.map(team => team.team_number));
+
+        let temp_map = new Map();
+
+        for (let i = 0; i < teams.length; i++) {
+          temp_map.set(teams[i].team_number, teams[i].nickname);
+        }
+
+        setTeamNumberToNameMap(temp_map);
       })
       .catch(error => {
         console.error('Error getting teams at competition:', error);
@@ -76,7 +88,7 @@ function PicklistCreator({route}) {
               color: isActive ? 'blue' : colors.text,
               fontWeight: isActive ? 'bold' : 'normal',
             }}>
-            {item}
+            {item} - {teamNumberToNameMap.get(item)}
           </Text>
         </Pressable>
       </ScaleDecorator>
@@ -178,7 +190,7 @@ function PicklistCreator({route}) {
       padding: '2%',
       flexDirection: 'row',
       alignItems: 'center',
-      marginRight: '60%',
+      marginRight: '30%',
     },
     team_number_displayed: {
       flex: 1,
@@ -304,7 +316,9 @@ function PicklistCreator({route}) {
                 <Text style={{color: 'gray'}}>
                   {teams_list.indexOf(item) + 1}
                 </Text>
-                <Text style={styles.team_number_displayed}>{item}</Text>
+                <Text style={styles.team_number_displayed}>
+                  {item} - {teamNumberToNameMap.get(item)}
+                </Text>
               </Pressable>
             );
           }}
