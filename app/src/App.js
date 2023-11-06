@@ -35,7 +35,7 @@ import {
   TwoPeople,
   Gear,
 } from './SVGIcons';
-import PicklistsManager from './screens/PicklistsManager';
+import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 
 const Drawer = createDrawerNavigator();
 

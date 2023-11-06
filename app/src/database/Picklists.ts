@@ -1,5 +1,5 @@
 import {supabase} from '../lib/supabase';
-import CompetitionsDB from './Competitions';
+import ProfilesDB from './Profiles';
 
 export interface SimpleTeam {
   key: string;
@@ -12,14 +12,16 @@ export interface SimpleTeam {
 }
 
 export interface PicklistStructure {
-  teams: SimpleTeam[];
+  id?: string;
+  teams: number[];
   created_at: Date;
   name: string;
+  created_by: string;
 }
 
 class PicklistsDB {
-  static async getPicklists(): Promise<any> {
-    const {data, error} = await supabase.from('picklists').select('*');
+  static async getPicklists(): Promise<PicklistStructure[]> {
+    const {data, error} = await supabase.from('picklist').select('*');
     if (error) {
       throw error;
     } else {
@@ -40,25 +42,63 @@ class PicklistsDB {
     return await response.json();
   }
 
-  static async createPicklist(name: string, teams: number[]): Promise<any> {
+  static async getPicklist(picklist_id: string): Promise<PicklistStructure> {
     const {data, error} = await supabase
       .from('picklist')
-      .insert([
+      .select('*')
+      .eq('id', picklist_id);
+    if (error) {
+      throw error;
+    } else {
+      return data[0];
+    }
+  }
+
+  static async getUserId() {
+    ProfilesDB.getCurrentUserProfile().then(profile => {
+      console.log('Profile id:', profile.id);
+      return profile.id;
+    });
+  }
+
+  static async createPicklist(name: string, teams: number[]) {
+    try {
+      const user_id = await this.getUserId();
+      console.log('User id:', user_id);
+
+      // Before creating a picklist, confirm that user_id is not null and exists in the user table
+      // Your logic for checking if the user exists in your 'users' table can go here
+      // For now, we proceed to insert assuming user_id is valid since we've got it from auth state
+
+      const {data, error} = await supabase.from('picklist').insert([
         {
           teams: teams,
           created_at: new Date(),
           name: name,
-          created_by: 0,
-          last_modified: new Date(),
+          created_by: user_id,
         },
-      ])
-      .select();
+      ]);
+
+      if (error) throw error;
+      return data; // assuming 'data' contains the array of inserted rows
+    } catch (error) {
+      console.error('Error in picklist creation:', error);
+      throw error;
+    }
+  }
+
+  static async updatePicklist(id: number, new_teams: number[]) {
+    console.log('updating picklist, id using is:', id);
+    console.log('new teams list: ', new_teams);
+    const {data, error} = await supabase
+      .from('picklist')
+      .update({teams: new_teams})
+      .eq('id', id);
     if (error) {
-      console.log('oops');
-      console.log(error);
-      console.log('all error data: ' + JSON.stringify(error));
+      console.log('Picklist not updated, error');
       throw error;
     } else {
+      console.log('Picklist updated successfully');
       return data;
     }
   }

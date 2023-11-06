@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import StandardButton from '../components/StandardButton';
+import StandardButton from '../../components/StandardButton';
 
 import {createStackNavigator} from '@react-navigation/stack';
 import PicklistsManagerScreen from './PicklistsManagerScreen';
@@ -39,22 +39,6 @@ function PicklistsManager() {
       />
     </Stack.Navigator>
   );
-
-  //       }
-  //   <View style={styles.container}>
-  //     <Text
-  //       style={{
-  //         color: colors.text,
-  //       }}>
-  //       PicklistsManager
-  //     </Text>
-  //     <StandardButton
-  //       text={'Create Picklist'}
-  //       onPress={() => {}}
-  //       color={'blue'}
-  //     />
-  //   </View>
-  // );
 }
 
 export default PicklistsManager;

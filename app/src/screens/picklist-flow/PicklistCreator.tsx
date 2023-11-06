@@ -7,11 +7,12 @@ import {
   Switch,
   FlatList,
   Pressable,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-import {useTheme} from '@react-navigation/native';
-import StandardButton from '../components/StandardButton';
-import PicklistsDB, {SimpleTeam} from '../database/Picklists';
-import StandardModal from '../components/modals/StandardModal';
+import {useNavigation, useTheme} from '@react-navigation/native';
+import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
+import StandardModal from '../../components/modals/StandardModal';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DraggableFlatList, {
   RenderItemParams,
@@ -19,8 +20,9 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import Svg, {Path} from 'react-native-svg';
 
-function PicklistCreator() {
+function PicklistCreator({route}) {
   const {colors} = useTheme();
+  const navigation = useNavigation();
 
   const [name, setName] = useState<string | undefined>(undefined);
   const [possibleTeams, setPossibleTeams] = useState<number[]>([]);
@@ -30,18 +32,33 @@ function PicklistCreator() {
 
   const [dragging_active, setDraggingActive] = useState(false);
 
-  const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
+
+  const {picklist_id} = route.params;
 
   useEffect(() => {
     PicklistsDB.getTeamsAtCompetition('2023cc')
       .then(teams => {
         // set teams to just the numbers of the returned teams
-        console.info(teams);
         setPossibleTeams(teams.map(team => team.team_number));
       })
       .catch(error => {
         console.error('Error getting teams at competition:', error);
       });
+  }, []);
+
+  useEffect(() => {
+    if (picklist_id) {
+      PicklistsDB.getPicklist(picklist_id)
+        .then(picklist => {
+          setPresetPicklist(picklist);
+          setName(picklist.name);
+          setTeamsList(picklist.teams);
+        })
+        .catch(error => {
+          console.error('Error getting picklist:', error);
+        });
+    }
   }, []);
 
   const renderItemDraggable = ({
@@ -67,30 +84,60 @@ function PicklistCreator() {
   };
 
   const savePicklistToDB = () => {
-    console.log('saving picklist to db');
-    PicklistsDB.createPicklist(name ?? '', teams_list).then(r => {
-      console.log('response after submitting picklist to db: ' + r);
-    });
+    if (presetPicklist) {
+      console.log('user has opted to update picklist');
+      PicklistsDB.updatePicklist(picklist_id, teams_list).then(r => {
+        console.log('response after updating picklist: ' + r);
+      });
+    } else {
+      console.log('saving picklist to db');
+      PicklistsDB.createPicklist(name ?? 'Picklist', teams_list).then(r => {
+        console.log('response after submitting picklist to db: ' + r);
+      });
+    }
   };
 
-  const renderItemStandard = ({item}) => {
-    return (
-      <Pressable style={styles.team_item_in_list}>
-        <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
-        <Text style={styles.team_number_displayed}>{item}</Text>
-      </Pressable>
+  const prepareUpload = () => {
+    const additional_message = presetPicklist
+      ? ' This will overwrite the picklist ' +
+        presetPicklist.name +
+        ' by ' +
+        presetPicklist.created_by +
+        '.'
+      : '';
+    Alert.alert(
+      'Upload Picklist',
+      'Are you sure you want to upload this picklist?' + additional_message,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Upload',
+          onPress: () => {
+            savePicklistToDB();
+            navigation.goBack();
+          },
+        },
+      ],
     );
   };
 
   const addTeam = (team: number) => {
-    if (teams_list.includes(team)) {
-      return;
-    }
     setTeamsList(prevTeams => [...prevTeams, team]);
   };
 
   const removeTeam = (team: number) => {
     setTeamsList(prevTeams => prevTeams.filter(t => t !== team));
+  };
+
+  const addOrRemoveTeam = (team: number) => {
+    if (teams_list.includes(team)) {
+      removeTeam(team);
+    } else {
+      addTeam(team);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -139,21 +186,46 @@ function PicklistCreator() {
           {dragging_active ? 'Reordering Active' : 'Reordering Inactive'}
         </Text>
       </Pressable>
-      <TextInput
-        style={styles.name_input}
-        onPressIn={() => setName('')}
-        onChangeText={text => {
-          setName(text);
-        }}
-        value={name}
-        defaultValue={'Enter Name'}
-      />
-      <StandardModal title={'Add Teams'} visible={teamAddingModalVisible}>
-        <StandardButton
-          color={'red'}
-          text={'Cancel'}
-          onPress={() => setTeamAddingModalVisible(false)}
+      {presetPicklist ? (
+        <View>
+          <Text style={styles.name_input}>{presetPicklist.name}</Text>
+          <Text style={{color: 'gray'}}>By {presetPicklist.created_by}</Text>
+        </View>
+      ) : (
+        <TextInput
+          style={styles.name_input}
+          onPressIn={() => setName('')}
+          onChangeText={text => {
+            setName(text);
+          }}
+          value={name}
+          defaultValue={'Enter Name'}
         />
+      )}
+      <StandardModal title={'Add Teams'} visible={teamAddingModalVisible}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: colors.primary,
+            borderColor: colors.primary,
+            borderWidth: 1,
+            padding: '5%',
+            borderRadius: 10,
+            alignItems: 'center',
+            marginBottom: '5%',
+          }}
+          onPress={() => {
+            setTeamAddingModalVisible(false);
+          }}>
+          <Text style={{color: 'white', fontSize: 20}}>Cancel</Text>
+        </TouchableOpacity>
+
+        {/*}*/}
+        {/*<StandardButton*/}
+        {/*  color={'red'}*/}
+        {/*  text={'Cancel'}*/}
+        {/*  isLoading={false}*/}
+        {/*  onPress={() => setTeamAddingModalVisible(false)}*/}
+        {/*/>*/}
         <View
           style={{
             flexDirection: 'row',
@@ -170,6 +242,7 @@ function PicklistCreator() {
           />
         </View>
         <FlatList
+          style={{maxHeight: '50%'}}
           data={
             filter_by_added
               ? possibleTeams.filter(team => teams_list.includes(team))
@@ -184,40 +257,21 @@ function PicklistCreator() {
                 text={String(item)}
                 textStyle={styles.team_item}
                 isChecked={teams_list.includes(item)}
-                onPress={isChecked => {
+                onPress={() => {
                   // console.log(item);
-                  if (isChecked) {
-                    addTeam(item);
-                    console.log('adding team ' + item);
-                  } else {
-                    removeTeam(item);
-                    console.log('removing team ' + item);
-                  }
+                  // if (isChecked) {
+                  //   addTeam(item);
+                  //   console.log('adding team ' + item);
+                  // } else {
+                  //   removeTeam(item);
+                  //   console.log('removing team ' + item);
+                  // }
+                  console.log('checkbox press detected');
+                  addOrRemoveTeam(item);
                 }}
               />
             );
           }}
-        />
-      </StandardModal>
-      <StandardModal title={'Share'} visible={shareModalVisible}>
-        <StandardButton
-          color={'red'}
-          text={'Cancel'}
-          onPress={() => setShareModalVisible(false)}
-        />
-        <StandardButton
-          color={'blue'}
-          text={'Save'}
-          onPress={() => {
-            console.log('saving');
-            console.info(teams_list);
-            savePicklistToDB();
-          }}
-        />
-        <StandardButton
-          color={'blue'}
-          text={'Publish to Team'}
-          onPress={() => {}}
         />
       </StandardModal>
 
@@ -231,7 +285,16 @@ function PicklistCreator() {
       ) : (
         <FlatList
           data={teams_list}
-          renderItem={renderItemStandard}
+          renderItem={({item}) => {
+            return (
+              <Pressable style={styles.team_item_in_list}>
+                <Text style={{color: 'gray'}}>
+                  {teams_list.indexOf(item) + 1}
+                </Text>
+                <Text style={styles.team_number_displayed}>{item}</Text>
+              </Pressable>
+            );
+          }}
           keyExtractor={item => String(item)}
         />
       )}
@@ -260,7 +323,7 @@ function PicklistCreator() {
           <Text style={{color: 'white', fontSize: 20}}>Add Team</Text>
         </Pressable>
         <Pressable
-          onPress={() => setShareModalVisible(true)}
+          onPress={() => prepareUpload()}
           style={{
             backgroundColor: 'black',
             borderColor: colors.border,
@@ -275,18 +338,15 @@ function PicklistCreator() {
           <Svg width={'50%'} height="100%" viewBox="0 0 16 16">
             <Path
               fill="white"
-              d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"
+              d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
+            />
+            <Path
+              fill={'white'}
+              d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"
             />
           </Svg>
         </Pressable>
       </View>
-      {/*<StandardButton*/}
-      {/*  color={'blue'}*/}
-      {/*  text={'Clear'}*/}
-      {/*  onPress={() => setTeamsList([])}*/}
-      {/*/>*/}
-      {/*<StandardButton color={'blue'} text={'Save'} onPress={() => {}} />*/}
-      {/*<StandardButton color={'blue'} text={'Publish'} onPress={() => {}} />*/}
     </View>
   );
 }
