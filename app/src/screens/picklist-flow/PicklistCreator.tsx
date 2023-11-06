@@ -98,6 +98,19 @@ function PicklistCreator({route}) {
   };
 
   const prepareUpload = () => {
+    if (teams_list === presetPicklist?.teams) {
+      Alert.alert(
+        'No Changes',
+        'You have not made any changes to this picklist.',
+        [
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+        ],
+      );
+      return;
+    }
     const additional_message = presetPicklist
       ? ' This will overwrite the picklist ' +
         presetPicklist.name +
@@ -325,7 +338,8 @@ function PicklistCreator({route}) {
         <Pressable
           onPress={() => prepareUpload()}
           style={{
-            backgroundColor: 'black',
+            backgroundColor:
+              teams_list === presetPicklist?.teams ? 'red' : 'black',
             borderColor: colors.border,
             borderWidth: 1,
             flex: 0.2,
