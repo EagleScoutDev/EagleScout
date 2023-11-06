@@ -63,9 +63,6 @@ class PicklistsDB {
 
   static async createPicklist(name: string, teams: number[]) {
     try {
-      const user_id = await this.getUserId();
-      console.log('User id:', user_id);
-
       // Before creating a picklist, confirm that user_id is not null and exists in the user table
       // Your logic for checking if the user exists in your 'users' table can go here
       // For now, we proceed to insert assuming user_id is valid since we've got it from auth state
@@ -75,7 +72,6 @@ class PicklistsDB {
           teams: teams,
           created_at: new Date(),
           name: name,
-          created_by: user_id,
         },
       ]);
 
