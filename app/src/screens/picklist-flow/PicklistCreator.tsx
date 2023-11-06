@@ -338,7 +338,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
         }}>
         <Pressable
           style={{
-            backgroundColor: colors.primary,
+            backgroundColor: colors.text,
             borderColor: colors.primary,
             borderWidth: 1,
             padding: '5%',
@@ -349,13 +349,20 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           onPress={() => {
             setTeamAddingModalVisible(true);
           }}>
-          <Text style={{color: 'white', fontSize: 20}}>Add/Remove Teams</Text>
+          <Text
+            style={{
+              color: colors.background,
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            Add/Remove Teams
+          </Text>
         </Pressable>
         <Pressable
           onPress={() => prepareUpload()}
           style={{
             backgroundColor:
-              teams_list === presetPicklist?.teams ? 'red' : 'black',
+              teams_list === presetPicklist?.teams ? 'red' : colors.text,
             borderColor: colors.border,
             borderWidth: 1,
             flex: 0.2,
@@ -367,11 +374,15 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           }}>
           <Svg width={'50%'} height="100%" viewBox="0 0 16 16">
             <Path
-              fill="white"
+              fill={colors.background}
+              stroke={colors.background}
+              strokeWidth={1}
               d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
             />
             <Path
-              fill={'white'}
+              fill={colors.background}
+              stroke={colors.background}
+              strokeWidth={1}
               d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"
             />
           </Svg>
