@@ -20,7 +20,7 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import Svg, {Path} from 'react-native-svg';
 
-function PicklistCreator({route}) {
+function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   const {colors} = useTheme();
   const navigation = useNavigation();
 
@@ -60,7 +60,7 @@ function PicklistCreator({route}) {
   }, []);
 
   useEffect(() => {
-    if (picklist_id) {
+    if (picklist_id !== -1) {
       PicklistsDB.getPicklist(picklist_id)
         .then(picklist => {
           setPresetPicklist(picklist);
@@ -227,7 +227,9 @@ function PicklistCreator({route}) {
           defaultValue={'Enter Name'}
         />
       )}
-      <StandardModal title={'Add Teams'} visible={teamAddingModalVisible}>
+      <StandardModal
+        title={'Add/Remove Teams'}
+        visible={teamAddingModalVisible}>
         <TouchableOpacity
           style={{
             backgroundColor: colors.primary,
@@ -347,7 +349,7 @@ function PicklistCreator({route}) {
           onPress={() => {
             setTeamAddingModalVisible(true);
           }}>
-          <Text style={{color: 'white', fontSize: 20}}>Add Team</Text>
+          <Text style={{color: 'white', fontSize: 20}}>Add/Remove Teams</Text>
         </Pressable>
         <Pressable
           onPress={() => prepareUpload()}

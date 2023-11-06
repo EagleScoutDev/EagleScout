@@ -119,7 +119,9 @@ function PicklistsManagerScreen({navigation}) {
           margin: '5%',
         }}
         onPress={() => {
-          navigation.navigate('Picklist Creator');
+          navigation.navigate('Picklist Creator', {
+            picklist_id: -1,
+          });
         }}>
         <Text
           style={{
