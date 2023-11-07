@@ -206,13 +206,13 @@ function SubmittedForms() {
                 });
               }}
             />
-            <ReportList forms={offlineReports} isOffline={true} />
+            <ReportList reports={offlineReports} isOffline={true} />
           </View>
         )}
 
       {selectedTheme === 'In Database' && (
         <View style={{flex: 1}}>
-          <ReportList forms={reports} isOffline={false} />
+          <ReportList reports={reports} isOffline={false} />
         </View>
       )}
     </SafeAreaView>

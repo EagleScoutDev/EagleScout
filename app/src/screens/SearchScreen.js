@@ -108,7 +108,7 @@ function SearchScreen() {
               }}>
               Scout Reports
             </Text>
-            <ReportList forms={forms} isOffline={false} />
+            <ReportList reports={forms} isOffline={false} />
           </View>
         )}
       </View>

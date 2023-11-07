@@ -66,6 +66,7 @@ function ScoutingFlow({
     dataToSubmit.matchNumber = match;
     dataToSubmit.teamNumber = team;
     dataToSubmit.competitionId = competition.id;
+    dataToSubmit.competitionName = competition.name;
   }
 
   /**
