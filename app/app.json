@@ -6,6 +6,19 @@
       "eas": {
         "projectId": "ae24884f-5287-4511-a273-641824be5675"
       }
+    },
+    "version": "1.0.0",
+    "icon": "./assets/eaglestrike.png",
+    "splash": {
+      "image": "./assets/eaglestrike.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "package": "com.team114.eaglescout"
+    },
+    "ios": {
+      "bundleIdentifier": "com.team114.eaglescout"
     }
   }
 }
