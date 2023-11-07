@@ -97,7 +97,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
   });
 
   useEffect(() => {
-    if (data !== null) {
+    if (data != null) {
       console.log('updating temp data!');
       setTempData(data.data);
       console.log('finished updating temp data!');
@@ -147,7 +147,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
     }
   }, [data]);
 
-  if (data === null) {
+  if (data == null) {
     return <View />;
   }
   return (
@@ -207,7 +207,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                 <Text style={styles.section_title}>{field.text}</Text>
               )}
               {/*If the entry has a question property, this indicates that it is a question*/}
-              {field.question && data.data[index] !== null && (
+              {field.question && data.data[index] != null && (
                 <View
                   style={{
                     flexDirection:
@@ -270,8 +270,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                       options={field.labels}
                       value={
                         tempData[index] &&
-                        tempData[index] !== null &&
-                        tempData[index] !== undefined &&
+                        tempData[index] != null &&
                         tempData[index] !== ''
                           ? Object.values(tempData[index]).map(value => {
                               return Number.parseInt(value, 10);
@@ -313,7 +312,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                         {data.data[index].toString()}
                       </Text>
                     )}
-                  {tempData[index] === null ||
+                  {tempData[index] == null ||
                     (tempData[index] === '' && (
                       <Text style={styles.no_info}>N/A</Text>
                     ))}

@@ -2,7 +2,7 @@ import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import NoInternet from '../../components/NoInternet';
-import AddCompetitionModal from './AddCompetitionModal';
+import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
 import DBManager from '../../DBManager';
 //import InAppBrowser from 'react-native-inappbrowser-reborn';
 //import {v4 as uuid} from 'uuid';
@@ -44,7 +44,7 @@ const CompetitionsList = ({setChosenComp}) => {
   const checkAdmin = async () => {
     // use async storage
     const user = await AsyncStorage.getItem('user');
-    if (user !== null) {
+    if (user != null) {
       console.log('user: ' + user);
       const userObj = JSON.parse(user);
       if (userObj.admin) {
@@ -84,7 +84,7 @@ const CompetitionsList = ({setChosenComp}) => {
   }, []);
 
   // useEffect(() => {
-  //   if (chosenComp !== null) {
+  //   if (chosenComp != null) {
   //     DBManager.getReportsForCompetition(chosenComp).then(r => {
   //       setScoutData(r);
   //     });
@@ -216,7 +216,7 @@ const CompetitionsList = ({setChosenComp}) => {
         setVisible={setAddCompetitionModalVisible}
         onRefresh={getCompetitions}
       />
-      {competitionToEdit !== null &&
+      {competitionToEdit != null &&
         editingMode &&
         editCompetitionModalVisible && (
           <EditCompetitionModal
