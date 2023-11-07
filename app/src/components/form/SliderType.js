@@ -4,7 +4,30 @@ import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import Question from './Question';
 
-function SliderType({low, high, step, question, value, onValueChange}) {
+function SliderLabel({text}) {
+  const {colors} = useTheme();
+  return (
+    <Text
+      style={{
+        color: colors.text,
+        fontSize: 12,
+      }}>
+      {text}
+    </Text>
+  );
+}
+
+function SliderType({
+  low,
+  high,
+  step,
+  question,
+  value,
+  onValueChange,
+  disabled = false,
+  minLabel,
+  maxLabel,
+}) {
   const {colors} = useTheme();
   const [localValue, setLocalValue] = useState(value);
 
@@ -18,16 +41,10 @@ function SliderType({low, high, step, question, value, onValueChange}) {
         flexDirection: 'column',
         marginVertical: 10,
       }}>
-      <Question title={question + ' (' + low + '-' + high + ')'} />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-        <Text style={{color: colors.text}}>Value: {localValue}</Text>
+      <Question title={`${question} (${low} - ${high})`} />
+      <View>
         <Slider
-          style={{width: 200, height: 40}}
+          disabled={disabled}
           value={localValue}
           maximumValue={Number.parseInt(high)}
           minimumValue={Number.parseInt(low)}
@@ -37,6 +54,25 @@ function SliderType({low, high, step, question, value, onValueChange}) {
           onValueChange={setLocalValue}
           onSlidingComplete={onValueChange}
         />
+        {/*Label the min/max values and current value*/}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <SliderLabel text={minLabel ? minLabel : low} />
+          <Text
+            style={{
+              color: colors.primary,
+              fontSize: 13,
+              alignSelf: 'center',
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}>
+            {localValue}
+          </Text>
+          <SliderLabel text={maxLabel ? maxLabel : high} />
+        </View>
       </View>
     </View>
   );

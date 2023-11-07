@@ -14,6 +14,8 @@ import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
 import {ChevronDown, ChevronUp} from '../SVGIcons';
 import Competitions from '../database/Competitions';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import FormHelper from "../FormHelper";
 
 if (
   Platform.OS === 'android' &&
@@ -28,6 +30,8 @@ function CompetitionFlatList({
   overrideCollapsed,
   isCurrentlyRunning,
   setChosenScoutForm,
+  setChosenScoutFormIndex,
+  setChosenCompetitionIndex,
   setModalVisible,
 }) {
   const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
@@ -161,10 +165,12 @@ function CompetitionFlatList({
           </View>
         </View>
       )}
-      renderItem={({item}) => (
+      renderItem={({item, index, separators}) => (
         <TouchableOpacity
           onPress={() => {
             setChosenScoutForm(item);
+            setChosenScoutFormIndex(index);
+            setChosenCompetitionIndex();
             setModalVisible(true);
           }}
           style={{
@@ -220,14 +226,16 @@ function CompetitionFlatList({
           </View>
         </TouchableOpacity>
       )}
-      keyExtractor={item => item.id}
+      // keyExtractor={item => item.id}
     />
   );
 }
 
-function ReportList({reports}) {
+function ReportList({reports, isOffline}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
+  const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
+  const [chosenCompetitionIndex, setChosenCompetitionIndex] = useState(null);
   const [dataCopy, setDataCopy] = useState([]);
   const [isCollapsedAll, setIsCollapsedAll] = useState(false);
   const [firstIsCollapsedAll, setFirstIsCollapsedAll] = useState(true);
@@ -237,9 +245,19 @@ function ReportList({reports}) {
     if (!reports) {
       return;
     }
+
+
     const effect = async () => {
-      const currComp = await Competitions.getCurrentCompetition();
-      console.log('currComp', currComp);
+      let currComp;
+      if (!isOffline) {
+        currComp = await Competitions.getCurrentCompetition();
+      } else {
+        const currCompObj = await AsyncStorage.getItem(
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+        if (currCompObj != null) {
+          currComp = JSON.parse(currCompObj);
+        }
+      }
       const comps = {};
       for (const report of reports) {
         if (!comps[report.competitionName]) {
@@ -259,7 +277,20 @@ function ReportList({reports}) {
       );
     };
     effect().catch(console.log);
-  }, [reports]);
+  }, [isOffline, reports]);
+
+  /**
+   * Locally updates the dataCopy array with the new data, so we don't have to re-fetch the db after a report edit
+   * @param newData - the new data to update the array with
+   */
+  const updateFormData = newData => {
+    const newForms = [...dataCopy];
+    console.log('datacopoy');
+    console.log(dataCopy);
+    console.log(chosenScoutFormIndex);
+    newForms[chosenCompetitionIndex].data[chosenScoutFormIndex].data = newData;
+    setDataCopy(newForms);
+  };
 
   if (!reports || reports.length === 0) {
     return (
@@ -314,7 +345,7 @@ function ReportList({reports}) {
         style={{
           paddingBottom: 20,
         }}>
-        {dataCopy.map(item => (
+        {dataCopy.map((item, index) => (
           <CompetitionFlatList
             key={item.index}
             compName={item.title}
@@ -328,6 +359,10 @@ function ReportList({reports}) {
               console.log('set scout form', chosenForm);
               setChosenScoutForm(chosenForm);
             }}
+            setChosenScoutFormIndex={setChosenScoutFormIndex}
+            setChosenCompetitionIndex={() => {
+              setChosenCompetitionIndex(index);
+            }}
             setModalVisible={setModalVisible}
           />
         ))}
@@ -337,8 +372,10 @@ function ReportList({reports}) {
           visible={modalVisible}
           setVisible={setModalVisible}
           data={chosenScoutForm}
+          updateFormData={updateFormData}
           // TODO: add accurate competition name
           chosenComp={chosenScoutForm.competitionName}
+          isOfflineForm={isOffline}
         />
       )}
     </KeyboardAvoidingView>
