@@ -30,7 +30,7 @@ function CompetitionFlatList({
   setChosenScoutForm,
   setModalVisible,
 }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
   const [sort, setSort] = useState('');
   const [dataCopy, setDataCopy] = useState(data);
   const {colors} = useTheme();
@@ -230,6 +230,7 @@ function ReportList({reports}) {
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [dataCopy, setDataCopy] = useState([]);
   const [isCollapsedAll, setIsCollapsedAll] = useState(false);
+  const [firstIsCollapsedAll, setFirstIsCollapsedAll] = useState(true);
   const {colors} = useTheme();
 
   useEffect(() => {
@@ -240,14 +241,11 @@ function ReportList({reports}) {
       const currComp = await Competitions.getCurrentCompetition();
       console.log('currComp', currComp);
       const comps = {};
-      for (const form of reports) {
-        if (!comps[form.competitionName]) {
-          comps[form.competitionName] = [];
+      for (const report of reports) {
+        if (!comps[report.competitionName]) {
+          comps[report.competitionName] = [];
         }
-        comps[form.competitionName].push(form);
-      }
-      if (currComp && Object.keys(comps).some(comp => comp === currComp.name)) {
-        setIsCollapsedAll(true);
+        comps[report.competitionName].push(report);
       }
       setDataCopy(
         Object.keys(comps)
@@ -292,7 +290,10 @@ function ReportList({reports}) {
   return (
     <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
       <TouchableOpacity
-        onPress={() => setIsCollapsedAll(!isCollapsedAll)}
+        onPress={() => {
+          setIsCollapsedAll(!isCollapsedAll);
+          setFirstIsCollapsedAll(false);
+        }}
         style={{
           alignSelf: 'flex-end',
           // backgroundColor: colors.primary,
@@ -319,7 +320,10 @@ function ReportList({reports}) {
             compName={item.title}
             data={item.data}
             isCurrentlyRunning={item.isCurrentlyRunning}
-            overrideCollapsed={isCollapsedAll || item.isCurrentlyRunning}
+            overrideCollapsed={
+              (firstIsCollapsedAll && !item.isCurrentlyRunning) ||
+              isCollapsedAll
+            }
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
               setChosenScoutForm(chosenForm);
