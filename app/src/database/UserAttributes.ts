@@ -80,7 +80,7 @@ class UserAttributesDB {
             profile = data2[j];
           }
         }
-        if (profile === undefined) {
+        if (profile == null) {
           throw new Error('Profile not found for user with id ' + data[i].id);
         }
         res.push({

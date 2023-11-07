@@ -157,7 +157,7 @@ function ScoutViewer({
   });
 
   useEffect(() => {
-    if (data !== null) {
+    if (data != null) {
       setTempData(data.data);
       setFormMetaData(data);
     }
@@ -424,7 +424,7 @@ function ScoutViewer({
                 <Text style={styles.section_title}>{field.text}</Text>
               )}
               {/*If the entry has a question property, this indicates that it is a question*/}
-              {field.question && formData[index] !== null && (
+              {field.question && formData[index] != null && (
                 <View
                   style={{
                     flexDirection:
@@ -545,8 +545,7 @@ function ScoutViewer({
                       options={field.labels}
                       value={
                         tempData[index] &&
-                        tempData[index] !== null &&
-                        tempData[index] !== undefined &&
+                        tempData[index] != null &&
                         tempData[index] !== ''
                           ? Object.values(tempData[index]).map(value => {
                               return Number.parseInt(value, 10);

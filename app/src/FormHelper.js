@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FormHelper {
   static DEBUG = false;
-  static LATEST_FORM = '2023form';
-  static COMPETITION = '2023competition';
+  static LATEST_FORM = 'current-form';
+  static ASYNCSTORAGE_COMPETITION_KEY = 'current-competition';
   static SCOUTING_STYLE = 'scoutingStyle';
   static THEME = 'themePreference';
 
@@ -14,7 +14,7 @@ class FormHelper {
   static async readAsyncStorage(itemKey) {
     try {
       const value = await AsyncStorage.getItem(itemKey);
-      if (value !== null) {
+      if (value != null) {
         // value previously stored
         if (FormHelper.DEBUG) {
           console.log('[readStoredForm] data: ' + value);
