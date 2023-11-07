@@ -9,9 +9,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import RadioButtons from '../form/RadioButtons';
-import StandardButton from '../StandardButton';
 import Checkbox from '../form/Checkbox';
 import {supabase} from '../../lib/supabase';
 import FormHelper from '../../FormHelper';
@@ -66,22 +65,22 @@ function ScoutViewer({
   // this is the history of the form fetched from scout_edit_reports
   const [formHistory, setFormHistory] = useState([]);
 
-  const refreshHistory = async () => {
-    const history = await ScoutReportsDB.getReportHistory(data.reportId);
-    console.log('form history: ', history);
-    if (!history.length) {
-      setHistoryButtonVisible(false);
-    } else {
-      setFormHistory(history);
+  const refreshHistory = useCallback(async () => {
+    setHistoryButtonVisible(false);
+    if (data && !isOfflineForm) {
+      const history = await ScoutReportsDB.getReportHistory(data.reportId);
+      if (history.length !== 0) {
+        setHistoryButtonVisible(true);
+        setFormHistory(history);
+      }
     }
-  };
+  }, [data, isOfflineForm]);
+
   useEffect(() => {
     (async () => {
-      if (data) {
-        await refreshHistory();
-      }
+      await refreshHistory();
     })();
-  }, [data, userName]);
+  }, [data, isOfflineForm, refreshHistory]);
 
   const [authUserId, setAuthUserId] = useState(null);
   const [authUserAttributes, setAuthUserAttributes] = useState(null);
@@ -93,8 +92,6 @@ function ScoutViewer({
       setAuthUserId(user.id);
       const att = await UserAttributes.getCurrentUserAttribute();
       setAuthUserAttributes(att);
-      console.log('auth user id: ', user.id);
-      console.log('auth user attributes: ', att);
     })();
   }, []);
 
@@ -161,20 +158,10 @@ function ScoutViewer({
 
   useEffect(() => {
     if (data !== null) {
-      console.log('updating temp data!');
       setTempData(data.data);
       setFormMetaData(data);
-      console.log('finished updating temp data!');
-      console.log('printing out temp data: ');
-      console.log(tempData);
     }
   }, [data]);
-
-  useEffect(() => {
-    console.log('printing out temp data: ');
-    console.log(tempData);
-    // convert each object in tempData to an array of the values
-  }, [tempData]);
 
   useEffect(() => {
     /**
@@ -196,11 +183,15 @@ function ScoutViewer({
         console.error('data is null, cannot get username');
       }
     };
-    getUserName().then(r => {
-      if (DEBUG) {
-        console.log('creator of scout report found');
-      }
-    });
+    if (!isOfflineForm) {
+      getUserName().then(r => {
+        if (DEBUG) {
+          console.log('creator of scout report found');
+        }
+      });
+    } else {
+      setUserName('You');
+    }
   }, [data]);
 
   useEffect(() => {
@@ -211,9 +202,6 @@ function ScoutViewer({
     }
   }, [data]);
 
-  if (data === null) {
-    return <View />;
-  }
   return (
     <Modal
       animationType="slide"
@@ -227,7 +215,7 @@ function ScoutViewer({
         setVisible={setHistorySelectorModalVisible}
         onHistorySelect={id => {
           setHistorySelectorModalVisible(false);
-          if (id === null) {
+          if (id == null) {
             // user dismissed the modal
             return;
           }
@@ -264,7 +252,8 @@ function ScoutViewer({
             alignItems: 'center',
           }}>
           {(authUserId === data.userId ||
-            (authUserAttributes && authUserAttributes.admin)) && (
+            (authUserAttributes && authUserAttributes.admin) ||
+            isOfflineForm) && (
             <View
               style={{
                 flexDirection: 'row',
@@ -303,9 +292,7 @@ function ScoutViewer({
                               for (let i = 0; i < tempData.length; i++) {
                                 if (
                                   data.form[i].required &&
-                                  (tempData[i] === null ||
-                                    tempData[i] === undefined ||
-                                    tempData[i] === '')
+                                  (tempData[i] == null || tempData[i] === '')
                                 ) {
                                   Alert.alert(
                                     'Missing Required Fields',
@@ -322,13 +309,11 @@ function ScoutViewer({
                                 }
                               }
                               if (isOfflineForm) {
-                                await FormHelper.editFormOffline(tempData);
+                                await FormHelper.editFormOffline(
+                                  tempData,
+                                  data.createdAt,
+                                );
                                 setEditingActive(false);
-                                Toast.show({
-                                  type: 'success',
-                                  text1: 'Success',
-                                  text2: 'Form successfully updated!',
-                                });
                               } else {
                                 await ScoutReportsDB.editOnlineScoutReport(
                                   formMetaData.reportId,
@@ -498,7 +483,7 @@ function ScoutViewer({
                           // make text box seem editable
                           backgroundColor: colors.card,
                           borderColor:
-                            field.required && !tempData[index]
+                            field.required && tempData[index] == null
                               ? 'red'
                               : colors.border,
                           borderWidth: 1,
@@ -510,18 +495,15 @@ function ScoutViewer({
                           field.type === 'number' ? 'numeric' : 'default'
                         }
                         value={
-                          tempData[index] ? tempData[index].toString() : null
-                        }
-                        placeholder={
-                          tempData[index] === null || tempData[index] === ''
-                            ? 'N/A'
-                            : ''
+                          tempData[index] != null
+                            ? tempData[index].toString()
+                            : null
                         }
                         placeholderTextColor={colors.notification}
                         onChangeText={value => {
                           let a = [...tempData];
                           if (field.type === 'number') {
-                            if (value === '') {
+                            if (value === '' || !/^\d+$/.test(value)) {
                               a[index] = null;
                               setTempData(a);
                               return;
@@ -607,7 +589,7 @@ function ScoutViewer({
                       </Text>
                     )}
                   {!editingActive &&
-                    (tempData[index] === null || tempData[index] === '') && (
+                    (tempData[index] == null || tempData[index] === '') && (
                       <Text style={styles.no_info}>N/A</Text>
                     )}
                 </View>

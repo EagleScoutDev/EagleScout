@@ -46,11 +46,17 @@ class FormHelper {
   /**
    * Edits an offline form
    */
-  static async editFormOffline(report) {
-    const utcMilliseconds = new Date(report.createdAt).getUTCMilliseconds();
+  static async editFormOffline(data, createdAt) {
+    const utcMilliseconds = new Date(createdAt).getUTCMilliseconds();
+    const originalReport = JSON.parse(
+      await AsyncStorage.getItem('form-' + utcMilliseconds),
+    );
     await AsyncStorage.setItem(
       'form-' + utcMilliseconds,
-      JSON.stringify(report),
+      JSON.stringify({
+        ...originalReport,
+        data: data,
+      }),
     );
   }
 }

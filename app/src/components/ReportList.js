@@ -10,7 +10,7 @@ import {useEffect, useState} from 'react';
 import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
 
-function ReportList({forms}) {
+function ReportList({forms, isOffline}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
@@ -74,6 +74,7 @@ function ReportList({forms}) {
         updateFormData={updateFormData}
         // TODO: add accurate competition name
         chosenComp={chosenScoutForm.competitionName}
+        isOfflineForm={isOffline}
       />
     );
   } else {
