@@ -11,7 +11,6 @@ import ReportList from '../components/ReportList';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../components/MinimalSectionHeader';
 import SegmentedOption from '../components/pickers/SegmentedOption';
-import DBManager from '../DBManager';
 import ScoutReportsDB from '../database/ScoutReports';
 import Svg, {Path} from 'react-native-svg';
 
@@ -24,14 +23,20 @@ function SearchScreen() {
   const [selectedTheme, setSelectedTheme] = useState('Statistics');
 
   useEffect(() => {
-    ScoutReportsDB.getReportsForTeam(team).then(results => {
-      if (DEBUG) {
-        console.log('results: ' + JSON.stringify(results));
-      }
+    if (/^\d+$/.test(team) && Number(team) < 100000) {
+      ScoutReportsDB.getReportsForTeam(Number(team))
+        .then(results => {
+          if (DEBUG) {
+            console.log('results: ' + JSON.stringify(results));
+          }
 
-      //console.log(results[0]);
-      setForms(results);
-    });
+          //console.log(results[0]);
+          setForms(results);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   }, [team]);
 
   return (
@@ -103,7 +108,7 @@ function SearchScreen() {
               }}>
               Scout Reports
             </Text>
-            <ReportList forms={forms} />
+            <ReportList reports={forms} />
           </View>
         )}
       </View>

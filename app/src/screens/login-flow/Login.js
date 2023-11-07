@@ -131,7 +131,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
           />
           <StandardButton
             text={'Log In'}
-            onPress={() => onSubmit(username, password)}
+            onPress={() => onSubmit(username, password, navigation)}
             color={colors.primary}
           />
 
