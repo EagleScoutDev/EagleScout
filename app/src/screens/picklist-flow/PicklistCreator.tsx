@@ -41,6 +41,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   >(new Map());
 
   useEffect(() => {
+    // TODO: @gabor, replace this hardcoded value with the current competition
     PicklistsDB.getTeamsAtCompetition('2023cc')
       .then(teams => {
         // set teams to just the numbers of the returned teams
@@ -61,7 +62,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
 
   useEffect(() => {
     if (picklist_id !== -1) {
-      PicklistsDB.getPicklist(picklist_id)
+      PicklistsDB.getPicklist(String(picklist_id))
         .then(picklist => {
           setPresetPicklist(picklist);
           setName(picklist.name);
@@ -206,9 +207,10 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
         <Text
           style={{
             color: dragging_active ? colors.primary : colors.text,
-            fontSize: 30,
+            fontSize: 20,
+            marginBottom: '5%',
           }}>
-          {dragging_active ? 'Reordering Active' : 'Reordering Inactive'}
+          {dragging_active ? 'Disable Reordering' : 'Enable Reordering'}
         </Text>
       </Pressable>
       {presetPicklist ? (
@@ -245,19 +247,10 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           }}>
           <Text style={{color: 'white', fontSize: 20}}>Cancel</Text>
         </TouchableOpacity>
-
-        {/*}*/}
-        {/*<StandardButton*/}
-        {/*  color={'red'}*/}
-        {/*  text={'Cancel'}*/}
-        {/*  isLoading={false}*/}
-        {/*  onPress={() => setTeamAddingModalVisible(false)}*/}
-        {/*/>*/}
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            // add a gap between items
             marginBottom: '5%',
           }}>
           <Text style={{color: colors.text, fontSize: 20, marginRight: '3%'}}>
@@ -285,15 +278,6 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
                 textStyle={styles.team_item}
                 isChecked={teams_list.includes(item)}
                 onPress={() => {
-                  // console.log(item);
-                  // if (isChecked) {
-                  //   addTeam(item);
-                  //   console.log('adding team ' + item);
-                  // } else {
-                  //   removeTeam(item);
-                  //   console.log('removing team ' + item);
-                  // }
-                  console.log('checkbox press detected');
                   addOrRemoveTeam(item);
                 }}
               />
@@ -339,8 +323,6 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
         <Pressable
           style={{
             backgroundColor: colors.text,
-            borderColor: colors.primary,
-            borderWidth: 1,
             padding: '5%',
             borderRadius: 10,
             alignItems: 'center',

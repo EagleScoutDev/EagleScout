@@ -4,6 +4,8 @@ import {View, Text, StyleSheet, FlatList, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
 import ProfilesDB from '../../database/Profiles';
+import {CaretRight} from '../../SVGIcons';
+import Svg, {Path} from 'react-native-svg';
 
 function PicklistsManagerScreen({navigation}) {
   const {colors} = useTheme();
@@ -90,23 +92,46 @@ function PicklistsManagerScreen({navigation}) {
                 padding: '5%',
                 borderRadius: 10,
                 marginTop: '5%',
+                marginHorizontal: '5%',
+                flexDirection: 'row',
+                // alignItems: 'center',
               }}>
-              <Text
+              <View>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: colors.text,
+                  }}>
+                  {item.name}
+                </Text>
+                {/*<Text>{item.teams.toString()}</Text>*/}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: 'gray',
+                  }}>
+                  By {userName}
+                </Text>
+              </View>
+              <Svg
+                width={20}
+                height={20}
+                viewBox="0 0 24 24"
+                stroke="gray"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  color: colors.text,
+                  position: 'absolute',
+                  right: '5%',
+                  top: '80%',
                 }}>
-                {item.name}
-              </Text>
-              {/*<Text>{item.teams.toString()}</Text>*/}
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: 'gray',
-                }}>
-                By {userName}
-              </Text>
+                <Path
+                  fill-rule="evenodd"
+                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                />
+              </Svg>
             </Pressable>
           );
         }}
