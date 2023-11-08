@@ -35,6 +35,7 @@ import {
   TwoPeople,
   Gear,
 } from './SVGIcons';
+import codePush from 'react-native-code-push';
 
 const Drawer = createDrawerNavigator();
 
@@ -304,4 +305,4 @@ const MyStack = () => {
   // }
 };
 
-export default MyStack;
+export default codePush(MyStack);

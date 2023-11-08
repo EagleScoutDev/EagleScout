@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EagleScout</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">nKfCyBSQKN1inlkFxEHv4FmGi-wkuMIqkI5aK</string>
 </resources>

@@ -78,8 +78,8 @@ android {
         applicationId "com.eaglescout"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "5.0"
+        versionCode 10
+        versionName "0.2.0"
     }
     signingConfigs {
         debug {
@@ -121,3 +121,4 @@ dependencies {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
