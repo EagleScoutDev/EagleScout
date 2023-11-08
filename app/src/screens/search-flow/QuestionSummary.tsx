@@ -2,10 +2,10 @@ import React, {useEffect} from 'react';
 import {View, Text, Button, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
-import {OpenAI} from '../lib/OpenAI';
+import {OpenAI} from '../../lib/OpenAI';
 import {LineChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
-import StandardModal from '../components/modals/StandardModal';
+import StandardModal from '../../components/modals/StandardModal';
 
 interface Props {
   item: any;

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import SearchMain from './SearchMain';
 
 import TeamViewer from './TeamViewer';
-import {SimpleTeam} from '../lib/TBAUtils';
+import {SimpleTeam} from '../../lib/TBAUtils';
 
 function SearchScreen() {
   const [team, setChosenTeam] = useState<SimpleTeam>();

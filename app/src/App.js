@@ -16,7 +16,7 @@ import UserManager from './screens/UserManager';
 import {useEffect, useState} from 'react';
 import SubmittedForms from './screens/SubmittedForms';
 import DebugOffline from './screens/DebugOffline';
-import SearchScreen from './screens/SearchScreen';
+import SearchScreen from './screens/search-flow/SearchScreen';
 import {useColorScheme} from 'react-native';
 import ScoutingView from './screens/scouting-flow/ScoutingView';
 import AsyncStorage from '@react-native-async-storage/async-storage';

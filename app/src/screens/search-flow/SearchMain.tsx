@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import MinimalSectionHeader from '../components/MinimalSectionHeader';
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import Svg, {Path} from 'react-native-svg';
 
-import {SimpleTeam} from '../lib/TBAUtils';
-import {TBA} from '../lib/TBAUtils';
+import {SimpleTeam} from '../../lib/TBAUtils';
+import {TBA} from '../../lib/TBAUtils';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;

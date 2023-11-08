@@ -1,18 +1,11 @@
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Pressable, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import FormsDB from '../database/Forms';
+import FormsDB from '../../database/Forms';
 import QuestionSummary from './QuestionSummary';
-import ScoutReportsDB, {ScoutReportReturnData} from '../database/ScoutReports';
-import teamViewer from './TeamViewer';
-import {XCircle} from '../SVGIcons';
+import ScoutReportsDB, {
+  ScoutReportReturnData,
+} from '../../database/ScoutReports';
 import Svg, {Path} from 'react-native-svg';
 
 function ScoutSummary({team_number}: {team_number: number}) {
@@ -27,7 +20,7 @@ function ScoutSummary({team_number}: {team_number: number}) {
   const [generateSummary, setGenerateSummary] = useState<boolean>(false);
 
   useEffect(() => {
-    FormsDB.getForm(4).then(form => {
+    FormsDB.getForm(3).then(form => {
       // console.log(form.formStructure);
       setFormStructure(form.formStructure);
     });
@@ -54,7 +47,6 @@ function ScoutSummary({team_number}: {team_number: number}) {
           padding: '5%',
           borderRadius: 12,
         }}>
-        <XCircle color={colors.notification} />
         <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
           No reports found for this team.
         </Text>
