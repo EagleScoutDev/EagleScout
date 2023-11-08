@@ -11,6 +11,7 @@ import StandardButton from '../StandardButton';
 import {supabase} from '../../lib/supabase';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
+import StandardModal from './StandardModal';
 
 const DEBUG = false;
 
@@ -82,257 +83,234 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={true}>
+    <StandardModal title={`Edit "${name}"`} visible={true}>
+      <TextInput
+        style={{
+          backgroundColor: colors.background,
+          color: colors.text,
+          padding: 10,
+          borderRadius: 10,
+          width: '100%',
+          marginBottom: 20,
+          borderWidth: 1,
+          borderColor: colors.text,
+        }}
+        placeholder="Competition Name"
+        placeholderTextColor={colors.text}
+        onChangeText={text => {
+          setName(text);
+        }}
+        value={name}
+      />
       <View
         style={{
-          backgroundColor: colors.card,
-          justifyContent: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
           alignItems: 'center',
-          top: '30%',
-          borderRadius: 20,
-          borderColor: 'black',
-          borderWidth: 1,
-          padding: 35,
-          elevation: 5,
-          margin: 20,
         }}>
-        <Text
+        <View
           style={{
-            fontSize: 20,
-            color: colors.text,
-            fontWeight: '600',
-            paddingBottom: 20,
-          }}>
-          Edit "{name}"
-        </Text>
-        <TextInput
-          style={{
-            backgroundColor: colors.background,
-            color: colors.text,
-            padding: 10,
+            backgroundColor: colors.card,
             borderRadius: 10,
-            width: '100%',
-            marginBottom: 20,
-            borderWidth: 1,
-            borderColor: colors.text,
+            padding: 10,
+            flex: 0.7,
           }}
-          placeholder="Competition Name"
-          placeholderTextColor={colors.text}
-          onChangeText={text => {
-            setName(text);
-          }}
-          value={name}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-          }}>
-          <View
+          onPress={() => setEditStartDate(true)}>
+          <Text
             style={{
-              backgroundColor: colors.card,
-              borderRadius: 10,
-              padding: 10,
-              flex: 0.7,
-            }}
-            onPress={() => setEditStartDate(true)}>
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 18,
-                fontWeight: '600',
-                textAlign: 'center',
-              }}>
-              Start Date
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.border,
-              borderRadius: 10,
-              padding: 10,
-              flex: 1,
-            }}
-            onPress={() => setEditStartDate(true)}>
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 20,
-                fontWeight: '600',
-                textAlign: 'center',
-              }}>
-              {new Date(startDate).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-            </Text>
-          </TouchableOpacity>
-          <DatePicker
-            modal
-            open={editStartDate}
-            date={startDate}
-            mode={'date'}
-            onConfirm={date => {
-              setStartDate(date);
-              setEditStartDate(false);
-            }}
-            onCancel={() => {}}
-          />
-        </View>
-        <View style={{height: 20}} />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              backgroundColor: colors.card,
-              borderRadius: 10,
-              padding: 10,
-              flex: 0.7,
-            }}
-            onPress={() => setEditEndDate(true)}>
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 18,
-                fontWeight: '600',
-                textAlign: 'center',
-              }}>
-              End Date
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.border,
-              borderRadius: 10,
-              padding: 10,
-              flex: 1,
-            }}
-            onPress={() => setEditEndDate(true)}>
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 20,
-                fontWeight: '600',
-                textAlign: 'center',
-              }}>
-              {new Date(endDate).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-            </Text>
-          </TouchableOpacity>
-          <DatePicker
-            modal
-            open={editEndDate}
-            date={endDate}
-            mode={'date'}
-            onConfirm={date => {
-              setEndDate(date);
-              setEditEndDate(false);
-            }}
-            onCancel={() => {
-              setEditEndDate(false);
-            }}
-          />
-        </View>
-        <View
-          style={{
-            flexDirection: 'column',
-            width: '100%',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+              color: colors.text,
+              fontSize: 18,
+              fontWeight: '600',
+              textAlign: 'center',
             }}>
-            <StandardButton
-              text={'Delete'}
-              color={colors.notification}
-              width={'40%'}
-              onPress={() => {
-                Alert.alert(
-                  'Delete ' + name + '?',
-                  'Are you sure you want to delete this competition? This action cannot be undone.',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => {
-                        setVisible(false);
-                        if (DEBUG) {
-                          console.log('Cancel Pressed');
-                        }
-                      },
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Delete',
-                      onPress: async () => deleteCompetition(),
-                    },
-                  ],
-                  {cancelable: false},
-                );
-              }}
-            />
-
-            <StandardButton
-              text={'Cancel'}
-              color={colors.primary}
-              width={'40%'}
-              onPress={() => setVisible(false)}
-            />
-          </View>
+            Start Date
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: colors.border,
+            borderRadius: 10,
+            padding: 10,
+            flex: 1,
+          }}
+          onPress={() => setEditStartDate(true)}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 20,
+              fontWeight: '600',
+              textAlign: 'center',
+            }}>
+            {new Date(startDate).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </Text>
+        </TouchableOpacity>
+        <DatePicker
+          modal
+          open={editStartDate}
+          date={startDate}
+          mode={'date'}
+          onConfirm={date => {
+            setStartDate(date);
+            setEditStartDate(false);
+          }}
+          onCancel={() => {}}
+        />
+      </View>
+      <View style={{height: 20}} />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            backgroundColor: colors.card,
+            borderRadius: 10,
+            padding: 10,
+            flex: 0.7,
+          }}
+          onPress={() => setEditEndDate(true)}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 18,
+              fontWeight: '600',
+              textAlign: 'center',
+            }}>
+            End Date
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: colors.border,
+            borderRadius: 10,
+            padding: 10,
+            flex: 1,
+          }}
+          onPress={() => setEditEndDate(true)}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 20,
+              fontWeight: '600',
+              textAlign: 'center',
+            }}>
+            {new Date(endDate).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </Text>
+        </TouchableOpacity>
+        <DatePicker
+          modal
+          open={editEndDate}
+          date={endDate}
+          mode={'date'}
+          onConfirm={date => {
+            setEndDate(date);
+            setEditEndDate(false);
+          }}
+          onCancel={() => {
+            setEditEndDate(false);
+          }}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'column',
+          width: '100%',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
           <StandardButton
-            text={'Save'}
-            color={'green'}
-            width={'100%'}
-            onPress={async () => {
-              if (!changesMade()) {
-                setVisible(false);
-                return;
-              }
-
-              const error = await updateCompetition();
-
-              if (error) {
-                console.error(error);
-                Alert.alert(
-                  'Error',
-                  'There was an error updating the competition. Please try again.',
-                  [
-                    {
-                      text: 'OK',
-                      onPress: () => {
-                        if (DEBUG) {
-                          console.log('OK Pressed');
-                        }
-                      },
-                      style: 'cancel',
+            text={'Delete'}
+            color={colors.notification}
+            width={'40%'}
+            onPress={() => {
+              Alert.alert(
+                'Delete ' + name + '?',
+                'Are you sure you want to delete this competition? This action cannot be undone.',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => {
+                      setVisible(false);
+                      if (DEBUG) {
+                        console.log('Cancel Pressed');
+                      }
                     },
-                  ],
-                  {cancelable: false},
-                );
-                if (DEBUG) {
-                  console.log(error);
-                }
-              } else {
-                if (DEBUG) {
-                  console.log('updated competition');
-                }
-                setVisible(false);
-                onRefresh();
-              }
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Delete',
+                    onPress: async () => deleteCompetition(),
+                  },
+                ],
+                {cancelable: false},
+              );
             }}
           />
+
+          <StandardButton
+            text={'Cancel'}
+            color={colors.primary}
+            width={'40%'}
+            onPress={() => setVisible(false)}
+          />
         </View>
+        <StandardButton
+          text={'Save'}
+          color={'green'}
+          width={'100%'}
+          onPress={async () => {
+            if (!changesMade()) {
+              setVisible(false);
+              return;
+            }
+
+            const error = await updateCompetition();
+
+            if (error) {
+              console.error(error);
+              Alert.alert(
+                'Error',
+                'There was an error updating the competition. Please try again.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      if (DEBUG) {
+                        console.log('OK Pressed');
+                      }
+                    },
+                    style: 'cancel',
+                  },
+                ],
+                {cancelable: false},
+              );
+              if (DEBUG) {
+                console.log(error);
+              }
+            } else {
+              if (DEBUG) {
+                console.log('updated competition');
+              }
+              setVisible(false);
+              onRefresh();
+            }
+          }}
+        />
       </View>
-    </Modal>
+    </StandardModal>
   );
 };
 

@@ -9,11 +9,17 @@ import {
   StyleSheet,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import RadioButtons from '../form/RadioButtons';
-import StandardButton from '../StandardButton';
 import Checkbox from '../form/Checkbox';
 import {supabase} from '../../lib/supabase';
+import FormHelper from '../../FormHelper';
+import Toast from 'react-native-toast-message';
+import UserAttributes from '../../database/UserAttributes';
+import ScoutReportsDB from '../../database/ScoutReports';
+import SliderType from '../form/SliderType';
+import {ClockHistory, PencilSquare, X} from '../../SVGIcons';
+import {HistorySelectorModal} from './HistorySelectorModal';
 
 const DEBUG = false;
 
@@ -23,17 +29,71 @@ const DEBUG = false;
  * @param setVisible - function to set the visibility of the modal
  * @param data - the data to display
  * @param chosenComp - the competition that the data is from
+ * @param updateFormData - function to update the form data visually
+ * @param isOfflineForm - whether the data is from an offline form
  * @returns {JSX.Element} - the scout viewer
  */
-function ScoutViewer({visible, setVisible, data, chosenComp}) {
+function ScoutViewer({
+  visible,
+  setVisible,
+  data,
+  chosenComp,
+  updateFormData,
+  isOfflineForm,
+}) {
   const {colors} = useTheme();
   const [userName, setUserName] = useState('');
+  const [formData, setFormData] = useState(data.data);
 
-  // variables for editing forms
+  // editing state:
   const [editingActive, setEditingActive] = useState(false);
 
+  // history state:
+  const [historySelectorModalVisible, setHistorySelectorModalVisible] =
+    useState(false);
+  // this controls the color of the history button - true: blue, false: grey
+  const [historyButtonEnabled, setHistoryButtonEnabled] = useState(false);
+  // this will be false if there is no history to show (i.e. the report has never been edited)
+  const [historyButtonVisible, setHistoryButtonVisible] = useState(true);
+  const [selectedHistoryId, setSelectedHistoryId] = useState(0);
+
   // this only holds the data of the form, since the form questions should remain the same
-  const [tempData, setTempData] = useState({});
+  // this is a writable copy of the data
+  const [tempData, setTempData] = useState([]);
+  // this holds the metadata of the form (comp id, match id, etc)
+  const [formMetaData, setFormMetaData] = useState(null);
+  // this is the history of the form fetched from scout_edit_reports
+  const [formHistory, setFormHistory] = useState([]);
+
+  const refreshHistory = useCallback(async () => {
+    setHistoryButtonVisible(false);
+    if (data && !isOfflineForm) {
+      const history = await ScoutReportsDB.getReportHistory(data.reportId);
+      if (history.length !== 0) {
+        setHistoryButtonVisible(true);
+        setFormHistory(history);
+      }
+    }
+  }, [data, isOfflineForm]);
+
+  useEffect(() => {
+    (async () => {
+      await refreshHistory();
+    })();
+  }, [data, isOfflineForm, refreshHistory]);
+
+  const [authUserId, setAuthUserId] = useState(null);
+  const [authUserAttributes, setAuthUserAttributes] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const {
+        data: {user},
+      } = await supabase.auth.getUser();
+      setAuthUserId(user.id);
+      const att = await UserAttributes.getCurrentUserAttribute();
+      setAuthUserAttributes(att);
+    })();
+  }, []);
 
   const styles = StyleSheet.create({
     modal_container: {
@@ -97,20 +157,11 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
   });
 
   useEffect(() => {
-    if (data !== null) {
-      console.log('updating temp data!');
+    if (data != null) {
       setTempData(data.data);
-      console.log('finished updating temp data!');
-      console.log('printing out temp data: ');
-      console.log(tempData);
+      setFormMetaData(data);
     }
   }, [data]);
-
-  useEffect(() => {
-    console.log('printing out temp data: ');
-    console.log(tempData);
-    // convert each object in tempData to an array of the values
-  }, [tempData]);
 
   useEffect(() => {
     /**
@@ -132,11 +183,15 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
         console.error('data is null, cannot get username');
       }
     };
-    getUserName().then(r => {
-      if (DEBUG) {
-        console.log('creator of scout report found');
-      }
-    });
+    if (!isOfflineForm) {
+      getUserName().then(r => {
+        if (DEBUG) {
+          console.log('creator of scout report found');
+        }
+      });
+    } else {
+      setUserName('You');
+    }
   }, [data]);
 
   useEffect(() => {
@@ -147,41 +202,203 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
     }
   }, [data]);
 
-  if (data === null) {
-    return <View />;
-  }
   return (
     <Modal
       animationType="slide"
       visible={visible}
       transparent={true}
       presentationStyle={'overFullScreen'}>
+      <HistorySelectorModal
+        formHistory={formHistory}
+        selectedHistoryId={selectedHistoryId}
+        visible={historySelectorModalVisible}
+        setVisible={setHistorySelectorModalVisible}
+        onHistorySelect={id => {
+          setHistorySelectorModalVisible(false);
+          if (id == null) {
+            // user dismissed the modal
+            return;
+          }
+          console.log(
+            'selected history id:',
+            id,
+            'current history:',
+            formHistory,
+            'form data:',
+            formHistory.find(history => history.historyId === id).data,
+          );
+          setSelectedHistoryId(id);
+          setFormData(
+            formHistory.find(history => history.historyId === id).data,
+          );
+          // this is a very crude way of detecting if this is the first/current form
+          // todo: should probably improve if/once a better method is devised
+          if (formHistory.length && id === formHistory[0].historyId) {
+            setHistoryButtonEnabled(false);
+            setSelectedHistoryId(null);
+          }
+        }}
+      />
       <View style={styles.modal_container}>
         <TouchableOpacity onPress={() => setVisible(false)}>
           <Text style={styles.breadcrumbs}>
             {chosenComp} / Round {data ? data.matchNumber : ''}{' '}
           </Text>
         </TouchableOpacity>
-        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-          {/*<TouchableOpacity*/}
-          {/*  onPress={() => {*/}
-          {/*    setEditingActive(!editingActive);*/}
-          {/*    if (editingActive) {*/}
-          {/*      setTempData(data.data);*/}
-          {/*    }*/}
-          {/*  }}>*/}
-          {/*  <Text*/}
-          {/*    style={{*/}
-          {/*      textAlign: 'right',*/}
-          {/*      color: editingActive ? colors.primary : 'gray',*/}
-          {/*      fontWeight: 'bold',*/}
-          {/*      fontSize: 17,*/}
-          {/*    }}>*/}
-          {/*    {editingActive ? 'Cancel' : 'Edit'}*/}
-          {/*  </Text>*/}
-          {/*</TouchableOpacity>*/}
-          <TouchableOpacity onPress={() => setVisible(false)}>
-            <Text style={styles.close}>Close</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          {(authUserId === data.userId ||
+            (authUserAttributes && authUserAttributes.admin) ||
+            isOfflineForm) && (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 20,
+              }}>
+              {!selectedHistoryId && (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (!editingActive) {
+                      setEditingActive(true);
+                      return;
+                    }
+                    // if the data is different than the temp data, then we should ask the user to save
+                    if (
+                      !tempData.every(
+                        (value, index) => value === data.data[index],
+                      )
+                    ) {
+                      Alert.alert(
+                        'Save Changes?',
+                        'Are you sure you want to save these changes?',
+                        [
+                          {
+                            text: 'Cancel',
+                            onPress: () => {
+                              console.log('Cancel Pressed');
+                            },
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Save',
+                            onPress: async () => {
+                              console.log('Save Pressed');
+                              for (let i = 0; i < tempData.length; i++) {
+                                if (
+                                  data.form[i].required &&
+                                  (tempData[i] == null || tempData[i] === '')
+                                ) {
+                                  Alert.alert(
+                                    'Missing Required Fields',
+                                    'Please fill in all required fields.',
+                                    [
+                                      {
+                                        text: 'OK',
+                                        onPress: () => {},
+                                        style: 'cancel',
+                                      },
+                                    ],
+                                  );
+                                  return;
+                                }
+                              }
+                              if (isOfflineForm) {
+                                await FormHelper.editFormOffline(
+                                  tempData,
+                                  data.createdAt,
+                                );
+                                setEditingActive(false);
+                              } else {
+                                await ScoutReportsDB.editOnlineScoutReport(
+                                  formMetaData.reportId,
+                                  tempData,
+                                );
+                              }
+                              setEditingActive(false);
+                              updateFormData(tempData);
+                              setFormData(tempData);
+                              await refreshHistory();
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      setEditingActive(false);
+                    }
+                  }}>
+                  <PencilSquare
+                    style={{
+                      padding: '2%',
+                      fill: editingActive ? colors.primary : 'gray',
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+              {!editingActive && historyButtonVisible && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setHistorySelectorModalVisible(true);
+                    setHistoryButtonEnabled(true);
+                  }}>
+                  <ClockHistory
+                    style={{
+                      padding: '2%',
+                      fill: historyButtonEnabled ? colors.primary : 'gray',
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              if (
+                !tempData.every((value, index) => value === data.data[index])
+              ) {
+                Alert.alert(
+                  'Cancel Changes?',
+                  'Are you sure you want to cancel these changes?',
+                  [
+                    {
+                      text: 'No',
+                      onPress: () => {
+                        console.log('Cancel Pressed');
+                      },
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Yes',
+                      onPress: () => {
+                        console.log('Yes Pressed');
+                        setEditingActive(false);
+                        setTempData(data.data);
+                        setVisible(false);
+                      },
+                    },
+                  ],
+                );
+                return;
+              }
+              setVisible(false);
+            }}>
+            <X
+              style={{
+                padding: '2%',
+                width: 40,
+                height: 40,
+                fill: colors.notification,
+              }}
+            />
           </TouchableOpacity>
         </View>
         <ScrollView>
@@ -207,13 +424,14 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                 <Text style={styles.section_title}>{field.text}</Text>
               )}
               {/*If the entry has a question property, this indicates that it is a question*/}
-              {field.question && data.data[index] !== null && (
+              {field.question && formData[index] != null && (
                 <View
                   style={{
                     flexDirection:
                       field.type === 'radio' ||
                       field.type === 'textbox' ||
-                      field.type === 'checkbox'
+                      field.type === 'checkbox' ||
+                      (editingActive && field.type === 'number' && field.slider)
                         ? 'column'
                         : 'row',
                     justifyContent: 'space-between',
@@ -224,7 +442,12 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                     margin: 5,
                     borderRadius: 10,
                   }}>
-                  <Text style={styles.question}>{field.question}</Text>
+                  {/*SliderType renders its own custom question text, so we shouldn't render a question here
+                  if the field is a slider*/}
+                  {/*SliderType is only used when editing is active*/}
+                  {(!editingActive || !field.slider) && (
+                    <Text style={styles.question}>{field.question}</Text>
+                  )}
                   {field.type === 'radio' && (
                     <View>
                       <RadioButtons
@@ -247,21 +470,73 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                       />
                     </View>
                   )}
-                  {field.type !== 'radio' &&
-                    field.type !== 'checkbox' &&
-                    editingActive && (
+                  {editingActive &&
+                    ((field.type === 'number' && !field.slider) ||
+                      field.type === 'textbox') && (
                       <TextInput
+                        style={{
+                          flex: 1,
+                          textAlign:
+                            field.type === 'textbox' ? 'left' : 'center',
+                          alignSelf:
+                            field.type === 'textbox' ? 'flex-start' : 'center',
+                          // make text box seem editable
+                          backgroundColor: colors.card,
+                          borderColor:
+                            field.required && tempData[index] == null
+                              ? 'red'
+                              : colors.border,
+                          borderWidth: 1,
+                          borderRadius: 5,
+                          padding: 5,
+                          width: '100%',
+                        }}
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
                         }
-                        value={tempData[index]}
+                        value={
+                          tempData[index] != null
+                            ? tempData[index].toString()
+                            : null
+                        }
+                        placeholderTextColor={colors.notification}
                         onChangeText={value => {
+                          let a = [...tempData];
+                          if (field.type === 'number') {
+                            if (value === '' || !/^\d+$/.test(value)) {
+                              a[index] = null;
+                              setTempData(a);
+                              return;
+                            }
+                            a[index] = Number.parseInt(value, 10);
+                          } else {
+                            a[index] = value;
+                          }
+                          setTempData(a);
+                        }}
+                        multiline={true}
+                      />
+                    )}
+                  {editingActive && field.type === 'number' && field.slider && (
+                    // it is a number slider
+                    <View>
+                      <SliderType
+                        low={field.low ? Number.parseInt(field.low, 10) : 0}
+                        high={field.high ? Number.parseInt(field.high, 10) : 10}
+                        step={field.step ? Number.parseInt(field.step, 10) : 1}
+                        question={field.question}
+                        value={tempData[index]}
+                        onValueChange={value => {
                           let a = [...tempData];
                           a[index] = value;
                           setTempData(a);
                         }}
+                        disabled={!editingActive}
+                        minLabel={field.minLabel}
+                        maxLabel={field.maxLabel}
                       />
-                    )}
+                    </View>
+                  )}
                   {field.type === 'checkbox' && (
                     <Checkbox
                       title={''}
@@ -270,8 +545,7 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                       options={field.labels}
                       value={
                         tempData[index] &&
-                        tempData[index] !== null &&
-                        tempData[index] !== undefined &&
+                        tempData[index] != null &&
                         tempData[index] !== ''
                           ? Object.values(tempData[index]).map(value => {
                               return Number.parseInt(value, 10);
@@ -310,43 +584,17 @@ function ScoutViewer({visible, setVisible, data, chosenComp}) {
                           alignSelf:
                             field.type === 'textbox' ? 'flex-start' : 'center',
                         }}>
-                        {data.data[index].toString()}
+                        {formData[index].toString()}
                       </Text>
                     )}
-                  {tempData[index] === null ||
-                    (tempData[index] === '' && (
+                  {!editingActive &&
+                    (tempData[index] == null || tempData[index] === '') && (
                       <Text style={styles.no_info}>N/A</Text>
-                    ))}
+                    )}
                 </View>
               )}
             </View>
           ))}
-          {tempData !== data.data && editingActive && (
-            <StandardButton
-              color={'blue'}
-              text={'Save'}
-              onPress={() => {
-                Alert.alert(
-                  'Save Changes?',
-                  'Are you sure you want to save these changes?',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Save',
-                      onPress: () => {
-                        console.log('Save Pressed');
-                        // TODO: update the scouting form using updateDoc
-                      },
-                    },
-                  ],
-                );
-              }}
-            />
-          )}
         </ScrollView>
       </View>
     </Modal>

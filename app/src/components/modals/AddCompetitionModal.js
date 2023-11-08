@@ -6,19 +6,15 @@ import React, {
   TouchableOpacity,
   View,
 } from 'react-native';
-import StandardButton from '../../components/StandardButton';
+import StandardButton from '../StandardButton';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-import StandardModal from '../../components/modals/StandardModal';
+import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
-import SegmentedOption from '../../components/pickers/SegmentedOption';
-import UserAttributes from '../../database/UserAttributes';
-import ProfilesDB from '../../database/Profiles';
-import UserAttributesDB from '../../database/UserAttributes';
+import SelectMenu from '../form/SelectMenu';
 
 function Spacer() {
-  // eslint-disable-next-line react-native/no-inline-styles
   return <View style={{height: '2%'}} />;
 }
 
@@ -32,53 +28,45 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
   const [selectedFormID, setSelectedFormID] = useState(null);
 
-  const [formIDs, setFormIDs] = useState([]);
+  const [formList, setFormList] = useState([]);
 
   const getFormIDs = async () => {
-    const current_team_id = (await UserAttributesDB.getCurrentUserAttribute())
-      .team_id;
-
     // get form ids
     let {data: forms, error} = await supabase
       .from('forms')
-      .select('id')
-      .eq('team_id', current_team_id);
-
-    let form_ids = [];
-    forms.forEach(form => {
-      form_ids.push(form.id);
-    });
-    setFormIDs(form_ids);
+      .select('id, name');
+    if (error) {
+      console.error('Failed to get forms');
+      console.error(error);
+    } else {
+      setFormList(forms);
+    }
   };
 
   const submitCompetition = async () => {
     // if no form is selected, alert the user
-    if (selectedFormID === null) {
+    if (selectedFormID == null) {
       Alert.alert('Error', 'Please select a form to use for this competition.');
-      return;
+      return false;
+    }
+    // if the start date is after (or equal to) the end date, alert the user
+    if (startDate >= endDate) {
+      Alert.alert('Error', 'Start date must be before end date.');
+      return false;
+    }
+    // if the name is empty, alert the user
+    if (name === '') {
+      Alert.alert('Error', 'Please enter a name for this competition.');
+      return false;
     }
 
-    const {
-      data: {user},
-    } = await supabase.auth.getUser();
-
-    let {data: user_attributes, error} = await supabase
-      .from('user_attributes')
-      .select('team_id')
-      .eq('id', user.id);
-
-    // console.log('user_attributes', user_attributes);
-    const {team_id} = user_attributes[0];
-    // console.log('final team id: ', team_id);
-
-    const res = await supabase.from('competitions').insert({
-      team_id: team_id,
+    const {error} = await supabase.from('competitions').insert({
       name: name,
       start_time: startDate,
       end_time: endDate,
       form_id: selectedFormID,
     });
-    const error2 = res.error;
+    return error == null;
   };
 
   useEffect(() => {
@@ -91,7 +79,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
   const styles = StyleSheet.create({
     competition_name_input: {
-      height: 50,
+      // height: 50,
       borderColor: 'gray',
       borderWidth: 1,
       width: '100%',
@@ -99,7 +87,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       padding: 10,
       marginBottom: 10,
       color: colors.text,
-      fontSize: 20,
+      fontSize: 18,
     },
     label: {
       color: colors.text,
@@ -209,25 +197,24 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       <View
         style={{
           flexDirection: 'row',
-          margin: 20,
-          backgroundColor: colors.border,
-          padding: 2,
-          borderRadius: 10,
-          alignContent: 'center',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          zIndex: 100,
+          // align with competition name input
+          marginTop: 10,
         }}>
-        {formIDs.map(f_id => {
-          return (
-            <SegmentedOption
-              title={f_id}
-              selected={selectedFormID}
-              colors={colors}
-              onPress={() => {
-                console.log('pressed');
-                setSelectedFormID(f_id);
-              }}
-            />
-          );
-        })}
+        <SelectMenu
+          setSelected={setSelectedFormID}
+          data={formList.map(f => ({
+            value: f.name,
+            key: f.id,
+          }))}
+          searchEnabled={false}
+          searchPlaceholder={'Search for a form...'}
+          placeholder={'Select a form...'}
+          maxHeight={100}
+        />
       </View>
 
       <Spacer />
@@ -241,8 +228,12 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         <StandardButton
           color={colors.primary}
           onPress={() => {
-            submitCompetition().then(() => onRefresh());
-            setVisible(false);
+            submitCompetition().then(success => {
+              if (success) {
+                setVisible(false);
+                onRefresh();
+              }
+            });
           }}
           text={'Submit'}
           width={'40%'}
