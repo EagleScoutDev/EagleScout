@@ -7,6 +7,7 @@ import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
 import Svg, {Path} from 'react-native-svg';
+import CompetitionsDB from '../../database/Competitions';
 
 function ScoutSummary({team_number}: {team_number: number}) {
   const {colors} = useTheme();
@@ -20,9 +21,13 @@ function ScoutSummary({team_number}: {team_number: number}) {
   const [generateSummary, setGenerateSummary] = useState<boolean>(false);
 
   useEffect(() => {
-    FormsDB.getAllForms().then(forms => {
-      // set the last form as the current form
-      setFormStructure(forms[forms.length - 1].formStructure);
+    CompetitionsDB.getCurrentCompetition().then(competition => {
+      if (!competition) {
+        return;
+      }
+      FormsDB.getForm(competition!.formId).then(form => {
+        setFormStructure(form.formStructure);
+      });
     });
 
     ScoutReportsDB.getReportsForTeam(team_number).then(reports => {
