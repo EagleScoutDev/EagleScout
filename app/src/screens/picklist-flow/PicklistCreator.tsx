@@ -19,27 +19,44 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 import Svg, {Path} from 'react-native-svg';
+import ProfilesDB from '../../database/Profiles';
 
 function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   const {colors} = useTheme();
+
+  // navigates back to the previous screen once picklist is updated
   const navigation = useNavigation();
 
+  // name of picklist
   const [name, setName] = useState<string | undefined>(undefined);
+
+  // list of all teams at the current competition
   const [possibleTeams, setPossibleTeams] = useState<number[]>([]);
+
+  // modal config
   const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
   const [filter_by_added, setFilterByAdded] = useState(false);
+
+  // list of teams in the picklist
   const [teams_list, setTeamsList] = useState<number[]>([]);
 
+  // used to enable/disable dragging
   const [dragging_active, setDraggingActive] = useState(false);
 
+  // used to store the picklist that is being edited, or undefined if a new picklist is being created
   const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
 
+  // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
   const {picklist_id} = route.params;
 
+  // used to display the team name next to the team number
   const [teamNumberToNameMap, setTeamNumberToNameMap] = useState<
     Map<number, string>
   >(new Map());
 
+  const [creator_name, setCreatorName] = useState<string>('');
+
+  // fetches all teams at the current competition
   useEffect(() => {
     // TODO: @gabor, replace this hardcoded value with the current competition
     PicklistsDB.getTeamsAtCompetition('2023cc')
@@ -60,6 +77,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       });
   }, []);
 
+  // if a picklist is being edited, fetches the picklist from the database
   useEffect(() => {
     if (picklist_id !== -1) {
       PicklistsDB.getPicklist(String(picklist_id))
@@ -67,6 +85,9 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           setPresetPicklist(picklist);
           setName(picklist.name);
           setTeamsList(picklist.teams);
+          ProfilesDB.getProfile(picklist.created_by).then(profile => {
+            setCreatorName(profile.name);
+          });
         })
         .catch(error => {
           console.error('Error getting picklist:', error);
@@ -125,10 +146,10 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       return;
     }
     const additional_message = presetPicklist
-      ? ' This will overwrite the picklist ' +
+      ? ' This will overwrite the picklist "' +
         presetPicklist.name +
-        ' by ' +
-        presetPicklist.created_by +
+        '" by ' +
+        creator_name +
         '.'
       : '';
     Alert.alert(
@@ -216,7 +237,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       {presetPicklist ? (
         <View>
           <Text style={styles.name_input}>{presetPicklist.name}</Text>
-          <Text style={{color: 'gray'}}>By {presetPicklist.created_by}</Text>
+          <Text style={{color: 'gray'}}>By {creator_name}</Text>
         </View>
       ) : (
         <TextInput

@@ -21,6 +21,16 @@ function PicklistsManagerScreen({navigation}) {
 
         for (let i = 0; i < picklistsResponse.length; i++) {
           console.log('picklist ' + i + ' info: ' + picklistsResponse[i].id);
+          console.log(
+            'picklist ' + i + ' creator: ' + picklistsResponse[i].created_by,
+          );
+
+          ProfilesDB.getProfile(picklistsResponse[i].created_by).then(
+            profile => {
+              console.log('picklist ' + i + ' creator name: ' + profile.name);
+              users.set(picklistsResponse[i].created_by, profile.name);
+            },
+          );
         }
       })
       .catch(error => {
@@ -79,7 +89,6 @@ function PicklistsManagerScreen({navigation}) {
         keyExtractor={item => item.name}
         // keyExtractor={item => item.teams.length} // Use a unique property of the picklist as key
         renderItem={({item}) => {
-          const userName = users.get(item.created_by) || 'Unknown';
           return (
             <Pressable
               onPress={() => {
@@ -111,7 +120,7 @@ function PicklistsManagerScreen({navigation}) {
                     fontSize: 12,
                     color: 'gray',
                   }}>
-                  By {userName}
+                  By {users.get(item.created_by) || 'Unknown'}
                 </Text>
               </View>
               <Svg
