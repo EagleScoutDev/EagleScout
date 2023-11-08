@@ -17,12 +17,7 @@ import ScoutingView from './ScoutingView';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({
-  navigation,
-  route,
-  setDisplayNavigationHeader,
-  isScoutStylePreferenceScrolling,
-}) {
+function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -162,9 +157,7 @@ function ScoutingFlow({
     } else {
       setIsCompetitionHappening(false);
     }
-
-    setDisplayNavigationHeader(isScoutStylePreferenceScrolling || comp == null);
-  }, [setDisplayNavigationHeader, initForm, isScoutStylePreferenceScrolling]);
+  }, [initForm]);
 
   const submitForm = async () => {
     let dataToSubmit = {};

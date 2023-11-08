@@ -42,7 +42,6 @@ const MyStack = () => {
   const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState('System');
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
-  const [scoutingFlowHeaderShown, setScoutingFlowHeaderShown] = useState(true);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
@@ -137,7 +136,6 @@ const MyStack = () => {
   const ScoutReportComponent = props => (
     <ScoutingFlow
       {...props}
-      setDisplayNavigationHeader={setScoutingFlowHeaderShown}
       isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
     />
   );
@@ -238,7 +236,6 @@ const MyStack = () => {
               component={ScoutReportComponent}
               options={{
                 drawerIcon: () => DocumentWithPlus(),
-                headerShown: scoutingFlowHeaderShown,
               }}
             />
             {/*<Drawer.Screen name="Gamified" component={Gamified} />*/}
