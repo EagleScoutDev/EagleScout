@@ -27,7 +27,7 @@ const ScoutingReportsList = ({navigation, competition}) => {
     });
   }, [competition]);
 
-  return <ReportList reports={reports} />;
+  return <ReportList reports={reports} isOffline={false} />;
 };
 
 export default ScoutingReportsList;
