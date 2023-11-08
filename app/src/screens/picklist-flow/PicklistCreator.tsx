@@ -85,20 +85,57 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   // if a picklist is being edited, fetches the picklist from the database
   useEffect(() => {
     if (picklist_id !== -1) {
-      PicklistsDB.getPicklist(String(picklist_id))
-        .then(picklist => {
-          setPresetPicklist(picklist);
-          setName(picklist.name);
-          setTeamsList(picklist.teams);
-          ProfilesDB.getProfile(picklist.created_by).then(profile => {
-            setCreatorName(profile.name);
-          });
-        })
-        .catch(error => {
-          console.error('Error getting picklist:', error);
-        });
+      fetchPicklist();
     }
   }, []);
+
+  // adds header button to fetch picklist from database
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => {
+            fetchPicklist();
+          }}>
+          <Svg
+            width={25}
+            height={25}
+            viewBox="0 0 16 16"
+            stroke="gray"
+            strokeWidth={1}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              marginRight: '5%',
+            }}>
+            <Path
+              fill={colors.primary}
+              d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+            />
+            <Path
+              fill={colors.primary}
+              d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+            />
+          </Svg>
+        </Pressable>
+      ),
+    });
+  }, []);
+
+  const fetchPicklist = () => {
+    PicklistsDB.getPicklist(String(picklist_id))
+      .then(picklist => {
+        setPresetPicklist(picklist);
+        setName(picklist.name);
+        setTeamsList(picklist.teams);
+        ProfilesDB.getProfile(picklist.created_by).then(profile => {
+          setCreatorName(profile.name);
+        });
+      })
+      .catch(error => {
+        console.error('Error getting picklist:', error);
+      });
+  };
 
   const renderItemDraggable = ({
     item,
@@ -250,6 +287,9 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
+          borderBottomWidth: 1,
+          borderColor: colors.border,
+          marginBottom: '5%',
         }}>
         <Pressable
           onPress={() => {
