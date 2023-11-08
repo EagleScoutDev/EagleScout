@@ -20,14 +20,14 @@ function PicklistsManagerScreen({navigation}) {
         setPicklists(picklistsResponse);
 
         for (let i = 0; i < picklistsResponse.length; i++) {
-          console.log('picklist ' + i + ' info: ' + picklistsResponse[i].id);
-          console.log(
-            'picklist ' + i + ' creator: ' + picklistsResponse[i].created_by,
-          );
-
+          // console.log('picklist ' + i + ' info: ' + picklistsResponse[i].id);
+          // console.log(
+          //   'picklist ' + i + ' creator: ' + picklistsResponse[i].created_by,
+          // );
+          //
           ProfilesDB.getProfile(picklistsResponse[i].created_by).then(
             profile => {
-              console.log('picklist ' + i + ' creator name: ' + profile.name);
+              // console.log('picklist ' + i + ' creator name: ' + profile.name);
               users.set(picklistsResponse[i].created_by, profile.name);
             },
           );
@@ -36,37 +36,6 @@ function PicklistsManagerScreen({navigation}) {
       .catch(error => {
         console.error('Error getting picklists:', error);
       });
-    // PicklistsDB.getPicklists()
-    //   .then(picklistsResponse => {
-    //     // Create an array of promises to get all user names
-    //     const userPromises = picklistsResponse.map(picklist => {
-    //       console.log('picklist creator: ' + picklist.created_by);
-    //       // Return a promise to get the user name from the user ID
-    //       ProfilesDB.getProfile(picklist.created_by);
-    //     });
-    //
-    //     // Resolve all promises to fetch user names
-    //     Promise.all(userPromises)
-    //       .then(profiles => {
-    //         // Create a new Map for user IDs and names
-    //         const newUsersMap = new Map();
-    //         profiles.forEach(profile => {
-    //           // Assume each profile contains a 'name' field and an 'id' field
-    //           if (profile == null) {
-    //             newUsersMap.set(profile.id, 'Unknown');
-    //           }
-    //           newUsersMap.set(profile.id, profile.name);
-    //         });
-    //         setUsers(newUsersMap); // Update the users state with new data
-    //         setPicklists(picklistsResponse); // Update the picklists state
-    //       })
-    //       .catch(error => {
-    //         console.error('Error getting user names:', error);
-    //       });
-    //   })
-    //   .catch(error => {
-    //     console.error('Error getting picklists:', error);
-    //   });
   };
 
   const onRefresh = () => {
