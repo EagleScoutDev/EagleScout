@@ -13,7 +13,8 @@ export class OpenAI {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization:
+            'Bearer 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',
         },
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
