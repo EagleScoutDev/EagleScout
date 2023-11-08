@@ -20,9 +20,9 @@ function ScoutSummary({team_number}: {team_number: number}) {
   const [generateSummary, setGenerateSummary] = useState<boolean>(false);
 
   useEffect(() => {
-    FormsDB.getForm(3).then(form => {
-      // console.log(form.formStructure);
-      setFormStructure(form.formStructure);
+    FormsDB.getAllForms().then(forms => {
+      // set the last form as the current form
+      setFormStructure(forms[forms.length - 1].formStructure);
     });
 
     ScoutReportsDB.getReportsForTeam(team_number).then(reports => {
