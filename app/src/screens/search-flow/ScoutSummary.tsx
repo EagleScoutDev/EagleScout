@@ -51,8 +51,12 @@ function ScoutSummary({team_number}: {team_number: number}) {
           marginHorizontal: '5%',
           padding: '5%',
           borderRadius: 12,
+
+          maxWidth: '85%',
+          alignSelf: 'center',
+          minWidth: '85%',
         }}>
-        <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
+        <Text style={{color: 'red', fontSize: 20, textAlign: 'center'}}>
           No reports found for this team.
         </Text>
       </View>

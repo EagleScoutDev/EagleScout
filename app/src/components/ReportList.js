@@ -54,7 +54,8 @@ function ReportList({team_number}) {
             width: '80%',
             alignSelf: 'center',
             borderRadius: 15,
-            padding: 20,
+            padding: '5%',
+            marginVertical: '5%',
           }}>
           <Text
             style={{
