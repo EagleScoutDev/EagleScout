@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme, useNavigation} from '@react-navigation/native';
@@ -115,6 +116,11 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
               )}
               {ListItem('Change Password', () =>
                 navigation.navigate('Change Password'),
+              )}
+              {ListItem(
+                'Request Account Deletion',
+                () => Linking.openURL('https://forms.gle/Jmcp61ViSVs9VAqn6'),
+                true,
               )}
               {ListItem('Sign Out', () => attemptSignOut(), false)}
             </View>
