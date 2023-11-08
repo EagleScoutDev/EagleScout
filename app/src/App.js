@@ -34,6 +34,7 @@ import {
   ListWithDots,
   TwoPeople,
   Gear,
+  CheckList,
 } from './SVGIcons';
 import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 
@@ -255,7 +256,7 @@ const MyStack = () => {
               name={'Picklists'}
               component={PicklistsManager}
               options={{
-                drawerIcon: () => ListWithDots(),
+                drawerIcon: () => CheckList(),
               }}
             />
             <Drawer.Screen
