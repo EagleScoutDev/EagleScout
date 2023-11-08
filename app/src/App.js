@@ -34,7 +34,9 @@ import {
   ListWithDots,
   TwoPeople,
   Gear,
+  CheckList,
 } from './SVGIcons';
+import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
 
 const Drawer = createDrawerNavigator();
@@ -246,6 +248,13 @@ const MyStack = () => {
               component={CompetitionsView}
               options={{
                 drawerIcon: () => Trophy(),
+              }}
+            />
+            <Drawer.Screen
+              name={'Picklists'}
+              component={PicklistsManager}
+              options={{
+                drawerIcon: () => CheckList(),
               }}
             />
             <Drawer.Screen
