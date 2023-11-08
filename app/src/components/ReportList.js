@@ -1,16 +1,16 @@
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
-  ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import {useEffect, useState} from 'react';
 import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
+import ScoutReportsDB from '../database/ScoutReports';
 
-function ReportList({forms}) {
+function ReportList({team_number}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [sort, setSort] = useState('');
@@ -18,58 +18,71 @@ function ReportList({forms}) {
   const {colors} = useTheme();
 
   useEffect(() => {
-    setDataCopy(forms);
-  }, [forms]);
+    if (/^\d+$/.test(team_number) && Number(team_number) < 100000) {
+      ScoutReportsDB.getReportsForTeam(Number(team_number))
+        .then(results => {
+          setDataCopy([...results]); // Spread into a new array to trigger re-render
+          console.log(results.length);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }, []);
 
-  if (forms == null) {
-    return (
-      <View>
-        <Text style={{paddingHorizontal: '10%'}}>Waiting for input...</Text>
-      </View>
-    );
-  }
-
-  if (forms.length === 0) {
-    return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: colors.card,
-          width: '80%',
-          alignSelf: 'center',
-          borderRadius: 15,
-          padding: 20,
-        }}>
-        <Text
-          style={{
-            paddingHorizontal: '10%',
-            color: 'red',
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}>
-          No reports found.
-        </Text>
-      </View>
-    );
-  }
-
-  if (modalVisible) {
+  // Render ScoutViewer modal if it's visible
+  if (modalVisible && chosenScoutForm) {
     return (
       <ScoutViewer
         visible={modalVisible}
         setVisible={setModalVisible}
         data={chosenScoutForm}
-        // TODO: add accurate competition name
         chosenComp={chosenScoutForm.competitionName}
       />
     );
-  } else {
-    return (
-      <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
+  }
+
+  // Main ReportList component rendering
+  return (
+    <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
+      {dataCopy && dataCopy.length === 0 && (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.card,
+            width: '80%',
+            alignSelf: 'center',
+            borderRadius: 15,
+            padding: 20,
+          }}>
+          <Text
+            style={{
+              paddingHorizontal: '10%',
+              color: 'red',
+              fontSize: 16,
+              fontWeight: 'bold',
+            }}>
+            No reports found.
+          </Text>
+        </View>
+      )}
+
+      {dataCopy && dataCopy.length > 0 && (
         <FlatList
-          data={dataCopy}
-          // add a header
+          data={
+            sort
+              ? [...dataCopy].sort((a, b) => {
+                  if (sort === 'team') {
+                    return a.team - b.team;
+                  } else if (sort === 'match') {
+                    return a.match_number - b.match_number;
+                  } else if (sort === 'date') {
+                    return new Date(a.created_at) - new Date(b.created_at);
+                  }
+                })
+              : dataCopy
+          }
           ListHeaderComponent={() => (
             <View
               style={{
@@ -114,7 +127,7 @@ function ReportList({forms}) {
                   setSort('match');
                   setDataCopy(
                     dataCopy.sort((a, b) => {
-                      return a.match_number - b.match_umber;
+                      return a.match_number - b.match_number;
                     }),
                   );
                 }}>
@@ -208,11 +221,11 @@ function ReportList({forms}) {
               </View>
             </TouchableOpacity>
           )}
-          // keyExtractor={item => item.id}
+          // keyExtractor={item => item.id.toString()} // Updated keyExtractor
         />
-      </KeyboardAvoidingView>
-    );
-  }
+      )}
+    </KeyboardAvoidingView>
+  );
 }
 
 export default ReportList;

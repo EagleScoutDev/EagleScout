@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {SimpleEvent, TBA} from './lib/TBAUtils';
+import {SimpleEvent, TBA} from '../../lib/TBAUtils';
 import {useTheme} from '@react-navigation/native';
 import {View, Text, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import Svg, {Path} from 'react-native-svg';

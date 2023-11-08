@@ -18,7 +18,7 @@ interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
 }
 
-const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
+const SearchMain: React.FC<Props> = ({navigation}) => {
   const [team, setTeam] = useState<string>('');
   const {colors} = useTheme();
 
@@ -73,12 +73,12 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
         </Svg>
         <TextInput
           style={{
-            marginHorizontal: 20,
+            marginHorizontal: '6%',
             height: 40,
             borderColor: 'gray',
             borderWidth: 1,
             borderRadius: 25,
-            paddingLeft: 20,
+            paddingLeft: '6%',
             color: colors.text,
             flex: 1,
           }}
@@ -141,7 +141,7 @@ const SearchMain: React.FC<Props> = ({setChosenTeam}) => {
           return (
             <TouchableOpacity
               onPress={() => {
-                setChosenTeam(item);
+                navigation.navigate('TeamViewer', {team: item});
               }}
               key={item.key}
               style={{

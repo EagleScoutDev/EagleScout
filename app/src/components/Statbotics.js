@@ -137,6 +137,7 @@ function Statbotics({team}) {
       backgroundColor: colors.card,
       borderRadius: 10,
       alignSelf: 'center',
+      marginTop: '5%',
     },
   });
 
