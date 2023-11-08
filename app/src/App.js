@@ -17,7 +17,7 @@ import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SubmittedForms from './screens/SubmittedForms';
 import DebugOffline from './screens/DebugOffline';
-import SearchScreen from './screens/SearchScreen';
+import SearchScreen from './screens/search-flow/SearchScreen';
 import {useColorScheme} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';

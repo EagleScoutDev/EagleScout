@@ -107,13 +107,12 @@ export const PencilNotepad = () => {
   );
 };
 
-export const CaretRight = () => {
+export const CaretRight = (color = 'gray') => {
   return (
     <Svg
       width={20}
       height={20}
       viewBox="0 0 24 24"
-      stroke="gray"
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -124,6 +123,31 @@ export const CaretRight = () => {
       }}>
       <Path
         fill-rule="evenodd"
+        fill={color}
+        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+      />
+    </Svg>
+  );
+};
+
+export const CaretDown = (color = 'gray') => {
+  return (
+    <Svg
+      width={20}
+      height={20}
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{
+        position: 'absolute',
+        right: 20,
+        top: 20,
+        transform: [{rotate: '90deg'}],
+      }}>
+      <Path
+        fill-rule="evenodd"
+        fill={color}
         d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
       />
     </Svg>
@@ -183,3 +207,19 @@ export const ClockHistory = props => (
     <Path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z" />
   </Svg>
 );
+
+export const XCircle = (color = 'gray') => {
+  return (
+    <Svg width={'30%'} height="30%" viewBox="0 0 16 16">
+      <Path
+        fill={color}
+        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+      />
+
+      <Path
+        fill={color}
+        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+      />
+    </Svg>
+  );
+};
