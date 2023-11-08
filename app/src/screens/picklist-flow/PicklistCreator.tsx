@@ -54,7 +54,12 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
     Map<number, string>
   >(new Map());
 
+  // human-readable name of the person who created the picklist
   const [creator_name, setCreatorName] = useState<string>('');
+
+  // live mode, displays strikethroughs if in live picklist making
+  const [live_mode, setLiveMode] = useState<boolean>(false);
+  const [removed_teams, setRemovedTeams] = useState<number[]>([]);
 
   // fetches all teams at the current competition
   useEffect(() => {
@@ -187,6 +192,14 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
     }
   };
 
+  const addOrRemoveTeamLiveMode = (team: number) => {
+    if (removed_teams.includes(team)) {
+      setRemovedTeams(prev => prev.filter(t => t !== team));
+    } else {
+      setRemovedTeams(prev => [...prev, team]);
+    }
+  };
+
   const styles = StyleSheet.create({
     name_input: {
       color: colors.text,
@@ -214,6 +227,15 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       alignItems: 'center',
       marginRight: '30%',
     },
+    team_number_strikethrough: {
+      flex: 1,
+      color: 'gray',
+      fontSize: 20,
+      marginLeft: '5%',
+
+      textDecorationLine: 'line-through',
+      textDecorationStyle: 'solid',
+    },
     team_number_displayed: {
       flex: 1,
       color: colors.text,
@@ -224,16 +246,40 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => setDraggingActive(!dragging_active)}>
-        <Text
-          style={{
-            color: dragging_active ? colors.primary : colors.text,
-            fontSize: 20,
-            marginBottom: '5%',
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+        <Pressable
+          onPress={() => {
+            setDraggingActive(!dragging_active);
+            setLiveMode(false);
           }}>
-          {dragging_active ? 'Disable Reordering' : 'Enable Reordering'}
-        </Text>
-      </Pressable>
+          <Text
+            style={{
+              color: dragging_active ? colors.primary : colors.text,
+              fontSize: 20,
+              marginBottom: '5%',
+            }}>
+            Sortable
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            setLiveMode(!live_mode);
+            setDraggingActive(false);
+          }}>
+          <Text
+            style={{
+              color: live_mode ? colors.primary : colors.text,
+              fontSize: 20,
+              marginBottom: '5%',
+            }}>
+            Live Mode
+          </Text>
+        </Pressable>
+      </View>
       {presetPicklist ? (
         <View>
           <Text style={styles.name_input}>{presetPicklist.name}</Text>
@@ -319,11 +365,22 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           data={teams_list}
           renderItem={({item}) => {
             return (
-              <Pressable style={styles.team_item_in_list}>
+              <Pressable
+                style={styles.team_item_in_list}
+                onPress={() => {
+                  if (live_mode) {
+                    addOrRemoveTeamLiveMode(item);
+                  }
+                }}>
                 <Text style={{color: 'gray'}}>
                   {teams_list.indexOf(item) + 1}
                 </Text>
-                <Text style={styles.team_number_displayed}>
+                <Text
+                  style={
+                    removed_teams.includes(item)
+                      ? styles.team_number_strikethrough
+                      : styles.team_number_displayed
+                  }>
                   {item} - {teamNumberToNameMap.get(item)}
                 </Text>
               </Pressable>
