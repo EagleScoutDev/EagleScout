@@ -352,7 +352,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           onPress={() => {
             setTeamAddingModalVisible(false);
           }}>
-          <Text style={{color: 'white', fontSize: 20}}>Cancel</Text>
+          <Text style={{color: 'white', fontSize: 20}}>Save</Text>
         </TouchableOpacity>
         <View
           style={{
