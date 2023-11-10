@@ -29,7 +29,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   // initial data fetch
   useEffect(() => {
-    TBA.getTeamsAtCompetition('2023cc').then(teams => {
+    TBA.getTeamsAtCompetition('2023mttd').then(teams => {
       // sort teams by team number
       teams.sort((a, b) => {
         return a.team_number - b.team_number;

@@ -83,7 +83,7 @@ export class TBA {
    * Returns the rank of the team at the competition
    * @param comp_id the competition id
    * @param team_number the team number
-   * @returns the rank of the team at the competition, or -1 if the competition has not taken place yet
+   * @returns the rank of the team at the competition, or -1 if the competition has not taken place yet, or -2 if the team is not ranked
    */
   static async getTeamRank(
     comp_id: string,
@@ -106,10 +106,16 @@ export class TBA {
       return -1;
     }
     const data = await response.json();
+    console.log('data response', data);
 
     // this means that the competition has not taken place yet
     if (data === null) {
       return -1;
+    }
+
+    // if the qualification ranking is null, then the team is not ranked
+    if (data.qual == null) {
+      return -2;
     }
 
     return data.qual.ranking.rank;
