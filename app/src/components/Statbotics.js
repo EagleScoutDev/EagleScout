@@ -146,6 +146,7 @@ function Statbotics({team}) {
       backgroundColor: colors.card,
       borderRadius: 10,
       alignSelf: 'center',
+      marginTop: '5%',
     },
   });
 
@@ -275,27 +276,11 @@ function Statbotics({team}) {
 
   return (
     <View style={styles.formSection}>
-      <Text
-        style={{
-          textAlign: 'center',
-          fontWeight: 'bold',
-          fontSize: 20,
-          color: colors.text,
-        }}
-        onPress={() => setVisible(!visible)}>
-        Team {team} Statistics
-      </Text>
-      <Text
-        style={{textAlign: 'center', fontStyle: 'italic', color: colors.text}}>
-        {overall ? overall.name : 'Loading...'}
-      </Text>
-
       <View>
         <Text
           style={{
             fontWeight: 'bold',
             fontSize: 15,
-            marginTop: 20,
             color: colors.text,
           }}>
           Overall Statistics

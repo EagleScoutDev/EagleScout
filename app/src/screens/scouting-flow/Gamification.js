@@ -87,7 +87,6 @@ function Gamification({
           tabBarStyle: {
             backgroundColor: colors.background,
             borderTopColor: colors.background,
-            marginTop: '10%',
           },
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.text,
@@ -108,7 +107,6 @@ function Gamification({
 
             tabBarStyle: {
               backgroundColor: colors.background,
-              paddingTop: '10%',
             },
           }}
           children={() => (
@@ -171,7 +169,6 @@ function Gamification({
 
                   tabBarStyle: {
                     backgroundColor: colors.background,
-                    paddingTop: '10%',
                   },
                 }}
                 children={() => (
