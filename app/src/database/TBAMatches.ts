@@ -2,7 +2,7 @@ import {supabase} from '../lib/supabase';
 
 interface TBAMatch {
   id: number;
-  team: number;
+  team: string;
   match: number;
   predictedTime: Date;
   eventId: string;

@@ -1,9 +1,17 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SectionGrid} from 'react-native-super-grid';
-import React, { useEffect } from "react";
+import {useState, useEffect} from 'react';
 import TBAMatches from '../../database/TBAMatches';
+import SetScoutAssignmentModal from '../../components/modals/SetScoutAssignmentModal';
+import ScoutAssignments from '../../database/ScoutAssignments';
 
-function ScoutAssignmentsSpreadsheet({competition}) {
+function ScoutAssignmentsSpreadsheet({route}) {
+  const {competition} = route.params;
+  const [matchesGrouped, setMatchesGrouped] = useState([]);
+  const [scoutAssignmentModalVisible, setScoutAssignmentModalVisible] =
+    useState(false);
+  const [match, setMatch] = useState(null);
+
   const styles = StyleSheet.create({
     gridView: {
       marginTop: 20,
@@ -39,20 +47,42 @@ function ScoutAssignmentsSpreadsheet({competition}) {
   useEffect(() => {
     (async () => {
       let matches = await TBAMatches.getMatchesForCompetition(competition.id);
-      console.log(matches[0]);
+      let scoutAssignments =
+        await ScoutAssignments.getScoutAssignmentsForCompetition(
+          competition.id,
+        );
 
       matches = matches.filter(match => match.compLevel === 'qm');
-
       const matchesGrouped = [];
+      let uniqueIndex = 0;
       matches.forEach(match => {
         const matchingObject = matchesGrouped.find(
           obj => obj.data[0].match === match.match,
         );
+        let name = '';
+        let assignmentExists = false;
+        for (let i = 0; i < scoutAssignments.length; i++) {
+          if (
+            scoutAssignments[i].matchId === match.id &&
+            scoutAssignments[i].team === match.team
+          ) {
+            name = scoutAssignments[i].userFullName;
+            assignmentExists = true;
+            break;
+          }
+        }
+        const matchData = {
+          ...match,
+          name: name,
+          assignmentExists: assignmentExists,
+          key: uniqueIndex++,
+          teamFormatted: teamFormatter(match.team),
+        };
         if (matchingObject) {
-          matchingObject.data.push(match);
+          matchingObject.data.push(matchData);
         } else {
           matchesGrouped.push({
-            data: [match],
+            data: [matchData],
             title: `Match: ${match.match}`,
           });
         }
@@ -66,26 +96,66 @@ function ScoutAssignmentsSpreadsheet({competition}) {
     })();
   }, [competition]);
 
-  const [matchesGrouped, setMatchesGrouped] = React.useState([]);
+  const teamFormatter = team => {
+    if (team.substring(0, 3) === 'frc') {
+      return team.substring(3);
+    } else {
+      return team;
+    }
+  };
+
+  const setScoutAssignment = item => {
+    console.log('setting scout assignment');
+    setMatch(item);
+    setScoutAssignmentModalVisible(true);
+  };
+
+  const setNameCb = name => {
+    for (let i = 0; i < matchesGrouped.length; i++) {
+      for (let j = 0; j < matchesGrouped[i].data.length; j++) {
+        if (matchesGrouped[i].data[j].key === match.key) {
+          if (name != null) {
+            matchesGrouped[i].data[j].name = name;
+            matchesGrouped[i].data[j].assignmentExists = true;
+          } else {
+            matchesGrouped[i].data[j].name = '';
+            matchesGrouped[i].data[j].assignmentExists = false;
+          }
+          break;
+        }
+      }
+    }
+  };
 
   return (
-    <SectionGrid
-      itemDimension={90}
-      // staticDimension={300}
-      // fixed
-      // spacing={20}
-      sections={matchesGrouped}
-      style={styles.gridView}
-      renderItem={({item, section, index}) => (
-        <View style={[styles.itemContainer, {backgroundColor: item.alliance}]}>
-          <Text style={styles.itemName}>{item.team}</Text>
-          <Text style={styles.itemCode}>{item.team}</Text>
-        </View>
-      )}
-      renderSectionHeader={({section}) => (
-        <Text style={styles.sectionHeader}>{section.title}</Text>
-      )}
-    />
+    <>
+      <SectionGrid
+        itemDimension={90}
+        // staticDimension={300}
+        // fixed
+        // spacing={20}
+        sections={matchesGrouped}
+        style={styles.gridView}
+        renderItem={({item, section, index}) => (
+          <TouchableOpacity
+            style={[styles.itemContainer, {backgroundColor: item.alliance}]}
+            onPress={() => setScoutAssignment(item)}>
+            <Text style={styles.itemName}>{item.teamFormatted}</Text>
+            <Text style={styles.itemCode}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+        renderSectionHeader={({section}) => (
+          <Text style={styles.sectionHeader}>{section.title}</Text>
+        )}
+      />
+      <SetScoutAssignmentModal
+        visible={scoutAssignmentModalVisible}
+        setVisible={setScoutAssignmentModalVisible}
+        competition={competition}
+        match={match}
+        setNameCb={setNameCb}
+      />
+    </>
   );
 }
 

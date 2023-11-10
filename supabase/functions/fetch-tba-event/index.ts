@@ -59,16 +59,24 @@ serve(async (req: Request) => {
         return getResponse(false, 'Matches not available for this competition yet');
       }
       matches_db_function.push({
-        team_red_1: Number(elem.alliances.red.team_keys[0].substring(3)),
-        team_red_2: Number(elem.alliances.red.team_keys[1].substring(3)),
-        team_red_3: Number(elem.alliances.red.team_keys[2].substring(3)),
-        team_blue_1: Number(elem.alliances.blue.team_keys[0].substring(3)),
-        team_blue_2: Number(elem.alliances.blue.team_keys[1].substring(3)),
-        team_blue_3: Number(elem.alliances.blue.team_keys[2].substring(3)),
+        team_red_2: elem.alliances.red.team_keys[1],
+        team_red_3: elem.alliances.red.team_keys[2],
+        team_red_1: elem.alliances.red.team_keys[0],
+        team_blue_1: elem.alliances.blue.team_keys[0],
+        team_blue_2: elem.alliances.blue.team_keys[1],
+        team_blue_3: elem.alliances.blue.team_keys[2],
         match_number: elem.match_number,
         predicted_time: elem.predicted_time ? new Date(elem.predicted_time) : null,
         comp_level: elem.comp_level
       });
+      if (elem.match_number == 1 && elem.comp_level == 'qm') {
+        console.log('team_red_1: ' + elem.alliances.red.team_keys[0]);
+        console.log('team_red_2: ' + elem.alliances.red.team_keys[1]);
+        console.log('team_red_3: ' + elem.alliances.red.team_keys[2]);
+        console.log('team_blue_1: ' + elem.alliances.blue.team_keys[0]);
+        console.log('team_blue_2: ' + elem.alliances.blue.team_keys[1]);
+        console.log('team_blue_3: ' + elem.alliances.blue.team_keys[2]);
+      }
     });
     const {error} = await supabaseClient.rpc('add_tba_event', {
       event_key_arg: eventKey,
