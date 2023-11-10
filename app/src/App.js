@@ -25,7 +25,7 @@ import CustomDrawerContent from './CustomDrawer';
 import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import FormHelper from './FormHelper';
 import ScoutAssignments from './screens/scout-assignments-flow/ScoutAssignments';
-// import UpcomingRoundsView from './screens/UpcomingRoundsView';
+import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
 import {
   ClipboardWithGraph,
@@ -217,13 +217,13 @@ const MyStack = () => {
           </>
         ) : (
           <>
-            {/*<Drawer.Screen*/}
-            {/*  name="Upcoming Rounds"*/}
-            {/*  component={UpcomingRoundsView}*/}
-            {/*  options={{*/}
-            {/*    drawerIcon: () => ClipboardWithGraph(),*/}
-            {/*  }}*/}
-            {/*/>*/}
+            <Drawer.Screen
+              name="Upcoming Rounds"
+              component={UpcomingRoundsView}
+              options={{
+                drawerIcon: () => ClipboardWithGraph(),
+              }}
+            />
             <Drawer.Screen
               name="Search"
               component={SearchScreen}
