@@ -116,7 +116,11 @@ function CompetitionRank({team_number}: {team_number: number}) {
               marginTop: '2%',
               fontWeight: '800',
             }}>
-            Ranked #{currentCompetitionRank}
+            {currentCompetitionRank === -1
+              ? 'Has not competed yet'
+              : currentCompetitionRank === -2
+              ? 'Unranked'
+              : 'Ranked #' + {currentCompetitionRank}}
           </Text>
           <Text
             style={{
@@ -216,8 +220,9 @@ function CompetitionRank({team_number}: {team_number: number}) {
                   }}>
                   {item.rank === -1
                     ? 'Future Competition'
+                    : item.rank === -2
+                    ? 'Unranked'
                     : 'Rank #' + item.rank}
-                  {/*Rank {item.rank}*/}
                 </Text>
               </View>
             );
