@@ -38,6 +38,7 @@ import {
 } from './SVGIcons';
 import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
+import DataAggregation from './screens/DataAggregation';
 
 const Drawer = createDrawerNavigator();
 
@@ -255,6 +256,13 @@ const MyStack = () => {
               component={PicklistsManager}
               options={{
                 drawerIcon: () => CheckList(),
+              }}
+            />
+            <Drawer.Screen
+              name={'Team Rank'}
+              component={DataAggregation}
+              options={{
+                drawerIcon: () => ListWithDots(),
               }}
             />
             <Drawer.Screen
