@@ -14,13 +14,12 @@ function SetScoutAssignmentModal({
   visible,
   setVisible,
   competition,
-  match,
+  matches,
   setNameCb,
 }) {
   const [name, setName] = useState('');
   const [userId, setUserId] = useState(null);
   const [names, setNames] = useState([]);
-  const [existsAssignment, setExistsAssignment] = useState(false);
   const {colors} = useTheme();
 
   const styles = StyleSheet.create({
@@ -58,12 +57,16 @@ function SetScoutAssignmentModal({
   };
 
   useEffect(() => {
-    if (match != null) {
-      setName(match.name);
+    if (matches != null) {
+      if (matches.length === 1) {
+        setName(matches[0].name);
+      } else {
+        setName('');
+      }
       setNames([]);
       setUserId(null);
     }
-  }, [match, visible]);
+  }, [matches, visible]);
 
   useEffect(() => {
     searchForUser(name).catch(console.error);
@@ -86,35 +89,45 @@ function SetScoutAssignmentModal({
       Alert.alert('Error', 'Please select a user.');
       return;
     }
-    const {error} = await supabase.from('scout_assignments').upsert(
-      {
-        competition_id: competition.id,
-        match_id: match.id,
-        user_id: userId,
-      },
-      {onConflict: 'competition_id, match_id'},
-    );
-    if (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to set scout assignment.');
-    } else {
-      setNameCb(name);
-      setVisible(false);
+    const upsertPromises = matches.map(match => {
+      return supabase.from('scout_assignments').upsert(
+        {
+          competition_id: competition.id,
+          match_id: match.id,
+          user_id: userId,
+        },
+        {onConflict: 'competition_id, match_id'},
+      );
+    });
+    const upsertResults = await Promise.all(upsertPromises);
+    for (const result of upsertResults) {
+      if (result.error) {
+        console.error(result.error);
+        Alert.alert('Error', 'Failed to set scout assignment(s).');
+        return;
+      }
     }
+    setNameCb(name);
+    setVisible(false);
   };
 
   const deleteScoutAssignment = async () => {
-    const {error} = await supabase
-      .from('scout_assignments')
-      .delete()
-      .match({competition_id: competition.id, match_id: match.id});
-    if (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to delete scout assignment.');
-    } else {
-      setNameCb(null);
-      setVisible(false);
+    const deletePromises = matches.map(match => {
+      return supabase
+        .from('scout_assignments')
+        .delete()
+        .match({competition_id: competition.id, match_id: match.id});
+    });
+    const deleteResults = await Promise.all(deletePromises);
+    for (const result of deleteResults) {
+      if (result.error) {
+        console.error(result.error);
+        Alert.alert('Error', 'Failed to delete scout assignment(s).');
+        return;
+      }
     }
+    setNameCb(null);
+    setVisible(false);
   };
 
   const onDelete = () => {
@@ -137,26 +150,30 @@ function SetScoutAssignmentModal({
 
   return (
     <>
-      {match && (
+      {matches && (
         <StandardModal title={'Set scout assignment'} visible={visible}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 18,
-              fontWeight: '600',
-              textAlign: 'center',
-            }}>
-            Match: {match.match}
-          </Text>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 18,
-              fontWeight: '600',
-              textAlign: 'center',
-            }}>
-            Team: {match.teamFormatted}
-          </Text>
+          {matches.length === 1 && (
+            <>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 18,
+                  fontWeight: '600',
+                  textAlign: 'center',
+                }}>
+                Match: {matches[0].match}
+              </Text>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 18,
+                  fontWeight: '600',
+                  textAlign: 'center',
+                }}>
+                Team: {matches[0].teamFormatted}
+              </Text>
+            </>
+          )}
           <Text style={styles.label_background}>Search for a user</Text>
           <Spacer />
           <TextInput
@@ -209,7 +226,7 @@ function SetScoutAssignmentModal({
               width={'40%'}
             />
           </View>
-          {match.assignmentExists && (
+          {(matches.length > 1 || matches[0].assignmentExists) && (
             <View style={styles.button_row}>
               <StandardButton
                 color={'#e60000'}
