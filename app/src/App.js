@@ -24,7 +24,8 @@ import SignUpModal from './screens/login-flow/SignUpModal';
 import CustomDrawerContent from './CustomDrawer';
 import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import FormHelper from './FormHelper';
-// import UpcomingRoundsView from './screens/UpcomingRoundsView';
+import ScoutAssignments from './screens/scout-assignments-flow/ScoutAssignments';
+import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
 import {
   ClipboardWithGraph,
@@ -216,13 +217,13 @@ const MyStack = () => {
           </>
         ) : (
           <>
-            {/*<Drawer.Screen*/}
-            {/*  name="Upcoming Rounds"*/}
-            {/*  component={UpcomingRoundsView}*/}
-            {/*  options={{*/}
-            {/*    drawerIcon: () => ClipboardWithGraph(),*/}
-            {/*  }}*/}
-            {/*/>*/}
+            <Drawer.Screen
+              name="Upcoming Rounds"
+              component={UpcomingRoundsView}
+              options={{
+                drawerIcon: () => ClipboardWithGraph(),
+              }}
+            />
             <Drawer.Screen
               name="Search"
               component={SearchScreen}
@@ -273,6 +274,18 @@ const MyStack = () => {
                 },
               }}
             />
+            {admin === true && admin !== '0' && (
+              <Drawer.Screen
+                name="Scout Assignments"
+                component={ScoutAssignments}
+                options={{
+                  // drawerItemStyle: {
+                  //   display: 'none',
+                  // },
+                  drawerIcon: () => TwoPeople(),
+                }}
+              />
+            )}
             {admin === true && admin !== '0' && (
               <Drawer.Screen
                 name="User Management"
