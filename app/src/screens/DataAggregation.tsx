@@ -216,7 +216,7 @@ function DataAggregation({navigation}) {
               ))}
           </View>
           <StandardButton
-            text={'Save to Picklist'}
+            text={'Send to Picklist'}
             color={'blue'}
             isLoading={false}
             onPress={() => {
@@ -227,7 +227,6 @@ function DataAggregation({navigation}) {
                 temp.push(key);
               });
 
-              // navigation.navigate('Picklists');
               navigation.navigate('Picklists', {
                 screen: 'Picklist Creator',
                 params: {
