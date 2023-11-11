@@ -85,6 +85,10 @@ const MyStack = () => {
       const {
         data: {user},
       } = await supabase.auth.getUser();
+      if (user.user_metadata.requested_deletion) {
+        setError('Your account has been marked for deletion.');
+        return;
+      }
       console.log('user: ' + user.id);
       const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
