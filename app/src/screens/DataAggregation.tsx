@@ -143,14 +143,23 @@ function DataAggregation({navigation}) {
             }}>
             <Text
               style={{
-                textAlign: 'center',
-                fontSize: 20,
-                marginVertical: '5%',
-                color: colors.text,
+                color: colors.primary,
+                fontSize: 18,
+                paddingTop: '5%',
+                paddingLeft: '5%',
               }}>
-              Chosen Question: {chosenQuestion && chosenQuestion.question}
+              Back
             </Text>
           </Pressable>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 20,
+              marginVertical: '5%',
+              color: colors.text,
+            }}>
+            Chosen Question: {chosenQuestion && chosenQuestion.question}
+          </Text>
           <Pressable
             onPress={() => {
               if (teamsToAverage) {
@@ -158,7 +167,14 @@ function DataAggregation({navigation}) {
                 const sorted = new Map([...teamsToAverage.entries()].reverse());
                 setTeamsToAverage(sorted);
               }
-            }}>
+            }}
+            style={({pressed}) => ({
+              backgroundColor: colors.card,
+              padding: '3%',
+              marginHorizontal: '20%',
+              borderRadius: 10,
+              opacity: pressed ? 0.5 : 1,
+            })}>
             <Text style={{color: colors.text, textAlign: 'center'}}>
               Change Sort
             </Text>
@@ -220,18 +236,11 @@ function DataAggregation({navigation}) {
             color={'blue'}
             isLoading={false}
             onPress={() => {
-              // get just the keys
-              let temp: number[] = [];
-
-              teamsToAverage?.forEach((value, key) => {
-                temp.push(key);
-              });
-
               navigation.navigate('Picklists', {
                 screen: 'Picklist Creator',
                 params: {
                   picklist_id: -1,
-                  given_teams: temp,
+                  given_teams: Array.from(teamsToAverage.keys()),
                 },
               });
             }}

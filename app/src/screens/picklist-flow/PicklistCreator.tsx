@@ -21,7 +21,11 @@ import DraggableFlatList, {
 import Svg, {Path} from 'react-native-svg';
 import ProfilesDB from '../../database/Profiles';
 
-function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
+function PicklistCreator({
+  route,
+}: {
+  route: {params: {picklist_id: number; given_teams: number[]}};
+}) {
   const {colors} = useTheme();
 
   // navigates back to the previous screen once picklist is updated
@@ -38,7 +42,9 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   const [filter_by_added, setFilterByAdded] = useState(false);
 
   // list of teams in the picklist
-  const [teams_list, setTeamsList] = useState<number[]>([]);
+  const [teams_list, setTeamsList] = useState<number[]>(
+    route.params.given_teams,
+  );
 
   // used to enable/disable dragging
   const [dragging_active, setDraggingActive] = useState(false);
