@@ -27,6 +27,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
 
+  const [searchInFocus, setSearchInFocus] = useState<boolean>(false);
+
   // initial data fetch
   useEffect(() => {
     TBA.getTeamsAtCompetition('2023mttd').then(teams => {
@@ -84,6 +86,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           }}
           onChangeText={text => setTeam(text)}
           value={team}
+          onFocus={() => setSearchInFocus(true)}
           // keyboardType={'numeric'}
           placeholder={'Try "114" or "Eaglestrike"'}
           onEndEditing={() => {

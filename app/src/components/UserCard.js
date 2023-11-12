@@ -27,7 +27,7 @@ function UserCard({name, email}) {
       </View>
       <View>
         <Text style={{fontSize: 20, color: colors.text}}>{name}</Text>
-        <Text style={{color: colors.text}}>{email}</Text>
+        {/*<Text style={{color: colors.text}}>{email}</Text>*/}
       </View>
     </View>
   );

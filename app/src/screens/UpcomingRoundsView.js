@@ -4,8 +4,10 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  Pressable,
 } from 'react-native';
 import {useEffect, useState} from 'react';
+import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {Path, Svg} from 'react-native-svg';
 import CompetitionsDB from '../database/Competitions';
@@ -97,6 +99,29 @@ const UpcomingRoundsView = ({navigation}) => {
     });
   }, [navigation]);
 
+  const FAB = () => (
+    <Pressable
+      style={{
+        position: 'absolute',
+        bottom: '5%',
+        right: '5%',
+        backgroundColor: colors.card,
+        borderRadius: 50,
+        padding: '5%',
+        elevation: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        borderWidth: 1,
+        borderColor: colors.text,
+      }}
+      onPress={() => {
+        navigation.navigate('Scout Report');
+      }}>
+      <Text style={{color: colors.text, fontWeight: 'bold'}}>Scout Now +</Text>
+    </Pressable>
+  );
+
   return (
     <>
       {isCompetitionHappening ? (
@@ -145,7 +170,7 @@ const UpcomingRoundsView = ({navigation}) => {
                         padding: '5%',
                         textAlign: 'center',
                       }}>
-                      Congratulations! You have no rounds left to scout today.
+                      You have no rounds left to scout today.
                     </Text>
                   </View>
                 )}
@@ -226,13 +251,21 @@ const UpcomingRoundsView = ({navigation}) => {
                   ))}
                 </ScrollView>
               </View>
+              <FAB />
             </View>
           ) : (
-            <Text>Connect to the internet to fetch upcoming rounds.</Text>
+            <>
+              <Text style={{color: colors.text}}>
+                Connect to the internet to fetch upcoming rounds.
+              </Text>
+              <FAB />
+            </>
           )}
         </>
       ) : (
-        <Text>There is no competition happening currently.</Text>
+        <Text style={{color: colors.text}}>
+          There is no competition happening currently.
+        </Text>
       )}
     </>
   );
