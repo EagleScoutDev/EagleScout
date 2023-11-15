@@ -42,7 +42,6 @@ function CompetitionFlatList({
 
   useEffect(() => {
     setIsCollapsed(overrideCollapsed);
-    console.log(isCollapsed);
   }, [overrideCollapsed]);
 
   useEffect(() => {
