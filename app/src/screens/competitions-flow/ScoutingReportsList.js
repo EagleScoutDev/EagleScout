@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, ActivityIndicator} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import ScoutReportsDB from '../../database/ScoutReports';
@@ -16,6 +16,7 @@ const ScoutingReportsList = ({navigation, competition}) => {
    * }
    */
   const [reports, setReports] = useState([]);
+  const [reportsLoading, setReportsLoading] = useState(true);
 
   useEffect(() => {
     console.log('HERE');
@@ -24,10 +25,13 @@ const ScoutingReportsList = ({navigation, competition}) => {
       // console.log(reports);
       console.log('number of reports: ' + reports.length);
       setReports(reports);
+      setReportsLoading(false);
     });
   }, [competition]);
-
-  return <ReportList reports={reports} isOffline={false} />;
+  if (reportsLoading) {
+    return <ActivityIndicator />;
+  }
+  return <ReportList reports={reports} isOffline={false} expandable={false} displayHeaders={false} />;
 };
 
 export default ScoutingReportsList;

@@ -14,8 +14,8 @@ import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
 import {ChevronDown, ChevronUp} from '../SVGIcons';
 import Competitions from '../database/Competitions';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import FormHelper from "../FormHelper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import FormHelper from '../FormHelper';
 
 if (
   Platform.OS === 'android' &&
@@ -33,6 +33,7 @@ function CompetitionFlatList({
   setChosenScoutFormIndex,
   setChosenCompetitionIndex,
   setModalVisible,
+  displayHeader,
 }) {
   const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
   const [sort, setSort] = useState('');
@@ -41,6 +42,7 @@ function CompetitionFlatList({
 
   useEffect(() => {
     setIsCollapsed(overrideCollapsed);
+    console.log(isCollapsed);
   }, [overrideCollapsed]);
 
   useEffect(() => {
@@ -69,33 +71,35 @@ function CompetitionFlatList({
       }}
       ListHeaderComponent={() => (
         <View>
-          <TouchableOpacity onPress={onPress}>
-            <View
-              style={{
-                width: '90%',
-                alignSelf: 'center',
-                flexDirection: 'row',
-                paddingTop: 10,
-                paddingBottom: 20,
-                paddingHorizontal: 20,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text
+          {displayHeader && (
+            <TouchableOpacity onPress={onPress}>
+              <View
                 style={{
-                  color: isCurrentlyRunning ? colors.primary : colors.text,
-                  fontSize: 30,
-                  fontWeight: 'bold',
+                  width: '90%',
+                  alignSelf: 'center',
+                  flexDirection: 'row',
+                  paddingTop: 10,
+                  paddingBottom: 20,
+                  paddingHorizontal: 20,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}>
-                {compName}
-              </Text>
-              {isCollapsed ? (
-                <ChevronUp width={30} height={30} />
-              ) : (
-                <ChevronDown width={30} height={30} />
-              )}
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: isCurrentlyRunning ? colors.primary : colors.text,
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                  }}>
+                  {compName}
+                </Text>
+                {isCollapsed ? (
+                  <ChevronUp width={30} height={30} />
+                ) : (
+                  <ChevronDown width={30} height={30} />
+                )}
+              </View>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               display: isCollapsed ? 'none' : 'flex',
@@ -231,7 +235,12 @@ function CompetitionFlatList({
   );
 }
 
-function ReportList({reports, isOffline}) {
+function ReportList({
+  reports,
+  isOffline,
+  expandable = true,
+  displayHeaders = true,
+}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
@@ -246,14 +255,14 @@ function ReportList({reports, isOffline}) {
       return;
     }
 
-
     const effect = async () => {
       let currComp;
       if (!isOffline) {
         currComp = await Competitions.getCurrentCompetition();
       } else {
         const currCompObj = await AsyncStorage.getItem(
-          FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+        );
         if (currCompObj != null) {
           currComp = JSON.parse(currCompObj);
         }
@@ -320,26 +329,28 @@ function ReportList({reports, isOffline}) {
 
   return (
     <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
-      <TouchableOpacity
-        onPress={() => {
-          setIsCollapsedAll(!isCollapsedAll);
-          setFirstIsCollapsedAll(false);
-        }}
-        style={{
-          alignSelf: 'flex-end',
-          // backgroundColor: colors.primary,
-          paddingHorizontal: 10,
-          // borderRadius: 10,
-        }}>
-        <Text
+      {expandable && (
+        <TouchableOpacity
+          onPress={() => {
+            setIsCollapsedAll(!isCollapsedAll);
+            setFirstIsCollapsedAll(false);
+          }}
           style={{
-            color: colors.primary,
-            fontWeight: 'bold',
-            fontSize: 17,
+            alignSelf: 'flex-end',
+            // backgroundColor: colors.primary,
+            paddingHorizontal: 10,
+            // borderRadius: 10,
           }}>
-          {isCollapsedAll ? 'Expand All' : 'Collapse All'}
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: 'bold',
+              fontSize: 17,
+            }}>
+            {isCollapsedAll ? 'Expand All' : 'Collapse All'}
+          </Text>
+        </TouchableOpacity>
+      )}
       {/* instead of a FlatList, use a view to avoid the weird error when removing from DOM */}
       <View
         style={{
@@ -352,8 +363,11 @@ function ReportList({reports, isOffline}) {
             data={item.data}
             isCurrentlyRunning={item.isCurrentlyRunning}
             overrideCollapsed={
-              (firstIsCollapsedAll && !item.isCurrentlyRunning) ||
-              isCollapsedAll
+              // if expandable is false, keep all to be defaultly open
+              !expandable
+                ? false
+                : (firstIsCollapsedAll && !item.isCurrentlyRunning) ||
+                  isCollapsedAll
             }
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
@@ -364,6 +378,7 @@ function ReportList({reports, isOffline}) {
               setChosenCompetitionIndex(index);
             }}
             setModalVisible={setModalVisible}
+            displayHeader={displayHeaders}
           />
         ))}
       </View>
