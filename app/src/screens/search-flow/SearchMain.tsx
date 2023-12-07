@@ -47,6 +47,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  const [prevScrollY, setPrevScrollY] = useState<number>(0);
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -116,7 +117,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       />
       {!isScrolling && (
         <>
-          <MinimalSectionHeader title={'Search'} />
           <View
             style={{
               flexDirection: 'row',
@@ -165,11 +165,12 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       <FlatList
         onScroll={scroll_event => {
           // if scrolling down, hide search bar
-          if (scroll_event.nativeEvent.contentOffset.y > 0) {
+          if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
             setIsScrolling(true);
           } else {
             setIsScrolling(false);
           }
+          setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
         }}
         data={Array.from(reportsByMatch.keys()).reverse()}
         keyExtractor={item => item.toString()}
