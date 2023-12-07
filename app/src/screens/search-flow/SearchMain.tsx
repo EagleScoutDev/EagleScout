@@ -104,8 +104,12 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          marginLeft: '4%',
+          // marginLeft: '4%',
           marginTop: '3%',
+          paddingLeft: '4%',
+          borderColor: 'gray',
+          borderWidth: 1,
+          borderRadius: 10,
         }}>
         <Svg width={'6%'} height="50%" viewBox="0 0 16 16">
           <Path
@@ -115,12 +119,9 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         </Svg>
         <TextInput
           style={{
-            marginHorizontal: '6%',
+            marginHorizontal: '4%',
             height: 40,
-            borderColor: 'gray',
-            borderWidth: 1,
-            borderRadius: 25,
-            paddingLeft: '6%',
+            // paddingLeft: '6%',
             color: colors.text,
             flex: 1,
           }}
