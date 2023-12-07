@@ -5,14 +5,17 @@ import {
   Switch,
   FlatList,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import Svg, {Path} from 'react-native-svg';
+import ScoutReports, {ScoutReportReturnData} from '../../database/ScoutReports';
 
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
+import ScoutReportsDB from '../../database/ScoutReports';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -29,8 +32,45 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   const [searchInFocus, setSearchInFocus] = useState<boolean>(false);
 
+  const [listOfScoutReports, setListOfScoutReports] = useState<
+    ScoutReportReturnData[]
+  >([]);
+
+  // create an object where key is match number and value is an array of reports
+  const [reportsByMatch, setReportsByMatch] = useState<
+    Map<number, ScoutReportReturnData[]>
+  >(new Map());
+
   // initial data fetch
   useEffect(() => {
+    ScoutReportsDB.getReportsForCompetition(1).then(reports => {
+      console.log('num reports found for id 8 is ' + reports.length);
+
+      // sort reports by matchnumber
+      reports.sort((a, b) => {
+        return a.matchNumber - b.matchNumber;
+      });
+
+      // create an object where key is match number and value is an array of reports
+      let temp: Map<number, ScoutReportReturnData[]> = new Map();
+      reports.forEach(report => {
+        if (temp.has(report.matchNumber)) {
+          temp.get(report.matchNumber)?.push(report);
+        } else {
+          temp.set(report.matchNumber, [report]);
+        }
+      });
+
+      // print temp out nicely
+      temp.forEach((value, key) => {
+        console.log('key: ' + key);
+        console.log(value.length);
+      });
+      setReportsByMatch(temp);
+
+      setListOfScoutReports(reports);
+    });
+
     TBA.getTeamsAtCompetition('2023mttd').then(teams => {
       // sort teams by team number
       teams.sort((a, b) => {
@@ -58,7 +98,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   }, [team, listOfTeams]);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, marginTop: '10%'}}>
       <MinimalSectionHeader title={'Search'} />
       <View
         style={{
@@ -94,32 +134,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           }}
         />
       </View>
-      {/*<View*/}
-      {/*  style={{*/}
-      {/*    flexDirection: 'row',*/}
-      {/*    alignItems: 'center',*/}
-      {/*    marginTop: '3%',*/}
-      {/*    justifyContent: 'space-between',*/}
-
-      {/*    padding: '4%',*/}
-      {/*    paddingHorizontal: '6%',*/}
-      {/*    marginHorizontal: '5%',*/}
-
-      {/*    backgroundColor: colors.card,*/}
-      {/*    borderColor: colors.border,*/}
-      {/*    borderWidth: 1,*/}
-      {/*    borderRadius: 10,*/}
-      {/*  }}>*/}
-      {/*  <Text style={{color: colors.text, fontWeight: 'bold', fontSize: 15}}>*/}
-      {/*    Filter by current competition*/}
-      {/*  </Text>*/}
-      {/*  <Switch*/}
-      {/*    onValueChange={() =>*/}
-      {/*      setCurrentCompetitionOnly(!currentCompetitionOnly)*/}
-      {/*    }*/}
-      {/*    value={currentCompetitionOnly}*/}
-      {/*  />*/}
-      {/*</View>*/}
       <View
         style={{
           height: 1,
@@ -129,60 +143,67 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         }}
       />
       <FlatList
-        data={filteredTeams}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{
-              height: 1,
-              width: '80%',
-              alignSelf: 'center',
-              backgroundColor: colors.border,
-            }}
-          />
-        )}
+        data={Array.from(reportsByMatch.keys())}
+        keyExtractor={item => item.toString()}
         renderItem={({item}) => {
           return (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('TeamViewer', {team: item});
-              }}
-              key={item.key}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                // marginVertical: '2%',
-                justifyContent: 'space-between',
-
-                padding: '5%',
-                paddingHorizontal: '3%',
-                marginHorizontal: '5%',
-
-                // backgroundColor: colors.card,
-                // borderColor: colors.border,
-                // borderBottomColor: colors.border,
-                // borderBottomWidth: 1,
-                // borderWidth: 1,
-                borderRadius: 10,
-              }}>
-              <Text
+            <View>
+              <View
                 style={{
-                  color: colors.text,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  flex: 1,
+                  minWidth: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                {item.team_number}
-              </Text>
-              <Text
+                <Text
+                  style={{
+                    color: 'grey',
+                    marginHorizontal: '4%',
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                  }}>
+                  {item}
+                </Text>
+                <View
+                  style={{
+                    height: 2,
+                    width: '100%',
+                    backgroundColor: colors.border,
+                    marginVertical: '3%',
+                  }}
+                />
+              </View>
+              <View
                 style={{
-                  color: colors.text,
-                  fontWeight: 'bold',
-                  textAlign: 'right',
-                  flex: 5,
+                  // make it like a 3x2 grid
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
                 }}>
-                {item.nickname}
-              </Text>
-            </TouchableOpacity>
+                {reportsByMatch.get(item)?.map((report, index) => {
+                  return (
+                    <Pressable
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: index < 3 ? 'crimson' : 'dodgerblue',
+                        margin: '2%',
+                        padding: '6%',
+                        borderRadius: 10,
+                        minWidth: '25%',
+                      }}>
+                      <Text
+                        style={{
+                          color: colors.text,
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          flex: 1,
+                        }}>
+                        {report.teamNumber}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
           );
         }}
       />

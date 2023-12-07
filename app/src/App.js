@@ -213,6 +213,7 @@ const MyStack = () => {
               name="Search"
               component={SearchScreen}
               options={{
+                headerShown: false,
                 tabBarIcon: ({color, size, focused}) => (
                   <Svg viewBox="0 0 16 16" width={size} height={size}>
                     <Path
