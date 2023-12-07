@@ -16,6 +16,7 @@ import ScoutReports, {ScoutReportReturnData} from '../../database/ScoutReports';
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
 import ScoutReportsDB from '../../database/ScoutReports';
+import CompetitionChanger from './CompetitionChanger';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -34,6 +35,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     ScoutReportReturnData[]
   >([]);
 
+  const [competitionId, setCompetitionId] = useState<number>(1); // default to 2023mttd
+
   // create an object where key is match number and value is an array of reports
   const [reportsByMatch, setReportsByMatch] = useState<
     Map<number, ScoutReportReturnData[]>
@@ -43,7 +46,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   // initial data fetch
   useEffect(() => {
-    ScoutReportsDB.getReportsForCompetition(1).then(reports => {
+    ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
       console.log('num reports found for id 8 is ' + reports.length);
 
       // sort reports by matchnumber
@@ -79,7 +82,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       setListOfTeams(teams);
     });
     console.log(listOfTeams);
-  }, []);
+  }, [competitionId]);
 
   // when user starts searching, filter the results displayed
   useEffect(() => {
@@ -99,6 +102,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={{flex: 1, marginTop: '10%'}}>
+      <CompetitionChanger
+        currentCompId={competitionId}
+        setCurrentCompId={setCompetitionId}
+      />
       <MinimalSectionHeader title={'Search'} />
       <View
         style={{
@@ -144,7 +151,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         }}
       />
       <FlatList
-        data={Array.from(reportsByMatch.keys())}
+        data={Array.from(reportsByMatch.keys()).reverse()}
         keyExtractor={item => item.toString()}
         renderItem={({item}) => {
           return (

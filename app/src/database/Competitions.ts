@@ -7,7 +7,7 @@ interface Competition {
   formId: number;
 }
 
-interface CompetitionReturnData extends Competition {
+export interface CompetitionReturnData extends Competition {
   id: number;
   form: [];
   scoutAssignmentsEnabled: boolean;
@@ -67,7 +67,7 @@ class CompetitionsDB {
       name: competition.name,
       start_time: competition.startTime,
       end_time: competition.endTime,
-      form_id: competition.formId
+      form_id: competition.formId,
     });
     if (error) {
       throw error;
