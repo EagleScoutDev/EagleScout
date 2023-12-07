@@ -6,6 +6,7 @@ import {SimpleTeam} from '../../lib/TBAUtils';
 import {createStackNavigator} from '@react-navigation/stack';
 import ReportsForTeam from './ReportsForTeam';
 import {useTheme} from '@react-navigation/native';
+import ScoutViewer from '../../components/modals/ScoutViewer';
 
 const Stack = createStackNavigator();
 function SearchScreen() {
@@ -44,6 +45,14 @@ function SearchScreen() {
       <Stack.Screen
         name={'Reports for Team'}
         component={ReportsForTeam}
+        options={{
+          headerBackTitle: 'Back',
+          headerTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name={'Scout Report Viewer'}
+        component={ScoutViewer}
         options={{
           headerBackTitle: 'Back',
           headerTitle: '',

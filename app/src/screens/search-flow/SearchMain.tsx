@@ -25,8 +25,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [team, setTeam] = useState<string>('');
   const {colors} = useTheme();
 
-  const [currentCompetitionOnly, setCurrentCompetitionOnly] = useState(true);
-
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
 
@@ -40,6 +38,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [reportsByMatch, setReportsByMatch] = useState<
     Map<number, ScoutReportReturnData[]>
   >(new Map());
+
+  const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
 
   // initial data fetch
   useEffect(() => {
@@ -153,6 +153,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                   minWidth: '100%',
                   flexDirection: 'row',
                   alignItems: 'center',
+                  marginVertical: '3%',
                 }}>
                 <Text
                   style={{
@@ -168,7 +169,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                     height: 2,
                     width: '100%',
                     backgroundColor: colors.border,
-                    marginVertical: '3%',
                   }}
                 />
               </View>
@@ -181,6 +181,16 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 {reportsByMatch.get(item)?.map((report, index) => {
                   return (
                     <Pressable
+                      onPress={() => {
+                        navigation.navigate('Scout Report Viewer', {
+                          visible: scoutViewerVisible,
+                          setVisible: setScoutViewerVisible,
+                          data: report.data ?? [],
+                          chosenComp: report.competitionName,
+                          updateFormData: () => {},
+                          isOfflineForm: false,
+                        });
+                      }}
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
