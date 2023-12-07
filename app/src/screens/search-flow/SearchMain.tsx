@@ -170,6 +170,11 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           } else {
             setIsScrolling(false);
           }
+
+          // if at top of flatlist, show search bar
+          if (scroll_event.nativeEvent.contentOffset.y === 0) {
+            setIsScrolling(false);
+          }
           setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
         }}
         data={Array.from(reportsByMatch.keys()).reverse()}
