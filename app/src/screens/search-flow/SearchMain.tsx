@@ -19,6 +19,7 @@ import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
 import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
+import ScoutViewer from '../../components/modals/ScoutViewer';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -45,6 +46,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   >(new Map());
 
   const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
+  const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
@@ -216,14 +218,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                   return (
                     <Pressable
                       onPress={() => {
-                        navigation.navigate('Scout Report Viewer', {
-                          visible: scoutViewerVisible,
-                          setVisible: setScoutViewerVisible,
-                          data: report.data ?? [],
-                          chosenComp: report.competitionName,
-                          updateFormData: () => {},
-                          isOfflineForm: false,
-                        });
+                        setScoutViewerVisible(true);
+                        setCurrentReport(report);
                       }}
                       style={{
                         flexDirection: 'row',
@@ -251,6 +247,16 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           );
         }}
       />
+      {scoutViewerVisible && currentReport && (
+        <ScoutViewer
+          visible={scoutViewerVisible}
+          setVisible={setScoutViewerVisible}
+          data={currentReport ?? []}
+          chosenComp={currentReport?.competitionName ?? ''}
+          updateFormData={() => {}}
+          isOfflineForm={false}
+        />
+      )}
     </View>
   );
 };

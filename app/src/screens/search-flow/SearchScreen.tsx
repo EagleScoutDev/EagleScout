@@ -50,14 +50,6 @@ function SearchScreen() {
           headerTitle: '',
         }}
       />
-      <Stack.Screen
-        name={'Scout Report Viewer'}
-        component={ScoutViewer}
-        options={{
-          headerBackTitle: 'Back',
-          headerTitle: '',
-        }}
-      />
     </Stack.Navigator>
   );
 }
