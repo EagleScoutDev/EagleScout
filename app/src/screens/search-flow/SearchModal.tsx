@@ -3,6 +3,7 @@ import Svg, {Path} from 'react-native-svg';
 import React, {useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {SimpleTeam} from '../../lib/TBAUtils';
+import {ScoutReportReturnData} from '../../database/ScoutReports';
 
 enum FilterState {
   TEAM,
@@ -15,12 +16,16 @@ interface SearchModalProps {
   searchActive: boolean;
   setSearchActive: (searchActive: boolean) => void;
   teams: SimpleTeam[];
+  reportsByMatch: Map<number, ScoutReportReturnData[]>;
+  navigateIntoReport: (report: ScoutReportReturnData) => void;
 }
 
 const SearchModal = ({
   searchActive,
   setSearchActive,
   teams,
+  reportsByMatch,
+  navigateIntoReport,
 }: SearchModalProps) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -251,6 +256,79 @@ const SearchModal = ({
                     />
                   </Svg>
                 </Pressable>
+              );
+            }}
+          />
+        )}
+        {filterState === FilterState.MATCH && (
+          <FlatList
+            data={Array.from(reportsByMatch.keys()).filter(match => {
+              return match.toString().includes(searchTerm);
+            })}
+            renderItem={({item}) => {
+              return (
+                <View>
+                  <View
+                    style={{
+                      minWidth: '100%',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginVertical: '3%',
+                    }}>
+                    <Text
+                      style={{
+                        color: 'grey',
+                        marginHorizontal: '4%',
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                      }}>
+                      {item}
+                    </Text>
+                    <View
+                      style={{
+                        height: 2,
+                        width: '100%',
+                        backgroundColor: colors.border,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      // make it like a 3x2 grid
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                    }}>
+                    {reportsByMatch.get(item)?.map((report, index) => {
+                      return (
+                        <Pressable
+                          onPress={() => {
+                            setSearchActive(false);
+                            navigateIntoReport(report);
+                          }}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor:
+                              index < 3 ? 'crimson' : 'dodgerblue',
+                            margin: '2%',
+                            padding: '6%',
+                            borderRadius: 10,
+                            minWidth: '25%',
+                          }}>
+                          <Text
+                            style={{
+                              color: colors.text,
+                              fontWeight: 'bold',
+                              textAlign: 'center',
+                              flex: 1,
+                            }}>
+                            {report.teamNumber}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
               );
             }}
           />

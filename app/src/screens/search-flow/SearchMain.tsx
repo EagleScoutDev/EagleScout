@@ -114,6 +114,11 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     }
   }, [team, listOfTeams]);
 
+  const navigateIntoReport = (report: ScoutReportReturnData) => {
+    setScoutViewerVisible(true);
+    setCurrentReport(report);
+  };
+
   return (
     <View style={{flex: 1, marginTop: '10%'}}>
       {!isScrolling && (
@@ -206,8 +211,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                   return (
                     <Pressable
                       onPress={() => {
-                        setScoutViewerVisible(true);
-                        setCurrentReport(report);
+                        navigateIntoReport(report);
                       }}
                       style={{
                         flexDirection: 'row',
@@ -249,6 +253,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         searchActive={searchActive}
         setSearchActive={setSearchActive}
         teams={listOfTeams}
+        reportsByMatch={reportsByMatch}
+        navigateIntoReport={navigateIntoReport}
       />
     </View>
   );
