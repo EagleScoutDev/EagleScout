@@ -134,7 +134,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '2%',
-              marginHorizontal: '3%',
             }}>
             <CompetitionChanger
               currentCompId={competitionId}
@@ -142,6 +141,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
               loading={fetchingData}
             />
             <Pressable
+              style={{
+                marginRight: '2%',
+                marginLeft: '6%',
+              }}
               onPress={() => {
                 setSearchActive(true);
               }}>
