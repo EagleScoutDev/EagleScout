@@ -1,7 +1,8 @@
-import {Modal, Pressable, Text, TextInput, View} from 'react-native';
+import {FlatList, Modal, Pressable, Text, TextInput, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import React, {useState} from 'react';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
+import {SimpleTeam} from '../../lib/TBAUtils';
 
 enum FilterState {
   TEAM,
@@ -13,12 +14,18 @@ enum FilterState {
 interface SearchModalProps {
   searchActive: boolean;
   setSearchActive: (searchActive: boolean) => void;
+  teams: SimpleTeam[];
 }
 
-const SearchModal = ({searchActive, setSearchActive}: SearchModalProps) => {
+const SearchModal = ({
+  searchActive,
+  setSearchActive,
+  teams,
+}: SearchModalProps) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterState, setFilterState] = useState<FilterState>(FilterState.TEAM);
+  const navigation = useNavigation();
 
   const getSearchPrompt = (): string => {
     switch (filterState) {
@@ -200,6 +207,54 @@ const SearchModal = ({searchActive, setSearchActive}: SearchModalProps) => {
             backgroundColor: colors.border,
           }}
         />
+        {filterState === FilterState.TEAM && (
+          <FlatList
+            data={teams.filter(team => {
+              return (
+                team.team_number.toString().includes(searchTerm) ||
+                team.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+            })}
+            renderItem={({item}) => {
+              return (
+                <Pressable
+                  onPress={() => {
+                    setSearchActive(false);
+                    navigation.navigate('TeamViewer', {
+                      team: item.team_number,
+                    });
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: '4%',
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.border,
+                  }}>
+                  <Text style={{color: colors.text, flex: 1, fontSize: 16}}>
+                    {item.team_number}
+                  </Text>
+                  <Text style={{color: colors.text, flex: 5, fontSize: 16}}>
+                    {item.nickname}
+                  </Text>
+                  <Svg
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                    style={{
+                      flex: 1,
+                    }}>
+                    <Path
+                      fill="gray"
+                      d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                    />
+                  </Svg>
+                </Pressable>
+              );
+            }}
+          />
+        )}
       </View>
     </Modal>
   );

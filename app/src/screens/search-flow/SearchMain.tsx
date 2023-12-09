@@ -20,6 +20,7 @@ import {TBA} from '../../lib/TBAUtils';
 import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
+import SearchModal from './SearchModal';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -31,8 +32,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
-
-  const [searchInFocus, setSearchInFocus] = useState<boolean>(false);
 
   const [listOfScoutReports, setListOfScoutReports] = useState<
     ScoutReportReturnData[]
@@ -51,6 +50,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
 
+  // for searching
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+
+  // used for animating the search bar hiding and showing
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   }, [isScrolling]);
@@ -58,9 +61,9 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   // initial data fetch
   useEffect(() => {
     ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
-      console.log('num reports found for id 8 is ' + reports.length);
+      // console.log('num reports found for id 8 is ' + reports.length);
 
-      // sort reports by matchnumber
+      // sort reports by match number
       reports.sort((a, b) => {
         return a.matchNumber - b.matchNumber;
       });
@@ -75,11 +78,11 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         }
       });
 
-      // print temp out nicely
-      temp.forEach((value, key) => {
-        console.log('key: ' + key);
-        console.log(value.length);
-      });
+      // // print temp out nicely
+      // temp.forEach((value, key) => {
+      //   console.log('key: ' + key);
+      //   console.log(value.length);
+      // });
       setReportsByMatch(temp);
 
       setListOfScoutReports(reports);
@@ -92,7 +95,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       });
       setListOfTeams(teams);
     });
-    console.log(listOfTeams);
+    // console.log(listOfTeams);
   }, [competitionId]);
 
   // when user starts searching, filter the results displayed
@@ -115,10 +118,30 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     <View style={{flex: 1, marginTop: '10%'}}>
       {!isScrolling && (
         <>
-          <CompetitionChanger
-            currentCompId={competitionId}
-            setCurrentCompId={setCompetitionId}
-          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '2%',
+              marginHorizontal: '3%',
+            }}>
+            <CompetitionChanger
+              currentCompId={competitionId}
+              setCurrentCompId={setCompetitionId}
+            />
+            <Pressable
+              onPress={() => {
+                setSearchActive(true);
+              }}>
+              <Svg width={'20'} height="20" viewBox="0 0 16 16">
+                <Path
+                  fill={searchActive ? colors.primary : 'gray'}
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+                />
+              </Svg>
+            </Pressable>
+          </View>
           <View
             style={{
               height: 1,
@@ -222,6 +245,11 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           isOfflineForm={false}
         />
       )}
+      <SearchModal
+        searchActive={searchActive}
+        setSearchActive={setSearchActive}
+        teams={listOfTeams}
+      />
     </View>
   );
 };
