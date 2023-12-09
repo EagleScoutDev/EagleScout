@@ -12,6 +12,7 @@ import CompetitionsDB from '../../database/Competitions';
 import {CompetitionReturnData} from '../../database/Competitions';
 import Svg, {Path} from 'react-native-svg';
 import SearchModal from './SearchModal';
+import {Dropdown} from 'react-native-element-dropdown';
 
 interface CompetitionChangerProps {
   currentCompId: number;
@@ -57,91 +58,79 @@ const CompetitionChanger = ({
   }, []);
 
   return (
-    <View>
-      <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-        onPress={() => {
-          setIsActive(!isActive);
-        }}>
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 200,
-            width: 40 + (compnameToIcon(competitionName).length - 1) * 20,
-            height: 40,
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 20,
-              textAlign: 'center',
-              fontWeight: '700',
-            }}>
-            {compnameToIcon(competitionName)}
-          </Text>
-        </View>
-        <Text
-          style={{
-            color: colors.text,
-            marginHorizontal: '5%',
-            fontWeight: 'bold',
-          }}>
-          {competitionName}
-        </Text>
-        {loading ? (
-          <ActivityIndicator
-            animating={true}
-            color={colors.text}
-            size="small"
-          />
-        ) : (
-          <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <Path
-              fill="gray"
-              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-            />
-          </Svg>
-        )}
-      </Pressable>
-      {isActive &&
-        competitionsList.map(competition => {
-          return (
-            <Pressable
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: '2%',
-                borderBottomWidth: 1,
-                borderBottomColor: colors.border,
-                maxWidth: '40%',
-              }}
-              onPress={() => {
-                setIsActive(false);
-                setCurrentCompId(competition.id);
-                setCompetitionName(competition.name);
-              }}>
-              <View
-                style={{
-                  backgroundColor:
-                    competition.id === currentCompId
-                      ? colors.primary
-                      : colors.background,
-                  width: 20,
-                  height: 20,
-                  borderRadius: 200,
-                  // marginHorizontal: '5%',
-                  marginLeft: '5%',
-                  marginRight: '10%',
-                }}
-              />
-              <Text style={{color: colors.text}}>{competition.name}</Text>
-            </Pressable>
-          );
+    <View
+      style={{
+        flex: 1,
+      }}>
+      <Dropdown
+        data={competitionsList.map(competition => {
+          return {
+            label: competition.name,
+            value: competition.id,
+          };
         })}
+        labelField={'label'}
+        valueField={'value'}
+        onChange={item => {
+          setCurrentCompId(item.value);
+          setCompetitionName(item.label);
+          setIsActive(false);
+        }}
+        style={{
+          borderRadius: 10,
+          padding: '2%',
+          marginVertical: '2%',
+        }}
+        selectedTextStyle={{
+          color: colors.text,
+          fontWeight: 'bold',
+        }}
+        containerStyle={{
+          borderRadius: 10,
+        }}
+        itemContainerStyle={{
+          borderRadius: 10,
+          borderBottomWidth: 1,
+          borderColor: colors.border,
+        }}
+        value={{
+          label: competitionName,
+          value: currentCompId,
+        }}
+        renderLeftIcon={() => {
+          if (loading) {
+            return (
+              <ActivityIndicator
+                style={{marginRight: '4%'}}
+                size={'small'}
+                color={colors.text}
+              />
+            );
+          }
+          return (
+            <View
+              style={{
+                backgroundColor: colors.card,
+                borderRadius: 200,
+
+                width: 40 + (compnameToIcon(competitionName).length - 1) * 20,
+                height: 40,
+                justifyContent: 'center',
+                marginRight: '4%',
+              }}>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 20,
+                  textAlign: 'center',
+                  fontWeight: '700',
+                }}>
+                {compnameToIcon(competitionName)}
+              </Text>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 };
