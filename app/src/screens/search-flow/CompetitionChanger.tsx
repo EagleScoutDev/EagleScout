@@ -76,22 +76,30 @@ const CompetitionChanger = ({
           setCompetitionName(item.label);
           setIsActive(false);
         }}
+        activeColor={colors.card}
         style={{
           borderRadius: 10,
           padding: '2%',
           marginVertical: '2%',
+          backgroundColor: colors.background,
         }}
         selectedTextStyle={{
           color: colors.text,
           fontWeight: 'bold',
+          backgroundColor: colors.background,
         }}
         containerStyle={{
           borderRadius: 10,
+          backgroundColor: colors.background,
         }}
         itemContainerStyle={{
           borderRadius: 10,
           borderBottomWidth: 1,
           borderColor: colors.border,
+          backgroundColor: colors.background,
+        }}
+        itemTextStyle={{
+          color: colors.text,
         }}
         value={{
           label: competitionName,
