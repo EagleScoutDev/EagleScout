@@ -226,7 +226,7 @@ const SearchModal = ({
                   onPress={() => {
                     setSearchActive(false);
                     navigation.navigate('TeamViewer', {
-                      team: item.team_number,
+                      team: item,
                     });
                   }}
                   style={{
