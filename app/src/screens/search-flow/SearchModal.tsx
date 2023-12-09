@@ -93,6 +93,7 @@ const SearchModal = ({
               keyboardType={
                 filterState === FilterState.MATCH ? 'numeric' : 'default'
               }
+              placeholderTextColor={'gray'}
               placeholder={getSearchPrompt()}
               onEndEditing={() => {
                 console.log('onEndEditing');
