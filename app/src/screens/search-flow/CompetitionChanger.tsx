@@ -256,6 +256,8 @@ const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
                     ? colors.text
                     : colors.background,
                 borderRadius: 10,
+                flex: 1,
+                justifyContent: 'center',
               }}>
               <Text
                 style={{
@@ -282,6 +284,8 @@ const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
                     ? colors.text
                     : colors.background,
                 borderRadius: 10,
+                flex: 1,
+                justifyContent: 'center',
               }}>
               <Text
                 style={{
@@ -308,6 +312,8 @@ const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
                     ? colors.text
                     : colors.background,
                 borderRadius: 10,
+                flex: 1,
+                justifyContent: 'center',
               }}>
               <Text
                 style={{
@@ -322,6 +328,13 @@ const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
               </Text>
             </Pressable>
           </View>
+          <View
+            style={{
+              height: 1,
+              width: '100%',
+              backgroundColor: colors.border,
+            }}
+          />
         </View>
       </Modal>
     </View>
