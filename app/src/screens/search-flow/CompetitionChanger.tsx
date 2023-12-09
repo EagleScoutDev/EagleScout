@@ -1,25 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  LayoutAnimation,
-  Modal,
-  TextInput,
-} from 'react-native';
+import {View, Text, Pressable, LayoutAnimation} from 'react-native';
 
 import {useTheme} from '@react-navigation/native';
 import CompetitionsDB from '../../database/Competitions';
 import {CompetitionReturnData} from '../../database/Competitions';
 import Svg, {Path} from 'react-native-svg';
 import SearchModal from './SearchModal';
-
-enum FilterState {
-  TEAM,
-  MATCH,
-  PERSON,
-}
 
 const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
   const {colors} = useTheme();
@@ -32,8 +18,6 @@ const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
   >([]);
 
   const [searchActive, setSearchActive] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filterState, setFilterState] = useState<FilterState>(FilterState.TEAM);
 
   const compnameToIcon = (compname: string): string => {
     let split = compname.split(' ');
