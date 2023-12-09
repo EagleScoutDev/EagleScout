@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Pressable, LayoutAnimation} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  LayoutAnimation,
+  ActivityIndicator,
+} from 'react-native';
 
 import {useTheme} from '@react-navigation/native';
 import CompetitionsDB from '../../database/Competitions';
@@ -7,7 +13,17 @@ import {CompetitionReturnData} from '../../database/Competitions';
 import Svg, {Path} from 'react-native-svg';
 import SearchModal from './SearchModal';
 
-const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
+interface CompetitionChangerProps {
+  currentCompId: number;
+  setCurrentCompId: (id: number) => void;
+  loading: boolean;
+}
+
+const CompetitionChanger = ({
+  currentCompId,
+  setCurrentCompId,
+  loading,
+}: CompetitionChangerProps) => {
   const {colors} = useTheme();
   const [isActive, setIsActive] = useState(false);
 
@@ -76,12 +92,20 @@ const CompetitionChanger = ({currentCompId, setCurrentCompId}) => {
           }}>
           {competitionName}
         </Text>
-        <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <Path
-            fill="gray"
-            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+        {loading ? (
+          <ActivityIndicator
+            animating={true}
+            color={colors.text}
+            size="small"
           />
-        </Svg>
+        ) : (
+          <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <Path
+              fill="gray"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+            />
+          </Svg>
+        )}
       </Pressable>
       {isActive &&
         competitionsList.map(competition => {

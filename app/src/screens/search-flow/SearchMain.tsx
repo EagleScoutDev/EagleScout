@@ -8,6 +8,7 @@ import {
   Pressable,
   Animated,
   LayoutAnimation,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
@@ -53,6 +54,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   // for searching
   const [searchActive, setSearchActive] = useState<boolean>(false);
 
+  const [fetchingData, setFetchingData] = useState<boolean>(false);
+
   // used for animating the search bar hiding and showing
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -60,6 +63,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   // initial data fetch
   useEffect(() => {
+    setFetchingData(true);
     ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
       // console.log('num reports found for id 8 is ' + reports.length);
 
@@ -94,6 +98,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         return a.team_number - b.team_number;
       });
       setListOfTeams(teams);
+      setFetchingData(false);
     });
     // console.log(listOfTeams);
   }, [competitionId]);
@@ -134,6 +139,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             <CompetitionChanger
               currentCompId={competitionId}
               setCurrentCompId={setCompetitionId}
+              loading={fetchingData}
             />
             <Pressable
               onPress={() => {
