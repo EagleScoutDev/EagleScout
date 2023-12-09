@@ -114,19 +114,21 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   return (
     <View style={{flex: 1, marginTop: '10%'}}>
       {!isScrolling && (
-        <CompetitionChanger
-          currentCompId={competitionId}
-          setCurrentCompId={setCompetitionId}
-        />
+        <>
+          <CompetitionChanger
+            currentCompId={competitionId}
+            setCurrentCompId={setCompetitionId}
+          />
+          <View
+            style={{
+              height: 1,
+              width: '100%',
+              backgroundColor: colors.border,
+              marginVertical: '3%',
+            }}
+          />
+        </>
       )}
-      <View
-        style={{
-          height: 1,
-          width: '100%',
-          backgroundColor: colors.border,
-          marginVertical: '3%',
-        }}
-      />
       <FlatList
         onScroll={scroll_event => {
           // if scrolling down, hide search bar
