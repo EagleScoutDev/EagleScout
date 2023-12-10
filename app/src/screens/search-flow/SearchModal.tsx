@@ -389,7 +389,7 @@ const SearchModal = ({
           />
         )}
         {filterState === FilterState.PERSON && users.length > 0 && (
-          <View>
+          <View style={{flex: 1, marginBottom: '10%'}}>
             <Dropdown
               data={users.map(user => {
                 return {
