@@ -198,7 +198,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           }
 
           // if at top of flatlist, show search bar
-          if (scroll_event.nativeEvent.contentOffset.y === 0) {
+          if (
+            scroll_event.nativeEvent.contentOffset.y <
+            0.005 * scroll_event.nativeEvent.contentSize.height
+          ) {
             setIsScrolling(false);
           }
           setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
