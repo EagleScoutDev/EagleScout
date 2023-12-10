@@ -434,6 +434,9 @@ const SearchModal = ({
                 color: colors.text,
               }}
               placeholder={'Select a user'}
+              placeholderStyle={{
+                color: 'gray',
+              }}
               value={{
                 label: selectedUser?.name ?? 'Select a user',
                 value: selectedUser?.id ?? '',
