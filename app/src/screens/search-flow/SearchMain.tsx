@@ -1,20 +1,8 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Switch,
-  FlatList,
-  TouchableOpacity,
-  Pressable,
-  Animated,
-  LayoutAnimation,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, FlatList, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import Svg, {Path} from 'react-native-svg';
-import ScoutReports, {ScoutReportReturnData} from '../../database/ScoutReports';
+import {ScoutReportReturnData} from '../../database/ScoutReports';
 
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
@@ -27,20 +15,12 @@ interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
 }
 
-const SearchMain: React.FC<Props> = ({navigation}) => {
-  const [team, setTeam] = useState<string>('');
+const SearchMain: React.FC<Props> = () => {
   const {colors} = useTheme();
-
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
-  const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
-
-  const [listOfScoutReports, setListOfScoutReports] = useState<
-    ScoutReportReturnData[]
-  >([]);
 
   const [competitionId, setCompetitionId] = useState<number>(1); // default to 2023mttd
 
-  // create an object where key is match number and value is an array of reports
   const [reportsByMatch, setReportsByMatch] = useState<
     Map<number, ScoutReportReturnData[]>
   >(new Map());
@@ -49,11 +29,14 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
+
+  // used for hiding and showing header
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
 
   // for searching
   const [searchActive, setSearchActive] = useState<boolean>(false);
 
+  // indicates if competition data is still being fetched
   const [fetchingData, setFetchingData] = useState<boolean>(false);
 
   // used for animating the search bar hiding and showing
@@ -82,14 +65,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         }
       });
 
-      // // print temp out nicely
-      // temp.forEach((value, key) => {
-      //   console.log('key: ' + key);
-      //   console.log(value.length);
-      // });
       setReportsByMatch(temp);
-
-      setListOfScoutReports(reports);
     });
 
     TBA.getTeamsAtCompetition('2023mttd').then(teams => {
@@ -102,22 +78,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     });
     // console.log(listOfTeams);
   }, [competitionId]);
-
-  // when user starts searching, filter the results displayed
-  useEffect(() => {
-    if (team.length > 0 && listOfTeams.length > 0) {
-      setFilteredTeams(
-        listOfTeams.filter(t => {
-          return (
-            t.team_number.toString().includes(team) ||
-            t.nickname.toLowerCase().includes(team.toLowerCase())
-          );
-        }),
-      );
-    } else {
-      setFilteredTeams(listOfTeams);
-    }
-  }, [team, listOfTeams]);
 
   const navigateIntoReport = (report: ScoutReportReturnData) => {
     setScoutViewerVisible(true);
