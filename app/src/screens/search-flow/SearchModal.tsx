@@ -1,9 +1,11 @@
 import {FlatList, Modal, Pressable, Text, TextInput, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
+import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
+import {Dropdown} from 'react-native-element-dropdown';
 
 enum FilterState {
   TEAM,
@@ -32,6 +34,15 @@ const SearchModal = ({
   const [filterState, setFilterState] = useState<FilterState>(FilterState.TEAM);
   const navigation = useNavigation();
 
+  // parsed from reports, then used to find names
+  const [userIds, setUserIds] = useState<string[]>([]);
+
+  const [users, setUsers] = useState<ProfilesReturnData[]>([]);
+
+  const [selectedUser, setSelectedUser] = useState<ProfilesReturnData | null>(
+    null,
+  );
+
   const getSearchPrompt = (): string => {
     switch (filterState) {
       case FilterState.TEAM:
@@ -42,6 +53,39 @@ const SearchModal = ({
         return 'Try "John" or "John Smith"';
     }
   };
+
+  useEffect(() => {
+    let temp: Set<string> = new Set<string>();
+    reportsByMatch.forEach((reports, match) => {
+      reports.forEach(report => {
+        if (!temp.has(report.userId)) {
+          temp.add(report.userId);
+        }
+      });
+    });
+    setUserIds(Array.from(temp));
+  }, []);
+
+  useEffect(() => {
+    if (userIds.length === 0) {
+      return;
+    }
+
+    let temp: ProfilesReturnData[] = [];
+
+    for (let i = 0; i < userIds.length; i++) {
+      ProfilesDB.getProfile(userIds[i]).then(profile => {
+        temp.push(profile);
+      });
+    }
+
+    // sort temp by first name
+    temp.sort((a, b) => {
+      return a.firstName.localeCompare(b.firstName);
+    });
+
+    setUsers(temp);
+  }, [userIds]);
 
   return (
     <Modal
@@ -343,6 +387,154 @@ const SearchModal = ({
               );
             }}
           />
+        )}
+        {filterState === FilterState.PERSON && users.length > 0 && (
+          <View>
+            <Dropdown
+              data={users.map(user => {
+                return {
+                  label: user.name,
+                  value: user.id,
+                };
+              })}
+              labelField={'label'}
+              valueField={'value'}
+              onChange={item => {
+                let newSelectedUser: ProfilesReturnData | null = null;
+                users.forEach(user => {
+                  if (user.id === item.value) {
+                    newSelectedUser = user;
+                  }
+                });
+                setSelectedUser(newSelectedUser);
+              }}
+              activeColor={colors.card}
+              style={{
+                borderRadius: 10,
+                padding: '2%',
+                margin: '2%',
+                backgroundColor: colors.background,
+              }}
+              selectedTextStyle={{
+                color: colors.text,
+                fontWeight: 'bold',
+                backgroundColor: colors.background,
+              }}
+              containerStyle={{
+                borderRadius: 10,
+                backgroundColor: colors.background,
+              }}
+              itemContainerStyle={{
+                borderRadius: 10,
+                borderBottomWidth: 1,
+                borderColor: colors.border,
+                backgroundColor: colors.background,
+              }}
+              itemTextStyle={{
+                color: colors.text,
+              }}
+              placeholder={'Select a user'}
+              value={{
+                label: selectedUser?.name ?? 'Select a user',
+                value: selectedUser?.id ?? '',
+              }}
+              renderLeftIcon={() => {
+                return (
+                  <Svg
+                    style={{
+                      marginRight: '4%',
+                    }}
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 16 16">
+                    <Path fill="gray" d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <Path
+                      fill="gray"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                    />
+                  </Svg>
+                );
+              }}
+            />
+            {selectedUser && (
+              <FlatList
+                data={Array.from(reportsByMatch.keys()).filter(match => {
+                  return reportsByMatch
+                    .get(match)
+                    ?.some(report => report.userId === selectedUser?.id);
+                })}
+                renderItem={({item}) => {
+                  return (
+                    <View>
+                      <View
+                        style={{
+                          minWidth: '100%',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginVertical: '3%',
+                        }}>
+                        <Text
+                          style={{
+                            color: 'grey',
+                            marginHorizontal: '4%',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                          }}>
+                          {item}
+                        </Text>
+                        <View
+                          style={{
+                            height: 2,
+                            width: '100%',
+                            backgroundColor: colors.border,
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          // make it like a 3x2 grid
+                          flexDirection: 'row',
+                          flexWrap: 'wrap',
+                        }}>
+                        {reportsByMatch.get(item)?.map((report, index) => {
+                          if (report.userId === selectedUser?.id) {
+                            return (
+                              <Pressable
+                                onPress={() => {
+                                  setSearchActive(false);
+                                  navigateIntoReport(report);
+                                }}
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  backgroundColor:
+                                    index < 3 ? 'crimson' : 'dodgerblue',
+                                  margin: '2%',
+                                  padding: '6%',
+                                  borderRadius: 10,
+                                  minWidth: '25%',
+                                }}>
+                                <Text
+                                  style={{
+                                    color: colors.text,
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    flex: 1,
+                                  }}>
+                                  {report.teamNumber}
+                                </Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </View>
+                    </View>
+                  );
+                }}
+              />
+            )}
+          </View>
         )}
       </View>
     </Modal>

@@ -1,15 +1,18 @@
-import { supabase } from '../lib/supabase';
+import {supabase} from '../lib/supabase';
 
-interface ProfilesReturnData {
-  id: string,
-  firstName: string,
-  lastName: string,
-  name: string
+export interface ProfilesReturnData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  name: string;
 }
 
 class ProfilesDB {
-  static async getProfile(id: string) : Promise<ProfilesReturnData> {
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', id);
+  static async getProfile(id: string): Promise<ProfilesReturnData> {
+    const {data, error} = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', id);
     if (error) {
       throw error;
     } else {
@@ -20,29 +23,36 @@ class ProfilesDB {
           id: data[0].id,
           firstName: data[0].first_name,
           lastName: data[0].last_name,
-          name: data[0].name
+          name: data[0].name,
         };
       }
     }
   }
 
-  static async getCurrentUserProfile() : Promise<ProfilesReturnData> {
-    const { data: { user } } = await supabase.auth.getUser();
+  static async getCurrentUserProfile(): Promise<ProfilesReturnData> {
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
     if (user == null) {
       throw new Error('User not logged in');
     }
     return this.getProfile(user.id);
   }
 
-  static async setName(firstName: string, lastName: string) : Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+  static async setName(firstName: string, lastName: string): Promise<void> {
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
     if (user == null) {
       throw new Error('User not logged in');
     }
-    const { data, error } = await supabase.from('profiles').update({
-      first_name: firstName,
-      last_name: lastName
-    }).eq('id', user.id);
+    const {data, error} = await supabase
+      .from('profiles')
+      .update({
+        first_name: firstName,
+        last_name: lastName,
+      })
+      .eq('id', user.id);
     if (error) {
       throw error;
     }
