@@ -64,7 +64,7 @@ const SearchModal = ({
       });
     });
     setUserIds(Array.from(temp));
-  }, []);
+  }, [reportsByMatch]);
 
   useEffect(() => {
     if (userIds.length === 0) {
