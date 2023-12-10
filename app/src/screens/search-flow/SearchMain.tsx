@@ -57,9 +57,9 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [fetchingData, setFetchingData] = useState<boolean>(false);
 
   // used for animating the search bar hiding and showing
-  useEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  }, [isScrolling]);
+  // useEffect(() => {
+  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  // }, [isScrolling]);
 
   // initial data fetch
   useEffect(() => {
@@ -126,72 +126,68 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={{flex: 1, marginTop: '10%'}}>
-      {!isScrolling && (
-        <>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '2%',
-            }}>
-            <CompetitionChanger
-              currentCompId={competitionId}
-              setCurrentCompId={setCompetitionId}
-              loading={fetchingData}
-            />
-            <Pressable
-              onPress={() => {
-                const sortedKeys = Array.from(reportsByMatch.keys()).reverse();
-
-                const sortedMap = new Map<number, ScoutReportReturnData[]>();
-                sortedKeys.forEach(key => {
-                  sortedMap.set(key, reportsByMatch.get(key)!);
-                });
-
-                setReportsByMatch(sortedMap);
-              }}
-              style={{
-                marginRight: '2%',
-                marginLeft: '6%',
-              }}>
-              <Svg
-                width="20"
-                height="20"
-                fill="currentColor"
-                viewBox="0 0 16 16">
-                <Path
-                  fill="gray"
-                  d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"
-                />
-              </Svg>
-            </Pressable>
-            <Pressable
-              style={{
-                marginRight: '2%',
-                marginLeft: '6%',
-              }}
-              onPress={() => {
-                setSearchActive(true);
-              }}>
-              <Svg width={'20'} height="20" viewBox="0 0 16 16">
-                <Path
-                  fill={searchActive ? colors.primary : 'gray'}
-                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                />
-              </Svg>
-            </Pressable>
-          </View>
-          <View
-            style={{
-              height: 1,
-              width: '100%',
-              backgroundColor: colors.border,
-              marginVertical: '3%',
-            }}
+      <View
+        style={{
+          display: isScrolling ? 'none' : 'flex',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '2%',
+          }}>
+          <CompetitionChanger
+            currentCompId={competitionId}
+            setCurrentCompId={setCompetitionId}
+            loading={fetchingData}
           />
-        </>
-      )}
+          <Pressable
+            onPress={() => {
+              const sortedKeys = Array.from(reportsByMatch.keys()).reverse();
+
+              const sortedMap = new Map<number, ScoutReportReturnData[]>();
+              sortedKeys.forEach(key => {
+                sortedMap.set(key, reportsByMatch.get(key)!);
+              });
+
+              setReportsByMatch(sortedMap);
+            }}
+            style={{
+              marginRight: '2%',
+              marginLeft: '6%',
+            }}>
+            <Svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <Path
+                fill="gray"
+                d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"
+              />
+            </Svg>
+          </Pressable>
+          <Pressable
+            style={{
+              marginRight: '2%',
+              marginLeft: '6%',
+            }}
+            onPress={() => {
+              setSearchActive(true);
+            }}>
+            <Svg width={'20'} height="20" viewBox="0 0 16 16">
+              <Path
+                fill={searchActive ? colors.primary : 'gray'}
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+              />
+            </Svg>
+          </Pressable>
+        </View>
+        <View
+          style={{
+            height: 1,
+            width: '100%',
+            backgroundColor: colors.border,
+          }}
+        />
+      </View>
       <FlatList
         onScroll={scroll_event => {
           // if scrolling down, hide search bar
