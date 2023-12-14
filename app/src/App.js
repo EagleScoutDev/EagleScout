@@ -28,6 +28,7 @@ import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/Home';
 import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
+import DataMain from './screens/data-flow/DataMain';
 
 const Tab = createBottomTabNavigator();
 
@@ -226,8 +227,9 @@ const MyStack = () => {
             />
             <Tab.Screen
               name="Data"
-              component={CompetitionsView}
+              component={DataMain}
               options={{
+                headerShown: false,
                 tabBarIcon: ({color, size, focused}) =>
                   focused ? (
                     <Svg width={size} height={size} viewBox="0 0 16 16">
