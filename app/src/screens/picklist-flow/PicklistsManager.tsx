@@ -7,13 +7,17 @@ const Stack = createStackNavigator();
 
 function PicklistsManager() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Stack.Screen
         name="PicklistsManager"
         component={PicklistsManagerScreen}
         options={{
-          title: 'Picklists Manager',
-          headerShown: false,
+          title: 'Picklists',
+          headerShown: true,
+          headerBackTitle: 'Back',
         }}
       />
       <Stack.Screen

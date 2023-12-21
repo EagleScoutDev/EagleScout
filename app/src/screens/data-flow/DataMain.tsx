@@ -34,22 +34,29 @@ const DataMain = () => {
         name={'Picklist'}
         component={PicklistsManager}
         options={{
-          headerBackTitle: 'Back',
+          headerShown: false,
+          // headerBackTitle: 'Back',
+          // headerTitle: 'PicklistA',
         }}
       />
       <DataStack.Screen
         name={'Team Rank'}
         component={DataAggregator}
-        options={{
-          headerBackTitle: 'Back',
-        }}
+        options={
+          {
+            // headerBackTitle: 'Back',
+            // headerTitle: 'Team RankA',
+          }
+        }
       />
       <DataStack.Screen
         name={'Manage Competitions'}
         component={CompetitionsView}
-        options={{
-          headerBackTitle: 'Back',
-        }}
+        options={
+          {
+            // headerBackTitle: 'Back',
+          }
+        }
       />
       <DataStack.Screen
         name={'Manage Users'}
