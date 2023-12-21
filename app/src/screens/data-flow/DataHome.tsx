@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {CaretRight} from '../../SVGIcons';
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 
 const DataHome = ({navigation}) => {
   const {colors} = useTheme();
@@ -64,12 +65,22 @@ const DataHome = ({navigation}) => {
         marginTop: '10%',
       }}>
       <Text style={styles.title}>Data</Text>
+      <MinimalSectionHeader title={'Data Analysis'} />
       <View style={styles.list_container}>
         {ListItem('Picklist', () => {
           navigation.navigate('Picklist');
         })}
-        {ListItem('Team Rank', () => {})}
-        {ListItem('Ask AI', () => {})}
+        {ListItem('Team Rank', () => {
+          navigation.navigate('Team Rank');
+        })}
+      </View>
+      <View style={{height: 20}} />
+
+      <MinimalSectionHeader title={'Administrative'} />
+      <View style={styles.list_container}>
+        {ListItem('Manage Competitions', () => {
+          navigation.navigate('Manage Competitions');
+        })}
       </View>
     </View>
   );
