@@ -16,7 +16,12 @@ const DataMain = () => {
   const {colors} = useTheme();
 
   return (
-    <DataStack.Navigator>
+    <DataStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+      }}>
       <DataStack.Screen
         name="DataHome"
         component={DataHome}

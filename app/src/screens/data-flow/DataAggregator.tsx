@@ -34,6 +34,8 @@ function DataAggregation({navigation}) {
     number
   > | null>(null);
 
+  const [compName, setCompName] = useState<string>();
+
   const [noActiveCompetition, setNoActiveCompetition] =
     useState<boolean>(false);
   // const navigation = useNavigation();
@@ -54,6 +56,7 @@ function DataAggregation({navigation}) {
 
       setCurrForm(competition.form);
       setCompID(competition.id);
+      setCompName(competition.name);
     });
   }, []);
 
@@ -158,6 +161,7 @@ function DataAggregation({navigation}) {
               setNoActiveCompetition(false);
               setCurrForm(item.form);
               setCompID(item.id);
+              setCompName(item.name);
             }}>
             <View style={styles.list_item}>
               <Text style={styles.list_text}>{item.name}</Text>
@@ -194,7 +198,7 @@ function DataAggregation({navigation}) {
               marginVertical: '5%',
               color: colors.text,
             }}>
-            Chosen Question: {chosenQuestion && chosenQuestion.question}
+            {compName} / {chosenQuestion && chosenQuestion.question}
           </Text>
           <Pressable
             onPress={() => {
@@ -278,7 +282,6 @@ function DataAggregation({navigation}) {
             style={{
               marginHorizontal: '10%',
               marginVertical: '5%',
-              flex: 1,
             }}>
             <StandardButton
               text={'Send to Picklist'}

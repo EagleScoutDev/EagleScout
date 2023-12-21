@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {CaretRight} from '../../SVGIcons';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
 
 const DataHome = ({navigation}) => {
   const {colors} = useTheme();
+  const [addCompetitionModalVisible, setAddCompetitionModalVisible] =
+    useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -81,7 +84,15 @@ const DataHome = ({navigation}) => {
         {ListItem('Manage Competitions', () => {
           navigation.navigate('Manage Competitions');
         })}
+        {ListItem('Create Competition', () => {
+          setAddCompetitionModalVisible(true);
+        })}
       </View>
+      <AddCompetitionModal
+        visible={addCompetitionModalVisible}
+        setVisible={setAddCompetitionModalVisible}
+        onRefresh={() => {}}
+      />
     </View>
   );
 };
