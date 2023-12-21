@@ -229,7 +229,16 @@ const MyStack = () => {
               name="Data"
               component={DataMain}
               options={{
-                headerShown: false,
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: colors.background,
+                  // make font bigger
+                },
+                headerTitleStyle: {
+                  color: colors.text,
+                  fontSize: 20,
+                  fontWeight: '600',
+                },
                 tabBarIcon: ({color, size, focused}) =>
                   focused ? (
                     <Svg width={size} height={size} viewBox="0 0 16 16">

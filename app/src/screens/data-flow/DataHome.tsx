@@ -65,9 +65,7 @@ const DataHome = ({navigation}) => {
     <View
       style={{
         alignItems: 'center',
-        marginTop: '10%',
       }}>
-      <Text style={styles.title}>Data</Text>
       <MinimalSectionHeader title={'Data Analysis'} />
       <View style={styles.list_container}>
         {ListItem('Picklist', () => {
