@@ -2,10 +2,12 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import PicklistsManagerScreen from './PicklistsManagerScreen';
 import PicklistCreator from './PicklistCreator';
+import {useTheme} from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
 function PicklistsManager() {
+  const {colors} = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -18,6 +20,9 @@ function PicklistsManager() {
           title: 'Picklists',
           headerShown: true,
           headerBackTitle: 'Back',
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
         }}
       />
       <Stack.Screen
@@ -26,6 +31,9 @@ function PicklistsManager() {
         options={{
           title: 'Picklist Creator',
           headerShown: true,
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
         }}
       />
     </Stack.Navigator>
