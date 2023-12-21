@@ -84,8 +84,15 @@ const DataHome = ({navigation}) => {
         {ListItem('Manage Competitions', () => {
           navigation.navigate('Manage Competitions');
         })}
-        {ListItem('Create Competition', () => {
-          setAddCompetitionModalVisible(true);
+        {ListItem(
+          'Create Competition',
+          () => {
+            setAddCompetitionModalVisible(true);
+          },
+          false,
+        )}
+        {ListItem('Manage Users', () => {
+          navigation.navigate('Manage Users');
         })}
       </View>
       <AddCompetitionModal

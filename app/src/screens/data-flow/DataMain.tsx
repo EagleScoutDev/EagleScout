@@ -9,6 +9,7 @@ import PicklistsManager from '../picklist-flow/PicklistsManager';
 import DataAggregator from './DataAggregator';
 import CompetitionsList from '../competitions-flow/CompetitionsList';
 import CompetitionsView from '../competitions-flow/CompetitionsView';
+import UserManager from './UserManager';
 
 const DataStack = createStackNavigator();
 
@@ -46,6 +47,13 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Manage Competitions'}
         component={CompetitionsView}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Manage Users'}
+        component={UserManager}
         options={{
           headerBackTitle: 'Back',
         }}
