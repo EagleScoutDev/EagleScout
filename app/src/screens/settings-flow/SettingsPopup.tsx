@@ -53,8 +53,6 @@ const SettingsPopup = ({
         }}
         text={'View Device Storage'}
       />
-      <View style={{marginVertical: '10%'}} />
-      <Text>This will be in the settings popup.</Text>
     </Modal>
   );
 };
