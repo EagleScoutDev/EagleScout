@@ -181,6 +181,16 @@ const SettingsHome = ({
           disabled={false}
         />
       </ListItemContainer>
+      <ListItemContainer title={''}>
+        <ListItem
+          text={'View Your Reports'}
+          onPress={() => {
+            navigation.navigate('Reports');
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+      </ListItemContainer>
       <SettingsPopup
         visible={settingsPopupActive}
         setVisible={setSettingsPopupActive}

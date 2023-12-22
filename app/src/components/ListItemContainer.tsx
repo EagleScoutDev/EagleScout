@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from './MinimalSectionHeader';
 
 interface ListItemContainerProps {
-  children: ReactElement[];
+  children: ReactElement | ReactElement[];
   title: string;
 }
 
@@ -13,7 +13,7 @@ const ListItemContainer = ({children, title}: ListItemContainerProps) => {
 
   return (
     <>
-      <MinimalSectionHeader title={title} />
+      {title.length > 0 && <MinimalSectionHeader title={title} />}
       <View
         style={{
           margin: '3%',
