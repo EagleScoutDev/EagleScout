@@ -11,6 +11,8 @@ import {CaretRight} from '../../SVGIcons';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
 import PicklistsDB from '../../database/Picklists';
+import ListItem from '../../components/ListItem';
+import ListItemContainer from '../../components/ListItemContainer';
 
 enum InternetStatus {
   NOT_ATTEMPTED,
@@ -61,21 +63,6 @@ const DataHome = ({navigation}) => {
     nav_link_text: {
       color: colors.text,
     },
-    list_item: {
-      fontSize: 15,
-      fontWeight: '600',
-      color: colors.text,
-      backgroundColor: colors.card,
-      padding: 15,
-    },
-    list_container: {
-      margin: '3%',
-      borderRadius: 10,
-      overflow: 'hidden',
-      borderWidth: 1,
-      borderColor: colors.border,
-      minWidth: '90%',
-    },
     title: {
       fontSize: 34,
       fontWeight: '600',
@@ -84,29 +71,7 @@ const DataHome = ({navigation}) => {
       paddingLeft: '5%',
       marginTop: '5%',
     },
-    disabled_list_item: {
-      fontSize: 15,
-      fontWeight: '600',
-      color: 'gray',
-      backgroundColor: colors.card,
-      padding: 15,
-    },
   });
-
-  const ListItem = (text, onPress, caretVisible = true, disabled = false) => (
-    <TouchableOpacity
-      disabled={disabled}
-      onPress={onPress}
-      style={{
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-      }}>
-      <Text style={disabled ? styles.disabled_list_item : styles.list_item}>
-        {text}
-      </Text>
-      {caretVisible && CaretRight()}
-    </TouchableOpacity>
-  );
 
   return (
     <View
@@ -133,54 +98,52 @@ const DataHome = ({navigation}) => {
           </Pressable>
         </View>
       )}
-      <MinimalSectionHeader title={'Data Analysis'} />
-      <View style={styles.list_container}>
-        {ListItem(
-          'Picklist',
-          () => {
+      <ListItemContainer title={'Data Analysis'}>
+        <ListItem
+          text={'Picklist'}
+          onPress={() => {
             navigation.navigate('Picklist');
-          },
-          true,
-          internetStatus !== InternetStatus.CONNECTED,
-        )}
-        {ListItem(
-          'Team Rank',
-          () => {
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+        <ListItem
+          text={'Team Rank'}
+          onPress={() => {
             navigation.navigate('Team Rank');
-          },
-          true,
-          internetStatus !== InternetStatus.CONNECTED,
-        )}
-      </View>
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+      </ListItemContainer>
       <View style={{height: 20}} />
 
-      <MinimalSectionHeader title={'Administrative'} />
-      <View style={styles.list_container}>
-        {ListItem(
-          'Manage Competitions',
-          () => {
+      <ListItemContainer title={'Administrative'}>
+        <ListItem
+          text={'Manage Competitions'}
+          onPress={() => {
             navigation.navigate('Manage Competitions');
-          },
-          true,
-          internetStatus !== InternetStatus.CONNECTED,
-        )}
-        {ListItem(
-          'Create Competition',
-          () => {
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+        <ListItem
+          text={'Create Competition'}
+          onPress={() => {
             setAddCompetitionModalVisible(true);
-          },
-          false,
-          internetStatus !== InternetStatus.CONNECTED,
-        )}
-        {ListItem(
-          'Manage Users',
-          () => {
+          }}
+          caretVisible={false}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+        <ListItem
+          text={'Manage Users'}
+          onPress={() => {
             navigation.navigate('Manage Users');
-          },
-          true,
-          internetStatus !== InternetStatus.CONNECTED,
-        )}
-      </View>
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+      </ListItemContainer>
       <AddCompetitionModal
         visible={addCompetitionModalVisible}
         setVisible={setAddCompetitionModalVisible}
