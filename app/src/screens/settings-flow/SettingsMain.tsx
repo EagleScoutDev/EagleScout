@@ -6,6 +6,7 @@ import ChangePassword from './ChangePassword';
 import EditProfile from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
+import SubmittedForms from './SubmittedForms';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,7 @@ function SettingsMain({
         name="Debug Offline"
         component={DebugOffline}
       />
+      <Stack.Screen name={'Reports'} component={SubmittedForms} />
     </Stack.Navigator>
   );
 }
