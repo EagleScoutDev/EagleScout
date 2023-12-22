@@ -59,6 +59,17 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
     );
   };
 
+  const styles = StyleSheet.create({
+    title: {
+      fontSize: 34,
+      fontWeight: '600',
+      color: colors.text,
+      padding: '3%',
+      paddingLeft: '5%',
+      marginTop: '5%',
+    },
+  });
+
   const signOutFunction = () => {
     // AsyncStorage.setItem('authenticated', 'false');
     // TODO: triple check if this is the right way to do this
@@ -74,7 +85,12 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
         name="Main Settings"
         options={{headerShown: false}}
         children={() => (
-          <SafeAreaView>
+          <View
+            style={{
+              marginTop: '10%',
+              paddingHorizontal: '2%',
+            }}>
+            <Text style={styles.title}>Settings</Text>
             <UserCard
               name={user ? user.first_name + ' ' + user.last_name : 'No user'}
               //email={user ? user.email : 'No user'}
@@ -136,7 +152,7 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
               }}>
               <Text style={{color: 'gray'}}>v{VERSION}</Text>
             </View>
-          </SafeAreaView>
+          </View>
         )}
       />
       <Stack.Screen

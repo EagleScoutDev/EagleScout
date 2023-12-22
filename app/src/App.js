@@ -251,6 +251,7 @@ const MyStack = () => {
             <Tab.Screen
               name="Settings"
               options={{
+                headerShown: false,
                 tabBarIcon: ({size, color}) => (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
                     <Path
