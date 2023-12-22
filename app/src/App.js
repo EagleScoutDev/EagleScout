@@ -25,7 +25,7 @@ import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
 import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
-import Home from './screens/Home';
+import Home from './screens/home-flow/Home';
 import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
@@ -200,6 +200,7 @@ const MyStack = () => {
               name="Home"
               component={Home}
               options={{
+                headerShown: false,
                 tabBarIcon: ({color, size, focused}) =>
                   focused ? (
                     <Svg width={size} height={size} viewBox="0 0 16 16">
