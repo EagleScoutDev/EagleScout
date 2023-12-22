@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VERSION = '3.0.1';
 
-interface User {
+interface StoredUser {
   team_id: number;
   scouter: boolean;
   admin: boolean;
@@ -38,13 +38,13 @@ const SettingsHome = ({
     InternetStatus.NOT_ATTEMPTED,
   );
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<StoredUser | null>(null);
   const navigation = useNavigation();
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
     if (foundUser != null) {
-      let foundUserObject: User = JSON.parse(foundUser);
+      let foundUserObject: StoredUser = JSON.parse(foundUser);
       setUser(foundUserObject);
     }
   };

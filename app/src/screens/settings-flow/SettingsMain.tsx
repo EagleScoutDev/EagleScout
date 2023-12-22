@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import EditProfileModal from './EditProfileModal';
-import ChangePasswordModal from './ChangePasswordModal';
 import DebugOffline from '../DebugOffline';
 import SettingsHome from './SettingsHome';
+import ChangePassword from './ChangePassword';
+import EditProfile from './EditProfile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -13,11 +14,29 @@ interface SettingsMainProps {
   setScoutingStyle: (arg0: string) => void;
 }
 
+interface StoredUser {
+  team_id: number;
+  scouter: boolean;
+  admin: boolean;
+  first_name: string;
+  last_name: string;
+}
+
 function SettingsMain({
   onSignOut,
   setTheme,
   setScoutingStyle,
 }: SettingsMainProps) {
+  const [user, setUser] = useState<StoredUser | null>(null);
+
+  const getUser = async () => {
+    let foundUser = await AsyncStorage.getItem('user');
+    if (foundUser != null) {
+      let foundUserObject: StoredUser = JSON.parse(foundUser);
+      setUser(foundUserObject);
+    }
+  };
+
   return (
     <Stack.Navigator initialRouteName={'Main Settings'}>
       <Stack.Screen
@@ -36,9 +55,9 @@ function SettingsMain({
         options={{
           headerBackTitle: 'Back',
         }}
-        children={props => <EditProfileModal {...props} getUser={getUser} />}
+        children={props => <EditProfile {...props} getUser={getUser} />}
       />
-      <Stack.Screen name="Change Password" component={ChangePasswordModal} />
+      <Stack.Screen name="Change Password" component={ChangePassword} />
       <Stack.Screen
         options={{
           headerBackTitle: 'Back',
