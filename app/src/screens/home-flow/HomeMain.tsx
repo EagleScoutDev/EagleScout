@@ -34,7 +34,7 @@ const HomeMain = () => {
       fontWeight: 'bold',
     },
     scout_button: {
-      backgroundColor: 'cornflowerblue',
+      backgroundColor: colors.primary,
       padding: '5%',
       borderRadius: 25,
       justifyContent: 'center',
