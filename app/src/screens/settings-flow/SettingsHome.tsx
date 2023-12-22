@@ -1,7 +1,7 @@
 import {Alert, Pressable, Settings, StyleSheet, Text, View} from 'react-native';
 import {Path, Svg} from 'react-native-svg';
 import InternetStatus from '../../lib/InternetStatus';
-import UserCard from '../../components/UserCard';
+import UserProfileBox from '../../components/UserProfileBox';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import SettingsPopup from './SettingsPopup';
@@ -145,7 +145,7 @@ const SettingsHome = ({
         </View>
       )}
 
-      <UserCard user={user} />
+      <UserProfileBox user={user} />
 
       <ListItemContainer title={'Account'}>
         <ListItem

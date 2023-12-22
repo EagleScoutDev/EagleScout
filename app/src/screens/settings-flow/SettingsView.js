@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme, useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {Path, Svg} from 'react-native-svg';
-import UserCard from '../../components/UserCard';
 import {createStackNavigator} from '@react-navigation/stack';
 import EditProfileModal from './EditProfileModal';
 import ChangePasswordModal from './ChangePasswordModal';
@@ -145,10 +144,10 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
               </View>
             )}
 
-            <UserCard
-              name={user ? user.first_name + ' ' + user.last_name : 'No user'}
-              //email={user ? user.email : 'No user'}
-            />
+            {/*<UserCard*/}
+            {/*  name={user ? user.first_name + ' ' + user.last_name : 'No user'}*/}
+            {/*  //email={user ? user.email : 'No user'}*/}
+            {/*/>*/}
             <ListItemContainer title={'Account'}>
               <ListItem
                 text={'Edit Profile'}
