@@ -5,6 +5,7 @@ import SettingsHome from './SettingsHome';
 import ChangePassword from './ChangePassword';
 import EditProfile from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StoredUser} from '../../lib/StoredUser';
 
 const Stack = createStackNavigator();
 
@@ -12,14 +13,6 @@ interface SettingsMainProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
   setScoutingStyle: (arg0: string) => void;
-}
-
-interface StoredUser {
-  team_id: number;
-  scouter: boolean;
-  admin: boolean;
-  first_name: string;
-  last_name: string;
 }
 
 function SettingsMain({

@@ -9,16 +9,9 @@ import React, {useEffect, useState} from 'react';
 import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StoredUser} from '../../lib/StoredUser';
 
 const VERSION = '3.0.1';
-
-interface StoredUser {
-  team_id: number;
-  scouter: boolean;
-  admin: boolean;
-  first_name: string;
-  last_name: string;
-}
 
 interface SettingsHomeProps {
   onSignOut: () => void;
@@ -152,10 +145,7 @@ const SettingsHome = ({
         </View>
       )}
 
-      <UserCard
-        name={user ? user.first_name + ' ' + user.last_name : 'No user'}
-        email={''}
-      />
+      <UserCard user={user} />
 
       <ListItemContainer title={'Account'}>
         <ListItem
