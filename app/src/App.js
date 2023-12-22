@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Login from './screens/login-flow/Login';
-import SettingsView from './screens/settings-flow/SettingsView';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
@@ -29,6 +28,7 @@ import Svg, {Path} from 'react-native-svg';
 import Home from './screens/Home';
 import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import DataMain from './screens/data-flow/DataMain';
+import SettingsMain from './screens/settings-flow/SettingsMain';
 
 const Tab = createBottomTabNavigator();
 
@@ -270,7 +270,7 @@ const MyStack = () => {
                 ),
               }}
               children={() => (
-                <SettingsView
+                <SettingsMain
                   onSignOut={redirectLogin}
                   setTheme={setThemePreference}
                   setScoutingStyle={setScoutStylePreference}
