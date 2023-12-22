@@ -1,31 +1,20 @@
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Linking,
-  Pressable,
-} from 'react-native';
+import {Alert, StyleSheet, Text, View, Pressable} from 'react-native';
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme, useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import ThemePicker from '../../components/pickers/ThemePicker';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
-import StandardButton from '../../components/StandardButton';
-import ScoutingStylePicker from '../../components/pickers/ScoutingStylePicker';
 import {Path, Svg} from 'react-native-svg';
 import UserCard from '../../components/UserCard';
 import {createStackNavigator} from '@react-navigation/stack';
 import EditProfileModal from './EditProfileModal';
 import ChangePasswordModal from './ChangePasswordModal';
 import DebugOffline from '../DebugOffline';
-import {CaretRight} from '../../SVGIcons';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import SettingsPopup from './SettingsPopup';
+
+import InternetStatus from '../../lib/InternetStatus';
+import PicklistsDB from '../../database/Picklists';
 
 const Stack = createStackNavigator();
 const VERSION = '3.0.1';
@@ -35,6 +24,26 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
   const [settingsPopupActive, setSettingsPopupActive] = useState(false);
+
+  const [internetStatus, setInternetStatus] = useState(
+    InternetStatus.NOT_ATTEMPTED,
+  );
+
+  const testConnection = () => {
+    // attempt connection to picklist table
+    setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
+    PicklistsDB.getPicklists()
+      .then(() => {
+        setInternetStatus(InternetStatus.CONNECTED);
+      })
+      .catch(() => {
+        setInternetStatus(InternetStatus.FAILED);
+      });
+  };
+
+  useEffect(() => {
+    testConnection();
+  }, []);
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
@@ -101,6 +110,7 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
                 marginTop: '5%',
               }}>
               <Text style={styles.title}>Profile</Text>
+
               <Pressable onPress={() => setSettingsPopupActive(true)}>
                 <Svg width={32} height={32} viewBox="0 0 16 16">
                   <Path
@@ -110,6 +120,30 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
                 </Svg>
               </Pressable>
             </View>
+            {internetStatus === InternetStatus.FAILED && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                  marginHorizontal: '4%',
+                  marginBottom: '4%',
+                }}>
+                <Text style={{flex: 1, color: 'grey'}}>
+                  Some features may be disabled until you regain an internet
+                  connection.
+                </Text>
+                <Pressable onPress={testConnection}>
+                  <Text
+                    style={{
+                      flex: 1,
+                      color: colors.primary,
+                      fontWeight: 'bold',
+                    }}>
+                    Try again?
+                  </Text>
+                </Pressable>
+              </View>
+            )}
 
             <UserCard
               name={user ? user.first_name + ' ' + user.last_name : 'No user'}
@@ -126,7 +160,7 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
                   });
                 }}
                 caretVisible={true}
-                disabled={false}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
               />
               <ListItem
                 text={'Change Password'}
@@ -134,13 +168,13 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
                   navigation.navigate('Change Password');
                 }}
                 caretVisible={true}
-                disabled={false}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
               />
               <ListItem
                 text={'Request Account Deletion'}
                 onPress={() => {}}
                 caretVisible={true}
-                disabled={false}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
               />
               <ListItem
                 text={'Sign Out'}

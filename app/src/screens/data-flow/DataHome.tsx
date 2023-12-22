@@ -13,13 +13,7 @@ import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
 import PicklistsDB from '../../database/Picklists';
 import ListItem from '../../components/ListItem';
 import ListItemContainer from '../../components/ListItemContainer';
-
-enum InternetStatus {
-  NOT_ATTEMPTED,
-  CONNECTED,
-  ATTEMPTING_TO_CONNECT,
-  FAILED,
-}
+import InternetStatus from '../../lib/InternetStatus';
 
 const DataHome = ({navigation}) => {
   const {colors} = useTheme();
@@ -89,7 +83,8 @@ const DataHome = ({navigation}) => {
             marginBottom: '4%',
           }}>
           <Text style={{flex: 1, color: 'grey'}}>
-            Failed to establish connection to server.
+            Some features may be disabled until you regain an internet
+            connection.
           </Text>
           <Pressable onPress={testConnection}>
             <Text style={{flex: 1, color: colors.primary, fontWeight: 'bold'}}>
