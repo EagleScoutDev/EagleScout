@@ -7,6 +7,7 @@ import {
   View,
   Linking,
 } from 'react-native';
+import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme, useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
@@ -21,6 +22,8 @@ import EditProfileModal from './EditProfileModal';
 import ChangePasswordModal from './ChangePasswordModal';
 import DebugOffline from '../DebugOffline';
 import {CaretRight} from '../../SVGIcons';
+import ListItemContainer from '../../components/ListItemContainer';
+import ListItem from '../../components/ListItem';
 
 const Stack = createStackNavigator();
 const VERSION = '3.0.1';
@@ -65,35 +68,6 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
     });
   };
 
-  const styles = StyleSheet.create({
-    list_item: {
-      fontSize: 15,
-      fontWeight: '600',
-      color: colors.text,
-      backgroundColor: colors.card,
-      padding: 15,
-    },
-    list_container: {
-      margin: '3%',
-      borderRadius: 10,
-      overflow: 'hidden',
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-  });
-
-  const ListItem = (text, onPress, caretVisible = true) => (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-      }}>
-      <Text style={styles.list_item}>{text}</Text>
-      {caretVisible && CaretRight()}
-    </TouchableOpacity>
-  );
-
   return (
     <Stack.Navigator initialRouteName={'Main Settings'}>
       <Stack.Screen
@@ -105,25 +79,40 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
               name={user ? user.first_name + ' ' + user.last_name : 'No user'}
               //email={user ? user.email : 'No user'}
             />
-            <MinimalSectionHeader title={'Account'} />
-            <View style={styles.list_container}>
-              {ListItem('Edit Profile', () =>
-                navigation.navigate('Edit Profile', {
-                  initialFirstName: user ? user.first_name : '',
-                  initialLastName: user ? user.last_name : '',
-                  //initialEmail: user.email,
-                }),
-              )}
-              {ListItem('Change Password', () =>
-                navigation.navigate('Change Password'),
-              )}
-              {ListItem(
-                'Request Account Deletion',
-                () => Linking.openURL('https://forms.gle/Jmcp61ViSVs9VAqn6'),
-                true,
-              )}
-              {ListItem('Sign Out', () => attemptSignOut(), false)}
-            </View>
+            <ListItemContainer title={'Account'}>
+              <ListItem
+                text={'Edit Profile'}
+                onPress={() => {
+                  navigation.navigate('Edit Profile', {
+                    initialFirstName: user ? user.first_name : '',
+                    initialLastName: user ? user.last_name : '',
+                    //initialEmail: user.email,
+                  });
+                }}
+                caretVisible={true}
+                disabled={false}
+              />
+              <ListItem
+                text={'Change Password'}
+                onPress={() => {
+                  navigation.navigate('Change Password');
+                }}
+                caretVisible={true}
+                disabled={false}
+              />
+              <ListItem
+                text={'Request Account Deletion'}
+                onPress={() => {}}
+                caretVisible={true}
+                disabled={false}
+              />
+              <ListItem
+                text={'Sign Out'}
+                onPress={() => attemptSignOut()}
+                caretVisible={false}
+                disabled={false}
+              />
+            </ListItemContainer>
             <ThemePicker colors={colors} setTheme={setTheme} />
             <ScoutingStylePicker
               colors={colors}
