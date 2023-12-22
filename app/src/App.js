@@ -32,6 +32,18 @@ import SettingsMain from './screens/settings-flow/SettingsMain';
 
 const Tab = createBottomTabNavigator();
 
+const CustomLightTheme = {
+  dark: false,
+  colors: {
+    primary: 'rgb(0, 122, 255)',
+    card: 'rgb(242, 242, 242)',
+    background: 'rgb(255, 255, 255)',
+    text: 'rgb(0, 0, 0)',
+    border: 'rgb(216, 216, 216)',
+    notification: 'rgb(255, 59, 48)',
+  },
+};
+
 const MyStack = () => {
   const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState('System');
@@ -154,10 +166,10 @@ const MyStack = () => {
         themePreference === 'Dark'
           ? DarkTheme
           : themePreference === 'Light'
-          ? DefaultTheme
+          ? CustomLightTheme
           : scheme === 'dark'
           ? DarkTheme
-          : DefaultTheme
+          : CustomLightTheme
       }>
       <Tab.Navigator
         initialRouteName="Login"
