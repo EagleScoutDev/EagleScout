@@ -14,8 +14,9 @@ import ScoutViewer from './modals/ScoutViewer';
 import {useTheme} from '@react-navigation/native';
 import {ChevronDown, ChevronUp} from '../SVGIcons';
 import Competitions from '../database/Competitions';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import FormHelper from "../FormHelper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import FormHelper from '../FormHelper';
+import {Badge} from '../components/Badge';
 
 if (
   Platform.OS === 'android' &&
@@ -81,14 +82,37 @@ function CompetitionFlatList({
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <Text
-                style={{
-                  color: isCurrentlyRunning ? colors.primary : colors.text,
-                  fontSize: 30,
-                  fontWeight: 'bold',
-                }}>
-                {compName}
-              </Text>
+              <View style={{flexDirection: 'column'}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 10,
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                    }}>
+                    {compName}
+                  </Text>
+                  {isCurrentlyRunning && (
+                    <Badge
+                      color={colors.background}
+                      backgroundColor={colors.primary}
+                      text={'Active'}
+                    />
+                  )}
+                </View>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: 16,
+                  }}>
+                  {data.length} {data.length === 1 ? 'report' : 'reports'}
+                </Text>
+              </View>
               {isCollapsed ? (
                 <ChevronUp width={30} height={30} />
               ) : (
@@ -237,8 +261,8 @@ function ReportList({reports, isOffline}) {
   const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
   const [chosenCompetitionIndex, setChosenCompetitionIndex] = useState(null);
   const [dataCopy, setDataCopy] = useState([]);
-  const [isCollapsedAll, setIsCollapsedAll] = useState(false);
-  const [firstIsCollapsedAll, setFirstIsCollapsedAll] = useState(true);
+  const [isCollapsedAll, setIsCollapsedAll] = useState(true);
+  const [isInitialCollapse, setIsInitialCollapse] = useState(true);
   const {colors} = useTheme();
 
   useEffect(() => {
@@ -246,14 +270,14 @@ function ReportList({reports, isOffline}) {
       return;
     }
 
-
     const effect = async () => {
       let currComp;
       if (!isOffline) {
         currComp = await Competitions.getCurrentCompetition();
       } else {
         const currCompObj = await AsyncStorage.getItem(
-          FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+        );
         if (currCompObj != null) {
           currComp = JSON.parse(currCompObj);
         }
@@ -323,7 +347,7 @@ function ReportList({reports, isOffline}) {
       <TouchableOpacity
         onPress={() => {
           setIsCollapsedAll(!isCollapsedAll);
-          setFirstIsCollapsedAll(false);
+          setIsInitialCollapse(false);
         }}
         style={{
           alignSelf: 'flex-end',
@@ -352,8 +376,7 @@ function ReportList({reports, isOffline}) {
             data={item.data}
             isCurrentlyRunning={item.isCurrentlyRunning}
             overrideCollapsed={
-              (firstIsCollapsedAll && !item.isCurrentlyRunning) ||
-              isCollapsedAll
+              isInitialCollapse ? !item.isCurrentlyRunning : isCollapsedAll
             }
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
