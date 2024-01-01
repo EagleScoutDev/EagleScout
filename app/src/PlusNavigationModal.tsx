@@ -22,9 +22,7 @@ const PlusNavigationModal = () => {
       bottom: 0,
       right: 0,
       left: 0,
-      borderColor: colors.border,
-      borderTopWidth: 4,
-      backgroundColor: colors.card,
+      backgroundColor: colors.background,
       paddingBottom: '10%',
     },
     title_text: {
@@ -39,7 +37,7 @@ const PlusNavigationModal = () => {
     grouping: {
       flexDirection: 'row',
       backgroundColor: colors.background,
-      borderWidth: 2,
+      borderBottomWidth: 1,
       borderColor: colors.border,
       borderRadius: 10,
       padding: '5%',
@@ -65,14 +63,18 @@ const PlusNavigationModal = () => {
   });
 
   return (
-    <TouchableWithoutFeedback
-      style={{
-        backgroundColor: 'red',
-        flex: 1,
-      }}
-      onPress={() => {
-        navigation.goBack();
-      }}>
+    <>
+      <View
+        style={{
+          backgroundColor: 'grey',
+          // make the blue part semi-transparent
+          minHeight: '100%',
+          maxHeight: '100%',
+          opacity: 0.4,
+          // z stack so it is in the back
+          zIndex: -1,
+        }}
+      />
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.grouping}
@@ -129,7 +131,7 @@ const PlusNavigationModal = () => {
           </View>
         </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+    </>
   );
 };
 
