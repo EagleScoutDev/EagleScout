@@ -64,7 +64,10 @@ const PlusNavigationModal = () => {
 
   return (
     <>
-      <View
+      <Pressable
+        onPress={() => {
+          navigation.goBack();
+        }}
         style={{
           backgroundColor: 'grey',
           // make the blue part semi-transparent
