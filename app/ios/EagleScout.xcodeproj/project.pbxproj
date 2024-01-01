@@ -433,6 +433,7 @@
 			baseConfigurationReference = 5891F268932DF6B759F5938D /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = TJDS82Z5AF;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -461,6 +462,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = TJDS82Z5AF;
 				INFOPLIST_FILE = EagleScoutTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -486,7 +488,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = 7S8859644D;
+				DEVELOPMENT_TEAM = TJDS82Z5AF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = EagleScout/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -499,8 +501,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.team114.--PRODUCT-NAME-rfc1034identifier-";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.team114.eaglescout;
+				PRODUCT_BUNDLE_IDENTIFIER = com.team114.eaglescout2024;
 				PRODUCT_NAME = EagleScout;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -515,7 +516,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = 7S8859644D;
+				DEVELOPMENT_TEAM = TJDS82Z5AF;
 				INFOPLIST_FILE = EagleScout/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -527,8 +528,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.team114.--PRODUCT-NAME-rfc1034identifier-";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.team114.eaglescout;
+				PRODUCT_BUNDLE_IDENTIFIER = com.team114.eaglescout2024;
 				PRODUCT_NAME = EagleScout;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
