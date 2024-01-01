@@ -168,7 +168,6 @@ const MyStack = () => {
   return (
     <Tab.Navigator
       initialRouteName="Login"
-      drawerContent={props => <CustomDrawerContent {...props} />}
       options={{
         headerShown: false,
       }}>
@@ -195,6 +194,7 @@ const MyStack = () => {
             name="Home"
             component={Home}
             options={{
+              tabBarShowLabel: false,
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
@@ -222,6 +222,7 @@ const MyStack = () => {
             component={SearchScreen}
             options={{
               headerShown: false,
+              tabBarShowLabel: false,
               tabBarIcon: ({color, size, focused}) => (
                 <Svg viewBox="0 0 16 16" width={size} height={size}>
                   <Path
@@ -244,6 +245,7 @@ const MyStack = () => {
             })}
             options={{
               headerShown: false,
+              tabBarShowLabel: false,
               tabBarIcon: ({color, size, focused}) => (
                 <Svg width={size * 2.5} height={size * 2.5} viewBox="0 0 16 16">
                   <Path
@@ -259,6 +261,7 @@ const MyStack = () => {
             component={DataMain}
             options={{
               headerShown: false,
+              tabBarShowLabel: false,
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
@@ -281,6 +284,7 @@ const MyStack = () => {
             name="Profile"
             options={{
               headerShown: false,
+              tabBarShowLabel: false,
               tabBarIcon: ({size, color}) => (
                 <Svg width={size} height={size} viewBox="0 0 16 16">
                   <Path fill={color} d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
