@@ -195,6 +195,7 @@ const MyStack = () => {
             component={Home}
             options={{
               tabBarShowLabel: false,
+              headerShown: false,
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">

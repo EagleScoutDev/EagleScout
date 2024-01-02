@@ -82,7 +82,7 @@ const PlusNavigationModal = () => {
         <TouchableOpacity
           style={styles.grouping}
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate('Home', {screen: 'Scout Report'});
           }}>
           <View style={styles.icon_box}>
             <Svg
