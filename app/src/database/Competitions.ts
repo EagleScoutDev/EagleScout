@@ -73,6 +73,20 @@ class CompetitionsDB {
       throw error;
     }
   }
+
+  static async getCompetitionTeams(competitionId: number): Promise<number[]> {
+    const {data, error} = await supabase
+      .from('competitions')
+      .select('tba_events ( teams )')
+      .eq('id', competitionId)
+      .single();
+    if (error) {
+      throw error;
+    } else {
+      console.log(data);
+      return data.tba_events.teams;
+    }
+  }
 }
 
 export default CompetitionsDB;
