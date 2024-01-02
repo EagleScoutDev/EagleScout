@@ -48,9 +48,8 @@ const CustomLightTheme = {
 
 const Placeholder = () => <View />;
 
-const MyStack = () => {
+const MyStack = ({themePreference, setThemePreference}) => {
   const scheme = useColorScheme();
-  const [themePreference, setThemePreference] = useState('System');
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
@@ -320,24 +319,42 @@ const MyStack = () => {
 const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
+  const scheme = useColorScheme();
+  const [themePreference, setThemePreference] = useState('System');
+
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={
+        themePreference === 'Dark'
+          ? DarkTheme
+          : themePreference === 'Light'
+          ? CustomLightTheme
+          : scheme === 'dark'
+          ? DarkTheme
+          : CustomLightTheme
+      }>
       <RootStack.Navigator
         screenOptions={{
           headerShown: false,
           presentation: 'transparentModal',
           animationEnabled: false,
-
-          // make it a sliding animation
         }}>
-        <RootStack.Screen name="BottomTabNavigatorScreen" component={MyStack} />
+        <RootStack.Screen
+          name={'S'}
+          children={() => (
+            <MyStack
+              themePreference={themePreference}
+              setThemePreference={setThemePreference}
+            />
+          )}
+        />
         <RootStack.Screen
           name="CustomModal"
           component={PlusNavigationModal}
           options={{animationEnabled: true}}
         />
-        {/*<Toast />*/}
       </RootStack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 };
