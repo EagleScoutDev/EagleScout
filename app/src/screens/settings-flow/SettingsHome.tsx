@@ -1,5 +1,5 @@
 import {Alert, Pressable, Settings, StyleSheet, Text, View} from 'react-native';
-import {Path, Svg} from 'react-native-svg';
+import {Circle, Path, Svg} from 'react-native-svg';
 import InternetStatus from '../../lib/InternetStatus';
 import UserProfileBox from '../../components/UserProfileBox';
 import ListItemContainer from '../../components/ListItemContainer';
@@ -10,6 +10,7 @@ import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 
 const VERSION = '3.0.1';
 
@@ -146,6 +147,59 @@ const SettingsHome = ({
       )}
 
       <UserProfileBox user={user} />
+
+      <MinimalSectionHeader title={'Connection Status'} />
+      {/*TODO: add a explainer question mark that explains the ramifications. Internet means you can browse TBA stuff (like making picklists), but database means you can't get insights or anything data-related. should be a popover sheet.*/}
+      {/*TODO: clicking on this should refresh the results (and show loading indicators)*/}
+      <View
+        style={{
+          flexDirection: 'column',
+          padding: '5%',
+          margin: '3%',
+          alignItems: 'center',
+          backgroundColor: colors.card,
+          borderRadius: 10,
+          borderColor: colors.border,
+          borderWidth: 1,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              color: colors.text,
+              flex: 1,
+              fontWeight: 'bold',
+            }}>
+            Internet
+          </Text>
+          <Svg width={25} height={25} viewBox="0 0 16 16">
+            <Circle fill={'lawngreen'} cx={8} cy={8} r={8} />
+          </Svg>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            marginTop: '2%',
+          }}>
+          <Text
+            style={{
+              color: colors.text,
+              flex: 1,
+              fontWeight: 'bold',
+            }}>
+            Database
+          </Text>
+          <Svg width={25} height={25} viewBox="0 0 16 16">
+            <Circle fill={'red'} cx={8} cy={8} r={8} />
+          </Svg>
+        </View>
+      </View>
 
       <ListItemContainer title={'Account'}>
         <ListItem
