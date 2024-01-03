@@ -148,6 +148,18 @@ const SearchMain: React.FC<Props> = () => {
           }}
         />
       </View>
+      {reportsByMatch.size === 0 && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{color: colors.text, fontSize: 20}}>
+            No reports found.
+          </Text>
+        </View>
+      )}
       <FlatList
         onScroll={scroll_event => {
           // if scrolling down, hide search bar
