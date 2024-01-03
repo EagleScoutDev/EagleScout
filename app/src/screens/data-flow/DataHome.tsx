@@ -14,6 +14,8 @@ import PicklistsDB from '../../database/Picklists';
 import ListItem from '../../components/ListItem';
 import ListItemContainer from '../../components/ListItemContainer';
 import InternetStatus from '../../lib/InternetStatus';
+import {StoredUser} from '../../lib/StoredUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DataHome = ({navigation}) => {
   const {colors} = useTheme();
@@ -23,6 +25,15 @@ const DataHome = ({navigation}) => {
   const [internetStatus, setInternetStatus] = useState<InternetStatus>(
     InternetStatus.NOT_ATTEMPTED,
   );
+  const [user, setUser] = useState<StoredUser | null>(null);
+
+  const getUser = async () => {
+    let foundUser = await AsyncStorage.getItem('user');
+    if (foundUser != null) {
+      let foundUserObject: StoredUser = JSON.parse(foundUser);
+      setUser(foundUserObject);
+    }
+  };
 
   const testConnection = () => {
     // attempt connection to picklist table
@@ -38,6 +49,7 @@ const DataHome = ({navigation}) => {
 
   useEffect(() => {
     testConnection();
+    getUser();
   }, []);
 
   const styles = StyleSheet.create({
@@ -113,37 +125,41 @@ const DataHome = ({navigation}) => {
       </ListItemContainer>
       <View style={{height: 20}} />
 
-      <ListItemContainer title={'Administrative'}>
-        <ListItem
-          text={'Manage Competitions'}
-          onPress={() => {
-            navigation.navigate('Manage Competitions');
-          }}
-          caretVisible={true}
-          disabled={internetStatus !== InternetStatus.CONNECTED}
-        />
-        <ListItem
-          text={'Create Competition'}
-          onPress={() => {
-            setAddCompetitionModalVisible(true);
-          }}
-          caretVisible={false}
-          disabled={internetStatus !== InternetStatus.CONNECTED}
-        />
-        <ListItem
-          text={'Manage Users'}
-          onPress={() => {
-            navigation.navigate('Manage Users');
-          }}
-          caretVisible={true}
-          disabled={internetStatus !== InternetStatus.CONNECTED}
-        />
-      </ListItemContainer>
-      <AddCompetitionModal
-        visible={addCompetitionModalVisible}
-        setVisible={setAddCompetitionModalVisible}
-        onRefresh={() => {}}
-      />
+      {user?.admin && (
+        <>
+          <ListItemContainer title={'Administrative'}>
+            <ListItem
+              text={'Manage Competitions'}
+              onPress={() => {
+                navigation.navigate('Manage Competitions');
+              }}
+              caretVisible={true}
+              disabled={internetStatus !== InternetStatus.CONNECTED}
+            />
+            <ListItem
+              text={'Create Competition'}
+              onPress={() => {
+                setAddCompetitionModalVisible(true);
+              }}
+              caretVisible={false}
+              disabled={internetStatus !== InternetStatus.CONNECTED}
+            />
+            <ListItem
+              text={'Manage Users'}
+              onPress={() => {
+                navigation.navigate('Manage Users');
+              }}
+              caretVisible={true}
+              disabled={internetStatus !== InternetStatus.CONNECTED}
+            />
+          </ListItemContainer>
+          <AddCompetitionModal
+            visible={addCompetitionModalVisible}
+            setVisible={setAddCompetitionModalVisible}
+            onRefresh={() => {}}
+          />
+        </>
+      )}
     </View>
   );
 };
