@@ -29,6 +29,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [selectedFormID, setSelectedFormID] = useState(null);
 
   const [formList, setFormList] = useState([]);
+  const [tbakey, settbakey] = useState('');
 
   const getFormIDs = async () => {
     // get form ids
@@ -60,11 +61,32 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       return false;
     }
 
+    const {error: fetchTbaEventError} = await supabase.functions.invoke(
+      'fetch-tba-event',
+      {
+        body: {tbakey: tbakey},
+      },
+    );
+    if (fetchTbaEventError) {
+      Alert.alert('Error', 'Invalid TBA Key');
+      return false;
+    }
+    const {data: eventData, error: eventError} = await supabase
+      .from('tba_events')
+      .select('id')
+      .eq('event_key', tbakey)
+      .single();
+    if (eventError) {
+      Alert.alert('Error', 'Failed to get TBA key from events in database');
+      return false;
+    }
+
     const {error} = await supabase.from('competitions').insert({
       name: name,
       start_time: startDate,
       end_time: endDate,
       form_id: selectedFormID,
+      tba_event_id: eventData.id,
     });
     return error == null;
   };
@@ -216,6 +238,16 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
           maxHeight={100}
         />
       </View>
+
+      <Spacer />
+      <Text style={styles.label}>The event's The Blue Alliance key</Text>
+      <Spacer />
+      <TextInput
+        style={styles.competition_name_input}
+        placeholder="TBA Key"
+        onChangeText={text => settbakey(text)}
+        value={tbakey}
+      />
 
       <Spacer />
       <View style={styles.button_row}>

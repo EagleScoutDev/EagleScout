@@ -2,7 +2,7 @@ import {supabase} from '../lib/supabase';
 
 interface UserAttributeReturnData {
   id: string;
-  team_id: number;
+  organization_id: number;
   scouter: boolean;
   admin: boolean;
 }
@@ -23,11 +23,11 @@ class UserAttributesDB {
       throw error;
     } else {
       if (data.length === 0) {
-        throw new Error('Profile not found');
+        throw new Error('User Attribute not found');
       } else {
         return {
           id: data[0].id,
-          team_id: data[0].team_id,
+          organization_id: data[0].organization_id,
           scouter: data[0].scouter,
           admin: data[0].admin,
         };
@@ -85,7 +85,7 @@ class UserAttributesDB {
         }
         res.push({
           id: data[i].id,
-          team_id: data[i].team_id,
+          organization_id: data[i].organization_id,
           scouter: data[i].scouter,
           admin: data[i].admin,
           firstName: profile.first_name,
