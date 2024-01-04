@@ -1,64 +1,77 @@
 import React, {useEffect, useState} from 'react';
 
 import {
-  View,
-  Text,
-  StyleSheet,
   ActivityIndicator,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import MinimalSectionHeader from './components/MinimalSectionHeader';
-import {Circle, Path, Svg} from 'react-native-svg';
+import {Path, Svg} from 'react-native-svg';
 import {useTheme} from '@react-navigation/native';
 import InternetStatus from './lib/InternetStatus';
-import PicklistsDB from './database/Picklists';
-import {TBA} from './lib/TBAUtils';
+import {SUPABASE_URL} from '@env';
+
+const useUrlStatus = (url: string) => {
+  const [status, setStatus] = useState(InternetStatus.NOT_ATTEMPTED);
+  const [previousController, setPreviousController] =
+    useState<AbortController | null>(null);
+  const [previousTimeout, setPreviousTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
+  const fetchStatus = async () => {
+    setStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 5000);
+    setPreviousController(controller);
+    setPreviousTimeout(timeout);
+    fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+    })
+      .then(() => {
+        setStatus(InternetStatus.CONNECTED);
+      })
+      .catch(_err => {
+        setStatus(InternetStatus.FAILED);
+      });
+  };
+  const cleanup = () => {
+    if (previousController) {
+      previousController.abort();
+    }
+    if (previousTimeout) {
+      clearTimeout(previousTimeout);
+    }
+    setPreviousController(null);
+    setPreviousTimeout(null);
+  };
+  useEffect(() => {
+    cleanup();
+    fetchStatus();
+    return cleanup;
+  }, [url]);
+  return {
+    status,
+    retry: () => {
+      cleanup();
+      fetchStatus();
+    },
+  };
+};
 
 const ConnectionStatusBox = () => {
   const {colors} = useTheme();
 
-  const [dbConnection, setDBConnection] = useState<InternetStatus>(
-    InternetStatus.NOT_ATTEMPTED,
+  const {status: tbaConnection, retry: retryTba} = useUrlStatus(
+    'https://www.thebluealliance.com/api/v3/status',
   );
-  const [tbaConnection, setTBAConnection] = useState<InternetStatus>(
-    InternetStatus.NOT_ATTEMPTED,
+  const {status: dbConnection, retry: retrySupabase} = useUrlStatus(
+    `${SUPABASE_URL}/rest/v1`,
   );
-
-  const testDBConnection = () => {
-    // attempt connection to picklist table
-    setDBConnection(InternetStatus.ATTEMPTING_TO_CONNECT);
-    PicklistsDB.getPicklists()
-      .then(() => {
-        setDBConnection(InternetStatus.CONNECTED);
-      })
-      .catch(() => {
-        setDBConnection(InternetStatus.FAILED);
-      });
-  };
-
-  const testTBAConnection = () => {
-    setTBAConnection(InternetStatus.ATTEMPTING_TO_CONNECT);
-    TBA.getStatus()
-      .then(result => {
-        if (result.is_datafeed_down) {
-          setTBAConnection(InternetStatus.FAILED);
-        } else {
-          setTBAConnection(InternetStatus.CONNECTED);
-        }
-      })
-      .catch(() => {
-        setTBAConnection(InternetStatus.FAILED);
-      });
-  };
-
-  const testBothConnections = () => {
-    testDBConnection();
-    testTBAConnection();
-  };
-
-  useEffect(() => {
-    testBothConnections();
-  }, []);
 
   const Checkmark = () => {
     return (
@@ -125,10 +138,12 @@ const ConnectionStatusBox = () => {
   return (
     <View>
       <MinimalSectionHeader title={'Connection Status'} />
-      {/*TODO: clicking on this should refresh the results (and show loading indicators)*/}
       <TouchableOpacity
         style={styles.container}
-        onPress={() => testBothConnections}>
+        onPress={() => {
+          retryTba();
+          retrySupabase();
+        }}>
         <View style={styles.row_container}>
           <Text style={styles.label}>TBA</Text>
           {(tbaConnection === InternetStatus.ATTEMPTING_TO_CONNECT ||
