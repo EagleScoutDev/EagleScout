@@ -47,9 +47,36 @@ export interface SimpleEvent {
   year: number;
 }
 
+export interface TBAStatus {
+  android: {
+    latest_app_version: number;
+    min_app_version: number;
+  };
+  current_season: number;
+  down_events: string[];
+  ios: {
+    latest_app_version: number;
+    min_app_version: number;
+  };
+  is_datafeed_down: boolean;
+  max_season: number;
+}
+
+const auth_key: string =
+  'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq';
+
 export class TBA {
-  constructor() {
-    // TODO
+  static async getStatus(): Promise<TBAStatus> {
+    const response = await fetch(
+      'https://www.thebluealliance.com/api/v3/status',
+      {
+        headers: {
+          'X-TBA-Auth-Key': auth_key,
+        },
+      },
+    );
+
+    return await response.json();
   }
 
   static async getEventsForYear(year: number): Promise<SimpleEvent[]> {

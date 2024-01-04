@@ -38,9 +38,13 @@ const ConnectionStatusBox = () => {
 
   const testTBAConnection = () => {
     setTBAConnection(InternetStatus.ATTEMPTING_TO_CONNECT);
-    TBA.getEventsForYear(2020)
-      .then(() => {
-        setTBAConnection(InternetStatus.CONNECTED);
+    TBA.getStatus()
+      .then(result => {
+        if (result.is_datafeed_down) {
+          setTBAConnection(InternetStatus.FAILED);
+        } else {
+          setTBAConnection(InternetStatus.CONNECTED);
+        }
       })
       .catch(() => {
         setTBAConnection(InternetStatus.FAILED);
