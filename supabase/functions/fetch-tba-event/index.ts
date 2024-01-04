@@ -46,7 +46,20 @@ serve(async (req: Request) => {
   }
   const matches = await matchesRes.json();
 
-  if (matches.length == 0 ) {
+  const teamsRes = await fetch(
+    'https://www.thebluealliance.com/api/v3/event/' + eventKey + '/teams/simple', {
+      headers: {
+        'X-TBA-Auth-Key': tbaAuthKey
+      }
+    });
+  if (teamsRes.status !== 200) {
+    return getResponse(false, 'Unable to get competition teams');
+  }
+  const teams = await teamsRes.json();
+
+  if (teams.length === 0) {
+    return getResponse(false, 'Teams not available for this competition yet');
+  } else if (matches.length === 0 ) {
     return getResponse(false, 'Matches not available for this competition yet');
   } else {
     const matches_db_function: {
@@ -82,12 +95,13 @@ serve(async (req: Request) => {
       event_key_arg: eventKey,
       start_date_arg: moment.tz(event.start_date.toString(), event.timezone).utc().format(),
       end_date_arg: moment.tz(event.end_date.toString(), event.timezone).utc().format(),
-      matches: matches_db_function
+      matches: matches_db_function,
+      teams: teams
     });
     if (error) {
       console.log('error adding tba event');
       console.log(error);
-      return getResponse(false, 'Error adding TBA event');
+      return getResponse(false, 'Error adding TBA event' + error.message + typeof teams[0].team_number);
     } else {
       console.log('OK');
       return getResponse(true, 'OK');

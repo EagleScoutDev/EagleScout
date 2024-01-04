@@ -17,6 +17,10 @@ import ScoutReports, {ScoutReportReturnData} from '../../database/ScoutReports';
 
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
+import CompetitionsDB from '../../database/Competitions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import FormHelper from '../../FormHelper';
+import Competitions from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
@@ -28,6 +32,10 @@ interface Props {
 const SearchMain: React.FC<Props> = ({navigation}) => {
   const [team, setTeam] = useState<string>('');
   const {colors} = useTheme();
+
+  const [currentCompetitionOnly, setCurrentCompetitionOnly] = useState(true);
+  const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
@@ -85,14 +93,55 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       setListOfScoutReports(reports);
     });
 
-    TBA.getTeamsAtCompetition('2023mttd').then(teams => {
-      // sort teams by team number
-      teams.sort((a, b) => {
-        return a.team_number - b.team_number;
-      });
+    (async () => {
+      let dbRequestWorked;
+      let dbCompetition;
+      try {
+        dbCompetition = await CompetitionsDB.getCurrentCompetition();
+        dbRequestWorked = true;
+      } catch (e) {
+        dbRequestWorked = false;
+      }
+
+      let comp;
+      if (dbRequestWorked) {
+        if (dbCompetition != null) {
+          comp = dbCompetition;
+          await AsyncStorage.setItem(
+            FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+            JSON.stringify(dbCompetition),
+          );
+        }
+      } else {
+        const storedComp = await FormHelper.readAsyncStorage(
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+        );
+        if (storedComp != null) {
+          comp = JSON.parse(storedComp);
+        }
+      }
+      setIsOffline(!dbRequestWorked);
+
+      let teams = null;
+      if (comp != null) {
+        setIsCompetitionHappening(true);
+        if (dbRequestWorked) {
+          teams = await Competitions.getCompetitionTeams(comp.id);
+          await AsyncStorage.setItem('teams', JSON.stringify(teams));
+        } else {
+          const teamsOffline = await AsyncStorage.getItem('teams');
+          if (teamsOffline != null) {
+            teams = JSON.parse(teamsOffline);
+          }
+        }
+      } else {
+        setIsCompetitionHappening(false);
+      }
+      if (teams != null) {
+        teams.sort();
+      }
       setListOfTeams(teams);
-    });
-    console.log(listOfTeams);
+    })();
   }, [competitionId]);
 
   // when user starts searching, filter the results displayed

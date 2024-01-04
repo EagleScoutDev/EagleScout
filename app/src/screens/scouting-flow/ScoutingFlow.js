@@ -1,9 +1,4 @@
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -14,6 +9,7 @@ import CompetitionsDB from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
 import Gamification from './Gamification';
 import ScoutingView from './ScoutingView';
+import Confetti from 'react-native-confetti';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
@@ -40,6 +36,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confettiView, setConfettiView] = useState(null);
 
   // for the full-screen incrementer
   const [teleop_scored, setTeleop_scored] = useState({
@@ -159,6 +156,11 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
     }
   }, [initForm]);
 
+  const startConfetti = () => {
+    console.log('starting confetti');
+    confettiView.startConfetti();
+  };
+
   const submitForm = async () => {
     let dataToSubmit = {};
     if (match > 100 || !match) {
@@ -223,6 +225,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
         setTeam('');
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
+          startConfetti();
           navigation.navigate('Match');
         }
       });
@@ -240,6 +243,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
         setTeam('');
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
+          startConfetti();
           navigation.navigate('Match');
         }
       } catch (error) {
@@ -334,6 +338,21 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
     <>
       {isCompetitionHappening ? (
         <>
+          <View
+            style={{
+              zIndex: 100,
+              // allow touch through
+              pointerEvents: 'none',
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}>
+            <Confetti ref={setConfettiView} timeout={10} duration={3000} />
+          </View>
           {isScoutStylePreferenceScrolling ? (
             <ScoutingView
               match={match}

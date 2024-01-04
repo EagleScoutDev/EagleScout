@@ -92,7 +92,7 @@ const MyStack = () => {
       console.log('user: ' + user.id);
       const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
-        .select('team_id, scouter, admin')
+        .select('organization_id, scouter, admin')
         .eq('id', user.id)
         .single();
       const {data: profilesData, error: profilesError} = await supabase
@@ -107,7 +107,7 @@ const MyStack = () => {
         console.error(profilesError);
         setError('Cannot acccess profiles');
       } else {
-        if (!userAttribData.team_id) {
+        if (!userAttribData.organization_id) {
           setError('');
           navigation.navigate('CompleteSignUp');
         } else if (!userAttribData.scouter) {
