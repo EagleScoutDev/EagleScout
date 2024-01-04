@@ -45,7 +45,12 @@ const ChangePassword = ({navigation}) => {
         />
       </View>
       <StandardButton
-        color={colors.primary}
+        isLoading={false}
+        color={
+          newPassword !== confirmNewPassword || newPassword === ''
+            ? 'grey'
+            : colors.primary
+        }
         onPress={async () => {
           if (newPassword === '' || confirmNewPassword === '') {
             console.log('New password cannot be blank.');

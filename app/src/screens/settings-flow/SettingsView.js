@@ -6,7 +6,6 @@ import {useEffect, useState} from 'react';
 import {Path, Svg} from 'react-native-svg';
 import {createStackNavigator} from '@react-navigation/stack';
 import EditProfileModal from './EditProfileModal';
-import ChangePasswordModal from './ChangePasswordModal';
 import DebugOffline from '../DebugOffline';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
