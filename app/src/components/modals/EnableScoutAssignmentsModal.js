@@ -16,36 +16,13 @@ function EnableScoutAssignmentsModal({
   onRefresh,
 }) {
   const {colors} = useTheme();
-  const [tbakey, settbakey] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    settbakey('');
-  }, [visible]);
-
   const submit = async () => {
-    const {error: fetchTbaEventError} = await supabase.functions.invoke(
-      'fetch-tba-event',
-      {
-        body: {tbakey: tbakey},
-      },
-    );
-    if (fetchTbaEventError) {
-      return false;
-    }
-    const {data: eventData, error: eventError} = await supabase
-      .from('tba_events')
-      .select('id')
-      .eq('event_key', tbakey)
-      .single();
-    if (eventError) {
-      return false;
-    }
     const {error} = await supabase
       .from('competitions')
       .update({
         scout_assignments_enabled: true,
-        tba_event_id: eventData.id,
       })
       .eq('id', competition.id);
     return !error;
@@ -73,16 +50,7 @@ function EnableScoutAssignmentsModal({
   });
 
   return (
-    <StandardModal title={'Enable Scout Asignments'} visible={visible}>
-      <Text style={styles.label}>The event's The Blue Alliance key</Text>
-      <Spacer />
-      <TextInput
-        style={styles.tbakey_input}
-        placeholder="TBA Key"
-        onChangeText={text => settbakey(text)}
-        value={tbakey}
-      />
-
+    <StandardModal title={'Enable Scout Assignments?'} visible={visible}>
       <Spacer />
       <View style={styles.button_row}>
         <StandardButton
@@ -109,7 +77,7 @@ function EnableScoutAssignmentsModal({
               }
             });
           }}
-          text={'Submit'}
+          text={'Yes'}
           width={'40%'}
         />
       </View>
