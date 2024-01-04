@@ -12,16 +12,13 @@ import {
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import CompetitionsView from './screens/competitions-flow/CompetitionsView';
 import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {Alert, Modal, useColorScheme, View, Text} from 'react-native';
+import {useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
-import CustomDrawerContent from './CustomDrawer';
 import FormHelper from './FormHelper';
-import UpcomingRoundsView from './screens/UpcomingRoundsView';
 import {supabase} from './lib/supabase';
 import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
