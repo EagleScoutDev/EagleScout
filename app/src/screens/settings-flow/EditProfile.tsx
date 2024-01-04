@@ -47,7 +47,11 @@ function EditProfile({navigation, route, getUser}) {
       </View>
       <View style={styles.button_row}>
         <StandardButton
-          color={colors.primary}
+          color={
+            firstName === initialFirstName && lastName === initialLastName
+              ? 'grey'
+              : colors.primary
+          }
           isLoading={isLoading}
           onPress={async () => {
             setIsLoading(true);
