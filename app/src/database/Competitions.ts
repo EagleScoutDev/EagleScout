@@ -5,44 +5,38 @@ interface Competition {
   startTime: Date;
   endTime: Date;
   formId: number;
+  pitScoutFormId: number;
 }
 
 export interface CompetitionReturnData extends Competition {
   id: number;
   form: [];
   scoutAssignmentsEnabled: boolean;
+  pitScoutFormStructure: [];
 }
 
 class CompetitionsDB {
   static async getCompetitions(): Promise<CompetitionReturnData[]> {
-    const {data, error} = await supabase
-      .from('competitions')
-      .select('*, forms( form_structure )');
+    const {data, error} = await supabase.rpc('list_all_competitions');
     if (error) {
       throw error;
     } else {
-      return data.map(competition => {
-        return {
-          id: competition.id,
-          name: competition.name,
-          startTime: competition.start_time,
-          endTime: competition.end_time,
-          formId: competition.form_id,
-          form: competition.forms.form_structure,
-          scoutAssignmentsEnabled: competition.scout_assignments_enabled,
-        };
-      });
+      return (data as any[]).map(competition => ({
+        id: competition.competition_id,
+        name: competition.competition_name,
+        startTime: competition.start_time,
+        endTime: competition.end_time,
+        formId: competition.form_id,
+        form: competition.form_structure,
+        scoutAssignmentsEnabled: competition.scout_assignments_enabled,
+        pitScoutFormId: competition.pit_scout_form_id,
+        pitScoutFormStructure: competition.pit_scout_form_structure,
+      }));
     }
   }
 
   static async getCurrentCompetition(): Promise<CompetitionReturnData | null> {
-    // select the competiton from supabase where the current time is between the start and end time
-    const currentTime = new Date().toISOString();
-    const {data, error} = await supabase
-      .from('competitions')
-      .select('*, forms( form_structure )')
-      .lte('start_time', currentTime)
-      .gte('end_time', currentTime);
+    const {data, error} = await supabase.rpc('get_current_competition');
     if (error) {
       throw error;
     } else {
@@ -55,8 +49,10 @@ class CompetitionsDB {
           startTime: data[0].start_time,
           endTime: data[0].end_time,
           formId: data[0].form_id,
-          form: data[0].forms.form_structure,
+          form: data[0].form_structure,
           scoutAssignmentsEnabled: data[0].scout_assignments_enabled,
+          pitScoutFormId: data[0].pit_scout_form_id,
+          pitScoutFormStructure: data[0].pit_scout_form_structure,
         };
       }
     }

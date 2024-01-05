@@ -3,7 +3,15 @@ import {StyleSheet, Text, TextInput} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 
-function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
+function TeamInformation({
+  team,
+  setTeam,
+  disabled = false,
+}: {
+  team: string;
+  setTeam: (team: string) => void;
+  disabled?: boolean;
+}) {
   const {colors} = useTheme();
 
   const styles = StyleSheet.create({
@@ -34,23 +42,7 @@ function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
   });
 
   return (
-    <FormSection
-      colors={colors}
-      title={'Match Information'}
-      disabled={disabled}>
-      <Text style={styles.subtitle}>match number</Text>
-      <TextInput
-        style={
-          match > 100 || match === '0' ? styles.badInput : styles.textInput
-        }
-        placeholder={'000'}
-        value={match}
-        onChangeText={text => setMatch(text)}
-        keyboardType={'numeric'}
-      />
-      {(match > 100 || match === '0') && (
-        <Text style={{color: 'red'}}>match number invalid</Text>
-      )}
+    <FormSection colors={colors} title={'Team Information'} disabled={disabled}>
       <Text style={styles.subtitle}>team number</Text>
       <TextInput
         style={styles.textInput}
@@ -63,4 +55,4 @@ function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
   );
 }
 
-export default MatchInformation;
+export default TeamInformation;

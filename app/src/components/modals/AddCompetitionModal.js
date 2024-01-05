@@ -27,6 +27,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const {colors} = useTheme();
 
   const [selectedFormID, setSelectedFormID] = useState(null);
+  const [selectedPitScoutingFormID, setSelectedPitScoutingFormID] =
+    useState(null);
 
   const [formList, setFormList] = useState([]);
   const [tbakey, settbakey] = useState('');
@@ -35,7 +37,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
     // get form ids
     let {data: forms, error} = await supabase
       .from('forms')
-      .select('id, name');
+      .select('id, name, pitScouting:pit_scouting');
     if (error) {
       console.error('Failed to get forms');
       console.error(error);
@@ -48,6 +50,13 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
     // if no form is selected, alert the user
     if (selectedFormID == null) {
       Alert.alert('Error', 'Please select a form to use for this competition.');
+      return false;
+    }
+    if (selectedPitScoutingFormID == null) {
+      Alert.alert(
+        'Error',
+        'Please select a pit scouting form to use for this competition.',
+      );
       return false;
     }
     // if the start date is after (or equal to) the end date, alert the user
@@ -86,6 +95,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       start_time: startDate,
       end_time: endDate,
       form_id: selectedFormID,
+      pit_scout_form_id: selectedPitScoutingFormID,
       tba_event_id: eventData.id,
     });
     return error == null;
@@ -218,7 +228,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
       <View
         style={{
-          flexDirection: 'row',
+          // flexDirection: 'row',
+          gap: 10,
           justifyContent: 'center',
           alignItems: 'center',
           width: '100%',
@@ -228,13 +239,28 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         }}>
         <SelectMenu
           setSelected={setSelectedFormID}
-          data={formList.map(f => ({
-            value: f.name,
-            key: f.id,
-          }))}
+          data={formList
+            .filter(f => !f.pitScouting)
+            .map(f => ({
+              value: f.name,
+              key: f.id,
+            }))}
           searchEnabled={false}
-          searchPlaceholder={'Search for a form...'}
+          searchPlaceholder={'Search for a match scouting form...'}
           placeholder={'Select a form...'}
+          maxHeight={100}
+        />
+        <SelectMenu
+          setSelected={setSelectedPitScoutingFormID}
+          data={formList
+            .filter(f => f.pitScouting)
+            .map(f => ({
+              value: f.name,
+              key: f.id,
+            }))}
+          searchEnabled={false}
+          searchPlaceholder={'Search for a pit scouting form...'}
+          placeholder={'Select a pit scouting form...'}
           maxHeight={100}
         />
       </View>
