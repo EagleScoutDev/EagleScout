@@ -52,6 +52,17 @@ function PicklistsManagerScreen({navigation}) {
   // Render function using FlatList
   return (
     <View style={{flex: 1}}>
+      {picklists.length === 0 && (
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 20,
+            marginTop: '5%',
+            color: colors.text,
+          }}>
+          No picklists found.{'\n'}Create one to get started!
+        </Text>
+      )}
       <FlatList
         data={picklists}
         onRefresh={() => onRefresh()}
