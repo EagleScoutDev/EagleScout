@@ -99,29 +99,6 @@ const UpcomingRoundsView = ({navigation}) => {
     });
   }, [navigation]);
 
-  const FAB = () => (
-    <Pressable
-      style={{
-        position: 'absolute',
-        bottom: '5%',
-        right: '5%',
-        backgroundColor: colors.card,
-        borderRadius: 50,
-        padding: '5%',
-        elevation: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        borderWidth: 1,
-        borderColor: colors.text,
-      }}
-      onPress={() => {
-        navigation.navigate('Scout Report');
-      }}>
-      <Text style={{color: colors.text, fontWeight: 'bold'}}>Scout Now +</Text>
-    </Pressable>
-  );
-
   return (
     <>
       {isCompetitionHappening ? (
@@ -133,7 +110,7 @@ const UpcomingRoundsView = ({navigation}) => {
                   alignSelf: 'center',
                   height: '100%',
                   borderRadius: 10,
-                  padding: '10%',
+                  padding: '8%',
                   width: '100%',
                 }}>
                 {upcomingRounds.length !== 0 && (
@@ -153,7 +130,11 @@ const UpcomingRoundsView = ({navigation}) => {
                       borderColor: colors.border,
                       justifyContent: 'space-around',
                     }}>
-                    <Svg width={'100%'} height="50%" viewBox="0 0 16 16">
+                    <Svg
+                      width={'100%'}
+                      height="50%"
+                      viewBox="0 0 16 16"
+                      style={{marginVertical: '10%'}}>
                       <Path
                         fill="green"
                         d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
@@ -166,9 +147,10 @@ const UpcomingRoundsView = ({navigation}) => {
                     <Text
                       style={{
                         color: colors.text,
-                        fontSize: 25,
+                        fontSize: 24,
                         padding: '5%',
                         textAlign: 'center',
+                        flex: 1,
                       }}>
                       You have no rounds left to scout today.
                     </Text>
@@ -251,14 +233,12 @@ const UpcomingRoundsView = ({navigation}) => {
                   ))}
                 </ScrollView>
               </View>
-              <FAB />
             </View>
           ) : (
             <>
               <Text style={{color: colors.text}}>
                 Connect to the internet to fetch upcoming rounds.
               </Text>
-              <FAB />
             </>
           )}
         </>
