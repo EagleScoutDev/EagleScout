@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import NotesDB from '../../database/Notes';
+import CompetitionsDB, {
+  CompetitionReturnData,
+} from '../../database/Competitions';
 
 const NoteScreen = () => {
   const {colors} = useTheme();
@@ -15,6 +19,49 @@ const NoteScreen = () => {
   const [teamNumber, setTeamNumber] = useState<string>('');
   const [matchNumber, setMatchNumber] = useState<string>('');
   const [images, setImages] = useState<string[]>([]);
+
+  const [compID, setCompID] = useState<number>('');
+
+  useEffect(() => {
+    CompetitionsDB.getCurrentCompetition().then(result => {
+      if (result == null) {
+        setCompID(-1);
+      } else {
+        setCompID(result.id);
+      }
+    });
+  }, []);
+
+  const submitNote = () => {
+    // console.log(
+    //   'submitting note' +
+    //     '\nTitle: ' +
+    //     title +
+    //     '\nContent: ' +
+    //     content +
+    //     '\nTeam Number: ' +
+    //     teamNumber +
+    //     '\nMatch Number: ' +
+    //     matchNumber,
+    // );
+    NotesDB.createNote(
+      title,
+      content,
+      Number(teamNumber),
+      Number(matchNumber),
+      compID,
+    ).then((result: any) => {
+      console.log(result);
+      clearAllFields();
+    });
+  };
+
+  const clearAllFields = () => {
+    setTitle('');
+    setContent('');
+    setTeamNumber('');
+    setMatchNumber('');
+  };
 
   const styles = StyleSheet.create({
     number_label: {
@@ -110,7 +157,7 @@ const NoteScreen = () => {
         <TextInput
           multiline={true}
           style={styles.content_text_input}
-          onTextInput={text => setContent(text)}
+          onChangeText={text => setContent(text)}
           value={content}
           placeholder={'Start writing...'}
           placeholderTextColor={'grey'}
@@ -123,7 +170,7 @@ const NoteScreen = () => {
       {/*</TouchableOpacity>*/}
       <TouchableOpacity
         style={styles.submit_button_styling}
-        onPress={() => {}}
+        onPress={submitNote}
         disabled={
           title === '' ||
           content === '' ||
