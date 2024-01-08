@@ -27,9 +27,17 @@ class NotesDB {
   ): Promise<number> {
     const {data, error} = await supabase
       .from('matches')
-      .select('*')
-      .eq('number', match_number)
-      .eq('competition_id', competition_id);
+      .insert([
+        {
+          number: match_number,
+          competition_id: competition_id,
+        },
+      ])
+      .select();
+
+    if (!data || data?.length === 0) {
+      return -1;
+    }
     if (error) {
       throw error;
     } else {
@@ -37,7 +45,21 @@ class NotesDB {
     }
   }
 
-  static async createMatch(match_number: number, competition_id: number) {
+  static async createMatch(
+    match_number: number,
+    competition_id: number,
+  ): Promise<number> {
+    // console.log('createMatch match_number: ', match_number);
+    // console.log('createMatch competition_id: ', competition_id);
+    // check if match exists, if it does, return the id
+
+    let match_id = await this.checkIfMatchExists(match_number, competition_id);
+    if (match_id !== -1) {
+      return match_id;
+    } else {
+      console.log('match does not exist');
+    }
+
     const {data, error} = await supabase
       .from('matches')
       .insert([
@@ -46,11 +68,15 @@ class NotesDB {
           competition_id: competition_id,
         },
       ])
-      .single();
+      .select();
+
+    if (!data || data?.length === 0) {
+      return -1;
+    }
     if (error) {
       throw error;
     } else {
-      return data;
+      return data[0].id;
     }
   }
 
@@ -60,14 +86,23 @@ class NotesDB {
     team_number: number,
     match_number: number,
     competition_id: number,
-  ): Promise<NoteStructure> {
+  ): Promise<void> {
     let match_id = await this.checkIfMatchExists(match_number, competition_id);
     // console.log('match_id: ', match_id);
     let user_id = await ProfilesDB.getCurrentUserProfile().then(profile => {
       return profile.id;
     });
-    // console.log('user_id: ', user_id);
 
+    if (match_id === -1) {
+      match_id = await this.createMatch(match_number, competition_id);
+      if (match_id === -1) {
+        console.log('Error creating match');
+        return;
+      }
+    }
+
+    // console.log('user_id: ', user_id);
+    //
     // console.log('title: ', title);
     // console.log('content: ', content);
     // console.log('team_number: ', team_number);
@@ -87,11 +122,12 @@ class NotesDB {
         },
       ])
       .single();
+
+    // console.log('data: ', data);
     if (error) {
+      console.log('some error');
       console.error(error.message);
       throw error;
-    } else {
-      return data;
     }
   }
 }

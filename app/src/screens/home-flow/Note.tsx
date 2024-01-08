@@ -33,25 +33,24 @@ const NoteScreen = () => {
   }, []);
 
   const submitNote = () => {
-    // console.log(
-    //   'submitting note' +
-    //     '\nTitle: ' +
-    //     title +
-    //     '\nContent: ' +
-    //     content +
-    //     '\nTeam Number: ' +
-    //     teamNumber +
-    //     '\nMatch Number: ' +
-    //     matchNumber,
-    // );
+    console.log(
+      'submitting note' +
+        '\nTitle: ' +
+        title +
+        '\nContent: ' +
+        content +
+        '\nTeam Number: ' +
+        teamNumber +
+        '\nMatch Number: ' +
+        matchNumber,
+    );
     NotesDB.createNote(
       title,
       content,
       Number(teamNumber),
       Number(matchNumber),
       compID,
-    ).then((result: any) => {
-      console.log(result);
+    ).then(() => {
       clearAllFields();
     });
   };
@@ -73,11 +72,15 @@ const NoteScreen = () => {
       fontSize: 20,
       fontWeight: 'bold',
       textAlign: 'center',
+      backgroundColor: colors.card,
+      padding: '2%',
+      borderRadius: 10,
     },
     number_container: {
       flexDirection: 'row',
       justifyContent: 'space-evenly',
       alignItems: 'center',
+      marginVertical: '1%',
     },
     content_container: {
       height: '50%',
