@@ -4,6 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
+import RadioButtons from "../form/RadioButtons";
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -17,14 +18,30 @@ function EnableScoutAssignmentsModal({
 }) {
   const {colors} = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checked, setChecked] = useState(null);
 
   const submit = async () => {
+    let scoutAssignmentsConfig;
+    if (checked === 'Team based') {
+      scoutAssignmentsConfig = 'team_based';
+    } else if (checked === 'Position based') {
+      scoutAssignmentsConfig = 'position_based';
+    } else {
+      Alert.alert('Error', 'Please select a scout assignments configuration.');
+      return false;
+    }
     const {error} = await supabase
       .from('competitions')
       .update({
-        scout_assignments_enabled: true,
+        scout_assignments_config: scoutAssignmentsConfig,
       })
       .eq('id', competition.id);
+    if (error) {
+      Alert.alert(
+        'Error',
+        'There was an error enabling scout assignments. Please check if the TBA key is correct.',
+      );
+    }
     return !error;
   };
 
@@ -51,6 +68,12 @@ function EnableScoutAssignmentsModal({
 
   return (
     <StandardModal title={'Enable Scout Assignments?'} visible={visible}>
+      <RadioButtons
+        options={['Team based', 'Position based']}
+        value={checked}
+        onValueChange={setChecked}
+        colors={colors}
+      />
       <Spacer />
       <View style={styles.button_row}>
         <StandardButton
@@ -69,11 +92,6 @@ function EnableScoutAssignmentsModal({
               if (success) {
                 onRefresh();
                 setVisible(false);
-              } else {
-                Alert.alert(
-                  'Error',
-                  'There was an error enabling scout assignments. Please check if the TBA key is correct.',
-                );
               }
             });
           }}

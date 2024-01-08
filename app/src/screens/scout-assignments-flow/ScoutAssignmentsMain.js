@@ -1,7 +1,7 @@
 import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import EnableScoutAssignmentsModal from '../../components/modals/EnableScoutAssignmentsModal';
 import React, { useEffect, useState } from 'react';
-import CompetitionsDB from '../../database/Competitions';
+import CompetitionsDB, { ScoutAssignmentsConfig } from "../../database/Competitions";
 import NoInternet from '../../components/NoInternet';
 import {useTheme} from '@react-navigation/native';
 
@@ -68,7 +68,10 @@ function ScoutAssignmentsMain({navigation}) {
                 onPress={() => {
                   setChosenComp(comp);
                   console.log(comp);
-                  if (!comp.scoutAssignmentsEnabled) {
+                  if (
+                    comp.scoutAssignmentsConfig ===
+                    ScoutAssignmentsConfig.DISABLED
+                  ) {
                     setEnableScoutAssignmentsVisible(true);
                   } else {
                     navigation.navigate('Scout Assignments Spreadsheet', {
