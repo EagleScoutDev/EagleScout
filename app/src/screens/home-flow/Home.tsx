@@ -7,6 +7,7 @@ import Gamification from '../scouting-flow/Gamification';
 import ScoutingFlow from '../scouting-flow/ScoutingFlow';
 import FormHelper from '../../FormHelper';
 import HomeMain from './HomeMain';
+import NoteScreen from './Note';
 
 const HomeStack = createStackNavigator();
 
@@ -58,6 +59,13 @@ function Home({navigation}) {
           headerBackTitle: 'Home',
         }}
         component={ScoutReportComponent}
+      />
+      <HomeStack.Screen
+        name={'Note'}
+        options={{
+          headerBackTitle: 'Home',
+        }}
+        component={NoteScreen}
       />
     </HomeStack.Navigator>
   );
