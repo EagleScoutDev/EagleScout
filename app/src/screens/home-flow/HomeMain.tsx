@@ -57,9 +57,9 @@ const HomeMain = () => {
         <Text style={{paddingLeft: '5%', color: colors.text}}>
           Pit scouting is not yet available. Please check back later.
         </Text>
-        <Pressable onPress={() => navigation.navigate('Note')}>
+        <Pressable onPress={() => navigation.navigate('Note Viewer')}>
           <Text style={{paddingLeft: '5%', color: colors.text}}>
-            Take a note
+            See all notes
           </Text>
         </Pressable>
       </ScrollView>

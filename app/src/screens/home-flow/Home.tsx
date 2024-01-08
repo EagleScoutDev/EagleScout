@@ -8,6 +8,7 @@ import ScoutingFlow from '../scouting-flow/ScoutingFlow';
 import FormHelper from '../../FormHelper';
 import HomeMain from './HomeMain';
 import NoteScreen from './Note';
+import NoteViewer from './NoteViewer';
 
 const HomeStack = createStackNavigator();
 
@@ -66,6 +67,13 @@ function Home({navigation}) {
           headerBackTitle: 'Home',
         }}
         component={NoteScreen}
+      />
+      <HomeStack.Screen
+        name={'Note Viewer'}
+        options={{
+          headerBackTitle: 'Home',
+        }}
+        component={NoteViewer}
       />
     </HomeStack.Navigator>
   );

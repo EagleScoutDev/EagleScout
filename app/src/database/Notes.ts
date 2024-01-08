@@ -130,6 +130,20 @@ class NotesDB {
       throw error;
     }
   }
+
+  static async getAllNotes(): Promise<any[]> {
+    let {data, error} = await supabase.from('notes').select('*');
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      return [];
+    }
+
+    return data;
+  }
 }
 
 export default NotesDB;
