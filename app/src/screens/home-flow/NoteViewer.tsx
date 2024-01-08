@@ -75,7 +75,7 @@ const NoteViewer = () => {
   }, []);
 
   useEffect(() => {
-    if (searchTerm.length === 0) {
+    if (searchTerm.length < 1) {
       setFilteredNotes(notes);
     }
 
@@ -117,28 +117,99 @@ const NoteViewer = () => {
           borderColor: colors.border,
           borderRadius: 10,
           margin: '2%',
+          marginBottom: '0%',
         }}
       />
       <View
         style={{
           flexDirection: 'row',
+          alignItems: 'center',
           justifyContent: 'space-evenly',
+          padding: '2%',
         }}>
-        <SortOption
-          onPress={() => setFilterType(FilterType.TEXT)}
-          title={'Text'}
-          isActive={filterType === FilterType.TEXT}
-        />
-        <SortOption
-          onPress={() => setFilterType(FilterType.TEAM_NUMBER)}
-          title={'Team Number'}
-          isActive={filterType === FilterType.TEAM_NUMBER}
-        />
-        <SortOption
-          onPress={() => setFilterType(FilterType.MATCH_NUMBER)}
-          title={'Match Number'}
-          isActive={filterType === FilterType.MATCH_NUMBER}
-        />
+        <Pressable
+          onPress={() => {
+            setFilterType(FilterType.TEAM_NUMBER);
+          }}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: '2%',
+            backgroundColor:
+              filterType === FilterType.TEAM_NUMBER
+                ? colors.text
+                : colors.background,
+            borderRadius: 10,
+            flex: 1,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color:
+                filterType === FilterType.TEAM_NUMBER
+                  ? colors.background
+                  : colors.text,
+              fontWeight:
+                filterType === FilterType.TEAM_NUMBER ? 'bold' : 'normal',
+            }}>
+            Team
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            // setFilterState(FilterState.MATCH);
+            setFilterType(FilterType.MATCH_NUMBER);
+          }}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: '2%',
+            backgroundColor:
+              filterType === FilterType.MATCH_NUMBER
+                ? colors.text
+                : colors.background,
+            borderRadius: 10,
+            flex: 1,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color:
+                filterType === FilterType.MATCH_NUMBER
+                  ? colors.background
+                  : colors.text,
+              fontWeight:
+                filterType === FilterType.MATCH_NUMBER ? 'bold' : 'normal',
+            }}>
+            Match
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            // setFilterState(FilterState.PERSON);
+            setFilterType(FilterType.TEXT);
+          }}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: '2%',
+            backgroundColor:
+              filterType === FilterType.TEXT ? colors.text : colors.background,
+            borderRadius: 10,
+            flex: 1,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color:
+                filterType === FilterType.TEXT
+                  ? colors.background
+                  : colors.text,
+              fontWeight: filterType === FilterType.TEXT ? 'bold' : 'normal',
+            }}>
+            Text
+          </Text>
+        </Pressable>
       </View>
       <FlatList
         data={filteredNotes}
