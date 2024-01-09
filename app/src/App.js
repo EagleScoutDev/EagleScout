@@ -192,6 +192,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               tabBarShowLabel: false,
               headerShown: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
@@ -220,6 +223,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) => (
                 <Svg viewBox="0 0 16 16" width={size} height={size}>
                   <Path
@@ -243,6 +249,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) => (
                 <Svg width={size * 2.5} height={size * 2.5} viewBox="0 0 16 16">
                   <Path
@@ -259,6 +268,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
@@ -282,6 +294,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({size, color}) => (
                 <Svg width={size} height={size} viewBox="0 0 16 16">
                   <Path fill={color} d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
