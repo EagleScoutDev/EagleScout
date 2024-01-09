@@ -42,12 +42,10 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Team Rank'}
         component={DataAggregator}
-        options={
-          {
-            // headerBackTitle: 'Back',
-            // headerTitle: 'Team RankA',
-          }
-        }
+        options={{
+          headerBackTitle: 'Back',
+          // headerTitle: 'Team RankA',
+        }}
       />
       <DataStack.Screen
         name={'Manage Competitions'}

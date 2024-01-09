@@ -59,7 +59,13 @@ function SettingsMain({
         name="Debug Offline"
         component={DebugOffline}
       />
-      <Stack.Screen name={'Reports'} component={SubmittedForms} />
+      <Stack.Screen
+        name={'Reports'}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+        component={SubmittedForms}
+      />
     </Stack.Navigator>
   );
 }
