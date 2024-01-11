@@ -22,7 +22,7 @@ function getResponse(valid: boolean, message: string) {
 
 serve(async (req: Request) => {
   const { tbakey: eventKey } = await req.json();
-  const tbaAuthKey = 'YRbY8TXxQFiB9LY5NQDfCQkNEQje9pjPV7dZyGdN8idR1vcVtOyPj6diGXE5Nbik';
+  const tbaAuthKey = Deno.env.get('TBA_API_KEY');
 
   const eventRes = await fetch(
     'https://www.thebluealliance.com/api/v3/event/' + eventKey, {
