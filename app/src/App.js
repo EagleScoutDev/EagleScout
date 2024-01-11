@@ -39,6 +39,7 @@ import {
 } from './SVGIcons';
 import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
+import RegisterTeamModal from "./screens/login-flow/RegisterTeamModal";
 
 const Drawer = createDrawerNavigator();
 
@@ -200,11 +201,25 @@ const MyStack = () => {
                 drawerItemStyle: {
                   display: 'none',
                 },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
               }}
             />
             <Drawer.Screen
               name="CompleteSignUp"
               component={CompleteSignup}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  display: 'none',
+                },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
+              }}
+            />
+            <Drawer.Screen
+              name="Register new team"
+              component={RegisterTeamModal}
               options={{
                 headerShown: false,
                 drawerItemStyle: {
