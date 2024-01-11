@@ -15,26 +15,10 @@ function CompetitionRank({team_number}: {team_number: number}) {
   const [allCompetitions, setAllCompetitions] = useState<SimpleEvent[]>([]);
   const [historyVisible, setHistoryVisible] = useState<boolean>(false);
   const {colors} = useTheme();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const competition = await TBA.getCurrentCompetitionForTeam(team_number);
-        setCurrentCompetition(competition);
-
-        if (competition) {
-          const rank = await TBA.getTeamRank(competition.key, team_number);
-          setCurrentCompetitionRank(rank);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [team_number]);
-
-  useEffect(() => {
+    setLoading(true);
     let all_competitions: SimpleEvent[] = [];
 
     const fetchTeamRankings = async () => {
@@ -54,32 +38,104 @@ function CompetitionRank({team_number}: {team_number: number}) {
       }
     };
 
-    fetchTeamRankings()
-      .then(() => {
-        const sorted = [...all_competitions].sort((a, b) => {
-          const dateA = new Date(a.start_date).getTime();
-          const dateB = new Date(b.start_date).getTime();
-          return dateA - dateB;
-        });
+    const fetchData = async () => {
+      try {
+        const competition = await TBA.getCurrentCompetitionForTeam(team_number);
+        setCurrentCompetition(competition);
 
-        setAllCompetitions(sorted);
-        const last_event = sorted[sorted.length - 1];
-        console.log('last event: ' + Object.entries(last_event));
+        if (competition) {
+          const rank = await TBA.getTeamRank(competition.key, team_number);
+          setCurrentCompetitionRank(rank);
+          return true;
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+      return false;
+    };
 
-        setCurrentCompetition(last_event);
-        console.log('detected last rank: ' + last_event.rank);
-        setCurrentCompetitionRank(last_event.rank);
-        // the following line is used to trigger a rerender
-        // there is probably a better way to accomplish this
-        setCurrentCompetition(last_event);
-      })
-      .catch(error => {
-        console.log(error);
+    const findClosestDate = (events: SimpleEvent[]) => {
+      const dateDiff = (date: Date, startDate: Date, endDate: Date) => {
+        // if the date is between start and end date return 0
+        if (date >= startDate && date <= endDate) {
+          return 0;
+        }
+        // else return the difference between the date and the start date or the end date, whichever is closer
+        return Math.abs(date.getTime() - startDate.getTime()) <
+          Math.abs(date.getTime() - endDate.getTime())
+          ? Math.abs(date.getTime() - startDate.getTime())
+          : Math.abs(date.getTime() - endDate.getTime());
+      };
+
+      let closest = events[0];
+      let date = new Date();
+      let diff = dateDiff(
+        date,
+        new Date(events[0].start_date),
+        new Date(events[0].end_date),
+      );
+      events.forEach(event => {
+        const newDiff = dateDiff(
+          date,
+          new Date(event.start_date),
+          new Date(event.end_date),
+        );
+        if (newDiff < diff) {
+          closest = event;
+          diff = newDiff;
+        }
       });
+      return closest;
+    };
+
+    fetchData().then(success => {
+      fetchTeamRankings()
+        .then(() => {
+          const sorted = [...all_competitions].sort((a, b) => {
+            const dateA = new Date(a.start_date).getTime();
+            const dateB = new Date(b.start_date).getTime();
+            return dateA - dateB;
+          });
+
+          setAllCompetitions(sorted);
+
+          if (sorted.length > 0) {
+            const filteredArray = sorted.filter(
+              event => event.rank != null && event.rank >= 0,
+            );
+
+            let last_event;
+            if (filteredArray.length > 0) {
+              last_event = findClosestDate(filteredArray);
+            } else {
+              last_event = findClosestDate(sorted);
+            }
+            console.log('last event: ' + Object.entries(last_event));
+
+            if (!success) {
+              setCurrentCompetition(last_event);
+              console.log('detected last rank: ' + last_event.rank);
+              setCurrentCompetitionRank(last_event.rank);
+              // the following line is used to trigger a rerender
+              // there is probably a better way to accomplish this
+              setCurrentCompetition(last_event);
+            }
+          } else {
+            setCurrentCompetition(null);
+            setCurrentCompetitionRank(-3);
+          }
+          setLoading(false);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
   }, [team_number]);
 
   const rankToColor = (rank: number) => {
-    if (rank < 8) {
+    if (rank < 0) {
+      return 'gray';
+    } else if (rank < 8) {
       return 'green';
     } else if (rank < 16) {
       return 'deepskyblue';
@@ -101,9 +157,9 @@ function CompetitionRank({team_number}: {team_number: number}) {
           padding: '5%',
           marginTop: '5%',
           backgroundColor:
-            currentCompetitionRank === undefined
-              ? 'white'
-              : rankToColor(currentCompetitionRank!),
+            loading
+            ? 'gray'
+            : rankToColor(currentCompetitionRank!),
           borderRadius: 10,
           alignSelf: 'center',
         }}>
@@ -116,11 +172,19 @@ function CompetitionRank({team_number}: {team_number: number}) {
               marginTop: '2%',
               fontWeight: '800',
             }}>
-            {currentCompetitionRank === -1
-              ? 'Has not competed yet'
-              : currentCompetitionRank === -2
-              ? 'Unranked'
-              : 'Ranked #' + {currentCompetitionRank}}
+            {loading ? (
+              'Loading...'
+            ) : (
+              <>
+                {currentCompetitionRank === -1
+                  ? 'Has not competed yet'
+                  : currentCompetitionRank === -2
+                  ? 'Unranked'
+                  : currentCompetitionRank === -3
+                  ? 'No competitions found for this team'
+                  : 'Ranked #' + currentCompetitionRank}
+              </>
+            )}
           </Text>
           <Text
             style={{
@@ -129,7 +193,15 @@ function CompetitionRank({team_number}: {team_number: number}) {
               fontSize: 20,
               marginTop: '2%',
             }}>
-            at {currentCompetition?.name}
+            {loading ? (
+              ' '
+            ) : (
+              <>
+                {currentCompetition != null
+                  ? 'at ' + currentCompetition.name
+                  : ' '}
+              </>
+            )}
           </Text>
         </View>
         {historyVisible ? (
