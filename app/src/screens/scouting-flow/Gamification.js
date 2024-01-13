@@ -27,7 +27,6 @@ function Gamification({
   team,
   setTeam,
   colors,
-  styles,
   navigation,
   competition,
   data,
@@ -224,9 +223,7 @@ function Gamification({
                         return (
                           <FormComponent
                             key={item.question}
-                            colors={colors}
                             item={item}
-                            styles={styles}
                             arrayData={arrayData}
                             setArrayData={setArrayData}
                           />

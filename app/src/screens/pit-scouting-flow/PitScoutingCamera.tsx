@@ -1,10 +1,9 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
-  Dimensions,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {
@@ -25,6 +24,7 @@ import Reanimated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
+import {useTheme} from '@react-navigation/native';
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 // Reanimated.addWhitelistedNativeProps({
@@ -36,9 +36,12 @@ const MAX_ZOOM_FACTOR = 10;
 
 export default function PitScoutingCamera({
   onPhotoTaken,
+  onCancel,
 }: {
   onPhotoTaken: (photoData: string) => void;
+  onCancel: () => void;
 }) {
+  const {colors} = useTheme();
   const [flash, setFlash] = useState<'on' | 'off' | 'auto'>('auto');
   const [isCapturing, setIsCapturing] = useState(false);
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -110,8 +113,28 @@ export default function PitScoutingCamera({
 
   if (device == null) {
     return (
-      <View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 10,
+        }}>
         <Text>No camera found</Text>
+        <TouchableOpacity
+          onPress={onCancel}
+          style={{
+            backgroundColor: colors.background,
+            padding: 10,
+            borderRadius: 10,
+          }}>
+          <Text
+            style={{
+              color: colors.text,
+            }}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

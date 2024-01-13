@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   Modal,
@@ -9,13 +10,21 @@ import {
   Text,
   View,
 } from 'react-native';
-import PitScoutingCamera from './PitScoutingCamera';
 import {useTheme} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import PitScoutingCamera from './PitScoutingCamera';
 import FormSection from '../../components/form/FormSection';
 import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import TeamInformation from '../../components/form/TeamInformation';
 import CompetitionsDB from '../../database/Competitions';
+import FormHelper from '../../FormHelper';
+import PitScoutReports, {
+  PitScoutReportWithoutId,
+} from '../../database/PitScoutReports';
+import ScoutReportsDB from '../../database/ScoutReports';
+
+const ListSeparator = () => <View style={{width: 10}} />;
 
 export default function PitScoutingFlow() {
   const {colors} = useTheme();
@@ -26,12 +35,46 @@ export default function PitScoutingFlow() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStructure, setFormStructure] = useState<any[]>([]);
   const [competitionLoading, setCompetitionLoading] = useState(true);
+  const [currentCompetition, setCurrentCompetition] = useState<any>();
+
+  const defaultValues = useMemo(() => {
+    return {
+      radio: '',
+      checkbox: [],
+      textbox: '',
+      number: 0,
+      slider: 0,
+    };
+  }, []);
+
+  const initializeValues = useCallback(
+    (transformedStructure: any) => {
+      const newFormData: {
+        question: string;
+        type: string;
+        value: any;
+      }[] = [];
+      for (const section of transformedStructure) {
+        for (const question of section.questions) {
+          if (question.type === 'heading') {
+            continue;
+          }
+          // @ts-ignore
+          newFormData.push(defaultValues[question.type]);
+        }
+      }
+      setFormData(newFormData);
+    },
+    [defaultValues],
+  );
+
   const transformStructure = (structure: any[]) => {
     const newStructure: any[] = [];
     let currentSection: {
       title: string;
       questions: any[];
     } | null = null;
+    let currentIndice = 0;
     for (const item of structure) {
       if (item.type === 'heading') {
         if (currentSection) {
@@ -43,7 +86,9 @@ export default function PitScoutingFlow() {
         };
       } else {
         if (currentSection) {
+          item.indice = currentIndice;
           currentSection.questions.push(item);
+          currentIndice++;
         }
       }
     }
@@ -55,12 +100,92 @@ export default function PitScoutingFlow() {
       if (!competition) {
         return;
       }
-      setFormStructure(transformStructure(competition.pitScoutFormStructure));
+      const transformedStructure = transformStructure(
+        competition.pitScoutFormStructure,
+      );
+      setFormStructure(transformedStructure);
+      initializeValues(transformedStructure);
       setCompetitionLoading(false);
+      setCurrentCompetition(competition);
     });
-  }, []);
-  const submitForm = () => {
+  }, [initializeValues]);
+  const checkRequiredFields = () => {
+    for (const section of formStructure) {
+      for (const question of section.questions) {
+        if (
+          question.required &&
+          formData[question.indice] === defaultValues[question.type] &&
+          question.type !== 'number'
+        ) {
+          Alert.alert(
+            'Required Question: ' + question.question + ' not filled out',
+            'Please fill out all questions denoted with an asterisk',
+          );
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+  const submitForm = async () => {
     setIsSubmitting(true);
+    console.log('Submitting form', formData);
+    if (team === '') {
+      Alert.alert('Invalid Team Number', 'Please enter a valid team number');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!checkRequiredFields()) {
+      setIsSubmitting(false);
+      return;
+    }
+    const data: PitScoutReportWithoutId = {
+      data: formData,
+      teamNumber: parseInt(team, 10),
+      competitionId: currentCompetition!.id,
+    };
+    const googleResponse = await fetch('https://google.com').catch(() => {});
+    if (!googleResponse) {
+      FormHelper.savePitFormOffline(
+        data,
+        images.filter(item => item !== 'plus'),
+      ).then(() => {
+        Toast.show({
+          type: 'success',
+          text1: 'Saved offline successfully!',
+          visibilityTime: 3000,
+        });
+        setTeam('');
+        setFormData([]);
+        setImages(['plus']);
+        setIsSubmitting(false);
+      });
+    } else {
+      PitScoutReports.createOnlinePitScoutReport(
+        data,
+        images.filter(item => item !== 'plus'),
+      )
+        .then(() => {
+          setIsSubmitting(false);
+          setTeam('');
+          initializeValues(formStructure);
+          setImages(['plus']);
+          Toast.show({
+            type: 'success',
+            text1: 'Submitted successfully!',
+            visibilityTime: 3000,
+          });
+        })
+        .catch(err => {
+          setIsSubmitting(false);
+          console.log(err);
+          Toast.show({
+            type: 'error',
+            text1: 'Error submitting form',
+            visibilityTime: 3000,
+          });
+        });
+    }
   };
   return (
     <ScrollView>
@@ -77,19 +202,15 @@ export default function PitScoutingFlow() {
       </Text>
       <TeamInformation team={team} setTeam={setTeam} />
       {!competitionLoading &&
-        formStructure.map(section => (
-          <FormSection
-            colors={colors}
-            title={section.title}
-            key={section.title.length}>
-            {section.questions.map((item: any) => (
+        formData.length !== 0 &&
+        formStructure.map((section, i) => (
+          <FormSection colors={colors} title={section.title} key={i}>
+            {section.questions.map((item: any, j) => (
               <>
                 {/* @ts-ignore */}
                 <FormComponent
-                  key={item.question}
-                  colors={colors}
+                  key={j}
                   item={item}
-                  styles={styles}
                   arrayData={formData}
                   setArrayData={setFormData}
                 />
@@ -97,10 +218,10 @@ export default function PitScoutingFlow() {
             ))}
           </FormSection>
         ))}
-      <FormSection colors={colors} title={'Attach Images'} disabled={false}>
+      <FormSection colors={colors} title={'Attach Images'}>
         <FlatList
           style={styles.imageList}
-          ItemSeparatorComponent={() => <View style={{width: 10}} />}
+          ItemSeparatorComponent={ListSeparator}
           data={images}
           renderItem={({item}) => {
             if (item === 'plus') {
@@ -125,6 +246,7 @@ export default function PitScoutingFlow() {
               setImages(['plus', photoData, ...images.slice(1)]);
               setCameraOpen(false);
             }}
+            onCancel={() => setCameraOpen(false)}
           />
         </Modal>
       )}
@@ -145,7 +267,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingLeft: 10,
   },
   image: {
     width: 200,

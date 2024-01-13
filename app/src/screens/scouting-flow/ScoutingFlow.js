@@ -307,33 +307,6 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
     //console.log('dict: ', dict);
   }, [formStructure]);
 
-  const styles = StyleSheet.create({
-    textInput: {
-      height: 40,
-      borderColor: 'gray',
-      borderWidth: 1,
-      borderRadius: 10,
-      marginBottom: 15,
-      padding: 10,
-      color: colors.text,
-    },
-    badInput: {
-      height: 40,
-      borderColor: 'red',
-      borderWidth: 1,
-      borderRadius: 10,
-      padding: 10,
-      marginBottom: 15,
-      color: 'red',
-    },
-    subtitle: {
-      textAlign: 'left',
-      paddingBottom: 15,
-      color: colors.primary,
-      fontWeight: 'bold',
-    },
-  });
-
   return (
     <>
       {isCompetitionHappening ? (
@@ -360,7 +333,6 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
               team={team}
               setTeam={setTeam}
               colors={colors}
-              styles={styles}
               competition={competition}
               data={data}
               arrayData={arrayData}
@@ -379,7 +351,6 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
               team={team}
               setTeam={setTeam}
               colors={colors}
-              styles={styles}
               navigation={navigation}
               competition={competition}
               data={data}

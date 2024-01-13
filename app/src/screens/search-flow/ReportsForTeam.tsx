@@ -6,6 +6,10 @@ import CompetitionsDB from '../../database/Competitions';
 import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
+import PitScoutReports, {
+  PitScoutReportReturnData,
+} from '../../database/PitScoutReports';
+import {PitScoutReportList} from '../../components/PitScoutReportList';
 
 function ReportsForTeam({route}) {
   // const [team, setTeam] = useState('');
@@ -14,6 +18,9 @@ function ReportsForTeam({route}) {
   const [responses, setResponses] = useState<ScoutReportReturnData[] | null>(
     null,
   );
+  const [pitResponses, setPitResponses] = useState<
+    PitScoutReportReturnData[] | null
+  >(null);
 
   useEffect(() => {
     CompetitionsDB.getCurrentCompetition().then(competition => {
@@ -27,6 +34,13 @@ function ReportsForTeam({route}) {
         setResponses(reports);
         console.log('scout reports for team ' + team_number + ' : ' + reports);
         console.log('no reports? ' + (reports.length === 0));
+      });
+      PitScoutReports.getReportsForTeamAtCompetition(
+        team_number,
+        competition.id,
+      ).then(reports => {
+        console.log('pit reports for team ' + team_number + ' : ' + reports);
+        setPitResponses(reports);
       });
     });
   }, [team_number]);
@@ -42,9 +56,22 @@ function ReportsForTeam({route}) {
             color: colors.text,
             marginTop: '5%',
           }}>
-          Reports for Team #{team_number}
+          Match Scouting Reports for Team #{team_number}
         </Text>
         <ReportList reports={responses} isOffline={false} />
+      </View>
+      <View style={{flex: 1}}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            fontSize: 25,
+            paddingLeft: '5%',
+            color: colors.text,
+            marginTop: '5%',
+          }}>
+          Pit Scouting Reports for Team #{team_number}
+        </Text>
+        <PitScoutReportList reports={pitResponses} isOffline={false} />
       </View>
     </View>
   );

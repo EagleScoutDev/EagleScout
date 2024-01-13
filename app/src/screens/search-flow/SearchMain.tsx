@@ -5,15 +5,11 @@ import {
   Switch,
   FlatList,
   TouchableOpacity,
-  Pressable,
-  Animated,
-  LayoutAnimation,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import Svg, {Path} from 'react-native-svg';
-import ScoutReports, {ScoutReportReturnData} from '../../database/ScoutReports';
 
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
@@ -21,9 +17,6 @@ import CompetitionsDB from '../../database/Competitions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../../FormHelper';
 import Competitions from '../../database/Competitions';
-import ScoutReportsDB from '../../database/ScoutReports';
-import CompetitionChanger from './CompetitionChanger';
-import ScoutViewer from '../../components/modals/ScoutViewer';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -40,59 +33,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
 
-  const [searchInFocus, setSearchInFocus] = useState<boolean>(false);
-
-  const [listOfScoutReports, setListOfScoutReports] = useState<
-    ScoutReportReturnData[]
-  >([]);
-
-  const [competitionId, setCompetitionId] = useState<number>(1); // default to 2023mttd
-
-  // create an object where key is match number and value is an array of reports
-  const [reportsByMatch, setReportsByMatch] = useState<
-    Map<number, ScoutReportReturnData[]>
-  >(new Map());
-
-  const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
-  const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
-
-  const [isScrolling, setIsScrolling] = useState<boolean>(false);
-  const [prevScrollY, setPrevScrollY] = useState<number>(0);
-
-  useEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  }, [isScrolling]);
-
   // initial data fetch
   useEffect(() => {
-    ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
-      console.log('num reports found for id 8 is ' + reports.length);
-
-      // sort reports by matchnumber
-      reports.sort((a, b) => {
-        return a.matchNumber - b.matchNumber;
-      });
-
-      // create an object where key is match number and value is an array of reports
-      let temp: Map<number, ScoutReportReturnData[]> = new Map();
-      reports.forEach(report => {
-        if (temp.has(report.matchNumber)) {
-          temp.get(report.matchNumber)?.push(report);
-        } else {
-          temp.set(report.matchNumber, [report]);
-        }
-      });
-
-      // print temp out nicely
-      temp.forEach((value, key) => {
-        console.log('key: ' + key);
-        console.log(value.length);
-      });
-      setReportsByMatch(temp);
-
-      setListOfScoutReports(reports);
-    });
-
     (async () => {
       let dbRequestWorked;
       let dbCompetition;
@@ -142,7 +84,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       }
       setListOfTeams(teams);
     })();
-  }, [competitionId]);
+  }, []);
 
   // when user starts searching, filter the results displayed
   useEffect(() => {
@@ -161,23 +103,16 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   }, [team, listOfTeams]);
 
   return (
-    <View style={{flex: 1, marginTop: '10%'}}>
-      <CompetitionChanger
-        currentCompId={competitionId}
-        setCurrentCompId={setCompetitionId}
-      />
-      {!isScrolling && (
-        <>
+    <>
+      {isCompetitionHappening ? (
+        <View style={{flex: 1}}>
+          <MinimalSectionHeader title={'Search'} />
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              // marginLeft: '4%',
+              marginLeft: '4%',
               marginTop: '3%',
-              paddingLeft: '4%',
-              borderColor: 'gray',
-              borderWidth: 1,
-              borderRadius: 10,
             }}>
             <Svg width={'6%'} height="50%" viewBox="0 0 16 16">
               <Path
@@ -187,15 +122,17 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             </Svg>
             <TextInput
               style={{
-                marginHorizontal: '4%',
+                marginHorizontal: '6%',
                 height: 40,
-                // paddingLeft: '6%',
+                borderColor: 'gray',
+                borderWidth: 1,
+                borderRadius: 25,
+                paddingLeft: '6%',
                 color: colors.text,
                 flex: 1,
               }}
               onChangeText={text => setTeam(text)}
               value={team}
-              onFocus={() => setSearchInFocus(true)}
               // keyboardType={'numeric'}
               placeholder={'Try "114" or "Eaglestrike"'}
               onEndEditing={() => {
@@ -203,110 +140,111 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
               }}
             />
           </View>
-        </>
-      )}
-      <View
-        style={{
-          height: 1,
-          width: '100%',
-          backgroundColor: colors.border,
-          marginVertical: '3%',
-        }}
-      />
-      <FlatList
-        onScroll={scroll_event => {
-          // if scrolling down, hide search bar
-          if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
-            setIsScrolling(true);
-          } else {
-            setIsScrolling(false);
-          }
+          {/*<View*/}
+          {/*  style={{*/}
+          {/*    flexDirection: 'row',*/}
+          {/*    alignItems: 'center',*/}
+          {/*    marginTop: '3%',*/}
+          {/*    justifyContent: 'space-between',*/}
 
-          // if at top of flatlist, show search bar
-          if (scroll_event.nativeEvent.contentOffset.y === 0) {
-            setIsScrolling(false);
-          }
-          setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
-        }}
-        data={Array.from(reportsByMatch.keys()).reverse()}
-        keyExtractor={item => item.toString()}
-        renderItem={({item}) => {
-          return (
-            <View>
+          {/*    padding: '4%',*/}
+          {/*    paddingHorizontal: '6%',*/}
+          {/*    marginHorizontal: '5%',*/}
+
+          {/*    backgroundColor: colors.card,*/}
+          {/*    borderColor: colors.border,*/}
+          {/*    borderWidth: 1,*/}
+          {/*    borderRadius: 10,*/}
+          {/*  }}>*/}
+          {/*  <Text style={{color: colors.text, fontWeight: 'bold', fontSize: 15}}>*/}
+          {/*    Filter by current competition*/}
+          {/*  </Text>*/}
+          {/*  <Switch*/}
+          {/*    onValueChange={() =>*/}
+          {/*      setCurrentCompetitionOnly(!currentCompetitionOnly)*/}
+          {/*    }*/}
+          {/*    value={currentCompetitionOnly}*/}
+          {/*  />*/}
+          {/*</View>*/}
+          <View
+            style={{
+              height: 1,
+              width: '100%',
+              backgroundColor: colors.border,
+              marginVertical: '3%',
+            }}
+          />
+          <FlatList
+            data={filteredTeams}
+            ItemSeparatorComponent={() => (
               <View
                 style={{
-                  minWidth: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: '3%',
-                }}>
-                <Text
-                  style={{
-                    color: 'grey',
-                    marginHorizontal: '4%',
-                    fontWeight: 'bold',
-                    fontSize: 18,
-                  }}>
-                  {item}
-                </Text>
-                <View
-                  style={{
-                    height: 2,
-                    width: '100%',
-                    backgroundColor: colors.border,
+                  height: 1,
+                  width: '80%',
+                  alignSelf: 'center',
+                  backgroundColor: colors.border,
+                }}
+              />
+            )}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('TeamViewer', {team: item});
                   }}
-                />
-              </View>
-              <View
-                style={{
-                  // make it like a 3x2 grid
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                }}>
-                {reportsByMatch.get(item)?.map((report, index) => {
-                  return (
-                    <Pressable
-                      onPress={() => {
-                        setScoutViewerVisible(true);
-                        setCurrentReport(report);
-                      }}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        backgroundColor: index < 3 ? 'crimson' : 'dodgerblue',
-                        margin: '2%',
-                        padding: '6%',
-                        borderRadius: 10,
-                        minWidth: '25%',
-                      }}>
-                      <Text
-                        style={{
-                          color: colors.text,
-                          fontWeight: 'bold',
-                          textAlign: 'center',
-                          flex: 1,
-                        }}>
-                        {report.teamNumber}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-          );
-        }}
-      />
-      {scoutViewerVisible && currentReport && (
-        <ScoutViewer
-          visible={scoutViewerVisible}
-          setVisible={setScoutViewerVisible}
-          data={currentReport ?? []}
-          chosenComp={currentReport?.competitionName ?? ''}
-          updateFormData={() => {}}
-          isOfflineForm={false}
-        />
+                  key={item.key}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    // marginVertical: '2%',
+                    justifyContent: 'space-between',
+
+                    padding: '5%',
+                    paddingHorizontal: '3%',
+                    marginHorizontal: '5%',
+
+                    // backgroundColor: colors.card,
+                    // borderColor: colors.border,
+                    // borderBottomColor: colors.border,
+                    // borderBottomWidth: 1,
+                    // borderWidth: 1,
+                    borderRadius: 10,
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      flex: 1,
+                    }}>
+                    {item.team_number}
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      textAlign: 'right',
+                      flex: 5,
+                    }}>
+                    {item.nickname}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>There is no competition happening currently.</Text>
+
+          {isOffline && (
+            <Text>
+              To check for competitions, please connect to the internet.
+            </Text>
+          )}
+        </View>
       )}
-    </View>
+    </>
   );
 };
 

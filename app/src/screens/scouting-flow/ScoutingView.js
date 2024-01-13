@@ -11,7 +11,6 @@ function ScoutingView({
   team,
   setTeam,
   colors,
-  styles,
   competition,
   data,
   arrayData,
@@ -65,9 +64,7 @@ function ScoutingView({
                 return (
                   <FormComponent
                     key={item.question}
-                    colors={colors}
                     item={item}
-                    styles={styles}
                     arrayData={arrayData}
                     setArrayData={setArrayData}
                   />

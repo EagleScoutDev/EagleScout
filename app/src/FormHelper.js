@@ -44,6 +44,26 @@ class FormHelper {
   }
 
   /**
+   * Saves a pit scouting form offline
+   * @param dataToSubmit
+   * @param images - array of image base64 strings
+   */
+  static async savePitFormOffline(dataToSubmit, images) {
+    dataToSubmit.createdAt = new Date();
+
+    await AsyncStorage.setItem(
+      'pit-form-' + dataToSubmit.createdAt.getUTCMilliseconds(),
+      JSON.stringify(dataToSubmit),
+    );
+    for (let i = 0; i < images.length; i++) {
+      await AsyncStorage.setItem(
+        'pit-form-image-' + dataToSubmit.createdAt.getUTCMilliseconds() + i,
+        images[i],
+      );
+    }
+  }
+
+  /**
    * Edits an offline form
    */
   static async editFormOffline(data, createdAt) {

@@ -44,8 +44,8 @@ class CompetitionsDB {
         return null;
       } else {
         return {
-          id: data[0].id,
-          name: data[0].name,
+          id: data[0].competition_id,
+          name: data[0].competition_name,
           startTime: data[0].start_time,
           endTime: data[0].end_time,
           formId: data[0].form_id,

@@ -24,15 +24,6 @@ function TeamInformation({
       padding: 10,
       color: colors.text,
     },
-    badInput: {
-      height: 40,
-      borderColor: 'red',
-      borderWidth: 1,
-      borderRadius: 10,
-      padding: 10,
-      marginBottom: 15,
-      color: 'red',
-    },
     subtitle: {
       textAlign: 'left',
       paddingBottom: 15,
