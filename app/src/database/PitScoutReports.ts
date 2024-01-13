@@ -1,5 +1,6 @@
 import {supabase} from '../lib/supabase';
 import {decode} from 'base64-arraybuffer';
+import userAttributes from './UserAttributes';
 
 export interface PitScoutReport {
   reportId: number;
@@ -37,7 +38,9 @@ class PitScoutReports {
     reportId: number,
     images: string[],
   ) {
-    const bucket = supabase.storage.from('teams');
+    const orgId = (await userAttributes.getCurrentUserAttribute())
+      .organization_id;
+    const bucket = supabase.storage.from('organizations');
     for (let i = 0; i < images.length; i++) {
       // https://github.com/NiketanG/instaclone/blob/main/src/app/utils/uploadToSupabase.ts
       const base64Image = images[i];
@@ -49,7 +52,7 @@ class PitScoutReports {
       const res = decode(base64Str);
 
       const {error} = await bucket.upload(
-        `${teamId}/pit_images/${reportId}/${i}.jpg`,
+        `${orgId}/${teamId}/pit_images/${reportId}/${i}.jpg`,
         res,
         {
           contentType: 'image/jpg',
@@ -157,9 +160,11 @@ class PitScoutReports {
    * @param reportId
    */
   static async getImagesForReport(teamId: number, reportId: number) {
-    const bucket = supabase.storage.from('teams');
+    const orgId = (await userAttributes.getCurrentUserAttribute())
+      .organization_id;
+    const bucket = supabase.storage.from('organizations');
     const {data: images, error} = await bucket.list(
-      `${teamId}/pit_images/${reportId}`,
+      `${orgId}/${teamId}/pit_images/${reportId}`,
     );
     if (error) {
       throw error;
@@ -168,7 +173,7 @@ class PitScoutReports {
     const resultingImages: string[] = [];
     for (let i = 0; i < images.length; i++) {
       const {data, error} = await bucket.download(
-        `${teamId}/pit_images/${reportId}/${images[i].name}`,
+        `${orgId}/${teamId}/pit_images/${reportId}/${images[i].name}`,
       );
       if (error) {
         throw error;
