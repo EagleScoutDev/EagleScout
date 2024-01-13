@@ -141,14 +141,46 @@ class PitScoutReports {
       createdAt: new Date(report.created_at),
       formStructure: report.competitions.forms.form_structure,
       competitionName: report.competitions.name,
-      // submittedBy: report.profiles[0].username,
       /*
-      SELECT posts.*, profiles.username
-      FROM posts
-      JOIN profiles ON posts.user_id = profiles.user_id
+      TODO: translate this sql into the supabase query
+      SELECT pit_scout_reports.*, profiles.username
+      FROM pit_scout_reports
+      JOIN profiles ON pit_scout_reports.id = profiles.user_id
        */
       submittedBy: 'TODO',
     }));
+  }
+
+  /**
+   * Gets images for a pit scout report
+   * @param teamId
+   * @param reportId
+   */
+  static async getImagesForReport(teamId: number, reportId: number) {
+    const bucket = supabase.storage.from('teams');
+    const {data: images, error} = await bucket.list(
+      `${teamId}/pit_images/${reportId}`,
+    );
+    if (error) {
+      throw error;
+    }
+    console.log('images', images);
+    const resultingImages: string[] = [];
+    for (let i = 0; i < images.length; i++) {
+      const {data, error} = await bucket.download(
+        `${teamId}/pit_images/${reportId}/${images[i].name}`,
+      );
+      if (error) {
+        throw error;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(data as Blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        resultingImages.push(base64data as string);
+      };
+    }
+    return resultingImages;
   }
 }
 

@@ -1,5 +1,8 @@
 import {
+  FlatList,
+  Image,
   Modal,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,9 +13,13 @@ import {
 import {X} from '../../SVGIcons';
 import {useTheme} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {PitScoutReportReturnData} from '../../database/PitScoutReports';
+import PitScoutReports, {
+  PitScoutReportReturnData,
+} from '../../database/PitScoutReports';
 import RadioButtons from '../form/RadioButtons';
 import Checkbox from '../form/Checkbox';
+
+const ListSeparator = () => <View style={{width: 10}} />;
 
 export const PitScoutViewer = ({
   visible,
@@ -25,6 +32,7 @@ export const PitScoutViewer = ({
 }) => {
   const {colors} = useTheme();
   const [sections, setSections] = useState<any[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const transformStructure = (structure: any[]) => {
     const newStructure: any[] = [];
     let currentSection: {
@@ -63,6 +71,11 @@ export const PitScoutViewer = ({
       JSON.stringify(transformStructure(data.formStructure)),
     );
     setSections(transformStructure(data.formStructure));
+    PitScoutReports.getImagesForReport(data.teamNumber, data.reportId).then(
+      images => {
+        setImages(images);
+      },
+    );
   }, [data]);
   const styles = StyleSheet.create({
     container: {
@@ -109,6 +122,15 @@ export const PitScoutViewer = ({
       flex: 1,
       flexWrap: 'wrap',
       paddingBottom: 5,
+    },
+    image_list: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    image: {
+      width: 200,
+      height: 250,
     },
   });
   if (!data) {
@@ -226,6 +248,17 @@ export const PitScoutViewer = ({
                 ))}
               </View>
             ))}
+            <Text style={styles.section_title}>Images</Text>
+            <FlatList
+              style={styles.image_list}
+              ItemSeparatorComponent={ListSeparator}
+              data={images}
+              renderItem={({item}) => (
+                <Image source={{uri: item}} style={styles.image} />
+              )}
+              // keyExtractor={item => item}
+              horizontal={true}
+            />
           </ScrollView>
         </View>
       </SafeAreaView>
