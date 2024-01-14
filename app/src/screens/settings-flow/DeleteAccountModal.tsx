@@ -127,7 +127,6 @@ function DeleteAccountModal({
                   Alert.alert('Error checking password', authError.name);
                   return;
                 }
-                Alert.alert('Success', 'Account delete requested.');
                 await supabase.auth
                   .updateUser({
                     data: {
@@ -143,7 +142,10 @@ function DeleteAccountModal({
                   )
                   .then(() => signOut())
                   .then(() => supabase.auth.signOut())
-                  .then(() => navigation.navigate('Login'));
+                  .then(() => navigation.navigate('Login'))
+                  .finally(() =>
+                    Alert.alert('Success', 'Account delete requested.'),
+                  );
               },
             },
           ]);
