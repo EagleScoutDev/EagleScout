@@ -362,11 +362,9 @@ function ReportList({
             data={item.data}
             isCurrentlyRunning={item.isCurrentlyRunning}
             overrideCollapsed={
-              // if expandable is false, keep all to be defaultly open
-              !expandable
-                ? false
-                : (firstIsCollapsedAll && !item.isCurrentlyRunning) ||
-                  isCollapsedAll
+              expandable &&
+              ((firstIsCollapsedAll && !item.isCurrentlyRunning) ||
+                isCollapsedAll)
             }
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
