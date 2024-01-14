@@ -176,7 +176,7 @@ export const PitScoutViewer = ({
                 padding: '5%',
               }}>
               <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
-              <Text style={styles.report_info}>By: TODO</Text>
+              <Text style={styles.report_info}>By: {data.submittedBy}</Text>
               <Text style={styles.report_info}>
                 {data.createdAt.toLocaleString()}
               </Text>

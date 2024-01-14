@@ -128,14 +128,13 @@ class PitScoutReports {
     const {data, error} = await supabase
       .from('pit_scout_reports')
       .select(
-        'id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name)',
+        'id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name), profiles(name)',
       )
       .eq('team_id', teamId)
       .eq('competition_id', competitionId);
     if (error) {
       throw error;
     }
-    console.log('get reports for team', data);
     return data.map(report => ({
       reportId: report.id,
       teamNumber: teamId,
@@ -144,13 +143,7 @@ class PitScoutReports {
       createdAt: new Date(report.created_at),
       formStructure: report.competitions.forms.form_structure,
       competitionName: report.competitions.name,
-      /*
-      TODO: translate this sql into the supabase query
-      SELECT pit_scout_reports.*, profiles.username
-      FROM pit_scout_reports
-      JOIN profiles ON pit_scout_reports.id = profiles.user_id
-       */
-      submittedBy: 'TODO',
+      submittedBy: report.profiles.name,
     }));
   }
 
