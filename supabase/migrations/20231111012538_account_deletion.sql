@@ -18,11 +18,3 @@ as permissive
 for insert
 to authenticated
 with check (true);
-
-
-create policy "Enable read access for nobody"
-on "public"."deletion_requests"
-as permissive
-for select
-to public
-using (false);
