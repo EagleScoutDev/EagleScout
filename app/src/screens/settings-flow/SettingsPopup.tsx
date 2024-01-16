@@ -27,6 +27,7 @@ const SettingsPopup = ({
       visible={visible}
       presentationStyle={'formSheet'}
       animationType={'slide'}
+      onRequestClose={() => setVisible(false)}
       onDismiss={() => setVisible(false)}>
       <Pressable onPress={() => setVisible(false)}>
         <Text
