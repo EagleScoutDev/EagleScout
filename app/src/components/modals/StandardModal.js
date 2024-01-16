@@ -33,6 +33,7 @@ function StandardModal({visible, title, onDismiss, children}) {
                 borderWidth: 1,
                 padding: 35,
                 elevation: 5,
+                maxHeight: '90%',
               }}>
               <Text
                 style={{

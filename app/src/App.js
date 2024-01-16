@@ -36,9 +36,11 @@ import {
   TwoPeople,
   Gear,
   CheckList,
+  ViewStacked,
 } from './SVGIcons';
 import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
+import FormCreation from "./screens/form-creation-flow/FormCreation";
 
 const Drawer = createDrawerNavigator();
 
@@ -295,6 +297,18 @@ const MyStack = () => {
                   //   display: 'none',
                   // },
                   drawerIcon: () => TwoPeople(),
+                }}
+              />
+            )}
+            {admin === true && admin !== '0' && (
+              <Drawer.Screen
+                name="Form Creation"
+                component={FormCreation}
+                options={{
+                  // drawerItemStyle: {
+                  //   display: 'none',
+                  // },
+                  drawerIcon: () => ViewStacked(),
                 }}
               />
             )}
