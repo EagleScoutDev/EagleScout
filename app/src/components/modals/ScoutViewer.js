@@ -453,19 +453,19 @@ function ScoutViewer({
                       <RadioButtons
                         title={''}
                         colors={colors}
-                        options={field.labels}
+                        options={field.options}
                         onValueChange={value => {
                           console.log(
                             'radio button value changed to: ' + value,
                           );
                           let a = [...tempData];
                           console.log(
-                            'index of value: ' + field.labels.indexOf(value),
+                            'index of value: ' + field.options.indexOf(value),
                           );
-                          a[index] = field.labels.indexOf(value);
+                          a[index] = field.options.indexOf(value);
                           setTempData(a);
                         }}
-                        value={field.labels[tempData[index]]}
+                        value={field.options[tempData[index]]}
                         disabled={!editingActive}
                       />
                     </View>
@@ -542,7 +542,7 @@ function ScoutViewer({
                       title={''}
                       disabled={!editingActive}
                       colors={colors}
-                      options={field.labels}
+                      options={field.options}
                       value={
                         tempData[index] &&
                         tempData[index] != null &&
