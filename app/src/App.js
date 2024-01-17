@@ -30,6 +30,8 @@ import Home from './screens/Home';
 import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import PitScoutingFlow from './screens/pit-scouting-flow/PitScoutingFlow';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import BackgroundFetch from 'react-native-background-fetch';
+import PitScoutReports from './database/PitScoutReports';
 
 const Tab = createBottomTabNavigator();
 
@@ -147,6 +149,58 @@ const MyStack = () => {
         setThemePreference(value);
       }
     });
+  }, []);
+
+  /**
+   * sync offline pit scouting reports
+   * @param {string|undefined} taskId
+   * @returns {Promise<void>}
+   */
+  const syncReports = async taskId => {
+    const allOffline = await AsyncStorage.getAllKeys();
+    const offReports = allOffline.filter(
+      key => key.startsWith('pit-form-') && !key.startsWith('pit-form-image-'),
+    );
+    const formsFound = [];
+    for (const report of offReports) {
+      const data = JSON.parse(await AsyncStorage.getItem(report));
+      const images = [];
+      const imageKeys = allOffline.filter(key =>
+        key.startsWith(`pit-form-image-${data.createdAt.getUTCMilliseconds()}`),
+      );
+      for (const imageKey of imageKeys) {
+        images.push(await AsyncStorage.getItem(imageKey));
+      }
+      formsFound.push({data, images});
+    }
+    for (const form of formsFound) {
+      await PitScoutReports.createOfflinePitScoutReport(form.data, form.images);
+    }
+    if (taskId) {
+      BackgroundFetch.finish(taskId);
+    }
+  };
+
+  const initBackgroundFetch = async () => {
+    const status = await BackgroundFetch.configure(
+      {
+        minimumFetchInterval: 15,
+      },
+      async taskId => {
+        console.log('[BackgroundFetch] start');
+        await syncReports(taskId);
+        console.log('[BackgroundFetch] finish');
+      },
+      error => {
+        console.log('[BackgroundFetch] timed out');
+      },
+    );
+    console.log('[BackgroundFetch] status: ', status);
+  };
+
+  useEffect(() => {
+    syncReports();
+    initBackgroundFetch();
   }, []);
 
   return (

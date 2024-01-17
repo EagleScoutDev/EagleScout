@@ -57,7 +57,7 @@ class FormHelper {
     );
     for (let i = 0; i < images.length; i++) {
       await AsyncStorage.setItem(
-        'pit-form-image-' + dataToSubmit.createdAt.getUTCMilliseconds() + i,
+        `pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`,
         images[i],
       );
     }
