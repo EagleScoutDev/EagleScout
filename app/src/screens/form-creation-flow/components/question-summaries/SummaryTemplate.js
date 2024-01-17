@@ -1,4 +1,4 @@
-import React, { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, {TouchableOpacity, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {TrashCan} from '../../../../SVGIcons';
 import {StyleSheet} from 'react-native';
@@ -31,9 +31,11 @@ const SummaryTemplate = ({children, onDelete}) => {
 
   return (
     <View style={styles.mainContainer}>
-      <TouchableOpacity onPress={onDelete} style={styles.trashCanContainer}>
-        <TrashCan />
-      </TouchableOpacity>
+      {onDelete && (
+        <TouchableOpacity onPress={onDelete} style={styles.trashCanContainer}>
+          <TrashCan />
+        </TouchableOpacity>
+      )}
       <View style={styles.childrenContainer}>{children}</View>
     </View>
   );

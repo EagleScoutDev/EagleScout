@@ -27,6 +27,13 @@ class FormsDB {
     }
   }
 
+  static async deleteForm(form: FormReturnData): Promise<void> {
+    const {error} = await supabase.from('forms').delete().eq('id', form.id);
+    if (error) {
+      throw error;
+    }
+  }
+
   static async getForm(id: number): Promise<FormReturnData> {
     const {data, error} = await supabase.from('forms').select('*').eq('id', id);
     if (error) {
