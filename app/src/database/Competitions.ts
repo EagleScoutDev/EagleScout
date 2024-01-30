@@ -7,10 +7,16 @@ interface Competition {
   formId: number;
 }
 
+export enum ScoutAssignmentsConfig {
+  DISABLED,
+  TEAM_BASED,
+  POSITION_BASED,
+}
+
 interface CompetitionReturnData extends Competition {
   id: number;
   form: [];
-  scoutAssignmentsEnabled: boolean;
+  scoutAssignmentsConfig: ScoutAssignmentsConfig;
 }
 
 class CompetitionsDB {
@@ -22,6 +28,14 @@ class CompetitionsDB {
       throw error;
     } else {
       return data.map(competition => {
+        let scoutAssignmentsConfig: ScoutAssignmentsConfig;
+        if (competition.scout_assignments_config === 'team_based') {
+          scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
+        } else if (competition.scout_assignments_config === 'position_based') {
+          scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
+        } else {
+          scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
+        }
         return {
           id: competition.id,
           name: competition.name,
@@ -29,7 +43,7 @@ class CompetitionsDB {
           endTime: competition.end_time,
           formId: competition.form_id,
           form: competition.forms.form_structure,
-          scoutAssignmentsEnabled: competition.scout_assignments_enabled,
+          scoutAssignmentsConfig: scoutAssignmentsConfig,
         };
       });
     }
@@ -49,6 +63,14 @@ class CompetitionsDB {
       if (data.length === 0) {
         return null;
       } else {
+        let scoutAssignmentsConfig: ScoutAssignmentsConfig;
+        if (data[0].scout_assignments_config === 'team_based') {
+          scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
+        } else if (data[0].scout_assignments_config === 'position_based') {
+          scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
+        } else {
+          scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
+        }
         return {
           id: data[0].id,
           name: data[0].name,
@@ -56,7 +78,7 @@ class CompetitionsDB {
           endTime: data[0].end_time,
           formId: data[0].form_id,
           form: data[0].forms.form_structure,
-          scoutAssignmentsEnabled: data[0].scout_assignments_enabled,
+          scoutAssignmentsConfig: scoutAssignmentsConfig,
         };
       }
     }
@@ -71,6 +93,20 @@ class CompetitionsDB {
     });
     if (error) {
       throw error;
+    }
+  }
+
+  static async getCompetitionTeams(competitionId: number): Promise<number[]> {
+    const {data, error} = await supabase
+      .from('competitions')
+      .select('tba_events ( teams )')
+      .eq('id', competitionId)
+      .single();
+    if (error) {
+      throw error;
+    } else {
+      console.log(data);
+      return data.tba_events.teams;
     }
   }
 }

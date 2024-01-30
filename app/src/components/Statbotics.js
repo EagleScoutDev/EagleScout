@@ -314,7 +314,8 @@ function Statbotics({team}) {
           Past Competition Stats
         </Text>
         <ScrollView>
-          {competitions[0] != null &&
+          {competitions != null &&
+            competitions[0] != null &&
             competitions.map(comp => (
               <View style={{paddingVertical: 10}}>
                 <Text style={{fontWeight: '500', color: colors.text}}>

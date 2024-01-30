@@ -1,13 +1,35 @@
 import {View, Text} from 'react-native';
 import ReportList from '../../components/ReportList';
 import {useTheme} from '@react-navigation/native';
-
-const DEBUG = false;
+import {useEffect, useState} from 'react';
+import CompetitionsDB from '../../database/Competitions';
+import ScoutReportsDB, {
+  ScoutReportReturnData,
+} from '../../database/ScoutReports';
 
 function ReportsForTeam({route}) {
   // const [team, setTeam] = useState('');
   const {team_number} = route.params;
   const {colors} = useTheme();
+  const [responses, setResponses] = useState<ScoutReportReturnData[] | null>(
+    null,
+  );
+
+  useEffect(() => {
+    CompetitionsDB.getCurrentCompetition().then(competition => {
+      if (!competition) {
+        return;
+      }
+      ScoutReportsDB.getReportsForTeamAtCompetition(
+        team_number,
+        competition.id,
+      ).then(reports => {
+        setResponses(reports);
+        console.log('scout reports for team ' + team_number + ' : ' + reports);
+        console.log('no reports? ' + (reports.length === 0));
+      });
+    });
+  }, [team_number]);
 
   return (
     <View style={{flex: 1}}>
@@ -22,7 +44,7 @@ function ReportsForTeam({route}) {
           }}>
           Reports for Team #{team_number}
         </Text>
-        <ReportList team_number={team_number} isOffline={false} />
+        <ReportList reports={responses} isOffline={false} />
       </View>
     </View>
   );

@@ -25,15 +25,17 @@ function ScoutSummary({team_number}: {team_number: number}) {
       if (!competition) {
         return;
       }
+      ScoutReportsDB.getReportsForTeamAtCompetition(
+        team_number,
+        competition.id,
+      ).then(reports => {
+        setResponses(reports);
+        console.log('scout reports for team ' + team_number + ' : ' + reports);
+        console.log('no reports? ' + (reports.length === 0));
+      });
       FormsDB.getForm(competition!.formId).then(form => {
         setFormStructure(form.formStructure);
       });
-    });
-
-    ScoutReportsDB.getReportsForTeam(team_number).then(reports => {
-      setResponses(reports);
-      console.log('scout reports for team ' + team_number + ' : ' + reports);
-      console.log('no reports? ' + (reports.length === 0));
     });
   }, []);
 

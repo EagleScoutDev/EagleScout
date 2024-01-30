@@ -16,6 +16,7 @@ import {ChevronDown, ChevronUp} from '../SVGIcons';
 import Competitions from '../database/Competitions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../FormHelper';
+import {Badge} from './Badge';
 
 if (
   Platform.OS === 'android' &&
@@ -34,6 +35,7 @@ function CompetitionFlatList({
   setChosenCompetitionIndex,
   setModalVisible,
   displayHeader,
+  setIsInitialCollapse,
 }) {
   const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
   const [sort, setSort] = useState('');
@@ -50,6 +52,9 @@ function CompetitionFlatList({
 
   const onPress = () => {
     setIsCollapsed(!isCollapsed);
+    if (setIsInitialCollapse != null) {
+      setIsInitialCollapse(false);
+    }
   };
 
   const handleSort = (sortName, sortFunc) => {
@@ -83,14 +88,37 @@ function CompetitionFlatList({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
-                <Text
-                  style={{
-                    color: isCurrentlyRunning ? colors.primary : colors.text,
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                  }}>
-                  {compName}
-                </Text>
+                <View style={{flexDirection: 'column'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      gap: 10,
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                      }}>
+                      {compName}
+                    </Text>
+                    {isCurrentlyRunning && (
+                      <Badge
+                        color={colors.background}
+                        backgroundColor={colors.primary}
+                        text={'Active'}
+                      />
+                    )}
+                  </View>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: 16,
+                    }}>
+                    {data.length} {data.length === 1 ? 'report' : 'reports'}
+                  </Text>
+                </View>
                 {isCollapsed ? (
                   <ChevronUp width={30} height={30} />
                 ) : (
@@ -245,8 +273,8 @@ function ReportList({
   const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
   const [chosenCompetitionIndex, setChosenCompetitionIndex] = useState(null);
   const [dataCopy, setDataCopy] = useState([]);
-  const [isCollapsedAll, setIsCollapsedAll] = useState(false);
-  const [firstIsCollapsedAll, setFirstIsCollapsedAll] = useState(true);
+  const [isCollapsedAll, setIsCollapsedAll] = useState(true);
+  const [isInitialCollapse, setIsInitialCollapse] = useState(true);
   const {colors} = useTheme();
 
   useEffect(() => {
@@ -332,7 +360,7 @@ function ReportList({
         <TouchableOpacity
           onPress={() => {
             setIsCollapsedAll(!isCollapsedAll);
-            setFirstIsCollapsedAll(false);
+            setIsInitialCollapse(false);
           }}
           style={{
             alignSelf: 'flex-end',
@@ -363,8 +391,8 @@ function ReportList({
             isCurrentlyRunning={item.isCurrentlyRunning}
             overrideCollapsed={
               expandable &&
-              ((firstIsCollapsedAll && !item.isCurrentlyRunning) ||
-                isCollapsedAll)
+              !(isInitialCollapse && item.isCurrentlyRunning) &&
+              isCollapsedAll
             }
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
@@ -376,6 +404,9 @@ function ReportList({
             }}
             setModalVisible={setModalVisible}
             displayHeader={displayHeaders}
+            setIsInitialCollapse={
+              item.isCurrentlyRunning ? setIsInitialCollapse : null
+            }
           />
         ))}
       </View>

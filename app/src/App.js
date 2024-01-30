@@ -39,6 +39,7 @@ import {
 } from './SVGIcons';
 import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
+import RegisterTeamModal from "./screens/login-flow/RegisterTeamModal";
 
 const Drawer = createDrawerNavigator();
 
@@ -89,7 +90,7 @@ const MyStack = () => {
       console.log('user: ' + user.id);
       const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
-        .select('team_id, scouter, admin')
+        .select('organization_id, scouter, admin')
         .eq('id', user.id)
         .single();
       const {data: profilesData, error: profilesError} = await supabase
@@ -104,7 +105,7 @@ const MyStack = () => {
         console.error(profilesError);
         setError('Cannot acccess profiles');
       } else {
-        if (!userAttribData.team_id) {
+        if (!userAttribData.organization_id) {
           setError('');
           navigation.navigate('CompleteSignUp');
         } else if (!userAttribData.scouter) {
@@ -200,11 +201,25 @@ const MyStack = () => {
                 drawerItemStyle: {
                   display: 'none',
                 },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
               }}
             />
             <Drawer.Screen
               name="CompleteSignUp"
               component={CompleteSignup}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  display: 'none',
+                },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
+              }}
+            />
+            <Drawer.Screen
+              name="Register new team"
+              component={RegisterTeamModal}
               options={{
                 headerShown: false,
                 drawerItemStyle: {
