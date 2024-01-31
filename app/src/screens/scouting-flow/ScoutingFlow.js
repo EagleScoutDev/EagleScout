@@ -38,16 +38,6 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
 
-  // for the full-screen incrementer
-  const [teleop_scored, setTeleop_scored] = useState({
-    cones: [],
-    cubes: [],
-  });
-  const [auto_scored, setAuto_scored] = useState({
-    cones: [],
-    cubes: [],
-  });
-
   /**
    * Initializes fields of the report before submitting it.
    * @param dataToSubmit the object containing all report information
@@ -93,21 +83,13 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
       for (let i = 0; i < form.length; i++) {
         if (form[i].type === 'heading') {
           tempArray[i] = null;
+        } else if (form[i].type === 'radio') {
+          tempArray[i] = form[i].defaultIndex;
         } else {
           tempArray[i] = defaultValues[form[i].type];
         }
       }
       setArrayData(tempArray);
-      if (!isScoutStylePreferenceScrolling) {
-        setAuto_scored({
-          cones: [],
-          cubes: [],
-        });
-        setTeleop_scored({
-          cones: [],
-          cubes: [],
-        });
-      }
     },
     [defaultValues, isScoutStylePreferenceScrolling],
   );
@@ -370,10 +352,6 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
             />
           ) : (
             <Gamification
-              teleop_scored={teleop_scored}
-              setTeleop_scored={setTeleop_scored}
-              auto_scored={auto_scored}
-              setAuto_scored={setAuto_scored}
               match={match}
               setMatch={setMatch}
               team={team}
