@@ -16,7 +16,7 @@ import {ChevronDown, ChevronUp} from '../SVGIcons';
 import Competitions from '../database/Competitions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../FormHelper';
-import {Badge} from '../components/Badge';
+import {Badge} from './Badge';
 
 if (
   Platform.OS === 'android' &&
@@ -34,6 +34,8 @@ function CompetitionFlatList({
   setChosenScoutFormIndex,
   setChosenCompetitionIndex,
   setModalVisible,
+  displayHeader,
+  setIsInitialCollapse,
 }) {
   const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
   const [sort, setSort] = useState('');
@@ -50,6 +52,9 @@ function CompetitionFlatList({
 
   const onPress = () => {
     setIsCollapsed(!isCollapsed);
+    if (setIsInitialCollapse != null) {
+      setIsInitialCollapse(false);
+    }
   };
 
   const handleSort = (sortName, sortFunc) => {
@@ -70,56 +75,58 @@ function CompetitionFlatList({
       }}
       ListHeaderComponent={() => (
         <View>
-          <TouchableOpacity onPress={onPress}>
-            <View
-              style={{
-                width: '90%',
-                alignSelf: 'center',
-                flexDirection: 'row',
-                paddingTop: 10,
-                paddingBottom: 20,
-                paddingHorizontal: 20,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flexDirection: 'column'}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    gap: 10,
-                    alignItems: 'center',
-                  }}>
+          {displayHeader && (
+            <TouchableOpacity onPress={onPress}>
+              <View
+                style={{
+                  width: '90%',
+                  alignSelf: 'center',
+                  flexDirection: 'row',
+                  paddingTop: 10,
+                  paddingBottom: 20,
+                  paddingHorizontal: 20,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{flexDirection: 'column'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      gap: 10,
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                      }}>
+                      {compName}
+                    </Text>
+                    {isCurrentlyRunning && (
+                      <Badge
+                        color={colors.background}
+                        backgroundColor={colors.primary}
+                        text={'Active'}
+                      />
+                    )}
+                  </View>
                   <Text
                     style={{
                       color: colors.text,
-                      fontSize: 24,
-                      fontWeight: 'bold',
+                      fontSize: 16,
                     }}>
-                    {compName}
+                    {data.length} {data.length === 1 ? 'report' : 'reports'}
                   </Text>
-                  {isCurrentlyRunning && (
-                    <Badge
-                      color={colors.background}
-                      backgroundColor={colors.primary}
-                      text={'Active'}
-                    />
-                  )}
                 </View>
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontSize: 16,
-                  }}>
-                  {data.length} {data.length === 1 ? 'report' : 'reports'}
-                </Text>
+                {isCollapsed ? (
+                  <ChevronUp width={30} height={30} />
+                ) : (
+                  <ChevronDown width={30} height={30} />
+                )}
               </View>
-              {isCollapsed ? (
-                <ChevronUp width={30} height={30} />
-              ) : (
-                <ChevronDown width={30} height={30} />
-              )}
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               display: isCollapsed ? 'none' : 'flex',
@@ -255,7 +262,12 @@ function CompetitionFlatList({
   );
 }
 
-function ReportList({reports, isOffline}) {
+function ReportList({
+  reports,
+  isOffline,
+  expandable = true,
+  displayHeaders = true,
+}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [chosenScoutForm, setChosenScoutForm] = useState(null);
   const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
@@ -344,26 +356,28 @@ function ReportList({reports, isOffline}) {
 
   return (
     <KeyboardAvoidingView behavior={'height'} style={{flex: 1}}>
-      <TouchableOpacity
-        onPress={() => {
-          setIsCollapsedAll(!isCollapsedAll);
-          setIsInitialCollapse(false);
-        }}
-        style={{
-          alignSelf: 'flex-end',
-          // backgroundColor: colors.primary,
-          paddingHorizontal: 10,
-          // borderRadius: 10,
-        }}>
-        <Text
+      {expandable && (
+        <TouchableOpacity
+          onPress={() => {
+            setIsCollapsedAll(!isCollapsedAll);
+            setIsInitialCollapse(false);
+          }}
           style={{
-            color: colors.primary,
-            fontWeight: 'bold',
-            fontSize: 17,
+            alignSelf: 'flex-end',
+            // backgroundColor: colors.primary,
+            paddingHorizontal: 10,
+            // borderRadius: 10,
           }}>
-          {isCollapsedAll ? 'Expand All' : 'Collapse All'}
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: 'bold',
+              fontSize: 17,
+            }}>
+            {isCollapsedAll ? 'Expand All' : 'Collapse All'}
+          </Text>
+        </TouchableOpacity>
+      )}
       {/* instead of a FlatList, use a view to avoid the weird error when removing from DOM */}
       <View
         style={{
@@ -376,7 +390,9 @@ function ReportList({reports, isOffline}) {
             data={item.data}
             isCurrentlyRunning={item.isCurrentlyRunning}
             overrideCollapsed={
-              isInitialCollapse ? !item.isCurrentlyRunning : isCollapsedAll
+              expandable &&
+              !(isInitialCollapse && item.isCurrentlyRunning) &&
+              isCollapsedAll
             }
             setChosenScoutForm={chosenForm => {
               console.log('set scout form', chosenForm);
@@ -387,6 +403,10 @@ function ReportList({reports, isOffline}) {
               setChosenCompetitionIndex(index);
             }}
             setModalVisible={setModalVisible}
+            displayHeader={displayHeaders}
+            setIsInitialCollapse={
+              item.isCurrentlyRunning ? setIsInitialCollapse : null
+            }
           />
         ))}
       </View>

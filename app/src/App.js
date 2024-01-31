@@ -40,7 +40,8 @@ import {
 } from './SVGIcons';
 import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
-import FormCreation from "./screens/form-creation-flow/FormCreation";
+import FormCreation from './screens/form-creation-flow/FormCreation';
+import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 
 const Drawer = createDrawerNavigator();
 
@@ -88,6 +89,10 @@ const MyStack = () => {
       const {
         data: {user},
       } = await supabase.auth.getUser();
+      if (user.user_metadata.requested_deletion) {
+        setError('Your account has been marked for deletion.');
+        return;
+      }
       console.log('user: ' + user.id);
       const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
@@ -202,11 +207,25 @@ const MyStack = () => {
                 drawerItemStyle: {
                   display: 'none',
                 },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
               }}
             />
             <Drawer.Screen
               name="CompleteSignUp"
               component={CompleteSignup}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  display: 'none',
+                },
+                // prevents the drawer from opening when the user swipes from the left
+                swipeEnabled: false,
+              }}
+            />
+            <Drawer.Screen
+              name="Register new team"
+              component={RegisterTeamModal}
               options={{
                 headerShown: false,
                 drawerItemStyle: {

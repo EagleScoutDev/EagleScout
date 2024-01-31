@@ -21,6 +21,7 @@ import EditProfileModal from './EditProfileModal';
 import ChangePasswordModal from './ChangePasswordModal';
 import DebugOffline from '../DebugOffline';
 import {CaretRight} from '../../SVGIcons';
+import DeleteAccountModal from './DeleteAccountModal';
 
 const Stack = createStackNavigator();
 const VERSION = '3.0.1';
@@ -117,10 +118,8 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
               {ListItem('Change Password', () =>
                 navigation.navigate('Change Password'),
               )}
-              {ListItem(
-                'Request Account Deletion',
-                () => Linking.openURL('https://forms.gle/Jmcp61ViSVs9VAqn6'),
-                true,
+              {ListItem('Request Account Deletion', () =>
+                navigation.navigate('Request Account Deletion'),
               )}
               {ListItem('Sign Out', () => attemptSignOut(), false)}
             </View>
@@ -156,6 +155,12 @@ function SettingsView({onSignOut, setTheme, setScoutingStyle}) {
       />
       <Stack.Screen name="Change Password" component={ChangePasswordModal} />
       <Stack.Screen name="Debug Offline" component={DebugOffline} />
+      <Stack.Screen
+        name={'Request Account Deletion'}
+        children={props => (
+          <DeleteAccountModal {...props} signOut={signOutFunction} />
+        )}
+      />
     </Stack.Navigator>
   );
 }

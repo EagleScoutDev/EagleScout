@@ -4,6 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
+import RadioButtons from "../form/RadioButtons";
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -16,38 +17,31 @@ function EnableScoutAssignmentsModal({
   onRefresh,
 }) {
   const {colors} = useTheme();
-  const [tbakey, settbakey] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    settbakey('');
-  }, [visible]);
+  const [checked, setChecked] = useState(null);
 
   const submit = async () => {
-    const {error: fetchTbaEventError} = await supabase.functions.invoke(
-      'fetch-tba-event',
-      {
-        body: {tbakey: tbakey},
-      },
-    );
-    if (fetchTbaEventError) {
-      return false;
-    }
-    const {data: eventData, error: eventError} = await supabase
-      .from('tba_events')
-      .select('id')
-      .eq('event_key', tbakey)
-      .single();
-    if (eventError) {
+    let scoutAssignmentsConfig;
+    if (checked === 'Team based') {
+      scoutAssignmentsConfig = 'team_based';
+    } else if (checked === 'Position based') {
+      scoutAssignmentsConfig = 'position_based';
+    } else {
+      Alert.alert('Error', 'Please select a scout assignments configuration.');
       return false;
     }
     const {error} = await supabase
       .from('competitions')
       .update({
-        scout_assignments_enabled: true,
-        tba_event_id: eventData.id,
+        scout_assignments_config: scoutAssignmentsConfig,
       })
       .eq('id', competition.id);
+    if (error) {
+      Alert.alert(
+        'Error',
+        'There was an error enabling scout assignments. Please check if the TBA key is correct.',
+      );
+    }
     return !error;
   };
 
@@ -73,16 +67,13 @@ function EnableScoutAssignmentsModal({
   });
 
   return (
-    <StandardModal title={'Enable Scout Asignments'} visible={visible}>
-      <Text style={styles.label}>The event's The Blue Alliance key</Text>
-      <Spacer />
-      <TextInput
-        style={styles.tbakey_input}
-        placeholder="TBA Key"
-        onChangeText={text => settbakey(text)}
-        value={tbakey}
+    <StandardModal title={'Enable Scout Assignments?'} visible={visible}>
+      <RadioButtons
+        options={['Team based', 'Position based']}
+        value={checked}
+        onValueChange={setChecked}
+        colors={colors}
       />
-
       <Spacer />
       <View style={styles.button_row}>
         <StandardButton
@@ -101,15 +92,10 @@ function EnableScoutAssignmentsModal({
               if (success) {
                 onRefresh();
                 setVisible(false);
-              } else {
-                Alert.alert(
-                  'Error',
-                  'There was an error enabling scout assignments. Please check if the TBA key is correct.',
-                );
               }
             });
           }}
-          text={'Submit'}
+          text={'Yes'}
           width={'40%'}
         />
       </View>

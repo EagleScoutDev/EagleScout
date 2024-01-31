@@ -1,10 +1,12 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SectionGrid} from 'react-native-super-grid';
 import {useState, useEffect} from 'react';
 import TBAMatches from '../../database/TBAMatches';
 import SetScoutAssignmentModal from '../../components/modals/SetScoutAssignmentModal';
 import ScoutAssignments from '../../database/ScoutAssignments';
 import {useTheme} from '@react-navigation/native';
+import {ScoutAssignmentsConfig} from '../../database/Competitions';
+import {Position} from '../../database/ScoutAssignments';
 
 function ScoutAssignmentsSpreadsheet({route}) {
   const {competition} = route.params;
@@ -51,54 +53,128 @@ function ScoutAssignmentsSpreadsheet({route}) {
 
   useEffect(() => {
     (async () => {
-      let matches = await TBAMatches.getMatchesForCompetition(competition.id);
-      let scoutAssignments =
-        await ScoutAssignments.getScoutAssignmentsForCompetition(
-          competition.id,
-        );
+      if (
+        competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED
+      ) {
+        let matches = await TBAMatches.getMatchesForCompetition(competition.id);
+        let scoutAssignments =
+          await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBased(
+            competition.id,
+          );
 
-      matches = matches.filter(match => match.compLevel === 'qm');
-      const matchesGrouped = [];
-      let uniqueIndex = nextIdx;
-      matches.forEach(match => {
-        const matchingObject = matchesGrouped.find(
-          obj => obj.data[0].match === match.match,
-        );
-        let name = '';
-        let assignmentExists = false;
-        for (let i = 0; i < scoutAssignments.length; i++) {
-          if (
-            scoutAssignments[i].matchId === match.id &&
-            scoutAssignments[i].team === match.team
-          ) {
-            name = scoutAssignments[i].userFullName;
-            assignmentExists = true;
-            break;
+        matches = matches.filter(match => match.compLevel === 'qm');
+        const matchesGrouped = [];
+        let uniqueIndex = nextIdx;
+        matches.forEach(match => {
+          const matchingObject = matchesGrouped.find(
+            obj => obj.data[0].match === match.match,
+          );
+          let name = '';
+          let assignmentExists = false;
+          for (let i = 0; i < scoutAssignments.length; i++) {
+            if (
+              scoutAssignments[i].matchId === match.id &&
+              scoutAssignments[i].team === match.team
+            ) {
+              name = scoutAssignments[i].userFullName;
+              assignmentExists = true;
+              break;
+            }
+          }
+          const matchData = {
+            ...match,
+            name: name,
+            assignmentExists: assignmentExists,
+            key: uniqueIndex++,
+            teamFormatted: teamFormatter(match.team),
+          };
+          if (matchingObject) {
+            matchingObject.data.push(matchData);
+          } else {
+            matchesGrouped.push({
+              data: [matchData],
+              title: `Match: ${match.match}`,
+            });
+          }
+        });
+        setNextIdx(uniqueIndex);
+
+        matchesGrouped.sort((a, b) => {
+          return a.data[0].match - b.data[0].match;
+        });
+
+        setMatchesGrouped(matchesGrouped);
+      } else {
+        let matches = await TBAMatches.getMatchesForCompetition(competition.id);
+        let scoutAssignments =
+          await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBased(
+            competition.id,
+          );
+
+        matches = [];
+        for (let i = 1; i <= 100; i++) {
+          // iterate through Position, add each available position to matches
+
+          for (let j = 0; j < 3; j++) {
+            // iterate through each alliance
+            matches.push({
+              match: i,
+              position: j,
+              alliance: 'red',
+            });
+          }
+          for (let j = 3; j < 6; j++) {
+            // iterate through each alliance
+            matches.push({
+              match: i,
+              position: j,
+              alliance: 'blue',
+            });
           }
         }
-        const matchData = {
-          ...match,
-          name: name,
-          assignmentExists: assignmentExists,
-          key: uniqueIndex++,
-          teamFormatted: teamFormatter(match.team),
-        };
-        if (matchingObject) {
-          matchingObject.data.push(matchData);
-        } else {
-          matchesGrouped.push({
-            data: [matchData],
-            title: `Match: ${match.match}`,
-          });
-        }
-      });
-      setNextIdx(uniqueIndex);
 
-      matchesGrouped.sort((a, b) => {
-        return a.data[0].match - b.data[0].match;
-      });
+        const matchesGrouped = [];
+        let uniqueIndex = nextIdx;
+        matches.forEach(match => {
+          const matchingObject = matchesGrouped.find(
+            obj => obj.data[0].match === match.match,
+          );
+          let name = '';
+          let assignmentExists = false;
+          for (let i = 0; i < scoutAssignments.length; i++) {
+            console.log(scoutAssignments[i]);
+            if (
+              scoutAssignments[i].matchNumber === match.match &&
+              scoutAssignments[i].position === match.position
+            ) {
+              name = scoutAssignments[i].userFullName;
+              assignmentExists = true;
+              break;
+            }
+          }
+          const matchData = {
+            ...match,
+            name: name,
+            assignmentExists: assignmentExists,
+            key: uniqueIndex++,
+          };
+          if (matchingObject) {
+            matchingObject.data.push(matchData);
+          } else {
+            matchesGrouped.push({
+              data: [matchData],
+              title: `Match: ${match.match}`,
+            });
+          }
+        });
+        setNextIdx(uniqueIndex);
 
-      setMatchesGrouped(matchesGrouped);
+        matchesGrouped.sort((a, b) => {
+          return a.data[0].match - b.data[0].match;
+        });
+
+        setMatchesGrouped(matchesGrouped);
+      }
     })();
   }, [competition]); // eslint-disable-line react-hooks/exhaustive-deps
   // Eslint exhausting deps was disabled because we don't want to re-render
@@ -201,6 +277,24 @@ function ScoutAssignmentsSpreadsheet({route}) {
     }
   };
 
+  const getPosition = pos => {
+    if (pos === Position.BC) {
+      return 'B3';
+    } else if (pos === Position.BF) {
+      return 'B1';
+    } else if (pos === Position.BM) {
+      return 'B2';
+    } else if (pos === Position.RC) {
+      return 'R3';
+    } else if (pos === Position.RF) {
+      return 'R1';
+    } else if (pos === Position.RM) {
+      return 'R2';
+    } else {
+      return 'Unknown';
+    }
+  };
+
   return (
     <>
       <View>
@@ -263,7 +357,12 @@ function ScoutAssignmentsSpreadsheet({route}) {
             onPress={() =>
               selectMode ? setSelected(item) : setScoutAssignment(item)
             }>
-            <Text style={styles.itemName}>{item.teamFormatted}</Text>
+            <Text style={styles.itemName}>
+              {competition.scoutAssignmentsConfig ===
+              ScoutAssignmentsConfig.TEAM_BASED
+                ? item.teamFormatted
+                : getPosition(item.position)}
+            </Text>
             <Text style={styles.itemCode}>{item.name}</Text>
           </TouchableOpacity>
         )}
