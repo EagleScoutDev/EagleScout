@@ -22,6 +22,7 @@ EagleScout is available on iOS devices through the App Store and Android devices
 ## Contributing
 - We welcome any changes you wish to see!
 - EagleScout is written in React Native, and we are in the process of migrating to TypeScript.
+- To develop locally, follow [these instructions](app/README.md).
 
 ## Contact
 - Vir Shah, Scouting Lead (vir.shah@team114.org)
