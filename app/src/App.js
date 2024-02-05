@@ -10,6 +10,7 @@ import {
   useTheme,
 } from '@react-navigation/native';
 
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import CompleteSignup from './screens/login-flow/CompleteSignup';
@@ -264,6 +265,10 @@ const MyStack = ({themePreference, setThemePreference}) => {
             listeners={({navigation}) => ({
               tabPress: event => {
                 event.preventDefault();
+                ReactNativeHapticFeedback.trigger('impactLight', {
+                  enableVibrateFallback: true,
+                  ignoreAndroidSystemSettings: false,
+                });
                 navigation.navigate('CustomModal');
                 setModalVisible(true);
               },
