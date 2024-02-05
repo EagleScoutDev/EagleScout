@@ -5,7 +5,13 @@ import React, {
   TouchableOpacity,
 } from 'react-native';
 
-function StandardButton({color, onPress, width = '80%', text, isLoading}) {
+function StandardButton({
+  color,
+  onPress,
+  width = '80%',
+  text,
+  isLoading = false,
+}) {
   const baseButtonStyle = {
     backgroundColor: color,
     padding: 10,

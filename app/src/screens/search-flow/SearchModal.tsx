@@ -20,6 +20,7 @@ interface SearchModalProps {
   teams: SimpleTeam[];
   reportsByMatch: Map<number, ScoutReportReturnData[]>;
   navigateIntoReport: (report: ScoutReportReturnData) => void;
+  competitionId: number;
 }
 
 const SearchModal = ({
@@ -28,6 +29,7 @@ const SearchModal = ({
   teams,
   reportsByMatch,
   navigateIntoReport,
+  competitionId,
 }: SearchModalProps) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -282,6 +284,7 @@ const SearchModal = ({
                     setSearchActive(false);
                     navigation.navigate('TeamViewer', {
                       team: item,
+                      competitionId: competitionId,
                     });
                   }}
                   style={{

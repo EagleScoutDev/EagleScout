@@ -238,7 +238,7 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
             onPress={() => {
               Alert.alert(
                 'Delete ' + name + '?',
-                'Are you sure you want to delete this competition? This action cannot be undone.',
+                'Are you sure you want to delete this competition? This action cannot be undone.\nWARNING: This will delete all scout reports for this competition.',
                 [
                   {
                     text: 'Cancel',

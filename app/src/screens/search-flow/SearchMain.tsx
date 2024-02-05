@@ -10,6 +10,7 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import SearchModal from './SearchModal';
+import Competitions from "../../database/Competitions";
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -19,7 +20,7 @@ const SearchMain: React.FC<Props> = () => {
   const {colors} = useTheme();
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
 
-  const [competitionId, setCompetitionId] = useState<number>(1); // default to 2023mttd
+  const [competitionId, setCompetitionId] = useState<number>(-1); // default to 2023mttd
 
   const [reportsByMatch, setReportsByMatch] = useState<
     Map<number, ScoutReportReturnData[]>
@@ -46,37 +47,41 @@ const SearchMain: React.FC<Props> = () => {
 
   // initial data fetch
   useEffect(() => {
-    setFetchingData(true);
-    ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
-      // console.log('num reports found for id 8 is ' + reports.length);
+    if (competitionId !== -1) {
+      setFetchingData(true);
+      ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
+        // console.log('num reports found for id 8 is ' + reports.length);
 
-      // sort reports by match number
-      reports.sort((a, b) => {
-        return a.matchNumber - b.matchNumber;
+        // sort reports by match number
+        reports.sort((a, b) => {
+          return a.matchNumber - b.matchNumber;
+        });
+
+        // create an object where key is match number and value is an array of reports
+        let temp: Map<number, ScoutReportReturnData[]> = new Map();
+        reports.forEach(report => {
+          if (temp.has(report.matchNumber)) {
+            temp.get(report.matchNumber)?.push(report);
+          } else {
+            temp.set(report.matchNumber, [report]);
+          }
+        });
+
+        setReportsByMatch(temp);
       });
 
-      // create an object where key is match number and value is an array of reports
-      let temp: Map<number, ScoutReportReturnData[]> = new Map();
-      reports.forEach(report => {
-        if (temp.has(report.matchNumber)) {
-          temp.get(report.matchNumber)?.push(report);
-        } else {
-          temp.set(report.matchNumber, [report]);
-        }
+      Competitions.getCompetitionTBAKey(competitionId).then(key => {
+        TBA.getTeamsAtCompetition(key).then(teams => {
+          // sort teams by team number
+          teams.sort((a, b) => {
+            return a.team_number - b.team_number;
+          });
+          setListOfTeams(teams);
+          setFetchingData(false);
+        });
       });
-
-      setReportsByMatch(temp);
-    });
-
-    TBA.getTeamsAtCompetition('2023mttd').then(teams => {
-      // sort teams by team number
-      teams.sort((a, b) => {
-        return a.team_number - b.team_number;
-      });
-      setListOfTeams(teams);
-      setFetchingData(false);
-    });
-    // console.log(listOfTeams);
+      // console.log(listOfTeams);
+    }
   }, [competitionId]);
 
   const navigateIntoReport = (report: ScoutReportReturnData) => {
@@ -261,6 +266,7 @@ const SearchMain: React.FC<Props> = () => {
         teams={listOfTeams}
         reportsByMatch={reportsByMatch}
         navigateIntoReport={navigateIntoReport}
+        competitionId={competitionId}
       />
     </View>
   );

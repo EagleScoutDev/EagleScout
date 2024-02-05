@@ -152,6 +152,14 @@ const DataHome = ({navigation}) => {
               caretVisible={true}
               disabled={internetStatus !== InternetStatus.CONNECTED}
             />
+            <ListItem
+              text={'Manage Forms'}
+              onPress={() => {
+                navigation.navigate('Manage Forms');
+              }}
+              caretVisible={true}
+              disabled={internetStatus !== InternetStatus.CONNECTED}
+            />
           </ListItemContainer>
           <AddCompetitionModal
             visible={addCompetitionModalVisible}

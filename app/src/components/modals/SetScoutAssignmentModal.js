@@ -16,6 +16,7 @@ function SetScoutAssignmentModal({
   competition,
   matches,
   setNameCb,
+  teamBased,
 }) {
   const [name, setName] = useState('');
   const [userId, setUserId] = useState(null);
@@ -84,25 +85,64 @@ function SetScoutAssignmentModal({
     }
   }, [names, userId]);
 
+  const getTableName = () => {
+    if (teamBased) {
+      return 'scout_assignments_team_based';
+    } else {
+      return 'scout_assignments_position_based';
+    }
+  };
+
+  const getPosition = match => {
+    console.log(match);
+    if (match.position === 0) {
+      return 'rf';
+    } else if (match.position === 1) {
+      return 'rm';
+    } else if (match.position === 2) {
+      return 'rc';
+    } else if (match.position === 3) {
+      return 'bf';
+    } else if (match.position === 4) {
+      return 'bm';
+    } else if (match.position === 5) {
+      return 'bc';
+    }
+  };
+
   const onSubmit = async () => {
     if (userId == null) {
       Alert.alert('Error', 'Please select a user.');
       return;
     }
+    console.log(matches[0]);
     const upsertPromises = matches.map(match => {
-      return supabase.from('scout_assignments').upsert(
-        {
+      let vals;
+      if (teamBased) {
+        vals = {
           competition_id: competition.id,
           match_id: match.id,
           user_id: userId,
-        },
-        {onConflict: 'competition_id, match_id'},
-      );
+        };
+      } else {
+        console.log('pos: ' + getPosition(match.position));
+        vals = {
+          competition_id: competition.id,
+          match_number: match.match,
+          robot_position: getPosition(match),
+          user_id: userId,
+        };
+      }
+      return supabase.from(getTableName()).upsert(vals, {
+        onConflict: teamBased
+          ? 'competition_id, match_id'
+          : 'competition_id, match_number, robot_position',
+      });
     });
     const upsertResults = await Promise.all(upsertPromises);
     for (const result of upsertResults) {
       if (result.error) {
-        console.error(result.error);
+        console.error(result);
         Alert.alert('Error', 'Failed to set scout assignment(s).');
         return;
       }
@@ -114,7 +154,7 @@ function SetScoutAssignmentModal({
   const deleteScoutAssignment = async () => {
     const deletePromises = matches.map(match => {
       return supabase
-        .from('scout_assignments')
+        .from(getTableName())
         .delete()
         .match({competition_id: competition.id, match_id: match.id});
     });

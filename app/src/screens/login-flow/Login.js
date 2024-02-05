@@ -151,6 +151,25 @@ const Login = ({onSubmit, error, ifAuth}) => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          <View
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'space-around',
+              padding: 20,
+            }}>
+            <Text style={{color: colors.text}}>
+              Your team isn't using EagleScout yet?
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Register new team');
+              }}>
+              <Text style={{color: colors.primary, fontWeight: 'bold'}}>
+                Register your team with EagleScout
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

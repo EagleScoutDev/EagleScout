@@ -20,6 +20,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
+import {
+  ClipboardWithGraph,
+  MagnifyingGlass,
+  DocumentWithPlus,
+  Trophy,
+  ListWithDots,
+  TwoPeople,
+  Gear,
+  CheckList,
+  ViewStacked,
+} from './SVGIcons';
+import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/home-flow/Home';
@@ -30,6 +42,8 @@ import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
+import FormCreation from './screens/form-creation-flow/FormCreation';
+import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 
 const CustomLightTheme = {
   dark: false,
@@ -101,10 +115,14 @@ const MyStack = ({themePreference, setThemePreference}) => {
       const {
         data: {user},
       } = await supabase.auth.getUser();
+      if (user.user_metadata.requested_deletion) {
+        setError('Your account has been marked for deletion.');
+        return;
+      }
       console.log('user: ' + user.id);
       const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
-        .select('team_id, scouter, admin')
+        .select('organization_id, scouter, admin')
         .eq('id', user.id)
         .single();
       const {data: profilesData, error: profilesError} = await supabase
@@ -119,7 +137,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
         console.error(profilesError);
         setError('Cannot acccess profiles');
       } else {
-        if (!userAttribData.team_id) {
+        if (!userAttribData.organization_id) {
           setError('');
           navigation.navigate('CompleteSignUp');
         } else if (!userAttribData.scouter) {
@@ -183,6 +201,10 @@ const MyStack = ({themePreference, setThemePreference}) => {
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
+          <Tab.Screen
+            name="Register new team"
+            component={RegisterTeamModal}
+          />
         </Tab.Group>
       ) : (
         <>

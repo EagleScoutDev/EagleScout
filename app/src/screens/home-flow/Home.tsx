@@ -7,42 +7,13 @@ import Gamification from '../scouting-flow/Gamification';
 import ScoutingFlow from '../scouting-flow/ScoutingFlow';
 import FormHelper from '../../FormHelper';
 import HomeMain from './HomeMain';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 const HomeStack = createStackNavigator();
+const Tab = createMaterialTopTabNavigator();
 
-function Home({navigation}) {
-  const {colors} = useTheme();
-  const [scoutStylePreference, setScoutStylePreference] =
-    React.useState<string>('Paginated');
 
-  useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
-      if (value != null) {
-        setScoutStylePreference(value);
-      }
-    });
-  }, []);
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      // justifyContent: 'center',
-    },
-    text: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: colors.text,
-    },
-  });
-
-  const ScoutReportComponent = props => (
-    <ScoutingFlow
-      {...props}
-      isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
-    />
-  );
-
+function Home() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -57,7 +28,7 @@ function Home({navigation}) {
         options={{
           headerBackTitle: 'Home',
         }}
-        component={ScoutReportComponent}
+        component={ScoutingFlow}
       />
     </HomeStack.Navigator>
   );

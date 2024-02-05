@@ -170,7 +170,9 @@ const SettingsHome = ({
         />
         <ListItem
           text={'Request Account Deletion'}
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('Request Account Deletion');
+          }}
           caretVisible={true}
           disabled={internetStatus !== InternetStatus.CONNECTED}
         />

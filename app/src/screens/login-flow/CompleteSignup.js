@@ -198,9 +198,9 @@ const CompleteSignup = () => {
                   Alert.alert('Unable to set porofile information. Please try logging in again.');
                 }
                 const {error: registerUserWithTeamError} = await supabase.rpc(
-                  'register_user_with_team',
+                  'register_user_with_organization',
                   {
-                    team_number: team,
+                    organization_number: team,
                   },
                 );
                 if (registerUserWithTeamError) {
