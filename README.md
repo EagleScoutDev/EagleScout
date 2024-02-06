@@ -1,5 +1,8 @@
 # EagleScout
 
+![Eagle Scout](https://github.com/EagleScoutDev/EagleScout/assets/53363059/8c5609f7-69a7-4697-8cb4-41ec15fdc2bf)
+
+
 ## Introduction
 - EagleScout is an app developed by Team114 to collect and analyse scouting data.
 - It has built in offline-mode, pit scouting (with storage for images), and picklist creation and management.
