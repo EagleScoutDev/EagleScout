@@ -6,6 +6,7 @@ import {SimpleTeam} from '../../lib/TBAUtils';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
 import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {Dropdown} from 'react-native-element-dropdown';
+import ScoutViewer from '../../components/modals/ScoutViewer';
 
 enum FilterState {
   TEAM,
@@ -15,26 +16,21 @@ enum FilterState {
 
 // write the parameters
 interface SearchModalProps {
-  searchActive: boolean;
-  setSearchActive: (searchActive: boolean) => void;
-  teams: SimpleTeam[];
-  reportsByMatch: Map<number, ScoutReportReturnData[]>;
-  navigateIntoReport: (report: ScoutReportReturnData) => void;
-  competitionId: number;
+  route: {
+    params: {
+      teams: SimpleTeam[];
+      reportsByMatch: Map<number, ScoutReportReturnData[]>;
+      competitionId: number;
+    };
+  };
+  navigation: any;
 }
 
-const SearchModal = ({
-  searchActive,
-  setSearchActive,
-  teams,
-  reportsByMatch,
-  navigateIntoReport,
-  competitionId,
-}: SearchModalProps) => {
+const SearchModal = ({route, navigation}: SearchModalProps) => {
+  const {teams, reportsByMatch, competitionId} = route.params;
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterState, setFilterState] = useState<FilterState>(FilterState.TEAM);
-  const navigation = useNavigation();
 
   // parsed from reports, then used to find names
   const [userIds, setUserIds] = useState<string[]>([]);
@@ -44,6 +40,9 @@ const SearchModal = ({
   const [selectedUser, setSelectedUser] = useState<ProfilesReturnData | null>(
     null,
   );
+
+  const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
+  const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
 
   const getSearchPrompt = (): string => {
     switch (filterState) {
@@ -90,13 +89,7 @@ const SearchModal = ({
   }, [userIds]);
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={false}
-      visible={searchActive}
-      onRequestClose={() => {
-        setSearchActive(false);
-      }}>
+    <>
       <View
         style={{
           flex: 1,
@@ -161,7 +154,7 @@ const SearchModal = ({
               marginLeft: '5%',
               marginRight: '5%',
             }}
-            onPress={() => setSearchActive(false)}>
+            onPress={() => navigation.navigate('Main Search')}>
             <Text
               style={{
                 color: colors.text,
@@ -281,7 +274,6 @@ const SearchModal = ({
               return (
                 <Pressable
                   onPress={() => {
-                    setSearchActive(false);
                     navigation.navigate('TeamViewer', {
                       team: item,
                       competitionId: competitionId,
@@ -360,8 +352,8 @@ const SearchModal = ({
                       return (
                         <Pressable
                           onPress={() => {
-                            setSearchActive(false);
-                            navigateIntoReport(report);
+                            setCurrentReport(report);
+                            setScoutViewerVisible(true);
                           }}
                           style={{
                             flexDirection: 'row',
@@ -508,8 +500,8 @@ const SearchModal = ({
                             return (
                               <Pressable
                                 onPress={() => {
-                                  setSearchActive(false);
-                                  navigateIntoReport(report);
+                                  setCurrentReport(report);
+                                  setScoutViewerVisible(true);
                                 }}
                                 style={{
                                   flexDirection: 'row',
@@ -543,7 +535,17 @@ const SearchModal = ({
           </View>
         )}
       </View>
-    </Modal>
+      {scoutViewerVisible && currentReport && (
+        <ScoutViewer
+          visible={scoutViewerVisible}
+          setVisible={setScoutViewerVisible}
+          data={currentReport ?? []}
+          chosenComp={currentReport?.competitionName ?? ''}
+          updateFormData={() => {}}
+          isOfflineForm={false}
+        />
+      )}
+    </>
   );
 };
 
