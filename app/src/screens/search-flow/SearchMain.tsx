@@ -14,9 +14,10 @@ import Competitions from "../../database/Competitions";
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
+  navigation: any;
 }
 
-const SearchMain: React.FC<Props> = () => {
+const SearchMain: React.FC<Props> = ({navigation}) => {
   const {colors} = useTheme();
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
 
@@ -135,7 +136,11 @@ const SearchMain: React.FC<Props> = () => {
               marginLeft: '6%',
             }}
             onPress={() => {
-              setSearchActive(true);
+              navigation.navigate('SearchModal', {
+                teams: listOfTeams,
+                reportsByMatch: reportsByMatch,
+                competitionId: competitionId,
+              });
             }}>
             <Svg width={'20'} height="20" viewBox="0 0 16 16">
               <Path
@@ -260,14 +265,6 @@ const SearchMain: React.FC<Props> = () => {
           isOfflineForm={false}
         />
       )}
-      <SearchModal
-        searchActive={searchActive}
-        setSearchActive={setSearchActive}
-        teams={listOfTeams}
-        reportsByMatch={reportsByMatch}
-        navigateIntoReport={navigateIntoReport}
-        competitionId={competitionId}
-      />
     </View>
   );
 };
