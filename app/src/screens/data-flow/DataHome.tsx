@@ -4,8 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
-} from 'react-native';
+  Pressable, SafeAreaView
+} from "react-native";
 import {useTheme} from '@react-navigation/native';
 import {CaretRight} from '../../SVGIcons';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
@@ -75,14 +75,13 @@ const DataHome = ({navigation}) => {
       color: colors.text,
       padding: '3%',
       paddingLeft: '5%',
-      marginTop: '5%',
     },
   });
 
   return (
-    <View
+    <SafeAreaView
       style={{
-        marginTop: '10%',
+        marginTop: '0%',
         paddingHorizontal: '2%',
       }}>
       <Text style={styles.title}>Data</Text>
@@ -168,7 +167,7 @@ const DataHome = ({navigation}) => {
           />
         </>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

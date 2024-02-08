@@ -1,4 +1,4 @@
-import {Alert, Pressable, Settings, StyleSheet, Text, View} from 'react-native';
+import { Alert, Pressable, SafeAreaView, Settings, StyleSheet, Text, View } from "react-native";
 import {Path, Svg} from 'react-native-svg';
 import InternetStatus from '../../lib/InternetStatus';
 import UserProfileBox from '../../components/UserProfileBox';
@@ -95,9 +95,8 @@ const SettingsHome = ({
   }, []);
 
   return (
-    <View
+    <SafeAreaView
       style={{
-        marginTop: '10%',
         paddingHorizontal: '2%',
       }}>
       <View
@@ -107,7 +106,6 @@ const SettingsHome = ({
           justifyContent: 'space-evenly',
           padding: '3%',
           paddingLeft: '5%',
-          marginTop: '5%',
         }}>
         <Text style={styles.title}>Profile</Text>
 
@@ -207,7 +205,7 @@ const SettingsHome = ({
         }}>
         v{VERSION}
       </Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

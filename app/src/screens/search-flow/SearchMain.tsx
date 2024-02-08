@@ -1,4 +1,4 @@
-import {View, Text, FlatList, Pressable} from 'react-native';
+import { View, Text, FlatList, Pressable, SafeAreaView } from "react-native";
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
@@ -91,7 +91,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, marginTop: '10%'}}>
+    <SafeAreaView style={{flex: 1}}>
       <View
         style={{
           display: isScrolling ? 'none' : 'flex',
@@ -265,7 +265,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           isOfflineForm={false}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
