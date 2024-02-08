@@ -285,7 +285,7 @@ const UpcomingRoundsView = ({navigation}) => {
           )}
         </>
       ) : (
-        <Text style={{color: colors.text}}>
+        <Text style={{color: colors.text, padding: '5%'}} >
           There is no competition happening currently.
         </Text>
       )}
