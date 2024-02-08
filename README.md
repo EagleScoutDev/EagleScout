@@ -34,3 +34,4 @@ EagleScout is available on iOS devices through the App Store and Android devices
 
 ## Acknowledgments
 - OpenAI -- we use the ChatGPT API endpoint to summarize data.
+- The Blue Alliance -- we use the TBA APIv3 in order to populate competition schedules, get lists of teams participating at events, and for some other analysis tools.
