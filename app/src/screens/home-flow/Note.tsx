@@ -5,12 +5,118 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Modal,
+  SafeAreaView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
 import CompetitionsDB, {
   CompetitionReturnData,
 } from '../../database/Competitions';
+import Svg, {Path} from 'react-native-svg';
+import {TBA} from '../../lib/TBAUtils';
+import TBAMatches from '../../database/TBAMatches';
+
+const TextboxModal = ({
+  onSubmit,
+  content,
+  setContent,
+  images,
+  setImages,
+}: {
+  content: string;
+  setContent: (content: string) => void;
+  onSubmit: () => void;
+  images: string[];
+  setImages: (images: string[]) => void;
+}) => {
+  const [localContent, setLocalContent] = useState<string>(content);
+  const {colors} = useTheme();
+  const styles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.primary,
+      padding: '3%',
+      paddingHorizontal: '5%',
+      borderRadius: 10,
+      margin: '1%',
+    },
+  });
+  return (
+    <Modal visible={true} animationType={'slide'}>
+      <SafeAreaView style={{flex: 1}}>
+        <KeyboardAvoidingView
+          style={{flex: 1, height: '100%'}}
+          behavior={'padding'}>
+          <View
+            style={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              height: '100%',
+              width: '100%',
+              // backgroundColor: 'red',
+            }}>
+            <View
+              style={{
+                flex: 1,
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                padding: '5%',
+                zIndex: 1,
+              }}>
+              <TextInput
+                multiline={true}
+                style={{flex: 1}}
+                onChangeText={text => setLocalContent(text)}
+                value={localContent}
+                placeholder={'Start writing...'}
+                placeholderTextColor={'grey'}
+              />
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                alignSelf: 'flex-end',
+                height: '100%',
+                zIndex: 2,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setContent(localContent);
+                  onSubmit();
+                }}
+                style={{
+                  ...styles.button,
+                  marginRight: '5%',
+                  alignSelf: 'flex-end',
+                  width: 'auto',
+                }}>
+                <Text style={{color: colors.background}}>Save</Text>
+              </TouchableOpacity>
+              <View style={{flex: 1}} />
+              <TouchableOpacity
+                style={{
+                  ...styles.button,
+                  marginRight: '5%',
+                }}>
+                <Svg
+                  fill={colors.background}
+                  width={30}
+                  height={30}
+                  viewBox="0 0 16 16">
+                  <Path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                  <Path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
+                </Svg>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </Modal>
+  );
+};
 
 const NoteScreen = () => {
   const {colors} = useTheme();
@@ -20,17 +126,30 @@ const NoteScreen = () => {
   const [matchNumber, setMatchNumber] = useState<string>('');
   const [images, setImages] = useState<string[]>([]);
 
-  const [compID, setCompID] = useState<number>('');
+  const [availableTeams, setAvailableTeams] = useState<number[]>([]);
+
+  const [currentCompetition, setCurrentCompetition] =
+    useState<CompetitionReturnData>();
+  const [compID, setCompID] = useState<number>(0);
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     CompetitionsDB.getCurrentCompetition().then(result => {
       if (result == null) {
         setCompID(-1);
       } else {
+        setCurrentCompetition(result);
         setCompID(result.id);
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (compID === -1) {
+      return;
+    }
+  }, [matchNumber]);
 
   const submitNote = () => {
     console.log(
@@ -135,10 +254,10 @@ const NoteScreen = () => {
         style={styles.title_text_input}
       />
       <View style={styles.number_container}>
-        <Text style={styles.number_label}>Team Number</Text>
+        <Text style={styles.number_label}>Match Number</Text>
         <TextInput
-          onChangeText={text => setTeamNumber(text)}
-          value={teamNumber}
+          onChangeText={text => setMatchNumber(text)}
+          value={matchNumber}
           placeholder={'###'}
           placeholderTextColor={'grey'}
           keyboardType={'number-pad'}
@@ -146,10 +265,10 @@ const NoteScreen = () => {
         />
       </View>
       <View style={styles.number_container}>
-        <Text style={styles.number_label}>Match Number</Text>
+        <Text style={styles.number_label}>Team Number</Text>
         <TextInput
-          onChangeText={text => setMatchNumber(text)}
-          value={matchNumber}
+          onChangeText={text => setTeamNumber(text)}
+          value={teamNumber}
           placeholder={'###'}
           placeholderTextColor={'grey'}
           keyboardType={'number-pad'}
@@ -164,13 +283,11 @@ const NoteScreen = () => {
           value={content}
           placeholder={'Start writing...'}
           placeholderTextColor={'grey'}
+          onFocus={() => {
+            setModalVisible(true);
+          }}
         />
       </View>
-      {/*<TouchableOpacity onPress={() => {}}>*/}
-      {/*  <Text style={{color: colors.primary, fontWeight: 'bold'}}>*/}
-      {/*    Add Image*/}
-      {/*  </Text>*/}
-      {/*</TouchableOpacity>*/}
       <TouchableOpacity
         style={styles.submit_button_styling}
         onPress={submitNote}
@@ -184,6 +301,17 @@ const NoteScreen = () => {
           Submit
         </Text>
       </TouchableOpacity>
+      {modalVisible && (
+        <TextboxModal
+          onSubmit={() => {
+            setModalVisible(false);
+          }}
+          content={content}
+          setContent={setContent}
+          images={images}
+          setImages={setImages}
+        />
+      )}
     </View>
   );
 };

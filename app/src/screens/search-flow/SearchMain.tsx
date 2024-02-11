@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, SafeAreaView } from "react-native";
+import {View, Text, FlatList, Pressable, SafeAreaView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
@@ -10,7 +10,11 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import SearchModal from './SearchModal';
-import Competitions from "../../database/Competitions";
+import Competitions from '../../database/Competitions';
+import NotesDB, {
+  NoteStructure,
+  NoteStructureWithMatchNumber,
+} from '../../database/Notes';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -25,6 +29,9 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   const [reportsByMatch, setReportsByMatch] = useState<
     Map<number, ScoutReportReturnData[]>
+  >(new Map());
+  const [notesByMatch, setNotesByMatch] = useState<
+    Map<number, NoteStructureWithMatchNumber[]>
   >(new Map());
 
   const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
@@ -69,6 +76,23 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         });
 
         setReportsByMatch(temp);
+      });
+
+      NotesDB.getNotesForCompetition(competitionId).then(notes => {
+        notes.sort((a, b) => {
+          return a.match_number - b.match_number;
+        });
+
+        let temp: Map<number, NoteStructureWithMatchNumber[]> = new Map();
+        for (const note of notes) {
+          if (temp.has(note.match_number)) {
+            temp.get(note.match_number)?.push(note);
+          } else {
+            temp.set(note.match_number, [note]);
+          }
+        }
+
+        setNotesByMatch(temp);
       });
 
       Competitions.getCompetitionTBAKey(competitionId).then(key => {

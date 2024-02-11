@@ -15,6 +15,10 @@ export interface NoteStructure {
   created_by: string;
 }
 
+export type NoteStructureWithMatchNumber = NoteStructure & {
+  match_number: number;
+};
+
 class NotesDB {
   /**
    * Checks if a match exists in the database. If it does, return the match id.
@@ -24,24 +28,29 @@ class NotesDB {
   static async checkIfMatchExists(
     match_number: number,
     competition_id: number,
-  ): Promise<number> {
+  ): Promise<{
+    exists: boolean;
+    id: number;
+  }> {
     const {data, error} = await supabase
       .from('matches')
-      .insert([
-        {
-          number: match_number,
-          competition_id: competition_id,
-        },
-      ])
-      .select();
+      .select('id')
+      .eq('number', match_number)
+      .eq('competition_id', competition_id);
 
     if (!data || data?.length === 0) {
-      return -1;
+      return {
+        exists: false,
+        id: -1,
+      };
     }
     if (error) {
       throw error;
     } else {
-      return data[0].id;
+      return {
+        exists: true,
+        id: data[0].id,
+      };
     }
   }
 
@@ -51,15 +60,6 @@ class NotesDB {
   ): Promise<number> {
     // console.log('createMatch match_number: ', match_number);
     // console.log('createMatch competition_id: ', competition_id);
-    // check if match exists, if it does, return the id
-
-    let match_id = await this.checkIfMatchExists(match_number, competition_id);
-    if (match_id !== -1) {
-      return match_id;
-    } else {
-      console.log('match does not exist');
-    }
-
     const {data, error} = await supabase
       .from('matches')
       .insert([
@@ -68,11 +68,7 @@ class NotesDB {
           competition_id: competition_id,
         },
       ])
-      .select();
-
-    if (!data || data?.length === 0) {
-      return -1;
-    }
+      .select('id');
     if (error) {
       throw error;
     } else {
@@ -83,22 +79,21 @@ class NotesDB {
   static async createNote(
     title: string,
     content: string,
-    team_number: number,
-    match_number: number,
-    competition_id: number,
+    teamNumber: number,
+    matchNumber: number,
+    competitionId: number,
   ): Promise<void> {
-    let match_id = await this.checkIfMatchExists(match_number, competition_id);
+    let {exists: matchExists, id: matchId} = await this.checkIfMatchExists(
+      matchNumber,
+      competitionId,
+    );
     // console.log('match_id: ', match_id);
-    let user_id = await ProfilesDB.getCurrentUserProfile().then(profile => {
-      return profile.id;
-    });
+    const userId = await ProfilesDB.getCurrentUserProfile().then(
+      profile => profile.id,
+    );
 
-    if (match_id === -1) {
-      match_id = await this.createMatch(match_number, competition_id);
-      if (match_id === -1) {
-        console.log('Error creating match');
-        return;
-      }
+    if (!matchExists) {
+      matchId = await this.createMatch(matchNumber, competitionId);
     }
 
     // console.log('user_id: ', user_id);
@@ -109,24 +104,16 @@ class NotesDB {
     // console.log('match_id: ', match_id);
     // console.log('user_id: ', user_id);
 
-    const {data, error} = await supabase
-      .from('notes')
-      .insert([
-        {
-          title: title,
-          content: content,
-          team_number: team_number,
-          match_id: match_id,
-          created_at: new Date(),
-          created_by: user_id,
-        },
-      ])
-      .single();
-
-    // console.log('data: ', data);
+    const {error} = await supabase.from('notes').insert([
+      {
+        title: title,
+        content: content,
+        team_number: teamNumber,
+        match_id: matchId,
+        created_by: userId,
+      },
+    ]);
     if (error) {
-      console.log('some error');
-      console.error(error.message);
       throw error;
     }
   }
@@ -143,6 +130,100 @@ class NotesDB {
     }
 
     return data;
+  }
+
+  static async getNotesForCompetition(
+    competitionId: number,
+  ): Promise<NoteStructureWithMatchNumber[]> {
+    const res: NoteStructureWithMatchNumber[] = [];
+    const {data, error} = await supabase
+      .from('notes')
+      .select('*, matches(number)')
+      .eq('matches.competition_id', competitionId);
+    console.log('data: ', data);
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        res.push({
+          id: data[i].id,
+          title: data[i].title,
+          content: data[i].content,
+          team_number: data[i].team_number,
+          match_id: data[i].match_id,
+          match_number: data[i].matches.number,
+          created_at: data[i].created_at,
+          created_by: data[i].created_by,
+        });
+      }
+    }
+    return res;
+  }
+
+  static async getNotesForTeam(teamNumber: number): Promise<NoteStructure[]> {
+    const res: NoteStructure[] = [];
+    const {data, error} = await supabase
+      .from('notes')
+      .select('*')
+      .eq('team_number', teamNumber);
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        res.push({
+          id: data[i].id,
+          title: data[i].title,
+          content: data[i].content,
+          team_number: data[i].team_number,
+          match_id: data[i].match_id,
+          created_at: data[i].created_at,
+          created_by: data[i].created_by,
+        });
+      }
+    }
+    return res;
+  }
+
+  static async getNotesForTeamAtCompetition(
+    teamNumber: number,
+    competitionId: number,
+  ): Promise<NoteStructureWithMatchNumber[]> {
+    const res: NoteStructureWithMatchNumber[] = [];
+    const {data: compIds} = await supabase
+      .from('matches')
+      .select('id')
+      .eq('competition_id', competitionId);
+    if (!compIds) {
+      return [];
+    }
+    // the way that the match_id filter works is very janky
+    // find a better way to check that matches.competition_id == competitionId
+    const {data, error} = await supabase
+      .from('notes')
+      .select('*, matches(number)')
+      .eq('team_number', teamNumber)
+      .filter(
+        'match_id',
+        'in',
+        `(${compIds.map((match: {id: number}) => match.id).join(',')})`,
+      );
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        res.push({
+          id: data[i].id,
+          title: data[i].title,
+          content: data[i].content,
+          team_number: data[i].team_number,
+          match_id: data[i].match_id,
+          match_number: data[i].matches.number,
+          created_at: data[i].created_at,
+          created_by: data[i].created_by,
+        });
+      }
+    }
+    return res;
   }
 }
 
