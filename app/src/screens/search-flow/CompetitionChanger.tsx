@@ -82,6 +82,14 @@ const CompetitionChanger = ({
         })}
         labelField={'label'}
         valueField={'value'}
+        disable={competitionsList.length === 0}
+        placeholder={
+          loading
+            ? 'Loading...'
+            : competitionsList.length > 0
+            ? 'Select Competition'
+            : 'No competitions found'
+        }
         onChange={item => {
           setCurrentCompId(item.value);
           setCompetitionName(item.label);
