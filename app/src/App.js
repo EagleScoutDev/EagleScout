@@ -10,6 +10,7 @@ import {
   useTheme,
 } from '@react-navigation/native';
 
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import CompleteSignup from './screens/login-flow/CompleteSignup';
@@ -20,6 +21,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
+import {
+  ClipboardWithGraph,
+  MagnifyingGlass,
+  DocumentWithPlus,
+  Trophy,
+  ListWithDots,
+  TwoPeople,
+  Gear,
+  CheckList,
+  ViewStacked,
+} from './SVGIcons';
+import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/home-flow/Home';
@@ -30,6 +43,8 @@ import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
+import FormCreation from './screens/form-creation-flow/FormCreation';
+import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 
 const CustomLightTheme = {
   dark: false,
@@ -101,10 +116,14 @@ const MyStack = ({themePreference, setThemePreference}) => {
       const {
         data: {user},
       } = await supabase.auth.getUser();
+      if (user.user_metadata.requested_deletion) {
+        setError('Your account has been marked for deletion.');
+        return;
+      }
       console.log('user: ' + user.id);
       const {data: userAttribData, error: userAttribError} = await supabase
         .from('user_attributes')
-        .select('team_id, scouter, admin')
+        .select('organization_id, scouter, admin')
         .eq('id', user.id)
         .single();
       const {data: profilesData, error: profilesError} = await supabase
@@ -119,7 +138,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
         console.error(profilesError);
         setError('Cannot acccess profiles');
       } else {
-        if (!userAttribData.team_id) {
+        if (!userAttribData.organization_id) {
           setError('');
           navigation.navigate('CompleteSignUp');
         } else if (!userAttribData.scouter) {
@@ -183,6 +202,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
+          <Tab.Screen name="Register new team" component={RegisterTeamModal} />
         </Tab.Group>
       ) : (
         <>
@@ -192,6 +212,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               tabBarShowLabel: false,
               headerShown: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
@@ -220,6 +243,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) => (
                 <Svg viewBox="0 0 16 16" width={size} height={size}>
                   <Path
@@ -236,6 +262,10 @@ const MyStack = ({themePreference, setThemePreference}) => {
             listeners={({navigation}) => ({
               tabPress: event => {
                 event.preventDefault();
+                ReactNativeHapticFeedback.trigger('impactLight', {
+                  enableVibrateFallback: true,
+                  ignoreAndroidSystemSettings: false,
+                });
                 navigation.navigate('CustomModal');
                 setModalVisible(true);
               },
@@ -243,8 +273,17 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) => (
-                <Svg width={size * 2.5} height={size * 2.5} viewBox="0 0 16 16">
+                <Svg
+                  width={'120%'}
+                  height={'120%'}
+                  viewBox="0 0 16 16"
+                  style={{
+                    bottom: '20%',
+                  }}>
                   <Path
                     fill={colors.primary}
                     d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"
@@ -259,6 +298,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({color, size, focused}) =>
                 focused ? (
                   <Svg width={size} height={size} viewBox="0 0 16 16">
@@ -282,6 +324,9 @@ const MyStack = ({themePreference, setThemePreference}) => {
             options={{
               headerShown: false,
               tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
               tabBarIcon: ({size, color}) => (
                 <Svg width={size} height={size} viewBox="0 0 16 16">
                   <Path fill={color} d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />

@@ -6,7 +6,9 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "echo \"Please use 'npm run start:dev' or 'npm run start:prod' instead.\" && exit 1",
+    "start:dev": "NODE_ENV=development react-native start",
+    "start:prod": "NODE_ENV=production react-native start",
     "test": "jest"
   },
   "dependencies": {
@@ -23,7 +25,9 @@
     "react-native": "^0.72.4",
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-check-box": "^2.1.7",
     "react-native-code-push": "^8.1.0",
+    "react-native-confetti": "^0.1.0",
     "react-native-date-picker": "^4.3.0",
     "react-native-dotenv": "^3.4.9",
     "react-native-draggable-flatlist": "^4.0.1",

@@ -10,6 +10,8 @@ import DataAggregator from './DataAggregator';
 import CompetitionsList from '../competitions-flow/CompetitionsList';
 import CompetitionsView from '../competitions-flow/CompetitionsView';
 import UserManager from './UserManager';
+import FormCreationMain from "../form-creation-flow/FormCreationMain";
+import FormCreation from "../form-creation-flow/FormCreation";
 
 const DataStack = createStackNavigator();
 
@@ -42,12 +44,10 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Team Rank'}
         component={DataAggregator}
-        options={
-          {
-            // headerBackTitle: 'Back',
-            // headerTitle: 'Team RankA',
-          }
-        }
+        options={{
+          headerBackTitle: 'Back',
+          // headerTitle: 'Team RankA',
+        }}
       />
       <DataStack.Screen
         name={'Manage Competitions'}
@@ -61,6 +61,13 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Manage Users'}
         component={UserManager}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Manage Forms'}
+        component={FormCreation}
         options={{
           headerBackTitle: 'Back',
         }}

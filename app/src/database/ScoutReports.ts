@@ -44,6 +44,7 @@ class ScoutReportsDB {
       throw error;
     } else {
       console.log(data);
+      console.log('here1')
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           reportId: data[i].id,
@@ -78,6 +79,7 @@ class ScoutReportsDB {
     if (error) {
       throw error;
     } else {
+      console.log('here2')
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           reportId: data[i].id,
@@ -109,6 +111,41 @@ class ScoutReportsDB {
       throw error;
     } else {
       for (let i = 0; i < data.length; i += 1) {
+        console.log('here3')
+        res.push({
+          reportId: data[i].id,
+          matchNumber: data[i].matches.number,
+          teamNumber: data[i].team,
+          data: data[i].data,
+          competitionId: data[i].matches.competition_id,
+          form: data[i].matches.competitions.forms.form_structure,
+          userId: data[i].user_id,
+          createdAt: data[i].created_at,
+          competitionName: data[i].matches.competitions.name,
+        });
+      }
+    }
+    return res;
+  }
+
+  static async getReportsForTeamAtCompetition(
+    team: number,
+    compId: number,
+  ): Promise<ScoutReportReturnData[]> {
+    const res: ScoutReportReturnData[] = [];
+    const {data, error} = await supabase
+      .from('scout_reports')
+      .select(
+        '*, matches!inner( number, competition_id, competitions(name, forms(form_structure)) )',
+      )
+      .eq('team', team)
+      .eq('matches.competition_id', compId);
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        console.log('here4');
+        console.log('data: ' + JSON.stringify(data[0]));
         res.push({
           reportId: data[i].id,
           matchNumber: data[i].matches.number,

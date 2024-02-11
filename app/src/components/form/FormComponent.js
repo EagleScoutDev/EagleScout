@@ -35,12 +35,12 @@ function FormComponent({
           disabled={false}
           title={item.question}
           required={item.required}
-          options={item.labels}
-          value={item.labels[arrayData[item.indice]]}
+          options={item.options}
+          value={item.options[arrayData[item.indice]]}
           colors={colors}
           onValueChange={value => {
             let a = [...arrayData];
-            a[item.indice] = item.labels.indexOf(value);
+            a[item.indice] = item.options.indexOf(value);
             setArrayData(a);
           }}
         />
@@ -99,10 +99,10 @@ function FormComponent({
         colors={colors}
         title={item.question}
         required={item.required}
-        options={item.labels}
+        options={item.options}
         value={arrayData[item.indice]}
         onValueChange={value => {
-          const itemIndex = item.labels.indexOf(value);
+          const itemIndex = item.options.indexOf(value);
           let tempArray = [...arrayData[item.indice]];
 
           if (tempArray.includes(itemIndex)) {

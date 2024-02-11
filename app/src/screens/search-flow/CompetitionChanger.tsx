@@ -13,6 +13,7 @@ import {CompetitionReturnData} from '../../database/Competitions';
 import Svg, {Path} from 'react-native-svg';
 import SearchModal from './SearchModal';
 import {Dropdown} from 'react-native-element-dropdown';
+import Competitions from "../../database/Competitions";
 
 interface CompetitionChangerProps {
   currentCompId: number;
@@ -45,6 +46,16 @@ const CompetitionChanger = ({
   }, [isActive]);
 
   useEffect(() => {
+    if (currentCompId === -1) {
+      CompetitionsDB.getCurrentCompetition().then(competition => {
+        if (competition != null) {
+          setCurrentCompId(-1);
+        } else {
+          // TODO: handle when there is no current competition
+          setCurrentCompId(-1);
+        }
+      });
+    }
     CompetitionsDB.getCompetitions().then(competitions => {
       setCompetitionsList(competitions);
 
@@ -71,6 +82,14 @@ const CompetitionChanger = ({
         })}
         labelField={'label'}
         valueField={'value'}
+        disable={competitionsList.length === 0}
+        placeholder={
+          loading
+            ? 'Loading...'
+            : competitionsList.length > 0
+            ? 'Select Competition'
+            : 'No competitions found'
+        }
         onChange={item => {
           setCurrentCompId(item.value);
           setCompetitionName(item.label);

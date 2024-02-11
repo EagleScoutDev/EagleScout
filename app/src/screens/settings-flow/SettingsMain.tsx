@@ -7,6 +7,7 @@ import EditProfile from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import SubmittedForms from './SubmittedForms';
+import DeleteAccountModal from './DeleteAccountModal';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,15 @@ function SettingsMain({
     }
   };
 
+  const signOutFunction = () => {
+    // AsyncStorage.setItem('authenticated', 'false');
+    // TODO: triple check if this is the right way to do this
+    AsyncStorage.clear().then(() => {
+      console.log('Sign out successful');
+      onSignOut();
+    });
+  };
+
   return (
     <Stack.Navigator initialRouteName={'Main Settings'}>
       <Stack.Screen
@@ -53,13 +63,25 @@ function SettingsMain({
       />
       <Stack.Screen name="Change Password" component={ChangePassword} />
       <Stack.Screen
+        name={'Request Account Deletion'}
+        children={props => (
+          <DeleteAccountModal {...props} signOut={signOutFunction} />
+        )}
+      />
+      <Stack.Screen
         options={{
           headerBackTitle: 'Back',
         }}
         name="Debug Offline"
         component={DebugOffline}
       />
-      <Stack.Screen name={'Reports'} component={SubmittedForms} />
+      <Stack.Screen
+        name={'Reports'}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+        component={SubmittedForms}
+      />
     </Stack.Navigator>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import {useNavigation, useTheme} from '@react-navigation/native';
 import UpcomingRoundsView from '../UpcomingRoundsView';
 import Svg, {Path} from 'react-native-svg';
@@ -9,7 +9,6 @@ const HomeMain = () => {
   const navigation = useNavigation();
   const styles = StyleSheet.create({
     container: {
-      marginTop: '10%',
       paddingHorizontal: '2%',
       flex: 1,
     },
@@ -19,7 +18,6 @@ const HomeMain = () => {
       color: colors.text,
       padding: '3%',
       paddingLeft: '5%',
-      marginTop: '5%',
     },
     heading_two: {
       fontSize: 24,
@@ -48,7 +46,7 @@ const HomeMain = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ScrollView scrollEnabled={false}>
         <Text style={styles.title}>Home</Text>
         <Text style={styles.heading_two}>Upcoming Rounds</Text>
@@ -78,7 +76,7 @@ const HomeMain = () => {
       {/*    </Svg>*/}
       {/*  </View>*/}
       {/*</Pressable>*/}
-    </View>
+    </SafeAreaView>
   );
 };
 

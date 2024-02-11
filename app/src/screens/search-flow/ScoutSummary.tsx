@@ -9,7 +9,13 @@ import ScoutReportsDB, {
 import Svg, {Path} from 'react-native-svg';
 import CompetitionsDB from '../../database/Competitions';
 
-function ScoutSummary({team_number}: {team_number: number}) {
+function ScoutSummary({
+  team_number,
+  competitionId,
+}: {
+  team_number: number;
+  competitionId: number;
+}) {
   const {colors} = useTheme();
   const [formStructure, setFormStructure] = useState<Array<Object> | null>(
     null,
@@ -21,21 +27,21 @@ function ScoutSummary({team_number}: {team_number: number}) {
   const [generateSummary, setGenerateSummary] = useState<boolean>(false);
 
   useEffect(() => {
-    CompetitionsDB.getCurrentCompetition().then(competition => {
+    CompetitionsDB.getCompetitionById(competitionId).then(competition => {
       if (!competition) {
         return;
       }
-      FormsDB.getForm(competition!.formId).then(form => {
-        setFormStructure(form.formStructure);
+      ScoutReportsDB.getReportsForTeamAtCompetition(
+        team_number,
+        competition.id,
+      ).then(reports => {
+        setResponses(reports);
+        console.log('scout reports for team ' + team_number + ' : ' + reports);
+        console.log('no reports? ' + (reports.length === 0));
       });
+      setFormStructure(competition.form);
     });
-
-    ScoutReportsDB.getReportsForTeam(team_number).then(reports => {
-      setResponses(reports);
-      console.log('scout reports for team ' + team_number + ' : ' + reports);
-      console.log('no reports? ' + (reports.length === 0));
-    });
-  }, []);
+  }, [competitionId, team_number]);
 
   if (responses && responses.length === 0) {
     return (
