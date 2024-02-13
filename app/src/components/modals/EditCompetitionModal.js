@@ -1,50 +1,60 @@
-import {
-  Alert,
-  Modal,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import React, {Alert, StyleSheet, Text, TextInput, View} from 'react-native';
 import StandardButton from '../StandardButton';
 import {supabase} from '../../lib/supabase';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import StandardModal from './StandardModal';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
   const {colors} = useTheme();
 
   const [name, setName] = useState(tempComp.name);
-  const [startDate, setStartDate] = useState(new Date(tempComp.startTime));
-  const [editStartDate, setEditStartDate] = useState(false);
-
-  const [endDate, setEndDate] = useState(new Date(tempComp.endTime));
-  const [editEndDate, setEditEndDate] = useState(false);
+  const [startTime, setStartTime] = useState(new Date(tempComp.startTime));
+  const [endTime, setEndTime] = useState(new Date(tempComp.endTime));
 
   const changesMade = () => {
     if (name !== tempComp.name) {
       return true;
     }
-    if (startDate !== tempComp.startTime) {
+    if (startTime !== tempComp.startTime) {
       return true;
     }
-    if (endDate !== tempComp.endTime) {
+    if (endTime !== tempComp.endTime) {
       return true;
     }
     return false;
   };
+
+  const styles = StyleSheet.create({
+    label: {
+      color: colors.text,
+      fontSize: 18,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    label_background: {
+      backgroundColor: colors.card,
+      borderRadius: 10,
+      padding: 10,
+      flex: 0.7,
+    },
+    date_row: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+    },
+  });
 
   const updateCompetition = async () => {
     const {data, error} = await supabase
       .from('competitions')
       .update({
         name: name,
-        start_time: startDate,
-        end_time: endDate,
+        start_time: startTime,
+        end_time: endTime,
       })
       .eq('id', tempComp.id);
 
@@ -102,122 +112,45 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
         }}
         value={name}
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            padding: 10,
-            flex: 0.7,
-          }}
-          onPress={() => setEditStartDate(true)}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 18,
-              fontWeight: '600',
-              textAlign: 'center',
-            }}>
-            Start Date
-          </Text>
+      <View style={styles.date_row}>
+        <View style={styles.label_background}>
+          <Text style={styles.label}>Start Time</Text>
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: colors.border,
-            borderRadius: 10,
-            padding: 10,
-            flex: 1,
-          }}
-          onPress={() => setEditStartDate(true)}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 20,
-              fontWeight: '600',
-              textAlign: 'center',
-            }}>
-            {new Date(startDate).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </Text>
-        </TouchableOpacity>
-        <DatePicker
-          modal
-          open={editStartDate}
-          date={startDate}
+      </View>
+      <View style={styles.date_row}>
+        <RNDateTimePicker
+          value={startTime}
           mode={'date'}
-          onConfirm={date => {
-            setStartDate(date);
-            setEditStartDate(false);
+          onChange={(event, date) => {
+            setStartTime(date);
           }}
-          onCancel={() => {}}
+        />
+        <RNDateTimePicker
+          value={startTime}
+          mode={'time'}
+          onChange={(event, date) => {
+            setStartTime(date);
+          }}
         />
       </View>
-      <View style={{height: 20}} />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            padding: 10,
-            flex: 0.7,
-          }}
-          onPress={() => setEditEndDate(true)}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 18,
-              fontWeight: '600',
-              textAlign: 'center',
-            }}>
-            End Date
-          </Text>
+      <View style={styles.date_row}>
+        <View style={styles.label_background}>
+          <Text style={styles.label}>End Time</Text>
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: colors.border,
-            borderRadius: 10,
-            padding: 10,
-            flex: 1,
-          }}
-          onPress={() => setEditEndDate(true)}>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 20,
-              fontWeight: '600',
-              textAlign: 'center',
-            }}>
-            {new Date(endDate).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </Text>
-        </TouchableOpacity>
-        <DatePicker
-          modal
-          open={editEndDate}
-          date={endDate}
+      </View>
+      <View style={styles.date_row}>
+        <RNDateTimePicker
+          value={endTime}
           mode={'date'}
-          onConfirm={date => {
-            setEndDate(date);
-            setEditEndDate(false);
+          onChange={(event, date) => {
+            setEndTime(date);
           }}
-          onCancel={() => {
-            setEditEndDate(false);
+        />
+        <RNDateTimePicker
+          value={endTime}
+          mode={'time'}
+          onChange={(event, date) => {
+            setEndTime(date);
           }}
         />
       </View>
@@ -274,6 +207,26 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
           onPress={async () => {
             if (!changesMade()) {
               setVisible(false);
+              return;
+            }
+
+            if (startTime > endTime) {
+              Alert.alert(
+                'Error',
+                'The start time must be before the end time.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      if (DEBUG) {
+                        console.log('OK Pressed');
+                      }
+                    },
+                    style: 'cancel',
+                  },
+                ],
+                {cancelable: false},
+              );
               return;
             }
 
