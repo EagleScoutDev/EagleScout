@@ -111,7 +111,7 @@ export default function PitScoutingCamera({
     },
   });
 
-  if (device == null) {
+  if (device == null || !hasPermission) {
     return (
       <View
         style={{
@@ -192,6 +192,16 @@ export default function PitScoutingCamera({
           )}
         </Pressable>
       </View>
+      <View style={styles.cancelButtonContainer}>
+        <Pressable style={styles.cancelButton} onPress={onCancel}>
+          <Text
+            style={{
+              color: colors.text,
+            }}>
+            X
+          </Text>
+        </Pressable>
+      </View>
       <CaptureButton onPress={onCapturePress} loading={isCapturing} />
       <PinchGestureHandler onGestureEvent={onPinchGesture} enabled={true}>
         <ReanimatedCamera
@@ -224,5 +234,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 10,
+  },
+  cancelButtonContainer: {
+    position: 'absolute',
+    top: 30,
+    right: 30,
+    zIndex: 1,
+  },
+  cancelButton: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 999,
   },
 });
