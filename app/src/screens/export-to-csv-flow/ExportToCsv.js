@@ -1,12 +1,13 @@
 import {
   ActivityIndicator,
   Alert,
+  PermissionsAndroid,
   ScrollView,
-  Share,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Share from 'react-native-share';
 import CompetitionsDB from '../../database/Competitions';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
@@ -88,7 +89,6 @@ const ExportToCsv = () => {
       Alert.alert('Error', 'An error occurred while fetching the user names');
       return;
     }
-    console.log(reports);
     const csvrows = [];
     const header = [];
     header.push('user id');
@@ -118,7 +118,6 @@ const ExportToCsv = () => {
       });
       csvrows.push(row.join(','));
     });
-    console.log(csvrows);
 
     let csvContent = '';
 
@@ -126,26 +125,31 @@ const ExportToCsv = () => {
       csvContent += row + '\r\n';
     });
 
-    let path = RNFS.DocumentDirectoryPath + `/${comp.name}.csv`;
+    let path = RNFS.CachesDirectoryPath + `/${comp.name}.csv`;
     RNFS.writeFile(path, csvContent, 'utf8')
       .then(async success => {
         setLoading(false);
-        try {
-          const result = await Share.share({
-            url: `file://${path}`,
+        await Share.open({
+          url: `file://${path}`,
+        })
+          .then(() => {
+            RNFS.unlink(path)
+              .then(() => {
+                console.log('Deleted file');
+              })
+              .catch(err => {
+                console.error('Error deleting file: ' + err.message);
+              });
+          })
+          .catch(() => {
+            RNFS.unlink(path)
+              .then(() => {
+                console.log('Deleted file');
+              })
+              .catch(err => {
+                console.error('Error deleting file: ' + err.message);
+              });
           });
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
-            }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
-          }
-        } catch (error) {
-          Alert.alert('Cannot show share dialog', error.message);
-        }
       })
       .catch(err => {
         setLoading(false);

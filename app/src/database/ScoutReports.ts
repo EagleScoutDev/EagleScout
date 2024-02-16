@@ -43,8 +43,6 @@ class ScoutReportsDB {
     if (error) {
       throw error;
     } else {
-      console.log(data);
-      console.log('here1')
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           reportId: data[i].id,
