@@ -74,6 +74,11 @@ const CompetitionsList = ({setChosenComp}) => {
           }}>
           Competitions
         </Text>
+          {competitionList.length === 0 && (
+            <Text style={{color: colors.text}}>
+              No competitions found.
+            </Text>
+          )}
         <ScrollView>
           {competitionList.map((comp, index) => (
             <TouchableOpacity
