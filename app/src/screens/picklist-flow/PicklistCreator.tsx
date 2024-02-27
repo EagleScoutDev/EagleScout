@@ -187,6 +187,21 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       );
       return;
     }
+
+    if (teams_list.length === 0) {
+      Alert.alert(
+        'Error: Empty Picklist',
+        'You have not added any teams to this picklist.',
+        [
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+        ],
+      );
+      return;
+    }
+
     const additional_message = presetPicklist
       ? ' This will overwrite the picklist "' +
         presetPicklist.name +

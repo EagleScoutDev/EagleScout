@@ -14,7 +14,7 @@ interface TeamViewerProps {
 
 const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
   const {colors} = useTheme();
-  const {team} = route.params;
+  const {team, competitionId} = route.params;
   const navigation = useNavigation();
 
   return (
@@ -46,6 +46,7 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
           onPress={() => {
             navigation.navigate('Reports for Team', {
               team_number: team.team_number,
+              competitionId: competitionId,
             });
           }}
           style={{
@@ -72,7 +73,10 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
         </TouchableOpacity>
 
         <Statbotics team={team.team_number} />
-        <ScoutSummary team_number={team.team_number} />
+        <ScoutSummary
+          team_number={team.team_number}
+          competitionId={competitionId}
+        />
       </ScrollView>
     </View>
   );

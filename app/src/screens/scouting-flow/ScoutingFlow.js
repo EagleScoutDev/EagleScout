@@ -13,7 +13,7 @@ import Confetti from 'react-native-confetti';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
+function ScoutingFlow({navigation, route}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -37,6 +37,24 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
+  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] = useState(false);
+  const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
+
+  useEffect(() => {
+    FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
+      if (value != null) {
+        setScoutStylePreference(value);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (scoutStylePreference === 'Scrolling') {
+      setIsScoutStylePreferenceScrolling(true);
+    } else {
+      setIsScoutStylePreferenceScrolling(false);
+    }
+  }, [scoutStylePreference]);
 
   /**
    * Initializes fields of the report before submitting it.
@@ -126,6 +144,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
       }
     }
     setIsOffline(!dbRequestWorked);
+    console.log('LOADINGCOMPS');
 
     if (comp != null) {
       setIsCompetitionHappening(true);
@@ -136,7 +155,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
     } else {
       setIsCompetitionHappening(false);
     }
-  }, [initForm]);
+  }, []);
 
   const startConfetti = () => {
     console.log('starting confetti');

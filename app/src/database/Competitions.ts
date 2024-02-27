@@ -13,7 +13,7 @@ export enum ScoutAssignmentsConfig {
   POSITION_BASED,
 }
 
-interface CompetitionReturnData extends Competition {
+export interface CompetitionReturnData extends Competition {
   id: number;
   form: [];
   scoutAssignmentsConfig: ScoutAssignmentsConfig;
@@ -89,7 +89,7 @@ class CompetitionsDB {
       name: competition.name,
       start_time: competition.startTime,
       end_time: competition.endTime,
-      form_id: competition.formId
+      form_id: competition.formId,
     });
     if (error) {
       throw error;
@@ -107,6 +107,50 @@ class CompetitionsDB {
     } else {
       console.log(data);
       return data.tba_events.teams;
+    }
+  }
+
+  static async getCompetitionTBAKey(competitionId: number): Promise<string> {
+    const {data, error} = await supabase
+      .from('competitions')
+      .select('tba_events ( event_key )')
+      .eq('id', competitionId)
+      .single();
+    if (error) {
+      throw error;
+    } else {
+      return data.tba_events.event_key;
+    }
+  }
+
+  static async getCompetitionById(
+    competitionId: number,
+  ): Promise<CompetitionReturnData> {
+    const {data, error} = await supabase
+      .from('competitions')
+      .select('*, forms( form_structure )')
+      .eq('id', competitionId)
+      .single();
+    if (error) {
+      throw error;
+    } else {
+      let scoutAssignmentsConfig: ScoutAssignmentsConfig;
+      if (data.scout_assignments_config === 'team_based') {
+        scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
+      } else if (data.scout_assignments_config === 'position_based') {
+        scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
+      } else {
+        scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
+      }
+      return {
+        id: data.id,
+        name: data.name,
+        startTime: data.start_time,
+        endTime: data.end_time,
+        formId: data.form_id,
+        form: data.forms.form_structure,
+        scoutAssignmentsConfig: scoutAssignmentsConfig,
+      };
     }
   }
 }

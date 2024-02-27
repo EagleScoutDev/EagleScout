@@ -187,7 +187,7 @@ const CompetitionsList = ({setChosenComp}) => {
               setAddCompetitionModalVisible(true);
             }}
             style={{
-              padding: '2%',
+              padding: '6%',
               alignContent: 'center',
               justifyContent: 'center',
               paddingHorizontal: '6%',
@@ -204,9 +204,9 @@ const CompetitionsList = ({setChosenComp}) => {
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                fontSize: 40,
+                fontSize: 16,
               }}>
-              +
+              + New Competition
             </Text>
           </TouchableOpacity>
         )}

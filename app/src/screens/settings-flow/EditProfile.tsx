@@ -6,10 +6,12 @@ import {useState} from 'react';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
 
-function EditProfileModal({navigation, route, getUser}) {
+function EditProfile({navigation, route, getUser}) {
   const {initialFirstName, initialLastName} = route.params;
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
+  const [isLoading, setIsLoading] = useState(false);
+
   const {colors} = useTheme();
   const styles = StyleSheet.create({
     text_input: {
@@ -45,8 +47,14 @@ function EditProfileModal({navigation, route, getUser}) {
       </View>
       <View style={styles.button_row}>
         <StandardButton
-          color={colors.primary}
+          color={
+            firstName === initialFirstName && lastName === initialLastName
+              ? 'grey'
+              : colors.primary
+          }
+          isLoading={isLoading}
           onPress={async () => {
+            setIsLoading(true);
             const {
               data: {user},
             } = await supabase.auth.getUser();
@@ -82,6 +90,7 @@ function EditProfileModal({navigation, route, getUser}) {
 
             setFirstName('');
             setLastName('');
+            setIsLoading(false);
             // get user temporarily removed for development.
             getUser();
             console.log('popping back to main settings page from edit profile');
@@ -96,4 +105,4 @@ function EditProfileModal({navigation, route, getUser}) {
   );
 }
 
-export default EditProfileModal;
+export default EditProfile;

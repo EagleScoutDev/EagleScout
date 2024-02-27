@@ -5,11 +5,12 @@ import React, {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import StandardButton from '../StandardButton';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import DatePicker from 'react-native-date-picker';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
 import SelectMenu from '../form/SelectMenu';
@@ -20,10 +21,8 @@ function Spacer() {
 
 function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [name, setName] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [editStartDate, setEditStartDate] = useState(false);
-  const [endDate, setEndDate] = useState(new Date());
-  const [editEndDate, setEditEndDate] = useState(false);
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const {colors} = useTheme();
 
   const [selectedFormID, setSelectedFormID] = useState(null);
@@ -31,11 +30,14 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [formList, setFormList] = useState([]);
   const [tbakey, settbakey] = useState('');
 
+  const [showStartDate, setShowStartDate] = useState(Platform.OS === 'ios');
+  const [showStartTime, setShowStartTime] = useState(Platform.OS === 'ios');
+  const [showEndDate, setShowEndDate] = useState(Platform.OS === 'ios');
+  const [showEndTime, setShowEndTime] = useState(Platform.OS === 'ios');
+
   const getFormIDs = async () => {
     // get form ids
-    let {data: forms, error} = await supabase
-      .from('forms')
-      .select('id, name');
+    let {data: forms, error} = await supabase.from('forms').select('id, name');
     if (error) {
       console.error('Failed to get forms');
       console.error(error);
@@ -50,9 +52,9 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       Alert.alert('Error', 'Please select a form to use for this competition.');
       return false;
     }
-    // if the start date is after (or equal to) the end date, alert the user
-    if (startDate >= endDate) {
-      Alert.alert('Error', 'Start date must be before end date.');
+    // if the start time is after (or equal to) the end time, alert the user
+    if (startTime >= endTime) {
+      Alert.alert('Error', 'Start time must be before end time.');
       return false;
     }
     // if the name is empty, alert the user
@@ -83,8 +85,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
     const {error} = await supabase.from('competitions').insert({
       name: name,
-      start_time: startDate,
-      end_time: endDate,
+      start_time: startTime,
+      end_time: endTime,
       form_id: selectedFormID,
       tba_event_id: eventData.id,
     });
@@ -93,8 +95,6 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
 
   useEffect(() => {
     setName('');
-    setStartDate(new Date());
-    setEndDate(new Date());
     setSelectedFormID(null);
     getFormIDs();
   }, [visible]);
@@ -128,6 +128,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       borderRadius: 10,
       padding: 10,
       flex: 1,
+      marginLeft: 5,
     },
     date: {
       color: colors.text,
@@ -151,71 +152,112 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         onChangeText={text => setName(text)}
         value={name}
       />
-      <Spacer />
       <View style={styles.date_row}>
-        <View
-          style={styles.label_background}
-          onPress={() => setEditStartDate(true)}>
-          <Text style={styles.label}>Start Date</Text>
+        <View style={styles.label_background}>
+          <Text style={styles.label}>Start Time</Text>
         </View>
-        <TouchableOpacity
-          style={styles.date_background}
-          onPress={() => setEditStartDate(true)}>
-          <Text style={styles.date}>
-            {startDate.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </Text>
-        </TouchableOpacity>
-        <DatePicker
-          modal
-          open={editStartDate}
-          date={startDate}
-          mode={'date'}
-          onConfirm={date => {
-            setStartDate(date);
-            setEditStartDate(false);
-          }}
-          onCancel={() => {
-            setEditStartDate(false);
-          }}
-        />
       </View>
-      <Spacer />
       <View style={styles.date_row}>
-        <View
-          style={styles.label_background}
-          onPress={() => setEditEndDate(true)}>
-          <Text style={styles.label}>End Date</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.date_background}
-          onPress={() => setEditEndDate(true)}>
-          <Text style={styles.date}>
-            {endDate.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </Text>
-        </TouchableOpacity>
-        <DatePicker
-          modal
-          open={editEndDate}
-          date={endDate}
-          mode={'date'}
-          onConfirm={date => {
-            setEndDate(date);
-            setEditEndDate(false);
-          }}
-          onCancel={() => {
-            setEditEndDate(false);
-          }}
-        />
+        {Platform.OS !== 'ios' && (
+          <TouchableOpacity
+            style={styles.date_background}
+            onPress={() => setShowStartDate(true)}>
+            <Text style={styles.date}>
+              {startTime.toLocaleDateString('en-US')}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {Platform.OS !== 'ios' && (
+          <TouchableOpacity
+            style={styles.date_background}
+            onPress={() => setShowStartTime(true)}>
+            <Text style={styles.date}>
+              {startTime.toLocaleTimeString('en-US')}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {showStartDate && (
+          <RNDateTimePicker
+            value={startTime}
+            mode={'date'}
+            onChange={(event, date) => {
+              if (Platform.OS !== 'ios') {
+                setShowStartDate(false);
+              }
+              if (event.type === 'set') {
+                setStartTime(date);
+              }
+            }}
+          />
+        )}
+        {showStartTime && (
+          <RNDateTimePicker
+            value={startTime}
+            mode={'time'}
+            onChange={(event, date) => {
+              if (Platform.OS !== 'ios') {
+                setShowStartTime(false);
+              }
+              if (event.type === 'set') {
+                setStartTime(date);
+              }
+            }}
+          />
+        )}
       </View>
-
+      <View style={styles.date_row}>
+        <View style={styles.label_background}>
+          <Text style={styles.label}>End Time</Text>
+        </View>
+      </View>
+      <View style={styles.date_row}>
+        {Platform.OS !== 'ios' && (
+          <TouchableOpacity
+            style={styles.date_background}
+            onPress={() => setShowEndDate(true)}>
+            <Text style={styles.date}>
+              {endTime.toLocaleDateString('en-US')}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {Platform.OS !== 'ios' && (
+          <TouchableOpacity
+            style={styles.date_background}
+            onPress={() => setShowEndTime(true)}>
+            <Text style={styles.date}>
+              {endTime.toLocaleTimeString('en-US')}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {showEndDate && (
+          <RNDateTimePicker
+            value={endTime}
+            mode={'date'}
+            onChange={(event, date) => {
+              if (Platform.OS !== 'ios') {
+                setShowEndDate(false);
+              }
+              if (event.type === 'set') {
+                setEndTime(date);
+              }
+            }}
+          />
+        )}
+        {showEndTime && (
+          <RNDateTimePicker
+            value={endTime}
+            mode={'time'}
+            onChange={(event, date) => {
+              if (Platform.OS !== 'ios') {
+                setShowEndTime(false);
+              }
+              if (event.type === 'set') {
+                setEndTime(date);
+              }
+            }}
+          />
+        )}
+      </View>
       <View
         style={{
           flexDirection: 'row',

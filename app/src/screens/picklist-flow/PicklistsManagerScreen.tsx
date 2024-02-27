@@ -12,6 +12,7 @@ function PicklistsManagerScreen({navigation}) {
   const [picklists, setPicklists] = useState<Array<PicklistStructure>>([]);
   const [users, setUsers] = useState<Map<string, string>>(new Map());
   const [refreshing, setRefreshing] = useState(false);
+  const [hoveredPicklistID, setHoveredPicklistID] = useState('');
 
   const getPicklists = () => {
     // get picklists from database
@@ -51,6 +52,17 @@ function PicklistsManagerScreen({navigation}) {
   // Render function using FlatList
   return (
     <View style={{flex: 1}}>
+      {picklists.length === 0 && (
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 20,
+            marginTop: '5%',
+            color: colors.text,
+          }}>
+          No picklists found.{'\n'}Create one to get started!
+        </Text>
+      )}
       <FlatList
         data={picklists}
         onRefresh={() => onRefresh()}
@@ -60,6 +72,12 @@ function PicklistsManagerScreen({navigation}) {
         renderItem={({item}) => {
           return (
             <Pressable
+              onPressIn={() => {
+                setHoveredPicklistID(item.name);
+              }}
+              onPressOut={() => {
+                setHoveredPicklistID('');
+              }}
               onPress={() => {
                 navigation.navigate('Picklist Creator', {
                   picklist_id: item.id,
@@ -73,6 +91,11 @@ function PicklistsManagerScreen({navigation}) {
                 marginHorizontal: '5%',
                 flexDirection: 'row',
                 // alignItems: 'center',
+                borderWidth: hoveredPicklistID === item.name ? 1.5 : 1,
+                borderColor:
+                  hoveredPicklistID === item.name
+                    ? colors.primary
+                    : colors.border,
               }}>
               <View>
                 <Text

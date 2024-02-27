@@ -9,14 +9,14 @@ import ScoutReportsDB, {
 
 function ReportsForTeam({route}) {
   // const [team, setTeam] = useState('');
-  const {team_number} = route.params;
+  const {team_number, competitionId} = route.params;
   const {colors} = useTheme();
   const [responses, setResponses] = useState<ScoutReportReturnData[] | null>(
     null,
   );
 
   useEffect(() => {
-    CompetitionsDB.getCurrentCompetition().then(competition => {
+    CompetitionsDB.getCompetitionById(competitionId).then(competition => {
       if (!competition) {
         return;
       }
@@ -44,7 +44,11 @@ function ReportsForTeam({route}) {
           }}>
           Reports for Team #{team_number}
         </Text>
-        <ReportList reports={responses} isOffline={false} />
+        <ReportList
+          reports={responses}
+          isOffline={false}
+          displayHeaders={false}
+        />
       </View>
     </View>
   );

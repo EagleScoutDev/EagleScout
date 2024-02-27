@@ -4,8 +4,10 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  Pressable,
 } from 'react-native';
 import {useEffect, useState} from 'react';
+import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {Path, Svg} from 'react-native-svg';
 import CompetitionsDB, {ScoutAssignmentsConfig} from '../database/Competitions';
@@ -138,7 +140,7 @@ const UpcomingRoundsView = ({navigation}) => {
                   alignSelf: 'center',
                   height: '100%',
                   borderRadius: 10,
-                  padding: '10%',
+                  padding: '8%',
                   width: '100%',
                 }}>
                 {upcomingRounds.length !== 0 && (
@@ -158,7 +160,11 @@ const UpcomingRoundsView = ({navigation}) => {
                       borderColor: colors.border,
                       justifyContent: 'space-around',
                     }}>
-                    <Svg width={'100%'} height="50%" viewBox="0 0 16 16">
+                    <Svg
+                      width={'100%'}
+                      height="50%"
+                      viewBox="0 0 16 16"
+                      style={{marginVertical: '10%'}}>
                       <Path
                         fill="green"
                         d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
@@ -171,11 +177,12 @@ const UpcomingRoundsView = ({navigation}) => {
                     <Text
                       style={{
                         color: colors.text,
-                        fontSize: 25,
+                        fontSize: 24,
                         padding: '5%',
                         textAlign: 'center',
+                        flex: 1,
                       }}>
-                      Congratulations! You have no rounds left to scout today.
+                      You have no rounds left to scout today.
                     </Text>
                   </View>
                 )}
@@ -270,11 +277,17 @@ const UpcomingRoundsView = ({navigation}) => {
               </View>
             </View>
           ) : (
-            <Text>Connect to the internet to fetch upcoming rounds.</Text>
+            <>
+              <Text style={{color: colors.text}}>
+                Connect to the internet to fetch upcoming rounds.
+              </Text>
+            </>
           )}
         </>
       ) : (
-        <Text>There is no competition happening currently.</Text>
+        <Text style={{color: colors.text, padding: '5%'}} >
+          There is no competition happening currently.
+        </Text>
       )}
     </>
   );
