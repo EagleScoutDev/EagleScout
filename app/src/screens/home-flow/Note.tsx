@@ -14,9 +14,10 @@ import NotesDB from '../../database/Notes';
 import CompetitionsDB, {
   CompetitionReturnData,
 } from '../../database/Competitions';
-import Svg, {Path} from 'react-native-svg';
+// import Svg, {Path} from 'react-native-svg';
 import {TBA} from '../../lib/TBAUtils';
 import TBAMatches from '../../database/TBAMatches';
+// import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const TextboxModal = ({
   onSubmit,
@@ -24,12 +25,16 @@ const TextboxModal = ({
   setContent,
   images,
   setImages,
+  cameraVisible,
+  setCameraVisible,
 }: {
   content: string;
   setContent: (content: string) => void;
   onSubmit: () => void;
   images: string[];
   setImages: (images: string[]) => void;
+  cameraVisible: boolean;
+  setCameraVisible: (cameraVisible: boolean) => void;
 }) => {
   const [localContent, setLocalContent] = useState<string>(content);
   const {colors} = useTheme();
@@ -96,20 +101,23 @@ const TextboxModal = ({
                 <Text style={{color: colors.background}}>Save</Text>
               </TouchableOpacity>
               <View style={{flex: 1}} />
-              <TouchableOpacity
-                style={{
-                  ...styles.button,
-                  marginRight: '5%',
-                }}>
-                <Svg
-                  fill={colors.background}
-                  width={30}
-                  height={30}
-                  viewBox="0 0 16 16">
-                  <Path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                  <Path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
-                </Svg>
-              </TouchableOpacity>
+              {/*<TouchableOpacity*/}
+              {/*  style={{*/}
+              {/*    ...styles.button,*/}
+              {/*    marginRight: '5%',*/}
+              {/*  }}*/}
+              {/*  onPress={() => {*/}
+              {/*    setCameraVisible(true);*/}
+              {/*  }}>*/}
+              {/*  <Svg*/}
+              {/*    fill={colors.background}*/}
+              {/*    width={30}*/}
+              {/*    height={30}*/}
+              {/*    viewBox="0 0 16 16">*/}
+              {/*    <Path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />*/}
+              {/*    <Path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />*/}
+              {/*  </Svg>*/}
+              {/*</TouchableOpacity>*/}
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -133,6 +141,7 @@ const NoteScreen = () => {
   const [compID, setCompID] = useState<number>(0);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [cameraVisible, setCameraVisible] = useState<boolean>(false);
 
   useEffect(() => {
     CompetitionsDB.getCurrentCompetition().then(result => {
@@ -301,7 +310,7 @@ const NoteScreen = () => {
           Submit
         </Text>
       </TouchableOpacity>
-      {modalVisible && (
+      {modalVisible && !cameraVisible && (
         <TextboxModal
           onSubmit={() => {
             setModalVisible(false);
@@ -310,8 +319,23 @@ const NoteScreen = () => {
           setContent={setContent}
           images={images}
           setImages={setImages}
+          cameraVisible={cameraVisible}
+          setCameraVisible={setCameraVisible}
         />
       )}
+      {/*{cameraVisible && (*/}
+      {/*  <Modal animationType="slide" visible={cameraVisible}>*/}
+      {/*    <ScoutingCamera*/}
+      {/*      onPhotoTaken={uri => {*/}
+      {/*        setImages([...images, uri]);*/}
+      {/*        setCameraVisible(false);*/}
+      {/*      }}*/}
+      {/*      onCancel={() => {*/}
+      {/*        setCameraVisible(false);*/}
+      {/*      }}*/}
+      {/*    />*/}
+      {/*  </Modal>*/}
+      {/*)}*/}
     </View>
   );
 };
