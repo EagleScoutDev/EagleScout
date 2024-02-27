@@ -29,32 +29,38 @@ const SettingsPopup = ({
       animationType={'slide'}
       onRequestClose={() => setVisible(false)}
       onDismiss={() => setVisible(false)}>
-      <Pressable onPress={() => setVisible(false)}>
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 24,
-            marginVertical: '5%',
-            paddingLeft: '5%',
-          }}>
-          Settings
-        </Text>
-      </Pressable>
-      <ThemePicker colors={colors} setTheme={setTheme} />
-      <ScoutingStylePicker
-        colors={colors}
-        setScoutingStyle={setScoutingStyle}
-      />
-      <MinimalSectionHeader title={'Dev Tools'} />
-      <StandardButton
-        color={'black'}
-        isLoading={false}
-        onPress={() => {
-          setVisible(false);
-          navigation.navigate('Debug Offline');
-        }}
-        text={'View Device Storage'}
-      />
+      <View
+        style={{
+          backgroundColor: colors.card,
+          flex: 1,
+        }}>
+        <Pressable onPress={() => setVisible(false)}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 24,
+              marginVertical: '5%',
+              paddingLeft: '5%',
+            }}>
+            Settings
+          </Text>
+        </Pressable>
+        <ThemePicker colors={colors} setTheme={setTheme} />
+        <ScoutingStylePicker
+          colors={colors}
+          setScoutingStyle={setScoutingStyle}
+        />
+        <MinimalSectionHeader title={'Dev Tools'} />
+        <StandardButton
+          color={'black'}
+          isLoading={false}
+          onPress={() => {
+            setVisible(false);
+            navigation.navigate('Debug Offline');
+          }}
+          text={'View Device Storage'}
+        />
+      </View>
     </Modal>
   );
 };
