@@ -29,19 +29,6 @@ class PicklistsDB {
     }
   }
 
-  static async getTeamsAtCompetition(comp_id: string): Promise<SimpleTeam[]> {
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/event/${comp_id}/teams/simple`,
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'fx9XTT4fik6zzzNIkkfYORUfGhwlRUUu57Qa0xhZce4uVqYJ1Ekk9holo4d1qFw6',
-        },
-      },
-    );
-    return await response.json();
-  }
-
   static async getPicklist(picklist_id: string): Promise<PicklistStructure> {
     const {data, error} = await supabase
       .from('picklist')
@@ -51,6 +38,18 @@ class PicklistsDB {
       throw error;
     } else {
       return data[0];
+    }
+  }
+
+  static async deletePicklist(picklist_id: any) {
+    const {data, error, count} = await supabase
+      .from('picklist')
+      .delete()
+      .eq('id', picklist_id);
+    if (error) {
+      throw error;
+    } else {
+      return data;
     }
   }
 

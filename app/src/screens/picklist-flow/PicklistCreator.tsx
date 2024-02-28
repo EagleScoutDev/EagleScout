@@ -20,6 +20,8 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import Svg, {Path} from 'react-native-svg';
 import ProfilesDB from '../../database/Profiles';
+import {TBA} from '../../lib/TBAUtils';
+import Competitions from '../../database/Competitions';
 
 function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   const {colors} = useTheme();
@@ -64,21 +66,37 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   // fetches all teams at the current competition
   useEffect(() => {
     // TODO: @gabor, replace this hardcoded value with the current competition
-    PicklistsDB.getTeamsAtCompetition('2023cc')
-      .then(teams => {
-        // set teams to just the numbers of the returned teams
-        setPossibleTeams(teams.map(team => team.team_number));
-
-        let temp_map = new Map();
-
-        for (let i = 0; i < teams.length; i++) {
-          temp_map.set(teams[i].team_number, teams[i].nickname);
+    Competitions.getCurrentCompetition()
+      .then(competition => {
+        if (!competition) {
+          console.error('No current competition found');
+          return;
         }
+        Competitions.getCompetitionTBAKey(competition.id)
+          .then(tba_key => {
+            TBA.getTeamsAtCompetition(tba_key)
+              .then(teams => {
+                // set teams to just the numbers of the returned teams
+                setPossibleTeams(teams.map(team => team.team_number));
 
-        setTeamNumberToNameMap(temp_map);
+                let temp_map = new Map();
+
+                for (let i = 0; i < teams.length; i++) {
+                  temp_map.set(teams[i].team_number, teams[i].nickname);
+                }
+
+                setTeamNumberToNameMap(temp_map);
+              })
+              .catch(error => {
+                console.error('Error getting teams at competition:', error);
+              });
+          })
+          .catch(error => {
+            console.error('Error getting TBA key for competition:', error);
+          });
       })
       .catch(error => {
-        console.error('Error getting teams at competition:', error);
+        console.error('Error getting current competition:', error);
       });
   }, []);
 
@@ -221,7 +239,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           text: 'Upload',
           onPress: () => {
             savePicklistToDB();
-            navigation.goBack();
+            navigation.navigate('PicklistsManager');
           },
         },
       ],
