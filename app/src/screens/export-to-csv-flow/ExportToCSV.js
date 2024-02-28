@@ -17,11 +17,12 @@ import FormsDB from '../../database/Forms';
 import {supabase} from '../../lib/supabase';
 import RNFS from 'react-native-fs';
 
-const ExportToCsv = () => {
+const ExportToCSV = () => {
   const {colors} = useTheme();
   const [internetError, setInternetError] = useState(false);
   const [competitionList, setCompetitionList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [competitionsLoading, setCompetitionsLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   const getCompetitions = async () => {
     try {
@@ -36,6 +37,7 @@ const ExportToCsv = () => {
       console.error(error);
       setInternetError(true);
     }
+    setCompetitionsLoading(false);
   };
 
   useEffect(() => {
@@ -47,14 +49,17 @@ const ExportToCsv = () => {
   }
 
   const exportToCsv = async comp => {
-    setLoading(true);
+    setProcessing(true);
     let form;
     try {
       form = await FormsDB.getForm(comp.formId);
     } catch (error) {
       console.error(error);
-      setLoading(false);
-      Alert.alert('Error', 'An error occurred while fetching the form');
+      setProcessing(false);
+      Alert.alert(
+        'Error',
+        'An error occurred while fetching the form. Try reloading the app.',
+      );
       return;
     }
     let reports;
@@ -62,10 +67,10 @@ const ExportToCsv = () => {
       reports = await ScoutReports.getReportsForCompetition(comp.id);
     } catch (error) {
       console.error(error);
-      setLoading(false);
+      setProcessing(false);
       Alert.alert(
         'Error',
-        'An error occurred while fetching the reports for the competition',
+        'An error occurred while fetching the reports for the competition. Try reloading the app.',
       );
       return;
     }
@@ -85,8 +90,11 @@ const ExportToCsv = () => {
       names = await Promise.all(namesPromises);
     } catch (error) {
       console.error(error);
-      setLoading(false);
-      Alert.alert('Error', 'An error occurred while fetching the user names');
+      setProcessing(false);
+      Alert.alert(
+        'Error',
+        'An error occurred while fetching the user names. Try reloading the app.',
+      );
       return;
     }
     const csvrows = [];
@@ -128,7 +136,7 @@ const ExportToCsv = () => {
     let path = RNFS.CachesDirectoryPath + `/${comp.name}.csv`;
     RNFS.writeFile(path, csvContent, 'utf8')
       .then(async success => {
-        setLoading(false);
+        setProcessing(false);
         await Share.open({
           url: `file://${path}`,
         })
@@ -152,7 +160,7 @@ const ExportToCsv = () => {
           });
       })
       .catch(err => {
-        setLoading(false);
+        setProcessing(false);
         Alert.alert(
           'Error',
           'An error occurred while writing the CSV file. Please make sure the app has the necessary permissions.',
@@ -163,7 +171,7 @@ const ExportToCsv = () => {
 
   return (
     <>
-      {loading && (
+      {processing && (
         <View
           style={{
             position: 'absolute',
@@ -208,10 +216,18 @@ const ExportToCsv = () => {
             Choose a competition to export the scout reports to a CSV file
           </Text>
           <ScrollView>
+            {competitionsLoading && (
+              <ActivityIndicator size="large" color={colors.text} />
+            )}
+            {competitionList.length === 0 && !competitionsLoading && (
+              <Text style={{color: colors.text, textAlign: 'center'}}>
+                No competitions found
+              </Text>
+            )}
             {competitionList.map((comp, index) => (
               <TouchableOpacity
                 key={comp.id}
-                disabled={loading}
+                disabled={processing}
                 onPress={() => {
                   console.log(comp);
                   exportToCsv(comp);
@@ -240,4 +256,4 @@ const ExportToCsv = () => {
   );
 };
 
-export default ExportToCsv;
+export default ExportToCSV;

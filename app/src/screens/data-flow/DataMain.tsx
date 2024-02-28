@@ -10,9 +10,9 @@ import DataAggregator from './DataAggregator';
 import CompetitionsList from '../competitions-flow/CompetitionsList';
 import CompetitionsView from '../competitions-flow/CompetitionsView';
 import UserManager from './UserManager';
-import FormCreationMain from "../form-creation-flow/FormCreationMain";
-import FormCreation from "../form-creation-flow/FormCreation";
-import ExportToCsv from "../export-to-csv-flow/ExportToCsv";
+import FormCreationMain from '../form-creation-flow/FormCreationMain';
+import FormCreation from '../form-creation-flow/FormCreation';
+import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
 
 const DataStack = createStackNavigator();
 
@@ -52,7 +52,7 @@ const DataMain = () => {
       />
       <DataStack.Screen
         name={'Export to CSV'}
-        component={ExportToCsv}
+        component={ExportToCSV}
         options={{
           headerBackTitle: 'Back',
           // headerTitle: 'Team RankA',
