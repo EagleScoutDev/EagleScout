@@ -16,6 +16,7 @@ import CompetitionsDB, {
 } from '../../database/Competitions';
 // import Svg, {Path} from 'react-native-svg';
 import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const TextboxModal = ({
@@ -37,13 +38,13 @@ const TextboxModal = ({
 }) => {
   const [localContent, setLocalContent] = useState<string>(content);
   const {colors} = useTheme();
+  const insets = useSafeAreaInsets();
   const styles = StyleSheet.create({
     button: {
       backgroundColor: colors.primary,
       padding: '3%',
       paddingHorizontal: '5%',
       borderRadius: 10,
-      margin: '1%',
     },
   });
   return (
@@ -79,45 +80,37 @@ const TextboxModal = ({
                 placeholderTextColor={'grey'}
               />
             </View>
-            <View
+            <TouchableOpacity
+              onPress={() => {
+                setContent(localContent);
+                onSubmit();
+              }}
               style={{
-                display: 'flex',
+                ...styles.button,
                 alignSelf: 'flex-end',
-                height: '100%',
+                paddingtop: insets.top,
                 zIndex: 2,
+                right: '5%',
               }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setContent(localContent);
-                  onSubmit();
-                }}
-                style={{
-                  ...styles.button,
-                  marginRight: '5%',
-                  alignSelf: 'flex-end',
-                  width: 'auto',
-                }}>
-                <Text style={{color: colors.background}}>Save</Text>
-              </TouchableOpacity>
-              <View style={{flex: 1}} />
-              {/*<TouchableOpacity*/}
-              {/*  style={{*/}
-              {/*    ...styles.button,*/}
-              {/*    marginRight: '5%',*/}
-              {/*  }}*/}
-              {/*  onPress={() => {*/}
-              {/*    setCameraVisible(true);*/}
-              {/*  }}>*/}
-              {/*  <Svg*/}
-              {/*    fill={colors.background}*/}
-              {/*    width={30}*/}
-              {/*    height={30}*/}
-              {/*    viewBox="0 0 16 16">*/}
-              {/*    <Path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />*/}
-              {/*    <Path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />*/}
-              {/*  </Svg>*/}
-              {/*</TouchableOpacity>*/}
-            </View>
+              <Text style={{color: colors.background}}>Save</Text>
+            </TouchableOpacity>
+            {/*<TouchableOpacity*/}
+            {/*  style={{*/}
+            {/*    ...styles.button,*/}
+            {/*    marginRight: '5%',*/}
+            {/*  }}*/}
+            {/*  onPress={() => {*/}
+            {/*    setCameraVisible(true);*/}
+            {/*  }}>*/}
+            {/*  <Svg*/}
+            {/*    fill={colors.background}*/}
+            {/*    width={30}*/}
+            {/*    height={30}*/}
+            {/*    viewBox="0 0 16 16">*/}
+            {/*    <Path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />*/}
+            {/*    <Path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />*/}
+            {/*  </Svg>*/}
+            {/*</TouchableOpacity>*/}
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -319,9 +312,11 @@ const NoteScreen = () => {
     },
     number_container: {
       flexDirection: 'row',
-      justifyContent: 'space-evenly',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      marginVertical: '1%',
+      marginVertical: '3%',
+      width: '90%',
+      paddingHorizontal: '8%',
     },
     content_container: {
       height: '40%',
@@ -417,10 +412,9 @@ const NoteScreen = () => {
             style={[
               styles.number_label,
               {
-                textAlign: 'center',
-                width: '70%',
-                alignSelf: 'flex-start',
-                paddingBottom: '3%',
+                width: '100%',
+                paddingHorizontal: '9%',
+                marginBottom: '2%',
               },
             ]}>
             Team Number
