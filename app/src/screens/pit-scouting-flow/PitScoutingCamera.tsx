@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -42,13 +43,12 @@ export default function PitScoutingCamera({
   onCancel: () => void;
 }) {
   const {colors} = useTheme();
-  const [flash, setFlash] = useState<'on' | 'off' | 'auto'>('auto');
   const [isCapturing, setIsCapturing] = useState(false);
   const {hasPermission, requestPermission} = useCameraPermission();
   const device = useCameraDevice('back');
   const camera = useRef<Camera>(null);
   useEffect(() => {
-    if (hasPermission == null) {
+    if (!hasPermission) {
       requestPermission();
     }
   }, [hasPermission, requestPermission]);
@@ -57,9 +57,12 @@ export default function PitScoutingCamera({
       return;
     }
     setIsCapturing(true);
-    const file = await camera.current.takePhoto({
-      flash: flash,
+    const file = await camera.current
+      .takePhoto()
+      .catch(e => {
+      console.log(e);
     });
+    console.log('hi');
     const result = await fetch(`file://${file.path}`);
     const data = await result.blob();
     const reader = new FileReader();
@@ -69,7 +72,7 @@ export default function PitScoutingCamera({
       onPhotoTaken(dataUrl as string);
     };
     reader.readAsDataURL(data);
-  }, [camera, onPhotoTaken, flash]);
+  }, [camera, onPhotoTaken]);
   const zoom = useSharedValue(0);
   const minZoom = device?.minZoom ?? 1;
   const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
@@ -141,57 +144,6 @@ export default function PitScoutingCamera({
 
   return (
     <View style={styles.container}>
-      <View style={styles.flashButtonContainer}>
-        <Pressable
-          style={styles.flashButton}
-          onPress={() => {
-            if (flash === 'on') {
-              setFlash('off');
-            } else if (flash === 'off') {
-              setFlash('auto');
-            } else {
-              setFlash('on');
-            }
-          }}>
-          {flash === 'off' && (
-            <Svg
-              viewBox="0 0 512 512"
-              style={{
-                width: 24,
-                height: 24,
-              }}>
-              <Path d="M432 448a15.92 15.92 0 01-11.31-4.69l-352-352a16 16 0 0122.62-22.62l352 352A16 16 0 01432 448zM294.34 84.28l-22.08 120.84a16 16 0 006.17 15.71 16.49 16.49 0 009.93 3.17h94.12l-38.37 47.42a4 4 0 00.28 5.34l17.07 17.07a4 4 0 005.94-.31l60.8-75.16a16.37 16.37 0 003.3-14.36 16 16 0 00-15.5-12H307.19L335.4 37.63c.05-.3.1-.59.13-.89A18.45 18.45 0 00302.73 23l-92.58 114.46a4 4 0 00.28 5.35l17.07 17.06a4 4 0 005.94-.31zM217.78 427.57l22-120.71a16 16 0 00-6.19-15.7 16.54 16.54 0 00-9.92-3.16h-94.1l38.36-47.42a4 4 0 00-.28-5.34l-17.07-17.07a4 4 0 00-5.93.31L83.8 293.64A16.37 16.37 0 0080.5 308 16 16 0 0096 320h108.83l-28.09 154.36v.11a18.37 18.37 0 0032.5 14.53l92.61-114.46a4 4 0 00-.28-5.35l-17.07-17.06a4 4 0 00-5.94.31z" />
-            </Svg>
-          )}
-          {flash === 'on' && (
-            <Svg
-              viewBox="0 0 512 512"
-              style={{
-                width: 24,
-                height: 24,
-              }}>
-              <Path
-                d="M315.27 33L96 304h128l-31.51 173.23a2.36 2.36 0 002.33 2.77h0a2.36 2.36 0 001.89-.95L416 208H288l31.66-173.25a2.45 2.45 0 00-2.44-2.75h0a2.42 2.42 0 00-1.95 1z"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="32"
-              />
-            </Svg>
-          )}
-          {flash === 'auto' && (
-            <Svg
-              viewBox="0 0 512 512"
-              style={{
-                width: 24,
-                height: 24,
-              }}>
-              <Path d="M194.82 496a18.36 18.36 0 01-18.1-21.53v-.11L204.83 320H96a16 16 0 01-12.44-26.06L302.73 23a18.45 18.45 0 0132.8 13.71c0 .3-.08.59-.13.89L307.19 192H416a16 16 0 0112.44 26.06L209.24 489a18.45 18.45 0 01-14.42 7z" />
-            </Svg>
-          )}
-        </Pressable>
-      </View>
       <View style={styles.cancelButtonContainer}>
         <Pressable style={styles.cancelButton} onPress={onCancel}>
           <Text
@@ -223,17 +175,6 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-  },
-  flashButtonContainer: {
-    position: 'absolute',
-    top: 30,
-    left: 30,
-    zIndex: 1,
-  },
-  flashButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 10,
   },
   cancelButtonContainer: {
     position: 'absolute',
