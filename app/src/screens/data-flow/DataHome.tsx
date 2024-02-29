@@ -4,8 +4,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Pressable, SafeAreaView
-} from "react-native";
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {CaretRight} from '../../SVGIcons';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
@@ -104,69 +106,79 @@ const DataHome = ({navigation}) => {
           </Pressable>
         </View>
       )}
-      <ListItemContainer title={'Data Analysis'}>
-        <ListItem
-          text={'Picklist'}
-          onPress={() => {
-            navigation.navigate('Picklist');
-          }}
-          caretVisible={true}
-          disabled={internetStatus !== InternetStatus.CONNECTED}
-        />
-        <ListItem
-          text={'Team Rank'}
-          onPress={() => {
-            navigation.navigate('Team Rank');
-          }}
-          caretVisible={true}
-          disabled={internetStatus !== InternetStatus.CONNECTED}
-        />
-      </ListItemContainer>
-      <View style={{height: 20}} />
-
-      {user?.admin && (
-        <>
-          <ListItemContainer title={'Administrative'}>
-            <ListItem
-              text={'Manage Competitions'}
-              onPress={() => {
-                navigation.navigate('Manage Competitions');
-              }}
-              caretVisible={true}
-              disabled={internetStatus !== InternetStatus.CONNECTED}
-            />
-            <ListItem
-              text={'Create Competition'}
-              onPress={() => {
-                setAddCompetitionModalVisible(true);
-              }}
-              caretVisible={false}
-              disabled={internetStatus !== InternetStatus.CONNECTED}
-            />
-            <ListItem
-              text={'Manage Users'}
-              onPress={() => {
-                navigation.navigate('Manage Users');
-              }}
-              caretVisible={true}
-              disabled={internetStatus !== InternetStatus.CONNECTED}
-            />
-            <ListItem
-              text={'Manage Forms'}
-              onPress={() => {
-                navigation.navigate('Manage Forms');
-              }}
-              caretVisible={true}
-              disabled={internetStatus !== InternetStatus.CONNECTED}
-            />
-          </ListItemContainer>
-          <AddCompetitionModal
-            visible={addCompetitionModalVisible}
-            setVisible={setAddCompetitionModalVisible}
-            onRefresh={() => {}}
+      <ScrollView>
+        <ListItemContainer title={'Data Analysis'}>
+          <ListItem
+            text={'Picklist'}
+            onPress={() => {
+              navigation.navigate('Picklist');
+            }}
+            caretVisible={true}
+            disabled={internetStatus !== InternetStatus.CONNECTED}
           />
-        </>
-      )}
+          <ListItem
+            text={'Team Rank'}
+            onPress={() => {
+              navigation.navigate('Team Rank');
+            }}
+            caretVisible={true}
+            disabled={internetStatus !== InternetStatus.CONNECTED}
+          />
+          <ListItem
+            text={'Export to CSV'}
+            onPress={() => {
+              navigation.navigate('Export to CSV');
+            }}
+            caretVisible={true}
+            disabled={internetStatus !== InternetStatus.CONNECTED}
+          />
+        </ListItemContainer>
+        <View style={{height: 20}} />
+
+        {user?.admin && (
+          <>
+            <ListItemContainer title={'Administrative'}>
+              <ListItem
+                text={'Manage Competitions'}
+                onPress={() => {
+                  navigation.navigate('Manage Competitions');
+                }}
+                caretVisible={true}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
+              />
+              <ListItem
+                text={'Create Competition'}
+                onPress={() => {
+                  setAddCompetitionModalVisible(true);
+                }}
+                caretVisible={false}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
+              />
+              <ListItem
+                text={'Manage Users'}
+                onPress={() => {
+                  navigation.navigate('Manage Users');
+                }}
+                caretVisible={true}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
+              />
+              <ListItem
+                text={'Manage Forms'}
+                onPress={() => {
+                  navigation.navigate('Manage Forms');
+                }}
+                caretVisible={true}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
+              />
+            </ListItemContainer>
+            <AddCompetitionModal
+              visible={addCompetitionModalVisible}
+              setVisible={setAddCompetitionModalVisible}
+              onRefresh={() => {}}
+            />
+          </>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };
