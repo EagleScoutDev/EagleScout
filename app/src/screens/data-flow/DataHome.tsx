@@ -170,6 +170,14 @@ const DataHome = ({navigation}) => {
                 caretVisible={true}
                 disabled={internetStatus !== InternetStatus.CONNECTED}
               />
+              <ListItem
+                text={'Manage Scout Assignments'}
+                onPress={() => {
+                  navigation.navigate('Manage Scout Assignments');
+                }}
+                caretVisible={true}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
+              />
             </ListItemContainer>
             <AddCompetitionModal
               visible={addCompetitionModalVisible}

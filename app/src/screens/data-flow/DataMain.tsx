@@ -13,6 +13,7 @@ import UserManager from './UserManager';
 import FormCreationMain from '../form-creation-flow/FormCreationMain';
 import FormCreation from '../form-creation-flow/FormCreation';
 import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
+import ScoutAssignments from "../scout-assignments-flow/ScoutAssignments";
 
 const DataStack = createStackNavigator();
 
@@ -77,6 +78,13 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Manage Forms'}
         component={FormCreation}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Manage Scout Assignments'}
+        component={ScoutAssignments}
         options={{
           headerBackTitle: 'Back',
         }}
