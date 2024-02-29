@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
 class FormHelper {
   static DEBUG = false;
@@ -49,6 +50,7 @@ class FormHelper {
    * @param images - array of image base64 strings
    */
   static async savePitFormOffline(dataToSubmit, images) {
+    await BackgroundFetchManager.startBackgroundFetch();
     dataToSubmit.createdAt = new Date();
 
     await AsyncStorage.setItem(
