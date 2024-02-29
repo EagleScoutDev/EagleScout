@@ -95,7 +95,7 @@ const CompetitionsList = ({setChosenComp}) => {
               }}>
               <Text
                 style={{
-                  color: colors.primary,
+                  color: colors.text,
                   fontWeight: 'bold',
                   textAlign: 'center',
                   fontSize: 16,
