@@ -285,14 +285,14 @@ function ScoutingFlow({navigation, route}) {
     // console.log('formStructure: ', formStructure);
     // console.log('a: ', a);
     let dict = {};
-    let currentHeading = a[0].text;
+    let currentHeading = a[0].title;
     // remove the first element of the array
     let ind = 0;
     while (a.length > 0) {
       let b = a.shift();
       // console.log('b: ' + b);
       if (b.type === 'heading') {
-        currentHeading = b.text;
+        currentHeading = b.title;
         dict[currentHeading] = [];
       } else {
         if (dict[currentHeading]) {
