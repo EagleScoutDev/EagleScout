@@ -106,7 +106,7 @@ const DataHome = ({navigation}) => {
           </Pressable>
         </View>
       )}
-      <ScrollView>
+      <View>
         <ListItemContainer title={'Data Analysis'}>
           <ListItem
             text={'Picklist'}
@@ -186,7 +186,7 @@ const DataHome = ({navigation}) => {
             />
           </>
         )}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
