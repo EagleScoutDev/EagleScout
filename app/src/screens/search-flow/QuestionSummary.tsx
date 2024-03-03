@@ -311,7 +311,12 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       )}
 
       {modalActive && (
-        <StandardModal title={item.question} visible={modalActive}>
+        <StandardModal
+          title={item.question}
+          visible={modalActive}
+          onDismiss={() => {
+            setModalActive(false);
+          }}>
           <View>
             <LineChart
               data={{
