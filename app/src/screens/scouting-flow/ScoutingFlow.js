@@ -37,7 +37,8 @@ function ScoutingFlow({navigation, route}) {
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
-  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] = useState(false);
+  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
+    useState(false);
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
 
   useEffect(() => {
@@ -389,7 +390,9 @@ function ScoutingFlow({navigation, route}) {
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>There is no competition happening currently.</Text>
+          <Text style={{color: colors.text}}>
+            There is no competition happening currently.
+          </Text>
 
           {isOffline && (
             <Text>
