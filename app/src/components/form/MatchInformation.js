@@ -45,6 +45,7 @@ function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
           match > 100 || match === '0' ? styles.badInput : styles.textInput
         }
         placeholder={'000'}
+        placeholderTextColor={'gray'}
         value={match}
         onChangeText={text => setMatch(text)}
         keyboardType={'numeric'}
@@ -56,6 +57,7 @@ function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
       <TextInput
         style={styles.textInput}
         placeholder={'000'}
+        placeholderTextColor={'gray'}
         value={team}
         onChangeText={text => setTeam(text)}
         keyboardType={'numeric'}
