@@ -1,5 +1,12 @@
-import { View, Text, FlatList, Pressable, SafeAreaView } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
@@ -10,7 +17,7 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import SearchModal from './SearchModal';
-import Competitions from "../../database/Competitions";
+import Competitions from '../../database/Competitions';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -84,6 +91,12 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     }
   }, [competitionId]);
 
+  const navigateToTeamViewer = (team: SimpleTeam) => {
+    navigation.navigate('TeamViewer', {
+      team: team,
+      competitionId: competitionId,
+    });
+  };
 
   // initial data fetch
   useEffect(() => {
@@ -271,6 +284,22 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           chosenComp={currentReport?.competitionName ?? ''}
           updateFormData={() => {}}
           isOfflineForm={false}
+          navigateToTeamViewer={() => {
+            if (currentReport) {
+              let team = listOfTeams.find(
+                team => team.team_number === currentReport.teamNumber,
+              );
+              if (team) {
+                setScoutViewerVisible(false);
+                navigateToTeamViewer(team);
+              } else {
+                Alert.alert(
+                  'Error: Team not found',
+                  'Report likely inputted with wrong team number.',
+                );
+              }
+            }
+          }}
         />
       )}
     </SafeAreaView>
