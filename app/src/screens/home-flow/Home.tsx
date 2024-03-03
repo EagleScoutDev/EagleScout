@@ -48,7 +48,12 @@ function Home() {
         options={{
           headerBackTitle: 'Home',
           headerRight: () => (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginRight: '5%',
+              }}>
               {seconds > 0 && (
                 <Text
                   style={{
