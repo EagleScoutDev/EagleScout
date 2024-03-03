@@ -19,10 +19,20 @@ interface Question {
   index: number;
 }
 
+enum AggregationStatus {
+  CHOOSING_COMPETITION,
+  CHOOSING_QUESTION,
+  PROCESSING,
+  DONE,
+}
+
 function DataAggregation({navigation}) {
   const {colors} = useTheme();
 
+  // competition form
   const [currForm, setCurrForm] = useState<Array<Object>>();
+
+  // used to get data for the competition
   const [compID, setCompID] = useState<number>();
 
   const [chosenQuestion, setChosenQuestion] = useState<Question | null>(null);
@@ -117,20 +127,22 @@ function DataAggregation({navigation}) {
       fontSize: 20,
     },
     container: {
-      backgroundColor: colors.card,
+      // backgroundColor: colors.card,
       margin: '10%',
-      padding: '10%',
+      // padding: '10%',
       borderRadius: 20,
-      maxHeight: '80%',
+      // maxHeight: '80%',
     },
     list_item: {
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
       paddingVertical: '5%',
+      flexDirection: 'row',
     },
     list_text: {
       color: colors.text,
       fontSize: 14,
+      // flex: 1,
     },
     question_text: {
       color: colors.text,
@@ -138,12 +150,13 @@ function DataAggregation({navigation}) {
       fontSize: 20,
     },
     rank_list_item: {
-      backgroundColor: colors.card,
+      // backgroundColor: colors.card,
       color: 'red',
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderColor: colors.border,
+      // borderBottomWidth: 1,
+      // borderColor: colors.border,
       padding: '5%',
+      paddingVertical: '2%',
     },
   });
 
@@ -195,30 +208,40 @@ function DataAggregation({navigation}) {
             style={{
               textAlign: 'center',
               fontSize: 20,
-              marginVertical: '5%',
               color: colors.text,
+              marginTop: '5%',
             }}>
-            {compName} / {chosenQuestion && chosenQuestion.question}
+            {chosenQuestion && chosenQuestion.question}
           </Text>
-          <Pressable
-            onPress={() => {
-              if (teamsToAverage) {
-                // change sort
-                const sorted = new Map([...teamsToAverage.entries()].reverse());
-                setTeamsToAverage(sorted);
-              }
-            }}
-            style={({pressed}) => ({
-              backgroundColor: colors.card,
-              padding: '3%',
-              marginHorizontal: '20%',
-              borderRadius: 10,
-              opacity: pressed ? 0.5 : 1,
-            })}>
-            <Text style={{color: colors.text, textAlign: 'center'}}>
-              Change Sort
-            </Text>
-          </Pressable>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 14,
+              fontWeight: 'bold',
+              color: colors.text,
+              marginBottom: '5%',
+            }}>
+            {compName}
+          </Text>
+          {/*<Pressable*/}
+          {/*  onPress={() => {*/}
+          {/*    if (teamsToAverage) {*/}
+          {/*      // change sort*/}
+          {/*      const sorted = new Map([...teamsToAverage.entries()].reverse());*/}
+          {/*      setTeamsToAverage(sorted);*/}
+          {/*    }*/}
+          {/*  }}*/}
+          {/*  style={({pressed}) => ({*/}
+          {/*    backgroundColor: colors.card,*/}
+          {/*    padding: '3%',*/}
+          {/*    marginHorizontal: '20%',*/}
+          {/*    borderRadius: 10,*/}
+          {/*    opacity: pressed ? 0.5 : 1,*/}
+          {/*  })}>*/}
+          {/*  <Text style={{color: colors.text, textAlign: 'center'}}>*/}
+          {/*    Change Sort*/}
+          {/*  </Text>*/}
+          {/*</Pressable>*/}
         </View>
       )}
       {chosenQuestion === null && (
@@ -229,12 +252,21 @@ function DataAggregation({navigation}) {
           <ScrollView>
             {currForm &&
               currForm.map((item, index) => (
-                <Pressable onPress={() => onPress(index, item.question)}>
+                <Pressable
+                  onPress={() => onPress(index, item.question)}
+                  key={item.question}>
                   {item.type === 'number' && (
                     <View style={styles.list_item}>
-                      <Text style={styles.list_text}>
-                        {index}) {item.question}
+                      <Text
+                        style={{
+                          color: colors.text,
+                          flex: 0.6,
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                        }}>
+                        {index}
                       </Text>
+                      <Text style={styles.list_text}>{item.question}</Text>
                     </View>
                   )}
                 </Pressable>
@@ -250,23 +282,40 @@ function DataAggregation({navigation}) {
       )}
       {teamsToAverage && (
         <View>
+          <View style={{flexDirection: 'row', paddingHorizontal: '10%'}}>
+            <View style={{flex: 0.2}} />
+            <Text style={{flex: 1, color: colors.text, fontSize: 14}}>
+              Team
+            </Text>
+            <Text
+              style={{
+                flex: 1,
+                color: colors.text,
+                fontSize: 14,
+                textAlign: 'right',
+              }}>
+              Average Value
+            </Text>
+          </View>
           <ScrollView
             style={{
-              backgroundColor: colors.card,
-              margin: '10%',
-              padding: '10%',
-              borderRadius: 20,
+              // backgroundColor: colors.card,
+              // margin: '10%',
+              paddingHorizontal: '10%',
+              // borderRadius: 20,
               maxHeight: '80%',
             }}>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{flex: 1, color: colors.text, fontSize: 20}}>
-                Team
-              </Text>
-              <Text style={{color: colors.text, fontSize: 20}}>Value</Text>
-            </View>
             {teamsToAverage &&
-              Array.from(teamsToAverage, ([key, value]) => (
+              Array.from(teamsToAverage, ([key, value], index) => (
                 <View key={key} style={styles.rank_list_item}>
+                  <Text
+                    style={{
+                      flex: 0.2,
+                      color: 'gray',
+                      fontWeight: 'bold',
+                    }}>
+                    {index + 1}.
+                  </Text>
                   <Text
                     style={{
                       flex: 1,
@@ -280,7 +329,6 @@ function DataAggregation({navigation}) {
           </ScrollView>
           <View
             style={{
-              marginHorizontal: '10%',
               marginVertical: '5%',
             }}>
             <StandardButton
