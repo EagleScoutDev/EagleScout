@@ -5,19 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Modal,
-  SafeAreaView,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
-import CompetitionsDB, {
-  CompetitionReturnData,
-} from '../../database/Competitions';
 // import Svg, {Path} from 'react-native-svg';
 import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NoteInputModal} from './components/NoteInputModal';
+import CompetitionsDB from '../../database/Competitions';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
@@ -31,10 +25,7 @@ const NoteScreen = () => {
   }>({red: [], blue: []});
   const [selectedAlliance, setSelectedAlliance] = useState<string>('');
   const [noteContents, setNoteContents] = useState<{
-    [key: string]: {
-      title: string;
-      content: string;
-    };
+    [key: string]: string;
   }>({});
 
   const [matchesForCompetition, setMatchesForCompetition] = useState<
@@ -89,13 +80,12 @@ const NoteScreen = () => {
     setModalVisible(false);
     const promises = [];
     for (const team of Object.keys(noteContents)) {
-      if (noteContents[team].content === '') {
+      if (noteContents[team] === '') {
         continue;
       }
       promises.push(
         NotesDB.createNote(
-          noteContents[team].title,
-          noteContents[team].content,
+          noteContents[team],
           Number(team),
           Number(matchNumber),
           compID,
@@ -109,16 +99,10 @@ const NoteScreen = () => {
   const selectAlliance = (alliance: 'red' | 'blue') => {
     setSelectedAlliance(alliance);
     const newNoteContents: {
-      [key: string]: {
-        title: string;
-        content: string;
-      };
+      [key: string]: string;
     } = {};
     alliances[alliance].forEach(team => {
-      newNoteContents[team] = {
-        title: '',
-        content: '',
-      };
+      newNoteContents[team] = '';
     });
     setNoteContents(newNoteContents);
   };

@@ -5,7 +5,6 @@ import ProfilesDB from './Profiles';
 export interface NoteStructure {
   id?: string;
 
-  title: string;
   content: string;
 
   team_number: number;
@@ -77,7 +76,6 @@ class NotesDB {
   }
 
   static async createNote(
-    title: string,
     content: string,
     teamNumber: number,
     matchNumber: number,
@@ -106,7 +104,6 @@ class NotesDB {
 
     const {error} = await supabase.from('notes').insert([
       {
-        title: title,
         content: content,
         team_number: teamNumber,
         match_id: matchId,
@@ -147,7 +144,6 @@ class NotesDB {
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           id: data[i].id,
-          title: data[i].title,
           content: data[i].content,
           team_number: data[i].team_number,
           match_id: data[i].match_id,
@@ -172,7 +168,6 @@ class NotesDB {
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           id: data[i].id,
-          title: data[i].title,
           content: data[i].content,
           team_number: data[i].team_number,
           match_id: data[i].match_id,
@@ -213,7 +208,6 @@ class NotesDB {
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           id: data[i].id,
-          title: data[i].title,
           content: data[i].content,
           team_number: data[i].team_number,
           match_id: data[i].match_id,

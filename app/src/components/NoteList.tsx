@@ -123,7 +123,7 @@ export const NoteList = ({notes}: {notes: NoteStructureWithMatchNumber[]}) => {
             }}>
             <View style={{flexDirection: 'row'}}>
               <Text style={{color: colors.text, fontWeight: 'bold'}}>
-                {item.title} - Match {item.match_number}
+                Match {item.match_number}
               </Text>
             </View>
             <Text style={{color: colors.text}}>{item.content}</Text>

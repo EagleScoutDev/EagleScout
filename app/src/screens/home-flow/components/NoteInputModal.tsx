@@ -23,17 +23,9 @@ export const NoteInputModal = ({
   onSubmit: () => void;
   selectedAlliance: string;
   noteContents: {
-    [key: string]: {
-      title: string;
-      content: string;
-    };
+    [key: string]: string;
   };
-  setNoteContents: (contents: {
-    [key: string]: {
-      title: string;
-      content: string;
-    };
-  }) => void;
+  setNoteContents: (contents: {[key: string]: string}) => void;
 }) => {
   const [localContent, setLocalContent] = useState<string>('');
   const [currentTeam, setCurrentTeam] = useState<number>(
@@ -52,7 +44,7 @@ export const NoteInputModal = ({
           selectedTeam={currentTeam}
           setSelectedTeam={(team: number) => {
             setCurrentTeam(team);
-            setLocalContent(noteContents[team]?.content || '');
+            setLocalContent(noteContents[team]);
           }}
           completed={Object.values(completed)}
         />
@@ -87,10 +79,7 @@ export const NoteInputModal = ({
                   });
                   setNoteContents({
                     ...noteContents,
-                    [currentTeam]: {
-                      title: 'Note',
-                      content: text,
-                    },
+                    [currentTeam]: text,
                   });
                 }}
                 value={localContent}
@@ -115,18 +104,7 @@ export const NoteInputModal = ({
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-      <NoteFAB
-        onSubmitPress={() => {
-          setNoteContents({
-            ...noteContents,
-            [currentTeam]: {
-              title: 'Note',
-              content: localContent,
-            },
-          });
-          onSubmit();
-        }}
-      />
+      <NoteFAB onSubmitPress={onSubmit} />
     </Modal>
   );
 };
