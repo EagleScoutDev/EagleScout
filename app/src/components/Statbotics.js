@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {useTheme} from '@react-navigation/native';
+import {StatboticsAPI} from '../lib/Statbotics';
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
-const DEBUG = false;
-const YEAR = '2023';
+const DEBUG = true;
 
 /**
  * A capsule that displays a value and a label.
@@ -59,36 +59,20 @@ function Statbotics({team}) {
    */
   async function fetchTeam() {
     setIsLoading(true);
-    const url =
-      'https://api.statbotics.io/v2/team_year/' + team + '/' + YEAR + '/';
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        // do something with the data
-        if (DEBUG) {
-          console.log(data);
-        }
-        if (data && Object.entries(data).length !== 0) {
-          setIsTeam(true);
-          setOverall(data);
-          if (DEBUG) {
-            console.log(data.name);
-          }
-        } else {
-          setIsTeam(false);
-        }
-        setIsLoading(false);
-      })
-      .catch(error => {
-        if (DEBUG) {
-          console.error('[fetchTeam]: ' + error);
-        }
-      });
+    const teamData = await StatboticsAPI.getTeamYear(team);
+    if (teamData) {
+      setOverall(teamData);
+      setIsTeam(true);
+      if (DEBUG) {
+        console.log('Statbotics team data', teamData);
+      }
+    } else {
+      setIsTeam(false);
+      if (DEBUG) {
+        console.log('No team data found');
+      }
+    }
+    setIsLoading(false);
   }
 
   /**
@@ -96,26 +80,17 @@ function Statbotics({team}) {
    * This includes every event that the team participated in.
    */
   async function fetchTeamEvent() {
-    const url =
-      'https://api.statbotics.io/v2/team_events/team/' + team + '/year/' + YEAR;
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        // do something with the data
-        // if (isTeam) {
-        setCompetitions(data);
-        // }
-      })
-      .catch(error => {
-        if (DEBUG) {
-          console.error(error);
-        }
-      });
+    const teamEvents = await StatboticsAPI.getTeamEvents(team);
+    if (teamEvents) {
+      setCompetitions(teamEvents);
+      if (DEBUG) {
+        console.log('Statbotics team events', teamEvents);
+      }
+    } else {
+      if (DEBUG) {
+        console.log('No team events found');
+      }
+    }
   }
 
   useEffect(() => {
@@ -289,17 +264,17 @@ function Statbotics({team}) {
           <InfoRow>
             <InfoCapsule
               title="Auto EPA"
-              value={overall.auto_epa_mean}
+              value={overall.epa.breakdown.auto_points.mean}
               textColor={colors.text}
             />
             <InfoCapsule
               title="Teleop EPA"
-              value={overall.teleop_epa_mean}
+              value={overall.epa.breakdown.teleop_points.mean}
               textColor={colors.text}
             />
             <InfoCapsule
               title="Endgame EPA"
-              value={overall.endgame_epa_mean}
+              value={overall.epa.breakdown.endgame_points.mean}
               textColor={colors.text}
             />
           </InfoRow>
@@ -324,17 +299,17 @@ function Statbotics({team}) {
                 <InfoRow>
                   <InfoCapsule
                     title="Auto EPA"
-                    value={comp.auto_epa_mean}
+                    value={comp.epa.breakdown.auto_points.mean}
                     textColor={colors.text}
                   />
                   <InfoCapsule
                     title="Teleop EPA"
-                    value={comp.teleop_epa_mean}
+                    value={comp.epa.breakdown.teleop_points.mean}
                     textColor={colors.text}
                   />
                   <InfoCapsule
                     title="Endgame EPA"
-                    value={comp.endgame_epa_mean}
+                    value={comp.epa.breakdown.endgame_points.mean}
                     textColor={colors.text}
                   />
                 </InfoRow>
