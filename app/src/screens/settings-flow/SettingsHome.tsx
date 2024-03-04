@@ -19,7 +19,7 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 
-const VERSION = '7.0.1';
+const VERSION = '7.1';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
