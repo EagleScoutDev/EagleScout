@@ -85,10 +85,6 @@ class NotesDB {
       matchNumber,
       competitionId,
     );
-    // console.log('match_id: ', match_id);
-    const userId = await ProfilesDB.getCurrentUserProfile().then(
-      profile => profile.id,
-    );
 
     if (!matchExists) {
       matchId = await this.createMatch(matchNumber, competitionId);
@@ -107,7 +103,6 @@ class NotesDB {
         content: content,
         team_number: teamNumber,
         match_id: matchId,
-        created_by: userId,
       },
     ]);
     if (error) {
