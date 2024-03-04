@@ -142,7 +142,7 @@ function DataAggregation({navigation}) {
     list_text: {
       color: colors.text,
       fontSize: 14,
-      // flex: 1,
+      flex: 1,
     },
     question_text: {
       color: colors.text,
@@ -260,7 +260,7 @@ function DataAggregation({navigation}) {
                       <Text
                         style={{
                           color: colors.text,
-                          flex: 0.6,
+                          flex: 0.2,
                           fontWeight: 'bold',
                           textAlign: 'center',
                         }}>
