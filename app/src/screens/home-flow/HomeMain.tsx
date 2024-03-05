@@ -51,10 +51,10 @@ const HomeMain = () => {
         <Text style={styles.title}>Home</Text>
         <Text style={styles.heading_two}>Upcoming Rounds</Text>
         <UpcomingRoundsView navigation={navigation} />
-        <Text style={styles.heading_two}>Pit Scouting</Text>
-        <Text style={{paddingLeft: '5%', color: colors.text}}>
-          Pit scouting is not yet available. Please check back later.
-        </Text>
+        {/*<Text style={styles.heading_two}>Pit Scouting</Text>*/}
+        {/*<Text style={{paddingLeft: '5%', color: colors.text}}>*/}
+        {/*  Pit scouting is not yet available. Please check back later.*/}
+        {/*</Text>*/}
       </ScrollView>
       {/*<Pressable*/}
       {/*  style={styles.scout_button}*/}

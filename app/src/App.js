@@ -266,8 +266,10 @@ const MyStack = ({themePreference, setThemePreference}) => {
                   enableVibrateFallback: true,
                   ignoreAndroidSystemSettings: false,
                 });
-                navigation.navigate('CustomModal');
-                setModalVisible(true);
+                navigation.navigate('Home', {screen: 'Scout Report'});
+                //
+                // navigation.navigate('CustomModal');
+                // setModalVisible(true);
               },
             })}
             options={{

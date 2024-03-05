@@ -13,7 +13,7 @@ import {CompetitionReturnData} from '../../database/Competitions';
 import Svg, {Path} from 'react-native-svg';
 import SearchModal from './SearchModal';
 import {Dropdown} from 'react-native-element-dropdown';
-import Competitions from "../../database/Competitions";
+import Competitions from '../../database/Competitions';
 
 interface CompetitionChangerProps {
   currentCompId: number;
@@ -21,6 +21,7 @@ interface CompetitionChangerProps {
   loading: boolean;
 }
 
+let NO_COMPETITION_TITLE = 'Loading...';
 const CompetitionChanger = ({
   currentCompId,
   setCurrentCompId,
@@ -83,6 +84,9 @@ const CompetitionChanger = ({
         labelField={'label'}
         valueField={'value'}
         disable={competitionsList.length === 0}
+        placeholderStyle={{
+          color: colors.text,
+        }}
         placeholder={
           loading
             ? 'Loading...'
