@@ -20,7 +20,13 @@ export enum FilterType {
   TEXT,
 }
 
-export const NoteList = ({notes}: {notes: NoteStructureWithMatchNumber[]}) => {
+export const NoteList = ({
+  notes,
+  onClose,
+}: {
+  notes: NoteStructureWithMatchNumber[];
+  onClose?: () => void;
+}) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredNotes, setFilteredNotes] =
@@ -108,6 +114,21 @@ export const NoteList = ({notes}: {notes: NoteStructureWithMatchNumber[]}) => {
             />
           </Svg>
         </Pressable>
+        {onClose && (
+          <Pressable
+            onPress={onClose}
+            style={{
+              padding: '2%',
+              marginRight: '2%',
+            }}>
+            <Svg fill="currentColor" viewBox="0 0 16 16" width="20" height="20">
+              <Path
+                fill="gray"
+                d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"
+              />
+            </Svg>
+          </Pressable>
+        )}
       </View>
       <FlatList
         data={filteredNotes}
@@ -123,7 +144,7 @@ export const NoteList = ({notes}: {notes: NoteStructureWithMatchNumber[]}) => {
             }}>
             <View style={{flexDirection: 'row'}}>
               <Text style={{color: colors.text, fontWeight: 'bold'}}>
-                Match {item.match_number}
+                Match {item.match_number} - Team {item.team_number}
               </Text>
             </View>
             <Text style={{color: colors.text}}>{item.content}</Text>
