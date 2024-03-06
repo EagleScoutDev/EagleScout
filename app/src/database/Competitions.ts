@@ -37,12 +37,12 @@ class CompetitionsDB {
           scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
         }
         return {
-          id: competition.id,
-          name: competition.name,
+          id: competition.competition_id,
+          name: competition.competition_name,
           startTime: competition.start_time,
           endTime: competition.end_time,
           formId: competition.form_id,
-          form: competition.forms.form_structure,
+          form: competition.form_structure,
           scoutAssignmentsConfig: scoutAssignmentsConfig,
           pitScoutFormId: competition.pit_scout_form_id,
           pitScoutFormStructure: competition.pit_scout_form_structure,
@@ -73,7 +73,7 @@ class CompetitionsDB {
           startTime: data[0].start_time,
           endTime: data[0].end_time,
           formId: data[0].form_id,
-          form: data[0].forms.form_structure,
+          form: data[0].form_structure,
           scoutAssignmentsConfig: scoutAssignmentsConfig,
           pitScoutFormId: data[0].pit_scout_form_id,
           pitScoutFormStructure: data[0].pit_scout_form_structure,
@@ -124,14 +124,13 @@ class CompetitionsDB {
   static async getCompetitionById(
     competitionId: number,
   ): Promise<CompetitionReturnData> {
-    const {data, error} = await supabase
-        .rpc('get_competition_by_id', {
-            id: competitionId,
-        })
-      // .from('competitions')
-      // .select('*, forms( form_structure )')
-      // .eq('id', competitionId)
-      // .single();
+    const {data, error} = await supabase.rpc('get_competition_by_id', {
+      id: competitionId,
+    });
+    // .from('competitions')
+    // .select('*, forms( form_structure )')
+    // .eq('id', competitionId)
+    // .single();
     if (error) {
       throw error;
     } else {
@@ -149,7 +148,7 @@ class CompetitionsDB {
         startTime: data.start_time,
         endTime: data.end_time,
         formId: data.form_id,
-        form: data.forms.form_structure,
+        form: data.form_structure,
         scoutAssignmentsConfig: scoutAssignmentsConfig,
         pitScoutFormId: data[0].pit_scout_form_id,
         pitScoutFormStructure: data[0].pit_scout_form_structure,

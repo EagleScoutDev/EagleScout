@@ -41,7 +41,7 @@ import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
-import {BackgroundFetchManager} from './lib/BackgroundFetchManager
+import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
 const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
@@ -274,10 +274,10 @@ const MyStack = ({themePreference, setThemePreference}) => {
                   enableVibrateFallback: true,
                   ignoreAndroidSystemSettings: false,
                 });
-                navigation.navigate('Home', {screen: 'Scout Report'});
-                //
-                // navigation.navigate('CustomModal');
-                // setModalVisible(true);
+                // navigation.navigate('Home', {screen: 'Scout Report'});
+
+                navigation.navigate('CustomModal');
+                setModalVisible(true);
               },
             })}
             options={{

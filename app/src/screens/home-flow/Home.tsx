@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import ScoutingFlow from '../scouting-flow/ScoutingFlow';
 import HomeMain from './HomeMain';
 import Svg, {Path} from 'react-native-svg';
+import PitScoutingFlow from '../pit-scouting-flow/PitScoutingFlow';
 
 const HomeStack = createStackNavigator();
 
@@ -92,6 +93,7 @@ function Home() {
         }}
         component={ScoutingFlow}
       />
+      <HomeStack.Screen name={'Pit Scout'} component={PitScoutingFlow} />
     </HomeStack.Navigator>
   );
 }

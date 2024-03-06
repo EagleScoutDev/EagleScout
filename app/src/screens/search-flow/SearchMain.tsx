@@ -24,13 +24,7 @@ interface Props {
 }
 
 const SearchMain: React.FC<Props> = ({navigation}) => {
-  const [team, setTeam] = useState<string>('');
   const {colors} = useTheme();
-
-  const [currentCompetitionOnly, setCurrentCompetitionOnly] = useState(true);
-  const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
-  const [isOffline, setIsOffline] = useState(false);
-
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
 
   const [competitionId, setCompetitionId] = useState<number>(-1); // default to 2023mttd

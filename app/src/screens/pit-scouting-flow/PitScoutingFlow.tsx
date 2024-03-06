@@ -81,7 +81,7 @@ export default function PitScoutingFlow() {
           newStructure.push(currentSection);
         }
         currentSection = {
-          title: item.text,
+          title: item.title,
           questions: [],
         };
       } else {

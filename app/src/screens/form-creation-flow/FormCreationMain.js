@@ -100,6 +100,7 @@ const FormCreationMain = ({navigation}) => {
     (async () => {
       let success = true;
       try {
+        // console.log(questions);
         await Forms.addForm({
           name: name,
           formStructure: questions,
