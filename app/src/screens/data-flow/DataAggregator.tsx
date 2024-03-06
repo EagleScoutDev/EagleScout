@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import CompetitionsDB, {
@@ -13,6 +14,7 @@ import CompetitionsDB, {
 } from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
 import StandardButton from '../../components/StandardButton';
+import WeightedRank from './WeightedRank';
 
 interface Question {
   question: string;
@@ -53,6 +55,8 @@ function DataAggregation({navigation}) {
   const [fullCompetitionsList, setFullCompetitionsList] = useState<
     CompetitionReturnData[]
   >([]);
+
+  const [weightedVisible, setWeightedVisible] = useState<boolean>(false);
 
   useEffect(() => {
     CompetitionsDB.getCurrentCompetition().then(competition => {
@@ -128,7 +132,7 @@ function DataAggregation({navigation}) {
     },
     container: {
       // backgroundColor: colors.card,
-      margin: '10%',
+      marginHorizontal: '10%',
       // padding: '10%',
       borderRadius: 20,
       // maxHeight: '80%',
@@ -143,6 +147,7 @@ function DataAggregation({navigation}) {
       color: colors.text,
       fontSize: 14,
       flex: 1,
+      textAlign: 'right',
     },
     question_text: {
       color: colors.text,
@@ -245,33 +250,57 @@ function DataAggregation({navigation}) {
         </View>
       )}
       {chosenQuestion === null && (
-        <View style={styles.container}>
-          <Text style={styles.question_text}>
-            Choose a Question to rank teams
-          </Text>
-          <ScrollView>
-            {currForm &&
-              currForm.map((item, index) => (
-                <Pressable
-                  onPress={() => onPress(index, item.question)}
-                  key={item.question}>
-                  {item.type === 'number' && (
-                    <View style={styles.list_item}>
-                      <Text
-                        style={{
-                          color: colors.text,
-                          flex: 0.2,
-                          fontWeight: 'bold',
-                          textAlign: 'center',
-                        }}>
-                        {index}
-                      </Text>
-                      <Text style={styles.list_text}>{item.question}</Text>
-                    </View>
-                  )}
-                </Pressable>
-              ))}
-          </ScrollView>
+        <View>
+          <WeightedRank
+            visible={weightedVisible}
+            setVisible={setWeightedVisible}
+            form={currForm}
+            compId={compID ?? -1}
+          />
+          <Pressable
+            onPress={() => {
+              setWeightedVisible(true);
+            }}>
+            <Text
+              style={{
+                color: colors.primary,
+                fontSize: 14,
+                textAlign: 'right',
+                padding: '5%',
+              }}>
+              Weighted Rank
+            </Text>
+          </Pressable>
+          <View style={{marginHorizontal: '10%'}}>
+            <Text style={styles.question_text}>
+              Choose a question to rank teams
+            </Text>
+            <ScrollView>
+              {currForm &&
+                currForm.map((item, index) => (
+                  <Pressable
+                    onPress={() => onPress(index, item.question)}
+                    key={item.question}>
+                    {item.type === 'number' && (
+                      <View style={styles.list_item}>
+                        <Text
+                          style={{
+                            color: colors.text,
+                            flex: 0.2,
+                            fontWeight: 'bold',
+                            textAlign: 'center',
+                          }}>
+                          {index}
+                        </Text>
+                        <Text style={{color: colors.text, flex: 1}}>
+                          {item.question}
+                        </Text>
+                      </View>
+                    )}
+                  </Pressable>
+                ))}
+            </ScrollView>
+          </View>
         </View>
       )}
       {processing && (
@@ -284,15 +313,22 @@ function DataAggregation({navigation}) {
         <View>
           <View style={{flexDirection: 'row', paddingHorizontal: '10%'}}>
             <View style={{flex: 0.2}} />
-            <Text style={{flex: 1, color: colors.text, fontSize: 14}}>
+            <Text
+              style={{
+                flex: 1,
+                color: colors.text,
+                fontSize: 16,
+                fontWeight: 'bold',
+              }}>
               Team
             </Text>
             <Text
               style={{
                 flex: 1,
                 color: colors.text,
-                fontSize: 14,
+                fontSize: 16,
                 textAlign: 'right',
+                fontWeight: 'bold',
               }}>
               Average Value
             </Text>
@@ -327,25 +363,25 @@ function DataAggregation({navigation}) {
                 </View>
               ))}
           </ScrollView>
-          <View
-            style={{
-              marginVertical: '5%',
-            }}>
-            <StandardButton
-              text={'Send to Picklist'}
-              color={'blue'}
-              isLoading={false}
-              onPress={() => {
-                navigation.navigate('Picklists', {
-                  screen: 'Picklist Creator',
-                  params: {
-                    picklist_id: -1,
-                    given_teams: Array.from(teamsToAverage.keys()),
-                  },
-                });
-              }}
-            />
-          </View>
+          {/*<View*/}
+          {/*  style={{*/}
+          {/*    marginVertical: '5%',*/}
+          {/*  }}>*/}
+          {/*  <StandardButton*/}
+          {/*    text={'Send to Picklist'}*/}
+          {/*    color={'blue'}*/}
+          {/*    isLoading={false}*/}
+          {/*    onPress={() => {*/}
+          {/*      navigation.navigate('Picklists', {*/}
+          {/*        screen: 'Picklist Creator',*/}
+          {/*        params: {*/}
+          {/*          picklist_id: -1,*/}
+          {/*          given_teams: Array.from(teamsToAverage.keys()),*/}
+          {/*        },*/}
+          {/*      });*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</View>*/}
         </View>
       )}
     </View>
