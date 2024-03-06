@@ -18,6 +18,7 @@ import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
+import Competitions from "../../database/Competitions";
 
 const VERSION = '7.1';
 
@@ -89,7 +90,7 @@ const SettingsHome = ({
   const testConnection = () => {
     // attempt connection to picklist table
     setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-    PicklistsDB.getPicklists()
+    Competitions.getCurrentCompetition()
       .then(() => {
         setInternetStatus(InternetStatus.CONNECTED);
       })
