@@ -1,25 +1,26 @@
 import {
   View,
   Text,
-  TextInput,
-  Switch,
   FlatList,
-  TouchableOpacity,
+  Pressable,
+  SafeAreaView,
+  Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import Svg, {Path} from 'react-native-svg';
+import {ScoutReportReturnData} from '../../database/ScoutReports';
 
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {TBA} from '../../lib/TBAUtils';
-import CompetitionsDB from '../../database/Competitions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import FormHelper from '../../FormHelper';
+import ScoutReportsDB from '../../database/ScoutReports';
+import CompetitionChanger from './CompetitionChanger';
+import ScoutViewer from '../../components/modals/ScoutViewer';
 import Competitions from '../../database/Competitions';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
+  navigation: any;
 }
 
 const SearchMain: React.FC<Props> = ({navigation}) => {
@@ -31,220 +32,282 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [isOffline, setIsOffline] = useState(false);
 
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
-  const [filteredTeams, setFilteredTeams] = useState<SimpleTeam[]>([]);
+
+  const [competitionId, setCompetitionId] = useState<number>(-1); // default to 2023mttd
+
+  const [reportsByMatch, setReportsByMatch] = useState<
+    Map<number, ScoutReportReturnData[]>
+  >(new Map());
+
+  const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
+  const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
+
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+
+  // used for hiding and showing header
+  const [prevScrollY, setPrevScrollY] = useState<number>(0);
+
+  // for searching
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+
+  // indicates if competition data is still being fetched
+  const [fetchingData, setFetchingData] = useState<boolean>(false);
+
+  // used for animating the search bar hiding and showing
+  // useEffect(() => {
+  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  // }, [isScrolling]);
+
+  const fetchData = useCallback(() => {
+    if (competitionId !== -1) {
+      setFetchingData(true);
+      ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
+        // console.log('num reports found for id 8 is ' + reports.length);
+
+        // sort reports by match number
+        reports.sort((a, b) => {
+          return a.matchNumber - b.matchNumber;
+        });
+
+        // create an object where key is match number and value is an array of reports
+        let temp: Map<number, ScoutReportReturnData[]> = new Map();
+        reports.forEach(report => {
+          if (temp.has(report.matchNumber)) {
+            temp.get(report.matchNumber)?.push(report);
+          } else {
+            temp.set(report.matchNumber, [report]);
+          }
+        });
+
+        setReportsByMatch(temp);
+      });
+
+      Competitions.getCompetitionTBAKey(competitionId).then(key => {
+        TBA.getTeamsAtCompetition(key).then(teams => {
+          // sort teams by team number
+          teams.sort((a, b) => {
+            return a.team_number - b.team_number;
+          });
+          setListOfTeams(teams);
+          setFetchingData(false);
+        });
+      });
+      // console.log(listOfTeams);
+    }
+  }, [competitionId]);
+
+  const navigateToTeamViewer = (team: SimpleTeam) => {
+    navigation.navigate('TeamViewer', {
+      team: team,
+      competitionId: competitionId,
+    });
+  };
 
   // initial data fetch
   useEffect(() => {
-    (async () => {
-      let dbRequestWorked;
-      let dbCompetition;
-      try {
-        dbCompetition = await CompetitionsDB.getCurrentCompetition();
-        dbRequestWorked = true;
-      } catch (e) {
-        dbRequestWorked = false;
-      }
+    fetchData();
+    navigation.addListener('focus', () => {
+      fetchData();
+    });
+  }, [fetchData, navigation]);
 
-      let comp;
-      if (dbRequestWorked) {
-        if (dbCompetition != null) {
-          comp = dbCompetition;
-          await AsyncStorage.setItem(
-            FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-            JSON.stringify(dbCompetition),
-          );
-        }
-      } else {
-        const storedComp = await FormHelper.readAsyncStorage(
-          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-        );
-        if (storedComp != null) {
-          comp = JSON.parse(storedComp);
-        }
-      }
-      setIsOffline(!dbRequestWorked);
-
-      let teams = null;
-      if (comp != null) {
-        setIsCompetitionHappening(true);
-        if (dbRequestWorked) {
-          teams = await Competitions.getCompetitionTeams(comp.id);
-          await AsyncStorage.setItem('teams', JSON.stringify(teams));
-        } else {
-          const teamsOffline = await AsyncStorage.getItem('teams');
-          if (teamsOffline != null) {
-            teams = JSON.parse(teamsOffline);
-          }
-        }
-      } else {
-        setIsCompetitionHappening(false);
-      }
-      if (teams != null) {
-        teams.sort();
-      }
-      setListOfTeams(teams);
-    })();
-  }, []);
-
-  // when user starts searching, filter the results displayed
-  useEffect(() => {
-    if (team.length > 0 && listOfTeams.length > 0) {
-      setFilteredTeams(
-        listOfTeams.filter(t => {
-          return (
-            t.team_number.toString().includes(team) ||
-            t.nickname.toLowerCase().includes(team.toLowerCase())
-          );
-        }),
-      );
-    } else {
-      setFilteredTeams(listOfTeams);
-    }
-  }, [team, listOfTeams]);
+  const navigateIntoReport = (report: ScoutReportReturnData) => {
+    setScoutViewerVisible(true);
+    setCurrentReport(report);
+  };
 
   return (
-    <>
-      {isCompetitionHappening ? (
-        <View style={{flex: 1}}>
-          <MinimalSectionHeader title={'Search'} />
-          <View
+    <SafeAreaView style={{flex: 1}}>
+      <View
+        style={{
+          display: isScrolling ? 'none' : 'flex',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '2%',
+          }}>
+          <CompetitionChanger
+            currentCompId={competitionId}
+            setCurrentCompId={setCompetitionId}
+            loading={fetchingData}
+          />
+          <Pressable
+            onPress={() => {
+              const sortedKeys = Array.from(reportsByMatch.keys()).reverse();
+
+              const sortedMap = new Map<number, ScoutReportReturnData[]>();
+              sortedKeys.forEach(key => {
+                sortedMap.set(key, reportsByMatch.get(key)!);
+              });
+
+              setReportsByMatch(sortedMap);
+            }}
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginLeft: '4%',
-              marginTop: '3%',
+              marginRight: '2%',
+              marginLeft: '6%',
             }}>
-            <Svg width={'6%'} height="50%" viewBox="0 0 16 16">
+            <Svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
               <Path
-                fill={'gray'}
+                fill="gray"
+                d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"
+              />
+            </Svg>
+          </Pressable>
+          <Pressable
+            style={{
+              marginRight: '2%',
+              marginLeft: '6%',
+            }}
+            onPress={() => {
+              navigation.navigate('SearchModal', {
+                teams: listOfTeams,
+                reportsByMatch: reportsByMatch,
+                competitionId: competitionId,
+              });
+            }}>
+            <Svg width={'20'} height="20" viewBox="0 0 16 16">
+              <Path
+                fill={searchActive ? colors.primary : 'gray'}
                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
               />
             </Svg>
-            <TextInput
-              style={{
-                marginHorizontal: '6%',
-                height: 40,
-                borderColor: 'gray',
-                borderWidth: 1,
-                borderRadius: 25,
-                paddingLeft: '6%',
-                color: colors.text,
-                flex: 1,
-              }}
-              onChangeText={text => setTeam(text)}
-              value={team}
-              // keyboardType={'numeric'}
-              placeholder={'Try "114" or "Eaglestrike"'}
-              onEndEditing={() => {
-                console.log('onEndEditing');
-              }}
-            />
-          </View>
-          {/*<View*/}
-          {/*  style={{*/}
-          {/*    flexDirection: 'row',*/}
-          {/*    alignItems: 'center',*/}
-          {/*    marginTop: '3%',*/}
-          {/*    justifyContent: 'space-between',*/}
-
-          {/*    padding: '4%',*/}
-          {/*    paddingHorizontal: '6%',*/}
-          {/*    marginHorizontal: '5%',*/}
-
-          {/*    backgroundColor: colors.card,*/}
-          {/*    borderColor: colors.border,*/}
-          {/*    borderWidth: 1,*/}
-          {/*    borderRadius: 10,*/}
-          {/*  }}>*/}
-          {/*  <Text style={{color: colors.text, fontWeight: 'bold', fontSize: 15}}>*/}
-          {/*    Filter by current competition*/}
-          {/*  </Text>*/}
-          {/*  <Switch*/}
-          {/*    onValueChange={() =>*/}
-          {/*      setCurrentCompetitionOnly(!currentCompetitionOnly)*/}
-          {/*    }*/}
-          {/*    value={currentCompetitionOnly}*/}
-          {/*  />*/}
-          {/*</View>*/}
-          <View
-            style={{
-              height: 1,
-              width: '100%',
-              backgroundColor: colors.border,
-              marginVertical: '3%',
-            }}
-          />
-          <FlatList
-            data={filteredTeams}
-            ItemSeparatorComponent={() => (
-              <View
-                style={{
-                  height: 1,
-                  width: '80%',
-                  alignSelf: 'center',
-                  backgroundColor: colors.border,
-                }}
-              />
-            )}
-            renderItem={({item}) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('TeamViewer', {team: item});
-                  }}
-                  key={item.key}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    // marginVertical: '2%',
-                    justifyContent: 'space-between',
-
-                    padding: '5%',
-                    paddingHorizontal: '3%',
-                    marginHorizontal: '5%',
-
-                    // backgroundColor: colors.card,
-                    // borderColor: colors.border,
-                    // borderBottomColor: colors.border,
-                    // borderBottomWidth: 1,
-                    // borderWidth: 1,
-                    borderRadius: 10,
-                  }}>
-                  <Text
-                    style={{
-                      color: colors.text,
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      flex: 1,
-                    }}>
-                    {item.team_number}
-                  </Text>
-                  <Text
-                    style={{
-                      color: colors.text,
-                      fontWeight: 'bold',
-                      textAlign: 'right',
-                      flex: 5,
-                    }}>
-                    {item.nickname}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
+          </Pressable>
         </View>
-      ) : (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>There is no competition happening currently.</Text>
-
-          {isOffline && (
-            <Text>
-              To check for competitions, please connect to the internet.
-            </Text>
-          )}
+        <View
+          style={{
+            height: 1,
+            width: '100%',
+            backgroundColor: colors.border,
+          }}
+        />
+      </View>
+      {reportsByMatch.size === 0 && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{color: colors.text, fontSize: 20}}>
+            No reports found.
+          </Text>
         </View>
       )}
-    </>
+      <FlatList
+        onScroll={scroll_event => {
+          // if scrolling down, hide search bar
+          if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
+            setIsScrolling(true);
+          } else {
+            setIsScrolling(false);
+          }
+
+          // if at top of flatlist, show search bar
+          if (
+            scroll_event.nativeEvent.contentOffset.y <
+            0.005 * scroll_event.nativeEvent.contentSize.height
+          ) {
+            setIsScrolling(false);
+          }
+          setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
+        }}
+        data={Array.from(reportsByMatch.keys()).reverse()}
+        keyExtractor={item => item.toString()}
+        renderItem={({item}) => {
+          return (
+            <View>
+              <View
+                style={{
+                  minWidth: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: '3%',
+                }}>
+                <Text
+                  style={{
+                    color: 'grey',
+                    marginHorizontal: '4%',
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                  }}>
+                  {item}
+                </Text>
+                <View
+                  style={{
+                    height: 2,
+                    width: '100%',
+                    backgroundColor: colors.border,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  // make it like a 3x2 grid
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                }}>
+                {reportsByMatch.get(item)?.map((report, index) => {
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        navigateIntoReport(report);
+                      }}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: index < 3 ? 'crimson' : 'dodgerblue',
+                        margin: '2%',
+                        padding: '6%',
+                        borderRadius: 10,
+                        minWidth: '25%',
+                      }}>
+                      <Text
+                        style={{
+                          color: colors.text,
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          flex: 1,
+                        }}>
+                        {report.teamNumber}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          );
+        }}
+      />
+      {scoutViewerVisible && currentReport && (
+        <ScoutViewer
+          visible={scoutViewerVisible}
+          setVisible={setScoutViewerVisible}
+          data={currentReport ?? []}
+          chosenComp={currentReport?.competitionName ?? ''}
+          updateFormData={() => {}}
+          isOfflineForm={false}
+          navigateToTeamViewer={() => {
+            if (currentReport) {
+              let team = listOfTeams.find(
+                team => team.team_number === currentReport.teamNumber,
+              );
+              if (team) {
+                setScoutViewerVisible(false);
+                navigateToTeamViewer(team);
+              } else {
+                Alert.alert(
+                  'Error: Team not found',
+                  'Report likely inputted with wrong team number.',
+                );
+              }
+            }
+          }}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 

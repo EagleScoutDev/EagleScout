@@ -10,7 +10,7 @@ import {useEffect, useState} from 'react';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {Path, Svg} from 'react-native-svg';
-import CompetitionsDB from '../database/Competitions';
+import CompetitionsDB, {ScoutAssignmentsConfig} from '../database/Competitions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../FormHelper';
 import ScoutAssignments from '../database/ScoutAssignments';
@@ -20,6 +20,23 @@ const UpcomingRoundsView = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {colors} = useTheme();
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
+  const [teamBased, setTeamBased] = useState(false);
+
+  const getPositionText = position => {
+    if (position === 0) {
+      return 'R1';
+    } else if (position === 1) {
+      return 'R2';
+    } else if (position === 2) {
+      return 'R3';
+    } else if (position === 3) {
+      return 'B1';
+    } else if (position === 4) {
+      return 'B2';
+    } else if (position === 5) {
+      return 'B3';
+    }
+  };
 
   const getUpcomingRounds = async () => {
     setRefreshing(true);
@@ -54,10 +71,23 @@ const UpcomingRoundsView = ({navigation}) => {
     if (comp != null) {
       setIsCompetitionHappening(true);
       if (dbRequestWorked) {
-        scoutAssignments =
-          await ScoutAssignments.getScoutAssignmentsForCompetitionCurrentUser(
-            comp.id,
-          );
+        if (comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED) {
+          setTeamBased(true);
+          scoutAssignments =
+            await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
+              comp.id,
+            );
+        } else if (
+          comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.POSITION_BASED
+        ) {
+          setTeamBased(false);
+          scoutAssignments =
+            await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
+              comp.id,
+            );
+        } else {
+          scoutAssignments = [];
+        }
         await AsyncStorage.setItem(
           'scout-assignments',
           JSON.stringify(scoutAssignments),
@@ -99,29 +129,6 @@ const UpcomingRoundsView = ({navigation}) => {
     });
   }, [navigation]);
 
-  const FAB = () => (
-    <Pressable
-      style={{
-        position: 'absolute',
-        bottom: '5%',
-        right: '5%',
-        backgroundColor: colors.card,
-        borderRadius: 50,
-        padding: '5%',
-        elevation: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        borderWidth: 1,
-        borderColor: colors.text,
-      }}
-      onPress={() => {
-        navigation.navigate('Scout Report');
-      }}>
-      <Text style={{color: colors.text, fontWeight: 'bold'}}>Scout Now +</Text>
-    </Pressable>
-  );
-
   return (
     <>
       {isCompetitionHappening ? (
@@ -133,7 +140,7 @@ const UpcomingRoundsView = ({navigation}) => {
                   alignSelf: 'center',
                   height: '100%',
                   borderRadius: 10,
-                  padding: '10%',
+                  padding: '8%',
                   width: '100%',
                 }}>
                 {upcomingRounds.length !== 0 && (
@@ -153,7 +160,11 @@ const UpcomingRoundsView = ({navigation}) => {
                       borderColor: colors.border,
                       justifyContent: 'space-around',
                     }}>
-                    <Svg width={'100%'} height="50%" viewBox="0 0 16 16">
+                    <Svg
+                      width={'100%'}
+                      height="50%"
+                      viewBox="0 0 16 16"
+                      style={{marginVertical: '10%'}}>
                       <Path
                         fill="green"
                         d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
@@ -166,9 +177,10 @@ const UpcomingRoundsView = ({navigation}) => {
                     <Text
                       style={{
                         color: colors.text,
-                        fontSize: 25,
+                        fontSize: 24,
                         padding: '5%',
                         textAlign: 'center',
+                        flex: 1,
                       }}>
                       You have no rounds left to scout today.
                     </Text>
@@ -198,7 +210,7 @@ const UpcomingRoundsView = ({navigation}) => {
                         //console.log('hey');
                         navigation.navigate('Scout Report', {
                           match: round.matchNumber,
-                          team: teamFormatter(round.team),
+                          team: teamBased ? teamFormatter(round.team) : null,
                         });
                       }}>
                       <View
@@ -217,15 +229,27 @@ const UpcomingRoundsView = ({navigation}) => {
                           Match: {round.matchNumber}
                         </Text>
                         <View style={{height: '20%'}} />
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            fontSize: 16,
-                            color: colors.text,
-                            // padding: '2%',
-                          }}>
-                          Team: {teamFormatter(round.team)}
-                        </Text>
+                        {teamBased ? (
+                          <Text
+                            style={{
+                              fontWeight: 'bold',
+                              fontSize: 16,
+                              color: colors.text,
+                              // padding: '2%',
+                            }}>
+                            Team: {teamFormatter(round.team)}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              fontWeight: 'bold',
+                              fontSize: 16,
+                              color: colors.text,
+                              // padding: '2%',
+                            }}>
+                            Position: {getPositionText(round.position)}
+                          </Text>
+                        )}
                       </View>
                       <View>
                         <Svg
@@ -251,19 +275,17 @@ const UpcomingRoundsView = ({navigation}) => {
                   ))}
                 </ScrollView>
               </View>
-              <FAB />
             </View>
           ) : (
             <>
               <Text style={{color: colors.text}}>
                 Connect to the internet to fetch upcoming rounds.
               </Text>
-              <FAB />
             </>
           )}
         </>
       ) : (
-        <Text style={{color: colors.text}}>
+        <Text style={{color: colors.text, padding: '5%'}} >
           There is no competition happening currently.
         </Text>
       )}

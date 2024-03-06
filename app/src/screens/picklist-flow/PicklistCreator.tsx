@@ -20,8 +20,10 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import Svg, {Path} from 'react-native-svg';
 import ProfilesDB from '../../database/Profiles';
+import {TBA} from '../../lib/TBAUtils';
+import Competitions from '../../database/Competitions';
 
-function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
+function PicklistCreator({route}: {route: {params: {picklist_id: number, currentCompID: number}}}) {
   const {colors} = useTheme();
 
   // navigates back to the previous screen once picklist is updated
@@ -47,7 +49,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
 
   // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
-  const {picklist_id} = route.params;
+  const {picklist_id, currentCompID} = route.params;
 
   // used to display the team name next to the team number
   const [teamNumberToNameMap, setTeamNumberToNameMap] = useState<
@@ -64,21 +66,37 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   // fetches all teams at the current competition
   useEffect(() => {
     // TODO: @gabor, replace this hardcoded value with the current competition
-    PicklistsDB.getTeamsAtCompetition('2023cc')
-      .then(teams => {
-        // set teams to just the numbers of the returned teams
-        setPossibleTeams(teams.map(team => team.team_number));
-
-        let temp_map = new Map();
-
-        for (let i = 0; i < teams.length; i++) {
-          temp_map.set(teams[i].team_number, teams[i].nickname);
+    Competitions.getCurrentCompetition()
+      .then(competition => {
+        if (!competition) {
+          console.error('No current competition found');
+          return;
         }
+        Competitions.getCompetitionTBAKey(competition.id)
+          .then(tba_key => {
+            TBA.getTeamsAtCompetition(tba_key)
+              .then(teams => {
+                // set teams to just the numbers of the returned teams
+                setPossibleTeams(teams.map(team => team.team_number));
 
-        setTeamNumberToNameMap(temp_map);
+                let temp_map = new Map();
+
+                for (let i = 0; i < teams.length; i++) {
+                  temp_map.set(teams[i].team_number, teams[i].nickname);
+                }
+
+                setTeamNumberToNameMap(temp_map);
+              })
+              .catch(error => {
+                console.error('Error getting teams at competition:', error);
+              });
+          })
+          .catch(error => {
+            console.error('Error getting TBA key for competition:', error);
+          });
       })
       .catch(error => {
-        console.error('Error getting teams at competition:', error);
+        console.error('Error getting current competition:', error);
       });
   }, []);
 
@@ -109,11 +127,11 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
               marginRight: '5%',
             }}>
             <Path
-              fill={colors.primary}
+              fill={'gray'}
               d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
             />
             <Path
-              fill={colors.primary}
+              fill={'gray'}
               d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
             />
           </Svg>
@@ -167,7 +185,11 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       });
     } else {
       console.log('saving picklist to db');
-      PicklistsDB.createPicklist(name ?? 'Picklist', teams_list).then(r => {
+      PicklistsDB.createPicklist(
+        name ?? 'Picklist',
+        teams_list,
+        currentCompID,
+      ).then(r => {
         console.log('response after submitting picklist to db: ' + r);
       });
     }
@@ -187,6 +209,21 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       );
       return;
     }
+
+    if (teams_list.length === 0) {
+      Alert.alert(
+        'Error: Empty Picklist',
+        'You have not added any teams to this picklist.',
+        [
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+        ],
+      );
+      return;
+    }
+
     const additional_message = presetPicklist
       ? ' This will overwrite the picklist "' +
         presetPicklist.name +
@@ -206,7 +243,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
           text: 'Upload',
           onPress: () => {
             savePicklistToDB();
-            navigation.goBack();
+            navigation.navigate('PicklistsManager');
           },
         },
       ],

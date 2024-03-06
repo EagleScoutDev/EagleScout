@@ -3,6 +3,7 @@ import {supabase} from '../lib/supabase';
 interface Form {
   formStructure: [];
   pitScouting: boolean;
+  name: string;
 }
 export enum FormQuestionTypes {
   radio = 'radio',
@@ -21,13 +22,21 @@ class FormsDB {
     const {data, error} = await supabase.from('forms').insert({
       form_structure: form.formStructure,
       pit_scouting: form.pitScouting,
+      name: form.name,
     });
     if (error) {
       throw error;
     }
   }
 
-  static async getForm(id: number): Promise<Form> {
+  static async deleteForm(form: FormReturnData): Promise<void> {
+    const {error} = await supabase.from('forms').delete().eq('id', form.id);
+    if (error) {
+      throw error;
+    }
+  }
+
+  static async getForm(id: number): Promise<FormReturnData> {
     const {data, error} = await supabase.from('forms').select('*').eq('id', id);
     if (error) {
       throw error;
@@ -36,8 +45,10 @@ class FormsDB {
         throw new Error('Form not found');
       } else {
         return {
+          id: data[0].id,
           formStructure: data[0].form_structure,
           pitScouting: data[0].pit_scouting,
+          name: data[0].name,
         };
       }
     }
@@ -54,6 +65,7 @@ class FormsDB {
           id: data[i].id,
           formStructure: data[i].form_structure,
           pitScouting: data[i].pit_scouting,
+          name: data[i].name,
         });
       }
     }

@@ -43,7 +43,6 @@ class ScoutReportsDB {
     if (error) {
       throw error;
     } else {
-      console.log(data);
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           reportId: data[i].id,
@@ -133,7 +132,7 @@ class ScoutReportsDB {
     const {data, error} = await supabase
       .from('scout_reports')
       .select(
-        '*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+        '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
       )
       .eq('team', team)
       .eq('matches.competition_id', compId);

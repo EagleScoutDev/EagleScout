@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
-import {supabase} from '../lib/supabase';
+import {supabase} from '../../lib/supabase';
 
 function SortOption({onPress, title, colors, isActive}) {
   return (

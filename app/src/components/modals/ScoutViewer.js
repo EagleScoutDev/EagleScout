@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  Pressable,
 } from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {useCallback, useEffect, useState} from 'react';
 import RadioButtons from '../form/RadioButtons';
 import Checkbox from '../form/Checkbox';
@@ -20,6 +21,7 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import SliderType from '../form/SliderType';
 import {ClockHistory, PencilSquare, X} from '../../SVGIcons';
 import {HistorySelectorModal} from './HistorySelectorModal';
+import Svg, {Path} from 'react-native-svg';
 
 const DEBUG = false;
 
@@ -40,6 +42,7 @@ function ScoutViewer({
   chosenComp,
   updateFormData,
   isOfflineForm,
+  navigateToTeamViewer,
 }) {
   const {colors} = useTheme();
   const [userName, setUserName] = useState('');
@@ -407,7 +410,25 @@ function ScoutViewer({
               borderRadius: 10,
               padding: '5%',
             }}>
-            <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
+              <Pressable
+                onPress={() => {
+                  navigateToTeamViewer();
+                }}>
+                <Svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-send-fill"
+                  viewBox="0 0 16 16">
+                  <Path
+                    fill={'gray'}
+                    d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"
+                  />
+                </Svg>
+              </Pressable>
+            </View>
             <Text style={styles.report_info}>
               Round {data ? data.matchNumber : ''}
             </Text>
@@ -453,19 +474,19 @@ function ScoutViewer({
                       <RadioButtons
                         title={''}
                         colors={colors}
-                        options={field.labels}
+                        options={field.options}
                         onValueChange={value => {
                           console.log(
                             'radio button value changed to: ' + value,
                           );
                           let a = [...tempData];
                           console.log(
-                            'index of value: ' + field.labels.indexOf(value),
+                            'index of value: ' + field.options.indexOf(value),
                           );
-                          a[index] = field.labels.indexOf(value);
+                          a[index] = field.options.indexOf(value);
                           setTempData(a);
                         }}
-                        value={field.labels[tempData[index]]}
+                        value={field.options[tempData[index]]}
                         disabled={!editingActive}
                       />
                     </View>
@@ -542,7 +563,7 @@ function ScoutViewer({
                       title={''}
                       disabled={!editingActive}
                       colors={colors}
-                      options={field.labels}
+                      options={field.options}
                       value={
                         tempData[index] &&
                         tempData[index] != null &&

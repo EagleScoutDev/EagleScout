@@ -13,7 +13,7 @@ import {PitScoutReportList} from '../../components/PitScoutReportList';
 
 function ReportsForTeam({route}) {
   // const [team, setTeam] = useState('');
-  const {team_number} = route.params;
+  const {team_number, competitionId} = route.params;
   const {colors} = useTheme();
   const [responses, setResponses] = useState<ScoutReportReturnData[] | null>(
     null,
@@ -23,7 +23,7 @@ function ReportsForTeam({route}) {
   >(null);
 
   useEffect(() => {
-    CompetitionsDB.getCurrentCompetition().then(competition => {
+    CompetitionsDB.getCompetitionById(competitionId).then(competition => {
       if (!competition) {
         return;
       }
@@ -58,7 +58,11 @@ function ReportsForTeam({route}) {
           }}>
           Match Scouting Reports for Team #{team_number}
         </Text>
-        <ReportList reports={responses} isOffline={false} />
+        <ReportList
+          reports={responses}
+          isOffline={false}
+          displayHeaders={false}
+        />
       </View>
       <View style={{flex: 1}}>
         <Text

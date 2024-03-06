@@ -18,10 +18,6 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 const Tab = createMaterialTopTabNavigator();
 
 function Gamification({
-  teleop_scored,
-  setTeleop_scored,
-  auto_scored,
-  setAuto_scored,
   match,
   setMatch,
   team,
@@ -35,48 +31,6 @@ function Gamification({
   submitForm,
   isSubmitting,
 }) {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    // set arraydata to a copy of the arraydata, and
-    // set the index of 10 in the array to the cube count
-    if (arrayData == null || arrayData.length === 0) {
-      console.log('arrayData is undefined or empty');
-      return;
-    }
-    console.log('auto_scored: ', JSON.stringify(auto_scored));
-    console.log('teleop_scored: ', JSON.stringify(teleop_scored));
-
-    setArrayData(b => {
-      let a = [...b];
-      console.log(arrayData);
-      a[2] =
-        auto_scored.cones.filter(c => c === 'low').length +
-        auto_scored.cubes.filter(c => c === 'low').length;
-      a[3] =
-        auto_scored.cones.filter(c => c === 'mid').length +
-        auto_scored.cubes.filter(c => c === 'mid').length;
-      a[4] =
-        auto_scored.cones.filter(c => c === 'high').length +
-        auto_scored.cubes.filter(c => c === 'high').length;
-
-      a[7] =
-        teleop_scored.cones.filter(c => c === 'low').length +
-        teleop_scored.cubes.filter(c => c === 'low').length;
-      a[8] =
-        teleop_scored.cones.filter(c => c === 'mid').length +
-        teleop_scored.cubes.filter(c => c === 'mid').length;
-      a[9] =
-        teleop_scored.cones.filter(c => c === 'high').length +
-        teleop_scored.cubes.filter(c => c === 'high').length;
-      // a[AUTO_SCORED_INDEX] =
-      //   auto_scored.cones.length + auto_scored.cubes.length;
-      // a[TELEOP_SCORED_INDEX] =
-      //   teleop_scored.cones.length + teleop_scored.cubes.length;
-      return a;
-    });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modalVisible]);
 
   return (
     <>
@@ -173,51 +127,6 @@ function Gamification({
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
-                    {auto_scored != null && teleop_scored != null && (
-                      <Modal
-                        visible={modalVisible}
-                        transparent={true}
-                        animationType={'slide'}>
-                        <FullScreenIncrementer
-                          setVisible={setModalVisible}
-                          cones={
-                            index === 0
-                              ? auto_scored.cones
-                              : teleop_scored.cones
-                          }
-                          cubes={
-                            index === 0
-                              ? auto_scored.cubes
-                              : teleop_scored.cubes
-                          }
-                          setScored={
-                            index === 0 ? setAuto_scored : setTeleop_scored
-                          }
-                        />
-                      </Modal>
-                    )}
-                    {/*if the index is 1 or 2, add a button to activate a modal*/}
-                    {(index === 0 || index === 1) && (
-                      <View style={{width: '100%'}}>
-                        <StandardButton
-                          text={'Show Modal'}
-                          width={'85%'}
-                          onPress={() => {
-                            console.log('show modal visible pressed');
-                            console.log(
-                              'autoscored: ',
-                              JSON.stringify(auto_scored),
-                            );
-                            console.log(
-                              'teleopscored: ',
-                              JSON.stringify(teleop_scored),
-                            );
-                            setModalVisible(true);
-                          }}
-                          color={'green'}
-                        />
-                      </View>
-                    )}
                     <FormSection colors={colors} title={''} key={key.length}>
                       {value.map((item, vIndex) => {
                         return (

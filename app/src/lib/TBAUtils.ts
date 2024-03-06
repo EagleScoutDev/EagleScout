@@ -1,3 +1,5 @@
+import {supabase} from './supabase';
+
 export interface SimpleEvent {
   rank: number | null;
   key: string;
@@ -53,30 +55,23 @@ export class TBA {
   }
 
   static async getEventsForYear(year: number): Promise<SimpleEvent[]> {
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/events/${year}/simple`,
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq',
-        },
-      },
-    );
-
-    return await response.json();
+    const {data, error} = await supabase.functions.invoke('tba-api', {
+      body: {endpoint: `/events/${year}/simple`},
+    });
+    if (error) {
+      throw error;
+    }
+    return data;
   }
 
   static async getTeamsAtCompetition(comp_id: string): Promise<SimpleTeam[]> {
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/event/${comp_id}/teams/simple`,
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq',
-        },
-      },
-    );
-    return await response.json();
+    const {data, error} = await supabase.functions.invoke('tba-api', {
+      body: {endpoint: `/event/${comp_id}/teams/simple`},
+    });
+    if (error) {
+      throw error;
+    }
+    return data;
   }
 
   /**
@@ -89,24 +84,15 @@ export class TBA {
     comp_id: string,
     team_number: number,
   ): Promise<number> {
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/team/frc${team_number}/event/${comp_id}/status`,
-
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq',
-        },
+    console.log(`getting rank for ${team_number} at ${comp_id}`);
+    const {data, error} = await supabase.functions.invoke('tba-api', {
+      body: {
+        endpoint: `/team/frc${team_number}/event/${comp_id}/status`,
       },
-    );
-
-    // looks sketch, but it's not
-    if (!response.ok) {
-      console.error('Network response was not ok:', response.status);
-      return -1;
+    });
+    if (error) {
+      throw error;
     }
-    const data = await response.json();
-    console.log('data response', data);
 
     // this means that the competition has not taken place yet
     if (data === null) {
@@ -125,16 +111,12 @@ export class TBA {
     team_number: number,
   ): Promise<SimpleEvent> {
     const current_year = new Date().getFullYear();
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/team/frc${team_number}/events/${current_year}/simple`,
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq',
-        },
-      },
-    );
-    const data = await response.json();
+    const {data, error} = await supabase.functions.invoke('tba-api', {
+      body: {endpoint: `/team/frc${team_number}/events/${current_year}/simple`},
+    });
+    if (error) {
+      throw error;
+    }
     const current_date = new Date();
     for (let i = 0; i < data.length; i++) {
       const start_date = new Date(data[i].start_date);
@@ -151,16 +133,12 @@ export class TBA {
     team_number: number,
   ): Promise<SimpleEvent[]> {
     const current_year = new Date().getFullYear();
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/team/frc${team_number}/events/${current_year}/simple`,
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'mJ3UfsR5M1wWACNoathXjF9U3FJZgSCArPNzHmdiB0olLTYItAUbvGiVB6L1XSjq',
-        },
-      },
-    );
-    const data = await response.json();
+    const {data, error} = await supabase.functions.invoke('tba-api', {
+      body: {endpoint: `/team/frc${team_number}/events/${current_year}/simple`},
+    });
+    if (error) {
+      throw error;
+    }
 
     // sort by start date
     data.sort((a: SimpleEvent, b: SimpleEvent) => {

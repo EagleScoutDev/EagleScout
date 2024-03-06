@@ -1,18 +1,11 @@
-import React, {
-  Text,
-  Alert,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {Alert, StyleSheet, TextInput, View} from 'react-native';
 import {useState} from 'react';
 import StandardButton from '../../components/StandardButton';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
 
-function ChangePasswordModal({navigation}) {
+const ChangePassword = ({navigation}) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const {colors} = useTheme();
@@ -52,7 +45,12 @@ function ChangePasswordModal({navigation}) {
         />
       </View>
       <StandardButton
-        color={colors.primary}
+        isLoading={false}
+        color={
+          newPassword !== confirmNewPassword || newPassword === ''
+            ? 'grey'
+            : colors.primary
+        }
         onPress={async () => {
           if (newPassword === '' || confirmNewPassword === '') {
             console.log('New password cannot be blank.');
@@ -122,6 +120,6 @@ function ChangePasswordModal({navigation}) {
       />
     </View>
   );
-}
+};
 
-export default ChangePasswordModal;
+export default ChangePassword;

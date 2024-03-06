@@ -13,7 +13,7 @@ import Confetti from 'react-native-confetti';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
+function ScoutingFlow({navigation, route}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -37,16 +37,25 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
+  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
+    useState(false);
+  const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
 
-  // for the full-screen incrementer
-  const [teleop_scored, setTeleop_scored] = useState({
-    cones: [],
-    cubes: [],
-  });
-  const [auto_scored, setAuto_scored] = useState({
-    cones: [],
-    cubes: [],
-  });
+  useEffect(() => {
+    FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
+      if (value != null) {
+        setScoutStylePreference(value);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (scoutStylePreference === 'Scrolling') {
+      setIsScoutStylePreferenceScrolling(true);
+    } else {
+      setIsScoutStylePreferenceScrolling(false);
+    }
+  }, [scoutStylePreference]);
 
   /**
    * Initializes fields of the report before submitting it.
@@ -93,21 +102,13 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
       for (let i = 0; i < form.length; i++) {
         if (form[i].type === 'heading') {
           tempArray[i] = null;
+        } else if (form[i].type === 'radio') {
+          tempArray[i] = form[i].defaultIndex;
         } else {
           tempArray[i] = defaultValues[form[i].type];
         }
       }
       setArrayData(tempArray);
-      if (!isScoutStylePreferenceScrolling) {
-        setAuto_scored({
-          cones: [],
-          cubes: [],
-        });
-        setTeleop_scored({
-          cones: [],
-          cubes: [],
-        });
-      }
     },
     [defaultValues, isScoutStylePreferenceScrolling],
   );
@@ -144,6 +145,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
       }
     }
     setIsOffline(!dbRequestWorked);
+    console.log('LOADINGCOMPS');
 
     if (comp != null) {
       setIsCompetitionHappening(true);
@@ -154,7 +156,7 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
     } else {
       setIsCompetitionHappening(false);
     }
-  }, [initForm]);
+  }, []);
 
   const startConfetti = () => {
     console.log('starting confetti');
@@ -284,14 +286,14 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
     // console.log('formStructure: ', formStructure);
     // console.log('a: ', a);
     let dict = {};
-    let currentHeading = a[0].text;
+    let currentHeading = a[0].title;
     // remove the first element of the array
     let ind = 0;
     while (a.length > 0) {
       let b = a.shift();
       // console.log('b: ' + b);
       if (b.type === 'heading') {
-        currentHeading = b.text;
+        currentHeading = b.title;
         dict[currentHeading] = [];
       } else {
         if (dict[currentHeading]) {
@@ -342,10 +344,6 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
             />
           ) : (
             <Gamification
-              teleop_scored={teleop_scored}
-              setTeleop_scored={setTeleop_scored}
-              auto_scored={auto_scored}
-              setAuto_scored={setAuto_scored}
               match={match}
               setMatch={setMatch}
               team={team}
@@ -363,7 +361,9 @@ function ScoutingFlow({navigation, route, isScoutStylePreferenceScrolling}) {
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>There is no competition happening currently.</Text>
+          <Text style={{color: colors.text}}>
+            There is no competition happening currently.
+          </Text>
 
           {isOffline && (
             <Text>

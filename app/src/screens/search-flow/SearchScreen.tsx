@@ -7,6 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import ReportsForTeam from './ReportsForTeam';
 import {useTheme} from '@react-navigation/native';
 import ScoutViewer from '../../components/modals/ScoutViewer';
+import SearchModal from "./SearchModal";
 
 const Stack = createStackNavigator();
 function SearchScreen() {
@@ -48,6 +49,13 @@ function SearchScreen() {
         options={{
           headerBackTitle: 'Back',
           headerTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name={'SearchModal'}
+        component={SearchModal}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

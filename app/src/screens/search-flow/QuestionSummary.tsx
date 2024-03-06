@@ -80,7 +80,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
 
     if (item.type === 'radio') {
       let counts: number[] = [];
-      for (let i = 0; i < item.labels.length; i++) {
+      for (let i = 0; i < item.options.length; i++) {
         counts.push(data.filter(datum => datum.data === i).length);
       }
       const index = counts.indexOf(Math.max(...counts));
@@ -111,9 +111,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
             textAlign: 'left',
             fontSize: 30,
           }}>
-          {item.text}
+          {item.title}
         </Text>
-        <Text>{item.description}</Text>
+        <Text style={{color: 'gray', fontWeight: 'bold'}}>
+          {item.description}
+        </Text>
       </View>
     );
   }
@@ -159,7 +161,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       {/*</Text>*/}
       {item.type === 'radio' && (
         <View>
-          {item.labels.map((label: string, index: number) => {
+          {item.options.map((label: string, index: number) => {
             return (
               <View>
                 <View
@@ -311,7 +313,12 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       )}
 
       {modalActive && (
-        <StandardModal title={item.question} visible={modalActive}>
+        <StandardModal
+          title={item.question}
+          visible={modalActive}
+          onDismiss={() => {
+            setModalActive(false);
+          }}>
           <View>
             <LineChart
               data={{

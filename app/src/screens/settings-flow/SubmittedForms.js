@@ -13,15 +13,15 @@ import {
   StyleSheet,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import ReportList from '../components/ReportList';
+import ReportList from '../../components/ReportList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme} from '@react-navigation/native';
-import SegmentedOption from '../components/pickers/SegmentedOption';
-import DBManager from '../DBManager';
+import SegmentedOption from '../../components/pickers/SegmentedOption';
+import DBManager from '../../DBManager';
 import React from 'react-native';
-import StandardButton from '../components/StandardButton';
+import StandardButton from '../../components/StandardButton';
 import Toast from 'react-native-toast-message';
-import ScoutReportsDB from '../database/ScoutReports';
+import ScoutReportsDB from '../../database/ScoutReports';
 
 const DEBUG = false;
 
