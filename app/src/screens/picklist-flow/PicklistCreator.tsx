@@ -23,7 +23,7 @@ import ProfilesDB from '../../database/Profiles';
 import {TBA} from '../../lib/TBAUtils';
 import Competitions from '../../database/Competitions';
 
-function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
+function PicklistCreator({route}: {route: {params: {picklist_id: number, currentCompID: number}}}) {
   const {colors} = useTheme();
 
   // navigates back to the previous screen once picklist is updated
@@ -49,7 +49,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
   const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
 
   // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
-  const {picklist_id} = route.params;
+  const {picklist_id, currentCompID} = route.params;
 
   // used to display the team name next to the team number
   const [teamNumberToNameMap, setTeamNumberToNameMap] = useState<
@@ -185,7 +185,11 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number}}}) {
       });
     } else {
       console.log('saving picklist to db');
-      PicklistsDB.createPicklist(name ?? 'Picklist', teams_list).then(r => {
+      PicklistsDB.createPicklist(
+        name ?? 'Picklist',
+        teams_list,
+        currentCompID,
+      ).then(r => {
         console.log('response after submitting picklist to db: ' + r);
       });
     }

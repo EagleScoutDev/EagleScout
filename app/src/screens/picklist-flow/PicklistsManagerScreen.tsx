@@ -7,6 +7,7 @@ import ProfilesDB from '../../database/Profiles';
 import {CaretRight} from '../../SVGIcons';
 import Svg, {Path} from 'react-native-svg';
 import CompetitionsDB from '../../database/Competitions';
+import Competitions from '../../database/Competitions';
 
 function PicklistsManagerScreen({navigation}) {
   const {colors} = useTheme();
@@ -15,10 +16,11 @@ function PicklistsManagerScreen({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [hoveredPicklistID, setHoveredPicklistID] = useState('');
   const [currentCompHappening, setCurrentCompHappening] = useState(false);
+  const [currentCompID, setCurrentCompID] = useState<number>(-1);
 
-  const getPicklists = (cmpId = null) => {
+  const getPicklists = (cmpId: any) => {
     // get picklists from database
-    PicklistsDB.getPicklists()
+    PicklistsDB.getPicklists(cmpId)
       .then(picklistsResponse => {
         const promises = picklistsResponse.map(picklist => {
           return ProfilesDB.getProfile(picklist.created_by);
@@ -56,15 +58,18 @@ function PicklistsManagerScreen({navigation}) {
 
   const onRefresh = () => {
     setRefreshing(true);
-    getPicklists();
+    if (currentCompID !== -1) {
+      getPicklists(currentCompID);
+    }
     setRefreshing(false);
   };
 
   useEffect(() => {
     navigation.addListener('focus', () => {
       CompetitionsDB.getCurrentCompetition().then(comp => {
-        if (comp) {
-          getPicklists();
+        if (comp != null) {
+          setCurrentCompID(comp.id);
+          getPicklists(comp.id);
           setCurrentCompHappening(true);
         }
       });
@@ -109,6 +114,7 @@ function PicklistsManagerScreen({navigation}) {
                   onPress={() => {
                     navigation.navigate('Picklist Creator', {
                       picklist_id: item.id,
+                      currentCompID: currentCompID,
                     });
                   }}
                   onLongPress={() => {
@@ -197,6 +203,7 @@ function PicklistsManagerScreen({navigation}) {
             onPress={() => {
               navigation.navigate('Picklist Creator', {
                 picklist_id: -1,
+                currentCompID: currentCompID,
               });
             }}>
             <Text
