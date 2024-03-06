@@ -1,5 +1,12 @@
 import React from 'react';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import UpcomingRoundsView from '../UpcomingRoundsView';
 import Svg, {Path} from 'react-native-svg';
@@ -55,11 +62,6 @@ const HomeMain = () => {
         <Text style={{paddingLeft: '5%', color: colors.text}}>
           Pit scouting is not yet available. Please check back later.
         </Text>
-        <Pressable onPress={() => navigation.navigate('Note Viewer')}>
-          <Text style={{paddingLeft: '5%', color: colors.text}}>
-            See all notes
-          </Text>
-        </Pressable>
       </ScrollView>
       {/*<Pressable*/}
       {/*  style={styles.scout_button}*/}
