@@ -70,8 +70,12 @@ function UserProfileBox({user}: UserProfileBoxProps) {
     <View style={styles.container}>
       <GradientShimmer
         LinearGradientComponent={LinearGradient}
-        backgroundColor={stringToColour(user.first_name.charAt(0))}
-        highlightColor={stringToColour(user.last_name.charAt(0))}
+        backgroundColor={stringToColour(
+          user.first_name ? user.first_name.charAt(0) : 'b',
+        )}
+        highlightColor={stringToColour(
+          user.last_name ? user.last_name.charAt(0) : 'b',
+        )}
         animating={true}
         duration={4000}
         easing={Easing.linear}
