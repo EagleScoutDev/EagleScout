@@ -19,6 +19,10 @@ function ScoutingView({
   setArrayData,
   submitForm,
   isSubmitting,
+  startRelativeTime,
+  setStartRelativeTime,
+  timeline,
+  setTimeline,
   isActive,
   setIsActive,
 }) {
@@ -55,7 +59,14 @@ function ScoutingView({
         setTeam={setTeam}
       />
 
-      <CrescendoModal isActive={isActive} setIsActive={setIsActive} />
+      <CrescendoModal
+        timeline={timeline}
+        setTimeline={setTimeline}
+        startRelativeTime={startRelativeTime}
+        setStartRelativeTime={setStartRelativeTime}
+        isActive={isActive}
+        setIsActive={setIsActive}
+      />
       {/*
        * The 'data' variable used here is a dictionary
        * Each key in the dictionary is a header

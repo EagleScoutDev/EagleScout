@@ -32,6 +32,10 @@ function Gamification({
   setArrayData,
   submitForm,
   isSubmitting,
+  startRelativeTime,
+  setStartRelativeTime,
+  timeline,
+  setTimeline,
   isActive,
   setIsActive,
 }) {
@@ -135,6 +139,10 @@ function Gamification({
                   <ScrollView keyboardShouldPersistTaps="handled">
                     {key === 'Teleop' && (
                       <CrescendoModal
+                        startRelativeTime={startRelativeTime}
+                        setStartRelativeTime={setStartRelativeTime}
+                        timeline={timeline}
+                        setTimeline={setTimeline}
                         isActive={isActive}
                         setIsActive={setIsActive}
                       />

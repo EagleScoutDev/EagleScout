@@ -3,34 +3,36 @@ import React, {useEffect} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 
-const CrescendoModal = ({isActive, setIsActive}) => {
+const CrescendoModal = ({
+  startRelativeTime,
+  setStartRelativeTime,
+  timeline,
+  setTimeline,
+  isActive,
+  setIsActive,
+}: {
+  startRelativeTime: number;
+  setStartRelativeTime: (firstTime: number) => void;
+  timeline: Map<number, string>;
+  setTimeline: (record: Map<number, string>) => void;
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
+}) => {
   const {colors} = useTheme();
-
-  // used to calculate relative time
-  const [firstTime, setFirstTime] = React.useState<number>(-1);
-
-  // used to store the record of timestamps to actions
-  const [record, setRecord] = React.useState<Map<number, string>>(new Map());
 
   // used for displaying to the user how many times each action was pressed
   const [actionCount, setActionCount] = React.useState<Map<string, number>>(
-    new Map(),
+    new Map([
+      ['Source', 0],
+      ['Floor', 0],
+      ['Speaker', 0],
+      ['Amp', 0],
+      ['Missed', 0],
+    ]),
   );
 
   // used for undo button
   const [timestampHistory, setTimestampHistory] = React.useState<number[]>([]);
-
-  useEffect(() => {
-    let tempActionCount = new Map<string, number>();
-
-    tempActionCount.set('Source', 0);
-    tempActionCount.set('Floor', 0);
-    tempActionCount.set('Speaker', 0);
-    tempActionCount.set('Amp', 0);
-    tempActionCount.set('Missed', 0);
-
-    setActionCount(tempActionCount);
-  }, []);
 
   const styles = StyleSheet.create({
     button: {
@@ -60,16 +62,16 @@ const CrescendoModal = ({isActive, setIsActive}) => {
   });
 
   const addItemToRecord = (label: string) => {
-    if (firstTime === -1) {
-      setFirstTime(new Date().getTime());
+    let relative_time = new Date().getTime() - startRelativeTime;
+    if (startRelativeTime === -1) {
+      setStartRelativeTime(new Date().getTime());
+      relative_time = 0;
     }
     console.log('Added item to record: ' + label);
 
-    let relative_time = new Date().getTime() - firstTime;
-
-    let newRecord = new Map(record);
+    let newRecord = new Map(timeline);
     newRecord.set(relative_time, label);
-    setRecord(newRecord);
+    setTimeline(newRecord);
 
     let newActionCount = new Map(actionCount);
     newActionCount.set(label, (newActionCount.get(label) ?? 0) + 1);
@@ -85,7 +87,7 @@ const CrescendoModal = ({isActive, setIsActive}) => {
     if (lastTimestamp === undefined) {
       return;
     }
-    let lastAction = record.get(lastTimestamp);
+    let lastAction = timeline.get(lastTimestamp);
     if (lastAction === undefined) {
       return;
     }
@@ -94,17 +96,23 @@ const CrescendoModal = ({isActive, setIsActive}) => {
     newActionCount.set(lastAction, (newActionCount.get(lastAction) ?? 0) - 1);
     setActionCount(newActionCount);
 
-    let newRecord = new Map(record);
+    let newRecord = new Map(timeline);
     newRecord.delete(lastTimestamp);
-    setRecord(newRecord);
+    setTimeline(newRecord);
 
     // if no more actions, reset firstTime
     if (newRecord.size === 0) {
-      setFirstTime(-1);
+      setStartRelativeTime(-1);
     }
   };
 
-  const InputButton = ({label, color = colors.primary}) => {
+  const InputButton = ({
+    label,
+    color = colors.primary,
+  }: {
+    label: string;
+    color?: string;
+  }) => {
     return (
       <Pressable
         style={[
@@ -180,7 +188,7 @@ const CrescendoModal = ({isActive, setIsActive}) => {
           onPress={() => {
             // print out the record
             console.log('Record: ');
-            record.forEach((value, key) => {
+            timeline.forEach((value, key) => {
               console.log(key + ' ' + value);
             });
           }}>

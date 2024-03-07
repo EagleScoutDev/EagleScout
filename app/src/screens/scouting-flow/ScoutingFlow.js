@@ -33,6 +33,10 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
+
+  const [startRelativeTime, setStartRelativeTime] = useState(-1);
+  const [timeline, setTimeline] = useState();
+
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -369,6 +373,10 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
               setArrayData={setArrayData}
               submitForm={submitForm}
               isSubmitting={isSubmitting}
+              startRelativeTime={startRelativeTime}
+              setStartRelativeTime={setStartRelativeTime}
+              timeline={timeline}
+              setTimeline={setTimeline}
               isActive={isActive}
               setIsActive={setIsActive}
             />
@@ -387,6 +395,10 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
               setArrayData={setArrayData}
               submitForm={submitForm}
               isSubmitting={isSubmitting}
+              startRelativeTime={startRelativeTime}
+              setStartRelativeTime={setStartRelativeTime}
+              timeline={timeline}
+              setTimeline={setTimeline}
               isActive={isActive}
               setIsActive={setIsActive}
             />
