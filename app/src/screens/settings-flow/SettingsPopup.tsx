@@ -48,9 +48,11 @@ const SettingsPopup = ({
   }, []);
 
   useEffect(() => {
-    saveOledPreference(JSON.stringify(localOled)).then(() => {
-      console.log('Saved OLED preference');
-    });
+    if (localOled != null) {
+      saveOledPreference(JSON.stringify(localOled)).then(() => {
+        console.log('Saved OLED preference');
+      });
+    }
   }, [localOled]);
 
   return (
