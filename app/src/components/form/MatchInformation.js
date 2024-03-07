@@ -37,8 +37,7 @@ function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
     <FormSection
       colors={colors}
       title={'Match Information'}
-      disabled={disabled}
-      description={'Enter the match and team number.'}>
+      disabled={disabled}>
       <Text style={styles.subtitle}>match number</Text>
       <TextInput
         style={

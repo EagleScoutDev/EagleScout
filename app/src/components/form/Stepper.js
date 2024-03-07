@@ -58,7 +58,7 @@ function Stepper(props) {
   });
 
   return (
-    <View style={styles.background} key={props.index}>
+    <View style={styles.background}>
       <Question title={props.title} />
       <View style={styles.container}>
         <TouchableOpacity
