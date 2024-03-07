@@ -13,6 +13,7 @@ import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import CrescendoModal from '../../components/modals/CrescendoModal';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();
@@ -31,8 +32,9 @@ function Gamification({
   setArrayData,
   submitForm,
   isSubmitting,
+  isActive,
+  setIsActive,
 }) {
-
   return (
     <>
       <Tab.Navigator
@@ -65,6 +67,9 @@ function Gamification({
           }}
           children={() => (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              {/*{isActive && (*/}
+              {/*  <CrescendoModal isActive={isActive} setIsActive={setIsActive} />*/}
+              {/*)}*/}
               <View
                 style={{
                   flex: 1,
@@ -128,6 +133,12 @@ function Gamification({
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
+                    {key === 'Teleop' && (
+                      <CrescendoModal
+                        isActive={isActive}
+                        setIsActive={setIsActive}
+                      />
+                    )}
                     <FormSection colors={colors} title={''} key={key.length}>
                       {value.map((item, vIndex) => {
                         return (

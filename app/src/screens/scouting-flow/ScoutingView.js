@@ -1,9 +1,10 @@
-import {Text, ScrollView, View} from 'react-native';
+import {Text, ScrollView, View, Modal} from 'react-native';
 import FormSection from '../../components/form/FormSection';
 import React from 'react';
 import FormComponent from '../../components/form/FormComponent';
 import MatchInformation from '../../components/form/MatchInformation';
 import StandardButton from '../../components/StandardButton';
+import CrescendoModal from '../../components/modals/CrescendoModal';
 
 function ScoutingView({
   match,
@@ -18,6 +19,8 @@ function ScoutingView({
   setArrayData,
   submitForm,
   isSubmitting,
+  isActive,
+  setIsActive,
 }) {
   return (
     <ScrollView>
@@ -52,6 +55,10 @@ function ScoutingView({
         setTeam={setTeam}
       />
 
+      <CrescendoModal isActive={isActive} setIsActive={setIsActive} />
+      <Modal visible={true} transparent={true} animationType={'slide'}>
+        <Text>ok</Text>
+      </Modal>
       {/*
        * The 'data' variable used here is a dictionary
        * Each key in the dictionary is a header

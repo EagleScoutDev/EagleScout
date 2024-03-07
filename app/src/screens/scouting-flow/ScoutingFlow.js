@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -13,7 +13,7 @@ import Confetti from 'react-native-confetti';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({navigation, route}) {
+function ScoutingFlow({navigation, route, isActive, setIsActive}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -369,6 +369,8 @@ function ScoutingFlow({navigation, route}) {
               setArrayData={setArrayData}
               submitForm={submitForm}
               isSubmitting={isSubmitting}
+              isActive={isActive}
+              setIsActive={setIsActive}
             />
           ) : (
             <Gamification
@@ -385,6 +387,8 @@ function ScoutingFlow({navigation, route}) {
               setArrayData={setArrayData}
               submitForm={submitForm}
               isSubmitting={isSubmitting}
+              isActive={isActive}
+              setIsActive={setIsActive}
             />
           )}
         </>
