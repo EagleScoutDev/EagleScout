@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
 // import Svg, {Path} from 'react-native-svg';
 import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
 import {NoteInputModal} from './components/NoteInputModal';
 import CompetitionsDB from '../../database/Competitions';
 import FormHelper from '../../FormHelper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
@@ -32,28 +33,83 @@ const NoteScreen = () => {
   const [matchesForCompetition, setMatchesForCompetition] = useState<
     TBAMatch[]
   >([]);
-  const [compID, setCompID] = useState<number>(-1);
+  const [compId, setCompId] = useState<number>(-1);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    CompetitionsDB.getCurrentCompetition().then(result => {
-      if (result == null) {
-        setCompID(-1);
-      } else {
-        setCompID(result.id);
-        TBAMatches.getMatchesForCompetition(result.id.toString()).then(
-          matches => {
-            setMatchesForCompetition(matches);
-          },
+  const loadMatches = useCallback(async () => {
+    let dbRequestWorked;
+    let dbMatches;
+    try {
+      dbMatches = await TBAMatches.getMatchesForCompetition(compId.toString());
+      dbRequestWorked = true;
+    } catch (e) {
+      dbRequestWorked = false;
+    }
+
+    let matches;
+    if (dbRequestWorked) {
+      if (dbMatches != null) {
+        matches = dbMatches;
+        await AsyncStorage.setItem(
+          FormHelper.ASYNCSTORAGE_MATCHES_KEY,
+          JSON.stringify(dbMatches),
         );
       }
+    } else {
+      const storedMatches = await FormHelper.readAsyncStorage(
+        FormHelper.ASYNCSTORAGE_MATCHES_KEY,
+      );
+      if (storedMatches != null) {
+        matches = JSON.parse(storedMatches);
+      }
+    }
+    if (matches != null) {
+      setMatchesForCompetition(matches);
+    }
+  }, [compId]);
+
+  const loadCompetition = useCallback(async () => {
+    let dbRequestWorked;
+    let dbCompetition;
+    try {
+      dbCompetition = await CompetitionsDB.getCurrentCompetition();
+      dbRequestWorked = true;
+    } catch (e) {
+      dbRequestWorked = false;
+    }
+
+    let comp;
+    if (dbRequestWorked) {
+      if (dbCompetition != null) {
+        comp = dbCompetition;
+        await AsyncStorage.setItem(
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+          JSON.stringify(dbCompetition),
+        );
+      }
+    } else {
+      const storedComp = await FormHelper.readAsyncStorage(
+        FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+      );
+      if (storedComp != null) {
+        comp = JSON.parse(storedComp);
+      }
+    }
+    if (comp != null) {
+      setCompId(comp.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCompetition().then(() => {
+      loadMatches();
     });
   }, []);
 
   useEffect(() => {
     if (
-      compID === -1 ||
+      compId === -1 ||
       matchNumber === '' ||
       matchesForCompetition.length === 0
     ) {
@@ -65,17 +121,13 @@ const NoteScreen = () => {
       .sort((a, b) => (a.alliance === 'red' ? -1 : 1))
       .map(match => match.team.replace('frc', ''))
       .map(match => Number(match));
-    if (teams.length === 0) {
-      setMatchNumberError(true);
-      return;
-    }
     setMatchNumberError(false);
     console.log(teams);
     setAlliances({
       red: teams.slice(0, 3),
       blue: teams.slice(3, 6),
     });
-  }, [matchNumber, compID, matchesForCompetition]);
+  }, [matchNumber, compId, matchesForCompetition]);
 
   const submitNote = async () => {
     setModalVisible(false);
@@ -85,13 +137,13 @@ const NoteScreen = () => {
       if (noteContents[team] === '') {
         continue;
       }
-      if (!googleResponse) {
+      if (googleResponse) {
         promises.push(
           NotesDB.createNote(
             noteContents[team],
             Number(team),
             Number(matchNumber),
-            compID,
+            compId,
           ),
         );
       } else {
@@ -99,7 +151,8 @@ const NoteScreen = () => {
           FormHelper.saveNoteOffline({
             content: noteContents[team],
             team_number: Number(team),
-            match_id: Number(matchNumber),
+            match_number: Number(matchNumber),
+            comp_id: compId,
             created_at: new Date(),
           }),
         );
@@ -169,7 +222,7 @@ const NoteScreen = () => {
     },
   });
 
-  if (compID === -1) {
+  if (compId === -1) {
     return (
       <View
         style={{

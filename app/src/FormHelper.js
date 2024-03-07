@@ -4,6 +4,7 @@ class FormHelper {
   static DEBUG = false;
   static LATEST_FORM = 'current-form';
   static ASYNCSTORAGE_COMPETITION_KEY = 'current-competition';
+  static ASYNCSTORAGE_MATCHES_KEY = 'current-matches';
   static SCOUTING_STYLE = 'scoutingStyle';
   static THEME = 'themePreference';
 
@@ -77,7 +78,10 @@ class FormHelper {
   }
 
   static async deleteOfflineNote(createdAt, teamNumber) {
-    await AsyncStorage.removeItem('note-' + createdAt + '-' + teamNumber);
+    createdAt = new Date(createdAt);
+    await AsyncStorage.removeItem(
+      `note-${createdAt.getUTCMilliseconds()}-${teamNumber}`,
+    );
   }
 }
 

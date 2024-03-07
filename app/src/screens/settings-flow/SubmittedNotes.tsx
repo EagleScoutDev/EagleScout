@@ -143,22 +143,29 @@ export const SubmittedNotes = () => {
                 }
 
                 setLoading(true);
+                const promises = [];
                 for (const note of offlineNotes) {
-                  NotesDB.createOfflineNote(note)
-                    .then(() => {
-                      FormHelper.deleteOfflineNote(
-                        note.created_at,
-                        note.team_number,
-                      );
-                    })
-                    .catch(() => {
-                      Alert.alert(
-                        'Error',
-                        'An error occurred while pushing offline reports',
-                      );
-                    });
+                  promises.push(
+                    NotesDB.createOfflineNote(note)
+                      .then(() =>
+                        FormHelper.deleteOfflineNote(
+                          note.created_at,
+                          note.team_number,
+                        ),
+                      )
+                      .catch(err => {
+                        console.log(err);
+                        Alert.alert(
+                          'Error',
+                          'An error occurred while pushing offline reports',
+                        );
+                      }),
+                  );
                 }
+                await Promise.all(promises);
                 await getOnlineNotes();
+                await getOfflineNotes();
+                setLoading(false);
               }}
             />
             <NoteList notes={offlineNotes} />

@@ -19,11 +19,13 @@ export type NoteStructureWithMatchNumber = NoteStructure & {
   competition_name?: string;
 };
 
-export type OfflineNote = Pick<
-  Partial<NoteStructureWithMatchNumber>,
-  'created_by' | 'match_number'
-> &
-  Omit<NoteStructureWithMatchNumber, 'created_by' | 'match_number'>;
+export type OfflineNote = {
+  content: string;
+  team_number: number;
+  comp_id: number;
+  match_number: number;
+  created_at: Date;
+};
 
 class NotesDB {
   /**
@@ -96,14 +98,6 @@ class NotesDB {
     if (!matchExists) {
       matchId = await this.createMatch(matchNumber, competitionId);
     }
-
-    // console.log('user_id: ', user_id);
-    //
-    // console.log('title: ', title);
-    // console.log('content: ', content);
-    // console.log('team_number: ', team_number);
-    // console.log('match_id: ', match_id);
-    // console.log('user_id: ', user_id);
 
     const {error} = await supabase.from('notes').insert([
       {
@@ -254,11 +248,19 @@ class NotesDB {
   }
 
   static async createOfflineNote(note: OfflineNote): Promise<void> {
-    const {data, error} = await supabase.from('offline_notes').insert([
+    let {exists: matchExists, id: matchId} = await this.checkIfMatchExists(
+      note.match_number,
+      note.comp_id,
+    );
+
+    if (!matchExists) {
+      matchId = await this.createMatch(note.match_number, note.comp_id);
+    }
+    const {data, error} = await supabase.from('notes').insert([
       {
         content: note.content,
         team_number: note.team_number,
-        match_number: note.match_id,
+        match_id: matchId,
       },
     ]);
     if (error) {
