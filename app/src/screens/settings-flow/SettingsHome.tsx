@@ -1,4 +1,12 @@
-import { Alert, Pressable, SafeAreaView, Settings, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  SafeAreaView,
+  Settings,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {Path, Svg} from 'react-native-svg';
 import InternetStatus from '../../lib/InternetStatus';
 import UserProfileBox from '../../components/UserProfileBox';
@@ -186,6 +194,14 @@ const SettingsHome = ({
           text={'View Your Reports'}
           onPress={() => {
             navigation.navigate('Reports');
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+        />
+        <ListItem
+          text={'View Your Notes'}
+          onPress={() => {
+            navigation.navigate('Notes');
           }}
           caretVisible={true}
           disabled={internetStatus !== InternetStatus.CONNECTED}

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import {NoteStructureWithMatchNumber} from '../database/Notes';
+import {NoteStructureWithMatchNumber, OfflineNote} from '../database/Notes';
 import Svg, {Path} from 'react-native-svg';
 
 export enum FilterType {
@@ -24,13 +24,13 @@ export const NoteList = ({
   notes,
   onClose,
 }: {
-  notes: NoteStructureWithMatchNumber[];
+  notes: (NoteStructureWithMatchNumber | OfflineNote)[];
   onClose?: () => void;
 }) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredNotes, setFilteredNotes] =
-    useState<NoteStructureWithMatchNumber[]>(notes);
+    useState<(NoteStructureWithMatchNumber | OfflineNote)[]>(notes);
   const [filterBy, setFilterBy] = useState<FilterType>(FilterType.TEXT);
   const [filterModalVisible, setFilterModalVisible] = useState<boolean>(false);
 
@@ -42,7 +42,7 @@ export const NoteList = ({
     const filtered = notes.filter(note => {
       if (filterBy === FilterType.MATCH_NUMBER) {
         return (
-          note.match_number.toString().includes(searchTerm) ||
+          note.match_number?.toString().includes(searchTerm) ||
           note.team_number.toString().includes(searchTerm)
         );
       }
@@ -145,6 +145,7 @@ export const NoteList = ({
             <View style={{flexDirection: 'row'}}>
               <Text style={{color: colors.text, fontWeight: 'bold'}}>
                 Match {item.match_number} - Team {item.team_number}
+                {item.competition_name ? ` - ${item.competition_name}` : ''}
               </Text>
             </View>
             <Text style={{color: colors.text}}>{item.content}</Text>

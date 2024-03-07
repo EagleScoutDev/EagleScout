@@ -12,6 +12,7 @@ import NotesDB from '../../database/Notes';
 import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
 import {NoteInputModal} from './components/NoteInputModal';
 import CompetitionsDB from '../../database/Competitions';
+import FormHelper from '../../FormHelper';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
@@ -79,18 +80,30 @@ const NoteScreen = () => {
   const submitNote = async () => {
     setModalVisible(false);
     const promises = [];
+    const googleResponse = await fetch('https://google.com').catch(() => {});
     for (const team of Object.keys(noteContents)) {
       if (noteContents[team] === '') {
         continue;
       }
-      promises.push(
-        NotesDB.createNote(
-          noteContents[team],
-          Number(team),
-          Number(matchNumber),
-          compID,
-        ),
-      );
+      if (!googleResponse) {
+        promises.push(
+          NotesDB.createNote(
+            noteContents[team],
+            Number(team),
+            Number(matchNumber),
+            compID,
+          ),
+        );
+      } else {
+        promises.push(
+          FormHelper.saveNoteOffline({
+            content: noteContents[team],
+            team_number: Number(team),
+            match_id: Number(matchNumber),
+            created_at: new Date(),
+          }),
+        );
+      }
     }
     await Promise.all(promises);
     clearAllFields();

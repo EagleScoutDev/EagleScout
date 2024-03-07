@@ -16,7 +16,14 @@ export interface NoteStructure {
 
 export type NoteStructureWithMatchNumber = NoteStructure & {
   match_number: number;
+  competition_name?: string;
 };
+
+export type OfflineNote = Pick<
+  Partial<NoteStructureWithMatchNumber>,
+  'created_by' | 'match_number'
+> &
+  Omit<NoteStructureWithMatchNumber, 'created_by' | 'match_number'>;
 
 class NotesDB {
   /**
@@ -213,6 +220,50 @@ class NotesDB {
       }
     }
     return res;
+  }
+
+  static async getNotesForSelf(): Promise<NoteStructureWithMatchNumber[]> {
+    const {
+      data: {user},
+    } = await supabase.auth.getUser();
+    if (user == null) {
+      throw new Error('User not logged in');
+    }
+    const res: NoteStructureWithMatchNumber[] = [];
+    const {data, error} = await supabase
+      .from('notes')
+      .select('*, matches(number, competitions(name))')
+      .eq('created_by', user.id);
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        res.push({
+          id: data[i].id,
+          content: data[i].content,
+          team_number: data[i].team_number,
+          match_id: data[i].match_id,
+          created_at: data[i].created_at,
+          created_by: data[i].created_by,
+          match_number: data[i].matches.number,
+          competition_name: data[i].matches.competitions.name,
+        });
+      }
+    }
+    return res;
+  }
+
+  static async createOfflineNote(note: OfflineNote): Promise<void> {
+    const {data, error} = await supabase.from('offline_notes').insert([
+      {
+        content: note.content,
+        team_number: note.team_number,
+        match_number: note.match_id,
+      },
+    ]);
+    if (error) {
+      throw error;
+    }
   }
 }
 

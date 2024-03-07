@@ -59,6 +59,26 @@ class FormHelper {
       }),
     );
   }
+
+  static async saveNoteOffline(note) {
+    note.created_at = new Date();
+    await AsyncStorage.setItem(
+      'note-' + note.created_at.getUTCMilliseconds() + '-' + note.team_number,
+      JSON.stringify(note),
+    );
+  }
+
+  static async getOfflineNotes() {
+    const keys = await AsyncStorage.getAllKeys();
+    const notes = await AsyncStorage.multiGet(keys);
+    return notes
+      .filter(note => note[0].includes('note-'))
+      .map(note => JSON.parse(note[1]));
+  }
+
+  static async deleteOfflineNote(createdAt, teamNumber) {
+    await AsyncStorage.removeItem('note-' + createdAt + '-' + teamNumber);
+  }
 }
 
 export default FormHelper;
