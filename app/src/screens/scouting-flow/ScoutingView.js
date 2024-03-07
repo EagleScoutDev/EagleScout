@@ -56,9 +56,6 @@ function ScoutingView({
       />
 
       <CrescendoModal isActive={isActive} setIsActive={setIsActive} />
-      <Modal visible={true} transparent={true} animationType={'slide'}>
-        <Text>ok</Text>
-      </Modal>
       {/*
        * The 'data' variable used here is a dictionary
        * Each key in the dictionary is a header

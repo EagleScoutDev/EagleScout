@@ -123,7 +123,11 @@ const CrescendoModal = ({isActive, setIsActive}) => {
   };
 
   return (
-    <Modal visible={true} transparent={false} presentationStyle={'formSheet'}>
+    <Modal
+      visible={isActive}
+      transparent={false}
+      animationType={'slide'}
+      presentationStyle={'formSheet'}>
       <View
         style={{
           flex: 1,
