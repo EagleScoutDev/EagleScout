@@ -46,7 +46,9 @@ export const NoteInputModal = ({
             setCurrentTeam(team);
             setLocalContent(noteContents[team]);
           }}
-          completed={Object.values(completed)}
+          completed={Object.keys(completed).map(
+            key => completed[parseInt(key)],
+          )}
         />
         <KeyboardAvoidingView
           style={{flex: 1, height: '100%'}}
