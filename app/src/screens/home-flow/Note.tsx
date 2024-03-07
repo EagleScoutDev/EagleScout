@@ -25,7 +25,9 @@ const NoteScreen = () => {
     red: number[];
     blue: number[];
   }>({red: [], blue: []});
-  const [selectedAlliance, setSelectedAlliance] = useState<string>('');
+  const [selectedAlliance, setSelectedAlliance] = useState<'red' | 'blue' | ''>(
+    '',
+  );
   const [noteContents, setNoteContents] = useState<{
     [key: string]: string;
   }>({});
@@ -129,6 +131,19 @@ const NoteScreen = () => {
     });
   }, [matchNumber, compId, matchesForCompetition]);
 
+  useEffect(() => {
+    if (selectedAlliance === '') {
+      return;
+    }
+    const newNoteContents: {
+      [key: string]: string;
+    } = {};
+    alliances[selectedAlliance].forEach(team => {
+      newNoteContents[team] = '';
+    });
+    setNoteContents(newNoteContents);
+  }, [alliances, selectedAlliance]);
+
   const submitNote = async () => {
     setModalVisible(false);
     const promises = [];
@@ -160,17 +175,6 @@ const NoteScreen = () => {
     }
     await Promise.all(promises);
     clearAllFields();
-  };
-
-  const selectAlliance = (alliance: 'red' | 'blue') => {
-    setSelectedAlliance(alliance);
-    const newNoteContents: {
-      [key: string]: string;
-    } = {};
-    alliances[alliance].forEach(team => {
-      newNoteContents[team] = '';
-    });
-    setNoteContents(newNoteContents);
   };
 
   const clearAllFields = () => {
@@ -288,7 +292,7 @@ const NoteScreen = () => {
                 borderRadius: 10,
                 flex: 1,
               }}
-              onPress={() => selectAlliance('red')}>
+              onPress={() => setSelectedAlliance('red')}>
               <Text
                 style={{
                   color: colors.text,
@@ -306,7 +310,7 @@ const NoteScreen = () => {
                 borderRadius: 10,
                 flex: 1,
               }}
-              onPress={() => selectAlliance('blue')}>
+              onPress={() => setSelectedAlliance('blue')}>
               <Text
                 style={{
                   color: colors.text,
