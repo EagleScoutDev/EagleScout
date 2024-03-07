@@ -15,12 +15,14 @@ interface SettingsMainProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
   setScoutingStyle: (arg0: string) => void;
+  setOled: (arg0: boolean) => void;
 }
 
 function SettingsMain({
   onSignOut,
   setTheme,
   setScoutingStyle,
+  setOled,
 }: SettingsMainProps) {
   const [user, setUser] = useState<StoredUser | null>(null);
 
@@ -51,6 +53,7 @@ function SettingsMain({
             onSignOut={onSignOut}
             setScoutingStyle={setScoutingStyle}
             setTheme={setTheme}
+            setOled={setOled}
           />
         )}
       />

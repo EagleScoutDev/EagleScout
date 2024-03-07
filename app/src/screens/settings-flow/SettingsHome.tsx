@@ -18,7 +18,7 @@ import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
-import Competitions from "../../database/Competitions";
+import Competitions from '../../database/Competitions';
 
 const VERSION = '7.1';
 
@@ -26,12 +26,14 @@ interface SettingsHomeProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
   setScoutingStyle: (arg0: string) => void;
+  setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
   setScoutingStyle,
   setTheme,
+  setOled,
 }: SettingsHomeProps) => {
   const {colors} = useTheme();
   const [settingsPopupActive, setSettingsPopupActive] = useState(false);
@@ -234,6 +236,7 @@ const SettingsHome = ({
       <SettingsPopup
         visible={settingsPopupActive}
         setVisible={setSettingsPopupActive}
+        setOled={setOled}
         setScoutingStyle={setScoutingStyle}
         setTheme={setTheme}
         navigation={navigation}
