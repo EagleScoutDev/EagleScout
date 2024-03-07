@@ -2,6 +2,7 @@ import React, {
   Alert,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -30,6 +31,7 @@ const FormCreationMain = ({navigation}) => {
   const [numberModalVisible, setNumberModalVisible] = useState(false);
   const [radioModalVisible, setRadioModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false);
+  const [pitScoutingForm, setPitScoutingForm] = useState(false);
 
   const newQuestionStyles = StyleSheet.create({
     textInput: {
@@ -104,6 +106,7 @@ const FormCreationMain = ({navigation}) => {
         await Forms.addForm({
           name: name,
           formStructure: questions,
+          pitScouting: pitScoutingForm,
         });
       } catch (e) {
         success = false;
@@ -136,6 +139,21 @@ const FormCreationMain = ({navigation}) => {
         onCancel={onFormCancel}
         questions={questions}
       />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+          borderWidth: 1,
+          borderColor: colors.border,
+          // borderRadius: 10,
+          padding: '5%',
+        }}>
+        <Text style={{color: colors.text, fontSize: 16}}>
+          Is this a pit scouting form?
+        </Text>
+        <Switch value={pitScoutingForm} onValueChange={setPitScoutingForm} />
+      </View>
       <ScrollView>
         {questions.map((question, index) => {
           return (
