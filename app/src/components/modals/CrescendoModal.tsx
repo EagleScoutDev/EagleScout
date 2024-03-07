@@ -152,7 +152,7 @@ const CrescendoModal = ({isActive, setIsActive}) => {
           style={{
             flexDirection: 'row',
             width: '40%',
-            backgroundColor: 'lightgray',
+            backgroundColor: colors.border,
             justifyContent: 'space-evenly',
             alignItems: 'center',
             paddingHorizontal: '2%',
