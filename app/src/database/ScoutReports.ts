@@ -1,11 +1,17 @@
 import {supabase} from '../lib/supabase';
 
+interface TimelineElement {
+  time: number;
+  label: string;
+}
+
 interface ScoutReport {
   reportId: number;
   matchNumber: number;
   teamNumber: number;
   data: [];
   competitionId: number;
+  timelineData?: TimelineElement[];
 }
 
 interface ScoutReportWithDate extends ScoutReport {
@@ -54,6 +60,7 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
         });
       }
     }
@@ -77,7 +84,7 @@ class ScoutReportsDB {
     if (error) {
       throw error;
     } else {
-      console.log('here2')
+      console.log('here2');
       for (let i = 0; i < data.length; i += 1) {
         res.push({
           reportId: data[i].id,
@@ -89,6 +96,7 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
         });
       }
     }
@@ -109,7 +117,7 @@ class ScoutReportsDB {
       throw error;
     } else {
       for (let i = 0; i < data.length; i += 1) {
-        console.log('here3')
+        console.log('here3');
         res.push({
           reportId: data[i].id,
           matchNumber: data[i].matches.number,
@@ -120,6 +128,7 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
         });
       }
     }
@@ -154,6 +163,7 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
         });
       }
     }
@@ -166,6 +176,7 @@ class ScoutReportsDB {
       match_number_arg: report.matchNumber,
       team_number_arg: report.teamNumber,
       data_arg: report.data,
+      timeline_data: report.timelineData,
     });
     if (error) {
       throw error;
@@ -183,6 +194,7 @@ class ScoutReportsDB {
       team_number_arg: report.teamNumber,
       data_arg: report.data,
       created_at_arg: report.createdAt,
+      timeline_data: report.timelineData,
     });
     if (error) {
       throw error;

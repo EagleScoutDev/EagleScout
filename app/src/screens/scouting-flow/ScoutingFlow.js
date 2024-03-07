@@ -68,6 +68,11 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
    */
   function initData(dataToSubmit, tempArray) {
     dataToSubmit.data = tempArray;
+    const timelineRecord = {};
+    timeline.forEach((value, key) => {
+      timelineRecord[key] = value;
+    });
+    dataToSubmit.timelineData = timelineRecord;
     dataToSubmit.matchNumber = match;
     dataToSubmit.teamNumber = team;
     dataToSubmit.competitionId = competition.id;
