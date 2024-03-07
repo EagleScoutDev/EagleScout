@@ -37,6 +37,8 @@ export default function PitScoutingFlow() {
   const [competitionLoading, setCompetitionLoading] = useState(true);
   const [currentCompetition, setCurrentCompetition] = useState<any>();
 
+  const [noActiveCompetition, setNoActiveCompetition] = useState(false);
+
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -98,8 +100,10 @@ export default function PitScoutingFlow() {
   useEffect(() => {
     CompetitionsDB.getCurrentCompetition().then(competition => {
       if (!competition) {
+        setNoActiveCompetition(true);
         return;
       }
+      setNoActiveCompetition(false);
       const transformedStructure = transformStructure(
         competition.pitScoutFormStructure,
       );
@@ -128,6 +132,14 @@ export default function PitScoutingFlow() {
     return true;
   };
   const submitForm = async () => {
+    if (noActiveCompetition) {
+      Alert.alert(
+        'Error: No Active Competition',
+        "There is no active competition. You can't submit a pit scouting report without an active competition",
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     console.log('Submitting form', formData);
     if (team === '') {
