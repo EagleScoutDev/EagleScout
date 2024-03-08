@@ -125,6 +125,8 @@ class PitScoutReports {
     teamId: number,
     competitionId: number,
   ): Promise<PitScoutReportReturnData[]> {
+    console.log('teamId', teamId);
+    console.log('competitionId', competitionId);
     const {data, error} = await supabase
       .from('pit_scout_reports')
       .select(

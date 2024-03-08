@@ -125,7 +125,7 @@ class CompetitionsDB {
     competitionId: number,
   ): Promise<CompetitionReturnData> {
     const {data, error} = await supabase.rpc('get_competition_by_id', {
-      id: competitionId,
+      id_arg: competitionId,
     });
     // .from('competitions')
     // .select('*, forms( form_structure )')
@@ -143,12 +143,12 @@ class CompetitionsDB {
         scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
       }
       return {
-        id: data.id,
-        name: data.name,
-        startTime: data.start_time,
-        endTime: data.end_time,
-        formId: data.form_id,
-        form: data.form_structure,
+        id: data[0].competition_id,
+        name: data[0].competition_name,
+        startTime: data[0].start_time,
+        endTime: data[0].end_time,
+        formId: data[0].form_id,
+        form: data[0].form_structure,
         scoutAssignmentsConfig: scoutAssignmentsConfig,
         pitScoutFormId: data[0].pit_scout_form_id,
         pitScoutFormStructure: data[0].pit_scout_form_structure,
