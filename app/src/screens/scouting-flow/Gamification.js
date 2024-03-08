@@ -38,6 +38,8 @@ function Gamification({
   setTimeline,
   isActive,
   setIsActive,
+  onLabelPress,
+  onLabelUndo,
 }) {
   return (
     <>
@@ -145,6 +147,8 @@ function Gamification({
                         setTimeline={setTimeline}
                         isActive={isActive}
                         setIsActive={setIsActive}
+                        onLabelPress={onLabelPress}
+                        onLabelUndo={onLabelUndo}
                       />
                     )}
                     <FormSection colors={colors} title={''} key={key.length}>

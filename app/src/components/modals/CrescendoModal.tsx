@@ -1,5 +1,5 @@
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 
@@ -10,6 +10,8 @@ const CrescendoModal = ({
   setTimeline,
   isActive,
   setIsActive,
+  onLabelPress,
+  onLabelUndo,
 }: {
   startRelativeTime: number;
   setStartRelativeTime: (firstTime: number) => void;
@@ -17,6 +19,8 @@ const CrescendoModal = ({
   setTimeline: (record: Map<number, string>) => void;
   isActive: boolean;
   setIsActive: (active: boolean) => void;
+  onLabelPress: (label: string) => void;
+  onLabelUndo: (label: string) => void;
 }) => {
   const {colors} = useTheme();
 
@@ -77,6 +81,8 @@ const CrescendoModal = ({
     newActionCount.set(label, (newActionCount.get(label) ?? 0) + 1);
     setActionCount(newActionCount);
 
+    onLabelPress(label);
+
     // storing the last action in case of undo
     setTimestampHistory([...timestampHistory, relative_time]);
   };
@@ -99,6 +105,8 @@ const CrescendoModal = ({
     let newRecord = new Map(timeline);
     newRecord.delete(lastTimestamp);
     setTimeline(newRecord);
+
+    onLabelUndo(lastAction);
 
     // if no more actions, reset firstTime
     if (newRecord.size === 0) {

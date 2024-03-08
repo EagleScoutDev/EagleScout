@@ -25,6 +25,8 @@ function ScoutingView({
   setTimeline,
   isActive,
   setIsActive,
+  onLabelPress,
+  onLabelUndo,
 }) {
   return (
     <ScrollView>
@@ -66,6 +68,8 @@ function ScoutingView({
         setStartRelativeTime={setStartRelativeTime}
         isActive={isActive}
         setIsActive={setIsActive}
+        onLabelPress={onLabelPress}
+        onLabelUndo={onLabelUndo}
       />
       {/*
        * The 'data' variable used here is a dictionary

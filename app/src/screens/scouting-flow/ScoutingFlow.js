@@ -318,6 +318,32 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
     //console.log('dict: ', dict);
   }, [formStructure]);
 
+  const onLabelPress = label => {
+    //find the index of the label in the form structure, where the type is number and link_to is the label
+    const index = formStructure.findIndex(
+      element => element.type === 'number' && element.link_to === label,
+    );
+    if (index === -1) {
+      return;
+    }
+    const tempArray = [...arrayData];
+    tempArray[index] = tempArray[index] + 1;
+    setArrayData(tempArray);
+  };
+
+  const onLabelUndo = label => {
+    //find the index of the label in the form structure, where the type is number and link_to is the label
+    const index = formStructure.findIndex(
+      element => element.type === 'number' && element.link_to === label,
+    );
+    if (index === -1) {
+      return;
+    }
+    const tempArray = [...arrayData];
+    tempArray[index] = tempArray[index] - 1;
+    setArrayData(tempArray);
+  };
+
   const styles = StyleSheet.create({
     textInput: {
       height: 40,
@@ -384,6 +410,8 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
               setTimeline={setTimeline}
               isActive={isActive}
               setIsActive={setIsActive}
+              onLabelPress={onLabelPress}
+              onLabelUndo={onLabelUndo}
             />
           ) : (
             <Gamification
@@ -406,6 +434,8 @@ function ScoutingFlow({navigation, route, isActive, setIsActive}) {
               setTimeline={setTimeline}
               isActive={isActive}
               setIsActive={setIsActive}
+              onLabelPress={onLabelPress}
+              onLabelUndo={onLabelUndo}
             />
           )}
         </>
