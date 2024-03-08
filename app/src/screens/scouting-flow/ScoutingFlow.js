@@ -209,10 +209,11 @@ function ScoutingFlow({navigation, route}) {
 
     initData(dataToSubmit, tempArray);
 
-    // make a request to google.com and get the response
-    const googleResponse = await fetch('https://google.com').catch(() => {});
+    const internetResponse = CompetitionsDB.getCurrentCompetition()
+      .then(() => true)
+      .catch(() => false);
 
-    if (!googleResponse) {
+    if (!internetResponse) {
       FormHelper.saveFormOffline({
         ...dataToSubmit,
         form: formStructure,
