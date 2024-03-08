@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
 
-const VERSION = '7.1.1';
+const VERSION = '7.1.1 (OTA 2)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
