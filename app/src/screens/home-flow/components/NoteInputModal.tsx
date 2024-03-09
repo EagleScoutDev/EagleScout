@@ -31,9 +31,6 @@ export const NoteInputModal = ({
   const [currentTeam, setCurrentTeam] = useState<number>(
     Number(Object.keys(noteContents)[0]) || 0,
   );
-  const [completed, setCompleted] = useState<{
-    [key: number]: boolean;
-  }>({});
   const {colors} = useTheme();
   return (
     <Modal visible={true} animationType={'slide'}>
@@ -46,8 +43,8 @@ export const NoteInputModal = ({
             setCurrentTeam(team);
             setLocalContent(noteContents[team]);
           }}
-          completed={Object.keys(completed).map(
-            key => completed[parseInt(key)],
+          completed={Object.keys(noteContents).map(
+            key => noteContents[parseInt(key)].length > 0,
           )}
         />
         <KeyboardAvoidingView
@@ -75,10 +72,6 @@ export const NoteInputModal = ({
                 style={{flex: 1, color: colors.text, fontSize: 20}}
                 onChangeText={text => {
                   setLocalContent(text);
-                  setCompleted({
-                    ...completed,
-                    [currentTeam]: text.length > 0,
-                  });
                   setNoteContents({
                     ...noteContents,
                     [currentTeam]: text,
