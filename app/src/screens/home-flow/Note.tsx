@@ -39,11 +39,13 @@ const NoteScreen = () => {
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const loadMatches = useCallback(async () => {
+  const loadMatches = async (competitionId: number) => {
     let dbRequestWorked;
     let dbMatches;
     try {
-      dbMatches = await TBAMatches.getMatchesForCompetition(compId.toString());
+      dbMatches = await TBAMatches.getMatchesForCompetition(
+        competitionId.toString(),
+      );
       dbRequestWorked = true;
     } catch (e) {
       dbRequestWorked = false;
@@ -69,9 +71,9 @@ const NoteScreen = () => {
     if (matches != null) {
       setMatchesForCompetition(matches);
     }
-  }, [compId]);
+  };
 
-  const loadCompetition = useCallback(async () => {
+  const loadCompetition = async () => {
     let dbRequestWorked;
     let dbCompetition;
     try {
@@ -100,12 +102,16 @@ const NoteScreen = () => {
     }
     if (comp != null) {
       setCompId(comp.id);
+      return comp.id;
     }
-  }, []);
+  };
 
   useEffect(() => {
-    loadCompetition().then(() => {
-      loadMatches();
+    loadCompetition().then(competitionId => {
+      if (competitionId === undefined) {
+        return;
+      }
+      loadMatches(competitionId);
     });
   }, []);
 
