@@ -4,6 +4,7 @@ class FormHelper {
   static DEBUG = false;
   static LATEST_FORM = 'current-form';
   static ASYNCSTORAGE_COMPETITION_KEY = 'current-competition';
+  static ASYNCSTORAGE_MATCHES_KEY = 'current-matches';
   static SCOUTING_STYLE = 'scoutingStyle';
   static THEME = 'themePreference';
   static OLED = 'oled';
@@ -58,6 +59,29 @@ class FormHelper {
         ...originalReport,
         data: data,
       }),
+    );
+  }
+
+  static async saveNoteOffline(note) {
+    note.created_at = new Date();
+    await AsyncStorage.setItem(
+      'note-' + note.created_at.getUTCMilliseconds() + '-' + note.team_number,
+      JSON.stringify(note),
+    );
+  }
+
+  static async getOfflineNotes() {
+    const keys = await AsyncStorage.getAllKeys();
+    const notes = await AsyncStorage.multiGet(keys);
+    return notes
+      .filter(note => note[0].includes('note-'))
+      .map(note => JSON.parse(note[1]));
+  }
+
+  static async deleteOfflineNote(createdAt, teamNumber) {
+    createdAt = new Date(createdAt);
+    await AsyncStorage.removeItem(
+      `note-${createdAt.getUTCMilliseconds()}-${teamNumber}`,
     );
   }
 }

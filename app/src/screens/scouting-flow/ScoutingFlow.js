@@ -209,7 +209,7 @@ function ScoutingFlow({navigation, route}) {
 
     initData(dataToSubmit, tempArray);
 
-    const internetResponse = CompetitionsDB.getCurrentCompetition()
+    const internetResponse = await CompetitionsDB.getCurrentCompetition()
       .then(() => true)
       .catch(() => false);
 

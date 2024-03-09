@@ -115,7 +115,7 @@ const PlusNavigationModal = () => {
         <TouchableOpacity
           style={styles.grouping}
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate('Home', {screen: 'Note'});
           }}>
           <View style={styles.icon_box}>
             <Svg width="100%" height="100%" viewBox="0 0 16 16">
