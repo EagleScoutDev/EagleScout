@@ -17,10 +17,12 @@ import FormHelper from '../../FormHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import Confetti from 'react-native-confetti/confettiView';
+import {useHeaderHeight} from '@react-navigation/elements';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
   const {colors} = useTheme();
+  const height = useHeaderHeight();
   const [matchNumber, setMatchNumber] = useState<string>('');
 
   const [alliances, setAlliances] = useState<{
@@ -250,9 +252,6 @@ const NoteScreen = () => {
       margin: '2%',
       borderRadius: 10,
       bottom: '5%',
-      position: 'absolute',
-      left: 0,
-      right: 0,
     },
     title_text_input: {
       color: colors.text,
@@ -297,11 +296,10 @@ const NoteScreen = () => {
         <Confetti ref={setConfettiView} timeout={10} duration={3000} />
       </View>
       <KeyboardAvoidingView
-        style={{flexDirection: 'column', flex: 1}}
-        behavior={'height'}>
-        <View>
-          <Text style={styles.title_text_input}>Create a Note</Text>
-        </View>
+        style={{flex: 1}}
+        behavior={'padding'}
+        keyboardVerticalOffset={height}>
+        <Text style={styles.title_text_input}>Create a Note</Text>
         <View style={styles.number_container}>
           <Text style={styles.number_label}>Match Number</Text>
           <TextInput
@@ -375,6 +373,7 @@ const NoteScreen = () => {
             </View>
           </View>
         )}
+        <View style={{flex: 1}} />
         <TouchableOpacity
           style={styles.submit_button_styling}
           onPress={() => {
@@ -394,16 +393,16 @@ const NoteScreen = () => {
             Next
           </Text>
         </TouchableOpacity>
-        {modalVisible && (
-          <NoteInputModal
-            onSubmit={submitNote}
-            isLoading={isLoading}
-            selectedAlliance={selectedAlliance}
-            noteContents={noteContents}
-            setNoteContents={setNoteContents}
-          />
-        )}
       </KeyboardAvoidingView>
+      {modalVisible && (
+        <NoteInputModal
+          onSubmit={submitNote}
+          isLoading={isLoading}
+          selectedAlliance={selectedAlliance}
+          noteContents={noteContents}
+          setNoteContents={setNoteContents}
+        />
+      )}
     </>
   );
 };
