@@ -16,6 +16,7 @@ import NotesDB, {
   OfflineNote,
 } from '../../database/Notes';
 import {NoteList} from '../../components/NoteList';
+import CompetitionsDB from '../../database/Competitions';
 
 export const SubmittedNotes = () => {
   const [notes, setNotes] = useState<NoteStructureWithMatchNumber[]>([]);
@@ -130,11 +131,12 @@ export const SubmittedNotes = () => {
               color={'red'}
               text={'Push offline to database'}
               onPress={async () => {
-                const googleResponse = await fetch('https://google.com').catch(
-                  () => {},
-                );
+                const internetResponse =
+                  await CompetitionsDB.getCurrentCompetition()
+                    .then(() => true)
+                    .catch(() => false);
 
-                if (!googleResponse) {
+                if (!internetResponse) {
                   Alert.alert(
                     'No internet connection',
                     'Please connect to the internet to push offline reports',

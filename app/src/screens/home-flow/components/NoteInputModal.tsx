@@ -16,11 +16,13 @@ import {NoteFAB} from './NoteFAB';
 
 export const NoteInputModal = ({
   onSubmit,
+  isLoading,
   selectedAlliance,
   noteContents,
   setNoteContents,
 }: {
   onSubmit: () => void;
+  isLoading: boolean;
   selectedAlliance: string;
   noteContents: {
     [key: string]: string;
@@ -99,7 +101,7 @@ export const NoteInputModal = ({
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-      <NoteFAB onSubmitPress={onSubmit} />
+      <NoteFAB onSubmitPress={onSubmit} isLoading={isLoading} />
     </Modal>
   );
 };

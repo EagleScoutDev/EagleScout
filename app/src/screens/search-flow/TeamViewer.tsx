@@ -67,7 +67,7 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
               padding: '5%',
               borderRadius: 10,
             }}>
-            See all scouting reports
+            See all scouting reports and notes
           </Text>
           {CaretRight()}
         </TouchableOpacity>

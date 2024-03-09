@@ -5,9 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
-} from 'react-native';
-import {useCallback, useEffect, useState} from 'react';
+  KeyboardAvoidingView, Alert
+} from "react-native";
+import React, {useCallback, useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
 // import Svg, {Path} from 'react-native-svg';
 import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
@@ -15,13 +15,14 @@ import {NoteInputModal} from './components/NoteInputModal';
 import CompetitionsDB from '../../database/Competitions';
 import FormHelper from '../../FormHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import Confetti from 'react-native-confetti/confettiView';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
   const {colors} = useTheme();
   const [matchNumber, setMatchNumber] = useState<string>('');
 
-  const [matchNumberError, setMatchNumberError] = useState<boolean>(false);
   const [alliances, setAlliances] = useState<{
     red: number[];
     blue: number[];
@@ -39,6 +40,9 @@ const NoteScreen = () => {
   const [compId, setCompId] = useState<number>(-1);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [confettiView, setConfettiView] = useState<any>(null);
+  const [matchNumberValid, setMatchNumberValid] = useState<boolean>(false);
 
   const loadMatches = async (competitionId: number) => {
     let dbRequestWorked;
@@ -129,13 +133,18 @@ const NoteScreen = () => {
       .filter(match => match.match === Number(matchNumber))
       .sort((a, b) => (a.alliance === 'red' ? -1 : 1))
       .map(match => match.team.replace('frc', ''))
+      .map(match => match.replace(/[A-Za-z]/g, ' '))
       .map(match => Number(match));
-    setMatchNumberError(false);
     console.log(teams);
-    setAlliances({
-      red: teams.slice(0, 3),
-      blue: teams.slice(3, 6),
-    });
+    if (teams.length === 6) {
+      setAlliances({
+        red: teams.slice(0, 3),
+        blue: teams.slice(3, 6),
+      });
+      setMatchNumberValid(true);
+    } else {
+      setMatchNumberValid(false);
+    }
   }, [matchNumber, compId, matchesForCompetition]);
 
   useEffect(() => {
@@ -151,15 +160,22 @@ const NoteScreen = () => {
     setNoteContents(newNoteContents);
   }, [alliances, selectedAlliance]);
 
+  const startConfetti = () => {
+    console.log('starting confetti');
+    confettiView.startConfetti();
+  };
+
   const submitNote = async () => {
-    setModalVisible(false);
+    setIsLoading(true);
     const promises = [];
-    const googleResponse = await fetch('https://google.com').catch(() => {});
+    const internetResponse = await CompetitionsDB.getCurrentCompetition()
+      .then(() => true)
+      .catch(() => false);
     for (const team of Object.keys(noteContents)) {
       if (noteContents[team] === '') {
         continue;
       }
-      if (googleResponse) {
+      if (internetResponse) {
         promises.push(
           NotesDB.createNote(
             noteContents[team],
@@ -181,7 +197,23 @@ const NoteScreen = () => {
       }
     }
     await Promise.all(promises);
+    if (internetResponse) {
+      Toast.show({
+        type: 'success',
+        text1: 'Note submitted!',
+        visibilityTime: 3000,
+      });
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Note saved offline successfully!',
+        visibilityTime: 3000,
+      });
+    }
+    startConfetti();
     clearAllFields();
+    setIsLoading(false);
+    setModalVisible(false);
   };
 
   const clearAllFields = () => {
@@ -213,9 +245,7 @@ const NoteScreen = () => {
     },
     submit_button_styling: {
       backgroundColor:
-        matchNumber === '' || selectedAlliance === '' || matchNumberError
-          ? 'grey'
-          : colors.primary,
+        matchNumber === '' || selectedAlliance === '' ? 'grey' : colors.primary,
       padding: '5%',
       margin: '2%',
       borderRadius: 10,
@@ -250,107 +280,131 @@ const NoteScreen = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{flexDirection: 'column', flex: 1}}
-      behavior={'height'}>
-      <View>
-        <Text style={styles.title_text_input}>Create a Note</Text>
+    <>
+      <View
+        style={{
+          zIndex: 100,
+          // allow touch through
+          pointerEvents: 'none',
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}>
+        <Confetti ref={setConfettiView} timeout={10} duration={3000} />
       </View>
-      <View style={styles.number_container}>
-        <Text style={styles.number_label}>Match Number</Text>
-        <TextInput
-          onChangeText={text => setMatchNumber(text)}
-          value={matchNumber}
-          placeholder={'###'}
-          placeholderTextColor={'grey'}
-          keyboardType={'number-pad'}
-          style={[
-            styles.number_field,
-            matchNumberError && {borderColor: 'red'},
-          ]}
-        />
-      </View>
-      {matchNumber !== '' && (
+      <KeyboardAvoidingView
+        style={{flexDirection: 'column', flex: 1}}
+        behavior={'height'}>
         <View>
-          <Text
-            style={{
-              color: colors.text,
-              fontWeight: 'bold',
-              fontSize: 20,
-              textAlign: 'center',
-              marginVertical: '2%',
-            }}>
-            Select Alliance
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginVertical: '2%',
-              justifyContent: 'space-between',
-              marginRight: '5%',
-              marginLeft: '5%',
-              gap: 10,
-            }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor:
-                  selectedAlliance === 'red'
-                    ? colors.notification
-                    : colors.card,
-                padding: '5%',
-                borderRadius: 10,
-                flex: 1,
-              }}
-              onPress={() => setSelectedAlliance('red')}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                Red
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                backgroundColor:
-                  selectedAlliance === 'blue' ? colors.primary : colors.card,
-                padding: '5%',
-                borderRadius: 10,
-                flex: 1,
-              }}
-              onPress={() => setSelectedAlliance('blue')}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                Blue
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.title_text_input}>Create a Note</Text>
         </View>
-      )}
-      <TouchableOpacity
-        style={styles.submit_button_styling}
-        onPress={() => setModalVisible(true)}
-        disabled={
-          matchNumber === '' || selectedAlliance === '' || matchNumberError
-        }>
-        <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
-          Next
-        </Text>
-      </TouchableOpacity>
-      {modalVisible && (
-        <NoteInputModal
-          onSubmit={submitNote}
-          selectedAlliance={selectedAlliance}
-          noteContents={noteContents}
-          setNoteContents={setNoteContents}
-        />
-      )}
-    </KeyboardAvoidingView>
+        <View style={styles.number_container}>
+          <Text style={styles.number_label}>Match Number</Text>
+          <TextInput
+            onChangeText={text => setMatchNumber(text)}
+            value={matchNumber}
+            placeholder={'###'}
+            placeholderTextColor={'grey'}
+            keyboardType={'number-pad'}
+            style={[styles.number_field]}
+          />
+        </View>
+        {matchNumber !== '' && (
+          <View>
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: 'bold',
+                fontSize: 20,
+                textAlign: 'center',
+                marginVertical: '2%',
+              }}>
+              Select Alliance
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: '2%',
+                justifyContent: 'space-between',
+                marginRight: '5%',
+                marginLeft: '5%',
+                gap: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedAlliance === 'red'
+                      ? colors.notification
+                      : colors.card,
+                  padding: '5%',
+                  borderRadius: 10,
+                  flex: 1,
+                }}
+                onPress={() => setSelectedAlliance('red')}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Red
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedAlliance === 'blue' ? colors.primary : colors.card,
+                  padding: '5%',
+                  borderRadius: 10,
+                  flex: 1,
+                }}
+                onPress={() => setSelectedAlliance('blue')}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Blue
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        <TouchableOpacity
+          style={styles.submit_button_styling}
+          onPress={() => {
+            if (matchNumberValid) {
+              setModalVisible(true);
+            } else {
+              Alert.alert(
+                'Match number invalid',
+                'Match number invalid. Please check if the match number you entered is correct.',
+              );
+            }
+          }}
+          disabled={
+            matchNumber === '' || selectedAlliance === ''
+          }>
+          <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
+            Next
+          </Text>
+        </TouchableOpacity>
+        {modalVisible && (
+          <NoteInputModal
+            onSubmit={submitNote}
+            isLoading={isLoading}
+            selectedAlliance={selectedAlliance}
+            noteContents={noteContents}
+            setNoteContents={setNoteContents}
+          />
+        )}
+      </KeyboardAvoidingView>
+    </>
   );
 };
 
