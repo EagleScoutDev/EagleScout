@@ -145,66 +145,79 @@ const FormCreationMain = ({navigation}) => {
                   setNewQuestionModalVisible(true);
                 }}
               />
-              {question.type === 'heading' && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIndex(index);
-                    setHeadingModalVisible(true);
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: 18,
+                    fontWeight: '600',
+                    marginLeft: '5%',
                   }}>
-                  <HeadingSummary
-                    question={question}
-                    onDelete={() => {
-                      setIndex(index);
-                      onDelete();
-                    }}
-                  />
-                </TouchableOpacity>
-              )}
-              {question.type === 'radio' && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIndex(index);
-                    setRadioModalVisible(true);
-                  }}>
-                  <RadioSummary
-                    question={question}
-                    onDelete={() => {
-                      setIndex(index);
-                      onDelete();
-                    }}
-                  />
-                </TouchableOpacity>
-              )}
-              {question.type === 'number' && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIndex(index);
-                    setNumberModalVisible(true);
-                  }}>
-                  <NumberSummary
-                    question={question}
-                    onDelete={() => {
-                      setIndex(index);
-                      onDelete();
-                    }}
-                  />
-                </TouchableOpacity>
-              )}
-              {question.type === 'textbox' && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIndex(index);
-                    setTextModalVisible(true);
-                  }}>
-                  <TextBoxSummary
-                    question={question}
-                    onDelete={() => {
-                      setIndex(index);
-                      onDelete();
-                    }}
-                  />
-                </TouchableOpacity>
-              )}
+                  {index + 1}
+                </Text>
+                <View style={{flex: 1}}>
+                  {question.type === 'heading' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIndex(index);
+                        setHeadingModalVisible(true);
+                      }}>
+                      <HeadingSummary
+                        question={question}
+                        onDelete={() => {
+                          setIndex(index);
+                          onDelete();
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  {question.type === 'radio' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIndex(index);
+                        setRadioModalVisible(true);
+                      }}>
+                      <RadioSummary
+                        question={question}
+                        onDelete={() => {
+                          setIndex(index);
+                          onDelete();
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  {question.type === 'number' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIndex(index);
+                        setNumberModalVisible(true);
+                      }}>
+                      <NumberSummary
+                        question={question}
+                        onDelete={() => {
+                          setIndex(index);
+                          onDelete();
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  {question.type === 'textbox' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIndex(index);
+                        setTextModalVisible(true);
+                      }}>
+                      <TextBoxSummary
+                        question={question}
+                        onDelete={() => {
+                          setIndex(index);
+                          onDelete();
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
             </>
           );
         })}

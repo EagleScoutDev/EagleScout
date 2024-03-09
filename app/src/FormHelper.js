@@ -7,6 +7,7 @@ class FormHelper {
   static ASYNCSTORAGE_MATCHES_KEY = 'current-matches';
   static SCOUTING_STYLE = 'scoutingStyle';
   static THEME = 'themePreference';
+  static OLED = 'oled';
 
   /**
    * Reads form data from AsyncStorage

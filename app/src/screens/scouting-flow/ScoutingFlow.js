@@ -37,7 +37,8 @@ function ScoutingFlow({navigation, route}) {
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
-  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] = useState(false);
+  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
+    useState(false);
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
 
   useEffect(() => {
@@ -78,7 +79,7 @@ function ScoutingFlow({navigation, route}) {
     for (let i = 0; i < formStructure.length; i++) {
       if (
         formStructure[i].required &&
-        tempArray[i] === defaultValues[formStructure[i].type] &&
+        (tempArray[i] === '' || tempArray[i] == null) &&
         formStructure[i].type !== 'number'
       ) {
         Alert.alert(
@@ -286,14 +287,14 @@ function ScoutingFlow({navigation, route}) {
     // console.log('formStructure: ', formStructure);
     // console.log('a: ', a);
     let dict = {};
-    let currentHeading = a[0].text;
+    let currentHeading = a[0].title;
     // remove the first element of the array
     let ind = 0;
     while (a.length > 0) {
       let b = a.shift();
       // console.log('b: ' + b);
       if (b.type === 'heading') {
-        currentHeading = b.text;
+        currentHeading = b.title;
         dict[currentHeading] = [];
       } else {
         if (dict[currentHeading]) {
@@ -390,7 +391,9 @@ function ScoutingFlow({navigation, route}) {
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>There is no competition happening currently.</Text>
+          <Text style={{color: colors.text}}>
+            There is no competition happening currently.
+          </Text>
 
           {isOffline && (
             <Text>

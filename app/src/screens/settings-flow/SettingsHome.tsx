@@ -18,19 +18,22 @@ import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
+import Competitions from '../../database/Competitions';
 
-const VERSION = '3.0.1';
+const VERSION = '7.1.1 (OTA 2)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
   setScoutingStyle: (arg0: string) => void;
+  setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
   setScoutingStyle,
   setTheme,
+  setOled,
 }: SettingsHomeProps) => {
   const {colors} = useTheme();
   const [settingsPopupActive, setSettingsPopupActive] = useState(false);
@@ -89,7 +92,7 @@ const SettingsHome = ({
   const testConnection = () => {
     // attempt connection to picklist table
     setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-    PicklistsDB.getPicklists()
+    Competitions.getCurrentCompetition()
       .then(() => {
         setInternetStatus(InternetStatus.CONNECTED);
       })
@@ -165,6 +168,11 @@ const SettingsHome = ({
           }}
           caretVisible={true}
           disabled={internetStatus !== InternetStatus.CONNECTED}
+          icon={() => (
+            <Svg width="16" height="16" fill={'gray'} viewBox="0 0 16 16">
+              <Path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001" />
+            </Svg>
+          )}
         />
         <ListItem
           text={'Change Password'}
@@ -173,6 +181,11 @@ const SettingsHome = ({
           }}
           caretVisible={true}
           disabled={internetStatus !== InternetStatus.CONNECTED}
+          icon={() => (
+            <Svg width="16" height="16" fill="gray" viewBox="0 0 16 16">
+              <Path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1" />
+            </Svg>
+          )}
         />
         <ListItem
           text={'Request Account Deletion'}
@@ -181,12 +194,23 @@ const SettingsHome = ({
           }}
           caretVisible={true}
           disabled={internetStatus !== InternetStatus.CONNECTED}
+          icon={() => (
+            <Svg width="16" height="16" fill="red" viewBox="0 0 16 16">
+              <Path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
+            </Svg>
+          )}
         />
         <ListItem
           text={'Sign Out'}
           onPress={() => attemptSignOut()}
           caretVisible={false}
           disabled={false}
+          icon={() => (
+            <Svg width="16" height="16" fill={colors.text} viewBox="0 0 16 16">
+              <Path d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+              <Path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+            </Svg>
+          )}
         />
       </ListItemContainer>
       <ListItemContainer title={''}>
@@ -197,6 +221,16 @@ const SettingsHome = ({
           }}
           caretVisible={true}
           disabled={internetStatus !== InternetStatus.CONNECTED}
+          icon={() => (
+            <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <Path
+                fill-rule="evenodd"
+                d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8z"
+              />
+              <Path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+              <Path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+            </Svg>
+          )}
         />
         <ListItem
           text={'View Your Notes'}
@@ -210,6 +244,7 @@ const SettingsHome = ({
       <SettingsPopup
         visible={settingsPopupActive}
         setVisible={setSettingsPopupActive}
+        setOled={setOled}
         setScoutingStyle={setScoutingStyle}
         setTheme={setTheme}
         navigation={navigation}

@@ -111,9 +111,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
             textAlign: 'left',
             fontSize: 30,
           }}>
-          {item.text}
+          {item.title}
         </Text>
-        <Text>{item.description}</Text>
+        <Text style={{color: 'gray', fontWeight: 'bold'}}>
+          {item.description}
+        </Text>
       </View>
     );
   }
@@ -311,7 +313,12 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       )}
 
       {modalActive && (
-        <StandardModal title={item.question} visible={modalActive}>
+        <StandardModal
+          title={item.question}
+          visible={modalActive}
+          onDismiss={() => {
+            setModalActive(false);
+          }}>
           <View>
             <LineChart
               data={{

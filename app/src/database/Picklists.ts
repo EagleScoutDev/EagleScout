@@ -17,29 +17,22 @@ export interface PicklistStructure {
   created_at: Date;
   name: string;
   created_by: string;
+  competition_id: string;
 }
 
 class PicklistsDB {
-  static async getPicklists(): Promise<PicklistStructure[]> {
-    const {data, error} = await supabase.from('picklist').select('*');
+  static async getPicklists(
+    competition_id: any,
+  ): Promise<PicklistStructure[]> {
+    const {data, error} = await supabase
+      .from('picklist')
+      .select('*')
+      .eq('competition_id', competition_id);
     if (error) {
       throw error;
     } else {
       return data;
     }
-  }
-
-  static async getTeamsAtCompetition(comp_id: string): Promise<SimpleTeam[]> {
-    const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/event/${comp_id}/teams/simple`,
-      {
-        headers: {
-          'X-TBA-Auth-Key':
-            'fx9XTT4fik6zzzNIkkfYORUfGhwlRUUu57Qa0xhZce4uVqYJ1Ekk9holo4d1qFw6',
-        },
-      },
-    );
-    return await response.json();
   }
 
   static async getPicklist(picklist_id: string): Promise<PicklistStructure> {
@@ -54,6 +47,18 @@ class PicklistsDB {
     }
   }
 
+  static async deletePicklist(picklist_id: any) {
+    const {data, error, count} = await supabase
+      .from('picklist')
+      .delete()
+      .eq('id', picklist_id);
+    if (error) {
+      throw error;
+    } else {
+      return data;
+    }
+  }
+
   static async getUserId() {
     ProfilesDB.getCurrentUserProfile().then(profile => {
       console.log('Profile id:', profile.id);
@@ -61,7 +66,7 @@ class PicklistsDB {
     });
   }
 
-  static async createPicklist(name: string, teams: number[]) {
+  static async createPicklist(name: string, teams: number[], cmpId: any) {
     try {
       // Before creating a picklist, confirm that user_id is not null and exists in the user table
       // Your logic for checking if the user exists in your 'users' table can go here
@@ -72,6 +77,7 @@ class PicklistsDB {
           teams: teams,
           created_at: new Date(),
           name: name,
+          competition_id: cmpId,
         },
       ]);
 
