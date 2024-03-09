@@ -5,14 +5,12 @@ import {
   KeyboardAvoidingView,
   Modal,
   SafeAreaView,
-  StyleSheet,
-  Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import {SegmentedTeamSelector} from './SegmentedTeamSelector';
 import {NoteFAB} from './NoteFAB';
+import {useHeaderHeight} from '@react-navigation/elements';
 
 export const NoteInputModal = ({
   onSubmit,
@@ -27,29 +25,42 @@ export const NoteInputModal = ({
   };
   setNoteContents: (contents: {[key: string]: string}) => void;
 }) => {
+  const height = useHeaderHeight();
   const [localContent, setLocalContent] = useState<string>('');
   const [currentTeam, setCurrentTeam] = useState<number>(
     Number(Object.keys(noteContents)[0]) || 0,
   );
   const {colors} = useTheme();
   return (
-    <Modal visible={true} animationType={'slide'}>
-      <SafeAreaView style={{flex: 1, backgroundColor: colors.card}}>
-        <SegmentedTeamSelector
-          color={selectedAlliance}
-          teams={Object.keys(noteContents).map(key => parseInt(key))}
-          selectedTeam={currentTeam}
-          setSelectedTeam={(team: number) => {
-            setCurrentTeam(team);
-            setLocalContent(noteContents[team]);
-          }}
-          completed={Object.keys(noteContents).map(
-            key => noteContents[parseInt(key)].length > 0,
-          )}
-        />
+    <Modal
+      visible={true}
+      animationType={'slide'}
+      presentationStyle={'overFullScreen'}
+      style={{
+        flex: 1,
+        height: '100%',
+      }}>
+      <SafeAreaView
+        style={{flex: 1, height: '100%', backgroundColor: colors.card}}>
         <KeyboardAvoidingView
-          style={{flex: 1, height: '100%'}}
+          style={{
+            flex: 1,
+            height: '100%',
+          }}
+          keyboardVerticalOffset={height}
           behavior={'padding'}>
+          <SegmentedTeamSelector
+            color={selectedAlliance}
+            teams={Object.keys(noteContents).map(key => parseInt(key))}
+            selectedTeam={currentTeam}
+            setSelectedTeam={(team: number) => {
+              setCurrentTeam(team);
+              setLocalContent(noteContents[team]);
+            }}
+            completed={Object.keys(noteContents).map(
+              key => noteContents[parseInt(key)].length > 0,
+            )}
+          />
           <View
             style={{
               flex: 1,
@@ -82,24 +93,16 @@ export const NoteInputModal = ({
                 placeholderTextColor={'grey'}
               />
             </View>
-            {/*<TouchableOpacity*/}
-            {/*  onPress={() => {*/}
-            {/*    setContent(localContent);*/}
-            {/*    onSubmit();*/}
-            {/*  }}*/}
-            {/*  style={{*/}
-            {/*    ...styles.button,*/}
-            {/*    alignSelf: 'flex-end',*/}
-            {/*    paddingtop: insets.top,*/}
-            {/*    zIndex: 2,*/}
-            {/*    right: '5%',*/}
-            {/*  }}>*/}
-            {/*  <Text style={{color: colors.background}}>Save</Text>*/}
-            {/*</TouchableOpacity>*/}
+          </View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+            }}>
+            <NoteFAB onSubmitPress={onSubmit} />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-      <NoteFAB onSubmitPress={onSubmit} />
     </Modal>
   );
 };

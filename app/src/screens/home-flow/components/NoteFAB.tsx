@@ -16,9 +16,10 @@ export const NoteFAB = ({
   const {colors} = useTheme();
   const styles = StyleSheet.create({
     fab: {
-      position: 'absolute',
-      bottom: insets.bottom + 20,
+      // position: 'absolute',
+      // bottom: insets.bottom + 20,
       right: 20,
+      alignSelf: 'flex-end',
     },
     fabButton: {
       backgroundColor: colors.primary,

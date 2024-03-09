@@ -15,10 +15,12 @@ import {NoteInputModal} from './components/NoteInputModal';
 import CompetitionsDB from '../../database/Competitions';
 import FormHelper from '../../FormHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useHeaderHeight} from '@react-navigation/elements';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
   const {colors} = useTheme();
+  const height = useHeaderHeight();
   const [matchNumber, setMatchNumber] = useState<string>('');
 
   const [matchNumberError, setMatchNumberError] = useState<boolean>(false);
@@ -220,9 +222,6 @@ const NoteScreen = () => {
       margin: '2%',
       borderRadius: 10,
       bottom: '5%',
-      position: 'absolute',
-      left: 0,
-      right: 0,
     },
     title_text_input: {
       color: colors.text,
@@ -250,98 +249,100 @@ const NoteScreen = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{flexDirection: 'column', flex: 1}}
-      behavior={'height'}>
-      <View>
+    <>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={'padding'}
+        keyboardVerticalOffset={height}>
         <Text style={styles.title_text_input}>Create a Note</Text>
-      </View>
-      <View style={styles.number_container}>
-        <Text style={styles.number_label}>Match Number</Text>
-        <TextInput
-          onChangeText={text => setMatchNumber(text)}
-          value={matchNumber}
-          placeholder={'###'}
-          placeholderTextColor={'grey'}
-          keyboardType={'number-pad'}
-          style={[
-            styles.number_field,
-            matchNumberError && {borderColor: 'red'},
-          ]}
-        />
-      </View>
-      {matchNumber !== '' && (
-        <View>
-          <Text
-            style={{
-              color: colors.text,
-              fontWeight: 'bold',
-              fontSize: 20,
-              textAlign: 'center',
-              marginVertical: '2%',
-            }}>
-            Select Alliance
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginVertical: '2%',
-              justifyContent: 'space-between',
-              marginRight: '5%',
-              marginLeft: '5%',
-              gap: 10,
-            }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor:
-                  selectedAlliance === 'red'
-                    ? colors.notification
-                    : colors.card,
-                padding: '5%',
-                borderRadius: 10,
-                flex: 1,
-              }}
-              onPress={() => setSelectedAlliance('red')}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                Red
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                backgroundColor:
-                  selectedAlliance === 'blue' ? colors.primary : colors.card,
-                padding: '5%',
-                borderRadius: 10,
-                flex: 1,
-              }}
-              onPress={() => setSelectedAlliance('blue')}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                Blue
-              </Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.number_container}>
+          <Text style={styles.number_label}>Match Number</Text>
+          <TextInput
+            onChangeText={text => setMatchNumber(text)}
+            value={matchNumber}
+            placeholder={'###'}
+            placeholderTextColor={'grey'}
+            keyboardType={'number-pad'}
+            style={[
+              styles.number_field,
+              matchNumberError && {borderColor: 'red'},
+            ]}
+          />
         </View>
-      )}
-      <TouchableOpacity
-        style={styles.submit_button_styling}
-        onPress={() => setModalVisible(true)}
-        disabled={
-          matchNumber === '' || selectedAlliance === '' || matchNumberError
-        }>
-        <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
-          Next
-        </Text>
-      </TouchableOpacity>
+        {matchNumber !== '' && (
+          <View>
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: 'bold',
+                fontSize: 20,
+                textAlign: 'center',
+                marginVertical: '2%',
+              }}>
+              Select Alliance
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: '2%',
+                justifyContent: 'space-between',
+                marginRight: '5%',
+                marginLeft: '5%',
+                gap: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedAlliance === 'red'
+                      ? colors.notification
+                      : colors.card,
+                  padding: '5%',
+                  borderRadius: 10,
+                  flex: 1,
+                }}
+                onPress={() => setSelectedAlliance('red')}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Red
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedAlliance === 'blue' ? colors.primary : colors.card,
+                  padding: '5%',
+                  borderRadius: 10,
+                  flex: 1,
+                }}
+                onPress={() => setSelectedAlliance('blue')}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Blue
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        <View style={{flex: 1}} />
+        <TouchableOpacity
+          style={styles.submit_button_styling}
+          onPress={() => setModalVisible(true)}
+          disabled={
+            matchNumber === '' || selectedAlliance === '' || matchNumberError
+          }>
+          <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
+            Next
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
       {modalVisible && (
         <NoteInputModal
           onSubmit={submitNote}
@@ -350,7 +351,7 @@ const NoteScreen = () => {
           setNoteContents={setNoteContents}
         />
       )}
-    </KeyboardAvoidingView>
+    </>
   );
 };
 
