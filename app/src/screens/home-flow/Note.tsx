@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {useCallback, useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
@@ -249,7 +250,9 @@ const NoteScreen = () => {
   }
 
   return (
-    <View style={{flexDirection: 'column', flex: 1}}>
+    <KeyboardAvoidingView
+      style={{flexDirection: 'column', flex: 1}}
+      behavior={'height'}>
       <View>
         <Text style={styles.title_text_input}>Create a Note</Text>
       </View>
@@ -347,7 +350,7 @@ const NoteScreen = () => {
           setNoteContents={setNoteContents}
         />
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
