@@ -1,6 +1,6 @@
 import {supabase} from '../lib/supabase';
 
-interface TBAMatch {
+export interface TBAMatch {
   id: number;
   team: string;
   match: number;

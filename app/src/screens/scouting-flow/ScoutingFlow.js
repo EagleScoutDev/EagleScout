@@ -79,7 +79,7 @@ function ScoutingFlow({navigation, route}) {
     for (let i = 0; i < formStructure.length; i++) {
       if (
         formStructure[i].required &&
-        tempArray[i] === defaultValues[formStructure[i].type] &&
+        (tempArray[i] === '' || tempArray[i] == null) &&
         formStructure[i].type !== 'number'
       ) {
         Alert.alert(
@@ -209,10 +209,11 @@ function ScoutingFlow({navigation, route}) {
 
     initData(dataToSubmit, tempArray);
 
-    // make a request to google.com and get the response
-    const googleResponse = await fetch('https://google.com').catch(() => {});
+    const internetResponse = await CompetitionsDB.getCurrentCompetition()
+      .then(() => true)
+      .catch(() => false);
 
-    if (!googleResponse) {
+    if (!internetResponse) {
       FormHelper.saveFormOffline({
         ...dataToSubmit,
         form: formStructure,

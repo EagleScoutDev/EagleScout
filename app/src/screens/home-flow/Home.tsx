@@ -4,6 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ScoutingFlow from '../scouting-flow/ScoutingFlow';
 import HomeMain from './HomeMain';
+import NoteScreen from './Note';
 import Svg, {Path} from 'react-native-svg';
 
 const HomeStack = createStackNavigator();
@@ -91,6 +92,13 @@ function Home() {
           ),
         }}
         component={ScoutingFlow}
+      />
+      <HomeStack.Screen
+        name={'Note'}
+        options={{
+          headerBackTitle: 'Home',
+        }}
+        component={NoteScreen}
       />
     </HomeStack.Navigator>
   );

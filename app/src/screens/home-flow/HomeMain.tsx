@@ -1,5 +1,12 @@
 import React from 'react';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import UpcomingRoundsView from '../UpcomingRoundsView';
 import Svg, {Path} from 'react-native-svg';

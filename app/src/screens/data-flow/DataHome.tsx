@@ -20,6 +20,7 @@ import {StoredUser} from '../../lib/StoredUser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, {Path} from 'react-native-svg';
 import {useColorScheme} from 'react-native';
+import Competitions from "../../database/Competitions";
 
 const DataHome = ({navigation}) => {
   const {colors} = useTheme();
@@ -48,7 +49,7 @@ const DataHome = ({navigation}) => {
   const testConnection = () => {
     // attempt connection to picklist table
     setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-    PicklistsDB.getPicklists()
+    Competitions.getCurrentCompetition()
       .then(() => {
         setInternetStatus(InternetStatus.CONNECTED);
       })

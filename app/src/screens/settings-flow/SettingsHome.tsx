@@ -18,19 +18,22 @@ import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
+import Competitions from '../../database/Competitions';
 
-const VERSION = '7.0.1';
+const VERSION = '7.1.1 (OTA 3)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
   setScoutingStyle: (arg0: string) => void;
+  setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
   setScoutingStyle,
   setTheme,
+  setOled,
 }: SettingsHomeProps) => {
   const {colors} = useTheme();
   const [settingsPopupActive, setSettingsPopupActive] = useState(false);
@@ -89,7 +92,7 @@ const SettingsHome = ({
   const testConnection = () => {
     // attempt connection to picklist table
     setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-    PicklistsDB.getPicklists()
+    Competitions.getCurrentCompetition()
       .then(() => {
         setInternetStatus(InternetStatus.CONNECTED);
       })
@@ -229,10 +232,24 @@ const SettingsHome = ({
             </Svg>
           )}
         />
+        <ListItem
+          text={'View Your Notes'}
+          onPress={() => {
+            navigation.navigate('Notes');
+          }}
+          caretVisible={true}
+          disabled={internetStatus !== InternetStatus.CONNECTED}
+          icon={() => (
+            <Svg width="16" height="16" fill="purple" viewBox="0 0 16 16">
+              <Path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z" />
+            </Svg>
+          )}
+        />
       </ListItemContainer>
       <SettingsPopup
         visible={settingsPopupActive}
         setVisible={setSettingsPopupActive}
+        setOled={setOled}
         setScoutingStyle={setScoutingStyle}
         setTheme={setTheme}
         navigation={navigation}
