@@ -13,10 +13,10 @@ const EntrypointHome = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.background,
+      backgroundColor: 'rgb(0,0,25)',
     },
     title: {
-      color: colors.text,
+      color: 'rgb(191, 219, 247)',
       fontSize: 40,
       fontWeight: 'bold',
     },
@@ -35,8 +35,8 @@ const EntrypointHome = () => {
       </View>
       <View style={{width: '100%', position: 'absolute', bottom: '10%'}}>
         <StandardButton
-          textColor={colors.text}
-          color={colors.background}
+          textColor={'white'}
+          color={'rgb(0,0,25)'}
           isLoading={false}
           onPress={() => {
             navigation.navigate('Login');
@@ -44,8 +44,8 @@ const EntrypointHome = () => {
           text={'Login'}
         />
         <StandardButton
-          textColor={colors.background}
-          color={colors.text}
+          textColor={colors.primary}
+          color={'rgb(0,0,25)'}
           isLoading={false}
           onPress={() => {
             navigation.navigate('Sign');
