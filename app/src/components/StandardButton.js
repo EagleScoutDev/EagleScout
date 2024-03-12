@@ -12,6 +12,7 @@ function StandardButton({
   width = '80%',
   text,
   isLoading = false,
+  disabled = false,
 }) {
   const baseButtonStyle = {
     backgroundColor: color,
@@ -43,7 +44,7 @@ function StandardButton({
     <TouchableOpacity
       style={isLoading ? styles.button_loading : styles.button}
       onPress={onPress}
-      disabled={isLoading}>
+      disabled={isLoading || disabled}>
       {isLoading && <ActivityIndicator size="small" color="#ffffff" />}
       <Text style={styles.button_text}>{text}</Text>
     </TouchableOpacity>

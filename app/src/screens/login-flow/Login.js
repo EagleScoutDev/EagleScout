@@ -12,6 +12,7 @@ import {StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 const Login = ({onSubmit, error, ifAuth}) => {
   let [username, setUsername] = useState();
   let [password, setPassword] = useState();
@@ -30,14 +31,14 @@ const Login = ({onSubmit, error, ifAuth}) => {
 
   const styles = StyleSheet.create({
     input: {
-      textAlign: 'center',
-      padding: 10,
+      textAlign: 'left',
+      padding: '5%',
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: colors.text,
-      margin: 10,
-      marginHorizontal: 30,
-      color: colors.text,
+      borderBottomWidth: 1,
+      borderColor: 'gray',
+      // margin: 10,
+      // marginHorizontal: 30,
+      color: 'white',
     },
     titleText: {
       textAlign: 'left',
@@ -55,7 +56,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
     },
     link_container: {
       flexDirection: 'row',
-      padding: '5%',
+      padding: '4%',
       // backgroundColor: colors.card,
       borderRadius: 20,
 
@@ -64,7 +65,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
       // marginHorizontal: '5%',
       // marginVertical: '2%',
 
-      justifyContent: 'space-evenly',
+      // justifyContent: 'space-evenly',
     },
   });
 
@@ -85,7 +86,8 @@ const Login = ({onSubmit, error, ifAuth}) => {
               margin: '3%',
               borderRadius: 10,
               position: 'absolute',
-              top: '20%',
+              top: '5%',
+              right: '5%',
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
@@ -95,21 +97,13 @@ const Login = ({onSubmit, error, ifAuth}) => {
         )}
         <Text style={styles.titleText}>Log In</Text>
         <>
-          <View
-            style={{
-              backgroundColor: colors.card,
-              borderRadius: 10,
-              margin: '5%',
-              padding: '5%',
-
-              borderColor: colors.border,
-              borderWidth: 4,
-              // top: '15%',
-            }}>
+          <View>
+            <MinimalSectionHeader title={'Email'} />
             <TextInput
               onChangeText={setUsername}
               value={username}
-              placeholder="Email"
+              placeholder="john.doe@team114.org"
+              placeholderTextColor={'gray'}
               style={{
                 ...styles.input,
                 borderColor:
@@ -117,28 +111,33 @@ const Login = ({onSubmit, error, ifAuth}) => {
                   error === 'auth/invalid-email' ||
                   error === 'auth/internal-error'
                     ? 'red'
-                    : colors.text,
+                    : 'gray',
               }}
               inputMode={'email'}
             />
+            <View style={{height: 30}} />
+            <MinimalSectionHeader title={'Password'} />
             <TextInput
               onChangeText={setPassword}
               value={password}
-              placeholder="Password"
               style={{
                 ...styles.input,
                 borderColor:
                   error === 'auth/internal-error' ||
                   error === 'auth/wrong-password'
                     ? 'red'
-                    : colors.text,
+                    : 'gray',
               }}
               secureTextEntry={true}
             />
             <StandardButton
               text={'Log In'}
+              textColor={
+                username === '' || password === '' ? 'red' : colors.primary
+              }
+              disabled={username === '' || password === ''}
               onPress={() => onSubmit(username, password, navigation)}
-              color={colors.primary}
+              // color={colors.primary}
             />
 
             {/*<View*/}
@@ -182,21 +181,21 @@ const Login = ({onSubmit, error, ifAuth}) => {
             onPress={() => {
               navigation.navigate('Sign');
             }}>
-            <Text style={{color: colors.text}}>
-              Want to bring the whole team?
-            </Text>
-            <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-              Register A Team
-            </Text>
+            <Text style={{color: 'gray'}}>Create Account</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
               navigation.navigate('Sign');
             }}>
-            <Text style={{color: colors.text}}>Don't have an account?</Text>
-            <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-              Register
+            <Text
+              style={{
+                color: 'gray',
+                // add underline
+                // textDecorationLine: 'underline',
+                // textDecorationStyle: 'solid',
+              }}>
+              Register your team with EagleScout
             </Text>
           </TouchableOpacity>
         </>
