@@ -81,7 +81,9 @@ function PicklistsManagerScreen({navigation}) {
     <View style={{flex: 1}}>
       {!currentCompHappening ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>There is no competition happening currently.</Text>
+          <Text style={{color: colors.text}}>
+            There is no competition happening currently.
+          </Text>
         </View>
       ) : (
         <>
