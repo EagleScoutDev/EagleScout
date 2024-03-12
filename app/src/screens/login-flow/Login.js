@@ -40,11 +40,12 @@ const Login = ({onSubmit, error, ifAuth}) => {
       color: colors.text,
     },
     titleText: {
-      textAlign: 'center',
+      textAlign: 'left',
+      padding: '5%',
       fontSize: 30,
       fontWeight: 'bold',
-      color: colors.primary,
-      marginVertical: 20,
+      color: 'rgb(191, 219, 247)',
+      // marginVertical: 20,
     },
     button: {
       textAlign: 'center',
@@ -52,12 +53,30 @@ const Login = ({onSubmit, error, ifAuth}) => {
       fontWeight: 'bold',
       color: 'red',
     },
+    link_container: {
+      flexDirection: 'row',
+      padding: '5%',
+      // backgroundColor: colors.card,
+      borderRadius: 20,
+
+      // borderWidth: 2,
+      // borderColor: colors.border,
+      // marginHorizontal: '5%',
+      // marginVertical: '2%',
+
+      justifyContent: 'space-evenly',
+    },
   });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={{flexDirection: 'column'}}>
-        <Text style={styles.titleText}>EagleScout</Text>
+      <SafeAreaView
+        style={{
+          flexDirection: 'column',
+          backgroundColor: 'rgb(0,0,25)',
+          flex: 1,
+        }}>
+        {/*<Text style={styles.titleText}>EagleScout</Text>*/}
         {error !== '' && (
           <View
             style={{
@@ -74,103 +93,113 @@ const Login = ({onSubmit, error, ifAuth}) => {
             <Text style={{color: 'white', textAlign: 'center'}}>{error}</Text>
           </View>
         )}
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            margin: '5%',
-            padding: '5%',
-            top: '15%',
-            borderWidth: 3,
-            borderColor: colors.primary,
-            shadowColor: colors.primary,
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.75,
-            shadowRadius: 3.84,
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 20,
-              color: colors.text,
-              padding: 10,
-            }}>
-            Log In
-          </Text>
-          <TextInput
-            onChangeText={setUsername}
-            value={username}
-            placeholder="Email"
-            style={{
-              ...styles.input,
-              borderColor:
-                error === 'auth/missing-email' ||
-                error === 'auth/invalid-email' ||
-                error === 'auth/internal-error'
-                  ? 'red'
-                  : colors.text,
-            }}
-            inputMode={'email'}
-          />
-          <TextInput
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            style={{
-              ...styles.input,
-              borderColor:
-                error === 'auth/internal-error' ||
-                error === 'auth/wrong-password'
-                  ? 'red'
-                  : colors.text,
-            }}
-            secureTextEntry={true}
-          />
-          <StandardButton
-            text={'Log In'}
-            onPress={() => onSubmit(username, password, navigation)}
-            color={colors.primary}
-          />
-
+        <Text style={styles.titleText}>Log In</Text>
+        <>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              padding: 20,
+              backgroundColor: colors.card,
+              borderRadius: 10,
+              margin: '5%',
+              padding: '5%',
+
+              borderColor: colors.border,
+              borderWidth: 4,
+              // top: '15%',
             }}>
-            <Text style={{color: colors.text}}>Don't have an account?</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Sign');
-              }}>
-              <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-                Register
-              </Text>
-            </TouchableOpacity>
+            <TextInput
+              onChangeText={setUsername}
+              value={username}
+              placeholder="Email"
+              style={{
+                ...styles.input,
+                borderColor:
+                  error === 'auth/missing-email' ||
+                  error === 'auth/invalid-email' ||
+                  error === 'auth/internal-error'
+                    ? 'red'
+                    : colors.text,
+              }}
+              inputMode={'email'}
+            />
+            <TextInput
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Password"
+              style={{
+                ...styles.input,
+                borderColor:
+                  error === 'auth/internal-error' ||
+                  error === 'auth/wrong-password'
+                    ? 'red'
+                    : colors.text,
+              }}
+              secureTextEntry={true}
+            />
+            <StandardButton
+              text={'Log In'}
+              onPress={() => onSubmit(username, password, navigation)}
+              color={colors.primary}
+            />
+
+            {/*<View*/}
+            {/*  style={{*/}
+            {/*    flexDirection: 'row',*/}
+            {/*    justifyContent: 'space-around',*/}
+            {/*    padding: 20,*/}
+            {/*  }}>*/}
+            {/*  <Text style={{color: colors.text}}>Don't have an account?</Text>*/}
+            {/*  <TouchableOpacity*/}
+            {/*    onPress={() => {*/}
+            {/*      navigation.navigate('Sign');*/}
+            {/*    }}>*/}
+            {/*    <Text style={{color: colors.primary, fontWeight: 'bold'}}>*/}
+            {/*      Register*/}
+            {/*    </Text>*/}
+            {/*  </TouchableOpacity>*/}
+            {/*</View>*/}
+
+            {/*<View*/}
+            {/*  style={{*/}
+            {/*    flexDirection: 'column',*/}
+            {/*    justifyContent: 'space-around',*/}
+            {/*    padding: 20,*/}
+            {/*  }}>*/}
+            {/*  <Text style={{color: colors.text}}>*/}
+            {/*    Want to bring the whole team?*/}
+            {/*  </Text>*/}
+            {/*  <TouchableOpacity*/}
+            {/*    onPress={() => {*/}
+            {/*      navigation.navigate('Register new team');*/}
+            {/*    }}>*/}
+            {/*    <Text style={{color: colors.primary, fontWeight: 'bold'}}>*/}
+            {/*      Register your team with EagleScout*/}
+            {/*    </Text>*/}
+            {/*  </TouchableOpacity>*/}
+            {/*</View>*/}
           </View>
-
-          <View
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'space-around',
-              padding: 20,
+          <TouchableOpacity
+            style={styles.link_container}
+            onPress={() => {
+              navigation.navigate('Sign');
             }}>
             <Text style={{color: colors.text}}>
-              Your team isn't using EagleScout yet?
+              Want to bring the whole team?
             </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Register new team');
-              }}>
-              <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-                Register your team with EagleScout
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+            <Text style={{color: colors.primary, fontWeight: 'bold'}}>
+              Register A Team
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.link_container}
+            onPress={() => {
+              navigation.navigate('Sign');
+            }}>
+            <Text style={{color: colors.text}}>Don't have an account?</Text>
+            <Text style={{color: colors.primary, fontWeight: 'bold'}}>
+              Register
+            </Text>
+          </TouchableOpacity>
+        </>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
