@@ -6,6 +6,7 @@ import React, {
 } from 'react-native';
 
 function StandardButton({
+  textColor = 'white',
   color,
   onPress,
   width = '80%',
@@ -34,7 +35,7 @@ function StandardButton({
     button_text: {
       fontSize: 20,
       textAlign: 'center',
-      color: 'white',
+      color: textColor,
       fontWeight: '600',
     },
   });

@@ -1,0 +1,60 @@
+import {Easing, StyleSheet, Text, View} from 'react-native';
+import {useNavigation, useTheme} from '@react-navigation/native';
+import StandardButton from '../../components/StandardButton';
+import GradientShimmer from 'react-native-gradient-shimmer';
+import LinearGradient from 'react-native-linear-gradient';
+import React from 'react';
+
+const EntrypointHome = () => {
+  const {colors} = useTheme();
+  const navigation = useNavigation();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
+    title: {
+      color: colors.text,
+      fontSize: 40,
+      fontWeight: 'bold',
+    },
+    subtitle: {
+      color: 'gray',
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+  });
+  return (
+    <View style={styles.container}>
+      {/*    logo*/}
+      <View style={{alignItems: 'center', flex: 0.5}}>
+        <Text style={styles.title}>Eaglescout</Text>
+        <Text style={styles.subtitle}>The future of scouting is now.</Text>
+      </View>
+      <View style={{width: '100%', position: 'absolute', bottom: '10%'}}>
+        <StandardButton
+          textColor={colors.text}
+          color={colors.background}
+          isLoading={false}
+          onPress={() => {
+            navigation.navigate('Login');
+          }}
+          text={'Login'}
+        />
+        <StandardButton
+          textColor={colors.background}
+          color={colors.text}
+          isLoading={false}
+          onPress={() => {
+            navigation.navigate('Sign');
+          }}
+          text={'Sign Up'}
+        />
+      </View>
+    </View>
+  );
+};
+
+export default EntrypointHome;
