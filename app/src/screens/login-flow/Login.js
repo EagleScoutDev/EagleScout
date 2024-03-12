@@ -100,6 +100,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
           <View>
             <MinimalSectionHeader title={'Email'} />
             <TextInput
+              autoCapitalize={'none'}
               onChangeText={text => setUsername(text)}
               value={username}
               placeholder="john.doe@team114.org"
