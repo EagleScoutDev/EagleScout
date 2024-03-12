@@ -43,7 +43,7 @@ function InfoRow({children}) {
   );
 }
 
-function Statbotics({team}) {
+export default function Statbotics({team}) {
   const [overall, setOverall] = useState(null);
   const [competitions, setCompetitions] = useState(null);
   const [visible, setVisible] = useState(true);
