@@ -57,42 +57,38 @@ const Login = ({onSubmit, error, ifAuth}) => {
     link_container: {
       flexDirection: 'row',
       padding: '4%',
-      // backgroundColor: colors.card,
       borderRadius: 20,
-
-      // borderWidth: 2,
-      // borderColor: colors.border,
-      // marginHorizontal: '5%',
-      // marginVertical: '2%',
-
-      // justifyContent: 'space-evenly',
+    },
+    background: {
+      flexDirection: 'column',
+      backgroundColor: 'rgb(0,0,25)',
+      flex: 1,
+    },
+    error: {
+      backgroundColor: 'red',
+      padding: '5%',
+      margin: '3%',
+      borderRadius: 10,
+      position: 'absolute',
+      top: '5%',
+      right: '5%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    error_text: {
+      color: 'white',
+      textAlign: 'center',
     },
   });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView
-        style={{
-          flexDirection: 'column',
-          backgroundColor: 'rgb(0,0,25)',
-          flex: 1,
-        }}>
+      <SafeAreaView style={styles.background}>
         {/*<Text style={styles.titleText}>EagleScout</Text>*/}
         {error !== '' && (
-          <View
-            style={{
-              backgroundColor: 'red',
-              padding: '5%',
-              margin: '3%',
-              borderRadius: 10,
-              position: 'absolute',
-              top: '5%',
-              right: '5%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'center',
-            }}>
-            <Text style={{color: 'white', textAlign: 'center'}}>{error}</Text>
+          <View style={styles.error}>
+            <Text style={styles.error_text}>{error}</Text>
           </View>
         )}
         <Text style={styles.titleText}>Log In</Text>
@@ -138,44 +134,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
               }
               disabled={username === '' || password === ''}
               onPress={() => onSubmit(username, password, navigation)}
-              // color={colors.primary}
             />
-
-            {/*<View*/}
-            {/*  style={{*/}
-            {/*    flexDirection: 'row',*/}
-            {/*    justifyContent: 'space-around',*/}
-            {/*    padding: 20,*/}
-            {/*  }}>*/}
-            {/*  <Text style={{color: colors.text}}>Don't have an account?</Text>*/}
-            {/*  <TouchableOpacity*/}
-            {/*    onPress={() => {*/}
-            {/*      navigation.navigate('Sign');*/}
-            {/*    }}>*/}
-            {/*    <Text style={{color: colors.primary, fontWeight: 'bold'}}>*/}
-            {/*      Register*/}
-            {/*    </Text>*/}
-            {/*  </TouchableOpacity>*/}
-            {/*</View>*/}
-
-            {/*<View*/}
-            {/*  style={{*/}
-            {/*    flexDirection: 'column',*/}
-            {/*    justifyContent: 'space-around',*/}
-            {/*    padding: 20,*/}
-            {/*  }}>*/}
-            {/*  <Text style={{color: colors.text}}>*/}
-            {/*    Want to bring the whole team?*/}
-            {/*  </Text>*/}
-            {/*  <TouchableOpacity*/}
-            {/*    onPress={() => {*/}
-            {/*      navigation.navigate('Register new team');*/}
-            {/*    }}>*/}
-            {/*    <Text style={{color: colors.primary, fontWeight: 'bold'}}>*/}
-            {/*      Register your team with EagleScout*/}
-            {/*    </Text>*/}
-            {/*  </TouchableOpacity>*/}
-            {/*</View>*/}
           </View>
           <TouchableOpacity
             style={styles.link_container}
@@ -187,15 +146,9 @@ const Login = ({onSubmit, error, ifAuth}) => {
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
-              navigation.navigate('Sign');
+              navigation.navigate('Register new team');
             }}>
-            <Text
-              style={{
-                color: 'gray',
-                // add underline
-                // textDecorationLine: 'underline',
-                // textDecorationStyle: 'solid',
-              }}>
+            <Text style={{color: 'gray'}}>
               Register your team with EagleScout
             </Text>
           </TouchableOpacity>
