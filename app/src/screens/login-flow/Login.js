@@ -14,8 +14,8 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 const Login = ({onSubmit, error, ifAuth}) => {
-  let [username, setUsername] = useState();
-  let [password, setPassword] = useState();
+  let [username, setUsername] = useState('');
+  let [password, setPassword] = useState('');
   const {colors} = useTheme();
   const navigation = useNavigation();
 
