@@ -159,6 +159,7 @@ const RegisterTeamModal = ({navigation}) => {
             onChangeText={setEmail}
             value={email}
             placeholder="Email"
+            placeholderTextColor={'gray'}
             style={{
               ...styles.input,
             }}
