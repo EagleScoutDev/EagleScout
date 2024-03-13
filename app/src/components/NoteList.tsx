@@ -75,7 +75,7 @@ export const NoteList = ({
   });
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: colors.background}}>
       <View
         style={{
           flexDirection: 'row',
@@ -85,9 +85,10 @@ export const NoteList = ({
         }}>
         <TextInput
           placeholder={'Search'}
-          placeholderTextColor={'grey'}
+          placeholderTextColor={colors.text}
           onChangeText={text => setSearchTerm(text)}
           style={{
+            color: colors.text,
             backgroundColor: colors.card,
             paddingHorizontal: '5%',
             paddingVertical: '2%',

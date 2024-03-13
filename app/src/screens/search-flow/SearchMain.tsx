@@ -355,7 +355,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       )}
       {notesViewerVisible && (
         <Modal visible={notesViewerVisible} animationType="slide">
-          <SafeAreaView style={{flex: 1}}>
+          <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
             <NoteList
               notes={notesByMatch.get(currentMatchNumber) ?? []}
               onClose={() => setNotesViewerVisible(false)}
