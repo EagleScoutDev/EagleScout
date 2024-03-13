@@ -5,8 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView, Alert
-} from "react-native";
+  KeyboardAvoidingView,
+  Alert,
+} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
 // import Svg, {Path} from 'react-native-svg';
@@ -199,20 +200,22 @@ const NoteScreen = () => {
       }
     }
     await Promise.all(promises);
-    if (internetResponse) {
-      Toast.show({
-        type: 'success',
-        text1: 'Note submitted!',
-        visibilityTime: 3000,
-      });
-    } else {
-      Toast.show({
-        type: 'success',
-        text1: 'Note saved offline successfully!',
-        visibilityTime: 3000,
-      });
+    if (promises.length > 0) {
+      if (internetResponse) {
+        Toast.show({
+          type: 'success',
+          text1: 'Note submitted!',
+          visibilityTime: 3000,
+        });
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Note saved offline successfully!',
+          visibilityTime: 3000,
+        });
+      }
+      startConfetti();
     }
-    startConfetti();
     clearAllFields();
     setIsLoading(false);
     setModalVisible(false);
@@ -386,9 +389,7 @@ const NoteScreen = () => {
               );
             }
           }}
-          disabled={
-            matchNumber === '' || selectedAlliance === ''
-          }>
+          disabled={matchNumber === '' || selectedAlliance === ''}>
           <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
             Next
           </Text>

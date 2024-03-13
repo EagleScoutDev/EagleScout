@@ -129,11 +129,11 @@ class NotesDB {
     competitionId: number,
   ): Promise<NoteStructureWithMatchNumber[]> {
     const res: NoteStructureWithMatchNumber[] = [];
+    // TODO: query is including values where the competition_id is wrong
     const {data, error} = await supabase
       .from('notes')
       .select('*, matches(number)')
       .eq('matches.competition_id', competitionId);
-    console.log('data: ', data);
     if (error) {
       throw error;
     } else {
