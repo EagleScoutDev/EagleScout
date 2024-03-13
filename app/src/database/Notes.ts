@@ -12,6 +12,7 @@ export interface NoteStructure {
 
   created_at: Date;
   created_by: string;
+  scouter_name?: string;
 }
 
 export type NoteStructureWithMatchNumber = NoteStructure & {
@@ -132,7 +133,7 @@ class NotesDB {
     // TODO: query is including values where the competition_id is wrong
     const {data, error} = await supabase
       .from('notes')
-      .select('*, matches(number)')
+      .select('*, matches!inner(number), profiles(name)')
       .eq('matches.competition_id', competitionId);
     if (error) {
       throw error;
@@ -146,6 +147,7 @@ class NotesDB {
           match_number: data[i].matches.number,
           created_at: data[i].created_at,
           created_by: data[i].created_by,
+          scouter_name: data[i].profiles.name,
         });
       }
     }
@@ -156,7 +158,7 @@ class NotesDB {
     const res: NoteStructure[] = [];
     const {data, error} = await supabase
       .from('notes')
-      .select('*')
+      .select('*, profiles(name)')
       .eq('team_number', teamNumber);
     if (error) {
       throw error;
@@ -169,6 +171,7 @@ class NotesDB {
           match_id: data[i].match_id,
           created_at: data[i].created_at,
           created_by: data[i].created_by,
+          scouter_name: data[i].profiles.name,
         });
       }
     }
@@ -191,7 +194,7 @@ class NotesDB {
     // find a better way to check that matches.competition_id == competitionId
     const {data, error} = await supabase
       .from('notes')
-      .select('*, matches(number)')
+      .select('*, matches(number), profiles(name)')
       .eq('team_number', teamNumber)
       .filter(
         'match_id',
@@ -210,6 +213,7 @@ class NotesDB {
           match_number: data[i].matches.number,
           created_at: data[i].created_at,
           created_by: data[i].created_by,
+          scouter_name: data[i].profiles.name,
         });
       }
     }

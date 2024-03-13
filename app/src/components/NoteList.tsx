@@ -148,6 +148,7 @@ export const NoteList = ({
                 <Text style={{color: colors.text, fontWeight: 'bold'}}>
                   Match {item.match_number} - Team {item.team_number}
                   {item.competition_name ? ` - ${item.competition_name}` : ''}
+                  {item.scouter_name ? ` - By: ${item.scouter_name}` : ''}
                 </Text>
               </View>
               <Text style={{color: colors.text}}>{item.content}</Text>
