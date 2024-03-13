@@ -10,3 +10,13 @@ This function is triggered when a new team is created and sends an email to a sp
 6. Select the register-team-email-trigger as the trigger 
 7. Click the dropdown next to "Add a new header", select "Auth header with service key"
 8. Click "Create Webhook"
+
+## Setting up Environment Variables
+
+The following environment variables must be set up in Supabase's Secret manager:
+
+SMTP_USERNAME: The username to the SMTP account
+
+SMTP_PASSWORD: The password to the SMTP account
+
+EMAILS: A comma seperated list of emails to send the info to
