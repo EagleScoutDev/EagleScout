@@ -139,6 +139,7 @@ const RegisterTeamModal = ({navigation}) => {
           </Text>
           <Spacer />
           <TextInput
+            autoCapitalize={'none'}
             onChangeText={setEmail}
             value={email}
             placeholder="Email"
