@@ -209,6 +209,9 @@ const RegisterTeamModal = ({navigation}) => {
           style={styles.link_container}
           onPress={() => {
             navigation.navigate('Login');
+            setEmail('');
+            setTeam('');
+            setTeamOption(null);
           }}>
           <Text style={{color: 'gray'}}>Log In</Text>
         </TouchableOpacity>
@@ -216,6 +219,9 @@ const RegisterTeamModal = ({navigation}) => {
           style={styles.link_container}
           onPress={() => {
             navigation.navigate('Sign');
+            setEmail('');
+            setTeam('');
+            setTeamOption(null);
           }}>
           <Text style={{color: 'gray'}}>Create Account</Text>
         </TouchableOpacity>

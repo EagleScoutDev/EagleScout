@@ -1,6 +1,6 @@
-import { useNavigation, useTheme } from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   Keyboard,
   SafeAreaView,
@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  Alert
+  Alert,
 } from 'react-native';
-import { supabase } from '../../lib/supabase';
+import {supabase} from '../../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import StandardButton from '../../components/StandardButton';
 
 function InputLabel(props) {
   return (
@@ -21,7 +22,7 @@ function InputLabel(props) {
         color: 'gray',
         fontWeight: 'bold',
         fontSize: 12,
-        paddingTop: 10,
+        paddingTop: '8%',
       }}>
       {props.visible ? props.title.toUpperCase() : ''}
     </Text>
@@ -37,33 +38,54 @@ const CompleteSignup = () => {
 
   const styles = StyleSheet.create({
     input: {
-      // center text
-      textAlign: 'center',
-      // add padding
-      padding: 10,
-      // add circular border around input field
+      textAlign: 'left',
+      padding: '5%',
       borderRadius: 10,
-      // add border
-      borderWidth: 1,
-      borderColor: colors.text,
-      // add margin
+      borderBottomWidth: 1,
+      borderColor: 'gray',
       // margin: 10,
-      // add horizontal space
-      marginHorizontal: 30,
-      color: colors.text,
+      // marginHorizontal: 30,
+      color: 'white',
     },
     titleText: {
-      textAlign: 'center',
+      textAlign: 'left',
+      padding: '5%',
       fontSize: 30,
       fontWeight: 'bold',
-      color: colors.primary,
-      marginVertical: 20,
+      color: 'rgb(191, 219, 247)',
+      // marginVertical: 20,
     },
     button: {
       textAlign: 'center',
       fontSize: 20,
       fontWeight: 'bold',
       color: 'red',
+    },
+    link_container: {
+      flexDirection: 'row',
+      padding: '4%',
+      borderRadius: 20,
+    },
+    background: {
+      flexDirection: 'column',
+      backgroundColor: 'rgb(0,0,25)',
+      flex: 1,
+    },
+    error: {
+      backgroundColor: 'red',
+      padding: '5%',
+      margin: '3%',
+      borderRadius: 10,
+      position: 'absolute',
+      top: '5%',
+      right: '5%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    error_text: {
+      color: 'white',
+      textAlign: 'center',
     },
   });
 
@@ -79,62 +101,14 @@ const CompleteSignup = () => {
       return false;
     }
     return true;
-  }
+  };
 
   return (
     // <Modal animationType={'slide'} visible={visible} transparent={false}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-        }}>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: '8%',
-            left: '5%',
-          }}
-          onPress={() => {
-            navigation.goBack();
-          }}>
-          <Text
-            style={{
-              ...styles.button,
-              color: colors.notification,
-              fontSize: 20,
-            }}>
-            {/*TODO: Figure out the elegant react navigation method for doing this.*/}
-            {'< Return Back'}
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            margin: '5%',
-            padding: '5%',
-            top: '13%',
-            borderWidth: 3,
-            borderColor: colors.primary,
-            // add drop shadow
-            shadowColor: colors.primary,
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.75,
-            shadowRadius: 3.84,
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 20,
-              color: colors.text,
-              padding: 10,
-            }}>
-            Complete Sign Up
-          </Text>
+      <SafeAreaView style={styles.background}>
+        <View>
+          <Text style={styles.titleText}>Set Up Your Account</Text>
           <View>
             <View
               style={{
@@ -176,26 +150,31 @@ const CompleteSignup = () => {
               }}
             />
           </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.primary,
-              padding: 10,
-              borderRadius: 10,
-              margin: 10,
-              marginHorizontal: 30,
-            }}
+          <StandardButton
+            text={'Save Changes'}
+            textColor={
+              firstName === '' || lastName === '' || team === ''
+                ? 'dimgray'
+                : colors.primary
+            }
+            disabled={firstName === '' || lastName === '' || team === ''}
             onPress={async () => {
               if (checkFields()) {
                 const {
-                  data: {user}
+                  data: {user},
                 } = await supabase.auth.getUser();
-                const {error: profilesSetError} = await supabase.from('profiles').update({
-                  first_name: firstName,
-                  last_name: lastName,
-                }).eq('id', user.id);
+                const {error: profilesSetError} = await supabase
+                  .from('profiles')
+                  .update({
+                    first_name: firstName,
+                    last_name: lastName,
+                  })
+                  .eq('id', user.id);
                 if (profilesSetError) {
                   console.error(profilesSetError);
-                  Alert.alert('Unable to set porofile information. Please try logging in again.');
+                  Alert.alert(
+                    'Unable to set porofile information. Please try logging in again.',
+                  );
                 }
                 const {error: registerUserWithTeamError} = await supabase.rpc(
                   'register_user_with_organization',
@@ -205,21 +184,30 @@ const CompleteSignup = () => {
                 );
                 if (registerUserWithTeamError) {
                   console.error(registerUserWithTeamError);
-                  Alert.alert('Unable to register you with the team provided. Please check if the team number is correct.');
+                  Alert.alert(
+                    'Unable to register you with the team provided. Please check if the team number is correct.',
+                  );
                 } else {
                   await supabase.auth.signOut();
-                  Alert.alert("You have completed sign up. You will be able to log in when one of the team's captains approve you.");
+                  Alert.alert(
+                    "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
+                  );
                   navigation.navigate('Login');
                 }
               }
+            }}
+          />
+          <TouchableOpacity
+            style={styles.link_container}
+            onPress={() => {
+              navigation.goBack();
             }}>
-            <Text style={{textAlign: 'center', color: 'white', fontSize: 20}}>
-              Complete sign up
-            </Text>
+            <Text style={{color: 'gray'}}>Return to Login</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
-)};
+  );
+};
 
 export default CompleteSignup;

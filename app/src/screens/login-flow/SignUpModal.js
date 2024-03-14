@@ -142,6 +142,8 @@ function SignUpModal({setVisible, navigation}) {
               style={styles.link_container}
               onPress={() => {
                 navigation.navigate('Login');
+                setEmail('');
+                setPassword('');
               }}>
               <Text style={{color: 'gray'}}>Log In</Text>
             </TouchableOpacity>
@@ -149,6 +151,8 @@ function SignUpModal({setVisible, navigation}) {
               style={styles.link_container}
               onPress={() => {
                 navigation.navigate('Register new team');
+                setEmail('');
+                setPassword('');
               }}>
               <Text style={{color: 'gray'}}>
                 Register your team with EagleScout

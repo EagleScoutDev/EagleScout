@@ -140,6 +140,8 @@ const Login = ({onSubmit, error, ifAuth}) => {
             style={styles.link_container}
             onPress={() => {
               navigation.navigate('Sign');
+              setUsername('');
+              setPassword('');
             }}>
             <Text style={{color: 'gray'}}>Create Account</Text>
           </TouchableOpacity>
@@ -147,6 +149,8 @@ const Login = ({onSubmit, error, ifAuth}) => {
             style={styles.link_container}
             onPress={() => {
               navigation.navigate('Register new team');
+              setUsername('');
+              setPassword('');
             }}>
             <Text style={{color: 'gray'}}>
               Register your team with EagleScout
