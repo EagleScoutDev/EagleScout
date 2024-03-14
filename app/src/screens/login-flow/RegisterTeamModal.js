@@ -100,40 +100,23 @@ const RegisterTeamModal = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      {/*<TouchableOpacity*/}
-      {/*  style={{*/}
-      {/*    position: 'absolute',*/}
-      {/*    top: '8%',*/}
-      {/*    left: '5%',*/}
-      {/*  }}*/}
-      {/*  onPress={() => {*/}
-      {/*    navigation.goBack();*/}
-      {/*  }}>*/}
-      {/*  <Text*/}
-      {/*    style={{*/}
-      {/*      ...styles.button,*/}
-      {/*      color: colors.notification,*/}
-      {/*      fontSize: 20,*/}
-      {/*    }}>*/}
-      {/*    /!*TODO: Figure out the elegant react navigation method for doing this.*!/*/}
-      {/*    {'< Return Back'}*/}
-      {/*  </Text>*/}
-      {/*</TouchableOpacity>*/}
       <SafeAreaView style={styles.background}>
         <Text style={styles.titleText}>Register your team with EagleScout</Text>
-        <View>
+        <View style={{paddingHorizontal: '5%'}}>
           <Text style={styles.label}>
             Are you registering an actual FRC team?
           </Text>
-          <RadioButtons
-            options={[
-              'Yes, I am part of an actual FRC team',
-              'No, I just want to try the app',
-            ]}
-            value={teamOption}
-            onValueChange={setTeamOption}
-            colors={{text: 'white'}}
-          />
+          <View style={{marginBottom: '5%'}}>
+            <RadioButtons
+              options={[
+                'Yes, I am part of an actual FRC team',
+                'No, I just want to try the app',
+              ]}
+              value={teamOption}
+              onValueChange={setTeamOption}
+              colors={{text: 'white'}}
+            />
+          </View>
           {teamOption != null && teamOption.substring(0, 1) === 'Y' && (
             <>
               <Text style={styles.label}>Your team number</Text>
@@ -150,9 +133,9 @@ const RegisterTeamModal = ({navigation}) => {
             </>
           )}
         </View>
-        <View>
+        <View style={{paddingHorizontal: '5%'}}>
           <Text style={styles.label}>
-            Email - we will reach back to you on this email
+            Email (we will use this email to contact you)
           </Text>
           <Spacer />
           <TextInput
@@ -173,7 +156,7 @@ const RegisterTeamModal = ({navigation}) => {
             (teamOption != null &&
               teamOption.substring(0, 1) === 'Y' &&
               team === '')
-              ? 'red'
+              ? 'dimgray'
               : colors.primary
           }
           disabled={false}
