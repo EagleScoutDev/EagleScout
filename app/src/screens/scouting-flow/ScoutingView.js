@@ -63,14 +63,16 @@ function ScoutingView({
             <FormSection colors={colors} title={key} key={key.length}>
               {value.map((item, vIndex) => {
                 return (
-                  <FormComponent
-                    key={item.question}
-                    colors={colors}
-                    item={item}
-                    styles={styles}
-                    arrayData={arrayData}
-                    setArrayData={setArrayData}
-                  />
+                  <View style={{marginVertical: '5%'}}>
+                    <FormComponent
+                      key={item.question}
+                      colors={colors}
+                      item={item}
+                      styles={styles}
+                      arrayData={arrayData}
+                      setArrayData={setArrayData}
+                    />
+                  </View>
                 );
               })}
             </FormSection>
