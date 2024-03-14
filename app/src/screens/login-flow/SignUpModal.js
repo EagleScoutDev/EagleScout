@@ -117,7 +117,7 @@ function SignUpModal({setVisible, navigation}) {
               <StandardButton
                 text={'Register'}
                 textColor={
-                  email === '' || password === '' ? 'red' : colors.primary
+                  email === '' || password === '' ? 'dimgray' : colors.primary
                 }
                 disabled={email === '' || password === ''}
                 onPress={async () => {

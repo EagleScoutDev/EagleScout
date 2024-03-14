@@ -130,7 +130,7 @@ const Login = ({onSubmit, error, ifAuth}) => {
             <StandardButton
               text={'Log In'}
               textColor={
-                username === '' || password === '' ? 'red' : colors.primary
+                username === '' || password === '' ? 'dimgray' : colors.primary
               }
               disabled={username === '' || password === ''}
               onPress={() => onSubmit(username, password, navigation)}
