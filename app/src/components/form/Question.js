@@ -9,7 +9,7 @@ function Question({title, required = false, onReset}) {
       <Pressable onLongPress={onReset}>
         <Text
           style={{
-            color: colors.primary,
+            color: colors.text,
             textAlign: 'left',
             paddingBottom: 10,
             // paddingTop: 15,
