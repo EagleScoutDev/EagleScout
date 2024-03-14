@@ -312,7 +312,6 @@ function ScoutingFlow({navigation, route}) {
 
   const styles = StyleSheet.create({
     textInput: {
-      height: 40,
       borderColor: 'gray',
       borderWidth: 1,
       borderRadius: 10,
