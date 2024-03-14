@@ -46,6 +46,7 @@ const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import type {Theme} from '@react-navigation/native/src/types';
+import {useDeepLinking} from './lib/hooks/useDeepLinking';
 
 const CustomLightTheme = {
   dark: false,
@@ -385,8 +386,24 @@ const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
   const scheme = useColorScheme();
+  const {url} = useDeepLinking();
   const [themePreference, setThemePreference] = useState('System');
   const [oled, setOled] = useState(false);
+
+  useEffect(() => {
+    if (!url) {
+      return;
+    }
+    console.log('[DEEP LINKING] initial url: ' + url);
+    const route = url.replace(/.*?:\/\//g, '');
+    console.log('[DEEP LINKING] route: ' + route);
+    const parts = route.split('/');
+    if (parts[0] === 'reset-password') {
+      // for the Reset Password email template
+    } else if (parts[0] === 'signed-up') {
+      // for the Confirm Signup email template
+    }
+  }, [url]);
 
   return (
     <NavigationContainer
