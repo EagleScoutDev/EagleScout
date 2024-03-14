@@ -6,7 +6,7 @@ function Question({title, required = false, onReset}) {
   const {colors} = useTheme();
   if (title) {
     return (
-      <Pressable onLongPress={onReset}>
+      <Pressable onLongPress={onReset} style={{flexDirection: 'row'}}>
         <Text
           style={{
             color: colors.text,
@@ -16,7 +16,18 @@ function Question({title, required = false, onReset}) {
             fontWeight: 'bold',
             fontSize: 16,
           }}>
-          {title + (required ? '*' : '')}
+          {title}
+        </Text>
+        <Text
+          style={{
+            color: 'red',
+            textAlign: 'left',
+            paddingBottom: 10,
+            // paddingTop: 15,
+            fontWeight: 'bold',
+            fontSize: 16,
+          }}>
+          {required ? '*' : ''}
         </Text>
       </Pressable>
     );
