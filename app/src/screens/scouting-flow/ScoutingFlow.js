@@ -165,7 +165,7 @@ function ScoutingFlow({navigation, route}) {
 
   const submitForm = async () => {
     let dataToSubmit = {};
-    if (match > 100 || !match) {
+    if (match > 400 || !match) {
       Alert.alert('Invalid Match Number', 'Please enter a valid match number');
       if (!isScoutStylePreferenceScrolling) {
         navigation.navigate('Match');
