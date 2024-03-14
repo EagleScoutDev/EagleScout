@@ -2,8 +2,11 @@ import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native';
 import Question from './Question';
+import {useTheme} from '@react-navigation/native';
 
 function Stepper(props) {
+  const {colors} = useTheme();
+
   let changeValue = type => {
     if (type === 'increment') {
       props.onValueChange(
@@ -18,25 +21,28 @@ function Stepper(props) {
 
   const styles = StyleSheet.create({
     button: {
-      backgroundColor: props.colors.primary,
+      backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 10,
+      borderRadius: 8,
       padding: 10,
       width: 100,
       height: 75,
+
+      // borderWidth: 4,
+      // borderColor: colors.border,
     },
     background: {
       flexDirection: 'column',
       paddingVertical: '5%',
-      backgroundColor: props.colors.card,
+      // backgroundColor: colors.card,
       elevation: 5,
       borderRadius: 10,
     },
     question: {
       textAlign: 'left',
       paddingBottom: 15,
-      color: props.colors.primary,
+      color: colors.primary,
       fontWeight: 'bold',
     },
     number: {
@@ -44,11 +50,11 @@ function Stepper(props) {
       fontWeight: 'bold',
       textAlign: 'center',
       width: 80,
-      color: props.colors.text,
+      color: colors.text,
     },
     stepper_value: {
       color: 'white',
-      fontSize: 20,
+      fontSize: 30,
     },
     container: {
       flexDirection: 'row',
@@ -62,10 +68,15 @@ function Stepper(props) {
       <Question title={props.title} />
       <View style={styles.container}>
         <TouchableOpacity
+          disabled={props.value === 0}
           onPress={() => {
             changeValue('minus');
           }}>
-          <View style={styles.button}>
+          <View
+            style={{
+              ...styles.button,
+              backgroundColor: props.value === 0 ? 'darkgray' : colors.primary,
+            }}>
             <Text style={styles.stepper_value}>-</Text>
           </View>
         </TouchableOpacity>
