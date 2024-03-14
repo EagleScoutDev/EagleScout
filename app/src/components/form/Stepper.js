@@ -59,7 +59,12 @@ function Stepper(props) {
 
   return (
     <View style={styles.background} key={props.index}>
-      <Question title={props.title} />
+      <Question
+        title={props.title}
+        onReset={() => {
+          props.onValueChange(0);
+        }}
+      />
       <View style={styles.container}>
         <TouchableOpacity
           disabled={props.value === 0}
