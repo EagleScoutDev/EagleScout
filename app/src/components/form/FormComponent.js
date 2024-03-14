@@ -32,6 +32,11 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
           options={item.options}
           value={item.options[arrayData[item.indice]]}
           colors={colors}
+          onReset={() => {
+            let a = [...arrayData];
+            a[item.indice] = null;
+            setArrayData(a);
+          }}
           onValueChange={value => {
             let a = [...arrayData];
             a[item.indice] = item.options.indexOf(value);
@@ -43,7 +48,15 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
   } else if (item.type === 'textbox') {
     return (
       <View>
-        <Question title={item.question} required={item.required} />
+        <Question
+          title={item.question}
+          required={item.required}
+          onReset={() => {
+            let a = [...arrayData];
+            a[item.indice] = '';
+            setArrayData(a);
+          }}
+        />
         <TextInput
           placeholder={'Type here'}
           placeholderTextColor={'gray'}
