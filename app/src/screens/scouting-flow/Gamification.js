@@ -127,7 +127,10 @@ function Gamification({
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
-                    <FormSection colors={colors} title={''} key={key.length}>
+                    <View
+                      style={{
+                        marginHorizontal: '5%',
+                      }}>
                       {value.map((item, vIndex) => {
                         return (
                           <FormComponent
@@ -140,7 +143,7 @@ function Gamification({
                           />
                         );
                       })}
-                    </FormSection>
+                    </View>
                     {/*if the index is not the last one, add a button that navigates users to the next tab*/}
                     {index !== Object.keys(data).length - 1 && (
                       <View style={{width: '100%', marginBottom: '5%'}}>
