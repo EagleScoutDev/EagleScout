@@ -10,8 +10,10 @@ function Question({title, required = false}) {
         style={{
           color: colors.primary,
           textAlign: 'left',
-          paddingBottom: 15,
+          paddingBottom: 10,
+          // paddingTop: 15,
           fontWeight: 'bold',
+          fontSize: 16,
         }}>
         {title + (required ? '*' : '')}
       </Text>

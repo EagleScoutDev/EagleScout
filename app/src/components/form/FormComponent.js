@@ -17,20 +17,14 @@ import Question from './Question';
  * @returns {JSX.Element|null} the JSX component
  * @constructor
  */
-function FormComponent({
-  item,
-  styles,
-  colors,
-  arrayData,
-  setArrayData,
-}) {
+function FormComponent({item, styles, colors, arrayData, setArrayData}) {
   if (!arrayData) {
     return null;
   }
 
   if (item.type === 'radio') {
     return (
-      <View style={styles.standardView}>
+      <View>
         <RadioButtons
           disabled={false}
           title={item.question}
@@ -48,9 +42,11 @@ function FormComponent({
     );
   } else if (item.type === 'textbox') {
     return (
-      <View style={styles.standardView}>
+      <View>
         <Question title={item.question} required={item.required} />
         <TextInput
+          placeholder={'Type here'}
+          placeholderTextColor={'gray'}
           style={styles.textInput}
           value={arrayData[item.indice]}
           onChangeText={text => {
@@ -82,7 +78,6 @@ function FormComponent({
     } else {
       return (
         <Stepper
-          colors={colors}
           title={item.question + (item.required ? '*' : '')}
           value={arrayData[item.indice]}
           onValueChange={newValue => {

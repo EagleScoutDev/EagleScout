@@ -133,14 +133,20 @@ function Gamification({
                       }}>
                       {value.map((item, vIndex) => {
                         return (
-                          <FormComponent
+                          <View
                             key={item.question}
-                            colors={colors}
-                            item={item}
-                            styles={styles}
-                            arrayData={arrayData}
-                            setArrayData={setArrayData}
-                          />
+                            style={{
+                              marginVertical: '5%',
+                            }}>
+                            <FormComponent
+                              key={item.question}
+                              colors={colors}
+                              item={item}
+                              styles={styles}
+                              arrayData={arrayData}
+                              setArrayData={setArrayData}
+                            />
+                          </View>
                         );
                       })}
                     </View>

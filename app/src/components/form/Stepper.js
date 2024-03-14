@@ -34,16 +34,10 @@ function Stepper(props) {
     },
     background: {
       flexDirection: 'column',
-      paddingVertical: '5%',
+      // paddingVertical: '5%',
       // backgroundColor: colors.card,
       elevation: 5,
       borderRadius: 10,
-    },
-    question: {
-      textAlign: 'left',
-      paddingBottom: 15,
-      color: colors.primary,
-      fontWeight: 'bold',
     },
     number: {
       fontSize: 20,
