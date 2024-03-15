@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
   Alert,
+  Modal,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
@@ -23,7 +24,11 @@ import ProfilesDB from '../../database/Profiles';
 import {TBA} from '../../lib/TBAUtils';
 import Competitions from '../../database/Competitions';
 
-function PicklistCreator({route}: {route: {params: {picklist_id: number, currentCompID: number}}}) {
+function PicklistCreator({
+  route,
+}: {
+  route: {params: {picklist_id: number; currentCompID: number}};
+}) {
   const {colors} = useTheme();
 
   // navigates back to the previous screen once picklist is updated
@@ -108,37 +113,63 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number, current
   }, []);
 
   // adds header button to fetch picklist from database
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable
-          onPress={() => {
-            fetchPicklist();
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginRight: '5%',
+            alignItems: 'center',
           }}>
-          <Svg
-            width={25}
-            height={25}
-            viewBox="0 0 16 16"
-            stroke="gray"
-            strokeWidth={1}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              marginRight: '5%',
+          <Pressable
+            onPress={() => {
+              fetchPicklist();
             }}>
-            <Path
-              fill={'gray'}
-              d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-            />
-            <Path
-              fill={'gray'}
-              d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
-            />
-          </Svg>
-        </Pressable>
+            <Svg
+              width={24}
+              height={24}
+              viewBox="0 0 16 16"
+              stroke="gray"
+              strokeWidth={1}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                marginRight: '5%',
+              }}>
+              <Path
+                fill={'gray'}
+                d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+              />
+              <Path
+                fill={'gray'}
+                d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+              />
+            </Svg>
+          </Pressable>
+          <Pressable
+            style={{marginLeft: '10%'}}
+            onPress={() => {
+              setDraggingActive(prev => !prev);
+              setLiveMode(false);
+            }}>
+            <Svg
+              width="22"
+              height="22"
+              fill={dragging_active ? colors.primary : 'dimgray'}
+              viewBox="0 0 16 16">
+              <Path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <Path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </Svg>
+          </Pressable>
+        </View>
       ),
     });
-  }, []);
+  }, [dragging_active]);
 
   const fetchPicklist = () => {
     PicklistsDB.getPicklist(String(picklist_id))
@@ -290,10 +321,12 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number, current
       color: colors.text,
       padding: '2%',
       fontSize: 20,
-      borderWidth: 1,
-      borderColor: colors.text,
-      minWidth: '80%',
+      // borderWidth: 1,
+      // borderColor: colors.text,
+      // minWidth: '60%',
+      // marginRight: '20%',
       textDecorationLine: 'none',
+      // backgroundColor: 'grey',
     },
     team_item_in_list: {
       padding: '2%',
@@ -328,20 +361,20 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number, current
           borderColor: colors.border,
           marginBottom: '5%',
         }}>
-        <Pressable
-          onPress={() => {
-            setDraggingActive(!dragging_active);
-            setLiveMode(false);
-          }}>
-          <Text
-            style={{
-              color: dragging_active ? colors.primary : colors.text,
-              fontSize: 20,
-              marginBottom: '5%',
-            }}>
-            Sortable
-          </Text>
-        </Pressable>
+        {/*<Pressable*/}
+        {/*  onPress={() => {*/}
+        {/*    setDraggingActive(!dragging_active);*/}
+        {/*    setLiveMode(false);*/}
+        {/*  }}>*/}
+        {/*  <Text*/}
+        {/*    style={{*/}
+        {/*      color: dragging_active ? colors.primary : colors.text,*/}
+        {/*      fontSize: 20,*/}
+        {/*      marginBottom: '5%',*/}
+        {/*    }}>*/}
+        {/*    Sortable*/}
+        {/*  </Text>*/}
+        {/*</Pressable>*/}
         <Pressable
           onPress={() => {
             setLiveMode(!live_mode);
@@ -365,6 +398,7 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number, current
       ) : (
         <TextInput
           style={styles.name_input}
+          multiline={true}
           onPressIn={() => setName('')}
           onChangeText={text => {
             setName(text);
@@ -373,62 +407,119 @@ function PicklistCreator({route}: {route: {params: {picklist_id: number, current
           defaultValue={'Enter Name'}
         />
       )}
-      <StandardModal
-        title={'Add/Remove Teams'}
-        visible={teamAddingModalVisible}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: colors.primary,
-            borderColor: colors.primary,
-            borderWidth: 1,
-            padding: '5%',
-            borderRadius: 10,
-            alignItems: 'center',
-            marginBottom: '5%',
-          }}
-          onPress={() => {
-            setTeamAddingModalVisible(false);
-          }}>
-          <Text style={{color: 'white', fontSize: 20}}>Save</Text>
-        </TouchableOpacity>
+      <Modal
+        visible={teamAddingModalVisible}
+        animationType="slide"
+        onDismiss={() => {
+          setTeamAddingModalVisible(false);
+        }}
+        onRequestClose={() => {
+          setTeamAddingModalVisible(false);
+        }}
+        presentationStyle={'pageSheet'}>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '5%',
+            flex: 1,
+            // justifyContent: 'center',
+            // alignItems: 'center',
+            backgroundColor: colors.card,
           }}>
-          <Text style={{color: colors.text, fontSize: 20, marginRight: '3%'}}>
-            Filter by Added
-          </Text>
-          <Switch
-            onValueChange={value => setFilterByAdded(value)}
-            value={filter_by_added}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              alignItems: 'center',
+            }}>
+            <Pressable
+              onPress={() => {
+                Alert.alert('Would you like to add all teams?', '', [
+                  {
+                    text: 'No',
+                    onPress: () => {},
+                  },
+                  {
+                    text: 'Yes',
+                    isPreferred: true,
+                    onPress: () => {
+                      setTeamsList(possibleTeams);
+                      setTeamAddingModalVisible(false);
+                      // setTeamAddingModalVisible(true);
+                    },
+                  },
+                ]);
+              }}>
+              <Svg
+                width="24"
+                height="24"
+                stroke={
+                  teams_list.length === possibleTeams.length
+                    ? 'gray'
+                    : colors.primary
+                }
+                strokeWidth={1}
+                viewBox="0 0 16 16">
+                <Path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                <Path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+              </Svg>
+            </Pressable>
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 20,
+                fontWeight: 'bold',
+                marginVertical: '2%',
+              }}>
+              List of Teams
+            </Text>
+            <Pressable
+              onPress={() => {
+                setTeamAddingModalVisible(false);
+              }}>
+              <Svg
+                width="16"
+                height="16"
+                fill="gray"
+                viewBox="0 0 16 16"
+                stroke={'gray'}
+                strokeWidth={3}>
+                <Path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+              </Svg>
+            </Pressable>
+          </View>
+          <FlatList
+            style={{
+              marginTop: '5%',
+              marginLeft: '5%',
+            }}
+            data={
+              filter_by_added
+                ? possibleTeams.filter(team => teams_list.includes(team))
+                : possibleTeams
+            }
+            renderItem={({item}) => {
+              return (
+                <View
+                  style={{
+                    // backgroundColor: 'red',
+                    minWidth: '80%',
+                  }}>
+                  <BouncyCheckbox
+                    size={30}
+                    fillColor="blue"
+                    unfillColor="#FFFFFF"
+                    text={String(item)}
+                    textStyle={styles.team_item}
+                    isChecked={teams_list.includes(item)}
+                    onPress={() => {
+                      addOrRemoveTeam(item);
+                    }}
+                  />
+                </View>
+              );
+            }}
           />
         </View>
-        <FlatList
-          style={{maxHeight: '50%'}}
-          data={
-            filter_by_added
-              ? possibleTeams.filter(team => teams_list.includes(team))
-              : possibleTeams
-          }
-          renderItem={({item}) => {
-            return (
-              <BouncyCheckbox
-                size={30}
-                fillColor="blue"
-                unfillColor="#FFFFFF"
-                text={String(item)}
-                textStyle={styles.team_item}
-                isChecked={teams_list.includes(item)}
-                onPress={() => {
-                  addOrRemoveTeam(item);
-                }}
-              />
-            );
-          }}
-        />
-      </StandardModal>
+      </Modal>
 
       {dragging_active ? (
         <DraggableFlatList
