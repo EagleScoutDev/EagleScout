@@ -358,8 +358,8 @@ function PicklistCreator({
       alignItems: 'center',
       borderBottomWidth: 1,
       borderColor: colors.border,
-      marginBottom: '5%',
-      padding: '5%',
+      paddingHorizontal: '5%',
+      paddingBottom: '10%',
     },
     settingsText: {
       color: colors.text,
@@ -410,6 +410,9 @@ function PicklistCreator({
             backgroundColor: colors.card,
             borderRadius: 10,
             padding: '5%',
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'space-evenly',
           }}>
           <Pressable
             style={styles.settingsLine}
