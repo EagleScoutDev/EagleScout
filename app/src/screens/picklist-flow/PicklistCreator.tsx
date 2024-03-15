@@ -458,24 +458,26 @@ function PicklistCreator({
           </Pressable>
         </View>
       )}
-      {/*)}*/}
-      <Pressable
-        onPress={() => {
-          setAdditionalSettingsOpen(!additionalSettingsOpen);
-          // console.log('additional settings open: ' + additionalSettingsOpen);
-        }}
-        style={styles.settings_button}>
-        <Svg
-          width="32"
-          height="32"
-          fill={colors.background}
-          viewBox="0 0 16 16">
-          <Path
-            fill-rule="evenodd"
-            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-          />
-        </Svg>
-      </Pressable>
+
+      {teams_list.length !== 0 && (
+        <Pressable
+          onPress={() => {
+            setAdditionalSettingsOpen(!additionalSettingsOpen);
+            // console.log('additional settings open: ' + additionalSettingsOpen);
+          }}
+          style={styles.settings_button}>
+          <Svg
+            width="32"
+            height="32"
+            fill={colors.background}
+            viewBox="0 0 16 16">
+            <Path
+              fill-rule="evenodd"
+              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+            />
+          </Svg>
+        </Pressable>
+      )}
 
       {/*  if the picklist was made by someone else, show the name and title. else, let the user enter a title */}
       {presetPicklist ? (
