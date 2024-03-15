@@ -7,11 +7,14 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  SafeAreaView,
 } from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {supabase} from '../../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import StandardButton from '../../components/StandardButton';
 
 function InputLabel(props) {
   return (
@@ -34,27 +37,22 @@ function SignUpModal({setVisible, navigation}) {
 
   const styles = StyleSheet.create({
     input: {
-      // center text
-      textAlign: 'center',
-      // add padding
-      padding: 10,
-      // add circular border around input field
+      textAlign: 'left',
+      padding: '5%',
       borderRadius: 10,
-      // add border
-      borderWidth: 1,
-      borderColor: colors.text,
-      // add margin
+      borderBottomWidth: 1,
+      borderColor: 'gray',
       // margin: 10,
-      // add horizontal space
-      marginHorizontal: 30,
-      color: colors.text,
+      // marginHorizontal: 30,
+      color: 'white',
     },
     titleText: {
-      textAlign: 'center',
+      textAlign: 'left',
+      padding: '5%',
       fontSize: 30,
       fontWeight: 'bold',
-      color: colors.primary,
-      marginVertical: 20,
+      color: 'rgb(191, 219, 247)',
+      // marginVertical: 20,
     },
     button: {
       textAlign: 'center',
@@ -62,114 +60,107 @@ function SignUpModal({setVisible, navigation}) {
       fontWeight: 'bold',
       color: 'red',
     },
+    link_container: {
+      flexDirection: 'row',
+      padding: '4%',
+      borderRadius: 20,
+    },
+    background: {
+      flexDirection: 'column',
+      backgroundColor: 'rgb(0,0,25)',
+      flex: 1,
+    },
+    error: {
+      backgroundColor: 'red',
+      padding: '5%',
+      margin: '3%',
+      borderRadius: 10,
+      position: 'absolute',
+      top: '5%',
+      right: '5%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    error_text: {
+      color: 'white',
+      textAlign: 'center',
+    },
   });
 
   return (
     // <Modal animationType={'slide'} visible={visible} transparent={false}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-        }}>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: '8%',
-            left: '5%',
-          }}
-          onPress={() => {
-            navigation.goBack();
-          }}>
-          <Text
-            style={{
-              ...styles.button,
-              color: colors.notification,
-              fontSize: 20,
-            }}>
-            {/*TODO: Figure out the elegant react navigation method for doing this.*/}
-            {'< Return Back'}
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            margin: '5%',
-            padding: '5%',
-            top: '13%',
-            borderWidth: 3,
-            borderColor: colors.primary,
-            // add drop shadow
-            shadowColor: colors.primary,
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.75,
-            shadowRadius: 3.84,
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 20,
-              color: colors.text,
-              padding: 10,
-            }}>
-            Sign Up
-          </Text>
-          <View>
-            <InputLabel title="Email" visible={email !== ''} />
-            <TextInput
-              onChangeText={setEmail}
-              value={email}
-              placeholder="Email"
-              style={{
-                ...styles.input,
-              }}
-              inputMode={'email'}
-            />
-            <InputLabel title="Password" visible={password !== ''} />
-            <TextInput
-              onChangeText={setPassword}
-              value={password}
-              placeholder="Password"
-              style={{
-                ...styles.input,
-              }}
-              secureTextEntry={true}
-            />
-          </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.primary,
-              padding: 10,
-              borderRadius: 10,
-              margin: 10,
-              marginHorizontal: 30,
-            }}
-            onPress={async () => {
-              const {error} = await supabase.auth.signUp({
-                email: email,
-                password: password,
-              });
-              if (error) {
-                console.error(error);
-                Alert.alert('Error signing up', error.toString());
-              } else {
-                Alert.alert(
-                  'Success!',
-                  'You received an email to confirm your account. Please follow the instructions in the email for next steps.',
-                );
+      <SafeAreaView style={styles.background}>
+        <Text style={styles.titleText}>Sign Up</Text>
+        <View>
+          <>
+            <View>
+              <MinimalSectionHeader title={'Email'} />
+              <TextInput
+                autoCapitalize={'none'}
+                onChangeText={text => setEmail(text)}
+                value={email}
+                placeholder="john.doe@team114.org"
+                placeholderTextColor={'gray'}
+                style={styles.input}
+                inputMode={'email'}
+              />
+              <View style={{height: 30}} />
+              <MinimalSectionHeader title={'Password'} />
+              <TextInput
+                onChangeText={text => setPassword(text)}
+                value={password}
+                style={styles.input}
+                secureTextEntry={true}
+              />
+              <StandardButton
+                text={'Register'}
+                textColor={
+                  email === '' || password === '' ? 'dimgray' : colors.primary
+                }
+                disabled={email === '' || password === ''}
+                onPress={async () => {
+                  const {error} = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                  });
+                  if (error) {
+                    console.error(error);
+                    Alert.alert('Error signing up', error.toString());
+                  } else {
+                    Alert.alert(
+                      'Success!',
+                      'You received an email to confirm your account. Please follow the instructions in the email for next steps.',
+                    );
+                    navigation.navigate('Login');
+                  }
+                }}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.link_container}
+              onPress={() => {
                 navigation.navigate('Login');
-              }
-            }}>
-            <Text style={{textAlign: 'center', color: 'white', fontSize: 20}}>
-              Register
-            </Text>
-          </TouchableOpacity>
+                setEmail('');
+                setPassword('');
+              }}>
+              <Text style={{color: 'gray'}}>Log In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.link_container}
+              onPress={() => {
+                navigation.navigate('Register new team');
+                setEmail('');
+                setPassword('');
+              }}>
+              <Text style={{color: 'gray'}}>
+                Register your team with EagleScout
+              </Text>
+            </TouchableOpacity>
+          </>
         </View>
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
