@@ -367,15 +367,17 @@ function PicklistCreator({
     },
     settings_button: {
       position: 'absolute',
-      bottom: '5%',
-      right: '5%',
+      bottom: '4%',
+      right: '6%',
       // borderColor: colors.text,
       // borderWidth: 1,
       padding: '5%',
       borderRadius: 200,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'cornflowerblue',
+      backgroundColor: colors.card,
+      borderColor: 'gray',
+      borderWidth: 2,
       zIndex: 10,
     },
   });
@@ -466,11 +468,7 @@ function PicklistCreator({
             // console.log('additional settings open: ' + additionalSettingsOpen);
           }}
           style={styles.settings_button}>
-          <Svg
-            width="32"
-            height="32"
-            fill={colors.background}
-            viewBox="0 0 16 16">
+          <Svg width="32" height="32" fill={colors.text} viewBox="0 0 16 16">
             <Path
               fill-rule="evenodd"
               d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
