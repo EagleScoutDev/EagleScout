@@ -340,7 +340,7 @@ function PicklistCreator({
     team_number_strikethrough: {
       flex: 1,
       color: 'gray',
-      fontSize: 20,
+      fontSize: 16,
       marginLeft: '5%',
 
       textDecorationLine: 'line-through',
