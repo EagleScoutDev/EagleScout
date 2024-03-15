@@ -349,7 +349,7 @@ function PicklistCreator({
     team_number_displayed: {
       flex: 1,
       color: colors.text,
-      fontSize: 20,
+      fontSize: 16,
       marginLeft: '5%',
     },
     settingsLine: {
@@ -364,6 +364,19 @@ function PicklistCreator({
     settingsText: {
       color: colors.text,
       fontWeight: 'bold',
+    },
+    settings_button: {
+      position: 'absolute',
+      bottom: '5%',
+      right: '5%',
+      // borderColor: colors.text,
+      // borderWidth: 1,
+      padding: '5%',
+      borderRadius: 200,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'cornflowerblue',
+      zIndex: 10,
     },
   });
 
@@ -448,19 +461,7 @@ function PicklistCreator({
           setAdditionalSettingsOpen(!additionalSettingsOpen);
           // console.log('additional settings open: ' + additionalSettingsOpen);
         }}
-        style={{
-          position: 'absolute',
-          bottom: '5%',
-          right: '5%',
-          // borderColor: colors.text,
-          // borderWidth: 1,
-          padding: '5%',
-          borderRadius: 200,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'cornflowerblue',
-          zIndex: 10,
-        }}>
+        style={styles.settings_button}>
         <Svg
           width="32"
           height="32"
@@ -472,6 +473,8 @@ function PicklistCreator({
           />
         </Svg>
       </Pressable>
+
+      {/*  if the picklist was made by someone else, show the name and title. else, let the user enter a title */}
       {presetPicklist ? (
         <View>
           <Text style={styles.name_input}>{presetPicklist.name}</Text>
@@ -489,6 +492,21 @@ function PicklistCreator({
           defaultValue={'Enter Name'}
         />
       )}
+
+      {teams_list.length === 0 && (
+        <Pressable onPress={() => setTeamAddingModalVisible(true)}>
+          <Text
+            style={{
+              color: colors.primary,
+              fontSize: 20,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              marginVertical: '50%',
+            }}>
+            Add teams to the picklist
+          </Text>
+        </Pressable>
+      )}
       <Modal
         visible={teamAddingModalVisible}
         animationType="slide"
@@ -502,8 +520,6 @@ function PicklistCreator({
         <View
           style={{
             flex: 1,
-            // justifyContent: 'center',
-            // alignItems: 'center',
             backgroundColor: colors.card,
           }}>
           <View
