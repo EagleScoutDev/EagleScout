@@ -12,7 +12,6 @@ import {
   Alert,
 } from 'react-native';
 import {supabase} from '../../lib/supabase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import StandardButton from '../../components/StandardButton';
 
 function InputLabel(props) {

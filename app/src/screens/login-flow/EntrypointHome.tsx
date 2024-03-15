@@ -1,8 +1,6 @@
-import {Easing, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
-import GradientShimmer from 'react-native-gradient-shimmer';
-import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';
 
 const EntrypointHome = () => {
