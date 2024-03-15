@@ -217,12 +217,13 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
               display: 'none',
             },
           }}>
-          <Tab.Screen name={'Entrypoint'} component={EntrypointHome} />
+          <Tab.Screen
+            name={'Entrypoint'}
+            children={() => <EntrypointHome ifAuth={skipAuth} />}
+          />
           <Tab.Screen
             name="Login"
-            children={() => (
-              <Login onSubmit={submitForm} error={error} ifAuth={skipAuth} />
-            )}
+            children={() => <Login onSubmit={submitForm} error={error} />}
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />

@@ -13,21 +13,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
-const Login = ({onSubmit, error, ifAuth}) => {
+const Login = ({onSubmit, error}) => {
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
   const {colors} = useTheme();
   const navigation = useNavigation();
-
-  useEffect(() => {
-    AsyncStorage.getItem('authenticated').then(r => {
-      if (r) {
-        console.log('Login page redirecting to Scout Report...');
-        // navigation.navigate('Scout Report');
-        ifAuth();
-      }
-    });
-  });
 
   const styles = StyleSheet.create({
     input: {
