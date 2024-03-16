@@ -150,9 +150,10 @@ function DataAggregation({navigation}) {
       textAlign: 'right',
     },
     question_text: {
-      color: colors.text,
-      fontWeight: 'bold',
-      fontSize: 16,
+      color: 'dimgray',
+      // fontWeight: 'bold',
+      fontSize: 12,
+      textAlign: 'center',
     },
     rank_list_item: {
       // backgroundColor: colors.card,
@@ -258,24 +259,33 @@ function DataAggregation({navigation}) {
             </Pressable>
           </View>
           <View style={{marginHorizontal: '10%'}}>
-            <Text style={styles.question_text}>Choose a Question</Text>
+            <Text style={styles.question_text}>
+              Choose a question to begin.
+            </Text>
             <ScrollView>
               {currForm &&
                 currForm.map((item, index) => (
                   <Pressable
-                    onPress={() => onPress(index, item.question)}
+                    onPress={() => {
+                      if (item.type === 'heading') {
+                        return;
+                      }
+                      onPress(index, item.question);
+                    }}
                     key={item.question + String(index)}>
+                    {item.type === 'heading' && (
+                      <Text
+                        style={{
+                          color: 'gray',
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                          marginTop: '16%',
+                        }}>
+                        {item.title.toUpperCase()}
+                      </Text>
+                    )}
                     {item.type === 'number' && (
                       <View style={styles.list_item}>
-                        <Text
-                          style={{
-                            color: colors.text,
-                            flex: 0.2,
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                          }}>
-                          {index}
-                        </Text>
                         <Text style={{color: colors.text, flex: 1}}>
                           {item.question}
                         </Text>
