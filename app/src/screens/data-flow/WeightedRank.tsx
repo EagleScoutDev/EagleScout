@@ -233,32 +233,56 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
           Weighted Rank
         </Text>
         {status === WeightedRankStatus.PRESENTING_RANKINGS && (
-          <ScrollView>
-            {Array.from(teamMap)
-              .sort((a, b) => a[1].sum / a[1].count - b[1].sum / b[1].count)
-              .reverse()
-              .map((team, index) => {
-                return (
-                  <View style={styles.list_item} key={index}>
-                    <Text
-                      style={{
-                        color: 'gray',
-                        fontSize: 16,
-                        flex: 0.3,
-                        fontWeight: 'bold',
-                      }}>
-                      {index + 1}
-                    </Text>
-                    <Text style={{color: colors.text, fontSize: 16, flex: 1}}>
-                      {team[0]}
-                    </Text>
-                    <Text style={{color: colors.text, fontSize: 16, width: 50}}>
-                      {parseFloat((team[1].sum / team[1].count).toFixed(2))}
-                    </Text>
-                  </View>
-                );
-              })}
-          </ScrollView>
+          <View>
+            <View style={styles.list_item}>
+              <View style={{flex: 0.3}} />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: colors.text,
+                  fontSize: 16,
+                  flex: 1,
+                }}>
+                Team
+              </Text>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: colors.text,
+                  fontSize: 16,
+                  width: 50,
+                }}>
+                Score
+              </Text>
+            </View>
+            <ScrollView>
+              {Array.from(teamMap)
+                .sort((a, b) => a[1].sum / a[1].count - b[1].sum / b[1].count)
+                .reverse()
+                .map((team, index) => {
+                  return (
+                    <View style={styles.list_item} key={index}>
+                      <Text
+                        style={{
+                          color: 'gray',
+                          fontSize: 16,
+                          flex: 0.3,
+                          fontWeight: 'bold',
+                        }}>
+                        {index + 1}
+                      </Text>
+                      <Text style={{color: colors.text, fontSize: 16, flex: 1}}>
+                        {team[0]}
+                      </Text>
+                      <Text
+                        style={{color: colors.text, fontSize: 16, width: 50}}>
+                        {parseFloat((team[1].sum / team[1].count).toFixed(2))}
+                      </Text>
+                    </View>
+                  );
+                })}
+            </ScrollView>
+          </View>
         )}
         {status === WeightedRankStatus.PROCESSING && (
           <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
