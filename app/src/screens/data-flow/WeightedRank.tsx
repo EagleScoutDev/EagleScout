@@ -13,7 +13,6 @@ import Svg, {Path} from 'react-native-svg';
 import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
-import number from '../form-creation-flow/components/questions/Number';
 
 interface WeightedRankProps {
   visible: boolean;
@@ -204,7 +203,7 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
                   setListOfWeights(originalWeights);
                 }}>
                 <Text style={{color: 'gray', fontSize: 14, textAlign: 'left'}}>
-                  Discard
+                  Reset
                 </Text>
               </Pressable>
             )}
@@ -283,14 +282,40 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
                           paddingTop: '4%',
                         }}
                         key={index}>
-                        <Text style={styles.question_text}>
-                          {question.question}
-                        </Text>
+                        <Pressable
+                          onPress={() => {
+                            let temp = [...listOfWeights]; // Create a new array by spreading the old one
+                            temp[index] = 0;
+                            setListOfWeights(temp);
+                          }}>
+                          <Text
+                            style={{
+                              color:
+                                listOfWeights[index] === 0
+                                  ? 'gray'
+                                  : colors.text,
+                              fontSize: 16,
+                              // fontWeight: 'bold',
+                              // textAlign: 'center',
+                            }}>
+                            {question.question}
+                          </Text>
+                        </Pressable>
                         {/*<Text>{listOfWeights[index]}</Text>*/}
                         <Slider
                           style={{width: '100%', height: 40}}
-                          minimumValue={0}
+                          minimumValue={-1}
                           maximumValue={1}
+                          // start the track at the middle
+                          // set track color to red if negative, blue if positive
+                          minimumTrackTintColor={
+                            listOfWeights[index] === 0
+                              ? 'dimgray'
+                              : listOfWeights[index] > 0
+                              ? colors.primary
+                              : 'red'
+                          }
+                          tapToSeek={true}
                           value={listOfWeights[index]}
                           onValueChange={value => {
                             let temp = [...listOfWeights]; // Create a new array by spreading the old one
@@ -298,6 +323,12 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
                             setListOfWeights(temp);
                           }}
                         />
+                        <View>
+                          <Text
+                            style={{color: colors.text, textAlign: 'center'}}>
+                            {listOfWeights[index].toFixed(2)}
+                          </Text>
+                        </View>
                       </View>
                     );
                   }
