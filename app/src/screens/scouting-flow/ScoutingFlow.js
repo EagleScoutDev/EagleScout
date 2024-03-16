@@ -224,6 +224,37 @@ function ScoutingFlow({navigation, route}) {
           text1: 'Saved offline successfully!',
           visibilityTime: 3000,
         });
+        const matchCopy = match;
+        const teamCopy = team;
+        (async () => {
+          const data = await AsyncStorage.getItem('scout-assignments');
+          if (data != null) {
+            const assignments = JSON.parse(data);
+            const newAssignments = assignments.filter(assignment => {
+              console.log(assignment.matchNumber);
+              console.log(assignment.team.substring(3));
+              console.log(matchCopy);
+              console.log(teamCopy);
+              if (
+                assignment.matchNumber === parseInt(matchCopy, 10) &&
+                assignment.team == null
+              ) {
+                return false;
+              } else if (
+                assignment.matchNumber === parseInt(matchCopy, 10) &&
+                assignment.team.substring(3) === teamCopy
+              ) {
+                return false;
+              } else {
+                return true;
+              }
+            });
+            await AsyncStorage.setItem(
+              'scout-assignments',
+              JSON.stringify(newAssignments),
+            );
+          }
+        })();
         setMatch('');
         setTeam('');
         initForm(formStructure);

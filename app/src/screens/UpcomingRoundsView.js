@@ -57,6 +57,9 @@ const UpcomingRoundsView = ({navigation}) => {
           FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
           JSON.stringify(dbCompetition),
         );
+      } else {
+        await AsyncStorage.removeItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+        await AsyncStorage.removeItem('scout-assignments');
       }
     } else {
       const storedComp = await FormHelper.readAsyncStorage(
