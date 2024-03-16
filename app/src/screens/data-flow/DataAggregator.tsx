@@ -215,6 +215,7 @@ function DataAggregation({navigation}) {
               fontSize: 20,
               color: colors.text,
               marginVertical: '5%',
+              marginHorizontal: '8%',
             }}>
             {chosenQuestion && chosenQuestion.question}
           </Text>
@@ -263,7 +264,7 @@ function DataAggregation({navigation}) {
                 currForm.map((item, index) => (
                   <Pressable
                     onPress={() => onPress(index, item.question)}
-                    key={item.question}>
+                    key={item.question + String(index)}>
                     {item.type === 'number' && (
                       <View style={styles.list_item}>
                         <Text
