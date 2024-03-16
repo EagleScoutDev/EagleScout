@@ -1,6 +1,6 @@
 {
   "name": "EagleScout",
-  "version": "6.0.1",
+  "version": "7.1.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -34,9 +34,11 @@
     "react-native-element-dropdown": "^2.10.1",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.12.1",
+    "react-native-gradient-shimmer": "^1.1.5",
     "react-native-haptic-feedback": "^2.2.0",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-pager-view": "^6.2.1",
-    "react-native-reanimated": "^3.4.2",
+    "react-native-reanimated": "^3.7.2",
     "react-native-safe-area-context": "^4.7.2",
     "react-native-screens": "^3.25.0",
     "react-native-share": "^10.0.2",

@@ -22,6 +22,7 @@ import React from 'react-native';
 import StandardButton from '../../components/StandardButton';
 import Toast from 'react-native-toast-message';
 import ScoutReportsDB from '../../database/ScoutReports';
+import CompetitionsDB from '../../database/Competitions';
 
 const DEBUG = false;
 
@@ -153,11 +154,12 @@ function SubmittedForms() {
               color={'red'}
               text={'Push offline to database'}
               onPress={async () => {
-                const googleResponse = await fetch('https://google.com').catch(
-                  () => {},
-                );
+                const internetResponse =
+                  await CompetitionsDB.getCurrentCompetition()
+                    .then(() => true)
+                    .catch(() => false);
 
-                if (!googleResponse) {
+                if (!internetResponse) {
                   Alert.alert(
                     'No internet connection',
                     'Please connect to the internet to push offline reports',

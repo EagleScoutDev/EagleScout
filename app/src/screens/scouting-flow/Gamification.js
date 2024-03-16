@@ -32,7 +32,6 @@ function Gamification({
   submitForm,
   isSubmitting,
 }) {
-
   return (
     <>
       <Tab.Navigator
@@ -55,7 +54,7 @@ function Gamification({
           options={{
             headerTintColor: colors.text,
             tabBarLabelStyle: {
-              fontSize: 7.5,
+              fontSize: 12,
               fontWeight: 'bold',
             },
 
@@ -117,7 +116,7 @@ function Gamification({
                   // change font color in header
                   headerTintColor: colors.text,
                   tabBarLabelStyle: {
-                    fontSize: 7.5,
+                    fontSize: 12,
                     fontWeight: 'bold',
                   },
 

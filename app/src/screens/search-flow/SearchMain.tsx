@@ -1,5 +1,14 @@
-import { View, Text, FlatList, Pressable, SafeAreaView } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  TouchableOpacity,
+  Modal,
+  Alert,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
@@ -10,7 +19,12 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import SearchModal from './SearchModal';
-import Competitions from "../../database/Competitions";
+import Competitions from '../../database/Competitions';
+import NotesDB, {
+  NoteStructure,
+  NoteStructureWithMatchNumber,
+} from '../../database/Notes';
+import {NoteList} from '../../components/NoteList';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -26,9 +40,14 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [reportsByMatch, setReportsByMatch] = useState<
     Map<number, ScoutReportReturnData[]>
   >(new Map());
+  const [notesByMatch, setNotesByMatch] = useState<
+    Map<number, NoteStructureWithMatchNumber[]>
+  >(new Map());
 
   const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
   const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
+  const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
+  const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
@@ -70,6 +89,23 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         setReportsByMatch(temp);
       });
 
+      NotesDB.getNotesForCompetition(competitionId).then(notes => {
+        notes.sort((a, b) => {
+          return a.match_number - b.match_number;
+        });
+
+        let temp: Map<number, NoteStructureWithMatchNumber[]> = new Map();
+        for (const note of notes) {
+          if (temp.has(note.match_number)) {
+            temp.get(note.match_number)?.push(note);
+          } else {
+            temp.set(note.match_number, [note]);
+          }
+        }
+
+        setNotesByMatch(temp);
+      });
+
       Competitions.getCompetitionTBAKey(competitionId).then(key => {
         TBA.getTeamsAtCompetition(key).then(teams => {
           // sort teams by team number
@@ -84,6 +120,12 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     }
   }, [competitionId]);
 
+  const navigateToTeamViewer = (team: SimpleTeam) => {
+    navigation.navigate('TeamViewer', {
+      team: team,
+      competitionId: competitionId,
+    });
+  };
 
   // initial data fetch
   useEffect(() => {
@@ -220,10 +262,29 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 <View
                   style={{
                     height: 2,
-                    width: '100%',
                     backgroundColor: colors.border,
+                    flex: 1,
                   }}
                 />
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: colors.card,
+                    padding: '3%',
+                    borderRadius: 99,
+                    marginRight: '4%',
+                  }}
+                  onPress={() => {
+                    setNotesViewerVisible(true);
+                    setCurrentMatchNumber(item);
+                  }}>
+                  <Svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill={colors.text}>
+                    <Path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                  </Svg>
+                </TouchableOpacity>
               </View>
               <View
                 style={{
@@ -271,7 +332,33 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           chosenComp={currentReport?.competitionName ?? ''}
           updateFormData={() => {}}
           isOfflineForm={false}
+          navigateToTeamViewer={() => {
+            if (currentReport) {
+              let team = listOfTeams.find(
+                team => team.team_number === currentReport.teamNumber,
+              );
+              if (team) {
+                setScoutViewerVisible(false);
+                navigateToTeamViewer(team);
+              } else {
+                Alert.alert(
+                  'Error: Team not found',
+                  'Report likely inputted with wrong team number.',
+                );
+              }
+            }
+          }}
         />
+      )}
+      {notesViewerVisible && (
+        <Modal visible={notesViewerVisible} animationType="slide">
+          <SafeAreaView style={{flex: 1}}>
+            <NoteList
+              notes={notesByMatch.get(currentMatchNumber) ?? []}
+              onClose={() => setNotesViewerVisible(false)}
+            />
+          </SafeAreaView>
+        </Modal>
       )}
     </SafeAreaView>
   );
