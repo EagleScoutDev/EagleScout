@@ -237,27 +237,30 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
         {/*</Text>*/}
         {status === WeightedRankStatus.PRESENTING_RANKINGS && (
           <ScrollView>
-            {Array.from(teamMap).map((team, index) => {
-              return (
-                <View style={styles.list_item} key={index}>
-                  <Text
-                    style={{
-                      color: 'gray',
-                      fontSize: 16,
-                      flex: 0.3,
-                      fontWeight: 'bold',
-                    }}>
-                    {index + 1}
-                  </Text>
-                  <Text style={{color: colors.text, fontSize: 16, flex: 1}}>
-                    {team[0]}
-                  </Text>
-                  <Text style={{color: colors.text, fontSize: 16}}>
-                    {parseFloat((team[1].sum / team[1].count).toFixed(2))}
-                  </Text>
-                </View>
-              );
-            })}
+            {Array.from(teamMap)
+              .sort((a, b) => a[1].sum / a[1].count - b[1].sum / b[1].count)
+              .reverse()
+              .map((team, index) => {
+                return (
+                  <View style={styles.list_item} key={index}>
+                    <Text
+                      style={{
+                        color: 'gray',
+                        fontSize: 16,
+                        flex: 0.3,
+                        fontWeight: 'bold',
+                      }}>
+                      {index + 1}
+                    </Text>
+                    <Text style={{color: colors.text, fontSize: 16, flex: 1}}>
+                      {team[0]}
+                    </Text>
+                    <Text style={{color: colors.text, fontSize: 16, width: 50}}>
+                      {parseFloat((team[1].sum / team[1].count).toFixed(2))}
+                    </Text>
+                  </View>
+                );
+              })}
           </ScrollView>
         )}
         {status === WeightedRankStatus.PROCESSING && (
