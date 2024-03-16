@@ -67,16 +67,18 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
       }
       setNumberQuestions(temp);
     }
-  }, []);
+  }, [form]);
 
   useEffect(() => {
-    let temp: number[] = [];
-    for (let i = 0; i < form?.length; i++) {
-      temp.push(0);
+    if (numberQuestions.length > 0 && form) {
+      let temp: number[] = [];
+      for (let i = 0; i < form.length; i++) {
+        temp.push(0);
+      }
+      setListOfWeights(temp);
+      setOriginalWeights(temp);
     }
-    setListOfWeights(temp);
-    setOriginalWeights(temp);
-  }, []);
+  }, [numberQuestions]);
 
   const generateRankings = () => {
     setStatus(WeightedRankStatus.FETCHING_REPORTS);
@@ -323,12 +325,14 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
                             setListOfWeights(temp);
                           }}
                         />
-                        <View>
-                          <Text
-                            style={{color: colors.text, textAlign: 'center'}}>
-                            {listOfWeights[index].toFixed(2)}
-                          </Text>
-                        </View>
+                        {listOfWeights.length > 0 && (
+                          <View>
+                            <Text
+                              style={{color: colors.text, textAlign: 'center'}}>
+                              {listOfWeights[index].toFixed(2)}
+                            </Text>
+                          </View>
+                        )}
                       </View>
                     );
                   }
