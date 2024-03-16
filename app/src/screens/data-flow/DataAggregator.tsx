@@ -152,7 +152,7 @@ function DataAggregation({navigation}) {
     question_text: {
       color: colors.text,
       fontWeight: 'bold',
-      fontSize: 20,
+      fontSize: 16,
     },
     rank_list_item: {
       // backgroundColor: colors.card,
@@ -214,39 +214,10 @@ function DataAggregation({navigation}) {
               textAlign: 'center',
               fontSize: 20,
               color: colors.text,
-              marginTop: '5%',
+              marginVertical: '5%',
             }}>
             {chosenQuestion && chosenQuestion.question}
           </Text>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 14,
-              fontWeight: 'bold',
-              color: colors.text,
-              marginBottom: '5%',
-            }}>
-            {compName}
-          </Text>
-          {/*<Pressable*/}
-          {/*  onPress={() => {*/}
-          {/*    if (teamsToAverage) {*/}
-          {/*      // change sort*/}
-          {/*      const sorted = new Map([...teamsToAverage.entries()].reverse());*/}
-          {/*      setTeamsToAverage(sorted);*/}
-          {/*    }*/}
-          {/*  }}*/}
-          {/*  style={({pressed}) => ({*/}
-          {/*    backgroundColor: colors.card,*/}
-          {/*    padding: '3%',*/}
-          {/*    marginHorizontal: '20%',*/}
-          {/*    borderRadius: 10,*/}
-          {/*    opacity: pressed ? 0.5 : 1,*/}
-          {/*  })}>*/}
-          {/*  <Text style={{color: colors.text, textAlign: 'center'}}>*/}
-          {/*    Change Sort*/}
-          {/*  </Text>*/}
-          {/*</Pressable>*/}
         </View>
       )}
       {chosenQuestion === null && (
@@ -257,24 +228,36 @@ function DataAggregation({navigation}) {
             form={currForm}
             compId={compID ?? -1}
           />
-          <Pressable
-            onPress={() => {
-              setWeightedVisible(true);
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginHorizontal: '2%',
+              marginBottom: '5%',
+              marginTop: '2%',
             }}>
-            <Text
-              style={{
-                color: colors.primary,
-                fontSize: 14,
-                textAlign: 'right',
-                padding: '5%',
+            <Text style={{color: colors.text, fontSize: 24}}>
+              {compName ? compName : 'No Competition Selected'}
+            </Text>
+            <Pressable
+              onPress={() => {
+                setWeightedVisible(true);
               }}>
-              Weighted Rank
-            </Text>
-          </Pressable>
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontSize: 14,
+                  textAlign: 'right',
+                  fontWeight: 'bold',
+                  // padding: '5%',
+                }}>
+                Weighted Rank
+              </Text>
+            </Pressable>
+          </View>
           <View style={{marginHorizontal: '10%'}}>
-            <Text style={styles.question_text}>
-              Choose a question to rank teams
-            </Text>
+            <Text style={styles.question_text}>Choose a Question</Text>
             <ScrollView>
               {currForm &&
                 currForm.map((item, index) => (
@@ -342,26 +325,29 @@ function DataAggregation({navigation}) {
               maxHeight: '80%',
             }}>
             {teamsToAverage &&
-              Array.from(teamsToAverage, ([key, value], index) => (
-                <View key={key} style={styles.rank_list_item}>
-                  <Text
-                    style={{
-                      flex: 0.2,
-                      color: 'gray',
-                      fontWeight: 'bold',
-                    }}>
-                    {index + 1}.
-                  </Text>
-                  <Text
-                    style={{
-                      flex: 1,
-                      color: colors.text,
-                    }}>
-                    {key}
-                  </Text>
-                  <Text style={styles.list_text}>{value}</Text>
-                </View>
-              ))}
+              Array.from(teamsToAverage)
+                .sort((a, b) => a[1] - b[1])
+                .reverse()
+                .map(([key, value], index) => (
+                  <View key={key} style={styles.rank_list_item}>
+                    <Text
+                      style={{
+                        flex: 0.2,
+                        color: 'gray',
+                        fontWeight: 'bold',
+                      }}>
+                      {index + 1}.
+                    </Text>
+                    <Text
+                      style={{
+                        flex: 1,
+                        color: colors.text,
+                      }}>
+                      {key}
+                    </Text>
+                    <Text style={styles.list_text}>{value}</Text>
+                  </View>
+                ))}
           </ScrollView>
           {/*<View*/}
           {/*  style={{*/}
