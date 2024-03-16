@@ -10,9 +10,11 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import Gamification from './Gamification';
 import ScoutingView from './ScoutingView';
 import Confetti from 'react-native-confetti';
+import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
+
 function ScoutingFlow({navigation, route}) {
   const defaultValues = useMemo(() => {
     return {
@@ -40,6 +42,19 @@ function ScoutingFlow({navigation, route}) {
   const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
     useState(false);
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
+
+  const {competitionId, matches, getTeamsForMatch} =
+    useCurrentCompetitionMatches();
+  const [teamsForMatch, setTeamsForMatch] = useState([]);
+  useEffect(() => {
+    if (!match || match > 400) {
+      return;
+    }
+    const teams = getTeamsForMatch(Number(match));
+    if (teams.length > 0) {
+      setTeamsForMatch(teams);
+    }
+  }, [match, competitionId, matches]);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
@@ -361,6 +376,7 @@ function ScoutingFlow({navigation, route}) {
               setMatch={setMatch}
               team={team}
               setTeam={setTeam}
+              teamsForMatch={teamsForMatch}
               colors={colors}
               styles={styles}
               competition={competition}
@@ -376,6 +392,7 @@ function ScoutingFlow({navigation, route}) {
               setMatch={setMatch}
               team={team}
               setTeam={setTeam}
+              teamsForMatch={teamsForMatch}
               colors={colors}
               styles={styles}
               navigation={navigation}

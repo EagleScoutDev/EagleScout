@@ -3,7 +3,14 @@ import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 
-function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
+function MatchInformation({
+  match,
+  setMatch,
+  team,
+  setTeam,
+  teamsForMatch,
+  disabled = false,
+}) {
   const {colors} = useTheme();
 
   const styles = StyleSheet.create({
@@ -102,6 +109,11 @@ function MatchInformation({match, setMatch, team, setTeam, disabled = false}) {
           keyboardType={'numeric'}
         />
       </View>
+      {team !== '' && !teamsForMatch.includes(Number.parseInt(team, 10)) && (
+        <Text style={{color: 'red', textAlign: 'center'}}>
+          Warning: Team {team} is not in this match
+        </Text>
+      )}
     </View>
   );
 }

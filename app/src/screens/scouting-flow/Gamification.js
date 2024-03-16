@@ -22,6 +22,7 @@ function Gamification({
   setMatch,
   team,
   setTeam,
+  teamsForMatch,
   colors,
   styles,
   navigation,
@@ -91,6 +92,7 @@ function Gamification({
                     setMatch={setMatch}
                     team={team}
                     setTeam={setTeam}
+                    teamsForMatch={teamsForMatch}
                     disabled={true}
                   />
                 </View>

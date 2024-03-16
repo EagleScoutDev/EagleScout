@@ -10,6 +10,7 @@ function ScoutingView({
   setMatch,
   team,
   setTeam,
+  teamsForMatch,
   colors,
   styles,
   competition,
@@ -50,6 +51,7 @@ function ScoutingView({
         setMatch={setMatch}
         team={team}
         setTeam={setTeam}
+        teamsForMatch={teamsForMatch}
       />
 
       {/*
