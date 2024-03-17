@@ -9,27 +9,24 @@ function FormSection({children, title, colors, disabled = false}) {
   const [visible, setVisible] = useState(true);
   const styles = StyleSheet.create({
     container: {
-      flexDirection: 'column',
-      minWidth: '85%',
-      maxWidth: '85%',
+      // flexDirection: 'column',
+      // minWidth: '85%',
+      // maxWidth: '85%',
       paddingTop: '5%',
       paddingBottom: '3%',
+      // minWidth: '95%',
+      width: '100%',
       paddingHorizontal: '5%',
-      backgroundColor: colors.card,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-      borderRadius: 10,
+      // backgroundColor: colors.card,
+      // borderRadius: 10,
       borderColor: colors.border,
-      borderWidth: 3,
+      borderTopWidth: 2,
+      borderBottomWidth: 2,
+
+      // flex: 1,
     },
     title: {
-      fontSize: 16,
+      fontSize: 20,
       fontWeight: 'bold',
       marginBottom: 10,
       color: colors.text,
@@ -38,7 +35,7 @@ function FormSection({children, title, colors, disabled = false}) {
       backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: '3%',
+      // marginVertical: '3%',
     },
   });
 
@@ -55,7 +52,7 @@ function FormSection({children, title, colors, disabled = false}) {
                 setVisible(!visible);
               }
             }}>
-            {title.toLowerCase()}
+            {title}
           </Text>
         )}
         {visible && children}
