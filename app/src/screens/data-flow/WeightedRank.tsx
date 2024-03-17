@@ -186,7 +186,7 @@ function WeightedRank() {
       color: colors.text,
       fontSize: 14,
       flex: 1,
-      textAlign: 'right',
+      textAlign: 'left',
     },
     question_text: {
       color: colors.text,
@@ -206,7 +206,11 @@ function WeightedRank() {
 
   if (noActiveCompetition) {
     return (
-      <View style={styles.container}>
+      <View
+        style={{
+          ...styles.container,
+          paddingVertical: '10%',
+        }}>
         <Text style={styles.header}>No Active Competition</Text>
         <Text style={{color: colors.text, fontSize: 14}}>
           Please choose which competition you would like to view data for.
@@ -265,7 +269,7 @@ function WeightedRank() {
         )}
       </View>
       {status === WeightedRankStatus.PRESENTING_RANKINGS && (
-        <View>
+        <View style={{flex: 1}}>
           <View style={styles.list_item}>
             <View style={{flex: 0.3}} />
             <Text
