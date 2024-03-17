@@ -25,8 +25,8 @@ function ScoutingFlow({navigation, route}) {
   }, []);
 
   const {colors} = useTheme();
-  const [match, setMatch] = useState();
-  const [team, setTeam] = useState();
+  const [match, setMatch] = useState('');
+  const [team, setTeam] = useState('');
   const [competition, setCompetition] = useState();
   const [formStructure, setFormStructure] = useState();
   const [formId, setFormId] = useState();
