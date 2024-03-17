@@ -236,27 +236,26 @@ function DataAggregation({navigation}) {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginHorizontal: '2%',
-              marginBottom: '5%',
-              marginTop: '2%',
+              marginVertical: '2%',
             }}>
             <Text style={{color: colors.text, fontSize: 24}}>
               {compName ? compName : 'No Competition Selected'}
             </Text>
-            <Pressable
-              onPress={() => {
-                setWeightedVisible(true);
-              }}>
-              <Text
-                style={{
-                  color: colors.primary,
-                  fontSize: 14,
-                  textAlign: 'right',
-                  fontWeight: 'bold',
-                  // padding: '5%',
-                }}>
-                Weighted Rank
-              </Text>
-            </Pressable>
+            {/*<Pressable*/}
+            {/*  onPress={() => {*/}
+            {/*    setWeightedVisible(true);*/}
+            {/*  }}>*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      color: colors.primary,*/}
+            {/*      fontSize: 14,*/}
+            {/*      textAlign: 'right',*/}
+            {/*      fontWeight: 'bold',*/}
+            {/*      // padding: '5%',*/}
+            {/*    }}>*/}
+            {/*    Weighted Rank*/}
+            {/*  </Text>*/}
+            {/*</Pressable>*/}
           </View>
           <View style={{marginHorizontal: '10%'}}>
             <Text style={styles.question_text}>

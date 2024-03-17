@@ -6,20 +6,23 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 import Svg, {Path} from 'react-native-svg';
 import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
+import CompetitionsDB, {
+  CompetitionReturnData,
+} from '../../database/Competitions';
 
-interface WeightedRankProps {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-  form: Object[] | undefined;
-  compId: number;
-}
+// interface WeightedRankProps {
+//   visible: boolean;
+//   setVisible: (visible: boolean) => void;
+//   form: Object[] | undefined;
+//   compId: number;
+// }
 
 enum WeightedRankStatus {
   CHOOSING_WEIGHTS,
@@ -33,7 +36,7 @@ interface MapValue {
   count: number;
 }
 
-function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
+function WeightedRank() {
   const {colors} = useTheme();
   const [listOfWeights, setListOfWeights] = React.useState<number[]>([]);
   const [originalWeights, setOriginalWeights] = React.useState<number[]>([]);
@@ -52,27 +55,54 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
     new Map(),
   );
 
-  const [teamMapSortable, setTeamMapSortable] = React.useState<
-    Map<number, number>
-  >(new Map());
+  // competition form
+  const [currForm, setCurrForm] = useState<Array<Object>>();
+  const [compId, setCompID] = useState<number>(-1);
+
+  const [noActiveCompetition, setNoActiveCompetition] = useState<boolean>(true);
+
+  const [fullCompetitionsList, setFullCompetitionsList] = useState<
+    CompetitionReturnData[]
+  >([]);
+
+  const [compName, setCompName] = useState<string>();
 
   useEffect(() => {
-    console.log('form: ' + form);
-    if (form) {
+    CompetitionsDB.getCurrentCompetition().then(competition => {
+      if (!competition) {
+        console.log('no active competition for weighted rank');
+        setNoActiveCompetition(true);
+        CompetitionsDB.getCompetitions().then(c => {
+          setFullCompetitionsList(c);
+        });
+        return;
+      }
+      console.log('active competition found for weighted rank');
+
+      setCurrForm(competition.form);
+      setCompID(competition.id);
+      setCompName(competition.name);
+      setNoActiveCompetition(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log('form: ' + currForm);
+    if (currForm) {
       let temp: Object[] = [];
-      for (let i = 0; i < form?.length; i++) {
-        if (form[i].type === 'number') {
-          temp.push(form[i]);
+      for (let i = 0; i < currForm?.length; i++) {
+        if (currForm[i].type === 'number') {
+          temp.push(currForm[i]);
         }
       }
       setNumberQuestions(temp);
     }
-  }, [form]);
+  }, [currForm]);
 
   useEffect(() => {
-    if (numberQuestions.length > 0 && form) {
+    if (numberQuestions.length > 0 && currForm) {
       let temp: number[] = [];
-      for (let i = 0; i < form.length; i++) {
+      for (let i = 0; i < currForm.length; i++) {
         temp.push(0);
       }
       setListOfWeights(temp);
@@ -142,7 +172,7 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
       fontSize: 20,
     },
     container: {
-      backgroundColor: colors.card,
+      // backgroundColor: colors.card,
       paddingHorizontal: '10%',
       flex: 1,
     },
@@ -174,222 +204,228 @@ function WeightedRank({form, visible, setVisible, compId}: WeightedRankProps) {
     },
   });
 
-  return (
-    <Modal
-      visible={visible}
-      animationType={'slide'}
-      presentationStyle={'formSheet'}>
+  if (noActiveCompetition) {
+    return (
       <View style={styles.container}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-          }}>
-          {status === WeightedRankStatus.PRESENTING_RANKINGS && (
+        <Text style={styles.header}>No Active Competition</Text>
+        <Text style={{color: colors.text, fontSize: 14}}>
+          Please choose which competition you would like to view data for.
+        </Text>
+        {fullCompetitionsList.map((item, index) => (
+          <Pressable
+            key={index}
+            onPress={() => {
+              setNoActiveCompetition(false);
+              setCurrForm(item.form);
+              setCompID(item.id);
+              setCompName(item.name);
+            }}>
+            <View style={styles.list_item}>
+              <Text style={styles.list_text}>{item.name}</Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+        }}>
+        {status === WeightedRankStatus.PRESENTING_RANKINGS && (
+          <Pressable
+            onPress={() => {
+              setListOfWeights(originalWeights);
+              setStatus(WeightedRankStatus.CHOOSING_WEIGHTS);
+            }}>
+            <Text style={{color: 'gray', fontSize: 14, textAlign: 'left'}}>
+              Reset
+            </Text>
+          </Pressable>
+        )}
+
+        {originalWeights !== listOfWeights &&
+          status !== WeightedRankStatus.PRESENTING_RANKINGS && (
             <Pressable
               onPress={() => {
                 setListOfWeights(originalWeights);
-                setStatus(WeightedRankStatus.CHOOSING_WEIGHTS);
               }}>
-              <Text style={{color: 'gray', fontSize: 14, textAlign: 'left'}}>
+              <Text
+                style={{
+                  color: 'gray',
+                  fontSize: 14,
+                  textAlign: 'left',
+                  marginVertical: '2%',
+                }}>
                 Reset
               </Text>
             </Pressable>
           )}
-
-          {originalWeights !== listOfWeights &&
-            status !== WeightedRankStatus.PRESENTING_RANKINGS && (
-              <Pressable
-                onPress={() => {
-                  setListOfWeights(originalWeights);
-                }}>
-                <Text style={{color: 'gray', fontSize: 14, textAlign: 'left'}}>
-                  Reset
-                </Text>
-              </Pressable>
-            )}
-          <Pressable
-            onPress={() => {
-              setVisible(false);
-            }}>
+      </View>
+      <Text
+        style={{
+          color: colors.text,
+          fontSize: 24,
+          marginVertical: '5%',
+        }}>
+        Weighted Rank
+      </Text>
+      {status === WeightedRankStatus.PRESENTING_RANKINGS && (
+        <View>
+          <View style={styles.list_item}>
+            <View style={{flex: 0.3}} />
             <Text
               style={{
-                color: colors.primary,
-                fontSize: 14,
-                textAlign: 'right',
-                padding: '5%',
                 fontWeight: 'bold',
+                color: colors.text,
+                fontSize: 16,
+                flex: 1,
               }}>
-              Close
+              Team
             </Text>
-          </Pressable>
-        </View>
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 20,
-          }}>
-          Weighted Rank
-        </Text>
-        {status === WeightedRankStatus.PRESENTING_RANKINGS && (
-          <View>
-            <View style={styles.list_item}>
-              <View style={{flex: 0.3}} />
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  color: colors.text,
-                  fontSize: 16,
-                  flex: 1,
-                }}>
-                Team
-              </Text>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  color: colors.text,
-                  fontSize: 16,
-                  width: 50,
-                }}>
-                Score
-              </Text>
-            </View>
-            <ScrollView>
-              {Array.from(teamMap)
-                .sort((a, b) => a[1].sum / a[1].count - b[1].sum / b[1].count)
-                .reverse()
-                .map((team, index) => {
-                  return (
-                    <View style={styles.list_item} key={index}>
-                      <Text
-                        style={{
-                          color: 'gray',
-                          fontSize: 16,
-                          flex: 0.3,
-                          fontWeight: 'bold',
-                        }}>
-                        {index + 1}
-                      </Text>
-                      <Text style={{color: colors.text, fontSize: 16, flex: 1}}>
-                        {team[0]}
-                      </Text>
-                      <Text
-                        style={{color: colors.text, fontSize: 16, width: 50}}>
-                        {parseFloat((team[1].sum / team[1].count).toFixed(2))}
-                      </Text>
-                    </View>
-                  );
-                })}
-            </ScrollView>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: colors.text,
+                fontSize: 16,
+                width: 50,
+              }}>
+              Score
+            </Text>
           </View>
-        )}
-        {status === WeightedRankStatus.PROCESSING && (
-          <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
-            Processing...
-          </Text>
-        )}
-        {status === WeightedRankStatus.CHOOSING_WEIGHTS && (
-          <>
-            <ScrollView>
-              {form &&
-                form.map((question, index) => {
-                  if (question.type === 'number') {
-                    return (
-                      <View
+          <ScrollView>
+            {Array.from(teamMap)
+              .sort((a, b) => a[1].sum / a[1].count - b[1].sum / b[1].count)
+              .reverse()
+              .map((team, index) => {
+                return (
+                  <View style={styles.list_item} key={index}>
+                    <Text
+                      style={{
+                        color: 'gray',
+                        fontSize: 16,
+                        flex: 0.3,
+                        fontWeight: 'bold',
+                      }}>
+                      {index + 1}
+                    </Text>
+                    <Text style={{color: colors.text, fontSize: 16, flex: 1}}>
+                      {team[0]}
+                    </Text>
+                    <Text style={{color: colors.text, fontSize: 16, width: 50}}>
+                      {parseFloat((team[1].sum / team[1].count).toFixed(2))}
+                    </Text>
+                  </View>
+                );
+              })}
+          </ScrollView>
+        </View>
+      )}
+      {status === WeightedRankStatus.PROCESSING && (
+        <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
+          Processing...
+        </Text>
+      )}
+      {status === WeightedRankStatus.CHOOSING_WEIGHTS && (
+        <ScrollView>
+          {currForm &&
+            currForm.map((question, index) => {
+              if (question.type === 'number') {
+                return (
+                  <View
+                    style={{
+                      paddingBottom: '4%',
+                      paddingTop: '4%',
+                    }}
+                    key={index}>
+                    <Pressable
+                      onPress={() => {
+                        let temp = [...listOfWeights]; // Create a new array by spreading the old one
+                        temp[index] = 0;
+                        setListOfWeights(temp);
+                      }}>
+                      <Text
                         style={{
-                          paddingBottom: '4%',
-                          paddingTop: '4%',
-                        }}
-                        key={index}>
-                        <Pressable
-                          onPress={() => {
-                            let temp = [...listOfWeights]; // Create a new array by spreading the old one
-                            temp[index] = 0;
-                            setListOfWeights(temp);
-                          }}>
-                          <Text
-                            style={{
-                              color:
-                                listOfWeights[index] === 0
-                                  ? 'gray'
-                                  : colors.text,
-                              fontSize: 16,
-                            }}>
-                            {question.question}
-                          </Text>
-                        </Pressable>
-                        {/*<Text>{listOfWeights[index]}</Text>*/}
-                        <Slider
-                          style={{width: '100%', height: 40}}
-                          minimumValue={-1}
-                          maximumValue={1}
-                          minimumTrackTintColor={
-                            listOfWeights[index] === 0
-                              ? 'dimgray'
-                              : listOfWeights[index] > 0
-                              ? colors.primary
-                              : 'red'
-                          }
-                          tapToSeek={true}
-                          value={listOfWeights[index]}
-                          onValueChange={value => {
-                            let temp = [...listOfWeights]; // Create a new array by spreading the old one
-                            temp[index] = value;
-                            setListOfWeights(temp);
-                          }}
-                        />
-                        {listOfWeights.length > 0 && (
-                          <View>
-                            <Text
-                              style={{color: colors.text, textAlign: 'center'}}>
-                              {listOfWeights[index].toFixed(2)}
-                            </Text>
-                          </View>
-                        )}
+                          color:
+                            listOfWeights[index] === 0 ? 'gray' : colors.text,
+                          fontSize: 16,
+                        }}>
+                        {question.question}
+                      </Text>
+                    </Pressable>
+                    {/*<Text>{listOfWeights[index]}</Text>*/}
+                    <Slider
+                      style={{width: '100%', height: 40}}
+                      minimumValue={-1}
+                      maximumValue={1}
+                      minimumTrackTintColor={
+                        listOfWeights[index] === 0
+                          ? 'dimgray'
+                          : listOfWeights[index] > 0
+                          ? colors.primary
+                          : 'red'
+                      }
+                      tapToSeek={true}
+                      value={listOfWeights[index]}
+                      onValueChange={value => {
+                        let temp = [...listOfWeights]; // Create a new array by spreading the old one
+                        temp[index] = value;
+                        setListOfWeights(temp);
+                      }}
+                    />
+                    {listOfWeights.length > 0 && (
+                      <View>
+                        <Text style={{color: colors.text, textAlign: 'center'}}>
+                          {listOfWeights[index].toFixed(2)}
+                        </Text>
                       </View>
-                    );
-                  }
-                })}
-            </ScrollView>
-
-            {listOfWeights !== originalWeights && (
-              <Pressable
-                onPress={() => generateRankings()}
+                    )}
+                  </View>
+                );
+              }
+            })}
+          {listOfWeights !== originalWeights && (
+            <Pressable
+              onPress={() => generateRankings()}
+              style={{
+                marginVertical: '10%',
+                justifyContent: 'space-evenly',
+                flexDirection: 'row',
+                backgroundColor: colors.primary,
+                marginHorizontal: '5%',
+                padding: '5%',
+                borderRadius: 12,
+                // flex: 1,
+              }}>
+              <Svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 16 16">
+                <Path
+                  fill="white"
+                  d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z"
+                />
+              </Svg>
+              <Text
                 style={{
-                  marginVertical: '10%',
-                  justifyContent: 'space-evenly',
-                  flexDirection: 'row',
-                  backgroundColor: '#bf1cff',
-                  marginHorizontal: '5%',
-                  padding: '5%',
-                  borderRadius: 12,
+                  color: 'white',
+                  fontSize: 20,
+                  textAlign: 'center',
+                  fontWeight: 'bold',
                 }}>
-                <Svg
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 16 16">
-                  <Path
-                    fill="white"
-                    d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z"
-                  />
-                </Svg>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 20,
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                  }}>
-                  Generate Rankings
-                </Text>
-              </Pressable>
-            )}
-          </>
-        )}
-      </View>
-    </Modal>
+                Generate Rankings
+              </Text>
+            </Pressable>
+          )}
+        </ScrollView>
+      )}
+    </View>
   );
 }
 
