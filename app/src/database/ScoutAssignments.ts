@@ -1,4 +1,5 @@
 import {supabase} from '../lib/supabase';
+import type from "@react-navigation/native/src/types";
 
 interface ScoutAssignmentTeamBased {
   id: number;
@@ -92,6 +93,7 @@ class ScoutAssignments {
     if (userError || user == null) {
       throw userError;
     }
+    let res: ScoutAssignmentTeamBasedCurrentUser[] = [];
     const {data, error} = await supabase
       .from('scout_assignments_team_based')
       .select('*, tba_matches(team, match)')
@@ -100,7 +102,6 @@ class ScoutAssignments {
     if (error) {
       throw error;
     } else {
-      const res: ScoutAssignmentTeamBasedCurrentUser[] = [];
       for (let i = 0; i < data.length; i++) {
         res.push({
           id: data[i].id,
@@ -110,8 +111,27 @@ class ScoutAssignments {
           team: data[i].tba_matches.team,
         });
       }
-      return res;
     }
+    const {data: data2, error: error2} = await supabase
+      .from('scout_reports')
+      .select('*, matches!inner( number, competition_id )')
+      .eq('matches.competition_id', compId)
+      .eq('user_id', user.id);
+    if (error2) {
+      throw error2;
+    }
+    res = res.filter(assignment => {
+      console.log(assignment.matchNumber);
+      console.log(assignment.team.substring(3));
+      return (
+        data2.find(
+          report =>
+            report.matches.number === assignment.matchNumber &&
+            report.team === parseInt(assignment.team.substring(3), 10),
+        ) === undefined
+      );
+    });
+    return res;
   }
 
   static async getScoutAssignmentsForCompetitionPositionBased(
@@ -184,6 +204,7 @@ class ScoutAssignments {
     if (userError || user == null) {
       throw userError;
     }
+    let res: ScoutAssignmentPositionBasedCurrentUser[] = [];
     const {data, error} = await supabase
       .from('scout_assignments_position_based')
       .select('*')
@@ -192,7 +213,6 @@ class ScoutAssignments {
     if (error) {
       throw error;
     } else {
-      const res: ScoutAssignmentPositionBasedCurrentUser[] = [];
       for (let i = 0; i < data.length; i++) {
         let position: Position;
         console.log(data[i]);
@@ -225,8 +245,23 @@ class ScoutAssignments {
           position: position,
         });
       }
-      return res;
     }
+    const {data: data2, error: error2} = await supabase
+      .from('scout_reports')
+      .select('*, matches!inner( number, competition_id )')
+      .eq('matches.competition_id', compId)
+      .eq('user_id', user.id);
+    if (error2) {
+      throw error2;
+    }
+    res = res.filter(assignment => {
+      return (
+        data2.find(
+          report => report.matches.number === assignment.matchNumber,
+        ) === undefined
+      );
+    });
+    return res;
   }
 }
 

@@ -5,19 +5,19 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView, Alert
-} from "react-native";
-import React, {useCallback, useEffect, useState} from 'react';
+  KeyboardAvoidingView,
+  Alert,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import NotesDB from '../../database/Notes';
 // import Svg, {Path} from 'react-native-svg';
-import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
 import {NoteInputModal} from './components/NoteInputModal';
 import CompetitionsDB from '../../database/Competitions';
 import FormHelper from '../../FormHelper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import Confetti from 'react-native-confetti/confettiView';
 import {useHeaderHeight} from '@react-navigation/elements';
+import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
@@ -36,108 +36,18 @@ const NoteScreen = () => {
     [key: string]: string;
   }>({});
 
-  const [matchesForCompetition, setMatchesForCompetition] = useState<
-    TBAMatch[]
-  >([]);
-  const [compId, setCompId] = useState<number>(-1);
-
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [confettiView, setConfettiView] = useState<any>(null);
   const [matchNumberValid, setMatchNumberValid] = useState<boolean>(false);
 
-  const loadMatches = async (competitionId: number) => {
-    let dbRequestWorked;
-    let dbMatches;
-    try {
-      dbMatches = await TBAMatches.getMatchesForCompetition(
-        competitionId.toString(),
-      );
-      dbRequestWorked = true;
-    } catch (e) {
-      dbRequestWorked = false;
-    }
-
-    let matches;
-    if (dbRequestWorked) {
-      if (dbMatches != null) {
-        matches = dbMatches;
-        await AsyncStorage.setItem(
-          FormHelper.ASYNCSTORAGE_MATCHES_KEY,
-          JSON.stringify(dbMatches),
-        );
-      }
-    } else {
-      const storedMatches = await FormHelper.readAsyncStorage(
-        FormHelper.ASYNCSTORAGE_MATCHES_KEY,
-      );
-      if (storedMatches != null) {
-        matches = JSON.parse(storedMatches);
-      }
-    }
-    if (matches != null) {
-      setMatchesForCompetition(matches);
-    }
-  };
-
-  const loadCompetition = async () => {
-    let dbRequestWorked;
-    let dbCompetition;
-    try {
-      dbCompetition = await CompetitionsDB.getCurrentCompetition();
-      dbRequestWorked = true;
-    } catch (e) {
-      dbRequestWorked = false;
-    }
-
-    let comp;
-    if (dbRequestWorked) {
-      if (dbCompetition != null) {
-        comp = dbCompetition;
-        await AsyncStorage.setItem(
-          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-          JSON.stringify(dbCompetition),
-        );
-      }
-    } else {
-      const storedComp = await FormHelper.readAsyncStorage(
-        FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-      );
-      if (storedComp != null) {
-        comp = JSON.parse(storedComp);
-      }
-    }
-    if (comp != null) {
-      setCompId(comp.id);
-      return comp.id;
-    }
-  };
+  const {competitionId, getTeamsForMatch} = useCurrentCompetitionMatches();
 
   useEffect(() => {
-    loadCompetition().then(competitionId => {
-      if (competitionId === undefined) {
-        return;
-      }
-      loadMatches(competitionId);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (
-      compId === -1 ||
-      matchNumber === '' ||
-      matchesForCompetition.length === 0
-    ) {
+    if (matchNumber === '') {
       return;
     }
-    const teams = matchesForCompetition
-      .filter(match => match.compLevel === 'qm')
-      .filter(match => match.match === Number(matchNumber))
-      .sort((a, b) => (a.alliance === 'red' ? -1 : 1))
-      .map(match => match.team.replace('frc', ''))
-      .map(match => match.replace(/[A-Za-z]/g, ' '))
-      .map(match => Number(match));
-    console.log(teams);
+    const teams = getTeamsForMatch(Number(matchNumber));
     if (teams.length === 6) {
       setAlliances({
         red: teams.slice(0, 3),
@@ -147,7 +57,7 @@ const NoteScreen = () => {
     } else {
       setMatchNumberValid(false);
     }
-  }, [matchNumber, compId, matchesForCompetition]);
+  }, [matchNumber]);
 
   useEffect(() => {
     if (selectedAlliance === '') {
@@ -183,7 +93,7 @@ const NoteScreen = () => {
             noteContents[team],
             Number(team),
             Number(matchNumber),
-            compId,
+            competitionId,
           ),
         );
       } else {
@@ -192,7 +102,7 @@ const NoteScreen = () => {
             content: noteContents[team],
             team_number: Number(team),
             match_number: Number(matchNumber),
-            comp_id: compId,
+            comp_id: competitionId,
             created_at: new Date(),
           }),
         );
@@ -262,7 +172,7 @@ const NoteScreen = () => {
     },
   });
 
-  if (compId === -1) {
+  if (competitionId === -1) {
     return (
       <View
         style={{
@@ -386,9 +296,7 @@ const NoteScreen = () => {
               );
             }
           }}
-          disabled={
-            matchNumber === '' || selectedAlliance === ''
-          }>
+          disabled={matchNumber === '' || selectedAlliance === ''}>
           <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
             Next
           </Text>
