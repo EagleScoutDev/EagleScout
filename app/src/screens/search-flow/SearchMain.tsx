@@ -49,7 +49,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
   const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
 
-  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  // const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   // used for hiding and showing header
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
@@ -142,10 +142,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View
-        style={{
-          display: isScrolling ? 'none' : 'flex',
-        }}>
+      <View>
         <View
           style={{
             flexDirection: 'row',
@@ -221,23 +218,23 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         </View>
       )}
       <FlatList
-        onScroll={scroll_event => {
-          // if scrolling down, hide search bar
-          if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
-            setIsScrolling(true);
-          } else {
-            setIsScrolling(false);
-          }
-
-          // if at top of flatlist, show search bar
-          if (
-            scroll_event.nativeEvent.contentOffset.y <
-            0.005 * scroll_event.nativeEvent.contentSize.height
-          ) {
-            setIsScrolling(false);
-          }
-          setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
-        }}
+        // onScroll={scroll_event => {
+        //   // if scrolling down, hide search bar
+        //   if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
+        //     setIsScrolling(true);
+        //   } else {
+        //     setIsScrolling(false);
+        //   }
+        //
+        //   // if at top of flatlist, show search bar
+        //   if (
+        //     scroll_event.nativeEvent.contentOffset.y <
+        //     0.005 * scroll_event.nativeEvent.contentSize.height
+        //   ) {
+        //     setIsScrolling(false);
+        //   }
+        //   setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
+        // }}
         data={Array.from(reportsByMatch.keys()).reverse()}
         keyExtractor={item => item.toString()}
         renderItem={({item}) => {
