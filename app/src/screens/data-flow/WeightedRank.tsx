@@ -235,46 +235,35 @@ function WeightedRank() {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
+          marginVertical: '5%',
         }}>
-        {status === WeightedRankStatus.PRESENTING_RANKINGS && (
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 24,
+          }}>
+          Weighted Rank
+        </Text>
+
+        {(status === WeightedRankStatus.PRESENTING_RANKINGS ||
+          originalWeights !== listOfWeights) && (
           <Pressable
             onPress={() => {
               setListOfWeights(originalWeights);
               setStatus(WeightedRankStatus.CHOOSING_WEIGHTS);
             }}>
-            <Text style={{color: 'gray', fontSize: 14, textAlign: 'left'}}>
+            <Text
+              style={{
+                color: 'gray',
+                fontSize: 14,
+                textAlign: 'left',
+              }}>
               Reset
             </Text>
           </Pressable>
         )}
-
-        {originalWeights !== listOfWeights &&
-          status !== WeightedRankStatus.PRESENTING_RANKINGS && (
-            <Pressable
-              onPress={() => {
-                setListOfWeights(originalWeights);
-              }}>
-              <Text
-                style={{
-                  color: 'gray',
-                  fontSize: 14,
-                  textAlign: 'left',
-                  marginVertical: '2%',
-                }}>
-                Reset
-              </Text>
-            </Pressable>
-          )}
       </View>
-      <Text
-        style={{
-          color: colors.text,
-          fontSize: 24,
-          marginVertical: '5%',
-        }}>
-        Weighted Rank
-      </Text>
       {status === WeightedRankStatus.PRESENTING_RANKINGS && (
         <View>
           <View style={styles.list_item}>
