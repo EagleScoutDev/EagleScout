@@ -335,6 +335,20 @@ function WeightedRank() {
         <ScrollView>
           {currForm &&
             currForm.map((question, index) => {
+              if (question.type === 'heading') {
+                return (
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      marginVertical: '5%',
+                    }}
+                    key={index}>
+                    {question.title}
+                  </Text>
+                );
+              }
               if (question.type === 'number') {
                 return (
                   <View
