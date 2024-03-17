@@ -164,7 +164,7 @@ const DataHome = ({navigation}) => {
               <Svg
                 width="16"
                 height="16"
-                fill={getProperColor('', 'orange')}
+                fill={getProperColor(colors.text, 'orange')}
                 viewBox="0 0 16 16">
                 <Path
                   fill-rule="evenodd"
