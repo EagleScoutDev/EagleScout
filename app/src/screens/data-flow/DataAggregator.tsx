@@ -147,7 +147,7 @@ function DataAggregation({navigation}) {
       color: colors.text,
       fontSize: 14,
       flex: 1,
-      textAlign: 'right',
+      textAlign: 'left',
     },
     question_text: {
       color: 'dimgray',
@@ -168,7 +168,11 @@ function DataAggregation({navigation}) {
 
   if (noActiveCompetition) {
     return (
-      <View style={styles.container}>
+      <View
+        style={{
+          ...styles.container,
+          paddingVertical: '10%',
+        }}>
         <Text style={styles.header}>No Active Competition</Text>
         <Text style={{color: colors.text, fontSize: 14}}>
           Please choose which competition you would like to view data for.
@@ -224,12 +228,6 @@ function DataAggregation({navigation}) {
       )}
       {chosenQuestion === null && (
         <View>
-          <WeightedRank
-            visible={weightedVisible}
-            setVisible={setWeightedVisible}
-            form={currForm}
-            compId={compID ?? -1}
-          />
           <View
             style={{
               flexDirection: 'row',
@@ -241,21 +239,6 @@ function DataAggregation({navigation}) {
             <Text style={{color: colors.text, fontSize: 24}}>
               {compName ? compName : 'No Competition Selected'}
             </Text>
-            {/*<Pressable*/}
-            {/*  onPress={() => {*/}
-            {/*    setWeightedVisible(true);*/}
-            {/*  }}>*/}
-            {/*  <Text*/}
-            {/*    style={{*/}
-            {/*      color: colors.primary,*/}
-            {/*      fontSize: 14,*/}
-            {/*      textAlign: 'right',*/}
-            {/*      fontWeight: 'bold',*/}
-            {/*      // padding: '5%',*/}
-            {/*    }}>*/}
-            {/*    Weighted Rank*/}
-            {/*  </Text>*/}
-            {/*</Pressable>*/}
           </View>
           <View style={{marginHorizontal: '10%'}}>
             <Text style={styles.question_text}>
@@ -278,7 +261,7 @@ function DataAggregation({navigation}) {
                           color: 'gray',
                           fontSize: 14,
                           fontWeight: 'bold',
-                          marginTop: '16%',
+                          marginTop: '10%',
                         }}>
                         {item.title.toUpperCase()}
                       </Text>
@@ -355,7 +338,7 @@ function DataAggregation({navigation}) {
                       }}>
                       {key}
                     </Text>
-                    <Text style={styles.list_text}>{value}</Text>
+                    <Text style={styles.list_text}>{value.toFixed(2)}</Text>
                   </View>
                 ))}
           </ScrollView>
