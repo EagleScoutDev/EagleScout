@@ -13,7 +13,8 @@ import UserManager from './UserManager';
 import FormCreationMain from '../form-creation-flow/FormCreationMain';
 import FormCreation from '../form-creation-flow/FormCreation';
 import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
-import ScoutAssignments from "../scout-assignments-flow/ScoutAssignments";
+import ScoutAssignments from '../scout-assignments-flow/ScoutAssignments';
+import WeightedRank from './WeightedRank';
 
 const DataStack = createStackNavigator();
 
@@ -46,6 +47,14 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Team Rank'}
         component={DataAggregator}
+        options={{
+          headerBackTitle: 'Back',
+          // headerTitle: 'Team RankA',
+        }}
+      />
+      <DataStack.Screen
+        name={'Weighted Team Rank'}
+        component={WeightedRank}
         options={{
           headerBackTitle: 'Back',
           // headerTitle: 'Team RankA',
