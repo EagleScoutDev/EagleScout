@@ -124,6 +124,9 @@ function SignUpModal({setVisible, navigation}) {
                   const {error} = await supabase.auth.signUp({
                     email: email,
                     password: password,
+                    options: {
+                      emailRedirectTo: 'eaglescout://confirm-signup',
+                    },
                   });
                   if (error) {
                     console.error(error);
