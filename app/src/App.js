@@ -17,7 +17,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {useColorScheme, View} from 'react-native';
+import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
@@ -50,6 +50,7 @@ import type {Theme} from '@react-navigation/native/src/types';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
+import ResetPassword from './screens/login-flow/ResetPassword';
 
 const CustomLightTheme = {
   dark: false,
@@ -116,7 +117,7 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
           console.error(error);
         }
         console.log('navigating to reset password');
-        nav.navigate('ResetPassword');
+        nav.navigate('ChangePassword');
       } else if (route === 'confirm-signup') {
         // for the Confirm Signup email template
         const {access_token, refresh_token} = params;
@@ -259,6 +260,12 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
     });
   }, []);
 
+  const ChangePasswordContainer = ({navigation}) => (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+      <ChangePassword navigation={navigation} />
+    </SafeAreaView>
+  );
+
   return (
     <Tab.Navigator
       initialRouteName="Entrypoint"
@@ -283,7 +290,11 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
-          <Tab.Screen name="ResetPassword" component={ChangePassword} />
+          <Tab.Screen
+            name="ChangePassword"
+            component={ChangePasswordContainer}
+          />
+          <Tab.Screen name="ResetPassword" component={ResetPassword} />
           <Tab.Screen name="Register new team" component={RegisterTeamModal} />
         </Tab.Group>
       ) : (
