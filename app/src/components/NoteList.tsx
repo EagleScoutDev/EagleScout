@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Modal,
   Pressable,
@@ -11,6 +12,7 @@ import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import {NoteStructureWithMatchNumber, OfflineNote} from '../database/Notes';
 import Svg, {Path} from 'react-native-svg';
+import {EditNoteModal} from './modals/EditNoteModal';
 
 export enum FilterType {
   // todo: allow note list to accept and display team #
@@ -29,17 +31,32 @@ export const NoteList = ({
 }) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filteredNotes, setFilteredNotes] =
+  const [notesCopy, setNotesCopy] =
     useState<(NoteStructureWithMatchNumber | OfflineNote)[]>(notes);
+  const [filteredNotes, setFilteredNotes] = useState<
+    {
+      note: NoteStructureWithMatchNumber | OfflineNote;
+      index: number;
+    }[]
+  >(notes.map((note, i) => ({note, index: i})));
   const [filterBy, setFilterBy] = useState<FilterType>(FilterType.TEXT);
   const [filterModalVisible, setFilterModalVisible] = useState<boolean>(false);
 
+  const [editModalVisible, setEditModalVisible] = useState<boolean>(false);
+  const [currentNote, setCurrentNote] =
+    useState<NoteStructureWithMatchNumber | null>(null);
+  const [currentNoteIndex, setCurrentNoteIndex] = useState<number>(-1);
+
   useEffect(() => {
+    const mapped = notesCopy.map((note, i) => ({
+      note,
+      index: i,
+    }));
     if (searchTerm === '') {
-      setFilteredNotes(notes);
+      setFilteredNotes(mapped);
       return;
     }
-    const filtered = notes.filter(note => {
+    const filtered = mapped.filter(({note}) => {
       if (filterBy === FilterType.MATCH_NUMBER) {
         return (
           note.match_number?.toString().includes(searchTerm) ||
@@ -49,7 +66,7 @@ export const NoteList = ({
       return note.content.toLowerCase().includes(searchTerm.toLowerCase());
     });
     setFilteredNotes(filtered);
-  }, [searchTerm]);
+  }, [searchTerm, filterBy, notesCopy]);
 
   const styles = StyleSheet.create({
     container: {
@@ -134,7 +151,7 @@ export const NoteList = ({
       {filteredNotes.length > 0 && (
         <FlatList
           data={filteredNotes}
-          renderItem={({item}) => (
+          renderItem={({item: {note: item, index}}) => (
             <Pressable
               style={{
                 backgroundColor: colors.card,
@@ -143,6 +160,15 @@ export const NoteList = ({
                 borderColor: colors.border,
                 borderRadius: 10,
                 margin: '5%',
+              }}
+              onLongPress={() => {
+                if (!('id' in item)) {
+                  Alert.alert('You cannot edit an offline note!');
+                  return;
+                }
+                setCurrentNote(item);
+                setCurrentNoteIndex(index);
+                setEditModalVisible(true);
               }}>
               <View style={{flexDirection: 'row'}}>
                 <Text style={{color: colors.text, fontWeight: 'bold'}}>
@@ -235,6 +261,25 @@ export const NoteList = ({
             </Pressable>
           </View>
         </Modal>
+      )}
+      {editModalVisible && currentNote && (
+        <EditNoteModal
+          visible={editModalVisible}
+          note={currentNote}
+          onSave={note => {
+            setEditModalVisible(false);
+            setCurrentNote(null);
+            setCurrentNoteIndex(-1);
+            const newNotes = [...notesCopy];
+            newNotes[currentNoteIndex] = note;
+            setNotesCopy(newNotes);
+          }}
+          onCancel={() => {
+            setEditModalVisible(false);
+            setCurrentNote(null);
+            setCurrentNoteIndex(-1);
+          }}
+        />
       )}
     </View>
   );
