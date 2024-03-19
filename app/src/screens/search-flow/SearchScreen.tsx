@@ -5,14 +5,37 @@ import TeamViewer from './TeamViewer';
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {createStackNavigator} from '@react-navigation/stack';
 import ReportsForTeam from './ReportsForTeam';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import ScoutViewer from '../../components/modals/ScoutViewer';
-import SearchModal from "./SearchModal";
+import SearchModal from './SearchModal';
+import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 const Stack = createStackNavigator();
-function SearchScreen() {
+
+function SearchScreen({
+  navigation: rootNavigation,
+}: {
+  navigation: BottomTabNavigationProp<{}>;
+}) {
   const [team, setChosenTeam] = useState<SimpleTeam>();
   const {colors} = useTheme();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = rootNavigation.addListener('tabPress', e => {
+      console.log(
+        'tab press',
+        navigation.isFocused(),
+        rootNavigation.isFocused(),
+      );
+      if (navigation.isFocused()) {
+        e.preventDefault();
+        navigation.navigate('SearchModal');
+      }
+    });
+
+    return unsubscribe;
+  }, [rootNavigation]);
 
   // if (team === null || team === undefined) {
   //   return <SearchMain setChosenTeam={setChosenTeam} />;
