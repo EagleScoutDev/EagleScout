@@ -3,6 +3,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import PicklistsManagerScreen from './PicklistsManagerScreen';
 import PicklistCreator from './PicklistCreator';
 import {useTheme} from '@react-navigation/native';
+import {Pressable, Text} from 'react-native';
+import Svg, {Path} from 'react-native-svg';
 
 const Stack = createStackNavigator();
 
