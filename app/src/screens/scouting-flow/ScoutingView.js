@@ -22,18 +22,18 @@ function ScoutingView({
 }) {
   return (
     <ScrollView>
-      <Text
-        style={{
-          color: colors.text,
-          textAlign: 'center',
-          paddingBottom: 15,
-          fontWeight: 'bold',
-          fontSize: 30,
-          marginTop: 20,
-          // marginVertical: 20,
-        }}>
-        Scouting Report
-      </Text>
+      {/*<Text*/}
+      {/*  style={{*/}
+      {/*    color: colors.text,*/}
+      {/*    textAlign: 'center',*/}
+      {/*    paddingBottom: 15,*/}
+      {/*    fontWeight: 'bold',*/}
+      {/*    fontSize: 30,*/}
+      {/*    marginTop: 20,*/}
+      {/*    // marginVertical: 20,*/}
+      {/*  }}>*/}
+      {/*  Scouting Report*/}
+      {/*</Text>*/}
       {competition != null && (
         <Text
           style={{
@@ -41,7 +41,7 @@ function ScoutingView({
             fontWeight: 'bold',
             fontSize: 20,
             textAlign: 'center',
-            marginBottom: 20,
+            marginVertical: 20,
           }}>
           {competition.name}
         </Text>
