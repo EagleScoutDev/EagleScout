@@ -12,39 +12,31 @@ import {StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
-const Login = ({onSubmit, error, ifAuth}) => {
-  let [username, setUsername] = useState();
-  let [password, setPassword] = useState();
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+const Login = ({onSubmit, error}) => {
+  let [username, setUsername] = useState('');
+  let [password, setPassword] = useState('');
   const {colors} = useTheme();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    AsyncStorage.getItem('authenticated').then(r => {
-      if (r) {
-        console.log('Login page redirecting to Scout Report...');
-        // navigation.navigate('Scout Report');
-        ifAuth();
-      }
-    });
-  });
-
   const styles = StyleSheet.create({
     input: {
-      textAlign: 'center',
-      padding: 10,
+      textAlign: 'left',
+      padding: '5%',
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: colors.text,
-      margin: 10,
-      marginHorizontal: 30,
-      color: colors.text,
+      borderBottomWidth: 1,
+      borderColor: 'gray',
+      // margin: 10,
+      // marginHorizontal: 30,
+      color: 'white',
     },
     titleText: {
-      textAlign: 'center',
+      textAlign: 'left',
+      padding: '5%',
       fontSize: 30,
       fontWeight: 'bold',
-      color: colors.primary,
-      marginVertical: 20,
+      color: 'rgb(191, 219, 247)',
+      // marginVertical: 20,
     },
     button: {
       textAlign: 'center',
@@ -52,125 +44,109 @@ const Login = ({onSubmit, error, ifAuth}) => {
       fontWeight: 'bold',
       color: 'red',
     },
+    link_container: {
+      flexDirection: 'row',
+      padding: '4%',
+      borderRadius: 20,
+    },
+    background: {
+      flexDirection: 'column',
+      backgroundColor: 'rgb(0,0,25)',
+      flex: 1,
+    },
+    error: {
+      backgroundColor: 'red',
+      padding: '5%',
+      margin: '3%',
+      borderRadius: 10,
+      position: 'absolute',
+      top: '5%',
+      right: '5%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    error_text: {
+      color: 'white',
+      textAlign: 'center',
+    },
   });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={{flexDirection: 'column'}}>
-        <Text style={styles.titleText}>EagleScout</Text>
+      <SafeAreaView style={styles.background}>
+        {/*<Text style={styles.titleText}>EagleScout</Text>*/}
         {error !== '' && (
-          <View
-            style={{
-              backgroundColor: 'red',
-              padding: '5%',
-              margin: '3%',
-              borderRadius: 10,
-              position: 'absolute',
-              top: '20%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'center',
-            }}>
-            <Text style={{color: 'white', textAlign: 'center'}}>{error}</Text>
+          <View style={styles.error}>
+            <Text style={styles.error_text}>{error}</Text>
           </View>
         )}
-        <View
-          style={{
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            margin: '5%',
-            padding: '5%',
-            top: '15%',
-            borderWidth: 3,
-            borderColor: colors.primary,
-            shadowColor: colors.primary,
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.75,
-            shadowRadius: 3.84,
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 20,
-              color: colors.text,
-              padding: 10,
-            }}>
-            Log In
-          </Text>
-          <TextInput
-            onChangeText={setUsername}
-            value={username}
-            placeholder="Email"
-            style={{
-              ...styles.input,
-              borderColor:
-                error === 'auth/missing-email' ||
-                error === 'auth/invalid-email' ||
-                error === 'auth/internal-error'
-                  ? 'red'
-                  : colors.text,
-            }}
-            inputMode={'email'}
-          />
-          <TextInput
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            style={{
-              ...styles.input,
-              borderColor:
-                error === 'auth/internal-error' ||
-                error === 'auth/wrong-password'
-                  ? 'red'
-                  : colors.text,
-            }}
-            secureTextEntry={true}
-          />
-          <StandardButton
-            text={'Log In'}
-            onPress={() => onSubmit(username, password, navigation)}
-            color={colors.primary}
-          />
-
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              padding: 20,
-            }}>
-            <Text style={{color: colors.text}}>Don't have an account?</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Sign');
-              }}>
-              <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-                Register
-              </Text>
-            </TouchableOpacity>
+        <Text style={styles.titleText}>Log In</Text>
+        <>
+          <View>
+            <MinimalSectionHeader title={'Email'} />
+            <TextInput
+              autoCapitalize={'none'}
+              onChangeText={text => setUsername(text)}
+              value={username}
+              placeholder="john.doe@team114.org"
+              placeholderTextColor={'gray'}
+              style={{
+                ...styles.input,
+                borderColor:
+                  error === 'auth/missing-email' ||
+                  error === 'auth/invalid-email' ||
+                  error === 'auth/internal-error'
+                    ? 'red'
+                    : 'gray',
+              }}
+              inputMode={'email'}
+            />
+            <View style={{height: 30}} />
+            <MinimalSectionHeader title={'Password'} />
+            <TextInput
+              onChangeText={text => setPassword(text)}
+              value={password}
+              style={{
+                ...styles.input,
+                borderColor:
+                  error === 'auth/internal-error' ||
+                  error === 'auth/wrong-password'
+                    ? 'red'
+                    : 'gray',
+              }}
+              secureTextEntry={true}
+            />
+            <StandardButton
+              text={'Log In'}
+              textColor={
+                username === '' || password === '' ? 'dimgray' : colors.primary
+              }
+              disabled={username === '' || password === ''}
+              onPress={() => onSubmit(username, password, navigation)}
+            />
           </View>
-
-          <View
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'space-around',
-              padding: 20,
+          <TouchableOpacity
+            style={styles.link_container}
+            onPress={() => {
+              navigation.navigate('Sign');
+              setUsername('');
+              setPassword('');
             }}>
-            <Text style={{color: colors.text}}>
-              Your team isn't using EagleScout yet?
+            <Text style={{color: 'gray'}}>Create Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.link_container}
+            onPress={() => {
+              navigation.navigate('Register new team');
+              setUsername('');
+              setPassword('');
+            }}>
+            <Text style={{color: 'gray'}}>
+              Register your team with EagleScout
             </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Register new team');
-              }}>
-              <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-                Register your team with EagleScout
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

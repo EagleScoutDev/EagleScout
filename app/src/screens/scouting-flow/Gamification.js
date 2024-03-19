@@ -22,6 +22,7 @@ function Gamification({
   setMatch,
   team,
   setTeam,
+  teamsForMatch,
   colors,
   styles,
   navigation,
@@ -32,7 +33,6 @@ function Gamification({
   submitForm,
   isSubmitting,
 }) {
-
   return (
     <>
       <Tab.Navigator
@@ -55,7 +55,7 @@ function Gamification({
           options={{
             headerTintColor: colors.text,
             tabBarLabelStyle: {
-              fontSize: 7.5,
+              fontSize: 12,
               fontWeight: 'bold',
             },
 
@@ -92,6 +92,7 @@ function Gamification({
                     setMatch={setMatch}
                     team={team}
                     setTeam={setTeam}
+                    teamsForMatch={teamsForMatch}
                     disabled={true}
                   />
                 </View>
@@ -117,7 +118,7 @@ function Gamification({
                   // change font color in header
                   headerTintColor: colors.text,
                   tabBarLabelStyle: {
-                    fontSize: 7.5,
+                    fontSize: 12,
                     fontWeight: 'bold',
                   },
 
@@ -128,20 +129,29 @@ function Gamification({
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
-                    <FormSection colors={colors} title={''} key={key.length}>
+                    <View
+                      style={{
+                        marginHorizontal: '5%',
+                      }}>
                       {value.map((item, vIndex) => {
                         return (
-                          <FormComponent
+                          <View
                             key={item.question}
-                            colors={colors}
-                            item={item}
-                            styles={styles}
-                            arrayData={arrayData}
-                            setArrayData={setArrayData}
-                          />
+                            style={{
+                              marginVertical: '5%',
+                            }}>
+                            <FormComponent
+                              key={item.question}
+                              colors={colors}
+                              item={item}
+                              styles={styles}
+                              arrayData={arrayData}
+                              setArrayData={setArrayData}
+                            />
+                          </View>
                         );
                       })}
-                    </FormSection>
+                    </View>
                     {/*if the index is not the last one, add a button that navigates users to the next tab*/}
                     {index !== Object.keys(data).length - 1 && (
                       <View style={{width: '100%', marginBottom: '5%'}}>

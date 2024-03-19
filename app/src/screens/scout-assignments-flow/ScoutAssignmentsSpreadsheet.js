@@ -376,6 +376,10 @@ function ScoutAssignmentsSpreadsheet({route}) {
         competition={competition}
         matches={matches}
         setNameCb={setNameCb}
+        teamBased={
+          competition.scoutAssignmentsConfig ===
+          ScoutAssignmentsConfig.TEAM_BASED
+        }
       />
     </>
   );

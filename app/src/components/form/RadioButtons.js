@@ -85,7 +85,11 @@ function RadioButtons(props) {
   });
   return (
     <View>
-      <Question title={props.title} required={props.required} />
+      <Question
+        title={props.title}
+        required={props.required}
+        onReset={props.onReset}
+      />
       {props.disabled ? disabledList : list}
     </View>
   );

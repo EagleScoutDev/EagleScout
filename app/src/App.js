@@ -46,6 +46,7 @@ const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import type {Theme} from '@react-navigation/native/src/types';
+import EntrypointHome from './screens/login-flow/EntrypointHome';
 
 const CustomLightTheme = {
   dark: false,
@@ -204,7 +205,7 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
 
   return (
     <Tab.Navigator
-      initialRouteName="Login"
+      initialRouteName="Entrypoint"
       options={{
         headerShown: false,
       }}>
@@ -217,10 +218,12 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
             },
           }}>
           <Tab.Screen
+            name={'Entrypoint'}
+            children={() => <EntrypointHome ifAuth={skipAuth} />}
+          />
+          <Tab.Screen
             name="Login"
-            children={() => (
-              <Login onSubmit={submitForm} error={error} ifAuth={skipAuth} />
-            )}
+            children={() => <Login onSubmit={submitForm} error={error} />}
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
