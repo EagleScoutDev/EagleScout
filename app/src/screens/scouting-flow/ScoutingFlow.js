@@ -15,7 +15,7 @@ import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatch
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
 
-function ScoutingFlow({navigation, route}) {
+function ScoutingFlow({navigation, route, resetTimer}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -290,6 +290,7 @@ function ScoutingFlow({navigation, route}) {
         });
         setMatch('');
         setTeam('');
+        resetTimer();
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
           startConfetti();

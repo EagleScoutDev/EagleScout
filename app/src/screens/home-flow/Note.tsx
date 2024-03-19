@@ -109,20 +109,22 @@ const NoteScreen = () => {
       }
     }
     await Promise.all(promises);
-    if (internetResponse) {
-      Toast.show({
-        type: 'success',
-        text1: 'Note submitted!',
-        visibilityTime: 3000,
-      });
-    } else {
-      Toast.show({
-        type: 'success',
-        text1: 'Note saved offline successfully!',
-        visibilityTime: 3000,
-      });
+    if (promises.length > 0) {
+      if (internetResponse) {
+        Toast.show({
+          type: 'success',
+          text1: 'Note submitted!',
+          visibilityTime: 3000,
+        });
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Note saved offline successfully!',
+          visibilityTime: 3000,
+        });
+      }
+      startConfetti();
     }
-    startConfetti();
     clearAllFields();
     setIsLoading(false);
     setModalVisible(false);

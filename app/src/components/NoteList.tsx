@@ -75,7 +75,7 @@ export const NoteList = ({
   });
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: colors.background}}>
       <View
         style={{
           flexDirection: 'row',
@@ -85,9 +85,10 @@ export const NoteList = ({
         }}>
         <TextInput
           placeholder={'Search'}
-          placeholderTextColor={'grey'}
+          placeholderTextColor={colors.text}
           onChangeText={text => setSearchTerm(text)}
           style={{
+            color: colors.text,
             backgroundColor: colors.card,
             paddingHorizontal: '5%',
             paddingVertical: '2%',
@@ -130,28 +131,46 @@ export const NoteList = ({
           </Pressable>
         )}
       </View>
-      <FlatList
-        data={filteredNotes}
-        renderItem={({item}) => (
-          <Pressable
-            style={{
-              backgroundColor: colors.card,
-              padding: '5%',
-              borderWidth: 1,
-              borderColor: colors.border,
-              borderRadius: 10,
-              margin: '5%',
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{color: colors.text, fontWeight: 'bold'}}>
-                Match {item.match_number} - Team {item.team_number}
-                {item.competition_name ? ` - ${item.competition_name}` : ''}
-              </Text>
-            </View>
-            <Text style={{color: colors.text}}>{item.content}</Text>
-          </Pressable>
-        )}
-      />
+      {filteredNotes.length > 0 && (
+        <FlatList
+          data={filteredNotes}
+          renderItem={({item}) => (
+            <Pressable
+              style={{
+                backgroundColor: colors.card,
+                padding: '5%',
+                borderWidth: 1,
+                borderColor: colors.border,
+                borderRadius: 10,
+                margin: '5%',
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{color: colors.text, fontWeight: 'bold'}}>
+                  Match {item.match_number} - Team {item.team_number}
+                  {item.competition_name ? ` - ${item.competition_name}` : ''}
+                  {item.scouter_name ? ` - By: ${item.scouter_name}` : ''}
+                </Text>
+              </View>
+              <Text style={{color: colors.text}}>{item.content}</Text>
+            </Pressable>
+          )}
+        />
+      )}
+      {filteredNotes.length === 0 && (
+        <View
+          style={{
+            backgroundColor: colors.card,
+            padding: '5%',
+            borderRadius: 10,
+            margin: '5%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{color: colors.text}}>
+            No notes found for this match.
+          </Text>
+        </View>
+      )}
       {filterModalVisible && (
         <Modal
           presentationStyle={'overFullScreen'}

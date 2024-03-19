@@ -102,7 +102,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             temp.set(note.match_number, [note]);
           }
         }
-
         setNotesByMatch(temp);
       });
 
@@ -280,7 +279,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                     height="16"
                     viewBox="0 0 16 16"
                     fill={colors.text}>
-                    <Path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                    <Path
+                      fill={'grey'}
+                      d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z"
+                    />
                   </Svg>
                 </TouchableOpacity>
               </View>
@@ -293,6 +295,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 {reportsByMatch.get(item)?.map((report, index) => {
                   return (
                     <Pressable
+                      key={report.reportId}
                       onPress={() => {
                         navigateIntoReport(report);
                       }}
@@ -350,7 +353,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       )}
       {notesViewerVisible && (
         <Modal visible={notesViewerVisible} animationType="slide">
-          <SafeAreaView style={{flex: 1}}>
+          <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
             <NoteList
               notes={notesByMatch.get(currentMatchNumber) ?? []}
               onClose={() => setNotesViewerVisible(false)}
