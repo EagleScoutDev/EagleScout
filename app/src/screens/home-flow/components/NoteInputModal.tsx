@@ -83,7 +83,8 @@ export const NoteInputModal = ({
               <TextInput
                 multiline={true}
                 style={{flex: 1, color: colors.text, fontSize: 20}}
-                onChangeText={text => {
+                onChange={evt => {
+                  const text = evt.nativeEvent.text;
                   setLocalContent(text);
                   setNoteContents({
                     ...noteContents,
