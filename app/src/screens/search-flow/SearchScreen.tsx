@@ -30,7 +30,9 @@ function SearchScreen({
       );
       if (navigation.isFocused()) {
         e.preventDefault();
-        navigation.navigate('SearchModal');
+        navigation.navigate('Main Search', {
+          searchEnabled: true,
+        });
       }
     });
 

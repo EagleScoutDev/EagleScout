@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
 
@@ -28,10 +28,15 @@ import {NoteList} from '../../components/NoteList';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
+  route: {
+    params: {
+      searchEnabled: boolean;
+    };
+  };
   navigation: any;
 }
 
-const SearchMain: React.FC<Props> = ({navigation}) => {
+const SearchMain: React.FC<Props> = ({route, navigation}) => {
   const {colors} = useTheme();
   const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
 
@@ -133,6 +138,16 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       fetchData();
     });
   }, [fetchData, navigation]);
+
+  // why is this not in a useEffect? we want to check searchEnabled every time the route changes
+  // having it in a useEffect would only check it once on initial render
+  if (route.params && route.params.searchEnabled && !fetchingData) {
+    navigation.navigate('SearchModal', {
+      teams: listOfTeams,
+      reportsByMatch: reportsByMatch,
+      competitionId: competitionId,
+    });
+  }
 
   const navigateIntoReport = (report: ScoutReportReturnData) => {
     setScoutViewerVisible(true);
