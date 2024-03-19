@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -34,6 +34,20 @@ function Home() {
     setSeconds(0);
     setIsActive(false);
   };
+
+  const ScoutingFlowWrapper = useMemo(
+    () =>
+      ({navigation, route}: any) => {
+        return (
+          <ScoutingFlow
+            navigation={navigation}
+            route={route}
+            resetTimer={reset}
+          />
+        );
+      },
+    [],
+  );
 
   return (
     <HomeStack.Navigator>
@@ -91,7 +105,7 @@ function Home() {
             </View>
           ),
         }}
-        component={ScoutingFlow}
+        component={ScoutingFlowWrapper}
       />
       <HomeStack.Screen
         name={'Note'}

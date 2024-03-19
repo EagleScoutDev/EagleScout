@@ -49,7 +49,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
   const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
 
-  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  // const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   // used for hiding and showing header
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
@@ -102,7 +102,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             temp.set(note.match_number, [note]);
           }
         }
-
         setNotesByMatch(temp);
       });
 
@@ -142,10 +141,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View
-        style={{
-          display: isScrolling ? 'none' : 'flex',
-        }}>
+      <View>
         <View
           style={{
             flexDirection: 'row',
@@ -158,32 +154,33 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             setCurrentCompId={setCompetitionId}
             loading={fetchingData}
           />
-          <Pressable
-            onPress={() => {
-              const sortedKeys = Array.from(reportsByMatch.keys()).reverse();
+          {/*<Pressable*/}
+          {/*  onPress={() => {*/}
+          {/*    const sortedKeys = Array.from(reportsByMatch.keys()).reverse();*/}
 
-              const sortedMap = new Map<number, ScoutReportReturnData[]>();
-              sortedKeys.forEach(key => {
-                sortedMap.set(key, reportsByMatch.get(key)!);
-              });
+          {/*    const sortedMap = new Map<number, ScoutReportReturnData[]>();*/}
+          {/*    sortedKeys.forEach(key => {*/}
+          {/*      sortedMap.set(key, reportsByMatch.get(key)!);*/}
+          {/*    });*/}
 
-              setReportsByMatch(sortedMap);
-            }}
-            style={{
-              marginRight: '2%',
-              marginLeft: '6%',
-            }}>
-            <Svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-              <Path
-                fill="gray"
-                d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"
-              />
-            </Svg>
-          </Pressable>
+          {/*    setReportsByMatch(sortedMap);*/}
+          {/*  }}*/}
+          {/*  style={{*/}
+          {/*    marginRight: '2%',*/}
+          {/*    marginLeft: '6%',*/}
+          {/*  }}>*/}
+          {/*  <Svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">*/}
+          {/*    <Path*/}
+          {/*      fill="gray"*/}
+          {/*      d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"*/}
+          {/*    />*/}
+          {/*  </Svg>*/}
+          {/*</Pressable>*/}
           <Pressable
             style={{
-              marginRight: '2%',
-              marginLeft: '6%',
+              paddingHorizontal: '8%',
+              paddingVertical: '4%',
+              // backgroundColor: colors.card,
             }}
             onPress={() => {
               navigation.navigate('SearchModal', {
@@ -221,23 +218,23 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         </View>
       )}
       <FlatList
-        onScroll={scroll_event => {
-          // if scrolling down, hide search bar
-          if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
-            setIsScrolling(true);
-          } else {
-            setIsScrolling(false);
-          }
-
-          // if at top of flatlist, show search bar
-          if (
-            scroll_event.nativeEvent.contentOffset.y <
-            0.005 * scroll_event.nativeEvent.contentSize.height
-          ) {
-            setIsScrolling(false);
-          }
-          setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
-        }}
+        // onScroll={scroll_event => {
+        //   // if scrolling down, hide search bar
+        //   if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
+        //     setIsScrolling(true);
+        //   } else {
+        //     setIsScrolling(false);
+        //   }
+        //
+        //   // if at top of flatlist, show search bar
+        //   if (
+        //     scroll_event.nativeEvent.contentOffset.y <
+        //     0.005 * scroll_event.nativeEvent.contentSize.height
+        //   ) {
+        //     setIsScrolling(false);
+        //   }
+        //   setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
+        // }}
         data={Array.from(reportsByMatch.keys()).reverse()}
         keyExtractor={item => item.toString()}
         renderItem={({item}) => {
@@ -282,7 +279,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                     height="16"
                     viewBox="0 0 16 16"
                     fill={colors.text}>
-                    <Path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                    <Path
+                      fill={'grey'}
+                      d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z"
+                    />
                   </Svg>
                 </TouchableOpacity>
               </View>
@@ -295,6 +295,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 {reportsByMatch.get(item)?.map((report, index) => {
                   return (
                     <Pressable
+                      key={report.reportId}
                       onPress={() => {
                         navigateIntoReport(report);
                       }}
@@ -352,7 +353,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       )}
       {notesViewerVisible && (
         <Modal visible={notesViewerVisible} animationType="slide">
-          <SafeAreaView style={{flex: 1}}>
+          <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
             <NoteList
               notes={notesByMatch.get(currentMatchNumber) ?? []}
               onClose={() => setNotesViewerVisible(false)}

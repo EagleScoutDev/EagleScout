@@ -10,10 +10,12 @@ import ScoutReportsDB from '../../database/ScoutReports';
 import Gamification from './Gamification';
 import ScoutingView from './ScoutingView';
 import Confetti from 'react-native-confetti';
+import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({navigation, route}) {
+
+function ScoutingFlow({navigation, route, resetTimer}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -25,8 +27,8 @@ function ScoutingFlow({navigation, route}) {
   }, []);
 
   const {colors} = useTheme();
-  const [match, setMatch] = useState();
-  const [team, setTeam] = useState();
+  const [match, setMatch] = useState('');
+  const [team, setTeam] = useState('');
   const [competition, setCompetition] = useState();
   const [formStructure, setFormStructure] = useState();
   const [formId, setFormId] = useState();
@@ -40,6 +42,19 @@ function ScoutingFlow({navigation, route}) {
   const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
     useState(false);
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
+
+  const {competitionId, matches, getTeamsForMatch} =
+    useCurrentCompetitionMatches();
+  const [teamsForMatch, setTeamsForMatch] = useState([]);
+  useEffect(() => {
+    if (!match || match > 400) {
+      return;
+    }
+    const teams = getTeamsForMatch(Number(match));
+    if (teams.length > 0) {
+      setTeamsForMatch(teams);
+    }
+  }, [match, competitionId, matches]);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
@@ -165,7 +180,7 @@ function ScoutingFlow({navigation, route}) {
 
   const submitForm = async () => {
     let dataToSubmit = {};
-    if (match > 100 || !match) {
+    if (match > 400 || !match) {
       Alert.alert('Invalid Match Number', 'Please enter a valid match number');
       if (!isScoutStylePreferenceScrolling) {
         navigation.navigate('Match');
@@ -275,6 +290,7 @@ function ScoutingFlow({navigation, route}) {
         });
         setMatch('');
         setTeam('');
+        resetTimer();
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
           startConfetti();
@@ -343,7 +359,6 @@ function ScoutingFlow({navigation, route}) {
 
   const styles = StyleSheet.create({
     textInput: {
-      height: 40,
       borderColor: 'gray',
       borderWidth: 1,
       borderRadius: 10,
@@ -393,6 +408,7 @@ function ScoutingFlow({navigation, route}) {
               setMatch={setMatch}
               team={team}
               setTeam={setTeam}
+              teamsForMatch={teamsForMatch}
               colors={colors}
               styles={styles}
               competition={competition}
@@ -408,6 +424,7 @@ function ScoutingFlow({navigation, route}) {
               setMatch={setMatch}
               team={team}
               setTeam={setTeam}
+              teamsForMatch={teamsForMatch}
               colors={colors}
               styles={styles}
               navigation={navigation}

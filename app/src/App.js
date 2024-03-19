@@ -8,6 +8,7 @@ import {
   DefaultTheme,
   DarkTheme,
   useTheme,
+  useNavigation,
 } from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -16,7 +17,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {useColorScheme, View} from 'react-native';
+import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
@@ -46,7 +47,10 @@ const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import type {Theme} from '@react-navigation/native/src/types';
+import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
+import ChangePassword from './screens/settings-flow/ChangePassword';
+import ResetPassword from './screens/login-flow/ResetPassword';
 
 const CustomLightTheme = {
   dark: false,
@@ -79,6 +83,59 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
+  const {url} = useDeepLinking();
+  const nav = useNavigation();
+
+  useEffect(() => {
+    if (!url) {
+      return;
+    }
+    (async () => {
+      console.log('[DEEP LINKING] initial url: ' + url);
+      const route = url.split('://')[1].split('#')[0];
+      const params = url
+        .split('#')[1]
+        .split('&')
+        .reduce((acc, cur) => {
+          const [key, value] = cur.split('=');
+          acc[key] = value;
+          return acc;
+        }, {});
+      console.log('[DEEP LINKING] route: ' + route);
+      console.log('[DEEP LINKING] params: ' + JSON.stringify(params));
+      if (route === 'forgot-password' || params.type === 'recovery') {
+        // for the Reset Password email template
+        const {access_token, refresh_token} = params;
+        if (!access_token || !refresh_token) {
+          return;
+        }
+        const {error} = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error(error);
+        }
+        console.log('navigating to reset password');
+        nav.navigate('ChangePassword');
+      } else if (route === 'confirm-signup') {
+        // for the Confirm Signup email template
+        const {access_token, refresh_token} = params;
+        if (!access_token || !refresh_token) {
+          return;
+        }
+        const {error} = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error(error);
+        }
+        console.log('navigating to complete sign up');
+        nav.navigate('CompleteSignUp');
+      }
+    })();
+  }, [url]);
 
   const ScoutReportComponent = props => (
     <ScoutingFlow
@@ -203,6 +260,12 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
     });
   }, []);
 
+  const ChangePasswordContainer = ({navigation}) => (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+      <ChangePassword navigation={navigation} />
+    </SafeAreaView>
+  );
+
   return (
     <Tab.Navigator
       initialRouteName="Entrypoint"
@@ -227,6 +290,11 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
+          <Tab.Screen
+            name="ChangePassword"
+            component={ChangePasswordContainer}
+          />
+          <Tab.Screen name="ResetPassword" component={ResetPassword} />
           <Tab.Screen name="Register new team" component={RegisterTeamModal} />
         </Tab.Group>
       ) : (

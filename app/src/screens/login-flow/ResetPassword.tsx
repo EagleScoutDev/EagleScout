@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
+  Alert,
   Keyboard,
   SafeAreaView,
   Text,
@@ -9,16 +10,15 @@ import {
   View,
 } from 'react-native';
 import {StyleSheet} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import {supabase} from '../../lib/supabase';
 
-const Login = ({onSubmit, error}) => {
-  let [username, setUsername] = useState('');
-  let [password, setPassword] = useState('');
+const ResetPassword = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
+  const [email, setEmail] = useState('');
 
   const styles = StyleSheet.create({
     input: {
@@ -55,93 +55,94 @@ const Login = ({onSubmit, error}) => {
       backgroundColor: 'rgb(0,0,25)',
       flex: 1,
     },
-    error: {
-      backgroundColor: 'red',
-      padding: '5%',
-      margin: '3%',
-      borderRadius: 10,
-      position: 'absolute',
-      top: '5%',
-      right: '5%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-    },
-    error_text: {
-      color: 'white',
-      textAlign: 'center',
-    },
   });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.background}>
-        {/*<Text style={styles.titleText}>EagleScout</Text>*/}
-        {error !== '' && (
-          <View style={styles.error}>
-            <Text style={styles.error_text}>{error}</Text>
-          </View>
-        )}
-        <Text style={styles.titleText}>Log In</Text>
+        <Text style={styles.titleText}>Reset Password</Text>
         <>
           <View>
             <MinimalSectionHeader title={'Email'} />
             <TextInput
               autoCapitalize={'none'}
-              onChangeText={text => setUsername(text)}
-              value={username}
+              onChangeText={text => setEmail(text)}
+              value={email}
               placeholder="john.doe@team114.org"
               placeholderTextColor={'gray'}
               style={{
                 ...styles.input,
-                borderColor:
-                  error === 'auth/missing-email' ||
-                  error === 'auth/invalid-email' ||
-                  error === 'auth/internal-error'
-                    ? 'red'
-                    : 'gray',
+                borderColor: email === '' ? 'gray' : colors.primary,
               }}
               inputMode={'email'}
             />
-            <View style={{height: 30}} />
-            <MinimalSectionHeader title={'Password'} />
-            <TextInput
-              onChangeText={text => setPassword(text)}
-              value={password}
-              style={{
-                ...styles.input,
-                borderColor:
-                  error === 'auth/internal-error' ||
-                  error === 'auth/wrong-password'
-                    ? 'red'
-                    : 'gray',
-              }}
-              secureTextEntry={true}
-            />
             <StandardButton
-              text={'Log In'}
-              textColor={
-                username === '' || password === '' ? 'dimgray' : colors.primary
-              }
-              disabled={username === '' || password === ''}
-              onPress={() => onSubmit(username, password, navigation)}
+              text={'Reset Password'}
+              textColor={email === '' ? 'dimgray' : colors.primary}
+              disabled={email === ''}
+              onPress={async () => {
+                if (email === '') {
+                  console.log('Email cannot be blank.');
+                  Alert.alert(
+                    'Email cannot be blank.',
+                    'Please try again',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                  return;
+                }
+                const {data, error} = await supabase.auth.resetPasswordForEmail(
+                  email,
+                );
+                if (error) {
+                  console.log('Error resetting password:', error);
+                  Alert.alert(
+                    'Error resetting password',
+                    'Please try again',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                } else {
+                  console.log('Password reset email sent');
+                  Alert.alert(
+                    'Password reset email sent',
+                    'Please check your email',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                }
+              }}
             />
           </View>
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
-              navigation.navigate('ResetPassword');
-              setUsername('');
+              navigation.navigate('Login');
+              setEmail('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Reset Password</Text>
+            <Text style={{color: 'gray'}}>Log In</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
               navigation.navigate('Sign');
-              setUsername('');
-              setPassword('');
+              setEmail('');
             }}>
             <Text style={{color: 'gray'}}>Create Account</Text>
           </TouchableOpacity>
@@ -149,8 +150,7 @@ const Login = ({onSubmit, error}) => {
             style={styles.link_container}
             onPress={() => {
               navigation.navigate('Register new team');
-              setUsername('');
-              setPassword('');
+              setEmail('');
             }}>
             <Text style={{color: 'gray'}}>
               Register your team with EagleScout
@@ -162,4 +162,4 @@ const Login = ({onSubmit, error}) => {
   );
 };
 
-export default Login;
+export default ResetPassword;

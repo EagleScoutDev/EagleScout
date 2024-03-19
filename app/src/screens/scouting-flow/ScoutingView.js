@@ -10,6 +10,7 @@ function ScoutingView({
   setMatch,
   team,
   setTeam,
+  teamsForMatch,
   colors,
   styles,
   competition,
@@ -21,18 +22,18 @@ function ScoutingView({
 }) {
   return (
     <ScrollView>
-      <Text
-        style={{
-          color: colors.text,
-          textAlign: 'center',
-          paddingBottom: 15,
-          fontWeight: 'bold',
-          fontSize: 30,
-          marginTop: 20,
-          // marginVertical: 20,
-        }}>
-        Scouting Report
-      </Text>
+      {/*<Text*/}
+      {/*  style={{*/}
+      {/*    color: colors.text,*/}
+      {/*    textAlign: 'center',*/}
+      {/*    paddingBottom: 15,*/}
+      {/*    fontWeight: 'bold',*/}
+      {/*    fontSize: 30,*/}
+      {/*    marginTop: 20,*/}
+      {/*    // marginVertical: 20,*/}
+      {/*  }}>*/}
+      {/*  Scouting Report*/}
+      {/*</Text>*/}
       {competition != null && (
         <Text
           style={{
@@ -40,7 +41,7 @@ function ScoutingView({
             fontWeight: 'bold',
             fontSize: 20,
             textAlign: 'center',
-            marginBottom: 20,
+            marginVertical: 20,
           }}>
           {competition.name}
         </Text>
@@ -50,6 +51,7 @@ function ScoutingView({
         setMatch={setMatch}
         team={team}
         setTeam={setTeam}
+        teamsForMatch={teamsForMatch}
       />
 
       {/*
@@ -63,14 +65,16 @@ function ScoutingView({
             <FormSection colors={colors} title={key} key={key.length}>
               {value.map((item, vIndex) => {
                 return (
-                  <FormComponent
-                    key={item.question}
-                    colors={colors}
-                    item={item}
-                    styles={styles}
-                    arrayData={arrayData}
-                    setArrayData={setArrayData}
-                  />
+                  <View style={{marginVertical: '5%'}}>
+                    <FormComponent
+                      key={item.question}
+                      colors={colors}
+                      item={item}
+                      styles={styles}
+                      arrayData={arrayData}
+                      setArrayData={setArrayData}
+                    />
+                  </View>
                 );
               })}
             </FormSection>

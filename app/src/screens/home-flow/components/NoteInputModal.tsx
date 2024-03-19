@@ -101,7 +101,13 @@ export const NoteInputModal = ({
               flex: 1,
               justifyContent: 'flex-end',
             }}>
-            <NoteFAB onSubmitPress={onSubmit} isLoading={isLoading} />
+            <NoteFAB
+              onSubmitPress={onSubmit}
+              isLoading={isLoading}
+              contentPresent={Object.keys(noteContents).some(
+                key => noteContents[parseInt(key)].length > 0,
+              )}
+            />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
