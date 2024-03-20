@@ -172,7 +172,8 @@ const CompleteSignup = () => {
                 if (profilesSetError) {
                   console.error(profilesSetError);
                   Alert.alert(
-                    'Unable to set porofile information. Please try logging in again.',
+                    'Error setting profile',
+                    'Unable to set profile information. Please try logging in again.',
                   );
                 }
                 const {error: registerUserWithTeamError} = await supabase.rpc(
@@ -184,11 +185,13 @@ const CompleteSignup = () => {
                 if (registerUserWithTeamError) {
                   console.error(registerUserWithTeamError);
                   Alert.alert(
+                    'Error registering with team',
                     'Unable to register you with the team provided. Please check if the team number is correct.',
                   );
                 } else {
                   await supabase.auth.signOut();
                   Alert.alert(
+                    'Sign up complete!',
                     "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
                   );
                   navigation.navigate('Login');
