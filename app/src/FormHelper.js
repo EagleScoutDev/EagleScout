@@ -5,6 +5,8 @@ class FormHelper {
   static LATEST_FORM = 'current-form';
   static ASYNCSTORAGE_COMPETITION_KEY = 'current-competition';
   static ASYNCSTORAGE_MATCHES_KEY = 'current-matches';
+  // used to save progress on a current/wip scouting report
+  static ASYNCSTORAGE_CURRENT_REPORT_KEY = 'current-report';
   static SCOUTING_STYLE = 'scoutingStyle';
   static THEME = 'themePreference';
   static OLED = 'oled';

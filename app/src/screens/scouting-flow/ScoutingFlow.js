@@ -167,7 +167,18 @@ function ScoutingFlow({navigation, route, resetTimer}) {
       setFormId(comp.formId);
       setFormStructure(comp.form);
       setCompetition(comp);
-      initForm(comp.form);
+      const storedFormData = await AsyncStorage.getItem(
+        FormHelper.ASYNCSTORAGE_CURRENT_REPORT_KEY,
+      );
+      console.log('storedFormData: ', storedFormData);
+      if (storedFormData != null) {
+        const data = JSON.parse(storedFormData);
+        setArrayData(data.arrayData);
+        setMatch(data.match);
+        setTeam(data.team);
+      } else {
+        initForm(comp.form);
+      }
     } else {
       setIsCompetitionHappening(false);
     }
@@ -356,6 +367,22 @@ function ScoutingFlow({navigation, route, resetTimer}) {
     setData(dict);
     //console.log('dict: ', dict);
   }, [formStructure]);
+
+  useEffect(() => {
+    if (arrayData == null) {
+      return;
+    }
+    (async () => {
+      await AsyncStorage.setItem(
+        FormHelper.ASYNCSTORAGE_CURRENT_REPORT_KEY,
+        JSON.stringify({
+          arrayData,
+          match,
+          team,
+        }),
+      );
+    })();
+  }, [arrayData]);
 
   const styles = StyleSheet.create({
     textInput: {
