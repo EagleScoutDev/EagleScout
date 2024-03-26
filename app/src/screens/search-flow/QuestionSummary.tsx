@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {View, Text, Button, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
@@ -35,6 +35,17 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const [stats, setStats] = useState<Statistics | null>(null);
   const [modalActive, setModalActive] = useState<boolean>(false);
 
+  const processedData = useMemo(
+    () =>
+      data
+        .sort((a, b) => a.match - b.match)
+        .filter(
+          (datum, index, self) =>
+            index === self.findIndex(t => t.match === datum.match),
+        ),
+    [data],
+  );
+
   const chartConfig = {
     backgroundGradientFrom: colors.card,
     backgroundGradientFromOpacity: 1.0,
@@ -65,23 +76,17 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   useEffect(() => {
     if (item.type === 'number') {
       const avg =
-        data.map(datum => datum.data).reduce((a, b) => a + b, 0) / data.length;
-      const max = Math.max(...data.map(datum => datum.data));
-      const min = Math.min(...data.map(datum => datum.data));
+        processedData.map(datum => datum.data).reduce((a, b) => a + b, 0) /
+        processedData.length;
+      const max = Math.max(...processedData.map(datum => datum.data));
+      const min = Math.min(...processedData.map(datum => datum.data));
       setStats({average: avg, max: max, min: min});
-
-      // sort data by match number
-      data.sort((a, b) => {
-        return a.match - b.match;
-      });
-
-      // TODO: remove duplicate data points (determined by match number)
     }
 
     if (item.type === 'radio') {
       let counts: number[] = [];
       for (let i = 0; i < item.options.length; i++) {
-        counts.push(data.filter(datum => datum.data === i).length);
+        counts.push(processedData.filter(datum => datum.data === i).length);
       }
       const index = counts.indexOf(Math.max(...counts));
 
@@ -322,10 +327,10 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
           <View>
             <LineChart
               data={{
-                labels: data.map(datum => String(datum.match)),
+                labels: processedData.map(datum => String(datum.match)),
                 datasets: [
                   {
-                    data: data.map(datum => datum.data),
+                    data: processedData.map(datum => datum.data),
                     strokeWidth: 2, // optional
                   },
                 ],
