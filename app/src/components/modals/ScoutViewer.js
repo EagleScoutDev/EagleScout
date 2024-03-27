@@ -441,8 +441,8 @@ function ScoutViewer({
           {data.form.map((field, index) => (
             <View key={index}>
               {/*If the entry has a text property, this indicates that it is a header, or section divider*/}
-              {field.text && (
-                <Text style={styles.section_title}>{field.text}</Text>
+              {field.title && (
+                <Text style={styles.section_title}>{field.title}</Text>
               )}
               {/*If the entry has a question property, this indicates that it is a question*/}
               {field.question && formData[index] != null && (

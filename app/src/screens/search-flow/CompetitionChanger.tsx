@@ -21,7 +21,6 @@ interface CompetitionChangerProps {
   loading: boolean;
 }
 
-let NO_COMPETITION_TITLE = 'Loading...';
 const CompetitionChanger = ({
   currentCompId,
   setCurrentCompId,
@@ -50,7 +49,7 @@ const CompetitionChanger = ({
     if (currentCompId === -1) {
       CompetitionsDB.getCurrentCompetition().then(competition => {
         if (competition != null) {
-          setCurrentCompId(-1);
+          setCurrentCompId(competition.id);
         } else {
           // TODO: handle when there is no current competition
           setCurrentCompId(-1);
@@ -156,7 +155,9 @@ const CompetitionChanger = ({
                   textAlign: 'center',
                   fontWeight: '700',
                 }}>
-                {compnameToIcon(competitionName)}
+                {competitionName === 'Loading...'
+                  ? ''
+                  : compnameToIcon(competitionName)}
               </Text>
             </View>
           );

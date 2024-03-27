@@ -23,6 +23,7 @@ function Gamification({
   setMatch,
   team,
   setTeam,
+  teamsForMatch,
   colors,
   styles,
   navigation,
@@ -63,7 +64,7 @@ function Gamification({
           options={{
             headerTintColor: colors.text,
             tabBarLabelStyle: {
-              fontSize: 7.5,
+              fontSize: 12,
               fontWeight: 'bold',
             },
 
@@ -103,6 +104,7 @@ function Gamification({
                     setMatch={setMatch}
                     team={team}
                     setTeam={setTeam}
+                    teamsForMatch={teamsForMatch}
                     disabled={true}
                   />
                 </View>
@@ -128,7 +130,7 @@ function Gamification({
                   // change font color in header
                   headerTintColor: colors.text,
                   tabBarLabelStyle: {
-                    fontSize: 7.5,
+                    fontSize: 12,
                     fontWeight: 'bold',
                   },
 
@@ -139,32 +141,43 @@ function Gamification({
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
-                    {key === 'Teleop' && (
-                      <CrescendoModal
-                        startRelativeTime={startRelativeTime}
-                        setStartRelativeTime={setStartRelativeTime}
-                        timeline={timeline}
-                        setTimeline={setTimeline}
-                        isActive={isActive}
-                        setIsActive={setIsActive}
-                        onLabelPress={onLabelPress}
-                        onLabelUndo={onLabelUndo}
-                      />
-                    )}
-                    <FormSection colors={colors} title={''} key={key.length}>
-                      {value.map((item, vIndex) => {
-                        return (
-                          <FormComponent
-                            key={item.question}
-                            colors={colors}
-                            item={item}
-                            styles={styles}
-                            arrayData={arrayData}
-                            setArrayData={setArrayData}
-                          />
-                        );
-                      })}
-                    </FormSection>
+                    <View
+                      style={{
+                        marginHorizontal: '5%',
+                      }}>
+                      {key === 'Teleop' && (
+                        <CrescendoModal
+                          startRelativeTime={startRelativeTime}
+                          setStartRelativeTime={setStartRelativeTime}
+                          timeline={timeline}
+                          setTimeline={setTimeline}
+                          isActive={isActive}
+                          setIsActive={setIsActive}
+                          onLabelPress={onLabelPress}
+                          onLabelUndo={onLabelUndo}
+                        />
+                      )}
+                      <FormSection colors={colors} title={''} key={key.length}>
+                        {value.map((item, vIndex) => {
+                          return (
+                            <View
+                              key={item.question}
+                              style={{
+                                marginVertical: '5%',
+                              }}>
+                              <FormComponent
+                                key={item.question}
+                                colors={colors}
+                                item={item}
+                                styles={styles}
+                                arrayData={arrayData}
+                                setArrayData={setArrayData}
+                              />
+                            </View>
+                          );
+                        })}
+                      </FormSection>
+                    </View>
                     {/*if the index is not the last one, add a button that navigates users to the next tab*/}
                     {index !== Object.keys(data).length - 1 && (
                       <View style={{width: '100%', marginBottom: '5%'}}>

@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import SubmittedForms from './SubmittedForms';
 import DeleteAccountModal from './DeleteAccountModal';
+import {SubmittedNotes} from './SubmittedNotes';
 
 const Stack = createStackNavigator();
 
@@ -15,12 +16,14 @@ interface SettingsMainProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
   setScoutingStyle: (arg0: string) => void;
+  setOled: (arg0: boolean) => void;
 }
 
 function SettingsMain({
   onSignOut,
   setTheme,
   setScoutingStyle,
+  setOled,
 }: SettingsMainProps) {
   const [user, setUser] = useState<StoredUser | null>(null);
 
@@ -51,6 +54,7 @@ function SettingsMain({
             onSignOut={onSignOut}
             setScoutingStyle={setScoutingStyle}
             setTheme={setTheme}
+            setOled={setOled}
           />
         )}
       />
@@ -81,6 +85,13 @@ function SettingsMain({
           headerBackTitle: 'Back',
         }}
         component={SubmittedForms}
+      />
+      <Stack.Screen
+        name={'Notes'}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+        component={SubmittedNotes}
       />
     </Stack.Navigator>
   );

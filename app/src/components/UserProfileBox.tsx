@@ -52,41 +52,41 @@ function UserProfileBox({user}: UserProfileBoxProps) {
     }
   };
 
-  // from https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript
-  const stringToColour = (str: string) => {
-    let hash = 0;
-    str.split('').forEach(char => {
-      hash = char.charCodeAt(0) + ((hash << 5) - hash);
-    });
-    let colour = '#';
-    for (let i = 0; i < 3; i++) {
-      const value = (hash >> (i * 8)) & 0xff;
-      colour += value.toString(16).padStart(2, '0');
-    }
-    return colour;
-  };
-
   return (
     <View style={styles.container}>
-      <GradientShimmer
-        LinearGradientComponent={LinearGradient}
-        backgroundColor={stringToColour(
-          user.first_name ? user.first_name.charAt(0) : 'b',
-        )}
-        highlightColor={stringToColour(
-          user.last_name ? user.last_name.charAt(0) : 'b',
-        )}
-        animating={true}
-        duration={4000}
-        easing={Easing.linear}
-        highlightWidth={150}
-        height={50}
-        width={50}
-        style={{
-          borderRadius: 100,
-          marginRight: '5%',
-        }}
-      />
+      {user.admin ? (
+        <GradientShimmer
+          LinearGradientComponent={LinearGradient}
+          backgroundColor={'blue'}
+          highlightColor={'darkblue'}
+          animating={true}
+          duration={4000}
+          easing={Easing.linear}
+          highlightWidth={150}
+          height={50}
+          width={50}
+          style={{
+            borderRadius: 10,
+            marginRight: '5%',
+          }}
+        />
+      ) : (
+        <GradientShimmer
+          LinearGradientComponent={LinearGradient}
+          backgroundColor={'red'}
+          highlightColor={'darkred'}
+          animating={true}
+          duration={4000}
+          easing={Easing.linear}
+          highlightWidth={150}
+          height={50}
+          width={50}
+          style={{
+            borderRadius: 100,
+            marginRight: '5%',
+          }}
+        />
+      )}
       <View>
         <Text style={styles.name_text}>
           {user.first_name} {user.last_name}

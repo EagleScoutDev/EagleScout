@@ -8,6 +8,7 @@ import {
   DefaultTheme,
   DarkTheme,
   useTheme,
+  useNavigation,
 } from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -16,7 +17,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {useColorScheme, View} from 'react-native';
+import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
@@ -45,6 +46,11 @@ import {createStackNavigator} from '@react-navigation/stack';
 const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
+import type {Theme} from '@react-navigation/native/src/types';
+import {useDeepLinking} from './lib/hooks/useDeepLinking';
+import EntrypointHome from './screens/login-flow/EntrypointHome';
+import ChangePassword from './screens/settings-flow/ChangePassword';
+import ResetPassword from './screens/login-flow/ResetPassword';
 
 const CustomLightTheme = {
   dark: false,
@@ -58,13 +64,78 @@ const CustomLightTheme = {
   },
 };
 
+const CustomDarkTheme = {
+  dark: true,
+  colors: {
+    primary: 'rgb(10, 132, 255)',
+    background: 'rgb(0, 0, 0)',
+    card: 'rgb(0, 0, 0)',
+    text: 'rgb(255, 255, 255)',
+    border: 'rgb(39, 39, 41)',
+    notification: 'rgb(255, 69, 58)',
+  },
+};
+
 const Placeholder = () => <View />;
 
-const MyStack = ({themePreference, setThemePreference}) => {
+const MyStack = ({themePreference, setThemePreference, setOled}) => {
   const scheme = useColorScheme();
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
+  const {url} = useDeepLinking();
+  const nav = useNavigation();
+
+  useEffect(() => {
+    if (!url) {
+      return;
+    }
+    (async () => {
+      console.log('[DEEP LINKING] initial url: ' + url);
+      const route = url.split('://')[1].split('#')[0];
+      const params = url
+        .split('#')[1]
+        .split('&')
+        .reduce((acc, cur) => {
+          const [key, value] = cur.split('=');
+          acc[key] = value;
+          return acc;
+        }, {});
+      console.log('[DEEP LINKING] route: ' + route);
+      console.log('[DEEP LINKING] params: ' + JSON.stringify(params));
+      if (route === 'forgot-password' || params.type === 'recovery') {
+        // for the Reset Password email template
+        const {access_token, refresh_token} = params;
+        if (!access_token || !refresh_token) {
+          return;
+        }
+        const {error} = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error(error);
+        }
+        console.log('navigating to reset password');
+        nav.navigate('ChangePassword');
+      } else if (route === 'confirm-signup') {
+        // for the Confirm Signup email template
+        const {access_token, refresh_token} = params;
+        if (!access_token || !refresh_token) {
+          return;
+        }
+        const {error} = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error(error);
+        }
+        console.log('navigating to complete sign up');
+        nav.navigate('CompleteSignUp');
+      }
+    })();
+  }, [url]);
 
   const ScoutReportComponent = props => (
     <ScoutingFlow
@@ -180,9 +251,24 @@ const MyStack = ({themePreference, setThemePreference}) => {
     });
   }, []);
 
+  useEffect(() => {
+    FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
+      if (value != null) {
+        console.log('[useEffect] data: ' + value);
+        setOled(JSON.parse(value));
+      }
+    });
+  }, []);
+
+  const ChangePasswordContainer = ({navigation}) => (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+      <ChangePassword navigation={navigation} />
+    </SafeAreaView>
+  );
+
   return (
     <Tab.Navigator
-      initialRouteName="Login"
+      initialRouteName="Entrypoint"
       options={{
         headerShown: false,
       }}>
@@ -195,13 +281,20 @@ const MyStack = ({themePreference, setThemePreference}) => {
             },
           }}>
           <Tab.Screen
+            name={'Entrypoint'}
+            children={() => <EntrypointHome ifAuth={skipAuth} />}
+          />
+          <Tab.Screen
             name="Login"
-            children={() => (
-              <Login onSubmit={submitForm} error={error} ifAuth={skipAuth} />
-            )}
+            children={() => <Login onSubmit={submitForm} error={error} />}
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
+          <Tab.Screen
+            name="ChangePassword"
+            component={ChangePasswordContainer}
+          />
+          <Tab.Screen name="ResetPassword" component={ResetPassword} />
           <Tab.Screen name="Register new team" component={RegisterTeamModal} />
         </Tab.Group>
       ) : (
@@ -266,10 +359,8 @@ const MyStack = ({themePreference, setThemePreference}) => {
                   enableVibrateFallback: true,
                   ignoreAndroidSystemSettings: false,
                 });
-                navigation.navigate('Home', {screen: 'Scout Report'});
-                //
-                // navigation.navigate('CustomModal');
-                // setModalVisible(true);
+                navigation.navigate('CustomModal');
+                setModalVisible(true);
               },
             })}
             options={{
@@ -351,6 +442,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
                 onSignOut={redirectLogin}
                 setTheme={setThemePreference}
                 setScoutingStyle={setScoutStylePreference}
+                setOled={setOled}
               />
             )}
           />
@@ -365,16 +457,21 @@ const RootStack = createStackNavigator();
 const RootNavigator = () => {
   const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState('System');
+  const [oled, setOled] = useState(false);
 
   return (
     <NavigationContainer
       theme={
         themePreference === 'Dark'
-          ? DarkTheme
+          ? oled
+            ? CustomDarkTheme
+            : DarkTheme
           : themePreference === 'Light'
           ? CustomLightTheme
           : scheme === 'dark'
-          ? DarkTheme
+          ? oled
+            ? CustomDarkTheme
+            : DarkTheme
           : CustomLightTheme
       }>
       <RootStack.Navigator
@@ -389,6 +486,7 @@ const RootNavigator = () => {
             <MyStack
               themePreference={themePreference}
               setThemePreference={setThemePreference}
+              setOled={setOled}
             />
           )}
         />
