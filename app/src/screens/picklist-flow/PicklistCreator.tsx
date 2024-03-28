@@ -73,6 +73,8 @@ function PicklistCreator({
   // whether the additional settings collapsing view is open
   const [additionalSettingsOpen, setAdditionalSettingsOpen] = useState(false);
 
+  const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+
   // fetches all teams at the current competition
   useEffect(() => {
     // TODO: @gabor, replace this hardcoded value with the current competition
@@ -339,6 +341,20 @@ function PicklistCreator({
       alignItems: 'center',
       // marginRight: '30%',
     },
+    team_item_in_list_selected: {
+      padding: '2%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      // marginRight: '30%',
+      backgroundColor: colors.card,
+      borderRadius: 10,
+    },
+    team_item_in_list_not_selected: {
+      padding: '2%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      opacity: 0.4,
+    },
     team_number_strikethrough: {
       flex: 1,
       color: 'gray',
@@ -349,6 +365,12 @@ function PicklistCreator({
       textDecorationStyle: 'solid',
     },
     team_number_displayed: {
+      flex: 1,
+      color: colors.text,
+      fontSize: 16,
+      marginLeft: '5%',
+    },
+    team_number_displayed_selected: {
       flex: 1,
       color: colors.text,
       fontSize: 16,
@@ -533,7 +555,21 @@ function PicklistCreator({
           data={teams_list}
           renderItem={({item}) => {
             return (
-              <View style={styles.team_item_in_list}>
+              <Pressable
+                style={
+                  selectedTeam === null
+                    ? styles.team_item_in_list
+                    : item === selectedTeam
+                    ? styles.team_item_in_list_selected
+                    : styles.team_item_in_list_not_selected
+                }
+                onPress={() => {
+                  if (selectedTeam === null) {
+                    setSelectedTeam(item);
+                  } else if (selectedTeam !== item) {
+                    setSelectedTeam(null);
+                  }
+                }}>
                 <BouncyCheckbox
                   isChecked={removed_teams.includes(item)}
                   fillColor={colors.primary}
@@ -552,11 +588,13 @@ function PicklistCreator({
                   style={
                     removed_teams.includes(item)
                       ? styles.team_number_strikethrough
+                      : item === selectedTeam
+                      ? styles.team_number_displayed_selected
                       : styles.team_number_displayed
                   }>
                   {item} - {teamNumberToNameMap.get(item)}
                 </Text>
-              </View>
+              </Pressable>
             );
           }}
           keyExtractor={item => String(item)}
