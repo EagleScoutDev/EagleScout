@@ -27,6 +27,12 @@ import Competitions from '../../database/Competitions';
 import TeamAddingModal from './TeamAddingModal';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
+interface PicklistTeam {
+  team_number: number;
+  notes: string;
+  tags: string[];
+}
+
 function PicklistCreator({
   route,
 }: {
