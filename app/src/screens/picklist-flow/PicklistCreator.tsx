@@ -203,16 +203,28 @@ function PicklistCreator({
   }: RenderItemParams<number>) => {
     return (
       <ScaleDecorator>
-        <Pressable onPressIn={drag} style={styles.team_item_in_list}>
-          <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
-          <Text
+        <Pressable
+          style={{
+            ...styles.team_item_in_list,
+            backgroundColor: isActive ? colors.card : colors.background,
+          }}
+          onPressIn={drag}>
+          <View
             style={{
-              ...styles.team_number_displayed,
-              color: isActive ? 'blue' : colors.text,
-              fontWeight: isActive ? 'bold' : 'normal',
+              flexDirection: 'row',
+              alignItems: selectedTeam === item ? 'center' : 'center',
+              // alignContent: 'center',
             }}>
-            {item} - {teamNumberToNameMap.get(item)}
-          </Text>
+            <BouncyCheckbox
+              isChecked={false}
+              disabled={true}
+              fillColor={colors.primary}
+            />
+            <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
+            <Text style={styles.team_number_displayed}>
+              {item} - {teamNumberToNameMap.get(item)}
+            </Text>
+          </View>
         </Pressable>
       </ScaleDecorator>
     );
