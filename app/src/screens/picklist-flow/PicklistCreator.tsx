@@ -337,13 +337,13 @@ function PicklistCreator({
     },
     team_item_in_list: {
       padding: '2%',
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'center',
       // marginRight: '30%',
     },
     team_item_in_list_selected: {
       padding: '2%',
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'center',
       // marginRight: '30%',
       backgroundColor: colors.card,
@@ -351,7 +351,7 @@ function PicklistCreator({
     },
     team_item_in_list_not_selected: {
       padding: '2%',
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'center',
       opacity: 0.4,
     },
@@ -570,30 +570,92 @@ function PicklistCreator({
                     setSelectedTeam(null);
                   }
                 }}>
-                <BouncyCheckbox
-                  isChecked={removed_teams.includes(item)}
-                  fillColor={colors.primary}
-                  onPress={() => {
-                    addOrRemoveTeamLiveMode(item);
-                    ReactNativeHapticFeedback.trigger('notificationSuccess', {
-                      enableVibrateFallback: true,
-                      ignoreAndroidSystemSettings: false,
-                    });
-                  }}
-                />
-                <Text style={{color: 'gray'}}>
-                  {teams_list.indexOf(item) + 1}
-                </Text>
-                <Text
-                  style={
-                    removed_teams.includes(item)
-                      ? styles.team_number_strikethrough
-                      : item === selectedTeam
-                      ? styles.team_number_displayed_selected
-                      : styles.team_number_displayed
-                  }>
-                  {item} - {teamNumberToNameMap.get(item)}
-                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: selectedTeam === item ? 'center' : 'center',
+                    // alignContent: 'center',
+                  }}>
+                  <BouncyCheckbox
+                    isChecked={removed_teams.includes(item)}
+                    disabled={item !== selectedTeam && selectedTeam !== null}
+                    fillColor={colors.primary}
+                    onPress={() => {
+                      addOrRemoveTeamLiveMode(item);
+                      ReactNativeHapticFeedback.trigger('notificationSuccess', {
+                        enableVibrateFallback: true,
+                        ignoreAndroidSystemSettings: false,
+                      });
+                    }}
+                  />
+                  <Text style={{color: 'gray'}}>
+                    {teams_list.indexOf(item) + 1}
+                  </Text>
+                  <View style={{flex: 1, flexDirection: 'column'}}>
+                    <Text
+                      style={
+                        removed_teams.includes(item)
+                          ? styles.team_number_strikethrough
+                          : item === selectedTeam
+                          ? styles.team_number_displayed_selected
+                          : styles.team_number_displayed
+                      }>
+                      {item} - {teamNumberToNameMap.get(item)}
+                    </Text>
+                    {selectedTeam === item && (
+                      <TextInput
+                        inputMode={'text'}
+                        placeholder={'Notes'}
+                        placeholderTextColor={'gray'}
+                        multiline={true}
+                        // text color
+                        style={{
+                          color: colors.text,
+                          backgroundColor: colors.card,
+                          marginLeft: '5%',
+                          // padding: '4%',
+                          // borderRadius: 10,
+                          // margin: '5%',
+                          // alignSelf: 'flex-start',
+                          // flex: 1,
+                        }}
+                      />
+                    )}
+                  </View>
+                </View>
+                {selectedTeam === item && (
+                  <View style={{width: '100%'}}>
+                    <Pressable>
+                      <Text
+                        style={{
+                          color: 'red',
+                          textAlign: 'right',
+                          padding: '5%',
+                        }}
+                        onPress={() => {
+                          Alert.alert(
+                            'Remove Team',
+                            'Are you sure you want to remove this team from the picklist?',
+                            [
+                              {
+                                text: 'Cancel',
+                                style: 'cancel',
+                              },
+                              {
+                                text: 'Remove',
+                                onPress: () => {
+                                  removeTeam(item);
+                                  setSelectedTeam(null);
+                                },
+                              },
+                            ],
+                          );
+                        }}>
+                        Remove
+                      </Text>
+                    </Pressable>
+                  </View>
+                )}
               </Pressable>
             );
           }}
