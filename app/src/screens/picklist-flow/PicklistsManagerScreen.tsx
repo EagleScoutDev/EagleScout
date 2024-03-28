@@ -31,6 +31,13 @@ function PicklistsManagerScreen({navigation}) {
           for (let i = 0; i < picklistsResponse.length; i++) {
             usersCopy.set(picklistsResponse[i].created_by, profiles[i].name);
           }
+          // sort picklists by created_at
+          picklistsResponse.sort((a, b) => {
+            return (
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+            );
+          });
           setPicklists(picklistsResponse);
           setUsers(usersCopy);
         });
@@ -171,7 +178,8 @@ function PicklistsManagerScreen({navigation}) {
                         fontSize: 12,
                         color: 'gray',
                       }}>
-                      By {users.get(item.created_by) || 'Unknown'}
+                      By {users.get(item.created_by) || 'Unknown'}, at{' '}
+                      {new Date(item.created_at).toLocaleString()}
                     </Text>
                   </View>
                   <Svg
