@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
@@ -21,7 +22,7 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import Svg, {Path} from 'react-native-svg';
 import ProfilesDB from '../../database/Profiles';
-import {TBA} from '../../lib/TBAUtils';
+import {SimpleTeam, TBA} from '../../lib/TBAUtils';
 import Competitions from '../../database/Competitions';
 import TeamAddingModal from './TeamAddingModal';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -74,6 +75,7 @@ function PicklistCreator({
   const [additionalSettingsOpen, setAdditionalSettingsOpen] = useState(false);
 
   const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+  const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
 
   // fetches all teams at the current competition
   useEffect(() => {
@@ -90,6 +92,7 @@ function PicklistCreator({
               .then(teams => {
                 // set teams to just the numbers of the returned teams
                 setPossibleTeams(teams.map(team => team.team_number));
+                setTBASimpleTeams(teams);
 
                 let temp_map = new Map();
 
@@ -407,7 +410,7 @@ function PicklistCreator({
   });
 
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={() => setSelectedTeam(null)}>
       {/*{additionalSettingsOpen && (*/}
       {additionalSettingsOpen && (
         <Pressable
@@ -624,7 +627,27 @@ function PicklistCreator({
                   </View>
                 </View>
                 {selectedTeam === item && (
-                  <View style={{width: '100%'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignSelf: 'flex-end',
+                    }}>
+                    <Pressable
+                      onPress={() => {
+                        navigation.navigate('Search', {
+                          screen: 'TeamViewer',
+                          params: {
+                            team: tbaSimpleTeams.find(
+                              team => team.team_number === item,
+                            ),
+                            competitionId: currentCompID,
+                          },
+                        });
+                      }}>
+                      <Text style={{color: 'gray', padding: '5%'}}>
+                        Learn More
+                      </Text>
+                    </Pressable>
                     <Pressable>
                       <Text
                         style={{
@@ -662,7 +685,7 @@ function PicklistCreator({
           keyExtractor={item => String(item)}
         />
       )}
-    </View>
+    </Pressable>
   );
 }
 
