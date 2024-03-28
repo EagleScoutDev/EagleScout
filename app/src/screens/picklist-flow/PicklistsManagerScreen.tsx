@@ -107,6 +107,7 @@ function PicklistsManagerScreen({navigation}) {
             renderItem={({item}) => {
               return (
                 <Pressable
+                  key={item.id ?? Math.random()}
                   onPressIn={() => {
                     setHoveredPicklistID(item.name);
                   }}
@@ -133,7 +134,7 @@ function PicklistsManagerScreen({navigation}) {
                           text: 'Delete',
                           onPress: () => {
                             PicklistsDB.deletePicklist(item.id).then(() => {
-                              getPicklists(item.id);
+                              getPicklists(item.competition_id);
                             });
                           },
                         },

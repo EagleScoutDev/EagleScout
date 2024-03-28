@@ -11,6 +11,7 @@ import {
   Alert,
   Modal,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
@@ -83,6 +84,9 @@ function PicklistCreator({
   const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
   const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
 
+  // syncing changes to database indicator
+  const [syncing, setSyncing] = useState(false);
+
   // fetches all teams at the current competition
   useEffect(() => {
     // TODO: @gabor, replace this hardcoded value with the current competition
@@ -139,31 +143,47 @@ function PicklistCreator({
             marginRight: '5%',
             alignItems: 'center',
           }}>
-          <Pressable
-            onPress={() => {
-              fetchPicklist();
-            }}>
-            <Svg
-              width={24}
-              height={24}
-              viewBox="0 0 16 16"
-              stroke="gray"
-              strokeWidth={1}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                marginRight: '5%',
+          {!presetPicklist && (
+            <Pressable onPress={() => prepareUpload()}>
+              <Svg width="32" height="32" fill={'gray'} viewBox="0 0 16 16">
+                <Path
+                  fill-rule="evenodd"
+                  d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"
+                />
+                <Path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+              </Svg>
+            </Pressable>
+          )}
+          {syncing && presetPicklist && (
+            <ActivityIndicator size="small" color={colors.primary} />
+          )}
+          {!syncing && presetPicklist && (
+            <Pressable
+              onPress={() => {
+                fetchPicklist();
               }}>
-              <Path
-                fill={'gray'}
-                d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-              />
-              <Path
-                fill={'gray'}
-                d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
-              />
-            </Svg>
-          </Pressable>
+              <Svg
+                width={24}
+                height={24}
+                viewBox="0 0 16 16"
+                stroke="gray"
+                strokeWidth={1}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  marginRight: '5%',
+                }}>
+                <Path
+                  fill={'gray'}
+                  d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                />
+                <Path
+                  fill={'gray'}
+                  d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+                />
+              </Svg>
+            </Pressable>
+          )}
           <Pressable
             style={{marginLeft: '10%'}}
             onPress={() => {
@@ -185,7 +205,11 @@ function PicklistCreator({
         </View>
       ),
     });
-  }, [dragging_active]);
+  }, [dragging_active, syncing]);
+
+  useEffect(() => {
+    saveIfExists();
+  }, [teams_list]);
 
   const fetchPicklist = () => {
     PicklistsDB.getPicklist(String(picklist_id))
@@ -236,11 +260,19 @@ function PicklistCreator({
     );
   };
 
+  const saveIfExists = () => {
+    if (presetPicklist) {
+      savePicklistToDB();
+    }
+  };
+
   const savePicklistToDB = () => {
+    setSyncing(true);
     if (presetPicklist) {
       console.log('user has opted to update picklist');
       PicklistsDB.updatePicklist(picklist_id, teams_list).then(r => {
         console.log('response after updating picklist: ' + r);
+        setSyncing(false);
       });
     } else {
       console.log('saving picklist to db');
@@ -250,6 +282,7 @@ function PicklistCreator({
         currentCompID,
       ).then(r => {
         console.log('response after submitting picklist to db: ' + r);
+        setSyncing(false);
       });
     }
   };
