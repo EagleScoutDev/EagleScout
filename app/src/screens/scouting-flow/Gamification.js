@@ -13,7 +13,8 @@ import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import CrescendoModal from '../../components/modals/CrescendoModal';
+import CrescendoTeleopModal from '../../components/games/crescendo/CrescendoTeleopModal';
+import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();
@@ -37,10 +38,14 @@ function Gamification({
   setStartRelativeTime,
   timeline,
   setTimeline,
-  isActive,
-  setIsActive,
+  isModalActive,
+  setIsModalActive,
+  fieldOrientation,
+  setFieldOrientation,
   onLabelPress,
   onLabelUndo,
+  selectedAlliance,
+  setSelectedAlliance,
 }) {
   return (
     <>
@@ -145,14 +150,24 @@ function Gamification({
                       style={{
                         marginHorizontal: '5%',
                       }}>
+                      {key === 'Auto' && (
+                        <CrescendoAutoModal
+                          isActive={isModalActive}
+                          setIsActive={setIsModalActive}
+                          fieldOrientation={fieldOrientation}
+                          setFieldOrientation={setFieldOrientation}
+                          selectedAlliance={selectedAlliance}
+                          setSelectedAlliance={setSelectedAlliance}
+                        />
+                      )}
                       {key === 'Teleop' && (
-                        <CrescendoModal
+                        <CrescendoTeleopModal
                           startRelativeTime={startRelativeTime}
                           setStartRelativeTime={setStartRelativeTime}
                           timeline={timeline}
                           setTimeline={setTimeline}
-                          isActive={isActive}
-                          setIsActive={setIsActive}
+                          isActive={isModalActive}
+                          setIsActive={setIsModalActive}
                           onLabelPress={onLabelPress}
                           onLabelUndo={onLabelUndo}
                         />

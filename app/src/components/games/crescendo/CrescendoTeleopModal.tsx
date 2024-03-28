@@ -3,7 +3,7 @@ import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 
-const CrescendoModal = ({
+const CrescendoTeleopModal = ({
   startRelativeTime,
   setStartRelativeTime,
   timeline,
@@ -240,4 +240,4 @@ const CrescendoModal = ({
   );
 };
 
-export default CrescendoModal;
+export default CrescendoTeleopModal;

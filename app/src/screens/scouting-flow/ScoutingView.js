@@ -1,10 +1,11 @@
-import {Text, ScrollView, View, Modal} from 'react-native';
+import {Pressable, Text, ScrollView, View, Modal} from 'react-native';
 import FormSection from '../../components/form/FormSection';
-import React from 'react';
+import React, {useState} from 'react';
 import FormComponent from '../../components/form/FormComponent';
 import MatchInformation from '../../components/form/MatchInformation';
 import StandardButton from '../../components/StandardButton';
-import CrescendoModal from '../../components/modals/CrescendoModal';
+import CrescendoTeleopModal from '../../components/games/crescendo/CrescendoTeleopModal';
+import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
 
 function ScoutingView({
   match,
@@ -24,11 +25,15 @@ function ScoutingView({
   setStartRelativeTime,
   timeline,
   setTimeline,
-  isActive,
-  setIsActive,
   onLabelPress,
   onLabelUndo,
+  fieldOrientation,
+  setFieldOrientation,
+  selectedAlliance,
+  setSelectedAlliance,
 }) {
+  const [activeModal, setActiveModal] = useState('');
+
   return (
     <ScrollView>
       {/*<Text*/}
@@ -62,14 +67,21 @@ function ScoutingView({
         setTeam={setTeam}
         teamsForMatch={teamsForMatch}
       />
-
-      <CrescendoModal
+      <CrescendoAutoModal
+        isActive={activeModal === 'Auto'}
+        setIsActive={() => setActiveModal('')}
+        fieldOrientation={fieldOrientation}
+        setFieldOrientation={setFieldOrientation}
+        selectedAlliance={selectedAlliance}
+        setSelectedAlliance={setSelectedAlliance}
+      />
+      <CrescendoTeleopModal
         timeline={timeline}
         setTimeline={setTimeline}
         startRelativeTime={startRelativeTime}
         setStartRelativeTime={setStartRelativeTime}
-        isActive={isActive}
-        setIsActive={setIsActive}
+        isActive={activeModal === 'Teleop'}
+        setIsActive={() => setActiveModal('')}
         onLabelPress={onLabelPress}
         onLabelUndo={onLabelUndo}
       />
@@ -81,7 +93,12 @@ function ScoutingView({
       {data &&
         Object.entries(data).map(([key, value], index) => {
           return (
-            <FormSection colors={colors} title={key} key={key.length}>
+            <FormSection
+              colors={colors}
+              title={key}
+              key={key.length}
+              modalAttached={key === 'Teleop' || key === 'Auto'}
+              onModalPress={() => setActiveModal(key)}>
               {value.map((item, vIndex) => {
                 return (
                   <View style={{marginVertical: '5%'}}>

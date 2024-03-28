@@ -14,7 +14,14 @@ import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatch
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({navigation, route, isActive, setIsActive, resetTimer}) {
+
+function ScoutingFlow({
+  navigation,
+  route,
+  isModalActive,
+  setIsModalActive,
+  resetTimer,
+}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -36,7 +43,9 @@ function ScoutingFlow({navigation, route, isActive, setIsActive, resetTimer}) {
   const [arrayData, setArrayData] = useState();
 
   const [startRelativeTime, setStartRelativeTime] = useState(-1);
-  const [timeline, setTimeline] = useState();
+  const [timeline, setTimeline] = useState([]);
+  const [fieldOrientation, setFieldOrientation] = useState('red');
+  const [selectedAlliance, setSelectedAlliance] = useState('red');
 
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
@@ -455,10 +464,12 @@ function ScoutingFlow({navigation, route, isActive, setIsActive, resetTimer}) {
               setStartRelativeTime={setStartRelativeTime}
               timeline={timeline}
               setTimeline={setTimeline}
-              isActive={isActive}
-              setIsActive={setIsActive}
               onLabelPress={onLabelPress}
               onLabelUndo={onLabelUndo}
+              fieldOrientation={fieldOrientation}
+              setFieldOrientation={setFieldOrientation}
+              selectedAlliance={selectedAlliance}
+              setSelectedAlliance={setSelectedAlliance}
             />
           ) : (
             <Gamification
@@ -480,10 +491,14 @@ function ScoutingFlow({navigation, route, isActive, setIsActive, resetTimer}) {
               setStartRelativeTime={setStartRelativeTime}
               timeline={timeline}
               setTimeline={setTimeline}
-              isActive={isActive}
-              setIsActive={setIsActive}
+              isModalActive={isModalActive}
+              setIsModalActive={setIsModalActive}
               onLabelPress={onLabelPress}
               onLabelUndo={onLabelUndo}
+              fieldOrientation={fieldOrientation}
+              setFieldOrientation={setFieldOrientation}
+              selectedAlliance={selectedAlliance}
+              setSelectedAlliance={setSelectedAlliance}
             />
           )}
         </>

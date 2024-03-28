@@ -137,13 +137,6 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
     })();
   }, [url]);
 
-  const ScoutReportComponent = props => (
-    <ScoutingFlow
-      {...props}
-      isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
-    />
-  );
-
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
       if (value != null) {
