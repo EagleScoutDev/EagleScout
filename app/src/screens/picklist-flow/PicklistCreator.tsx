@@ -24,6 +24,7 @@ import ProfilesDB from '../../database/Profiles';
 import {TBA} from '../../lib/TBAUtils';
 import Competitions from '../../database/Competitions';
 import TeamAddingModal from './TeamAddingModal';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 function PicklistCreator({
   route,
@@ -66,7 +67,7 @@ function PicklistCreator({
   const [creator_name, setCreatorName] = useState<string>('');
 
   // live mode, displays strikethroughs if in live picklist making
-  const [live_mode, setLiveMode] = useState<boolean>(false);
+  // const [live_mode, setLiveMode] = useState<boolean>(false);
   const [removed_teams, setRemovedTeams] = useState<number[]>([]);
 
   // whether the additional settings collapsing view is open
@@ -156,7 +157,7 @@ function PicklistCreator({
             style={{marginLeft: '10%'}}
             onPress={() => {
               setDraggingActive(prev => !prev);
-              setLiveMode(false);
+              // setLiveMode(false);
             }}>
             <Svg
               width="22"
@@ -336,7 +337,7 @@ function PicklistCreator({
       padding: '2%',
       flexDirection: 'row',
       alignItems: 'center',
-      marginRight: '30%',
+      // marginRight: '30%',
     },
     team_number_strikethrough: {
       flex: 1,
@@ -432,21 +433,21 @@ function PicklistCreator({
             </Svg>
             <Text style={styles.settingsText}>Add/Remove Teams</Text>
           </Pressable>
-          <Pressable
-            style={styles.settingsLine}
-            onPress={() => {
-              setLiveMode(!live_mode);
-              setDraggingActive(false);
-            }}>
-            <Svg
-              width="32"
-              height="32"
-              fill={live_mode ? colors.primary : colors.text}
-              viewBox="0 0 16 16">
-              <Path d="M6.333 5.686c0 .31.083.581.27.814H5.166a2.8 2.8 0 0 1-.099-.76c0-1.627 1.436-2.768 3.48-2.768 1.969 0 3.39 1.175 3.445 2.85h-1.23c-.11-1.08-.964-1.743-2.25-1.743-1.23 0-2.18.602-2.18 1.607zm2.194 7.478c-2.153 0-3.589-1.107-3.705-2.81h1.23c.144 1.06 1.129 1.703 2.544 1.703 1.34 0 2.31-.705 2.31-1.675 0-.827-.547-1.374-1.914-1.675L8.046 8.5H1v-1h14v1h-3.504c.468.437.675.994.675 1.697 0 1.826-1.436 2.967-3.644 2.967" />
-            </Svg>
-            <Text style={styles.settingsText}>Strikethrough Mode</Text>
-          </Pressable>
+          {/*<Pressable*/}
+          {/*  style={styles.settingsLine}*/}
+          {/*  onPress={() => {*/}
+          {/*    setLiveMode(!live_mode);*/}
+          {/*    setDraggingActive(false);*/}
+          {/*  }}>*/}
+          {/*  <Svg*/}
+          {/*    width="32"*/}
+          {/*    height="32"*/}
+          {/*    fill={live_mode ? colors.primary : colors.text}*/}
+          {/*    viewBox="0 0 16 16">*/}
+          {/*    <Path d="M6.333 5.686c0 .31.083.581.27.814H5.166a2.8 2.8 0 0 1-.099-.76c0-1.627 1.436-2.768 3.48-2.768 1.969 0 3.39 1.175 3.445 2.85h-1.23c-.11-1.08-.964-1.743-2.25-1.743-1.23 0-2.18.602-2.18 1.607zm2.194 7.478c-2.153 0-3.589-1.107-3.705-2.81h1.23c.144 1.06 1.129 1.703 2.544 1.703 1.34 0 2.31-.705 2.31-1.675 0-.827-.547-1.374-1.914-1.675L8.046 8.5H1v-1h14v1h-3.504c.468.437.675.994.675 1.697 0 1.826-1.436 2.967-3.644 2.967" />*/}
+          {/*  </Svg>*/}
+          {/*  <Text style={styles.settingsText}>Strikethrough Mode</Text>*/}
+          {/*</Pressable>*/}
           <Pressable
             style={styles.settingsLine}
             onPress={() => prepareUpload()}>
@@ -532,13 +533,18 @@ function PicklistCreator({
           data={teams_list}
           renderItem={({item}) => {
             return (
-              <Pressable
-                style={styles.team_item_in_list}
-                onPress={() => {
-                  if (live_mode) {
+              <View style={styles.team_item_in_list}>
+                <BouncyCheckbox
+                  isChecked={removed_teams.includes(item)}
+                  fillColor={colors.primary}
+                  onPress={() => {
                     addOrRemoveTeamLiveMode(item);
-                  }
-                }}>
+                    ReactNativeHapticFeedback.trigger('notificationSuccess', {
+                      enableVibrateFallback: true,
+                      ignoreAndroidSystemSettings: false,
+                    });
+                  }}
+                />
                 <Text style={{color: 'gray'}}>
                   {teams_list.indexOf(item) + 1}
                 </Text>
@@ -550,7 +556,7 @@ function PicklistCreator({
                   }>
                   {item} - {teamNumberToNameMap.get(item)}
                 </Text>
-              </Pressable>
+              </View>
             );
           }}
           keyExtractor={item => String(item)}
