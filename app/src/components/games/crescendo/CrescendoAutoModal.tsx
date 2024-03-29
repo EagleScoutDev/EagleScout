@@ -1,5 +1,5 @@
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {OrientationChooser} from '../OrientationChooser';
@@ -13,6 +13,8 @@ const CrescendoAutoModal = ({
   setFieldOrientation,
   selectedAlliance,
   setSelectedAlliance,
+  autoPath,
+  setAutoPath,
 }: {
   isActive: boolean;
   setIsActive: (active: boolean) => void;
@@ -20,11 +22,12 @@ const CrescendoAutoModal = ({
   setFieldOrientation: (orientation: string) => void;
   selectedAlliance: string;
   setSelectedAlliance: (alliance: string) => void;
+  autoPath: AutoPath;
+  setAutoPath: (autoPath: AutoPath) => void;
 }) => {
   const {colors} = useTheme();
 
-  const [autoPath, setAutoPath] = React.useState<AutoPath>([]);
-  const [history, setHistory] = React.useState<
+  const [history, setHistory] = useState<
     {
       action: string;
       noteId: number;

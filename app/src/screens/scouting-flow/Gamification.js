@@ -46,6 +46,8 @@ function Gamification({
   onLabelUndo,
   selectedAlliance,
   setSelectedAlliance,
+  autoPath,
+  setAutoPath,
 }) {
   return (
     <>
@@ -158,6 +160,8 @@ function Gamification({
                           setFieldOrientation={setFieldOrientation}
                           selectedAlliance={selectedAlliance}
                           setSelectedAlliance={setSelectedAlliance}
+                          autoPath={autoPath}
+                          setAutoPath={setAutoPath}
                         />
                       )}
                       {key === 'Teleop' && (

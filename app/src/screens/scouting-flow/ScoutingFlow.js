@@ -41,6 +41,7 @@ function ScoutingFlow({
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
+  const [autoPath, setAutoPath] = useState([]);
 
   const [startRelativeTime, setStartRelativeTime] = useState(-1);
   const [timeline, setTimeline] = useState([]);
@@ -379,6 +380,7 @@ function ScoutingFlow({
     const index = formStructure.findIndex(
       element => element.type === 'number' && element.link_to === label,
     );
+    console.log('index: ', index, 'label: ', label);
     if (index === -1) {
       return;
     }
@@ -470,6 +472,8 @@ function ScoutingFlow({
               setFieldOrientation={setFieldOrientation}
               selectedAlliance={selectedAlliance}
               setSelectedAlliance={setSelectedAlliance}
+              autoPath={autoPath}
+              setAutoPath={setAutoPath}
             />
           ) : (
             <Gamification
@@ -499,6 +503,8 @@ function ScoutingFlow({
               setFieldOrientation={setFieldOrientation}
               selectedAlliance={selectedAlliance}
               setSelectedAlliance={setSelectedAlliance}
+              autoPath={autoPath}
+              setAutoPath={setAutoPath}
             />
           )}
         </>

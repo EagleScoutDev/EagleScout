@@ -16,6 +16,15 @@ export type ActionMetadata = {
   link_name: string;
 };
 
+export const getActionForLink = (link: string): CrescendoActionType | null => {
+  for (const action in Object.keys(CrescendoActions)) {
+    if (CrescendoActions[action].link_name === link) {
+      return Number(action) as CrescendoActionType;
+    }
+  }
+  return null;
+};
+
 export const CrescendoActions: Record<CrescendoActionType, ActionMetadata> = {
   [CrescendoActionType.PickupSource]: {
     name: 'Pickup Source',

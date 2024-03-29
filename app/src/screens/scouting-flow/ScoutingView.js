@@ -1,11 +1,12 @@
 import {Pressable, Text, ScrollView, View, Modal} from 'react-native';
 import FormSection from '../../components/form/FormSection';
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import FormComponent from '../../components/form/FormComponent';
 import MatchInformation from '../../components/form/MatchInformation';
 import StandardButton from '../../components/StandardButton';
 import CrescendoTeleopModal from '../../components/games/crescendo/CrescendoTeleopModal';
 import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
+import {getActionForLink} from '../../components/games/crescendo/CrescendoActions';
 
 function ScoutingView({
   match,
@@ -31,8 +32,11 @@ function ScoutingView({
   setFieldOrientation,
   selectedAlliance,
   setSelectedAlliance,
+  autoPath,
+  setAutoPath,
 }) {
   const [activeModal, setActiveModal] = useState('');
+  const teleopModalRef = useRef();
 
   return (
     <ScrollView>
@@ -74,6 +78,8 @@ function ScoutingView({
         setFieldOrientation={setFieldOrientation}
         selectedAlliance={selectedAlliance}
         setSelectedAlliance={setSelectedAlliance}
+        autoPath={autoPath}
+        setAutoPath={setAutoPath}
       />
       <CrescendoTeleopModal
         timeline={timeline}
@@ -84,6 +90,7 @@ function ScoutingView({
         setIsActive={() => setActiveModal('')}
         onLabelPress={onLabelPress}
         onLabelUndo={onLabelUndo}
+        ref={teleopModalRef}
       />
       {/*
        * The 'data' variable used here is a dictionary
@@ -108,7 +115,20 @@ function ScoutingView({
                       item={item}
                       styles={styles}
                       arrayData={arrayData}
-                      setArrayData={setArrayData}
+                      setArrayData={newData => {
+                        console.log('change item', item);
+                        if (item.link_to) {
+                          const prevCount = arrayData[item.indice];
+                          const newCount = newData[item.indice];
+                          console.log('prevCount', prevCount);
+                          console.log('newCount', newCount);
+                          teleopModalRef.current.changeActionCount(
+                            getActionForLink(item.link_to),
+                            newCount - prevCount,
+                          );
+                        }
+                        setArrayData(newData);
+                      }}
                     />
                   </View>
                 );
