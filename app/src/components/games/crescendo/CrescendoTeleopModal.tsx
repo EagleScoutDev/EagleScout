@@ -205,16 +205,6 @@ const CrescendoTeleopModal = ({
             Undo
           </Text>
         </Pressable>
-        <Pressable
-          onPress={() => {
-            // print out the record
-            console.log('Record: ');
-            timeline.forEach((value, key) => {
-              console.log(key + ' ' + value);
-            });
-          }}>
-          <Text style={{color: colors.text}}>Print Record</Text>
-        </Pressable>
         <View
           style={{
             flexDirection: 'row',
