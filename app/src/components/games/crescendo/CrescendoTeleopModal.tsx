@@ -2,7 +2,11 @@ import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState, useMemo} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
-import {CrescendoActionType, CrescendoActions} from './CrescendoActions';
+import {
+  CrescendoActionType,
+  CrescendoActions,
+  CrescendoActionIcon,
+} from './CrescendoActions';
 
 const CrescendoTeleopModal = ({
   startRelativeTime,
@@ -57,9 +61,9 @@ const CrescendoTeleopModal = ({
       borderRadius: 10,
       margin: '5%',
       width: '90%',
-      // height: '20%',
       justifyContent: 'center',
       flex: 1,
+      alignItems: 'center',
     },
     button_label: {
       color: 'white',
@@ -69,7 +73,7 @@ const CrescendoTeleopModal = ({
     },
     button_count: {
       color: 'white',
-      textAlign: 'center',
+      paddingTop: '5%',
     },
     category_label: {
       color: 'gray',
@@ -115,7 +119,7 @@ const CrescendoTeleopModal = ({
             }
           });
         }}>
-        <Text style={styles.button_label}>{CrescendoActions[action].name}</Text>
+        <CrescendoActionIcon action={action} />
         <Text style={styles.button_count}>
           {linkItemMap[CrescendoActions[action].link_name]?.value}
         </Text>
@@ -153,6 +157,9 @@ const CrescendoTeleopModal = ({
         <Pressable
           onPress={() => {
             const lastTime = Math.max(...Array.from(timeline.keys()));
+            if (lastTime === -Infinity) {
+              return;
+            }
             setTimeline(prevTimeline => {
               const newTimeline = new Map(prevTimeline);
               newTimeline.delete(lastTime);
