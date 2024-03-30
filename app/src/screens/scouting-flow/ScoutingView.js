@@ -37,6 +37,7 @@ function ScoutingView({
 }) {
   const [activeModal, setActiveModal] = useState('');
   const teleopModalRef = useRef();
+  const autoModalRef = useRef();
 
   return (
     <ScrollView>
@@ -80,6 +81,20 @@ function ScoutingView({
         setSelectedAlliance={setSelectedAlliance}
         autoPath={autoPath}
         setAutoPath={setAutoPath}
+        onLabelChange={(label, change) => {
+          console.log(data);
+          const linkedItem = data['Auto'].find(item => item.link_to === label);
+          console.log(linkedItem);
+          if (linkedItem) {
+            const prevCount = arrayData[linkedItem.indice];
+            const newCount = prevCount + change;
+            setArrayData({
+              ...arrayData,
+              [linkedItem.indice]: newCount,
+            });
+          }
+        }}
+        ref={autoModalRef}
       />
       <CrescendoTeleopModal
         timeline={timeline}
@@ -122,10 +137,17 @@ function ScoutingView({
                           const newCount = newData[item.indice];
                           console.log('prevCount', prevCount);
                           console.log('newCount', newCount);
-                          teleopModalRef.current.changeActionCount(
-                            getActionForLink(item.link_to),
-                            newCount - prevCount,
-                          );
+                          if (key === 'Teleop') {
+                            teleopModalRef.current.changeActionCount(
+                              getActionForLink(item.link_to),
+                              newCount - prevCount,
+                            );
+                          } else if (key === 'Auto') {
+                            autoModalRef.current.changeActionCount(
+                              getActionForLink(item.link_to),
+                              newCount - prevCount,
+                            );
+                          }
                         }
                         setArrayData(newData);
                       }}
