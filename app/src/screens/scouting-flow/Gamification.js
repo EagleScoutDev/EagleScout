@@ -42,8 +42,6 @@ function Gamification({
   setIsModalActive,
   fieldOrientation,
   setFieldOrientation,
-  onLabelPress,
-  onLabelUndo,
   selectedAlliance,
   setSelectedAlliance,
   autoPath,

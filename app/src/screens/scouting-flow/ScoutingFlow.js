@@ -375,33 +375,6 @@ function ScoutingFlow({
     //console.log('dict: ', dict);
   }, [formStructure]);
 
-  const onLabelPress = label => {
-    //find the index of the label in the form structure, where the type is number and link_to is the label
-    const index = formStructure.findIndex(
-      element => element.type === 'number' && element.link_to === label,
-    );
-    console.log('index: ', index, 'label: ', label);
-    if (index === -1) {
-      return;
-    }
-    const tempArray = [...arrayData];
-    tempArray[index] = tempArray[index] + 1;
-    setArrayData(tempArray);
-  };
-
-  const onLabelUndo = label => {
-    //find the index of the label in the form structure, where the type is number and link_to is the label
-    const index = formStructure.findIndex(
-      element => element.type === 'number' && element.link_to === label,
-    );
-    if (index === -1) {
-      return;
-    }
-    const tempArray = [...arrayData];
-    tempArray[index] = tempArray[index] - 1;
-    setArrayData(tempArray);
-  };
-
   const styles = StyleSheet.create({
     textInput: {
       borderColor: 'gray',
@@ -466,8 +439,6 @@ function ScoutingFlow({
               setStartRelativeTime={setStartRelativeTime}
               timeline={timeline}
               setTimeline={setTimeline}
-              onLabelPress={onLabelPress}
-              onLabelUndo={onLabelUndo}
               fieldOrientation={fieldOrientation}
               setFieldOrientation={setFieldOrientation}
               selectedAlliance={selectedAlliance}
@@ -497,8 +468,6 @@ function ScoutingFlow({
               setTimeline={setTimeline}
               isModalActive={isModalActive}
               setIsModalActive={setIsModalActive}
-              onLabelPress={onLabelPress}
-              onLabelUndo={onLabelUndo}
               fieldOrientation={fieldOrientation}
               setFieldOrientation={setFieldOrientation}
               selectedAlliance={selectedAlliance}
