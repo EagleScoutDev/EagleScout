@@ -50,6 +50,16 @@ const FormOptionsModal = ({
         color={colors.notification}
       />
       <StandardButton
+        text={'Duplicate'}
+        onPress={() => {
+          setVisible(false);
+          navigation.navigate('Form Creation Main', {
+            form: form,
+          });
+        }}
+        color={'green'}
+      />
+      <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
