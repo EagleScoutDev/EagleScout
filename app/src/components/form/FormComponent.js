@@ -104,23 +104,12 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
   } else if (item.type === 'checkbox') {
     return (
       <Checkbox
-        colors={colors}
         title={item.question}
-        required={item.required}
-        options={item.options}
         value={arrayData[item.indice]}
+        doingReport={true}
         onValueChange={value => {
-          const itemIndex = item.options.indexOf(value);
-          let tempArray = [...arrayData[item.indice]];
-
-          if (tempArray.includes(itemIndex)) {
-            tempArray = tempArray.filter(b => b !== itemIndex);
-          } else {
-            tempArray.push(itemIndex);
-          }
-
           let a = [...arrayData];
-          a[item.indice] = tempArray;
+          a[item.indice] = value;
           setArrayData(a);
         }}
       />
