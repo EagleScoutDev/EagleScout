@@ -9,6 +9,7 @@ import Animated, {
   useAnimatedStyle,
   runOnJS,
 } from 'react-native-reanimated';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {CrescendoField} from './CrescendoField';
 import {AutoPath} from './AutoPath';
 import {
@@ -51,6 +52,11 @@ const ActionButton = ({
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   linkItemMap: LinkItemMap;
 }) => {
+  const colorAsRgb = {
+    r: parseInt(color.slice(1, 3), 16),
+    g: parseInt(color.slice(3, 5), 16),
+    b: parseInt(color.slice(5, 7), 16),
+  };
   const doAction = (action: CrescendoActionType, change: number) => {
     setHistory(history => [
       ...history,
@@ -82,12 +88,23 @@ const ActionButton = ({
     'worklet';
     runOnJS(doAction)(action, change);
   };
+
+  const triggerHapticWorklet = () => {
+    'worklet';
+    runOnJS(() => {
+      ReactNativeHapticFeedback.trigger('impactLight');
+    })();
+  };
+
   const position = useSharedValue(0);
 
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
       if (e.translationY < 0 && e.translationY > MAX_HEIGHT) {
         position.value = e.translationY;
+      }
+      if (e.translationY === MAX_HEIGHT) {
+        triggerHapticWorklet();
       }
     })
     .onEnd(e => {
@@ -99,6 +116,11 @@ const ActionButton = ({
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{translateY: position.value}],
+    backgroundColor: `rgb(${
+      colorAsRgb.r + (position.value / MAX_HEIGHT) * (255 - colorAsRgb.r)
+    }, ${colorAsRgb.g + (position.value / MAX_HEIGHT) * (87 - colorAsRgb.g)}, ${
+      colorAsRgb.b + (position.value / MAX_HEIGHT) * (87 - colorAsRgb.b)
+    })`,
   }));
 
   return (
