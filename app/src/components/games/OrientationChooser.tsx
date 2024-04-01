@@ -32,12 +32,8 @@ export const OrientationChooser = ({
   return (
     <View
       style={{
-        backgroundColor: colors.card,
         padding: '5%',
         borderRadius: 10,
-        margin: '5%',
-        width: '100%',
-        height: '20%',
         justifyContent: 'center',
       }}>
       <Text
@@ -55,7 +51,6 @@ export const OrientationChooser = ({
           flexDirection: 'row',
           justifyContent: 'space-between',
           marginVertical: '1%',
-          height: '100%',
         }}>
         <Pressable
           style={{

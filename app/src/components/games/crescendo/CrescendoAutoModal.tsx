@@ -1,7 +1,14 @@
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Modal, Pressable, Text, View} from 'react-native';
 import React, {useState, useMemo} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  runOnJS,
+} from 'react-native-reanimated';
 import {CrescendoField} from './CrescendoField';
 import {AutoPath} from './AutoPath';
 import {
@@ -9,6 +16,141 @@ import {
   CrescendoActions,
   CrescendoActionIcon,
 } from './CrescendoActions';
+
+interface HistoryAction {
+  action: string;
+  noteId: number;
+}
+
+interface LinkItemMap {
+  [key: string]: {
+    value: number;
+    index: number;
+  };
+}
+
+const MAX_HEIGHT = -300;
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+const ActionButton = ({
+  positiveAction,
+  negativeAction,
+  color,
+  flex,
+  setHistory,
+  setAutoPath,
+  setArrayData,
+  linkItemMap,
+}: {
+  positiveAction: CrescendoActionType;
+  negativeAction: CrescendoActionType;
+  color: string;
+  flex?: number;
+  setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
+  setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
+  setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
+  linkItemMap: LinkItemMap;
+}) => {
+  const doAction = (action: CrescendoActionType, change: number) => {
+    setHistory(history => [
+      ...history,
+      {
+        action: CrescendoActions[action].link_name,
+        noteId: positiveAction,
+      },
+    ]);
+    setArrayData(prevArrayData => {
+      const linkItem = linkItemMap[CrescendoActions[action].link_name];
+      if (linkItem) {
+        const {index} = linkItem;
+        const newArrayData = [...prevArrayData];
+        newArrayData[index] = prevArrayData[index] + change;
+        return newArrayData;
+      } else {
+        return prevArrayData;
+      }
+    });
+    setAutoPath(paths => [
+      ...paths,
+      {
+        type: action,
+        order: paths.at(-1)?.order ?? 0,
+      },
+    ]);
+  };
+  const runActionOnJs = (action: CrescendoActionType, change: number) => {
+    'worklet';
+    runOnJS(doAction)(action, change);
+  };
+  const position = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onUpdate(e => {
+      if (e.translationY < 0 && e.translationY > MAX_HEIGHT) {
+        position.value = e.translationY;
+      }
+    })
+    .onEnd(e => {
+      if (e.translationY < -100) {
+        runActionOnJs(negativeAction, 1);
+      }
+      position.value = withTiming(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{translateY: position.value}],
+  }));
+
+  return (
+    <GestureDetector gesture={panGesture}>
+      <AnimatedPressable
+        style={[
+          {
+            backgroundColor: color,
+            paddingHorizontal: '5%',
+            marginVertical: '5%',
+            paddingVertical: '10%',
+            borderRadius: 10,
+            width: '40%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex,
+          },
+          animatedStyle,
+        ]}
+        onPress={() => {
+          doAction(positiveAction, 1);
+        }}>
+        <CrescendoActionIcon action={positiveAction} />
+        <View
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              paddingTop: '5%',
+            }}>
+            In:{' '}
+            {linkItemMap[CrescendoActions[positiveAction].link_name]?.value ??
+              0}
+          </Text>
+          <Text
+            style={{
+              color: 'black',
+              paddingTop: '5%',
+              opacity: 0.8,
+            }}>
+            Missed:{' '}
+            {linkItemMap[CrescendoActions[negativeAction].link_name]?.value ??
+              0}
+          </Text>
+        </View>
+      </AnimatedPressable>
+    </GestureDetector>
+  );
+};
 
 const CrescendoAutoModal = ({
   isActive,
@@ -22,30 +164,23 @@ const CrescendoAutoModal = ({
   form,
 }: {
   isActive: boolean;
-  setIsActive: (active: boolean) => void;
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   fieldOrientation: string;
-  setFieldOrientation: (orientation: string) => void;
+  setFieldOrientation: React.Dispatch<React.SetStateAction<string>>;
   selectedAlliance: string;
-  setSelectedAlliance: (alliance: string) => void;
+  setSelectedAlliance: React.Dispatch<React.SetStateAction<string>>;
   autoPath: AutoPath;
-  setAutoPath: (
-    autoPath: AutoPath | ((autoPath: AutoPath) => AutoPath),
-  ) => void;
+  setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
   arrayData: any[];
-  setArrayData: (arrayData: any[] | ((arrayData: any[]) => any[])) => void;
+  setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   form: any;
 }) => {
   const {colors} = useTheme();
 
-  const [history, setHistory] = useState<
-    {
-      action: string;
-      noteId: number;
-    }[]
-  >([]);
+  const [history, setHistory] = useState<HistoryAction[]>([]);
 
   // for each linked item, map the link name to the item within the arrayData and the index
-  const linkItemMap = useMemo(
+  const linkItemMap = useMemo<LinkItemMap>(
     () =>
       form &&
       arrayData &&
@@ -60,54 +195,6 @@ const CrescendoAutoModal = ({
       }, {}),
     [form, arrayData],
   );
-
-  const ActionButton = ({
-    action,
-    color,
-  }: {
-    action: CrescendoActionType;
-    color: string;
-  }) => {
-    return (
-      <Pressable
-        style={{
-          backgroundColor: color,
-          padding: '5%',
-          margin: '5%',
-          paddingVertical: '10%',
-          borderRadius: 10,
-          width: '40%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => {
-          setHistory(history => [
-            ...history,
-            {action: CrescendoActions[action].link_name, noteId: action},
-          ]);
-          setArrayData(prevArrayData => {
-            const linkItem = linkItemMap[CrescendoActions[action].link_name];
-            if (linkItem) {
-              const {index} = linkItem;
-              const newArrayData = [...prevArrayData];
-              newArrayData[index] = prevArrayData[index] + 1;
-              return newArrayData;
-            } else {
-              return prevArrayData;
-            }
-          });
-        }}>
-        <CrescendoActionIcon action={action} />
-        <Text
-          style={{
-            color: 'black',
-            paddingTop: '5%',
-          }}>
-          {linkItemMap[CrescendoActions[action].link_name]?.value ?? 0}
-        </Text>
-      </Pressable>
-    );
-  };
 
   return (
     <Modal
@@ -145,29 +232,77 @@ const CrescendoAutoModal = ({
             marginBottom: '5%',
             display: 'flex',
             flexDirection: 'column',
-            gap: '5%',
           }}>
-          {/*
-          <OrientationChooser
-            selectedOrientation={fieldOrientation}
-            setSelectedOrientation={setFieldOrientation}
-            selectedAlliance={selectedAlliance}
-            setSelectedAlliance={setSelectedAlliance}
-          />*/}
-          <View
+          <Pressable
             style={{
-              display: 'flex',
               flexDirection: 'row',
+              width: '40%',
+              backgroundColor: colors.border,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              paddingHorizontal: '2%',
+              paddingVertical: '5%',
+              marginBottom: '5%',
+              borderRadius: 10,
+            }}
+            onPress={() => {
+              const lastAction = history.pop();
+              if (lastAction) {
+                switch (lastAction.action) {
+                  case 'intake':
+                    setAutoPath(paths =>
+                      paths.filter(path => path.noteId !== lastAction.noteId),
+                    );
+                    break;
+                  case 'miss':
+                    setAutoPath(paths =>
+                      paths.map(path =>
+                        path.noteId === lastAction.noteId
+                          ? {...path, state: 'success'}
+                          : path,
+                      ),
+                    );
+                    break;
+                  case 'reset':
+                    setAutoPath(paths => [
+                      ...paths,
+                      {
+                        type: CrescendoActionType.PickupGround,
+                        noteId: lastAction.noteId,
+                        order: paths.length,
+                        state: 'success',
+                      },
+                    ]);
+                    break;
+                  case CrescendoActions[CrescendoActionType.ScoreAmp].link_name:
+                  case CrescendoActions[CrescendoActionType.ScoreSpeaker]
+                    .link_name:
+                  case CrescendoActions[CrescendoActionType.MissAmp].link_name:
+                  case CrescendoActions[CrescendoActionType.MissSpeaker]
+                    .link_name:
+                    setArrayData(prevArrayData => {
+                      const {index} = linkItemMap[lastAction.action];
+                      const newArrayData = [...prevArrayData];
+                      newArrayData[index] = prevArrayData[index] - 1;
+                      return newArrayData;
+                    });
+                    break;
+                }
+              }
+              setHistory(history);
             }}>
-            <ActionButton
-              action={CrescendoActionType.ScoreAmp}
-              color="#9EFBA2"
-            />
-            <ActionButton
-              action={CrescendoActionType.ScoreSpeaker}
-              color="#B098F3"
-            />
-          </View>
+            <Svg width="28" height="28" fill={colors.text} viewBox="0 0 16 16">
+              <Path
+                fill-rule="evenodd"
+                d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"
+              />
+              <Path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466" />
+            </Svg>
+            <Text
+              style={{color: colors.text, fontSize: 20, fontWeight: 'bold'}}>
+              Undo
+            </Text>
+          </Pressable>
           <CrescendoField
             fieldOrientation={fieldOrientation}
             selectedAlliance={selectedAlliance}
@@ -175,8 +310,9 @@ const CrescendoAutoModal = ({
               setAutoPath(paths => [
                 ...paths,
                 {
+                  type: CrescendoActionType.PickupGround,
                   noteId: note,
-                  order: paths.length,
+                  order: paths.at(-1) ? paths.at(-1)!.order + 1 : 0,
                   state: 'success',
                 },
               ]);
@@ -209,100 +345,28 @@ const CrescendoAutoModal = ({
             style={{
               display: 'flex',
               flexDirection: 'row',
+              gap: 10,
             }}>
-            <Pressable
-              style={{
-                backgroundColor: '#D9D9D9',
-                padding: '5%',
-                margin: '5%',
-                borderRadius: 10,
-                width: '40%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => {}}>
-              <Svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <Path
-                  d="M35 2.5C35.663 2.5 36.2989 2.76339 36.7678 3.23223C37.2366 3.70107 37.5 4.33696 37.5 5V35C37.5 35.663 37.2366 36.2989 36.7678 36.7678C36.2989 37.2366 35.663 37.5 35 37.5H5C4.33696 37.5 3.70107 37.2366 3.23223 36.7678C2.76339 36.2989 2.5 35.663 2.5 35V5C2.5 4.33696 2.76339 3.70107 3.23223 3.23223C3.70107 2.76339 4.33696 2.5 5 2.5H35ZM5 0C3.67392 0 2.40215 0.526784 1.46447 1.46447C0.526784 2.40215 0 3.67392 0 5L0 35C0 36.3261 0.526784 37.5979 1.46447 38.5355C2.40215 39.4732 3.67392 40 5 40H35C36.3261 40 37.5979 39.4732 38.5355 38.5355C39.4732 37.5979 40 36.3261 40 35V5C40 3.67392 39.4732 2.40215 38.5355 1.46447C37.5979 0.526784 36.3261 0 35 0L5 0Z"
-                  fill="black"
-                />
-                <Path
-                  d="M11.615 11.615C11.7311 11.4986 11.8691 11.4062 12.0209 11.3432C12.1728 11.2802 12.3356 11.2478 12.5 11.2478C12.6644 11.2478 12.8272 11.2802 12.9791 11.3432C13.131 11.4062 13.2689 11.4986 13.385 11.615L20 18.2325L26.615 11.615C26.7312 11.4988 26.8692 11.4066 27.021 11.3437C27.1729 11.2808 27.3356 11.2484 27.5 11.2484C27.6644 11.2484 27.8271 11.2808 27.979 11.3437C28.1308 11.4066 28.2688 11.4988 28.385 11.615C28.5012 11.7312 28.5934 11.8692 28.6563 12.021C28.7192 12.1729 28.7516 12.3356 28.7516 12.5C28.7516 12.6644 28.7192 12.8271 28.6563 12.979C28.5934 13.1308 28.5012 13.2688 28.385 13.385L21.7675 20L28.385 26.615C28.5012 26.7312 28.5934 26.8692 28.6563 27.021C28.7192 27.1729 28.7516 27.3356 28.7516 27.5C28.7516 27.6644 28.7192 27.8271 28.6563 27.979C28.5934 28.1308 28.5012 28.2688 28.385 28.385C28.2688 28.5012 28.1308 28.5934 27.979 28.6563C27.8271 28.7192 27.6644 28.7516 27.5 28.7516C27.3356 28.7516 27.1729 28.7192 27.021 28.6563C26.8692 28.5934 26.7312 28.5012 26.615 28.385L20 21.7675L13.385 28.385C13.2688 28.5012 13.1308 28.5934 12.979 28.6563C12.8271 28.7192 12.6644 28.7516 12.5 28.7516C12.3356 28.7516 12.1729 28.7192 12.021 28.6563C11.8692 28.5934 11.7312 28.5012 11.615 28.385C11.4988 28.2688 11.4066 28.1308 11.3437 27.979C11.2808 27.8271 11.2484 27.6644 11.2484 27.5C11.2484 27.3356 11.2808 27.1729 11.3437 27.021C11.4066 26.8692 11.4988 26.7312 11.615 26.615L18.2325 20L11.615 13.385C11.4986 13.2689 11.4062 13.131 11.3432 12.9791C11.2802 12.8272 11.2478 12.6644 11.2478 12.5C11.2478 12.3356 11.2802 12.1728 11.3432 12.0209C11.4062 11.8691 11.4986 11.7311 11.615 11.615Z"
-                  fill="black"
-                />
-              </Svg>
-            </Pressable>
-            <Pressable
-              style={{
-                backgroundColor: '#A0D1FF',
-                padding: '5%',
-                margin: '5%',
-                borderRadius: 10,
-                width: '40%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                const lastAction = history.pop();
-                if (lastAction) {
-                  switch (lastAction.action) {
-                    case 'intake':
-                      setAutoPath(paths =>
-                        paths.filter(path => path.noteId !== lastAction.noteId),
-                      );
-                      break;
-                    case 'miss':
-                      setAutoPath(paths =>
-                        paths.map(path =>
-                          path.noteId === lastAction.noteId
-                            ? {...path, state: 'success'}
-                            : path,
-                        ),
-                      );
-                      break;
-                    case 'reset':
-                      setAutoPath(paths => [
-                        ...paths,
-                        {
-                          noteId: lastAction.noteId,
-                          order: paths.length,
-                          state: 'success',
-                        },
-                      ]);
-                      break;
-                    case CrescendoActions[CrescendoActionType.ScoreAmp]
-                      .link_name:
-                    case CrescendoActions[CrescendoActionType.ScoreSpeaker]
-                      .link_name:
-                      setArrayData(prevArrayData => {
-                        const linkItem =
-                          linkItemMap[
-                            CrescendoActions[
-                              Number(lastAction.action) as CrescendoActionType
-                            ].link_name
-                          ];
-                        if (linkItem) {
-                          const {item, index} = linkItem;
-                          const newItem = {...item, value: item.value - 1};
-                          const newArrayData = [...prevArrayData];
-                          newArrayData[index] = newItem;
-                          return newArrayData;
-                        } else {
-                          return prevArrayData;
-                        }
-                      });
-                      break;
-                  }
-                }
-                setHistory(history);
-              }}>
-              <Svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <Path
-                  d="M11.6667 31.6667V28.3333H23.5C25.25 28.3333 26.7711 27.7778 28.0634 26.6667C29.3556 25.5556 30.0011 24.1667 30 22.5C30 20.8333 29.3545 19.4444 28.0634 18.3333C26.7722 17.2222 25.2511 16.6667 23.5 16.6667H13L17.3334 21L15 23.3333L6.66669 15L15 6.66667L17.3334 9.00001L13 13.3333H23.5C26.1945 13.3333 28.5072 14.2083 30.4384 15.9583C32.3695 17.7083 33.3345 19.8889 33.3334 22.5C33.3334 25.1111 32.3684 27.2917 30.4384 29.0417C28.5084 30.7917 26.1956 31.6667 23.5 31.6667H11.6667Z"
-                  fill="black"
-                />
-              </Svg>
-            </Pressable>
+            <ActionButton
+              positiveAction={CrescendoActionType.ScoreAmp}
+              negativeAction={CrescendoActionType.MissAmp}
+              color="#86DF89"
+              flex={0.25}
+              setHistory={setHistory}
+              setAutoPath={setAutoPath}
+              setArrayData={setArrayData}
+              linkItemMap={linkItemMap}
+            />
+            <ActionButton
+              positiveAction={CrescendoActionType.ScoreSpeaker}
+              negativeAction={CrescendoActionType.MissSpeaker}
+              color="#B098F3"
+              flex={0.75}
+              setHistory={setHistory}
+              setAutoPath={setAutoPath}
+              setArrayData={setArrayData}
+              linkItemMap={linkItemMap}
+            />
           </View>
         </View>
       </View>

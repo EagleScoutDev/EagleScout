@@ -54,6 +54,10 @@ function ScoutingView({
         team={team}
         setTeam={setTeam}
         teamsForMatch={teamsForMatch}
+        selectedAlliance={selectedAlliance}
+        setSelectedAlliance={setSelectedAlliance}
+        fieldOrientation={fieldOrientation}
+        setFieldOrientation={setFieldOrientation}
       />
       <CrescendoAutoModal
         isActive={activeModal === 'Auto'}

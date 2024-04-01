@@ -1,7 +1,12 @@
+import {CrescendoActionType} from './CrescendoActions';
+
 export interface AutoNode {
-  noteId: number;
+  type: CrescendoActionType;
+  // only for intaking notes
+  noteId?: number;
   order: number;
-  state: 'success' | 'missed';
+  // only for intaking notes
+  state?: 'success' | 'missed';
 }
 
 export type AutoPath = AutoNode[];

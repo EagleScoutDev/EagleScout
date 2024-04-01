@@ -59,7 +59,7 @@ function Home() {
           />
         );
       },
-    [],
+    [isModalActive],
   );
 
   return (
@@ -142,9 +142,15 @@ function Home() {
               )}
             </View>
           ),
-        }}
-        component={ScoutingFlowWrapper}
-      />
+        }}>
+        {() => (
+          <ScoutingFlow
+            resetTimer={resetTimer}
+            isModalActive={isModalActive}
+            setIsModalActive={setIsModalActive}
+          />
+        )}
+      </HomeStack.Screen>
       <HomeStack.Screen
         name={'Note'}
         options={{

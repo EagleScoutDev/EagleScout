@@ -1,5 +1,5 @@
 import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useRoute, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import FormHelper from '../../FormHelper';
@@ -15,13 +15,9 @@ import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatch
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
 
-function ScoutingFlow({
-  navigation,
-  route,
-  isModalActive,
-  setIsModalActive,
-  resetTimer,
-}) {
+function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
+  const route = useRoute();
+  const navigation = useNavigation();
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -97,6 +93,7 @@ function ScoutingFlow({
       timelineRecord[key] = value;
     });
     dataToSubmit.timelineData = timelineRecord;
+    dataToSubmit.autoPath = autoPath;
     dataToSubmit.matchNumber = match;
     dataToSubmit.teamNumber = team;
     dataToSubmit.competitionId = competition.id;
@@ -290,6 +287,7 @@ function ScoutingFlow({
         })();
         setMatch('');
         setTeam('');
+        setAutoPath([]);
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
           startConfetti();
@@ -309,6 +307,7 @@ function ScoutingFlow({
         setMatch('');
         setTeam('');
         resetTimer();
+        setAutoPath([]);
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
           startConfetti();

@@ -1,6 +1,5 @@
 import React, {useMemo} from 'react';
 import {Pressable, View, Text} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {AutoPath} from './AutoPath';
 
@@ -19,7 +18,6 @@ export const CrescendoField = ({
   onNoteReset: (note: number) => void;
   autoPath: AutoPath;
 }) => {
-  const {colors} = useTheme();
   const Note = ({noteId}) => {
     const autoNote = useMemo(
       () => autoPath.find(note => note.noteId === noteId),
@@ -52,7 +50,7 @@ export const CrescendoField = ({
         {autoNote && (
           <Text
             style={{
-              color: colors.text,
+              color: 'black',
               textAlign: 'center',
             }}>
             {autoNote.order + 1}

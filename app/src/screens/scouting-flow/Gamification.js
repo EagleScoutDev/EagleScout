@@ -1,14 +1,12 @@
 import {
   Keyboard,
-  Modal,
   ScrollView,
   Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import FullScreenIncrementer from '../../components/form/FullScreenIncrementer';
 import FormSection from '../../components/form/FormSection';
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
@@ -47,6 +45,8 @@ function Gamification({
   autoPath,
   setAutoPath,
 }) {
+  const [activePage, setActivePage] = React.useState('Match');
+
   return (
     <>
       <Tab.Navigator
@@ -110,7 +110,10 @@ function Gamification({
                     team={team}
                     setTeam={setTeam}
                     teamsForMatch={teamsForMatch}
-                    disabled={true}
+                    selectedOrientation={fieldOrientation}
+                    setSelectedOrientation={setFieldOrientation}
+                    selectedAlliance={selectedAlliance}
+                    setSelectedAlliance={setSelectedAlliance}
                   />
                 </View>
                 <View style={{width: '100%', marginBottom: '5%'}}>
@@ -124,7 +127,6 @@ function Gamification({
             </TouchableWithoutFeedback>
           )}
         />
-
         {data &&
           Object.entries(data).map(([key, value], index) => {
             return (
@@ -143,6 +145,11 @@ function Gamification({
                     backgroundColor: colors.background,
                   },
                 }}
+                listeners={{
+                  tabPress: e => {
+                    setActivePage(key);
+                  },
+                }}
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
@@ -150,32 +157,8 @@ function Gamification({
                       style={{
                         marginHorizontal: '5%',
                       }}>
-                      {key === 'Auto' && (
-                        <CrescendoAutoModal
-                          isActive={isModalActive}
-                          setIsActive={setIsModalActive}
-                          fieldOrientation={fieldOrientation}
-                          setFieldOrientation={setFieldOrientation}
-                          selectedAlliance={selectedAlliance}
-                          setSelectedAlliance={setSelectedAlliance}
-                          autoPath={autoPath}
-                          setAutoPath={setAutoPath}
-                        />
-                      )}
-                      {key === 'Teleop' && (
-                        <CrescendoTeleopModal
-                          startRelativeTime={startRelativeTime}
-                          setStartRelativeTime={setStartRelativeTime}
-                          timeline={timeline}
-                          setTimeline={setTimeline}
-                          isActive={isModalActive}
-                          setIsActive={setIsModalActive}
-                          onLabelPress={onLabelPress}
-                          onLabelUndo={onLabelUndo}
-                        />
-                      )}
                       <FormSection colors={colors} title={''} key={key.length}>
-                        {value.map((item, vIndex) => {
+                        {value.map(item => {
                           return (
                             <View
                               key={item.question}
@@ -227,6 +210,30 @@ function Gamification({
             );
           })}
       </Tab.Navigator>
+      <CrescendoAutoModal
+        isActive={activePage === 'Auto' && isModalActive}
+        setIsActive={setIsModalActive}
+        fieldOrientation={fieldOrientation}
+        setFieldOrientation={setFieldOrientation}
+        selectedAlliance={selectedAlliance}
+        setSelectedAlliance={setSelectedAlliance}
+        autoPath={autoPath}
+        setAutoPath={setAutoPath}
+        arrayData={arrayData}
+        setArrayData={setArrayData}
+        form={data && data['Auto']}
+      />
+      <CrescendoTeleopModal
+        startRelativeTime={startRelativeTime}
+        setStartRelativeTime={setStartRelativeTime}
+        timeline={timeline}
+        setTimeline={setTimeline}
+        isActive={activePage === 'Teleop' && isModalActive}
+        setIsActive={setIsModalActive}
+        arrayData={arrayData}
+        setArrayData={setArrayData}
+        form={data && data['Teleop']}
+      />
     </>
   );
 }
