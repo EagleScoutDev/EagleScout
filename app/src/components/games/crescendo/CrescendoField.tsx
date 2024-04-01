@@ -53,7 +53,7 @@ export const CrescendoField = ({
               color: 'black',
               textAlign: 'center',
             }}>
-            {autoNote.order + 1}
+            {autoNote.order}
           </Text>
         )}
       </Pressable>
