@@ -27,6 +27,7 @@ import {SimpleTeam, TBA} from '../../lib/TBAUtils';
 import Competitions from '../../database/Competitions';
 import TeamAddingModal from './TeamAddingModal';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import CreateTagModal from './CreateTagModal';
 
 interface PicklistTeam {
   team_number: number;
@@ -86,6 +87,9 @@ function PicklistCreator({
 
   // syncing changes to database indicator
   const [syncing, setSyncing] = useState(false);
+
+  // modal for creating a new tag
+  const [createTagModal, setCreateTagModal] = useState(false);
 
   // fetches all teams at the current competition
   useEffect(() => {
@@ -576,6 +580,25 @@ function PicklistCreator({
           defaultValue={'Enter Name'}
         />
       )}
+
+      <View>
+        <Pressable
+          onPress={() => setCreateTagModal(true)}
+          style={{
+            width: '16%',
+            backgroundColor: colors.card,
+            borderRadius: 10,
+            padding: '2%',
+            margin: '2%',
+            marginHorizontal: '2%',
+          }}>
+          <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <Path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1zm4 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+          </Svg>
+        </Pressable>
+      </View>
+
+      <CreateTagModal visible={createTagModal} setVisible={setCreateTagModal} />
 
       {teams_list.length === 0 && (
         <Pressable onPress={() => setTeamAddingModalVisible(true)}>
