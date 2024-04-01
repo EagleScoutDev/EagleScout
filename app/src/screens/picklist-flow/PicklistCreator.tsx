@@ -401,7 +401,10 @@ function PicklistCreator({
       alignItems: 'center',
       // marginRight: '30%',
       backgroundColor: colors.card,
+      borderColor: colors.border,
+      borderWidth: 1,
       borderRadius: 10,
+      marginVertical: 8,
     },
     team_item_in_list_not_selected: {
       padding: '2%',
