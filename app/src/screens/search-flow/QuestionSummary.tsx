@@ -52,6 +52,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   // for radio-type questions
   const [indexOfGreatestValue, setIndexOfGreatestValue] = useState<number>(0);
 
+  // for checkbox-type questions
+  const [valueOfMostOccurrences, setValueOfMostOccurrences] = useState<
+    boolean | null
+  >(null);
+
   useEffect(() => {
     if (item.type === 'textbox' && generate_ai_summary) {
       let filteredData = data.filter(datum => datum.data !== '');
@@ -91,6 +96,22 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         return;
       }
       setIndexOfGreatestValue(index);
+    }
+
+    if (item.type === 'checkbox') {
+      let counts: number[] = [];
+      const iterArray = [true, false];
+      for (let i = 0; i < iterArray.length; i++) {
+        counts.push(data.filter(datum => datum.data === iterArray[i]).length);
+      }
+      const index = counts.indexOf(Math.max(...counts));
+
+      // if the largest value appears multiple times, set the index to -1
+      if (counts.filter(count => count === counts[index]).length > 1) {
+        setValueOfMostOccurrences(null);
+        return;
+      }
+      setValueOfMostOccurrences(iterArray[index]);
     }
   }, []);
 
@@ -205,6 +226,76 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                       }}>
                       {(
                         (data.filter(datum => datum.data === index).length /
+                          data.length) *
+                        100
+                      ).toFixed(2)}
+                      %
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    height: 1,
+                    width: '100%',
+                    backgroundColor: colors.border,
+                    marginVertical: '3%',
+                  }}
+                />
+              </View>
+            );
+          })}
+          <Text style={{color: 'gray', textAlign: 'center'}}>
+            {data.length} total responses
+          </Text>
+        </View>
+      )}
+
+      {item.type === 'checkbox' && (
+        <View>
+          {[true, false].map((value: boolean, index: number) => {
+            return (
+              <View>
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: '2%',
+                    // backgroundColor: colors.border,
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                      flex: 2,
+                    }}>
+                    {value ? 'True' : 'False'}
+                  </Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      backgroundColor:
+                        value === valueOfMostOccurrences
+                          ? colors.primary
+                          : colors.card,
+                      paddingVertical:
+                        value === valueOfMostOccurrences ? '2%' : 0,
+                      borderCurve: 'continuous',
+                      borderRadius: 12,
+                    }}>
+                    <Text
+                      style={{
+                        color:
+                          value === valueOfMostOccurrences
+                            ? 'white'
+                            : colors.text,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                      }}>
+                      {(
+                        (data.filter(datum => datum.data === value).length /
                           data.length) *
                         100
                       ).toFixed(2)}
