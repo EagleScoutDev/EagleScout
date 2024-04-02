@@ -15,6 +15,20 @@ const notePositions = [
   {x: 30, y: 284},
 ];
 
+const NoteToSpeakerLine = ({noteId}: {noteId: number}) => (
+  <>
+    <Line
+      x1={notePositions[noteId].x}
+      y1={notePositions[noteId].y}
+      x2="270"
+      y2="113.5"
+      stroke="#637AF4"
+      strokeWidth="4"
+    />
+    <Circle cx="270" cy="113.5" r="12" fill="#637AF4" />
+  </>
+);
+
 const DefaultNote = ({noteId}: {noteId: number}) => (
   <Circle
     cx={notePositions[noteId].x}
@@ -134,7 +148,19 @@ export const CrescendoAutoViewer = ({autoPath}: {autoPath: AutoPath}) => {
           <DefaultNote noteId={i} />
         ))}
         {autoPath.map(note => {
-          if (note && note.type === CrescendoActionType.PickupGround) {
+          if (note.type === CrescendoActionType.ScoreSpeaker) {
+            const noteId = autoPath.findIndex(
+              n =>
+                n?.type === CrescendoActionType.PickupGround &&
+                n.order === note.order,
+            );
+            if (noteId === -1) return null;
+            return <NoteToSpeakerLine noteId={noteId - 1} />;
+          }
+        })}
+        {autoPath.map(note => {
+          if (!note) return null;
+          if (note.type === CrescendoActionType.PickupGround) {
             return (
               <FilledNote noteId={note.noteId! - 1} status={note.state!} />
             );
