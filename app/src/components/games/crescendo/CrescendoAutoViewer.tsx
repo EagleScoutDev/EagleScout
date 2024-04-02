@@ -100,7 +100,12 @@ const FilledNote = ({
 export const CrescendoAutoViewer = ({autoPath}: {autoPath: AutoPath}) => {
   return (
     <View
-      style={{backgroundColor: '#5F5F5F', alignItems: 'center', padding: 10}}>
+      style={{
+        backgroundColor: '#5F5F5F',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 10,
+      }}>
       <Svg width="319" height="311" viewBox="0 0 319 311" fill="none">
         <Line
           x1="119.543"
