@@ -37,10 +37,25 @@ export class TagsDB {
 
   static async renameTag(tag_id: string, name: string) {
     try {
-      const {error} = supabase
+      const {error} = await supabase
         .from('tags')
         .update({name: name})
         .eq('id', tag_id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async deleteTag(tag_id: string) {
+    try {
+      const {data, error} = await supabase
+        .from('tags')
+        .delete()
+        .eq('id', String(tag_id));
+      console.log('delete tag result: ', data, error);
+      if (error) {
+        throw error;
+      }
     } catch (error) {
       throw error;
     }
