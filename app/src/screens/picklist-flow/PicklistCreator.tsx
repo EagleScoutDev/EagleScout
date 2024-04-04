@@ -42,12 +42,8 @@ function PicklistCreator({
   // name of picklist
   const [name, setName] = useState<string | undefined>(undefined);
 
-  // list of all teams at the current competition
-  const [possibleTeams, setPossibleTeams] = useState<number[]>([]);
-
   // modal config
   const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
-  const [filter_by_added, setFilterByAdded] = useState(false);
 
   // list of teams in the picklist
   const [teams_list, setTeamsList] = useState<number[]>([]);
@@ -97,17 +93,8 @@ function PicklistCreator({
           .then(tba_key => {
             TBA.getTeamsAtCompetition(tba_key)
               .then(teams => {
-                // set teams to just the numbers of the returned teams
-                setPossibleTeams(teams.map(team => team.team_number));
                 setTBASimpleTeams(teams);
-
-                let temp_map = new Map();
-
-                for (let i = 0; i < teams.length; i++) {
-                  temp_map.set(teams[i].team_number, teams[i].nickname);
-                }
-
-                setTeamNumberToNameMap(temp_map);
+                initializeNumberToNameMap(teams);
               })
               .catch(error => {
                 console.error('Error getting teams at competition:', error);
@@ -121,6 +108,16 @@ function PicklistCreator({
         console.error('Error getting current competition:', error);
       });
   }, []);
+
+  const initializeNumberToNameMap = (teams: SimpleTeam[]) => {
+    let temp_map = new Map();
+
+    for (let i = 0; i < teams.length; i++) {
+      temp_map.set(teams[i].team_number, teams[i].nickname);
+    }
+
+    setTeamNumberToNameMap(temp_map);
+  };
 
   // if a picklist is being edited, fetches the picklist from the database
   useEffect(() => {
@@ -619,7 +616,7 @@ function PicklistCreator({
         setVisible={setTeamAddingModalVisible}
         teams_list={teams_list}
         setTeamsList={setTeamsList}
-        possibleTeams={possibleTeams}
+        teamsAtCompetition={tbaSimpleTeams}
         addOrRemoveTeam={addOrRemoveTeam}
       />
 
