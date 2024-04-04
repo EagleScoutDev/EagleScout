@@ -256,7 +256,9 @@ function PicklistCreator({
             />
             <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
             <Text style={styles.team_number_displayed}>
-              {item} - {teamNumberToNameMap.get(item)}
+              {item}
+              {teamNumberToNameMap.size === 0 ? '' : ' '}
+              {teamNumberToNameMap.get(item)}
             </Text>
           </View>
         </Pressable>
@@ -680,7 +682,9 @@ function PicklistCreator({
                           ? styles.team_number_displayed_selected
                           : styles.team_number_displayed
                       }>
-                      {item} - {teamNumberToNameMap.get(item)}
+                      {item}
+                      {teamNumberToNameMap.size === 0 ? '' : ' - '}
+                      {teamNumberToNameMap.get(item)}
                     </Text>
                     {selectedTeam === item && (
                       <TextInput
