@@ -346,6 +346,18 @@ function PicklistCreator({
     }
   };
 
+  const setTagsForTeam = (team: PicklistTeam, tags: number[]) => {
+    let newTeams = teams_list.map(t => {
+      if (t === team) {
+        t.tags = tags;
+      }
+      return t;
+    });
+    console.log('tags changed for team: ', team, tags);
+
+    setTeamsList(newTeams);
+  };
+
   const styles = StyleSheet.create({
     name_input: {
       color: colors.text,
@@ -484,7 +496,10 @@ function PicklistCreator({
         </Pressable>
 
         <Pressable
-          onPress={() => setCreateTagModal(true)}
+          onPress={() => {
+            setCreateTagModal(true);
+            setSelectedTeamWithAnimation(null);
+          }}
           style={styles.modal_activation_button_container}>
           <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
             <Path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1zm4 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
@@ -502,6 +517,8 @@ function PicklistCreator({
         visible={createTagModal}
         setVisible={setCreateTagModal}
         picklist_id={picklist_id}
+        selected_team={selectedTeam}
+        setTags={setTagsForTeam}
       />
 
       {teams_list.length === 0 && (
@@ -612,7 +629,10 @@ function PicklistCreator({
                       alignSelf: 'flex-end',
                       alignItems: 'center',
                     }}>
-                    <Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setCreateTagModal(true);
+                      }}>
                       <Svg
                         width="16"
                         height="16"

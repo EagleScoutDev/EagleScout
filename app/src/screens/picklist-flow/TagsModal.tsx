@@ -12,20 +12,27 @@ import React from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {TagsDB, TagStructure} from '../../database/Tags';
+import {PicklistTeam} from '../../database/Picklists';
+import Svg, {Path} from 'react-native-svg';
 
 const TagsModal = ({
   visible,
   setVisible,
   picklist_id,
+  selected_team,
+  setTags,
 }: {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   picklist_id: number;
+  selected_team: PicklistTeam | null;
+  setTags: (team: PicklistTeam, tags: number[]) => void;
 }) => {
   const {colors} = useTheme();
   const [listOfTags, setListOfTags] = useState<TagStructure[]>([]);
 
   const [newTagName, setNewTagName] = useState('');
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
 
   useEffect(() => {
     console.log('picklist_id: ', picklist_id);
@@ -35,6 +42,14 @@ const TagsModal = ({
       });
     }
   }, [picklist_id, visible]);
+
+  useEffect(() => {
+    setSelectedTags(selected_team?.tags ?? []);
+  }, []);
+
+  useEffect(() => {
+    setTags(selected_team!, selectedTags);
+  }, [selectedTags, visible]);
 
   return (
     <Modal
@@ -71,7 +86,9 @@ const TagsModal = ({
                 fontSize: 20,
                 fontWeight: 'bold',
               }}>
-              Tags
+              {selected_team !== null
+                ? 'Tags for Team ' + selected_team.team_number
+                : 'Tags'}
             </Text>
             <Pressable onPress={() => setVisible(false)}>
               <Text style={{color: colors.text}}>Close</Text>
@@ -83,7 +100,27 @@ const TagsModal = ({
               data={listOfTags}
               scrollEnabled={true}
               renderItem={({item}) => (
-                <View
+                <Pressable
+                  onPress={() => {
+                    console.log('tag id: ', item.id);
+                    // print type of tag id
+                    console.log('tag id type: ', typeof item.id);
+                    if (
+                      selectedTags.includes(Number.parseInt(item.id ?? '', 10))
+                    ) {
+                      setSelectedTags(
+                        selectedTags.filter(
+                          tag_id =>
+                            tag_id !== Number.parseInt(item.id ?? '', 10),
+                        ),
+                      );
+                    } else {
+                      setSelectedTags([
+                        ...selectedTags,
+                        Number.parseInt(item.id ?? '', 10),
+                      ]);
+                    }
+                  }}
                   style={{
                     backgroundColor: colors.background,
                     padding: '5%',
@@ -92,7 +129,20 @@ const TagsModal = ({
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <Text style={{color: colors.text}}>{item.name}</Text>
+                  <View style={{flex: 0.2}}>
+                    {selectedTags.includes(
+                      Number.parseInt(item.id ?? '', 10),
+                    ) && (
+                      <Svg
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <Path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                      </Svg>
+                    )}
+                  </View>
+                  <Text style={{color: colors.text, flex: 1}}>{item.name}</Text>
                   <Pressable
                     onPress={() => {
                       console.log('tag id: ', item.id);
@@ -106,9 +156,9 @@ const TagsModal = ({
                         });
                       }
                     }}>
-                    <Text style={{color: colors.primary}}>Delete</Text>
+                    <Text style={{color: colors.notification}}>Delete</Text>
                   </Pressable>
-                </View>
+                </Pressable>
               )}
             />
           )}

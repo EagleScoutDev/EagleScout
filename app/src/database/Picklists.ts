@@ -23,7 +23,7 @@ export interface PicklistStructure {
 
 export interface PicklistTeam {
   team_number: number;
-  tags: TagStructure[];
+  tags: number[]; // tag ids
   dnp: boolean;
   notes: string;
 }
