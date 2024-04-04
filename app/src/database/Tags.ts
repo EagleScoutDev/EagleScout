@@ -9,7 +9,7 @@ export interface TagStructure {
 
 export class TagsDB {
   static async getTagsForPicklist(
-    picklist_id: string,
+    picklist_id: number,
   ): Promise<TagStructure[]> {
     const {data, error} = await supabase
       .from('tags')

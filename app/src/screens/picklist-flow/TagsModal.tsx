@@ -1,14 +1,11 @@
 import {
-  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React from 'react-native';
@@ -37,7 +34,7 @@ const TagsModal = ({
         setListOfTags(tags);
       });
     }
-  }, [visible]);
+  }, [picklist_id, visible]);
 
   return (
     <Modal
