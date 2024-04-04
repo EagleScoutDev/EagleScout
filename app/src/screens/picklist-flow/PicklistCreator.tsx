@@ -4,18 +4,13 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  Switch,
   FlatList,
   Pressable,
-  TouchableOpacity,
   Alert,
-  Modal,
-  TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
-import StandardModal from '../../components/modals/StandardModal';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DraggableFlatList, {
   RenderItemParams,
@@ -35,50 +30,46 @@ function PicklistCreator({
   route: {params: {picklist_id: number; currentCompID: number}};
 }) {
   const {colors} = useTheme();
-
-  // navigates back to the previous screen once picklist is updated
   const navigation = useNavigation();
 
   // name of picklist
   const [name, setName] = useState<string | undefined>(undefined);
 
-  // modal config
-  const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
-
-  // list of teams in the picklist
-  const [teams_list, setTeamsList] = useState<number[]>([]);
-
-  // used to enable/disable dragging
-  const [dragging_active, setDraggingActive] = useState(false);
-
-  // used to store the picklist that is being edited, or undefined if a new picklist is being created
-  const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
-
-  // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
-  const {picklist_id, currentCompID} = route.params;
+  // human-readable name of the person who created the picklist
+  const [creator_name, setCreatorName] = useState<string>('');
 
   // used to display the team name next to the team number
   const [teamNumberToNameMap, setTeamNumberToNameMap] = useState<
     Map<number, string>
   >(new Map());
 
-  // human-readable name of the person who created the picklist
-  const [creator_name, setCreatorName] = useState<string>('');
-
-  // live mode, displays strikethroughs if in live picklist making
-  // const [live_mode, setLiveMode] = useState<boolean>(false);
-  const [removed_teams, setRemovedTeams] = useState<number[]>([]);
-
-  const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
-  const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
-
-  // syncing changes to database indicator
+  // screen config
+  const [dragging_active, setDraggingActive] = useState(false);
   const [syncing, setSyncing] = useState(false);
 
-  // modal for creating a new tag
+  // modals
+  const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
   const [createTagModal, setCreateTagModal] = useState(false);
 
-  // fetches all teams at the current competition
+  // list of teams at the current competition
+  const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
+
+  // list of teams in the picklist -- this is the actual picklist
+  const [teams_list, setTeamsList] = useState<number[]>([]);
+
+  // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
+  const {picklist_id, currentCompID} = route.params;
+
+  // used to store the picklist that is being edited, or undefined if a new picklist is being created
+  const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
+
+  // used to track which teams have been selected already
+  const [removed_teams, setRemovedTeams] = useState<number[]>([]);
+
+  // currently highlighted team
+  const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+
+  // fetches all teams at the current competition for use in the team adding modal, name map
   useEffect(() => {
     Competitions.getCurrentCompetition()
       .then(competition => {
@@ -106,6 +97,7 @@ function PicklistCreator({
       });
   }, []);
 
+  // sets up the map that will be used to display team names next to team numbers
   const initializeNumberToNameMap = (teams: SimpleTeam[]) => {
     let temp_map = new Map();
 
@@ -198,10 +190,12 @@ function PicklistCreator({
     });
   }, [dragging_active, syncing]);
 
+  // when the picklist is being edited, ensures that the picklist has been uploaded before trying a save
   useEffect(() => {
     saveIfExists();
   }, [teams_list]);
 
+  // gets latest picklist from db
   const fetchPicklist = () => {
     PicklistsDB.getPicklist(String(picklist_id))
       .then(picklist => {
@@ -215,42 +209,6 @@ function PicklistCreator({
       .catch(error => {
         console.error('Error getting picklist:', error);
       });
-  };
-
-  const renderItemDraggable = ({
-    item,
-    drag,
-    isActive,
-  }: RenderItemParams<number>) => {
-    return (
-      <ScaleDecorator>
-        <Pressable
-          style={{
-            ...styles.team_item_in_list,
-            backgroundColor: isActive ? colors.card : colors.background,
-          }}
-          onPressIn={drag}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: selectedTeam === item ? 'center' : 'center',
-              // alignContent: 'center',
-            }}>
-            <BouncyCheckbox
-              isChecked={false}
-              disabled={true}
-              fillColor={colors.primary}
-            />
-            <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
-            <Text style={styles.team_number_displayed}>
-              {item}
-              {teamNumberToNameMap.size === 0 ? '' : ' '}
-              {teamNumberToNameMap.get(item)}
-            </Text>
-          </View>
-        </Pressable>
-      </ScaleDecorator>
-    );
   };
 
   const saveIfExists = () => {
@@ -375,30 +333,24 @@ function PicklistCreator({
       color: colors.text,
       padding: '2%',
       fontSize: 20,
-      // borderWidth: 1,
-      // borderColor: colors.text,
-      // minWidth: '60%',
-      // marginRight: '20%',
       textDecorationLine: 'none',
-      // backgroundColor: 'grey',
     },
     team_item_in_list: {
       padding: '2%',
       flexDirection: 'column',
       alignItems: 'center',
-      // marginRight: '30%',
     },
     team_item_in_list_selected: {
       padding: '2%',
       flexDirection: 'column',
       alignItems: 'center',
-      // marginRight: '30%',
       backgroundColor: colors.card,
       borderColor: colors.border,
       borderWidth: 1,
       borderRadius: 10,
       marginVertical: 8,
     },
+    // the style taken on by every team item in the list that is not selected, when a team has been selected
     team_item_in_list_not_selected: {
       padding: '2%',
       flexDirection: 'column',
@@ -410,9 +362,6 @@ function PicklistCreator({
       color: 'gray',
       fontSize: 16,
       marginLeft: '5%',
-
-      textDecorationLine: 'line-through',
-      textDecorationStyle: 'solid',
     },
     team_number_displayed: {
       flex: 1,
@@ -420,41 +369,52 @@ function PicklistCreator({
       fontSize: 16,
       marginLeft: '5%',
     },
-    team_number_displayed_selected: {
-      flex: 1,
-      color: colors.text,
-      fontSize: 16,
-      marginLeft: '5%',
-    },
-    settingsLine: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      borderBottomWidth: 1,
-      borderColor: colors.border,
-      paddingHorizontal: '5%',
-      paddingBottom: '10%',
-    },
-    settingsText: {
-      color: colors.text,
-      fontWeight: 'bold',
-    },
-    settings_button: {
-      position: 'absolute',
-      bottom: '4%',
-      right: '6%',
-      // borderColor: colors.text,
-      // borderWidth: 1,
-      padding: '5%',
-      borderRadius: 200,
-      justifyContent: 'center',
-      alignItems: 'center',
+    modal_activation_button_container: {
+      width: '16%',
       backgroundColor: colors.card,
-      borderColor: 'gray',
-      borderWidth: 2,
-      zIndex: 10,
+      borderRadius: 10,
+      padding: '2%',
+      margin: '2%',
+      marginHorizontal: '2%',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
     },
   });
+
+  const renderItemDraggable = ({
+    item,
+    drag,
+    isActive,
+  }: RenderItemParams<number>) => {
+    return (
+      <ScaleDecorator>
+        <Pressable
+          style={{
+            ...styles.team_item_in_list,
+            backgroundColor: isActive ? colors.card : colors.background,
+          }}
+          onPressIn={drag}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <BouncyCheckbox
+              isChecked={false}
+              disabled={true}
+              fillColor={colors.primary}
+            />
+            <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
+            <Text style={styles.team_number_displayed}>
+              {item}
+              {teamNumberToNameMap.size === 0 ? '' : ' '}
+              {teamNumberToNameMap.get(item)}
+            </Text>
+          </View>
+        </Pressable>
+      </ScaleDecorator>
+    );
+  };
 
   return (
     <Pressable style={styles.container} onPress={() => setSelectedTeam(null)}>
@@ -480,16 +440,7 @@ function PicklistCreator({
       <View style={{flexDirection: 'row'}}>
         <Pressable
           onPress={() => setTeamAddingModalVisible(true)}
-          style={{
-            width: '16%',
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            padding: '2%',
-            margin: '2%',
-            marginHorizontal: '2%',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-          }}>
+          style={styles.modal_activation_button_container}>
           <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
             <Path d="M2.873 11.297V4.142H1.699L0 5.379v1.137l1.64-1.18h.06v5.961zm3.213-5.09v-.063c0-.618.44-1.169 1.196-1.169.676 0 1.174.44 1.174 1.106 0 .624-.42 1.101-.807 1.526L4.99 10.553v.744h4.78v-.99H6.643v-.069L8.41 8.252c.65-.724 1.237-1.332 1.237-2.27C9.646 4.849 8.723 4 7.308 4c-1.573 0-2.36 1.064-2.36 2.15v.057zm6.559 1.883h.786c.823 0 1.374.481 1.379 1.179.01.707-.55 1.216-1.421 1.21-.77-.005-1.326-.419-1.379-.953h-1.095c.042 1.053.938 1.918 2.464 1.918 1.478 0 2.642-.839 2.62-2.144-.02-1.143-.922-1.651-1.551-1.714v-.063c.535-.09 1.347-.66 1.326-1.678-.026-1.053-.933-1.855-2.359-1.845-1.5.005-2.317.88-2.348 1.898h1.116c.032-.498.498-.944 1.206-.944.703 0 1.206.435 1.206 1.07.005.64-.504 1.106-1.2 1.106h-.75z" />
           </Svg>
@@ -503,16 +454,7 @@ function PicklistCreator({
 
         <Pressable
           onPress={() => setCreateTagModal(true)}
-          style={{
-            width: '16%',
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            padding: '2%',
-            margin: '2%',
-            marginHorizontal: '2%',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-          }}>
+          style={styles.modal_activation_button_container}>
           <Svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
             <Path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1zm4 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
           </Svg>
@@ -606,9 +548,12 @@ function PicklistCreator({
                     <Text
                       style={
                         removed_teams.includes(item)
-                          ? styles.team_number_strikethrough
-                          : item === selectedTeam
-                          ? styles.team_number_displayed_selected
+                          ? {
+                              ...styles.team_number_displayed,
+                              color: 'gray',
+                              textDecorationLine: 'line-through',
+                              textDecorationStyle: 'solid',
+                            }
                           : styles.team_number_displayed
                       }>
                       {item}
@@ -621,16 +566,10 @@ function PicklistCreator({
                         placeholder={'Notes'}
                         placeholderTextColor={'gray'}
                         multiline={true}
-                        // text color
                         style={{
                           color: colors.text,
                           backgroundColor: colors.card,
                           marginLeft: '5%',
-                          // padding: '4%',
-                          // borderRadius: 10,
-                          // margin: '5%',
-                          // alignSelf: 'flex-start',
-                          // flex: 1,
                         }}
                       />
                     )}
