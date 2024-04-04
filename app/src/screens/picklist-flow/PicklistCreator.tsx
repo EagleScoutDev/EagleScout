@@ -398,6 +398,18 @@ function PicklistCreator({
     setUniqueTags(newTags);
   };
 
+  const deleteTag = (tag: number) => {
+    for (let team of teams_list) {
+      removeTag(team, tag);
+    }
+
+    TagsDB.deleteTag(String(tag)).then(() => {
+      TagsDB.getTagsForPicklist(picklist_id).then(tags => {
+        setAllTags(tags);
+      });
+    });
+  };
+
   const styles = StyleSheet.create({
     name_input: {
       color: colors.text,
@@ -608,6 +620,7 @@ function PicklistCreator({
         selected_team={selectedTeam}
         addTag={addTag}
         removeTag={removeTag}
+        issueDeleteCommand={deleteTag}
       />
 
       {teams_list.length === 0 && (

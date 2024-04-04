@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Modal,
@@ -22,6 +23,7 @@ const TagsModal = ({
   selected_team,
   addTag,
   removeTag,
+  issueDeleteCommand,
 }: {
   visible: boolean;
   setVisible: (visible: boolean) => void;
@@ -29,6 +31,7 @@ const TagsModal = ({
   selected_team: PicklistTeam | null;
   addTag: (team: PicklistTeam, tag_id: number) => void;
   removeTag: (team: PicklistTeam, tag_id: number) => void;
+  issueDeleteCommand: (tag_id: number) => void;
 }) => {
   const {colors} = useTheme();
   const [listOfTags, setListOfTags] = useState<TagStructure[]>([]);
@@ -158,16 +161,28 @@ const TagsModal = ({
                   <Text style={{color: colors.text, flex: 1}}>{item.name}</Text>
                   <Pressable
                     onPress={() => {
-                      console.log('tag id: ', item.id);
-                      // print type of tag id
-                      console.log('tag id type: ', typeof item.id);
-                      if (item.id !== undefined) {
-                        TagsDB.deleteTag(item.id!).then(() => {
-                          TagsDB.getTagsForPicklist(picklist_id).then(tags => {
-                            setListOfTags(tags);
-                          });
-                        });
-                      }
+                      Alert.alert(
+                        `Delete "${item.name}"?`,
+                        'Are you sure you want to delete this tag? This action is irreversible.',
+                        [
+                          {
+                            text: 'Cancel',
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Delete',
+                            onPress: () => {
+                              if (item.id !== undefined) {
+                                issueDeleteCommand(
+                                  Number.parseInt(item.id, 10),
+                                );
+                                setVisible(false);
+                              }
+                            },
+                          },
+                        ],
+                        {cancelable: false},
+                      );
                     }}>
                     <Text style={{color: colors.notification}}>Delete</Text>
                   </Pressable>
@@ -175,6 +190,42 @@ const TagsModal = ({
               )}
             />
           )}
+          {selected_team &&
+            selected_team.tags.filter(
+              tag_id => !listOfTags.map(tag => tag.id).includes(String(tag_id)),
+            ).length > 0 && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: '2%',
+                  justifyContent: 'space-between',
+                }}>
+                <Text
+                  style={{
+                    color: 'red',
+                    fontSize: 10,
+                  }}>
+                  Error: Some tags not found in database.
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    for (const tag_id of selected_team.tags) {
+                      if (
+                        !listOfTags.map(tag => tag.id).includes(String(tag_id))
+                      ) {
+                        removeTag(selected_team, tag_id);
+                      }
+                    }
+                    setVisible(false);
+                    setVisible(true);
+                  }}>
+                  <Text style={{color: colors.primary, fontSize: 10}}>
+                    Attempt to Fix?
+                  </Text>
+                </Pressable>
+              </View>
+            )}
           <View
             style={{
               borderTopWidth: 1,
