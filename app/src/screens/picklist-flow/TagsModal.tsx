@@ -20,13 +20,15 @@ const TagsModal = ({
   setVisible,
   picklist_id,
   selected_team,
-  setTags,
+  addTag,
+  removeTag,
 }: {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   picklist_id: number;
   selected_team: PicklistTeam | null;
-  setTags: (team: PicklistTeam, tags: number[]) => void;
+  addTag: (team: PicklistTeam, tag_id: number) => void;
+  removeTag: (team: PicklistTeam, tag_id: number) => void;
 }) => {
   const {colors} = useTheme();
   const [listOfTags, setListOfTags] = useState<TagStructure[]>([]);
@@ -44,12 +46,10 @@ const TagsModal = ({
   }, [picklist_id, visible]);
 
   useEffect(() => {
-    setSelectedTags(selected_team?.tags ?? []);
-  }, []);
-
-  useEffect(() => {
-    setTags(selected_team!, selectedTags);
-  }, [selectedTags, visible]);
+    if (selected_team !== null) {
+      setSelectedTags(selected_team.tags);
+    }
+  }, [visible]);
 
   return (
     <Modal
@@ -102,6 +102,9 @@ const TagsModal = ({
               renderItem={({item}) => (
                 <Pressable
                   onPress={() => {
+                    if (selected_team === null) {
+                      return;
+                    }
                     console.log('tag id: ', item.id);
                     // print type of tag id
                     console.log('tag id type: ', typeof item.id);
@@ -114,11 +117,19 @@ const TagsModal = ({
                             tag_id !== Number.parseInt(item.id ?? '', 10),
                         ),
                       );
+                      removeTag(
+                        selected_team!,
+                        Number.parseInt(item.id ?? '', 10),
+                      );
                     } else {
                       setSelectedTags([
                         ...selectedTags,
                         Number.parseInt(item.id ?? '', 10),
                       ]);
+                      addTag(
+                        selected_team!,
+                        Number.parseInt(item.id ?? '', 10),
+                      );
                     }
                   }}
                   style={{
@@ -129,19 +140,21 @@ const TagsModal = ({
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <View style={{flex: 0.2}}>
-                    {selectedTags.includes(
-                      Number.parseInt(item.id ?? '', 10),
-                    ) && (
-                      <Svg
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        viewBox="0 0 16 16">
-                        <Path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                      </Svg>
-                    )}
-                  </View>
+                  {selected_team !== null && (
+                    <View style={{flex: 0.2}}>
+                      {selectedTags.includes(
+                        Number.parseInt(item.id ?? '', 10),
+                      ) && (
+                        <Svg
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          viewBox="0 0 16 16">
+                          <Path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                        </Svg>
+                      )}
+                    </View>
+                  )}
                   <Text style={{color: colors.text, flex: 1}}>{item.name}</Text>
                   <Pressable
                     onPress={() => {

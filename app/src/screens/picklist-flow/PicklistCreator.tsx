@@ -73,6 +73,9 @@ function PicklistCreator({
   // currently highlighted team
   const [selectedTeam, setSelectedTeam] = useState<PicklistTeam | null>(null);
 
+  // set of tags
+  const [uniqueTags, setUniqueTags] = useState<Set<number>>(new Set());
+
   // fetches all teams at the current competition for use in the team adding modal, name map
   useEffect(() => {
     Competitions.getCurrentCompetition()
@@ -346,16 +349,32 @@ function PicklistCreator({
     }
   };
 
-  const setTagsForTeam = (team: PicklistTeam, tags: number[]) => {
+  const addTag = (team: PicklistTeam, tag: number) => {
     let newTeams = teams_list.map(t => {
-      if (t === team) {
-        t.tags = tags;
+      if (t === team && !t.tags.includes(tag)) {
+        t.tags.push(tag);
       }
       return t;
     });
-    console.log('tags changed for team: ', team, tags);
-
     setTeamsList(newTeams);
+
+    let newTags = new Set(uniqueTags);
+    newTags.add(tag);
+    setUniqueTags(newTags);
+  };
+
+  const removeTag = (team: PicklistTeam, tag: number) => {
+    let newTeams = teams_list.map(t => {
+      if (t === team) {
+        t.tags = t.tags.filter(a => a !== tag);
+      }
+      return t;
+    });
+    setTeamsList(newTeams);
+
+    let newTags = new Set(uniqueTags);
+    newTags.delete(tag);
+    setUniqueTags(newTags);
   };
 
   const styles = StyleSheet.create({
@@ -518,7 +537,8 @@ function PicklistCreator({
         setVisible={setCreateTagModal}
         picklist_id={picklist_id}
         selected_team={selectedTeam}
-        setTags={setTagsForTeam}
+        addTag={addTag}
+        removeTag={removeTag}
       />
 
       {teams_list.length === 0 && (
