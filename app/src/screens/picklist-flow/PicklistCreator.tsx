@@ -69,9 +69,6 @@ function PicklistCreator({
   // const [live_mode, setLiveMode] = useState<boolean>(false);
   const [removed_teams, setRemovedTeams] = useState<number[]>([]);
 
-  // whether the additional settings collapsing view is open
-  const [additionalSettingsOpen, setAdditionalSettingsOpen] = useState(false);
-
   const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
   const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
 
@@ -461,69 +458,6 @@ function PicklistCreator({
 
   return (
     <Pressable style={styles.container} onPress={() => setSelectedTeam(null)}>
-      {/*{additionalSettingsOpen && (*/}
-      {additionalSettingsOpen && (
-        <Pressable
-          onPress={() => setAdditionalSettingsOpen(false)}
-          style={{
-            // position: 'absolute',
-            // flex: 1,
-            backgroundColor: 'gray',
-            zIndex: 2,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            opacity: 0.6,
-          }}
-        />
-      )}
-      {additionalSettingsOpen && (
-        <View
-          style={{
-            zIndex: 10,
-            position: 'absolute',
-            right: '5%',
-            bottom: '20%',
-            backgroundColor: colors.card,
-            borderRadius: 10,
-            padding: '5%',
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
-          }}>
-          <Pressable
-            style={styles.settingsLine}
-            onPress={() => prepareUpload()}>
-            <Svg width="32" height="32" fill={colors.text} viewBox="0 0 16 16">
-              <Path
-                fill-rule="evenodd"
-                d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"
-              />
-              <Path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
-            </Svg>
-            <Text style={styles.settingsText}>Sync with Cloud</Text>
-          </Pressable>
-        </View>
-      )}
-
-      {teams_list.length !== 0 && (
-        <Pressable
-          onPress={() => {
-            setAdditionalSettingsOpen(!additionalSettingsOpen);
-            // console.log('additional settings open: ' + additionalSettingsOpen);
-          }}
-          style={styles.settings_button}>
-          <Svg width="32" height="32" fill={colors.text} viewBox="0 0 16 16">
-            <Path
-              fill-rule="evenodd"
-              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-            />
-          </Svg>
-        </Pressable>
-      )}
-
       {/*  if the picklist was made by someone else, show the name and title. else, let the user enter a title */}
       {presetPicklist ? (
         <View>
