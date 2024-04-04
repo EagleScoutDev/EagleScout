@@ -657,7 +657,8 @@ function PicklistCreator({
           data={teams_list.filter(
             t =>
               filteredTags.size === 0 ||
-              t.tags.some(tag => filteredTags.has(tag)),
+              filteredTags.size ===
+                t.tags.filter(tag => filteredTags.has(tag)).length,
           )}
           renderItem={({item}) => {
             return (

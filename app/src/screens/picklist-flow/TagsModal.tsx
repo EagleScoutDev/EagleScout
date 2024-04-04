@@ -190,42 +190,44 @@ const TagsModal = ({
               )}
             />
           )}
-          {selected_team &&
-            selected_team.tags.filter(
-              tag_id => !listOfTags.map(tag => tag.id).includes(String(tag_id)),
-            ).length > 0 && (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: '2%',
-                  justifyContent: 'space-between',
-                }}>
-                <Text
-                  style={{
-                    color: 'red',
-                    fontSize: 10,
-                  }}>
-                  Error: Some tags not found in database.
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    for (const tag_id of selected_team.tags) {
-                      if (
-                        !listOfTags.map(tag => tag.id).includes(String(tag_id))
-                      ) {
-                        removeTag(selected_team, tag_id);
-                      }
-                    }
-                    setVisible(false);
-                    setVisible(true);
-                  }}>
-                  <Text style={{color: colors.primary, fontSize: 10}}>
-                    Attempt to Fix?
-                  </Text>
-                </Pressable>
-              </View>
-            )}
+          {/*{selected_team &&*/}
+          {/*  selected_team.tags.filter(*/}
+          {/*    tag_id =>*/}
+          {/*      !listOfTags.map(tag => tag.id!).includes(String(tag_id)),*/}
+          {/*  ).length > 0 && (*/}
+          {/*    <View*/}
+          {/*      style={{*/}
+          {/*        flexDirection: 'row',*/}
+          {/*        alignItems: 'center',*/}
+          {/*        marginVertical: '2%',*/}
+          {/*        justifyContent: 'space-between',*/}
+          {/*      }}>*/}
+          {/*      <Text*/}
+          {/*        style={{*/}
+          {/*          color: 'red',*/}
+          {/*          fontSize: 10,*/}
+          {/*        }}>*/}
+          {/*        Error: Some tags not found in database. {selected_team.tags}*/}
+          {/*        {listOfTags.map(tag => tag.id)}*/}
+          {/*      </Text>*/}
+          {/*      <Pressable*/}
+          {/*        onPress={() => {*/}
+          {/*          for (const tag_id of selected_team.tags) {*/}
+          {/*            if (*/}
+          {/*              !listOfTags.map(tag => tag.id).includes(String(tag_id))*/}
+          {/*            ) {*/}
+          {/*              removeTag(selected_team, tag_id);*/}
+          {/*            }*/}
+          {/*          }*/}
+          {/*          setVisible(false);*/}
+          {/*          setVisible(true);*/}
+          {/*        }}>*/}
+          {/*        <Text style={{color: colors.primary, fontSize: 10}}>*/}
+          {/*          Attempt to Fix?*/}
+          {/*        </Text>*/}
+          {/*      </Pressable>*/}
+          {/*    </View>*/}
+          {/*  )}*/}
           <View
             style={{
               borderTopWidth: 1,
