@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {LayoutAnimation, Platform, UIManager} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
@@ -27,6 +28,7 @@ import Competitions from '../../database/Competitions';
 import TeamAddingModal from './TeamAddingModal';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import TagsModal from './TagsModal';
+import {TagsDB, TagStructure} from '../../database/Tags';
 
 function PicklistCreator({
   route,
@@ -75,6 +77,17 @@ function PicklistCreator({
 
   // set of tags
   const [uniqueTags, setUniqueTags] = useState<Set<number>>(new Set());
+  const [allTags, setAllTags] = useState<TagStructure[]>([]);
+  const [filteredTags, setFilteredTags] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    console.log('picklist_id: ', picklist_id);
+    if (picklist_id !== -1) {
+      TagsDB.getTagsForPicklist(picklist_id).then(tags => {
+        setAllTags(tags);
+      });
+    }
+  }, [createTagModal]);
 
   // fetches all teams at the current competition for use in the team adding modal, name map
   useEffect(() => {
@@ -230,6 +243,14 @@ function PicklistCreator({
         ProfilesDB.getProfile(picklist.created_by).then(profile => {
           setCreatorName(profile.name);
         });
+
+        let temp = new Set();
+        picklist.teams.forEach(t => {
+          t.tags.forEach(tag => {
+            temp.add(tag);
+          });
+        });
+        setUniqueTags(temp);
       })
       .catch(error => {
         console.error('Error getting picklist:', error);
@@ -431,6 +452,7 @@ function PicklistCreator({
     },
     modal_activation_button_container: {
       width: '16%',
+      height: 30,
       backgroundColor: colors.card,
       borderRadius: 10,
       padding: '2%',
@@ -438,6 +460,7 @@ function PicklistCreator({
       marginHorizontal: '2%',
       flexDirection: 'row',
       justifyContent: 'space-around',
+      alignItems: 'center',
     },
   });
 
@@ -530,6 +553,52 @@ function PicklistCreator({
             />
           </Svg>
         </Pressable>
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            // if the contents of the view are too wide, they will be wrapped and placed below the previous line
+            flexWrap: 'wrap',
+            // the contents of the view are centered along the horizontal axis
+          }}>
+          {[...uniqueTags].map(tag => {
+            return (
+              <Pressable
+                key={tag}
+                onPress={() => {
+                  if (filteredTags.has(tag)) {
+                    let newTags = new Set(filteredTags);
+                    newTags.delete(tag);
+                    setFilteredTags(newTags);
+                  } else {
+                    let newTags = new Set(filteredTags);
+                    newTags.add(tag);
+                    setFilteredTags(newTags);
+                  }
+                }}
+                style={{
+                  backgroundColor: filteredTags.has(tag)
+                    ? colors.primary
+                    : colors.card,
+                  paddingHorizontal: '6%',
+                  paddingVertical: '3%',
+                  margin: '2%',
+                  borderRadius: 8,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text
+                  style={{
+                    color: filteredTags.has(tag) ? 'white' : colors.text,
+                  }}>
+                  {allTags.find(t => Number.parseInt(t.id ?? '', 10) === tag)
+                    ?.name ?? 'Unknown'}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
 
       <TagsModal
@@ -572,7 +641,11 @@ function PicklistCreator({
         />
       ) : (
         <FlatList
-          data={teams_list}
+          data={teams_list.filter(
+            t =>
+              filteredTags.size === 0 ||
+              t.tags.some(tag => filteredTags.has(tag)),
+          )}
           renderItem={({item}) => {
             return (
               <Pressable
