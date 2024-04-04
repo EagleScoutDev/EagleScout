@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import {LayoutAnimation, Platform, UIManager} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -96,6 +97,24 @@ function PicklistCreator({
         console.error('Error getting current competition:', error);
       });
   }, []);
+
+  useEffect(() => {
+    if (
+      Platform.OS === 'android' &&
+      UIManager.setLayoutAnimationEnabledExperimental
+    ) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }, []);
+
+  const setSelectedTeamWithAnimation = (
+    team: React.SetStateAction<number | null>,
+  ) => {
+    if (team) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    }
+    setSelectedTeam(team);
+  };
 
   // sets up the map that will be used to display team names next to team numbers
   const initializeNumberToNameMap = (teams: SimpleTeam[]) => {
@@ -417,7 +436,9 @@ function PicklistCreator({
   };
 
   return (
-    <Pressable style={styles.container} onPress={() => setSelectedTeam(null)}>
+    <Pressable
+      style={styles.container}
+      onPress={() => setSelectedTeamWithAnimation(null)}>
       {/*  if the picklist was made by someone else, show the name and title. else, let the user enter a title */}
       {presetPicklist ? (
         <View>
@@ -518,9 +539,9 @@ function PicklistCreator({
                 }
                 onPress={() => {
                   if (selectedTeam === null) {
-                    setSelectedTeam(item);
+                    setSelectedTeamWithAnimation(item);
                   } else if (selectedTeam !== item) {
-                    setSelectedTeam(null);
+                    setSelectedTeamWithAnimation(null);
                   }
                 }}>
                 <View
@@ -627,7 +648,7 @@ function PicklistCreator({
                                 text: 'Remove',
                                 onPress: () => {
                                   removeTeam(item);
-                                  setSelectedTeam(null);
+                                  setSelectedTeamWithAnimation(null);
                                 },
                               },
                             ],
