@@ -11,7 +11,10 @@ import {
 } from 'react-native';
 import {LayoutAnimation, Platform, UIManager} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
+import PicklistsDB, {
+  PicklistStructure,
+  PicklistTeam,
+} from '../../database/Picklists';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DraggableFlatList, {
   RenderItemParams,
@@ -56,7 +59,7 @@ function PicklistCreator({
   const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
 
   // list of teams in the picklist -- this is the actual picklist
-  const [teams_list, setTeamsList] = useState<number[]>([]);
+  const [teams_list, setTeamsList] = useState<PicklistTeam[]>([]);
 
   // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
   const {picklist_id, currentCompID} = route.params;
@@ -65,10 +68,10 @@ function PicklistCreator({
   const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
 
   // used to track which teams have been selected already
-  const [removed_teams, setRemovedTeams] = useState<number[]>([]);
+  const [removed_teams, setRemovedTeams] = useState<PicklistTeam[]>([]);
 
   // currently highlighted team
-  const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<PicklistTeam | null>(null);
 
   // fetches all teams at the current competition for use in the team adding modal, name map
   useEffect(() => {
@@ -108,7 +111,7 @@ function PicklistCreator({
   }, []);
 
   const setSelectedTeamWithAnimation = (
-    team: React.SetStateAction<number | null>,
+    team: React.SetStateAction<PicklistTeam | null>,
   ) => {
     if (team) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -313,22 +316,29 @@ function PicklistCreator({
   };
 
   const addTeam = (team: number) => {
-    setTeamsList(prevTeams => [...prevTeams, team]);
+    let newTeam: PicklistTeam = {
+      dnp: false,
+      tags: [],
+      team_number: team,
+      notes: '',
+    };
+    setTeamsList(prevTeams => [...prevTeams, newTeam]);
   };
 
   const removeTeam = (team: number) => {
-    setTeamsList(prevTeams => prevTeams.filter(t => t !== team));
+    setTeamsList(prevTeams => prevTeams.filter(t => t.team_number !== team));
   };
 
-  const addOrRemoveTeam = (team: number) => {
-    if (teams_list.includes(team)) {
-      removeTeam(team);
+  // only used by TeamAddingModal
+  const addOrRemoveTeam = (team: SimpleTeam) => {
+    if (teams_list.some(t => t.team_number === team.team_number)) {
+      removeTeam(team.team_number);
     } else {
-      addTeam(team);
+      addTeam(team.team_number);
     }
   };
 
-  const addOrRemoveTeamLiveMode = (team: number) => {
+  const addOrRemoveTeamLiveMode = (team: PicklistTeam) => {
     if (removed_teams.includes(team)) {
       setRemovedTeams(prev => prev.filter(t => t !== team));
     } else {
@@ -404,7 +414,7 @@ function PicklistCreator({
     item,
     drag,
     isActive,
-  }: RenderItemParams<number>) => {
+  }: RenderItemParams<PicklistTeam>) => {
     return (
       <ScaleDecorator>
         <Pressable
@@ -425,9 +435,9 @@ function PicklistCreator({
             />
             <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
             <Text style={styles.team_number_displayed}>
-              {item}
+              {item.team_number}
               {teamNumberToNameMap.size === 0 ? '' : ' '}
-              {teamNumberToNameMap.get(item)}
+              {teamNumberToNameMap.get(item.team_number)}
             </Text>
           </View>
         </Pressable>
@@ -512,7 +522,6 @@ function PicklistCreator({
         visible={teamAddingModalVisible}
         setVisible={setTeamAddingModalVisible}
         teams_list={teams_list}
-        setTeamsList={setTeamsList}
         teamsAtCompetition={tbaSimpleTeams}
         addOrRemoveTeam={addOrRemoveTeam}
       />
@@ -521,7 +530,7 @@ function PicklistCreator({
         <DraggableFlatList
           data={teams_list}
           onDragEnd={({data}) => setTeamsList(data)}
-          keyExtractor={item => String(item)}
+          keyExtractor={item => String(item.team_number)}
           renderItem={renderItemDraggable}
         />
       ) : (
@@ -577,9 +586,9 @@ function PicklistCreator({
                             }
                           : styles.team_number_displayed
                       }>
-                      {item}
+                      {item.team_number}
                       {teamNumberToNameMap.size === 0 ? '' : ' - '}
-                      {teamNumberToNameMap.get(item)}
+                      {teamNumberToNameMap.get(item.team_number)}
                     </Text>
                     {selectedTeam === item && (
                       <TextInput
@@ -618,7 +627,7 @@ function PicklistCreator({
                           screen: 'TeamViewer',
                           params: {
                             team: tbaSimpleTeams.find(
-                              team => team.team_number === item,
+                              team => team.team_number === item.team_number,
                             ),
                             competitionId: currentCompID,
                           },
@@ -647,7 +656,7 @@ function PicklistCreator({
                               {
                                 text: 'Remove',
                                 onPress: () => {
-                                  removeTeam(item);
+                                  removeTeam(item.team_number);
                                   setSelectedTeamWithAnimation(null);
                                 },
                               },
@@ -662,7 +671,7 @@ function PicklistCreator({
               </Pressable>
             );
           }}
-          keyExtractor={item => String(item)}
+          keyExtractor={item => String(item.team_number)}
         />
       )}
     </Pressable>

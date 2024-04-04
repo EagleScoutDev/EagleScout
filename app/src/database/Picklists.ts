@@ -1,5 +1,6 @@
 import {supabase} from '../lib/supabase';
 import ProfilesDB from './Profiles';
+import {TagStructure} from './Tags';
 
 export interface SimpleTeam {
   key: string;
@@ -13,17 +14,22 @@ export interface SimpleTeam {
 
 export interface PicklistStructure {
   id?: string;
-  teams: number[];
+  teams: PicklistTeam[];
   created_at: Date;
   name: string;
   created_by: string;
   competition_id: string;
 }
 
+export interface PicklistTeam {
+  team_number: number;
+  tags: TagStructure[];
+  dnp: boolean;
+  notes: string;
+}
+
 class PicklistsDB {
-  static async getPicklists(
-    competition_id: any,
-  ): Promise<PicklistStructure[]> {
+  static async getPicklists(competition_id: any): Promise<PicklistStructure[]> {
     const {data, error} = await supabase
       .from('picklist')
       .select('*')
@@ -66,7 +72,7 @@ class PicklistsDB {
     });
   }
 
-  static async createPicklist(name: string, teams: number[], cmpId: any) {
+  static async createPicklist(name: string, teams: PicklistTeam[], cmpId: any) {
     try {
       // Before creating a picklist, confirm that user_id is not null and exists in the user table
       // Your logic for checking if the user exists in your 'users' table can go here
@@ -81,7 +87,9 @@ class PicklistsDB {
         },
       ]);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
       return data; // assuming 'data' contains the array of inserted rows
     } catch (error) {
       console.error('Error in picklist creation:', error);
@@ -89,7 +97,7 @@ class PicklistsDB {
     }
   }
 
-  static async updatePicklist(id: number, new_teams: number[]) {
+  static async updatePicklist(id: number, new_teams: PicklistTeam[]) {
     console.log('updating picklist, id using is:', id);
     console.log('new teams list: ', new_teams);
     const {data, error} = await supabase

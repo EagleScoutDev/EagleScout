@@ -1,24 +1,22 @@
 import {Alert, FlatList, Modal, Pressable, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import {SimpleTeam, TBA} from '../../lib/TBAUtils';
-import Competitions from '../../database/Competitions';
+import {SimpleTeam} from '../../lib/TBAUtils';
+import {PicklistTeam} from '../../database/Picklists';
 
 interface TeamAddingModalProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  teams_list: number[];
-  setTeamsList: React.Dispatch<React.SetStateAction<number[]>>;
+  teams_list: PicklistTeam[];
   teamsAtCompetition: SimpleTeam[];
-  addOrRemoveTeam: (team: number) => void;
+  addOrRemoveTeam: (team: SimpleTeam) => void;
 }
 const TeamAddingModal = ({
   visible,
   setVisible,
   teams_list,
-  setTeamsList,
   teamsAtCompetition,
   addOrRemoveTeam,
 }: TeamAddingModalProps) => {
@@ -57,9 +55,9 @@ const TeamAddingModal = ({
                   text: 'Yes',
                   isPreferred: true,
                   onPress: () => {
-                    setTeamsList(
-                      teamsAtCompetition.map(team => team.team_number),
-                    );
+                    for (let i = 0; i < teamsAtCompetition.length; i++) {
+                      addOrRemoveTeam(teamsAtCompetition[i]);
+                    }
                     setVisible(false);
                   },
                 },
@@ -126,9 +124,11 @@ const TeamAddingModal = ({
                     fontSize: 20,
                     textDecorationLine: 'none',
                   }}
-                  isChecked={teams_list.includes(item.team_number)}
+                  isChecked={teams_list.some(
+                    team => team.team_number === item.team_number,
+                  )}
                   onPress={() => {
-                    addOrRemoveTeam(item.team_number);
+                    addOrRemoveTeam(item);
                   }}
                 />
               </View>
