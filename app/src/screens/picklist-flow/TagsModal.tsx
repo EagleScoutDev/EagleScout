@@ -77,39 +77,41 @@ const TagsModal = ({
               <Text style={{color: colors.text}}>Close</Text>
             </Pressable>
           </View>
-          <FlatList
-            style={{flex: 1}}
-            data={listOfTags}
-            scrollEnabled={true}
-            renderItem={({item}) => (
-              <View
-                style={{
-                  backgroundColor: colors.background,
-                  padding: '5%',
-                  margin: '2%',
-                  borderRadius: 10,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={{color: colors.text}}>{item.name}</Text>
-                <Pressable
-                  onPress={() => {
-                    console.log('tag id: ', item.id);
-                    // print type of tag id
-                    console.log('tag id type: ', typeof item.id);
-                    if (item.id !== undefined) {
-                      TagsDB.deleteTag(item.id!).then(() => {
-                        TagsDB.getTagsForPicklist(picklist_id).then(tags => {
-                          setListOfTags(tags);
-                        });
-                      });
-                    }
+          {listOfTags.length > 0 && (
+            <FlatList
+              style={{flex: 1}}
+              data={listOfTags}
+              scrollEnabled={true}
+              renderItem={({item}) => (
+                <View
+                  style={{
+                    backgroundColor: colors.background,
+                    padding: '5%',
+                    margin: '2%',
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  <Text style={{color: colors.primary}}>Delete</Text>
-                </Pressable>
-              </View>
-            )}
-          />
+                  <Text style={{color: colors.text}}>{item.name}</Text>
+                  <Pressable
+                    onPress={() => {
+                      console.log('tag id: ', item.id);
+                      // print type of tag id
+                      console.log('tag id type: ', typeof item.id);
+                      if (item.id !== undefined) {
+                        TagsDB.deleteTag(item.id!).then(() => {
+                          TagsDB.getTagsForPicklist(picklist_id).then(tags => {
+                            setListOfTags(tags);
+                          });
+                        });
+                      }
+                    }}>
+                    <Text style={{color: colors.primary}}>Delete</Text>
+                  </Pressable>
+                </View>
+              )}
+            />
+          )}
           <View
             style={{
               borderTopWidth: 1,
