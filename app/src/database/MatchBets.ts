@@ -85,6 +85,12 @@ export class MatchBets {
         },
       ])
       .select('id');
+    await supabase
+      .from('profiles')
+      .update({
+        scoutcoins: (await ProfilesDB.getProfile(user_id)).scoutcoins - amount,
+      })
+      .eq('id', user_id);
     if (error) {
       throw error;
     } else {
@@ -108,6 +114,12 @@ export class MatchBets {
       })
       .eq('user_id', user_id)
       .eq('match_id', id);
+    await supabase
+      .from('profiles')
+      .update({
+        scoutcoins: (await ProfilesDB.getProfile(user_id)).scoutcoins - amount,
+      })
+      .eq('id', user_id);
     if (error) {
       throw error;
     }
