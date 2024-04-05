@@ -5,6 +5,8 @@ export interface ProfilesReturnData {
   firstName: string;
   lastName: string;
   name: string;
+  emoji: string;
+  scoutcoins: number;
 }
 
 class ProfilesDB {
@@ -24,6 +26,8 @@ class ProfilesDB {
           firstName: data[0].first_name,
           lastName: data[0].last_name,
           name: data[0].name,
+          emoji: data[0].emoji,
+          scoutcoins: data[0].scoutcoins,
         };
       }
     }
