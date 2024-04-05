@@ -15,6 +15,7 @@ import FormCreation from '../form-creation-flow/FormCreation';
 import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
 import ScoutAssignments from '../scout-assignments-flow/ScoutAssignments';
 import WeightedRank from './WeightedRank';
+import {ManageBets} from '../match-betting-flow/admin/ManageBets';
 
 const DataStack = createStackNavigator();
 
@@ -94,6 +95,13 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Manage Scout Assignments'}
         component={ScoutAssignments}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Manage Match Bets'}
+        component={ManageBets}
         options={{
           headerBackTitle: 'Back',
         }}
