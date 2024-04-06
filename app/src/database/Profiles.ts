@@ -33,6 +33,24 @@ class ProfilesDB {
     }
   }
 
+  static async getAllProfiles(): Promise<ProfilesReturnData[]> {
+    const {data, error} = await supabase.from('profiles').select('*');
+    if (error) {
+      throw error;
+    } else {
+      return data.map(profile => {
+        return {
+          id: profile.id,
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          name: profile.name,
+          emoji: profile.emoji,
+          scoutcoins: profile.scoutcoins,
+        };
+      });
+    }
+  }
+
   static async getCurrentUserProfile(): Promise<ProfilesReturnData> {
     const {
       data: {user},

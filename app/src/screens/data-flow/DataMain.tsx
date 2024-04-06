@@ -16,6 +16,8 @@ import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
 import ScoutAssignments from '../scout-assignments-flow/ScoutAssignments';
 import WeightedRank from './WeightedRank';
 import {ManageBets} from '../match-betting-flow/admin/ManageBets';
+import {ScoutcoinLedger} from '../scoutcoin-flow/ScoutcoinLedger';
+import {ScoutcoinLeaderboard} from '../scoutcoin-flow/ScoutcoinLeaderboard';
 
 const DataStack = createStackNavigator();
 
@@ -67,6 +69,20 @@ const DataMain = () => {
         options={{
           headerBackTitle: 'Back',
           // headerTitle: 'Team RankA',
+        }}
+      />
+      <DataStack.Screen
+        name={'Scoutcoin Leaderboard'}
+        component={ScoutcoinLeaderboard}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Scoutcoin Ledger'}
+        component={ScoutcoinLedger}
+        options={{
+          headerBackTitle: 'Back',
         }}
       />
       <DataStack.Screen
