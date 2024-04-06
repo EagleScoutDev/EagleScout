@@ -21,6 +21,7 @@ function EditProfile({navigation, route, getUser}) {
   const [isLoading, setIsLoading] = useState(false);
   const [emojiModalVisible, setEmojiModalVisible] = useState(false);
   const [emoji, setEmoji] = useState(initialEmoji);
+  const [emojiChanged, setEmojiChanged] = useState(false);
 
   const {colors} = useTheme();
   const styles = StyleSheet.create({
@@ -71,7 +72,10 @@ function EditProfile({navigation, route, getUser}) {
           </Text>
         </Pressable>
         <EmojiPicker
-          onEmojiSelected={e => setEmoji(e.emoji)}
+          onEmojiSelected={e => {
+            setEmoji(e.emoji);
+            setEmojiChanged(true);
+          }}
           open={emojiModalVisible}
           onClose={() => setEmojiModalVisible(false)}
         />
@@ -119,6 +123,21 @@ function EditProfile({navigation, route, getUser}) {
                   ...data2,
                 }),
               );
+            }
+
+            if (emojiChanged) {
+              const {data, error} = await supabase.functions.invoke(
+                'purchase-item',
+                {
+                  body: JSON.stringify({
+                    itemName: 'emoji-change',
+                  }),
+                },
+              );
+              if (data !== 'success') {
+                Alert.alert(data);
+              }
+              setEmojiChanged(false);
             }
 
             setFirstName('');
