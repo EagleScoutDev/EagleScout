@@ -93,6 +93,7 @@ export const ManageBets = () => {
       matchId: number;
     }[]
   >([]);
+  const {colors} = useTheme();
   const refresh = () => {
     MatchBets.getMatchBets().then(bets => {
       const matchesReduced = bets.reduce((acc, bet: MatchBet) => {

@@ -314,6 +314,7 @@ export const BettingScreen = ({route}) => {
                 setBetActive(false);
                 setCurrentBet(0);
                 setBetAmount((prev: number) => prev + Number(currentBet));
+                console.log('BET AMOUNT', betAmount, currentBet);
                 if (betAmount === 0) {
                   await MatchBets.createMatchBet(
                     userProfile.id,
@@ -334,7 +335,7 @@ export const BettingScreen = ({route}) => {
                 height={24}
                 viewBox="0 0 16 16"
                 fill="none"
-                stroke="black"
+                stroke={colors.text}
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round">

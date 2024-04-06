@@ -126,9 +126,9 @@ export const ScoutcoinLeaderboard = () => {
               }
               setSendingScoutcoinUser(item.user);
             }}>
-            <Text>{item.place}</Text>
-            <Text>{item.user.name}</Text>
-            <Text>{item.user.scoutcoins}</Text>
+            <Text style={{color: colors.text}}>{item.place}</Text>
+            <Text style={{color: colors.text}}>{item.user.name}</Text>
+            <Text style={{color: colors.text}}>{item.user.scoutcoins}</Text>
           </Pressable>
         )}
         keyExtractor={item => item.user.id}

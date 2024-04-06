@@ -1,4 +1,5 @@
 import {supabase} from '../lib/supabase';
+import CompetitionsDB from './Competitions';
 import ProfilesDB from './Profiles';
 
 export interface MatchBet {
@@ -70,9 +71,13 @@ export class MatchBets {
     alliance: string,
     amount: number,
   ): Promise<number> {
-    let {exists, id} = await this.checkIfMatchExists(match_number, 1);
+    const activeCompId = await CompetitionsDB.getCurrentCompetition();
+    let {exists, id} = await this.checkIfMatchExists(
+      match_number,
+      activeCompId!.id,
+    );
     if (!exists) {
-      id = await this.createMatch(match_number, 1);
+      id = await this.createMatch(match_number, activeCompId!.id);
     }
     const {data, error} = await supabase
       .from('match_bets')
@@ -103,9 +108,13 @@ export class MatchBets {
     match_number: number,
     amount: number,
   ): Promise<void> {
-    const {exists, id} = await this.checkIfMatchExists(match_number, 1);
+    const activeCompId = await CompetitionsDB.getCurrentCompetition();
+    let {exists, id} = await this.checkIfMatchExists(
+      match_number,
+      activeCompId!.id,
+    );
     if (!exists) {
-      throw new Error('Match does not exist');
+      id = await this.createMatch(match_number, activeCompId!.id);
     }
     const {error} = await supabase
       .from('match_bets')
