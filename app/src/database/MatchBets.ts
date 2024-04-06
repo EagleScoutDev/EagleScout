@@ -103,7 +103,7 @@ export class MatchBets {
     match_number: number,
     amount: number,
   ): Promise<void> {
-    let {exists, id} = await this.checkIfMatchExists(match_number, 1);
+    const {exists, id} = await this.checkIfMatchExists(match_number, 1);
     if (!exists) {
       throw new Error('Match does not exist');
     }
@@ -142,16 +142,6 @@ export class MatchBets {
         created_at: bet.created_at,
         updated_at: bet.updated_at,
       }));
-    }
-  }
-
-  static async deleteBetForMatch(match_id: number): Promise<void> {
-    const {error} = await supabase
-      .from('match_bets')
-      .delete()
-      .eq('match_id', match_id);
-    if (error) {
-      throw error;
     }
   }
 }

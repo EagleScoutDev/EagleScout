@@ -2,8 +2,17 @@ import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {MatchBet, MatchBets} from '../../../database/MatchBets';
+import {supabase} from '../../../lib/supabase';
 
-const BetCard = ({matchNumber, matchId}: {matchNumber; matchId}) => {
+const BetCard = ({
+  matchNumber,
+  matchId,
+  onConfirm,
+}: {
+  matchNumber: number;
+  matchId: number;
+  onConfirm: (result: 'red' | 'blue' | 'tie') => void;
+}) => {
   const {colors} = useTheme();
   return (
     <View
@@ -34,7 +43,8 @@ const BetCard = ({matchNumber, matchId}: {matchNumber; matchId}) => {
             padding: 10,
             borderRadius: 10,
             margin: 10,
-          }}>
+          }}
+          onPress={() => onConfirm('blue')}>
           <Text>Blue win</Text>
         </Pressable>
         <Pressable
@@ -42,7 +52,8 @@ const BetCard = ({matchNumber, matchId}: {matchNumber; matchId}) => {
             padding: 10,
             borderRadius: 10,
             margin: 10,
-          }}>
+          }}
+          onPress={() => onConfirm('tie')}>
           <Text>Tie</Text>
         </Pressable>
         <Pressable
@@ -51,7 +62,8 @@ const BetCard = ({matchNumber, matchId}: {matchNumber; matchId}) => {
             padding: 10,
             borderRadius: 10,
             margin: 10,
-          }}>
+          }}
+          onPress={() => onConfirm('red')}>
           <Text>Red win</Text>
         </Pressable>
       </View>
@@ -67,7 +79,7 @@ export const ManageBets = () => {
       matchId: number;
     }[]
   >([]);
-  useEffect(() => {
+  const refresh = () => {
     MatchBets.getMatchBets().then(bets => {
       setBets(bets);
       const matchesReduced = bets.reduce((acc, bet: MatchBet) => {
@@ -79,6 +91,9 @@ export const ManageBets = () => {
       console.log(matchesReduced);
       setMatches(matchesReduced);
     });
+  };
+  useEffect(() => {
+    refresh();
   }, []);
   return (
     <View
@@ -101,7 +116,16 @@ export const ManageBets = () => {
           alignItems: 'center',
         }}>
         {matches.map(({matchNumber, matchId}) => (
-          <BetCard matchNumber={matchNumber} matchId={matchId} />
+          <BetCard
+            matchNumber={matchNumber}
+            matchId={matchId}
+            onConfirm={async result => {
+              await supabase.functions.invoke('confirm-bet', {
+                body: JSON.stringify({matchId, result}),
+              });
+              refresh();
+            }}
+          />
         ))}
       </View>
     </View>
