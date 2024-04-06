@@ -89,7 +89,7 @@ function UserProfileBox({user}: UserProfileBoxProps) {
       )}
       <View>
         <Text style={styles.name_text}>
-          {user.first_name} {user.last_name}
+          {user.first_name} {user.last_name} {user.emoji}
         </Text>
         <Text style={styles.role_text}>
           {getRoleName(user.scouter, user.admin)}

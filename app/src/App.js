@@ -194,7 +194,7 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
         .single();
       const {data: profilesData, error: profilesError} = await supabase
         .from('profiles')
-        .select('first_name, last_name')
+        .select('first_name, last_name, emoji')
         .eq('id', user.id)
         .single();
       if (userAttribError) {
