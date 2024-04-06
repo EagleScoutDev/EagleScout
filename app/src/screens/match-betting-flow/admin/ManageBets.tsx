@@ -72,7 +72,6 @@ const BetCard = ({
 };
 
 export const ManageBets = () => {
-  const [bets, setBets] = useState<MatchBet[]>([]);
   const [matches, setMatches] = useState<
     {
       matchNumber: number;
@@ -81,7 +80,6 @@ export const ManageBets = () => {
   >([]);
   const refresh = () => {
     MatchBets.getMatchBets().then(bets => {
-      setBets(bets);
       const matchesReduced = bets.reduce((acc, bet: MatchBet) => {
         if (!acc.find(m => m.matchId === bet.match_id)) {
           acc.push({matchNumber: bet.match_number!, matchId: bet.match_id});

@@ -31,15 +31,7 @@ export const BettingScreen = ({route}) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const {colors} = useTheme();
-  const [players, setPlayers] = useState([
-    {
-      id: '1',
-      name: 'Caleb',
-      emoji: '😎',
-      betAmount: 100,
-      betAlliance: 'red',
-    },
-  ]);
+  const [players, setPlayers] = useState([]);
   const [selectedAlliance, setSelectedAlliance] = useState();
   const [betAmount, setBetAmount] = useState(0);
   const [userProfile, setUserProfile] = useState<ProfilesReturnData | null>(
@@ -57,7 +49,6 @@ export const BettingScreen = ({route}) => {
     (async () => {
       const user = await UserAttributesDB.getCurrentUserAttribute();
       if (!user) {
-        console.log('no user');
         return;
       }
       const profile = await ProfilesDB.getProfile(user.id);

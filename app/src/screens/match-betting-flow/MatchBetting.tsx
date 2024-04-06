@@ -35,10 +35,6 @@ export const MatchBetting = () => {
       fontSize: 20,
     },
   });
-  // a screen with the header "Bet on a match"
-  // background should be a blue/green gradient type color
-  // there should be a text input allowing the user to input a match number
-  // there should be a button that says "next" that navigates to the "Bet" screen
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text

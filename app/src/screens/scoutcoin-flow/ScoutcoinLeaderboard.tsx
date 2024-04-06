@@ -58,7 +58,6 @@ export const ScoutcoinLeaderboard = () => {
       padding: 20,
       marginVertical: 8,
       marginHorizontal: 16,
-      // make it card-like
       backgroundColor: colors.card,
       borderRadius: 5,
       shadowColor: '#000',
@@ -69,7 +68,6 @@ export const ScoutcoinLeaderboard = () => {
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       elevation: 5,
-      // display
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
