@@ -52,6 +52,7 @@ export const MatchBetting = () => {
       borderRadius: 10,
       marginTop: 15,
       width: '80%',
+      alignSelf: 'center',
     },
     buttonText: {
       color: 'white',
@@ -112,7 +113,7 @@ export const MatchBetting = () => {
       <TouchableWithoutFeedback
         onPress={Keyboard.dismiss}
         style={{
-          height: '100%',
+          height: '80%',
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
@@ -150,17 +151,17 @@ export const MatchBetting = () => {
             onChangeText={text => setMatchNumber(Number(text))}
           />
         </View>
-        <Pressable
-          style={styles.button}
-          onPress={() => {
-            if (!matchNumber) {
-              return;
-            }
-            navigation.navigate('BettingScreen', {matchNumber});
-          }}>
-          <Text style={styles.buttonText}>Next</Text>
-        </Pressable>
       </TouchableWithoutFeedback>
+      <Pressable
+        style={styles.button}
+        onPress={() => {
+          if (!matchNumber) {
+            return;
+          }
+          navigation.navigate('BettingScreen', {matchNumber});
+        }}>
+        <Text style={styles.buttonText}>Next</Text>
+      </Pressable>
     </View>
   );
 };
