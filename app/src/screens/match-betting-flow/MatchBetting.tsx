@@ -1,11 +1,21 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, StyleSheet, Pressable} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
+import UserAttributesDB from '../../database/UserAttributes';
 
 export const MatchBetting = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
   const [matchNumber, setMatchNumber] = useState<number>();
+  const [orgId, setOrgId] = useState<number>(-1);
+
+  useEffect(() => {
+    UserAttributesDB.getCurrentUserAttribute().then(userAttribute => {
+      if (userAttribute) {
+        setOrgId(userAttribute.organization_id);
+      }
+    });
+  }, []);
 
   const styles = StyleSheet.create({
     textInput: {
@@ -35,6 +45,30 @@ export const MatchBetting = () => {
       fontSize: 20,
     },
   });
+
+  if (orgId === -1) {
+    return null;
+  }
+
+  if (orgId !== 1) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 30,
+            fontWeight: 'bold',
+            marginBottom: 30,
+          }}>
+          Bet on a match!
+        </Text>
+        <Text style={{color: colors.text, fontSize: 15, fontWeight: 'bold'}}>
+          Betting is coming soon...
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text
