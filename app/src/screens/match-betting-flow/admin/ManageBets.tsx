@@ -45,7 +45,12 @@ const BetCard = ({
             margin: 10,
           }}
           onPress={() => onConfirm('blue')}>
-          <Text>Blue win</Text>
+          <Text
+            style={{
+              color: colors.text,
+            }}>
+            Blue win
+          </Text>
         </Pressable>
         <Pressable
           style={{
@@ -54,7 +59,12 @@ const BetCard = ({
             margin: 10,
           }}
           onPress={() => onConfirm('tie')}>
-          <Text>Tie</Text>
+          <Text
+            style={{
+              color: colors.card,
+            }}>
+            Tie
+          </Text>
         </Pressable>
         <Pressable
           style={{
@@ -64,7 +74,12 @@ const BetCard = ({
             margin: 10,
           }}
           onPress={() => onConfirm('red')}>
-          <Text>Red win</Text>
+          <Text
+            style={{
+              color: colors.text,
+            }}>
+            Red win
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -104,6 +119,7 @@ export const ManageBets = () => {
         style={{
           fontSize: 20,
           fontWeight: 'bold',
+          color: colors.text,
         }}>
         Active Bets
       </Text>
