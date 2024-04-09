@@ -244,7 +244,7 @@ function PicklistCreator({
           setCreatorName(profile.name);
         });
 
-        let temp = new Set();
+        let temp = new Set<number>();
         picklist.teams.forEach(t => {
           t.tags.forEach(tag => {
             temp.add(tag);
@@ -565,52 +565,54 @@ function PicklistCreator({
             />
           </Svg>
         </Pressable>
+      </View>
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            // if the contents of the view are too wide, they will be wrapped and placed below the previous line
-            flexWrap: 'wrap',
-            // the contents of the view are centered along the horizontal axis
-          }}>
-          {[...uniqueTags].map(tag => {
-            return (
-              <Pressable
-                key={tag}
-                onPress={() => {
-                  if (filteredTags.has(tag)) {
-                    let newTags = new Set(filteredTags);
-                    newTags.delete(tag);
-                    setFilteredTags(newTags);
-                  } else {
-                    let newTags = new Set(filteredTags);
-                    newTags.add(tag);
-                    setFilteredTags(newTags);
-                  }
-                }}
+      <View
+        style={{
+          flexDirection: 'row',
+          // if the contents of the view are too wide, they will be wrapped and placed below the previous line
+          flexWrap: 'wrap',
+          // the contents of the view are centered along the horizontal axis
+        }}>
+        {[...uniqueTags].map(tag => {
+          return (
+            <Pressable
+              key={tag}
+              onPress={() => {
+                if (filteredTags.has(tag)) {
+                  let newTags = new Set(filteredTags);
+                  newTags.delete(tag);
+                  setFilteredTags(newTags);
+                } else {
+                  let newTags = new Set(filteredTags);
+                  newTags.add(tag);
+                  setFilteredTags(newTags);
+                }
+              }}
+              style={{
+                backgroundColor: filteredTags.has(tag)
+                  ? colors.primary
+                  : colors.card,
+                paddingHorizontal: '4%',
+                paddingVertical: '2%',
+                margin: 4,
+                borderRadius: 20,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                borderWidth: 1,
+                borderColor: colors.border,
+              }}>
+              <Text
                 style={{
-                  backgroundColor: filteredTags.has(tag)
-                    ? colors.primary
-                    : colors.card,
-                  paddingHorizontal: '6%',
-                  paddingVertical: '3%',
-                  margin: '2%',
-                  borderRadius: 8,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  color: filteredTags.has(tag) ? 'white' : colors.text,
+                  fontWeight: filteredTags.has(tag) ? 'bold' : 'normal',
                 }}>
-                <Text
-                  style={{
-                    color: filteredTags.has(tag) ? 'white' : colors.text,
-                  }}>
-                  {allTags.find(t => Number.parseInt(t.id ?? '', 10) === tag)
-                    ?.name ?? 'Unknown'}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                {allTags.find(t => Number.parseInt(t.id ?? '', 10) === tag)
+                  ?.name ?? 'Unknown'}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
       <TagsModal
