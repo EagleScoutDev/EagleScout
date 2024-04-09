@@ -133,7 +133,11 @@ export const BettingScreen = ({route}) => {
   }, []);
 
   useEffect(() => {
-    if (!subscribed || !supabaseChannel || !selectedAlliance) {
+    console.log('effect', subscribed, supabaseChannel, selectedAlliance);
+    //if (!subscribed || !supabaseChannel || !selectedAlliance) {
+    // return;
+    //}
+    if (!selectedAlliance || !supabaseChannel) {
       return;
     }
     console.log('sending bet', betAmount, selectedAlliance);
