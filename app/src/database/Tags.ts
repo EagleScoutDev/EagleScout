@@ -5,6 +5,7 @@ export interface TagStructure {
   name: string;
   created_at: Date;
   picklist_id: number;
+  color?: string; // hex color
 }
 
 export class TagsDB {
@@ -22,11 +23,11 @@ export class TagsDB {
     }
   }
 
-  static async createTag(picklist_id: number, name: string) {
+  static async createTag(picklist_id: number, name: string, color?: string) {
     try {
       const {data, error} = await supabase
         .from('tags')
-        .insert([{name: name, picklist_id: picklist_id}]);
+        .insert([{name: name, picklist_id: picklist_id, color: color}]);
       if (error) {
         throw error;
       }
@@ -40,6 +41,17 @@ export class TagsDB {
       const {error} = await supabase
         .from('tags')
         .update({name: name})
+        .eq('id', tag_id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateColorOfTag(tag_id: string, color: string) {
+    try {
+      const {error} = await supabase
+        .from('tags')
+        .update({color: color})
         .eq('id', tag_id);
     } catch (error) {
       throw error;

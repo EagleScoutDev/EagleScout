@@ -16,6 +16,8 @@ import {TagsDB, TagStructure} from '../../database/Tags';
 import {PicklistTeam} from '../../database/Picklists';
 import Svg, {Path} from 'react-native-svg';
 
+import ColorPicker, {HueSlider} from 'reanimated-color-picker';
+
 const TagsModal = ({
   visible,
   setVisible,
@@ -38,6 +40,61 @@ const TagsModal = ({
 
   const [newTagName, setNewTagName] = useState('');
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [deletionActive, setDeletionActive] = useState(false);
+  const [selectedTag, setSelectedTag] = useState<TagStructure | null>(null);
+
+  const onSelectColor = ({hex}) => {
+    console.log('Selected color: ', hex);
+    TagsDB.updateColorOfTag(selectedTag!.id!, hex).then(() => {
+      TagsDB.getTagsForPicklist(picklist_id).then(tags => {
+        setListOfTags(tags);
+      });
+    });
+    setSelectedTag(null);
+  };
+
+  const attemptDeleteTag = (tag: TagStructure) => {
+    Alert.alert(
+      `Delete "${tag.name}"?`,
+      'Are you sure you want to delete this tag? This action is irreversible.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            if (tag.id !== null) {
+              issueDeleteCommand(Number.parseInt(tag.id ?? '', 10));
+              setVisible(false);
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const onTagPress = (item: TagStructure) => {
+    if (selected_team === null) {
+      return;
+    }
+    console.log('tag id: ', item.id);
+    // print type of tag id
+    console.log('tag id type: ', typeof item.id);
+    if (selectedTags.includes(Number.parseInt(item.id ?? '', 10))) {
+      setSelectedTags(
+        selectedTags.filter(
+          tag_id => tag_id !== Number.parseInt(item.id ?? '', 10),
+        ),
+      );
+      removeTag(selected_team!, Number.parseInt(item.id ?? '', 10));
+    } else {
+      setSelectedTags([...selectedTags, Number.parseInt(item.id ?? '', 10)]);
+      addTag(selected_team!, Number.parseInt(item.id ?? '', 10));
+    }
+  };
 
   useEffect(() => {
     console.log('picklist_id: ', picklist_id);
@@ -88,11 +145,22 @@ const TagsModal = ({
                 color: colors.text,
                 fontSize: 20,
                 fontWeight: 'bold',
+                flex: 1,
               }}>
               {selected_team !== null
                 ? 'Tags for Team ' + selected_team.team_number
                 : 'Tags'}
             </Text>
+            <Pressable
+              onPress={() => setDeletionActive(prev => !prev)}
+              style={{flex: 0.2}}>
+              <Text
+                style={{
+                  color: deletionActive ? colors.primary : colors.text,
+                }}>
+                Edit
+              </Text>
+            </Pressable>
             <Pressable onPress={() => setVisible(false)}>
               <Text style={{color: colors.text}}>Close</Text>
             </Pressable>
@@ -102,49 +170,16 @@ const TagsModal = ({
               style={{flex: 1}}
               data={listOfTags}
               scrollEnabled={true}
+              keyExtractor={item => item.id ?? ''}
               renderItem={({item}) => (
-                <Pressable
-                  onPress={() => {
-                    if (selected_team === null) {
-                      return;
-                    }
-                    console.log('tag id: ', item.id);
-                    // print type of tag id
-                    console.log('tag id type: ', typeof item.id);
-                    if (
-                      selectedTags.includes(Number.parseInt(item.id ?? '', 10))
-                    ) {
-                      setSelectedTags(
-                        selectedTags.filter(
-                          tag_id =>
-                            tag_id !== Number.parseInt(item.id ?? '', 10),
-                        ),
-                      );
-                      removeTag(
-                        selected_team!,
-                        Number.parseInt(item.id ?? '', 10),
-                      );
-                    } else {
-                      setSelectedTags([
-                        ...selectedTags,
-                        Number.parseInt(item.id ?? '', 10),
-                      ]);
-                      addTag(
-                        selected_team!,
-                        Number.parseInt(item.id ?? '', 10),
-                      );
-                    }
-                  }}
+                <View
                   style={{
-                    backgroundColor: colors.background,
-                    padding: '5%',
-                    margin: '2%',
-                    borderRadius: 10,
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
+                    flex: 1,
+                    alignItems: 'center',
                   }}>
                   {selected_team !== null && (
-                    <View style={{flex: 0.2}}>
+                    <View style={{flex: 0.1}}>
                       {selectedTags.includes(
                         Number.parseInt(item.id ?? '', 10),
                       ) && (
@@ -152,82 +187,77 @@ const TagsModal = ({
                           width="16"
                           height="16"
                           fill="currentColor"
+                          strokeWidth={1}
+                          stroke="currentColor"
                           viewBox="0 0 16 16">
                           <Path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
                         </Svg>
                       )}
                     </View>
                   )}
-                  <Text style={{color: colors.text, flex: 1}}>{item.name}</Text>
                   <Pressable
-                    onPress={() => {
-                      Alert.alert(
-                        `Delete "${item.name}"?`,
-                        'Are you sure you want to delete this tag? This action is irreversible.',
-                        [
-                          {
-                            text: 'Cancel',
-                            style: 'cancel',
-                          },
-                          {
-                            text: 'Delete',
-                            onPress: () => {
-                              if (item.id !== undefined) {
-                                issueDeleteCommand(
-                                  Number.parseInt(item.id, 10),
-                                );
-                                setVisible(false);
-                              }
-                            },
-                          },
-                        ],
-                        {cancelable: false},
-                      );
+                    onPress={() => onTagPress(item)}
+                    style={{
+                      flex: 1,
+                      backgroundColor: colors.background,
+                      padding: '5%',
+                      margin: '2%',
+                      borderRadius: 10,
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+
+                      borderWidth: 1,
+                      borderColor: selectedTags.includes(
+                        Number.parseInt(item.id ?? '', 10),
+                      )
+                        ? colors.primary
+                        : colors.border,
                     }}>
-                    <Text style={{color: colors.notification}}>Delete</Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: colors.text, flex: 1}}>
+                        {item.name}
+                      </Text>
+                      {!deletionActive && (
+                        <Pressable
+                          onPress={() => {
+                            if (item.id !== null) {
+                              setSelectedTag(item);
+                            } else {
+                              setSelectedTag(null);
+                            }
+                          }}
+                          style={{
+                            backgroundColor: item.color,
+                            borderWidth: 1,
+                            borderColor: colors.border,
+                            borderRadius: 100,
+                            width: 20,
+                            height: 20,
+                            marginHorizontal: 10,
+                          }}
+                        />
+                      )}
+                      {deletionActive && (
+                        <Pressable onPress={() => attemptDeleteTag(item)}>
+                          <Text style={{color: colors.notification}}>
+                            Delete
+                          </Text>
+                        </Pressable>
+                      )}
+                    </View>
+                    {selectedTag?.id === item.id && (
+                      <ColorPicker
+                        value={item.color}
+                        onComplete={onSelectColor}
+                        style={{marginHorizontal: '4%', paddingVertical: '4%'}}>
+                        <HueSlider />
+                      </ColorPicker>
+                    )}
                   </Pressable>
-                </Pressable>
+                </View>
               )}
             />
           )}
-          {/*{selected_team &&*/}
-          {/*  selected_team.tags.filter(*/}
-          {/*    tag_id =>*/}
-          {/*      !listOfTags.map(tag => tag.id!).includes(String(tag_id)),*/}
-          {/*  ).length > 0 && (*/}
-          {/*    <View*/}
-          {/*      style={{*/}
-          {/*        flexDirection: 'row',*/}
-          {/*        alignItems: 'center',*/}
-          {/*        marginVertical: '2%',*/}
-          {/*        justifyContent: 'space-between',*/}
-          {/*      }}>*/}
-          {/*      <Text*/}
-          {/*        style={{*/}
-          {/*          color: 'red',*/}
-          {/*          fontSize: 10,*/}
-          {/*        }}>*/}
-          {/*        Error: Some tags not found in database. {selected_team.tags}*/}
-          {/*        {listOfTags.map(tag => tag.id)}*/}
-          {/*      </Text>*/}
-          {/*      <Pressable*/}
-          {/*        onPress={() => {*/}
-          {/*          for (const tag_id of selected_team.tags) {*/}
-          {/*            if (*/}
-          {/*              !listOfTags.map(tag => tag.id).includes(String(tag_id))*/}
-          {/*            ) {*/}
-          {/*              removeTag(selected_team, tag_id);*/}
-          {/*            }*/}
-          {/*          }*/}
-          {/*          setVisible(false);*/}
-          {/*          setVisible(true);*/}
-          {/*        }}>*/}
-          {/*        <Text style={{color: colors.primary, fontSize: 10}}>*/}
-          {/*          Attempt to Fix?*/}
-          {/*        </Text>*/}
-          {/*      </Pressable>*/}
-          {/*    </View>*/}
-          {/*  )}*/}
           <View
             style={{
               borderTopWidth: 1,
