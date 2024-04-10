@@ -1,7 +1,7 @@
-import FormSection from './FormSection';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
+import {OrientationChooser} from '../games/OrientationChooser';
 
 function MatchInformation({
   match,
@@ -9,7 +9,10 @@ function MatchInformation({
   team,
   setTeam,
   teamsForMatch,
-  disabled = false,
+  selectedOrientation,
+  setSelectedOrientation,
+  selectedAlliance,
+  setSelectedAlliance,
 }) {
   const {colors} = useTheme();
 
@@ -114,6 +117,12 @@ function MatchInformation({
           Warning: Team {team} is not in this match
         </Text>
       )}
+      <OrientationChooser
+        selectedOrientation={selectedOrientation}
+        setSelectedOrientation={setSelectedOrientation}
+        selectedAlliance={selectedAlliance}
+        setSelectedAlliance={setSelectedAlliance}
+      />
     </View>
   );
 }

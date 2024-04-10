@@ -1,5 +1,5 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
+import {useNavigation, useRoute, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import FormHelper from '../../FormHelper';
@@ -15,7 +15,9 @@ import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatch
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
 
-function ScoutingFlow({navigation, route, resetTimer}) {
+function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
+  const route = useRoute();
+  const navigation = useNavigation();
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -35,6 +37,13 @@ function ScoutingFlow({navigation, route, resetTimer}) {
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
+  const [autoPath, setAutoPath] = useState([]);
+
+  const [startRelativeTime, setStartRelativeTime] = useState(-1);
+  const [timeline, setTimeline] = useState([]);
+  const [fieldOrientation, setFieldOrientation] = useState('red');
+  const [selectedAlliance, setSelectedAlliance] = useState('red');
+
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,6 +88,12 @@ function ScoutingFlow({navigation, route, resetTimer}) {
    */
   function initData(dataToSubmit, tempArray) {
     dataToSubmit.data = tempArray;
+    const timelineRecord = {};
+    timeline.forEach((value, key) => {
+      timelineRecord[key] = value;
+    });
+    dataToSubmit.timelineData = timelineRecord;
+    dataToSubmit.autoPath = autoPath;
     dataToSubmit.matchNumber = match;
     dataToSubmit.teamNumber = team;
     dataToSubmit.competitionId = competition.id;
@@ -272,6 +287,7 @@ function ScoutingFlow({navigation, route, resetTimer}) {
         })();
         setMatch('');
         setTeam('');
+        setAutoPath([]);
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
           startConfetti();
@@ -291,6 +307,7 @@ function ScoutingFlow({navigation, route, resetTimer}) {
         setMatch('');
         setTeam('');
         resetTimer();
+        setAutoPath([]);
         initForm(formStructure);
         if (!isScoutStylePreferenceScrolling) {
           startConfetti();
@@ -417,6 +434,16 @@ function ScoutingFlow({navigation, route, resetTimer}) {
               setArrayData={setArrayData}
               submitForm={submitForm}
               isSubmitting={isSubmitting}
+              startRelativeTime={startRelativeTime}
+              setStartRelativeTime={setStartRelativeTime}
+              timeline={timeline}
+              setTimeline={setTimeline}
+              fieldOrientation={fieldOrientation}
+              setFieldOrientation={setFieldOrientation}
+              selectedAlliance={selectedAlliance}
+              setSelectedAlliance={setSelectedAlliance}
+              autoPath={autoPath}
+              setAutoPath={setAutoPath}
             />
           ) : (
             <Gamification
@@ -434,6 +461,18 @@ function ScoutingFlow({navigation, route, resetTimer}) {
               setArrayData={setArrayData}
               submitForm={submitForm}
               isSubmitting={isSubmitting}
+              startRelativeTime={startRelativeTime}
+              setStartRelativeTime={setStartRelativeTime}
+              timeline={timeline}
+              setTimeline={setTimeline}
+              isModalActive={isModalActive}
+              setIsModalActive={setIsModalActive}
+              fieldOrientation={fieldOrientation}
+              setFieldOrientation={setFieldOrientation}
+              selectedAlliance={selectedAlliance}
+              setSelectedAlliance={setSelectedAlliance}
+              autoPath={autoPath}
+              setAutoPath={setAutoPath}
             />
           )}
         </>

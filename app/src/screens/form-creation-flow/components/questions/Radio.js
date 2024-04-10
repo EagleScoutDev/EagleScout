@@ -8,7 +8,7 @@ import React, {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { useEffect, useState } from "react";
+import {useEffect, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
 import NewQuestionSeparator from '../NewQuestionSeparator';
 import RadioOptionsSeparator from './RadioOptionsSeparator';

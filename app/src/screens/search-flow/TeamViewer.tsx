@@ -55,7 +55,8 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
             alignSelf: 'center',
             minWidth: '85%',
             maxWidth: '85%',
-            borderRadius: 10,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
             backgroundColor: colors.card,
             marginTop: '5%',
           }}>
@@ -68,6 +69,35 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
               borderRadius: 10,
             }}>
             See all scouting reports and notes
+          </Text>
+          {CaretRight()}
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Auto Paths', {
+              team_number: team.team_number,
+              competitionId: competitionId,
+            });
+          }}
+          style={{
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+            alignSelf: 'center',
+            minWidth: '85%',
+            maxWidth: '85%',
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+            backgroundColor: colors.card,
+          }}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: '600',
+              color: colors.text,
+              padding: '5%',
+              borderRadius: 10,
+            }}>
+            See auto paths
           </Text>
           {CaretRight()}
         </TouchableOpacity>
