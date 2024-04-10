@@ -556,6 +556,27 @@ function PicklistCreator({
               {teamNumberToNameMap.size === 0 ? '' : ' '}
               {teamNumberToNameMap.get(item.team_number)}
             </Text>
+            <View
+              style={{
+                justifyContent: 'flex-end',
+                flexDirection: 'row',
+              }}>
+              {item.tags.length > 0 &&
+                item.tags.map(tag => {
+                  return (
+                    <View
+                      style={{
+                        borderRadius: 10,
+                        backgroundColor: getTagFromTagId(tag)?.color,
+                        width: 14,
+                        height: 14,
+                        margin: '2%',
+                        opacity: removed_teams.includes(item) ? 0.4 : 1,
+                      }}
+                    />
+                  );
+                })}
+            </View>
           </View>
         </Pressable>
       </ScaleDecorator>
