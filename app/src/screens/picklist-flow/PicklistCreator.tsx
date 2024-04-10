@@ -421,7 +421,7 @@ function PicklistCreator({
   };
 
   const getIdealTextColor = (bgColor: string) => {
-    const nThreshold = 105;
+    const nThreshold = 110;
     const components = {
       R: parseInt(bgColor.substring(1, 3), 16),
       G: parseInt(bgColor.substring(3, 5), 16),
