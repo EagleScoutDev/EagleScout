@@ -451,7 +451,7 @@ function ScoutViewer({
                     flexDirection:
                       field.type === 'radio' ||
                       field.type === 'textbox' ||
-                      field.type === 'checkbox' ||
+                      field.type === 'checkboxes' ||
                       (editingActive && field.type === 'number' && field.slider)
                         ? 'column'
                         : 'row',
@@ -467,7 +467,7 @@ function ScoutViewer({
                   if the field is a slider*/}
                   {/*SliderType is only used when editing is active*/}
                   {(!editingActive || !field.slider) &&
-                    field.type !== 'checkbox' && (
+                    field.type !== 'checkboxes' && (
                       <Text style={styles.question}>{field.question}</Text>
                     )}
                   {field.type === 'radio' && (
@@ -559,22 +559,25 @@ function ScoutViewer({
                       />
                     </View>
                   )}
-                  {field.type === 'checkbox' && (
-                    <Checkbox
-                      title={field.question}
-                      value={tempData[index]}
-                      doingReport={false}
-                      colors={colors}
-                      editingActive={editingActive}
-                      onValueChange={value => {
-                        let a = [...tempData];
-                        a[index] = value;
-                        setTempData(a);
-                      }}
-                    />
+                  {field.type === 'checkboxes' && (
+                    <View>
+                      <Checkbox
+                        title={field.question}
+                        options={field.options}
+                        value={tempData[index]}
+                        disabled={!editingActive}
+                        colors={colors}
+                        editingActive={editingActive}
+                        onValueChange={value => {
+                          let a = [...tempData];
+                          a[index] = value;
+                          setTempData(a);
+                        }}
+                      />
+                    </View>
                   )}
                   {field.type !== 'radio' &&
-                    field.type !== 'checkbox' &&
+                    field.type !== 'checkboxes' &&
                     !editingActive && (
                       <Text
                         style={{

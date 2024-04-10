@@ -7,7 +7,7 @@ import {useTheme} from '@react-navigation/native';
 import Radio from './questions/Radio';
 import Number from './questions/Number';
 import TextQuestion from './questions/TextBox';
-import CheckBox from './questions/CheckBox';
+import Checkboxes from './questions/Checkboxes';
 
 const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
   const [headingModalVisible, setHeadingModalVisible] = useState(false);
@@ -65,7 +65,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
             color={'red'}
           />
           <StandardButton
-            text={'CheckBox'}
+            text={'Checkboxes'}
             onPress={() => {
               setCheckBoxKey(nextKey);
               setNextKey(nextKey + 1);
@@ -117,7 +117,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
         key={radioKey}
         onSubmit={onSubmit}
       />
-      <CheckBox
+      <Checkboxes
         visible={checkBoxModalVisible}
         setVisible={setCheckBoxModalVisible}
         styles={styles}

@@ -19,7 +19,7 @@ function ScoutingFlow({navigation, route, resetTimer}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
-      checkbox: [],
+      checkboxes: [],
       textbox: '',
       number: 0,
       slider: 0,

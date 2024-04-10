@@ -4,40 +4,50 @@ import CheckBox from 'react-native-check-box';
 
 function CheckboxFunction({
   title,
-  doingReport,
+  options,
+  disabled,
   value,
   onValueChange,
-  editingActive,
   colors,
 }) {
+  if (!value) return null;
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-      }}>
-      {doingReport ? (
-        <Question title={title} />
-      ) : (
-        <Text
-          style={{
-            color: editingActive ? colors.primary : colors.text,
-            fontSize: 15,
-            fontWeight: '600',
-            paddingBottom: 5,
-          }}>
-          {title}
-        </Text>
-      )}
-      <Text> </Text>
-      <CheckBox
-        onClick={() => {
-          console.log(value);
-          if (doingReport || editingActive) {
-            onValueChange(!value);
-          }
-        }}
-        isChecked={value}
-      />
+    <View>
+      <Question title={title} />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}>
+        {options.map((item, index) => {
+          return (
+            <View
+              key={index}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 5,
+              }}>
+              <CheckBox
+                onClick={() => {
+                  if (disabled) return;
+                  if (value.includes(item)) {
+                    onValueChange(value.filter(i => i !== item));
+                  } else {
+                    onValueChange([...value, item]);
+                  }
+                }}
+                isChecked={value.includes(item)}
+                style={{
+                  marginRight: '6%',
+                }}
+              />
+              <Text style={{color: colors.text}}>{item}</Text>
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }

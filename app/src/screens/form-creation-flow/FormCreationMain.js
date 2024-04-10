@@ -20,8 +20,8 @@ import Heading from './components/questions/Heading';
 import Number from './components/questions/Number';
 import Radio from './components/questions/Radio';
 import TextBox from './components/questions/TextBox';
-import CheckBox from './components/questions/CheckBox';
-import CheckBoxSummary from "./components/question-summaries/CheckBoxSummary";
+import Checkboxes from './components/questions/Checkboxes';
+import CheckboxesSummary from './components/question-summaries/CheckboxesSummary';
 
 const FormCreationMain = ({navigation}) => {
   const {colors} = useTheme();
@@ -189,13 +189,13 @@ const FormCreationMain = ({navigation}) => {
                       />
                     </TouchableOpacity>
                   )}
-                  {question.type === 'checkbox' && (
+                  {question.type === 'checkboxes' && (
                     <TouchableOpacity
                       onPress={() => {
                         setIndex(index);
                         setCheckBoxModalVisible(true);
                       }}>
-                      <CheckBoxSummary
+                      <CheckboxesSummary
                         question={question}
                         onDelete={() => {
                           setIndex(index);
@@ -267,7 +267,7 @@ const FormCreationMain = ({navigation}) => {
         onSubmit={onReplace}
         value={questions[index]}
       />
-      <CheckBox
+      <Checkboxes
         visible={checkBoxModalVisible}
         setVisible={setCheckBoxModalVisible}
         styles={newQuestionStyles}

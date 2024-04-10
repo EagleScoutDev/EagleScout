@@ -101,17 +101,19 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
         />
       );
     }
-  } else if (item.type === 'checkbox') {
+  } else if (item.type === 'checkboxes') {
     return (
       <Checkbox
         title={item.question}
+        options={item.options}
         value={arrayData[item.indice]}
-        doingReport={true}
+        disabled={false}
         onValueChange={value => {
           let a = [...arrayData];
           a[item.indice] = value;
           setArrayData(a);
         }}
+        colors={colors}
       />
     );
   }

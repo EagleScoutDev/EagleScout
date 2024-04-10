@@ -98,7 +98,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       setIndexOfGreatestValue(index);
     }
 
-    if (item.type === 'checkbox') {
+    if (item.type === 'checkboxes') {
       let counts: number[] = [];
       const iterArray = [true, false];
       for (let i = 0; i < iterArray.length; i++) {
@@ -250,7 +250,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         </View>
       )}
 
-      {item.type === 'checkbox' && (
+      {item.type === 'checkboxes' && (
         <View>
           {[true, false].map((value: boolean, index: number) => {
             return (
