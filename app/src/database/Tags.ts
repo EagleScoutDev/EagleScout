@@ -63,7 +63,7 @@ export class TagsDB {
       const {data, error} = await supabase
         .from('tags')
         .delete()
-        .eq('id', String(tag_id));
+        .eq('id', tag_id);
       console.log('delete tag result: ', data, error);
       if (error) {
         throw error;

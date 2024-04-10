@@ -640,6 +640,29 @@ function PicklistCreator({
           );
         })}
       </View>
+      {[...uniqueTags].some(
+        tag => allTags.findIndex(a => a.id === String(tag)) > -1,
+      ) && (
+        <View style={{flexDirection: 'row'}}>
+          <Text style={{color: 'red'}}>Error: extra tags exist.</Text>
+          <Pressable
+            onPress={() => {
+              let teams_copy = [...teams_list];
+              for (let team of teams_copy) {
+                team.tags = team.tags.filter(tag => filteredTags.has(tag));
+              }
+              setTeamsList(teams_copy);
+            }}>
+            <Text style={{marginLeft: 10, color: colors.primary}}>
+              Attempt to fix?
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      <Text style={{color: 'gray', fontSize: 16, marginVertical: '2%'}}>
+        {[...uniqueTags].toString()}
+      </Text>
       <TagsModal
         visible={createTagModal}
         setVisible={setCreateTagModal}
@@ -748,6 +771,16 @@ function PicklistCreator({
                       <TextInput
                         inputMode={'text'}
                         placeholder={'Notes'}
+                        onChangeText={text => {
+                          let newTeams = teams_list.map(t => {
+                            if (t === item) {
+                              t.notes = text;
+                            }
+                            return t;
+                          });
+                          setTeamsList(newTeams);
+                        }}
+                        defaultValue={item.notes}
                         placeholderTextColor={'gray'}
                         multiline={true}
                         style={{
