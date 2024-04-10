@@ -445,6 +445,10 @@ function PicklistCreator({
 
   const addToDNP = (team: PicklistTeam) => {
     let addingToDNP = false;
+
+    // if it doesn't exist in the list, add it
+    addTeam(team.team_number);
+
     let specificTeam = teams_list.find(t => t === team);
     let newTeams = teams_list.map(t => {
       if (t === team) {
