@@ -30,6 +30,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import TagsModal from './TagsModal';
 import {TagsDB, TagStructure} from '../../database/Tags';
 import TagColorChangeModal from './TagColorChangeModal';
+import DoNotPickModal from './DoNotPickModal';
 
 function PicklistCreator({
   route,
@@ -57,6 +58,7 @@ function PicklistCreator({
   // modals
   const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
   const [createTagModal, setCreateTagModal] = useState(false);
+  const [showDNPModal, setShowDNPModal] = useState(false);
 
   // list of teams at the current competition
   const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
@@ -441,6 +443,26 @@ function PicklistCreator({
     return 255 - bgDelta < nThreshold ? '#000000' : '#ffffff';
   };
 
+  const addToDNP = (team: PicklistTeam) => {
+    let addingToDNP = false;
+    let specificTeam = teams_list.find(t => t === team);
+    let newTeams = teams_list.map(t => {
+      if (t === team) {
+        addingToDNP = !t.dnp;
+        t.dnp = !t.dnp;
+      }
+      return t;
+    });
+
+    // if the team is being added to DNP, move it to the end of the list
+    if (addingToDNP) {
+      newTeams = newTeams.filter(t => t !== specificTeam);
+      newTeams.push(specificTeam!);
+    }
+
+    setTeamsList(newTeams);
+  };
+
   const styles = StyleSheet.create({
     name_input: {
       color: colors.text,
@@ -595,6 +617,20 @@ function PicklistCreator({
             />
           </Svg>
         </Pressable>
+        <Pressable
+          onPress={() => {
+            setShowDNPModal(true);
+          }}
+          style={styles.modal_activation_button_container}>
+          <Svg
+            width="16"
+            height="16"
+            fill={teams_list.some(a => a.dnp) ? 'red' : 'gray'}
+            viewBox="0 0 16 16">
+            <Path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z" />
+            <Path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+          </Svg>
+        </Pressable>
       </View>
       <View
         style={{
@@ -684,6 +720,14 @@ function PicklistCreator({
         teamsAtCompetition={tbaSimpleTeams}
         addOrRemoveTeam={addOrRemoveTeam}
       />
+      <DoNotPickModal
+        visible={showDNPModal}
+        setVisible={setShowDNPModal}
+        teams={teams_list}
+        teamsAtCompetition={tbaSimpleTeams}
+        numbersToNames={teamNumberToNameMap}
+        addToDNP={addToDNP}
+      />
       {dragging_active ? (
         <DraggableFlatList
           data={teams_list}
@@ -747,6 +791,8 @@ function PicklistCreator({
                               textDecorationLine: 'line-through',
                               textDecorationStyle: 'solid',
                             }
+                          : item.dnp
+                          ? {...styles.team_number_displayed, color: 'red'}
                           : styles.team_number_displayed
                       }>
                       {item.team_number}
@@ -812,6 +858,18 @@ function PicklistCreator({
                         fill="gray"
                         viewBox="0 0 16 16">
                         <Path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1zm4 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                      </Svg>
+                    </Pressable>
+                    <Pressable
+                      style={{paddingHorizontal: '4%', flex: 0}}
+                      onPress={() => addToDNP(item)}>
+                      <Svg
+                        width="24"
+                        height="24"
+                        fill={item.dnp ? 'red' : 'gray'}
+                        viewBox="0 0 16 16">
+                        <Path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z" />
+                        <Path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
                       </Svg>
                     </Pressable>
                     <Pressable
