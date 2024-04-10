@@ -475,12 +475,6 @@ function PicklistCreator({
       padding: '5%',
       flex: 1,
     },
-    team_item: {
-      color: colors.text,
-      padding: '2%',
-      fontSize: 20,
-      textDecorationLine: 'none',
-    },
     team_item_in_list: {
       padding: '2%',
       flexDirection: 'column',
@@ -506,13 +500,13 @@ function PicklistCreator({
     team_number_strikethrough: {
       flex: 1,
       color: 'gray',
-      fontSize: 16,
+      fontSize: 18,
       marginLeft: '5%',
     },
     team_number_displayed: {
-      flex: 1,
+      // flex: 1,
       color: colors.text,
-      fontSize: 16,
+      fontSize: 18,
       marginLeft: '5%',
     },
     modal_activation_button_container: {
@@ -553,7 +547,11 @@ function PicklistCreator({
               fillColor={colors.primary}
             />
             <Text style={{color: 'gray'}}>{teams_list.indexOf(item) + 1}</Text>
-            <Text style={styles.team_number_displayed}>
+            <Text
+              style={{
+                ...styles.team_number_displayed,
+                flex: 1,
+              }}>
               {item.team_number}
               {teamNumberToNameMap.size === 0 ? '' : ' '}
               {teamNumberToNameMap.get(item.team_number)}
@@ -762,26 +760,34 @@ function PicklistCreator({
                 }}>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: selectedTeam === item ? 'center' : 'center',
-                    // alignContent: 'center',
+                    flexDirection: 'column',
                   }}>
-                  <BouncyCheckbox
-                    isChecked={removed_teams.includes(item)}
-                    disabled={item !== selectedTeam && selectedTeam !== null}
-                    fillColor={colors.primary}
-                    onPress={() => {
-                      addOrRemoveTeamLiveMode(item);
-                      ReactNativeHapticFeedback.trigger('notificationSuccess', {
-                        enableVibrateFallback: true,
-                        ignoreAndroidSystemSettings: false,
-                      });
-                    }}
-                  />
-                  <Text style={{color: 'gray'}}>
-                    {teams_list.indexOf(item) + 1}
-                  </Text>
-                  <View style={{flex: 1, flexDirection: 'column'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      // alignSelf: 'flex-start',
+                      // alignContent: 'flex-start',
+                      alignSelf: 'flex-start',
+                    }}>
+                    <BouncyCheckbox
+                      isChecked={removed_teams.includes(item)}
+                      disabled={item !== selectedTeam && selectedTeam !== null}
+                      fillColor={colors.primary}
+                      onPress={() => {
+                        addOrRemoveTeamLiveMode(item);
+                        ReactNativeHapticFeedback.trigger(
+                          'notificationSuccess',
+                          {
+                            enableVibrateFallback: true,
+                            ignoreAndroidSystemSettings: false,
+                          },
+                        );
+                      }}
+                    />
+                    <Text style={{color: 'gray'}}>
+                      {teams_list.indexOf(item) + 1}
+                    </Text>
                     <Text
                       style={
                         removed_teams.includes(item)
@@ -799,44 +805,53 @@ function PicklistCreator({
                       {teamNumberToNameMap.size === 0 ? '' : ' - '}
                       {teamNumberToNameMap.get(item.team_number)}
                     </Text>
-                    {selectedTeam === item && (
-                      <TextInput
-                        inputMode={'text'}
-                        placeholder={'Notes'}
-                        onChangeText={text => {
-                          let newTeams = teams_list.map(t => {
-                            if (t === item) {
-                              t.notes = text;
-                            }
-                            return t;
-                          });
-                          setTeamsList(newTeams);
-                        }}
-                        defaultValue={item.notes}
-                        placeholderTextColor={'gray'}
-                        multiline={true}
-                        style={{
-                          color: colors.text,
-                          backgroundColor: colors.card,
-                          marginLeft: '5%',
-                        }}
-                      />
-                    )}
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'flex-end',
+                        flexDirection: 'row',
+                      }}>
+                      {item.tags.length > 0 &&
+                        item.tags.map(tag => {
+                          return (
+                            <View
+                              style={{
+                                borderRadius: 10,
+                                backgroundColor: getTagFromTagId(tag)?.color,
+                                width: 14,
+                                height: 14,
+                                margin: '2%',
+                                opacity: removed_teams.includes(item) ? 0.4 : 1,
+                              }}
+                            />
+                          );
+                        })}
+                    </View>
                   </View>
-                  {item.tags.length > 0 &&
-                    item.tags.map(tag => {
-                      return (
-                        <View
-                          style={{
-                            borderRadius: 10,
-                            backgroundColor: getTagFromTagId(tag)?.color,
-                            padding: '2%',
-                            margin: '2%',
-                            opacity: removed_teams.includes(item) ? 0.4 : 1,
-                          }}
-                        />
-                      );
-                    })}
+                  {selectedTeam === item && (
+                    <TextInput
+                      inputMode={'text'}
+                      placeholder={'Notes'}
+                      onChangeText={text => {
+                        let newTeams = teams_list.map(t => {
+                          if (t === item) {
+                            t.notes = text;
+                          }
+                          return t;
+                        });
+                        setTeamsList(newTeams);
+                      }}
+                      defaultValue={item.notes}
+                      placeholderTextColor={'gray'}
+                      multiline={true}
+                      style={{
+                        color: colors.text,
+                        backgroundColor: colors.card,
+                        padding: '2%',
+                        marginTop: '2%',
+                      }}
+                    />
+                  )}
                 </View>
                 {selectedTeam === item && (
                   <View
