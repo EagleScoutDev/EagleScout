@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, Pressable, Text, View} from 'react-native';
 import ColorPicker, {HueSlider} from 'reanimated-color-picker';
 import {useTheme} from '@react-navigation/native';
@@ -13,21 +13,20 @@ const TagColorChangeModal = ({
   tag: TagStructure | undefined;
 }) => {
   const {colors} = useTheme();
-  const [color, setColor] = React.useState(tag?.color ?? '#FF0000');
+  const [color, setColor] = useState(tag?.color ?? '#FF0000');
 
   useEffect(() => {
     setColor(tag?.color ?? '#FF0000');
   }, [visible, tag]);
 
-  useEffect(() => {
-    if (tag !== undefined && color !== tag.color) {
-      TagsDB.updateColorOfTag(tag.id!, color!).then(r => {
-        console.log('finished updating color of tag');
-      });
-    }
-  }, [color]);
+  const saveColor = () => {
+    TagsDB.updateColorOfTag(tag.id!, color!).then(r => {
+      console.log('finished updating color of tag');
+    });
+  };
 
-  const onChangeColor = ({hex}) => {
+  const onChangeColor = ({hex}: {hex: string}) => {
+    console.log('hex', hex);
     setColor(hex);
   };
 
@@ -80,10 +79,13 @@ const TagColorChangeModal = ({
               {tag?.name}
             </Text>
           </View>
+          <Text style={{color: colors.text}}>{tag?.color}</Text>
           <ColorPicker
             onChange={onChangeColor}
             value={color}
-            onComplete={() => setVisible(false)}>
+            onComplete={() => {
+              saveColor();
+            }}>
             <HueSlider />
           </ColorPicker>
         </View>
