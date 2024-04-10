@@ -220,10 +220,14 @@ const TagsModal = ({
                       {!deletionActive && (
                         <Pressable
                           onPress={() => {
-                            if (item.id !== null) {
-                              setSelectedTag(item);
-                            } else {
+                            if (item.id === selectedTag?.id) {
                               setSelectedTag(null);
+                            } else {
+                              if (item.id !== null) {
+                                setSelectedTag(item);
+                              } else {
+                                setSelectedTag(null);
+                              }
                             }
                           }}
                           style={{
