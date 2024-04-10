@@ -53,9 +53,9 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const [indexOfGreatestValue, setIndexOfGreatestValue] = useState<number>(0);
 
   // for checkbox-type questions
-  const [valueOfMostOccurrences, setValueOfMostOccurrences] = useState<
-    boolean | null
-  >(null);
+  const [frequencies, setFrequencies] = useState(new Map<string, number>());
+  const [valueOfMostOccurrences, setValueOfMostOccurrences] =
+    useState<number>(0);
 
   useEffect(() => {
     if (item.type === 'textbox' && generate_ai_summary) {
@@ -97,21 +97,25 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       }
       setIndexOfGreatestValue(index);
     }
-
     if (item.type === 'checkboxes') {
-      let counts: number[] = [];
-      const iterArray = [true, false];
-      for (let i = 0; i < iterArray.length; i++) {
-        counts.push(data.filter(datum => datum.data === iterArray[i]).length);
+      const freq = new Map<string, number>(
+        item.options.map((option: string) => [option, 0]),
+      );
+      for (const {data: matchData} of data) {
+        for (const selected of matchData) {
+          freq.set(selected, freq.get(selected)! + 1);
+        }
       }
+      setFrequencies(freq);
+      const counts = Array.from(freq.values());
       const index = counts.indexOf(Math.max(...counts));
 
       // if the largest value appears multiple times, set the index to -1
       if (counts.filter(count => count === counts[index]).length > 1) {
-        setValueOfMostOccurrences(null);
+        setValueOfMostOccurrences(-1);
         return;
       }
-      setValueOfMostOccurrences(iterArray[index]);
+      setValueOfMostOccurrences(index);
     }
   }, []);
 
@@ -252,7 +256,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
 
       {item.type === 'checkboxes' && (
         <View>
-          {[true, false].map((value: boolean, index: number) => {
+          {item.options.map((label: string, index: number) => {
             return (
               <View>
                 <View
@@ -271,34 +275,32 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                       textAlign: 'left',
                       flex: 2,
                     }}>
-                    {value ? 'True' : 'False'}
+                    {label}
                   </Text>
                   <View
                     style={{
                       flex: 1,
                       backgroundColor:
-                        value === valueOfMostOccurrences
+                        index === valueOfMostOccurrences
                           ? colors.primary
                           : colors.card,
                       paddingVertical:
-                        value === valueOfMostOccurrences ? '2%' : 0,
+                        index === valueOfMostOccurrences ? '2%' : 0,
                       borderCurve: 'continuous',
                       borderRadius: 12,
                     }}>
                     <Text
                       style={{
                         color:
-                          value === valueOfMostOccurrences
+                          index === valueOfMostOccurrences
                             ? 'white'
                             : colors.text,
                         fontWeight: 'bold',
                         textAlign: 'center',
                       }}>
-                      {(
-                        (data.filter(datum => datum.data === value).length /
-                          data.length) *
-                        100
-                      ).toFixed(2)}
+                      {((frequencies.get(label)! / data.length) * 100).toFixed(
+                        2,
+                      )}
                       %
                     </Text>
                   </View>
@@ -319,7 +321,6 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
           </Text>
         </View>
       )}
-
       {/*<Text style={{color: 'green'}}>*/}
       {/*  raw data - {data.map(datum => datum.data + '(' + datum.match + ')')}*/}
       {/*</Text>*/}
