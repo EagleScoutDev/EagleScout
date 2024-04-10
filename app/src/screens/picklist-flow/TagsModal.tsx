@@ -130,8 +130,7 @@ const TagsModal = ({
             backgroundColor: colors.card,
             padding: '5%',
             margin: '5%',
-            marginVertical: selected_team === null ? '40%' : '30%',
-            marginBottom: selected_team === null ? '10%' : '80%',
+            marginVertical: '30%',
             borderRadius: 10,
             minWidth: '90%',
           }}>
@@ -273,57 +272,57 @@ const TagsModal = ({
               )}
             />
           )}
-          {selected_team === null && (
-            <View
+          {/*{selected_team === null && (*/}
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: colors.border,
+              paddingTop: '5%',
+            }}>
+            <TextInput
               style={{
-                borderTopWidth: 1,
-                borderTopColor: colors.border,
-                paddingTop: '5%',
-              }}>
-              <TextInput
-                style={{
-                  color: colors.text,
-                  backgroundColor: colors.background,
-                  padding: '5%',
-                  borderRadius: 10,
-                  minWidth: '100%',
-                }}
-                placeholder={'Tag Name'}
-                placeholderTextColor={'gray'}
-                value={newTagName}
-                onChangeText={setNewTagName}
-              />
-              <Pressable
-                disabled={newTagName === ''}
-                onPress={() => {
-                  TagsDB.createTag(picklist_id, newTagName).then(() => {
-                    TagsDB.getTagsForPicklist(picklist_id).then(tags => {
-                      setListOfTags(tags);
-                      setNewTagName('');
-                    });
+                color: colors.text,
+                backgroundColor: colors.background,
+                padding: '5%',
+                borderRadius: 10,
+                minWidth: '100%',
+              }}
+              placeholder={'Tag Name'}
+              placeholderTextColor={'gray'}
+              value={newTagName}
+              onChangeText={setNewTagName}
+            />
+            <Pressable
+              disabled={newTagName === ''}
+              onPress={() => {
+                TagsDB.createTag(picklist_id, newTagName).then(() => {
+                  TagsDB.getTagsForPicklist(picklist_id).then(tags => {
+                    setListOfTags(tags);
+                    setNewTagName('');
                   });
-                }}
+                });
+              }}
+              style={{
+                backgroundColor: newTagName === '' ? 'gray' : colors.primary,
+                padding: '5%',
+                borderRadius: 10,
+                marginTop: '5%',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10,
+              }}>
+              <Text
                 style={{
-                  backgroundColor: newTagName === '' ? 'gray' : colors.primary,
-                  padding: '5%',
-                  borderRadius: 10,
-                  marginTop: '5%',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: 10,
+                  color: 'white',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
                 }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                  }}>
-                  Create Tag
-                </Text>
-              </Pressable>
-            </View>
-          )}
+                Create Tag
+              </Text>
+            </Pressable>
+          </View>
+          {/*)}*/}
         </View>
       </KeyboardAvoidingView>
     </Modal>
