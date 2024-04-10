@@ -130,8 +130,10 @@ const TagsModal = ({
             backgroundColor: colors.card,
             padding: '5%',
             margin: '5%',
-            marginVertical: '20%',
+            marginVertical: selected_team === null ? '20%' : '30%',
+            marginBottom: selected_team === null ? '0%' : '80%',
             borderRadius: 10,
+            minWidth: '90%',
           }}>
           <View
             style={{
@@ -151,16 +153,18 @@ const TagsModal = ({
                 ? 'Tags for Team ' + selected_team.team_number
                 : 'Tags'}
             </Text>
-            <Pressable
-              onPress={() => setDeletionActive(prev => !prev)}
-              style={{flex: 0.2}}>
-              <Text
-                style={{
-                  color: deletionActive ? colors.primary : colors.text,
-                }}>
-                Edit
-              </Text>
-            </Pressable>
+            {selected_team === null && (
+              <Pressable
+                onPress={() => setDeletionActive(prev => !prev)}
+                style={{flex: 0.2}}>
+                <Text
+                  style={{
+                    color: deletionActive ? colors.primary : colors.text,
+                  }}>
+                  Edit
+                </Text>
+              </Pressable>
+            )}
             <Pressable onPress={() => setVisible(false)}>
               <Text style={{color: colors.text}}>Close</Text>
             </Pressable>
@@ -269,55 +273,57 @@ const TagsModal = ({
               )}
             />
           )}
-          <View
-            style={{
-              borderTopWidth: 1,
-              borderTopColor: colors.border,
-              paddingTop: '5%',
-            }}>
-            <TextInput
+          {selected_team === null && (
+            <View
               style={{
-                color: colors.text,
-                backgroundColor: colors.background,
-                padding: '5%',
-                borderRadius: 10,
-                minWidth: '100%',
-              }}
-              placeholder={'Tag Name'}
-              placeholderTextColor={'gray'}
-              value={newTagName}
-              onChangeText={setNewTagName}
-            />
-            <Pressable
-              disabled={newTagName === ''}
-              onPress={() => {
-                TagsDB.createTag(picklist_id, newTagName).then(() => {
-                  TagsDB.getTagsForPicklist(picklist_id).then(tags => {
-                    setListOfTags(tags);
-                    setNewTagName('');
-                  });
-                });
-              }}
-              style={{
-                backgroundColor: newTagName === '' ? 'gray' : colors.primary,
-                padding: '5%',
-                borderRadius: 10,
-                marginTop: '5%',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 10,
+                borderTopWidth: 1,
+                borderTopColor: colors.border,
+                paddingTop: '5%',
               }}>
-              <Text
+              <TextInput
                 style={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
+                  color: colors.text,
+                  backgroundColor: colors.background,
+                  padding: '5%',
+                  borderRadius: 10,
+                  minWidth: '100%',
+                }}
+                placeholder={'Tag Name'}
+                placeholderTextColor={'gray'}
+                value={newTagName}
+                onChangeText={setNewTagName}
+              />
+              <Pressable
+                disabled={newTagName === ''}
+                onPress={() => {
+                  TagsDB.createTag(picklist_id, newTagName).then(() => {
+                    TagsDB.getTagsForPicklist(picklist_id).then(tags => {
+                      setListOfTags(tags);
+                      setNewTagName('');
+                    });
+                  });
+                }}
+                style={{
+                  backgroundColor: newTagName === '' ? 'gray' : colors.primary,
+                  padding: '5%',
+                  borderRadius: 10,
+                  marginTop: '5%',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 10,
                 }}>
-                Create Tag
-              </Text>
-            </Pressable>
-          </View>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Create Tag
+                </Text>
+              </Pressable>
+            </View>
+          )}
         </View>
       </KeyboardAvoidingView>
     </Modal>
