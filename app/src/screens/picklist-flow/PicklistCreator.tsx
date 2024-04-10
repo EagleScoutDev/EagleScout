@@ -399,9 +399,18 @@ function PicklistCreator({
     });
     setTeamsList(newTeams);
 
-    let newTags = new Set(uniqueTags);
-    newTags.delete(tag);
-    setUniqueTags(newTags);
+    fillUniqueTags();
+  };
+
+  // sets up the set of unique tags
+  const fillUniqueTags = () => {
+    let temp = new Set<number>();
+    teams_list.forEach(t => {
+      t.tags.forEach(tag => {
+        temp.add(tag);
+      });
+    });
+    setUniqueTags(temp);
   };
 
   const deleteTag = (tag: number) => {
