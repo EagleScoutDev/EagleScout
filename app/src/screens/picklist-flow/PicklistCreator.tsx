@@ -29,6 +29,7 @@ import TeamAddingModal from './TeamAddingModal';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import TagsModal from './TagsModal';
 import {TagsDB, TagStructure} from '../../database/Tags';
+import TagColorChangeModal from './TagColorChangeModal';
 
 function PicklistCreator({
   route,
@@ -79,6 +80,11 @@ function PicklistCreator({
   const [uniqueTags, setUniqueTags] = useState<Set<number>>(new Set());
   const [allTags, setAllTags] = useState<TagStructure[]>([]);
   const [filteredTags, setFilteredTags] = useState<Set<number>>(new Set());
+  const [tagColorChangeModalVisible, setTagColorChangeModalVisible] =
+    useState(false);
+  const [selectedTagForColorChange, setSelectedTagForColorChange] = useState<
+    TagStructure | undefined
+  >(undefined);
 
   useEffect(() => {
     console.log('picklist_id: ', picklist_id);
@@ -87,7 +93,7 @@ function PicklistCreator({
         setAllTags(tags);
       });
     }
-  }, [createTagModal]);
+  }, [createTagModal, tagColorChangeModalVisible]);
 
   // fetches all teams at the current competition for use in the team adding modal, name map
   useEffect(() => {
@@ -549,7 +555,6 @@ function PicklistCreator({
           defaultValue={'Enter Name'}
         />
       )}
-
       <View style={{flexDirection: 'row'}}>
         <Pressable
           onPress={() => setTeamAddingModalVisible(true)}
@@ -582,7 +587,6 @@ function PicklistCreator({
           </Svg>
         </Pressable>
       </View>
-
       <View
         style={{
           flexDirection: 'row',
@@ -594,6 +598,10 @@ function PicklistCreator({
           return (
             <Pressable
               key={tag}
+              onLongPress={() => {
+                setTagColorChangeModalVisible(true);
+                setSelectedTagForColorChange(getTagFromTagId(tag));
+              }}
               onPress={() => {
                 if (filteredTags.has(tag)) {
                   let newTags = new Set(filteredTags);
@@ -632,7 +640,6 @@ function PicklistCreator({
           );
         })}
       </View>
-
       <TagsModal
         visible={createTagModal}
         setVisible={setCreateTagModal}
@@ -642,7 +649,11 @@ function PicklistCreator({
         removeTag={removeTag}
         issueDeleteCommand={deleteTag}
       />
-
+      <TagColorChangeModal
+        visible={tagColorChangeModalVisible}
+        setVisible={setTagColorChangeModalVisible}
+        tag={selectedTagForColorChange}
+      />
       {teams_list.length === 0 && (
         <Pressable onPress={() => setTeamAddingModalVisible(true)}>
           <Text
@@ -664,7 +675,6 @@ function PicklistCreator({
         teamsAtCompetition={tbaSimpleTeams}
         addOrRemoveTeam={addOrRemoveTeam}
       />
-
       {dragging_active ? (
         <DraggableFlatList
           data={teams_list}
