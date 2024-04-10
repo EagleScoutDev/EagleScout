@@ -254,7 +254,11 @@ const TagsModal = ({
                     </View>
                     {selectedTag?.id === item.id && (
                       <ColorPicker
-                        value={item.color === '' ? '#FF0000' : item.color}
+                        value={
+                          item.color === '' || !item.color
+                            ? '#FF0000'
+                            : item.color
+                        }
                         onComplete={onSelectColor}
                         style={{marginHorizontal: '4%', paddingVertical: '4%'}}>
                         <HueSlider />
