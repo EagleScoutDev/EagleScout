@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
 
-const VERSION = '7.2.1 (OTA 1)';
+const VERSION = '7.2.1 (OTA 2.5)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
@@ -164,6 +164,7 @@ const SettingsHome = ({
             navigation.navigate('Edit Profile', {
               initialFirstName: user ? user.first_name : '',
               initialLastName: user ? user.last_name : '',
+              initialEmoji: user ? user.emoji : '🙂',
               //initialEmail: user.email,
             });
           }}

@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@miblanchard/react-native-slider": "^2.6.0",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/datetimepicker": "^7.6.2",
@@ -45,7 +46,8 @@
     "react-native-super-grid": "^5.0.0",
     "react-native-svg": "^13.13.0",
     "react-native-toast-message": "^2.1.6",
-    "react-native-url-polyfill": "^2.0.0"
+    "react-native-url-polyfill": "^2.0.0",
+    "rn-emoji-keyboard": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
