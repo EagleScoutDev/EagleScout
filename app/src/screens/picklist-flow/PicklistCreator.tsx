@@ -409,7 +409,7 @@ function PicklistCreator({
       removeTag(team, tag);
     }
 
-    TagsDB.deleteTag(String(tag)).then(() => {
+    TagsDB.deleteTag(tag).then(() => {
       TagsDB.getTagsForPicklist(picklist_id).then(tags => {
         setAllTags(tags);
       });

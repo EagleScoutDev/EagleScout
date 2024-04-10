@@ -58,7 +58,7 @@ export class TagsDB {
     }
   }
 
-  static async deleteTag(tag_id: string) {
+  static async deleteTag(tag_id: number) {
     try {
       const {data, error} = await supabase
         .from('tags')
