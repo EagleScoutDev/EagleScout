@@ -777,21 +777,25 @@ function PicklistCreator({
                     style={{
                       flexDirection: 'row',
                       alignSelf: 'flex-end',
-                      alignItems: 'center',
+                      paddingVertical: '2%',
+                      // alignItems: 'center',
+                      // justifyContent: 'space-around',
                     }}>
                     <Pressable
+                      style={{paddingHorizontal: '4%', flex: 0}}
                       onPress={() => {
                         setCreateTagModal(true);
                       }}>
                       <Svg
-                        width="16"
-                        height="16"
+                        width="24"
+                        height="24"
                         fill="gray"
                         viewBox="0 0 16 16">
                         <Path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1zm4 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
                       </Svg>
                     </Pressable>
                     <Pressable
+                      style={{paddingHorizontal: '4%', flex: 0}}
                       onPress={() => {
                         navigation.navigate('Search', {
                           screen: 'TeamViewer',
@@ -803,38 +807,43 @@ function PicklistCreator({
                           },
                         });
                       }}>
-                      <Text style={{color: 'gray', padding: '5%'}}>
-                        Learn More
-                      </Text>
+                      <Svg
+                        width="24"
+                        height="24"
+                        fill="gray"
+                        viewBox="0 0 16 16">
+                        <Path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <Path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                      </Svg>
                     </Pressable>
-                    <Pressable>
-                      <Text
-                        style={{
-                          color: 'red',
-                          textAlign: 'right',
-                          padding: '5%',
-                        }}
-                        onPress={() => {
-                          Alert.alert(
-                            'Remove Team',
-                            'Are you sure you want to remove this team from the picklist?',
-                            [
-                              {
-                                text: 'Cancel',
-                                style: 'cancel',
+                    <Pressable
+                      style={{paddingHorizontal: '4%', flex: 0}}
+                      onPress={() => {
+                        Alert.alert(
+                          'Remove Team',
+                          'Are you sure you want to remove this team from the picklist?',
+                          [
+                            {
+                              text: 'Cancel',
+                              style: 'cancel',
+                            },
+                            {
+                              text: 'Remove',
+                              onPress: () => {
+                                removeTeam(item.team_number);
+                                setSelectedTeamWithAnimation(null);
                               },
-                              {
-                                text: 'Remove',
-                                onPress: () => {
-                                  removeTeam(item.team_number);
-                                  setSelectedTeamWithAnimation(null);
-                                },
-                              },
-                            ],
-                          );
-                        }}>
-                        Remove
-                      </Text>
+                            },
+                          ],
+                        );
+                      }}>
+                      <Svg
+                        width="24"
+                        height="24"
+                        fill="red"
+                        viewBox="0 0 16 16">
+                        <Path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                      </Svg>
                     </Pressable>
                   </View>
                 )}
