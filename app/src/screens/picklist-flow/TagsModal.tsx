@@ -207,11 +207,14 @@ const TagsModal = ({
                       justifyContent: 'space-between',
 
                       borderWidth: 1,
-                      borderColor: selectedTags.includes(
-                        Number.parseInt(item.id ?? '', 10),
-                      )
-                        ? colors.primary
-                        : colors.border,
+                      borderColor:
+                        selected_team !== null
+                          ? selectedTags.includes(
+                              Number.parseInt(item.id ?? '', 10),
+                            )
+                            ? colors.primary
+                            : colors.border
+                          : colors.border,
                     }}>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: colors.text, flex: 1}}>
