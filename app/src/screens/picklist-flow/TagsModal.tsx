@@ -130,8 +130,8 @@ const TagsModal = ({
             backgroundColor: colors.card,
             padding: '5%',
             margin: '5%',
-            marginVertical: selected_team === null ? '20%' : '30%',
-            marginBottom: selected_team === null ? '0%' : '80%',
+            marginVertical: selected_team === null ? '40%' : '30%',
+            marginBottom: selected_team === null ? '10%' : '80%',
             borderRadius: 10,
             minWidth: '90%',
           }}>
