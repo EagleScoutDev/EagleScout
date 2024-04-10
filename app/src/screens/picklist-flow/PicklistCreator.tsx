@@ -767,6 +767,7 @@ function PicklistCreator({
                             backgroundColor: getTagFromTagId(tag)?.color,
                             padding: '2%',
                             margin: '2%',
+                            opacity: removed_teams.includes(item) ? 0.4 : 1,
                           }}
                         />
                       );
