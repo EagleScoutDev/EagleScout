@@ -410,6 +410,22 @@ function PicklistCreator({
     });
   };
 
+  const getTagFromTagId = (tagId: number) => {
+    return allTags.find(tag => Number.parseInt(tag.id ?? '', 10) === tagId);
+  };
+
+  const getIdealTextColor = (bgColor: string) => {
+    const nThreshold = 105;
+    const components = {
+      R: parseInt(bgColor.substring(1, 3), 16),
+      G: parseInt(bgColor.substring(3, 5), 16),
+      B: parseInt(bgColor.substring(5, 7), 16),
+    };
+    const bgDelta =
+      components.R * 0.299 + components.G * 0.587 + components.B * 0.114;
+    return 255 - bgDelta < nThreshold ? '#000000' : '#ffffff';
+  };
+
   const styles = StyleSheet.create({
     name_input: {
       color: colors.text,
@@ -591,7 +607,7 @@ function PicklistCreator({
               }}
               style={{
                 backgroundColor: filteredTags.has(tag)
-                  ? colors.primary
+                  ? getTagFromTagId(tag)?.color
                   : colors.card,
                 paddingHorizontal: '4%',
                 paddingVertical: '2%',
@@ -599,12 +615,14 @@ function PicklistCreator({
                 borderRadius: 20,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                borderWidth: 1,
-                borderColor: colors.border,
+                borderWidth: 2,
+                borderColor: getTagFromTagId(tag)?.color,
               }}>
               <Text
                 style={{
-                  color: filteredTags.has(tag) ? 'white' : colors.text,
+                  color: filteredTags.has(tag)
+                    ? getIdealTextColor(getTagFromTagId(tag)?.color ?? '')
+                    : colors.text,
                   fontWeight: filteredTags.has(tag) ? 'bold' : 'normal',
                 }}>
                 {allTags.find(t => Number.parseInt(t.id ?? '', 10) === tag)
@@ -730,6 +748,19 @@ function PicklistCreator({
                       />
                     )}
                   </View>
+                  {item.tags.length > 0 &&
+                    item.tags.map(tag => {
+                      return (
+                        <View
+                          style={{
+                            borderRadius: 10,
+                            backgroundColor: getTagFromTagId(tag)?.color,
+                            padding: '2%',
+                            margin: '2%',
+                          }}
+                        />
+                      );
+                    })}
                 </View>
                 {selectedTeam === item && (
                   <View
