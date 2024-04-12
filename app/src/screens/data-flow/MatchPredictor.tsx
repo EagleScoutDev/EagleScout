@@ -33,56 +33,104 @@ const MatchPredictor = () => {
 
   const {competitionId, matches, getTeamsForMatch} =
     useCurrentCompetitionMatches();
+
+  // all teams in the match, with data
   const [allTeams, setAllTeams] = useState<TeamWithData[]>([]);
-  const [blueAlliance, setBlueAlliance] = useState<number[]>([]);
-  const [redAlliance, setRedAlliance] = useState<number[]>([]);
 
-  const [maxMatchNumber, setMaxMatchNumber] = useState<number>(0);
+  // teams in the match, from cache. no data except team number
+  const [teamsWithoutData, setTeamsWithoutData] = useState<number[]>([]);
+  const [numReportsPerTeam, setNumReportsPerTeam] = useState<number[]>([]);
 
+  // modal for choosing questions
   const [formulaCreatorActive, setFormulaCreatorActive] =
     useState<boolean>(false);
-
-  // const [inputStyle, setInputStyle] = useState<InputStyle>(InputStyle.NONE);
   const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>(
     [],
   );
 
-  async function getData() {
-    const teams = getTeamsForMatch(Number(matchNumber));
+  // uses local cache to get the teams in the match
+  async function getTeamsInMatch() {
+    const teams = getTeamsForMatch(Number(matchNumber)) || [];
     console.log('teams for match ' + matchNumber + ': ' + teams);
     if (teams.length > 0) {
-      let teamsWithData: TeamWithData[] = [];
-      for (let team of teams) {
-        let res = await getProcessedDataForTeam(team);
-        console.log(team + ' : ' + res + ' -> ' + TeamAggregation.getMean(res));
-      }
-      setAllTeams(teamsWithData);
-      setBlueAlliance(teams.slice(0, 3));
-      setRedAlliance(teams.slice(3, 6));
+      let temp = teams.map(team => ({
+        team_number: team,
+        mean: -1,
+        stdev: -1,
+      }));
+      setTeamsWithoutData(teams);
+      return temp;
     }
+    return [];
   }
 
-  useEffect(() => {
-    if (matches.length > 0) {
-      matches.sort((a, b) => a.match - b.match);
-      setMaxMatchNumber(matches[matches.length - 1].match);
-    }
-  }, []);
+  // const getDataForAllTeams = (teams: TeamWithData[] | undefined) => {
+  //   if (!teams) {
+  //     return;
+  //   }
+  //   // let teamsWithData: TeamWithData[] = [];
+  //   console.log('all teams: ' + teams);
+  //
+  //   const promises = teams.map(async team => ({
+  //     team_number: team.team_number,
+  //     mean: TeamAggregation.getMean(
+  //       await getProcessedDataForTeam(team.team_number),
+  //     ),
+  //     stdev: TeamAggregation.getStandardDeviation(
+  //       await getProcessedDataForTeam(team.team_number),
+  //     ),
+  //   }));
+  //
+  //   Promise.all(promises).then(res => {
+  //     console.log(res);
+  //     setAllTeams(res);
+  //   });
+  // };
 
-  const getProcessedDataForTeam = (team_number: number): Promise<number[]> => {
-    ScoutReportsDB.getReportsForTeamAtCompetition(
-      team_number,
-      competitionId,
-    ).then(reports => {
-      console.log('reports for team ' + team_number + ': ' + reports);
-      if (chosenQuestionIndices.length > 0) {
-        return TeamAggregation.createArrayFromIndices(
-          reports.map(report => report.data),
+  useEffect(() => {
+    getTeamsInMatch()
+      .then(r => {
+        if (r) {
+          // getDataForAllTeams(r);
+          setNumReportsPerTeam([0, 0, 0, 0, 0, 0]);
+        }
+      })
+      .catch(error => console.error('Failed to fetch teams in match:', error));
+  }, [matchNumber, competitionId, chosenQuestionIndices]);
+
+  // const getProcessedDataForTeams = async () => {
+  //   let temp = [];
+  //   for (let i = 0; i < teamsWithoutData.length; i++) {
+  //     const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+  //       teamsWithoutData[i],
+  //       competitionId,
+  //     );
+  //     temp.push(reports.length);
+  //   }
+  //   setNumReportsPerTeam(temp);
+  // };
+
+  const getProcessedDataForTeams = async () => {
+    let temp: TeamWithData[] = [];
+    for (let i = 0; i < teamsWithoutData.length; i++) {
+      const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+        teamsWithoutData[i],
+        competitionId,
+      );
+      if (reports.length !== 0) {
+        let data = TeamAggregation.createArrayFromIndices(
+          reports.map(a => a.data),
           chosenQuestionIndices,
         );
+        temp.push({
+          team_number: teamsWithoutData[i],
+          mean: data.reduce((a, b) => a + b, 0) / data.length,
+          stdev: TeamAggregation.getStandardDeviation(data),
+        });
       }
-    });
-    return Promise.resolve([]);
+    }
+    setAllTeams(temp);
+    // setNumReportsPerTeam(temp);
   };
 
   const styles = StyleSheet.create({
@@ -102,25 +150,28 @@ const MatchPredictor = () => {
       borderRadius: 10,
       padding: '5%',
     },
+    match_input_container: {
+      flexDirection: 'row',
+      marginHorizontal: '10%',
+      marginBottom: 40,
+      marginTop: 20,
+    },
+    match_label: {
+      color: colors.text,
+      fontSize: 20,
+      flex: 1,
+    },
+    team_item: {
+      color: colors.text,
+      fontSize: 20,
+    },
   });
 
   return (
     <View>
-      {/*{inputStyle !== InputStyle.NONE && (*/}
       <Pressable onPress={() => setFormulaCreatorActive(true)}>
         <Text style={{color: colors.primary, textAlign: 'center'}}>
           Choose your questions
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          console.log(allTeams);
-          getData().then(() => {
-            console.log('got data');
-          });
-        }}>
-        <Text style={{color: colors.primary, textAlign: 'center'}}>
-          attempt processing
         </Text>
       </Pressable>
 
@@ -130,14 +181,8 @@ const MatchPredictor = () => {
         chosenQuestionIndices={chosenQuestionIndices}
         setChosenQuestionIndices={setChosenQuestionIndices}
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          marginHorizontal: '10%',
-          marginBottom: 40,
-          marginTop: 20,
-        }}>
-        <Text style={{color: colors.text, fontSize: 20, flex: 1}}>Match</Text>
+      <View style={styles.match_input_container}>
+        <Text style={styles.match_label}>Match</Text>
         <TextInput
           style={styles.textInput}
           placeholder="###"
@@ -147,17 +192,6 @@ const MatchPredictor = () => {
           onChangeText={text => setMatchNumber(Number(text))}
         />
       </View>
-      {/*{matchNumber > maxMatchNumber && (*/}
-      {/*  <Text*/}
-      {/*    style={{*/}
-      {/*      color: 'red',*/}
-      {/*      fontSize: 16,*/}
-      {/*      textAlign: 'center',*/}
-      {/*      marginBottom: '10%',*/}
-      {/*    }}>*/}
-      {/*    Maximum match number is {maxMatchNumber}*/}
-      {/*  </Text>*/}
-      {/*)}*/}
       {matchNumber !== 0 && (
         <PercentageWinBar
           bluePercentage={bluePercentage}
@@ -167,39 +201,66 @@ const MatchPredictor = () => {
       <Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>
         {chosenQuestionIndices.toString()}
       </Text>
-      {matchNumber !== 0 &&
-        blueAlliance.length > 0 &&
-        redAlliance.length > 0 && (
+
+      {matchNumber !== 0 && teamsWithoutData.length > 0 && (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            marginVertical: '4%',
+          }}>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              marginVertical: '4%',
+              ...styles.team_container,
+              backgroundColor: 'blue',
             }}>
-            <View
-              style={{
-                ...styles.team_container,
-                backgroundColor: 'blue',
-              }}>
-              {redAlliance.map((team, index) => (
-                <Text key={index} style={{color: 'white', fontSize: 20}}>
-                  {team} {allTeams.find(t => t.team_number === team)?.mean}
-                </Text>
-              ))}
-            </View>
-            <View
-              style={{
-                ...styles.team_container,
-                backgroundColor: 'red',
-              }}>
-              {blueAlliance.map((team, index) => (
-                <Text key={index} style={{color: 'white', fontSize: 20}}>
-                  {team} {allTeams.find(t => t.team_number === team)?.mean}
-                </Text>
-              ))}
-            </View>
+            {teamsWithoutData.slice(3, 6).map((team, index) => (
+              <Text key={index} style={styles.team_item}>
+                {team} {allTeams.find(a => a.team_number === team)?.mean}
+                {/*{team} {allTeams.find(t => t.team_number === team)?.mean}*/}
+              </Text>
+            ))}
           </View>
-        )}
+          <View
+            style={{
+              ...styles.team_container,
+              backgroundColor: 'red',
+            }}>
+            {teamsWithoutData.slice(0, 3).map((team, index) => (
+              <Text key={index} style={styles.team_item}>
+                {team} {allTeams.find(a => a.team_number === team)?.mean}
+                {/*{team} {allTeams.find(t => t.team_number === team)?.mean}*/}
+              </Text>
+            ))}
+          </View>
+        </View>
+      )}
+      {matchNumber !== 0 && teamsWithoutData.length > 0 && (
+        <View>
+          <Pressable
+            disabled={chosenQuestionIndices.length === 0}
+            onPress={() => {
+              getProcessedDataForTeams();
+            }}
+            style={{
+              backgroundColor:
+                chosenQuestionIndices.length === 0 ? 'gray' : 'yellow',
+              padding: 10,
+              borderRadius: 10,
+              marginHorizontal: '5%',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                textAlign: 'center',
+                fontSize: 20,
+                fontWeight: '700',
+              }}>
+              Predict
+            </Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 };

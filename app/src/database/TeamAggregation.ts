@@ -10,7 +10,7 @@ class TeamAggregation {
    * @returns The average value of the array.
    */
   // from: https://stackoverflow.com/questions/7343890/standard-deviation-javascript
-  static async getStandardDeviation(array: number[]) {
+  static getStandardDeviation(array: number[]) {
     if (array.length === 0 || array.length === 1) {
       console.log('get standard deviation called with empty array');
       return 0;
@@ -24,7 +24,7 @@ class TeamAggregation {
 
   static getMean(array: number[]) {
     if (array.length === 0) {
-      console.log('get mean called with empty array');
+      console.warn('get mean called with empty array');
       return 0;
     }
     let sum = 0;
@@ -33,11 +33,12 @@ class TeamAggregation {
       sum += array[i];
     }
 
+    console.log('calculated mean: ', sum / array.length, 'from array:', array);
     return sum / array.length;
   }
 
   /**
-   * This function calculates the median value of a given array.
+   * This function returns a sum.
    * @param reports an array of arrays of numbers to process
    * @param indices an array of indices to include in the calculation
    * @returns a sum of the values at the given indices
