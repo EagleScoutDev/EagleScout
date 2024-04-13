@@ -17,42 +17,48 @@ const PercentageWinBar = ({
           marginHorizontal: '10%',
           justifyContent: 'center',
         }}>
-        <View
-          style={{
-            backgroundColor: 'blue',
-            minWidth: `${bluePercentage}%`,
-            height: 24,
-            borderTopLeftRadius: 10,
-            borderBottomLeftRadius: 10,
-            justifyContent: 'center',
-          }}>
-          <Text
+        {redPercentage !== 100 && (
+          <View
             style={{
-              color: 'white',
-              textAlign: 'center',
-              fontWeight: bluePercentage > redPercentage ? 'bold' : 'normal',
+              backgroundColor: 'blue',
+              minWidth: `${bluePercentage}%`,
+              height: 24,
+              borderTopLeftRadius: 10,
+              borderBottomLeftRadius: 10,
+              justifyContent: 'center',
+              borderRadius: bluePercentage === 100 ? 10 : 0,
             }}>
-            {bluePercentage}%
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: 'red',
-            width: `${redPercentage}%`,
-            height: 24,
-            borderBottomRightRadius: 10,
-            borderTopRightRadius: 10,
-            justifyContent: 'center',
-          }}>
-          <Text
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontWeight: bluePercentage > redPercentage ? 'bold' : 'normal',
+              }}>
+              {bluePercentage}%
+            </Text>
+          </View>
+        )}
+        {redPercentage !== 0 && (
+          <View
             style={{
-              color: 'white',
-              textAlign: 'center',
-              fontWeight: redPercentage > bluePercentage ? 'bold' : 'normal',
+              backgroundColor: 'red',
+              width: `${redPercentage}%`,
+              height: 24,
+              borderBottomRightRadius: 10,
+              borderTopRightRadius: 10,
+              justifyContent: 'center',
+              borderRadius: redPercentage === 100 ? 10 : 0,
             }}>
-            {redPercentage}%
-          </Text>
-        </View>
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontWeight: redPercentage > bluePercentage ? 'bold' : 'normal',
+              }}>
+              {redPercentage}%
+            </Text>
+          </View>
+        )}
       </View>
       <Text
         style={{
