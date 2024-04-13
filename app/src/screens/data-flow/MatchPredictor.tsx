@@ -326,8 +326,6 @@ const MatchPredictor = () => {
       color: colors.primary,
       fontSize: 16,
       textAlign: 'right',
-      marginVertical: '4%',
-      marginRight: '4%',
     },
   });
 
@@ -385,9 +383,25 @@ const MatchPredictor = () => {
 
   return (
     <View>
-      <Pressable onPress={() => setFormulaCreatorActive(true)}>
-        <Text style={styles.small_question_prompt}>Change Questions</Text>
-      </Pressable>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginHorizontal: '4%',
+          marginVertical: '2%',
+        }}>
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 16,
+            textAlign: 'right',
+          }}>
+          {compName}
+        </Text>
+        <Pressable onPress={() => setFormulaCreatorActive(true)}>
+          <Text style={styles.small_question_prompt}>Change Questions</Text>
+        </Pressable>
+      </View>
 
       <QuestionFormulaCreator
         visible={formulaCreatorActive}
