@@ -3,6 +3,7 @@ import {FlatList, Modal, Pressable, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CompetitionsDB from '../../database/Competitions';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Slider from '@react-native-community/slider';
 
 const QuestionFormulaCreator = ({
   visible,
@@ -19,7 +20,7 @@ const QuestionFormulaCreator = ({
   // const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>(
   //   [],
   // );
-  const [numberQuestions, setNumberQuestions] = React.useState<Object[]>([]);
+  // const [numberQuestions, setNumberQuestions] = React.useState<Object[]>([]);
   const [currForm, setCurrForm] = useState<Array<Object>>();
 
   useEffect(() => {
@@ -36,19 +37,6 @@ const QuestionFormulaCreator = ({
       setCurrForm(competition.form);
     });
   }, []);
-
-  useEffect(() => {
-    // console.log('form: ' + currForm);
-    if (currForm) {
-      let temp: Object[] = [];
-      for (let i = 0; i < currForm?.length; i++) {
-        if (currForm[i].type === 'number') {
-          temp.push(currForm[i]);
-        }
-      }
-      setNumberQuestions(temp);
-    }
-  }, [currForm]);
 
   return (
     <Modal
@@ -103,36 +91,54 @@ const QuestionFormulaCreator = ({
           <View style={{marginVertical: '4%'}} />
         )}
         <FlatList
-          data={numberQuestions}
+          data={currForm}
           renderItem={({item, index}) => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginVertical: '1%',
-                  alignItems: 'center',
-                  marginHorizontal: '4%',
-                }}>
-                <BouncyCheckbox
-                  fillColor={'blue'}
-                  text={item.question}
-                  isChecked={chosenQuestionIndices.includes(index)}
-                  textStyle={{color: colors.text, textDecorationLine: 'none'}}
-                  onPress={isChecked => {
-                    if (isChecked) {
-                      setChosenQuestionIndices([
-                        ...chosenQuestionIndices,
-                        index,
-                      ]);
-                    } else {
-                      setChosenQuestionIndices(
-                        chosenQuestionIndices.filter(i => i !== index),
-                      );
-                    }
+            if (item.type === 'heading') {
+              return (
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    marginVertical: '4%',
+                    marginLeft: '4%',
                   }}
-                />
-              </View>
-            );
+                  key={index}>
+                  {item.title}
+                </Text>
+              );
+            }
+            if (item.type === 'number') {
+              return (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginVertical: '1%',
+                    alignItems: 'center',
+                    marginHorizontal: '4%',
+                  }}>
+                  <BouncyCheckbox
+                    fillColor={'blue'}
+                    text={item.question}
+                    isChecked={chosenQuestionIndices.includes(index)}
+                    textStyle={{color: colors.text, textDecorationLine: 'none'}}
+                    onPress={isChecked => {
+                      if (isChecked) {
+                        setChosenQuestionIndices([
+                          ...chosenQuestionIndices,
+                          index,
+                        ]);
+                      } else {
+                        setChosenQuestionIndices(
+                          chosenQuestionIndices.filter(i => i !== index),
+                        );
+                      }
+                    }}
+                  />
+                </View>
+              );
+            }
+            return null;
           }}
         />
       </View>
