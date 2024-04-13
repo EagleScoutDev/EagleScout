@@ -12,6 +12,10 @@ import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatch
 import QuestionFormulaCreator from './QuestionFormulaCreator';
 import ScoutReportsDB from '../../database/ScoutReports';
 import TeamAggregation from '../../database/TeamAggregation';
+import {PredictionConfidence} from '../../lib/PredictionConfidence';
+import PredictionConfidenceTag from './PredictionConfidenceTag';
+import PredictionExplainerModal from './PredictionExplainerModal';
+import predictionExplainerModal from './PredictionExplainerModal';
 
 enum InputStyle {
   NONE,
@@ -47,6 +51,11 @@ const MatchPredictor = () => {
   const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>(
     [],
   );
+
+  const [predictionConfidence, setPredictionConfidence] =
+    useState<PredictionConfidence>(PredictionConfidence.UNDEFINED);
+  const [predictionExplainerModalVisible, setPredictionExplainerModalVisible] =
+    useState(false);
 
   // uses local cache to get the teams in the match
   async function getTeamsInMatch() {
@@ -86,6 +95,32 @@ const MatchPredictor = () => {
   //     setAllTeams(res);
   //   });
   // };
+  const assignPredictionConfidence = () => {
+    // rules:
+    // if every team has at least 6 reports, set to high
+    // if every team has at least 4 reports, set to medium
+    // if every team has at least 2 reports, set to low
+    // otherwise, set to undefined
+
+    let confidence: PredictionConfidence;
+    let numTwoReports = numReportsPerTeam.filter(a => a >= 2).length;
+    let numFourReports = numReportsPerTeam.filter(a => a >= 4).length;
+    let numSixReports = numReportsPerTeam.filter(a => a >= 6).length;
+    if (numSixReports === 6) {
+      confidence = PredictionConfidence.HIGH;
+    } else if (numFourReports === 6) {
+      confidence = PredictionConfidence.MEDIUM;
+    } else if (numTwoReports === 6) {
+      confidence = PredictionConfidence.LOW;
+    } else {
+      confidence = PredictionConfidence.UNDEFINED;
+    }
+    setPredictionConfidence(confidence);
+  };
+
+  useEffect(() => {
+    assignPredictionConfidence();
+  }, [numReportsPerTeam]);
 
   useEffect(() => {
     getTeamsInMatch()
@@ -160,6 +195,7 @@ const MatchPredictor = () => {
 
   const getProcessedDataForTeams = async () => {
     let temp: TeamWithData[] = [];
+    let tempNumReports: number[] = [];
     for (let i = 0; i < teamsWithoutData.length; i++) {
       const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
         teamsWithoutData[i],
@@ -176,8 +212,10 @@ const MatchPredictor = () => {
           stdev: TeamAggregation.getStandardDeviation(data),
         });
       }
+      tempNumReports.push(reports.length);
     }
     setAllTeams(temp);
+    setNumReportsPerTeam(tempNumReports);
     // setNumReportsPerTeam(temp);
   };
 
@@ -250,6 +288,17 @@ const MatchPredictor = () => {
       <Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>
         {chosenQuestionIndices.toString()}
       </Text>
+      <Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>
+        {numReportsPerTeam.toString()}
+      </Text>
+      <PredictionConfidenceTag
+        confidence={predictionConfidence}
+        setModal={setPredictionExplainerModalVisible}
+      />
+      <PredictionExplainerModal
+        visible={predictionExplainerModalVisible}
+        setVisible={setPredictionExplainerModalVisible}
+      />
 
       {matchNumber !== 0 && teamsWithoutData.length > 0 && (
         <View
