@@ -124,7 +124,7 @@ const MatchPredictor = () => {
         );
         temp.push({
           team_number: teamsWithoutData[i],
-          mean: data.reduce((a, b) => a + b, 0) / data.length,
+          mean: TeamAggregation.getMean(data),
           stdev: TeamAggregation.getStandardDeviation(data),
         });
       }
@@ -164,6 +164,7 @@ const MatchPredictor = () => {
     team_item: {
       color: colors.text,
       fontSize: 20,
+      marginHorizontal: 4,
     },
   });
 
@@ -215,10 +216,17 @@ const MatchPredictor = () => {
               backgroundColor: 'blue',
             }}>
             {teamsWithoutData.slice(3, 6).map((team, index) => (
-              <Text key={index} style={styles.team_item}>
-                {team} {allTeams.find(a => a.team_number === team)?.mean}
-                {/*{team} {allTeams.find(t => t.team_number === team)?.mean}*/}
-              </Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text key={team} style={styles.team_item}>
+                  {team}
+                </Text>
+                <Text key={team + '1'} style={styles.team_item}>
+                  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}
+                </Text>
+                <Text key={team + '2'} style={styles.team_item}>
+                  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}
+                </Text>
+              </View>
             ))}
           </View>
           <View
@@ -227,10 +235,17 @@ const MatchPredictor = () => {
               backgroundColor: 'red',
             }}>
             {teamsWithoutData.slice(0, 3).map((team, index) => (
-              <Text key={index} style={styles.team_item}>
-                {team} {allTeams.find(a => a.team_number === team)?.mean}
-                {/*{team} {allTeams.find(t => t.team_number === team)?.mean}*/}
-              </Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text key={team} style={styles.team_item}>
+                  {team}
+                </Text>
+                <Text key={team + '1'} style={styles.team_item}>
+                  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}
+                </Text>
+                <Text key={team + '2'} style={styles.team_item}>
+                  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}
+                </Text>
+              </View>
             ))}
           </View>
         </View>
@@ -257,6 +272,32 @@ const MatchPredictor = () => {
                 fontWeight: '700',
               }}>
               Predict
+            </Text>
+          </Pressable>
+          <Pressable
+            disabled={chosenQuestionIndices.length === 0}
+            onPress={() => {
+              console.log('debugging');
+              console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+              console.log(allTeams);
+              console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+            }}
+            style={{
+              backgroundColor:
+                chosenQuestionIndices.length === 0 ? 'gray' : 'cyan',
+              padding: 10,
+              borderRadius: 10,
+              marginHorizontal: '5%',
+              marginVertical: '4%',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                textAlign: 'center',
+                fontSize: 20,
+                fontWeight: '700',
+              }}>
+              Debug
             </Text>
           </Pressable>
         </View>
