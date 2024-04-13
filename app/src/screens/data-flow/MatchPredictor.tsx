@@ -390,14 +390,16 @@ const MatchPredictor = () => {
           marginHorizontal: '4%',
           marginVertical: '2%',
         }}>
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 16,
-            textAlign: 'right',
+        <Pressable
+          onPress={() => {
+            setNoActiveCompetition(true);
+            setOngoingCompetition(false);
+            setCurrForm(undefined);
+            setCompID(-1);
+            setCompName('');
           }}>
-          {compName}
-        </Text>
+          <Text style={styles.small_question_prompt}>{compName}</Text>
+        </Pressable>
         <Pressable onPress={() => setFormulaCreatorActive(true)}>
           <Text style={styles.small_question_prompt}>Change Questions</Text>
         </Pressable>
