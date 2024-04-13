@@ -133,6 +133,17 @@ const MatchPredictor = () => {
       console.log('Team Number: ' + finalWinner[i].team);
       console.log('Win Percentage: ' + finalWinner[i].probability);
     }
+
+    let calculatedBluePercentage =
+      finalWinner.find(a => a.team === 'Blue')?.probability || 0;
+    let calculatedRedPercentage =
+      finalWinner.find(a => a.team === 'Red')?.probability || 0;
+
+    calculatedBluePercentage = Math.round(bluePercentage * 100);
+    calculatedRedPercentage = Math.round(redPercentage * 100);
+
+    setBluePercentage(calculatedBluePercentage);
+    setRedPercentage(calculatedRedPercentage);
   };
 
   // const getProcessedDataForTeams = async () => {
