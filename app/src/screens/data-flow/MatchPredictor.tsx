@@ -98,6 +98,43 @@ const MatchPredictor = () => {
       .catch(error => console.error('Failed to fetch teams in match:', error));
   }, [matchNumber, competitionId, chosenQuestionIndices]);
 
+  const finalWinnerCalculation = () => {
+    let blueMean = 0;
+    let redMean = 0;
+
+    let blueStdev = 0;
+    let redStdev = 0;
+
+    for (let i = 0; i < allTeams.length; i++) {
+      if (i < 3) {
+        blueMean += allTeams[i].mean;
+        blueStdev += allTeams[i].stdev ** 2;
+      } else {
+        redMean += allTeams[i].mean;
+        redStdev += allTeams[i].stdev ** 2;
+      }
+    }
+
+    let finalWinner = TeamAggregation.determineWinner(
+      blueMean,
+      blueStdev,
+      redMean,
+      redStdev,
+    );
+
+    // print out finalWinner detailed
+    console.log('Blue Mean: ' + blueMean);
+    console.log('Red Mean: ' + redMean);
+    console.log('Blue Stdev: ' + blueStdev);
+    console.log('Red Stdev: ' + redStdev);
+
+    // print out every property of every object in finalWInner
+    for (let i = 0; i < finalWinner.length; i++) {
+      console.log('Team Number: ' + finalWinner[i].team);
+      console.log('Win Percentage: ' + finalWinner[i].probability);
+    }
+  };
+
   // const getProcessedDataForTeams = async () => {
   //   let temp = [];
   //   for (let i = 0; i < teamsWithoutData.length; i++) {
@@ -298,6 +335,29 @@ const MatchPredictor = () => {
                 fontWeight: '700',
               }}>
               Debug
+            </Text>
+          </Pressable>
+          <Pressable
+            // disabled={chosenQuestionIndices.length === 0}
+            onPress={() => {
+              finalWinnerCalculation();
+            }}
+            style={{
+              backgroundColor: 'lightgreen',
+              // chosenQuestionIndices.length === 0 ? 'green' : 'cyan',
+              padding: 10,
+              borderRadius: 10,
+              marginHorizontal: '5%',
+              marginVertical: '4%',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                textAlign: 'center',
+                fontSize: 20,
+                fontWeight: '700',
+              }}>
+              Final Solution
             </Text>
           </Pressable>
         </View>
