@@ -462,8 +462,25 @@ const MatchPredictor = () => {
           <View
             style={{
               ...styles.team_container,
-              backgroundColor: 'blue',
+              // backgroundColor: 'blue',
+              borderWidth: 1,
+              borderColor: 'blue',
+              backgroundColor:
+                allianceBreakdown.length === 2 &&
+                allianceBreakdown.find(a => a.team === 'Blue').probability >
+                  allianceBreakdown.find(a => a.team === 'Red').probability
+                  ? 'blue'
+                  : 'none',
             }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 20,
+                marginBottom: 10,
+                fontWeight: 'bold',
+              }}>
+              Blue Alliance
+            </Text>
             {teamsWithoutData.slice(3, 6).map((team, index) => (
               <View style={{flexDirection: 'row'}}>
                 <Text key={team} style={styles.team_item}>
@@ -481,8 +498,24 @@ const MatchPredictor = () => {
           <View
             style={{
               ...styles.team_container,
-              backgroundColor: 'red',
+              backgroundColor:
+                allianceBreakdown.length === 2 &&
+                allianceBreakdown.find(a => a.team === 'Red').probability >
+                  allianceBreakdown.find(a => a.team === 'Blue').probability
+                  ? 'red'
+                  : 'none',
+              borderWidth: 1,
+              borderColor: 'red',
             }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 20,
+                marginBottom: 10,
+                fontWeight: 'bold',
+              }}>
+              Red Alliance
+            </Text>
             {teamsWithoutData.slice(0, 3).map((team, index) => (
               <View style={{flexDirection: 'row'}}>
                 <Text key={team} style={styles.team_item}>
