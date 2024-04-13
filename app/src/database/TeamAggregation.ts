@@ -99,10 +99,64 @@ class TeamAggregation {
     redMean: number,
     redStdev: number,
   ) {
+    if (blueMean === 0) {
+      console.warn('determineWinner called with blueMean of 0');
+      return [
+        {
+          team: 'Blue',
+          probability: 0,
+        },
+        {
+          team: 'Red',
+          probability: 1,
+        },
+      ];
+    }
+    if (redMean === 0) {
+      console.warn('determineWinner called with redMean of 0');
+      return [
+        {
+          team: 'Blue',
+          probability: 1,
+        },
+        {
+          team: 'Red',
+          probability: 0,
+        },
+      ];
+    }
+
+    if (blueMean === redMean && blueStdev === redStdev) {
+      return [
+        {
+          team: 'Blue',
+          probability: 0.5,
+        },
+        {
+          team: 'Red',
+          probability: 0.5,
+        },
+      ];
+    }
+
     const meanDiff = blueMean - redMean;
     const diffVariance = blueStdev + redStdev;
     const stdevVariance = diffVariance ** 0.5;
-    const zScore = stdevVariance / meanDiff;
+
+    if (stdevVariance === 0) {
+      console.warn('determineWinner called with stdevVariance of 0');
+      return [
+        {
+          team: 'Blue',
+          probability: 0.0,
+        },
+        {
+          team: 'Red',
+          probability: 0.0,
+        },
+      ];
+    }
+    const zScore = meanDiff / stdevVariance;
 
     const probBlue = this.poz(zScore);
 
