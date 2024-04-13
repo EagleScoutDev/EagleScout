@@ -16,6 +16,10 @@ import TeamAggregation from '../../database/TeamAggregation';
 import {PredictionConfidence} from '../../lib/PredictionConfidence';
 import PredictionConfidenceTag from './PredictionConfidenceTag';
 import PredictionExplainerModal from './PredictionExplainerModal';
+import CompetitionsDB, {
+  CompetitionReturnData,
+} from '../../database/Competitions';
+import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
 
 enum InputStyle {
   NONE,
@@ -61,20 +65,66 @@ const MatchPredictor = () => {
   const [determiningWinner, setDeterminingWinner] = useState<boolean>(false);
   const [allianceBreakdown, setAllianceBreakdown] = useState<Object[]>([]);
 
+  const [compId, setCompID] = useState<number>(-1);
+  const [currForm, setCurrForm] = useState<Array<Object>>();
+  const [compName, setCompName] = useState<string>();
+
+  const [noActiveCompetition, setNoActiveCompetition] = useState<boolean>(true);
+  const [ongoingCompetition, setOngoingCompetition] = useState<boolean>(false);
+  const [fullCompetitionsList, setFullCompetitionsList] = useState<
+    CompetitionReturnData[]
+  >([]);
+
+  const [onlineMatches, setOnlineMatches] = useState<TBAMatch[]>([]);
+
+  useEffect(() => {
+    CompetitionsDB.getCurrentCompetition().then(competition => {
+      if (!competition) {
+        console.log('no active competition for weighted rank');
+        setNoActiveCompetition(true);
+        setOngoingCompetition(false);
+        CompetitionsDB.getCompetitions().then(c => {
+          setFullCompetitionsList(c);
+        });
+        return;
+      }
+      console.log('active competition found for weighted rank');
+
+      setOngoingCompetition(true);
+      setCurrForm(competition.form);
+      setCompID(competition.id);
+      setCompName(competition.name);
+      setNoActiveCompetition(false);
+    });
+  }, []);
+
   // uses local cache to get the teams in the match
   async function getTeamsInMatch() {
-    const teams = getTeamsForMatch(Number(matchNumber)) || [];
-    console.log('teams for match ' + matchNumber + ': ' + teams);
-    if (teams.length > 0) {
-      let temp = teams.map(team => ({
-        team_number: team,
-        mean: -1,
-        stdev: -1,
-      }));
-      setTeamsWithoutData(teams);
-      return temp;
+    if (ongoingCompetition) {
+      const teams = getTeamsForMatch(Number(matchNumber)) || [];
+      console.log('teams for match ' + matchNumber + ': ' + teams);
+      if (teams.length > 0) {
+        let temp = teams.map(team => ({
+          team_number: team,
+          mean: -1,
+          stdev: -1,
+        }));
+        setTeamsWithoutData(teams);
+        return temp;
+      }
+      return [];
+    } else {
+      console.log('~~~~~~~~~~~~~~~');
+      let a = onlineMatches.filter(m => m.match === matchNumber);
+
+      for (let i = 0; i < a.length; i++) {
+        console.log('team ' + i + ': ' + a[i].team);
+      }
+      let b = a.map(m => Number.parseInt(m.team.slice(3), 10));
+      console.log('teams from online: ' + b);
+      console.log('~~~~~~~~~~~~~~~');
+      setTeamsWithoutData(b);
     }
-    return [];
   }
 
   const assignPredictionConfidence = () => {
@@ -117,9 +167,15 @@ const MatchPredictor = () => {
         }
       })
       .catch(error => console.error('Failed to fetch teams in match:', error));
-  }, [matchNumber, competitionId, chosenQuestionIndices]);
+  }, [matchNumber, compId, chosenQuestionIndices]);
 
-  const finalWinnerCalculation = () => {
+  useEffect(() => {
+    if (currForm !== undefined && chosenQuestionIndices.length === 0) {
+      setFormulaCreatorActive(true);
+    }
+  }, [currForm]);
+
+  const finalWinnerCalculation = (teamsWithData: TeamWithData[]) => {
     let blueMean = 0;
     let redMean = 0;
 
@@ -127,7 +183,9 @@ const MatchPredictor = () => {
     let redStdev = 0;
 
     for (let i = 0; i < teamsWithoutData.length; i++) {
-      let foundTeam = allTeams.find(a => a.team_number === teamsWithoutData[i]);
+      let foundTeam = teamsWithData.find(
+        a => a.team_number === teamsWithoutData[i],
+      );
       console.log('found team: ' + foundTeam);
       if (i < 3) {
         redMean += foundTeam?.mean || 0;
@@ -180,7 +238,7 @@ const MatchPredictor = () => {
     for (let i = 0; i < teamsWithoutData.length; i++) {
       const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
         teamsWithoutData[i],
-        competitionId,
+        compId,
       );
       if (reports.length !== 0) {
         let data = TeamAggregation.createArrayFromIndices(
@@ -195,11 +253,35 @@ const MatchPredictor = () => {
       }
       tempNumReports.push(reports.length);
     }
-    setAllTeams(temp);
+    console.log('temp: ' + temp);
+    // setAllTeams(temp);
     setNumReportsPerTeam(tempNumReports);
+    return temp;
   };
 
   const styles = StyleSheet.create({
+    container: {
+      // backgroundColor: colors.card,
+      paddingHorizontal: '10%',
+      flex: 1,
+    },
+    list_item: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingVertical: '5%',
+      flexDirection: 'row',
+    },
+    list_text: {
+      color: colors.text,
+      fontSize: 14,
+      flex: 1,
+      textAlign: 'left',
+    },
+    header: {
+      color: colors.text,
+      fontSize: 20,
+    },
+
     textInput: {
       flex: 1,
       borderColor: 'gray',
@@ -249,13 +331,42 @@ const MatchPredictor = () => {
     },
   });
 
-  useEffect(() => {
-    if (chosenQuestionIndices.length === 0) {
-      setFormulaCreatorActive(true);
-    }
-  }, []);
+  if (noActiveCompetition) {
+    return (
+      <View
+        style={{
+          ...styles.container,
+          paddingVertical: '10%',
+        }}>
+        <Text style={styles.header}>No Active Competition</Text>
+        <Text style={{color: colors.text, fontSize: 14}}>
+          Please choose which competition you would like to view data for.
+        </Text>
+        {fullCompetitionsList.map((item, index) => (
+          <Pressable
+            key={index}
+            onPress={() => {
+              setNoActiveCompetition(false);
+              setOngoingCompetition(false);
+              setCurrForm(item.form);
+              setCompID(item.id);
+              setCompName(item.name);
+              TBAMatches.getMatchesForCompetition(String(item.id)).then(
+                matches => {
+                  setOnlineMatches(matches);
+                },
+              );
+            }}>
+            <View style={styles.list_item}>
+              <Text style={styles.list_text}>{item.name}</Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    );
+  }
 
-  if (chosenQuestionIndices.length === 0) {
+  if (chosenQuestionIndices.length === 0 && currForm !== undefined) {
     return (
       <View>
         <Pressable onPress={() => setFormulaCreatorActive(true)}>
@@ -266,6 +377,7 @@ const MatchPredictor = () => {
           setVisible={setFormulaCreatorActive}
           chosenQuestionIndices={chosenQuestionIndices}
           setChosenQuestionIndices={setChosenQuestionIndices}
+          compId={compId}
         />
       </View>
     );
@@ -282,6 +394,7 @@ const MatchPredictor = () => {
         setVisible={setFormulaCreatorActive}
         chosenQuestionIndices={chosenQuestionIndices}
         setChosenQuestionIndices={setChosenQuestionIndices}
+        compId={compId}
       />
       <View style={styles.match_input_container}>
         <Text style={styles.match_label}>Match</Text>
@@ -305,6 +418,9 @@ const MatchPredictor = () => {
       {/*</Text>*/}
       {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
       {/*  {numReportsPerTeam.toString()}*/}
+      {/*</Text>*/}
+      {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
+      {/*  {teamsWithoutData.toString()}*/}
       {/*</Text>*/}
       {matchNumber !== 0 && allianceBreakdown.length !== 0 && (
         <>
@@ -375,10 +491,10 @@ const MatchPredictor = () => {
               disabled={chosenQuestionIndices.length === 0}
               onPress={() => {
                 setFindingReports(true);
-                getProcessedDataForTeams().then(() => {
+                getProcessedDataForTeams().then(r => {
                   setFindingReports(false);
                   setDeterminingWinner(true);
-                  finalWinnerCalculation();
+                  finalWinnerCalculation(r);
                   setDeterminingWinner(false);
                 });
               }}

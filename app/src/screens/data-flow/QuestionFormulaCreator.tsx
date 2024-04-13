@@ -1,42 +1,34 @@
 import {useTheme} from '@react-navigation/native';
 import {FlatList, Modal, Pressable, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import CompetitionsDB from '../../database/Competitions';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import Slider from '@react-native-community/slider';
+import CompetitionsDB from '../../database/Competitions';
 
 const QuestionFormulaCreator = ({
   visible,
   setVisible,
   chosenQuestionIndices,
   setChosenQuestionIndices,
+  compId,
 }: {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   chosenQuestionIndices: number[];
   setChosenQuestionIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  compId: number;
 }) => {
   const {colors} = useTheme();
-  // const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>(
-  //   [],
-  // );
-  // const [numberQuestions, setNumberQuestions] = React.useState<Object[]>([]);
-  const [currForm, setCurrForm] = useState<Array<Object>>();
+  const [form, setForm] = useState<any[]>();
 
   useEffect(() => {
     setChosenQuestionIndices([]);
   }, []);
 
   useEffect(() => {
-    CompetitionsDB.getCurrentCompetition().then(competition => {
-      if (!competition) {
-        return;
-      }
-      console.log('active competition found for formula creator');
-
-      setCurrForm(competition.form);
+    CompetitionsDB.getCompetitionById(compId).then(comp => {
+      setForm(comp.form);
     });
-  }, []);
+  }, [compId]);
 
   return (
     <Modal
@@ -90,8 +82,13 @@ const QuestionFormulaCreator = ({
         ) : (
           <View style={{marginVertical: '4%'}} />
         )}
+        {/*{form !== undefined && (*/}
+        {/*<Text*/}
+        {/*  style={{color: colors.text, fontSize: 16, marginHorizontal: '4%'}}>*/}
+        {/*  {form !== undefined ? form.length : -1} questions*/}
+        {/*</Text>*/}
         <FlatList
-          data={currForm}
+          data={form}
           renderItem={({item, index}) => {
             if (item.type === 'heading') {
               return (
@@ -121,7 +118,10 @@ const QuestionFormulaCreator = ({
                     fillColor={'blue'}
                     text={item.question}
                     isChecked={chosenQuestionIndices.includes(index)}
-                    textStyle={{color: colors.text, textDecorationLine: 'none'}}
+                    textStyle={{
+                      color: colors.text,
+                      textDecorationLine: 'none',
+                    }}
                     onPress={isChecked => {
                       if (isChecked) {
                         setChosenQuestionIndices([
@@ -141,6 +141,7 @@ const QuestionFormulaCreator = ({
             return null;
           }}
         />
+        {/*)}*/}
       </View>
     </Modal>
   );
