@@ -1,11 +1,12 @@
 import React, {
+  ActivityIndicator,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import PercentageWinBar from './PercentageWinBar';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
@@ -15,7 +16,6 @@ import TeamAggregation from '../../database/TeamAggregation';
 import {PredictionConfidence} from '../../lib/PredictionConfidence';
 import PredictionConfidenceTag from './PredictionConfidenceTag';
 import PredictionExplainerModal from './PredictionExplainerModal';
-import predictionExplainerModal from './PredictionExplainerModal';
 
 enum InputStyle {
   NONE,
@@ -57,6 +57,10 @@ const MatchPredictor = () => {
   const [predictionExplainerModalVisible, setPredictionExplainerModalVisible] =
     useState(false);
 
+  const [findingReports, setFindingReports] = useState<boolean>(false);
+  const [determiningWinner, setDeterminingWinner] = useState<boolean>(false);
+  const [allianceBreakdown, setAllianceBreakdown] = useState<Object[]>([]);
+
   // uses local cache to get the teams in the match
   async function getTeamsInMatch() {
     const teams = getTeamsForMatch(Number(matchNumber)) || [];
@@ -73,28 +77,6 @@ const MatchPredictor = () => {
     return [];
   }
 
-  // const getDataForAllTeams = (teams: TeamWithData[] | undefined) => {
-  //   if (!teams) {
-  //     return;
-  //   }
-  //   // let teamsWithData: TeamWithData[] = [];
-  //   console.log('all teams: ' + teams);
-  //
-  //   const promises = teams.map(async team => ({
-  //     team_number: team.team_number,
-  //     mean: TeamAggregation.getMean(
-  //       await getProcessedDataForTeam(team.team_number),
-  //     ),
-  //     stdev: TeamAggregation.getStandardDeviation(
-  //       await getProcessedDataForTeam(team.team_number),
-  //     ),
-  //   }));
-  //
-  //   Promise.all(promises).then(res => {
-  //     console.log(res);
-  //     setAllTeams(res);
-  //   });
-  // };
   const assignPredictionConfidence = () => {
     // rules:
     // if every team has at least 6 reports, set to high
@@ -119,6 +101,10 @@ const MatchPredictor = () => {
   };
 
   useEffect(() => {
+    setAllianceBreakdown([]);
+  }, [matchNumber]);
+
+  useEffect(() => {
     assignPredictionConfidence();
   }, [numReportsPerTeam]);
 
@@ -140,13 +126,15 @@ const MatchPredictor = () => {
     let blueStdev = 0;
     let redStdev = 0;
 
-    for (let i = 0; i < allTeams.length; i++) {
+    for (let i = 0; i < teamsWithoutData.length; i++) {
+      let foundTeam = allTeams.find(a => a.team_number === teamsWithoutData[i]);
+      console.log('found team: ' + foundTeam);
       if (i < 3) {
-        blueMean += allTeams[i].mean;
-        blueStdev += allTeams[i].stdev ** 2;
+        redMean += foundTeam?.mean || 0;
+        redStdev += (foundTeam?.stdev || 0) ** 2;
       } else {
-        redMean += allTeams[i].mean;
-        redStdev += allTeams[i].stdev ** 2;
+        blueMean += foundTeam?.mean || 0;
+        blueStdev += (foundTeam?.stdev || 0) ** 2;
       }
     }
 
@@ -157,41 +145,34 @@ const MatchPredictor = () => {
       redStdev,
     );
 
+    console.log('~~~~~~~~~~~~~~~~~~');
     // print out finalWinner detailed
     console.log('Blue Mean: ' + blueMean);
-    console.log('Red Mean: ' + redMean);
     console.log('Blue Stdev: ' + blueStdev);
+    console.log();
+    console.log('Red Mean: ' + redMean);
     console.log('Red Stdev: ' + redStdev);
+    console.log();
 
     // print out every property of every object in finalWInner
     for (let i = 0; i < finalWinner.length; i++) {
       console.log('Team Number: ' + finalWinner[i].team);
       console.log('Win Percentage: ' + finalWinner[i].probability);
     }
+    console.log('~~~~~~~~~~~~~~~~~~');
 
     let calculatedBluePercentage =
       finalWinner.find(a => a.team === 'Blue')?.probability || 0;
     let calculatedRedPercentage =
       finalWinner.find(a => a.team === 'Red')?.probability || 0;
 
-    calculatedBluePercentage = Math.round(bluePercentage * 100);
-    calculatedRedPercentage = Math.round(redPercentage * 100);
+    calculatedBluePercentage = Math.round(calculatedBluePercentage * 100);
+    calculatedRedPercentage = Math.round(calculatedRedPercentage * 100);
 
     setBluePercentage(calculatedBluePercentage);
     setRedPercentage(calculatedRedPercentage);
+    setAllianceBreakdown(finalWinner);
   };
-
-  // const getProcessedDataForTeams = async () => {
-  //   let temp = [];
-  //   for (let i = 0; i < teamsWithoutData.length; i++) {
-  //     const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
-  //       teamsWithoutData[i],
-  //       competitionId,
-  //     );
-  //     temp.push(reports.length);
-  //   }
-  //   setNumReportsPerTeam(temp);
-  // };
 
   const getProcessedDataForTeams = async () => {
     let temp: TeamWithData[] = [];
@@ -216,7 +197,6 @@ const MatchPredictor = () => {
     }
     setAllTeams(temp);
     setNumReportsPerTeam(tempNumReports);
-    // setNumReportsPerTeam(temp);
   };
 
   const styles = StyleSheet.create({
@@ -231,10 +211,12 @@ const MatchPredictor = () => {
       alignSelf: 'center',
     },
     team_container: {
-      width: '40%',
+      // width: '40%',
+      flex: 1,
       alignItems: 'center',
       borderRadius: 10,
-      padding: '5%',
+      padding: '4%',
+      marginHorizontal: '5%',
     },
     match_input_container: {
       flexDirection: 'row',
@@ -248,18 +230,51 @@ const MatchPredictor = () => {
       flex: 1,
     },
     team_item: {
-      color: colors.text,
+      color: 'white',
       fontSize: 20,
       marginHorizontal: 4,
     },
+    question_prompt: {
+      color: colors.primary,
+      fontSize: 20,
+      textAlign: 'center',
+      marginVertical: '4%',
+    },
+    small_question_prompt: {
+      color: colors.primary,
+      fontSize: 16,
+      textAlign: 'right',
+      marginVertical: '4%',
+      marginRight: '4%',
+    },
   });
+
+  useEffect(() => {
+    if (chosenQuestionIndices.length === 0) {
+      setFormulaCreatorActive(true);
+    }
+  }, []);
+
+  if (chosenQuestionIndices.length === 0) {
+    return (
+      <View>
+        <Pressable onPress={() => setFormulaCreatorActive(true)}>
+          <Text style={styles.question_prompt}>Choose your questions</Text>
+        </Pressable>
+        <QuestionFormulaCreator
+          visible={formulaCreatorActive}
+          setVisible={setFormulaCreatorActive}
+          chosenQuestionIndices={chosenQuestionIndices}
+          setChosenQuestionIndices={setChosenQuestionIndices}
+        />
+      </View>
+    );
+  }
 
   return (
     <View>
       <Pressable onPress={() => setFormulaCreatorActive(true)}>
-        <Text style={{color: colors.primary, textAlign: 'center'}}>
-          Choose your questions
-        </Text>
+        <Text style={styles.small_question_prompt}>Change Questions</Text>
       </Pressable>
 
       <QuestionFormulaCreator
@@ -279,22 +294,27 @@ const MatchPredictor = () => {
           onChangeText={text => setMatchNumber(Number(text))}
         />
       </View>
-      {matchNumber !== 0 && (
+      {matchNumber !== 0 && allianceBreakdown.length !== 0 && (
         <PercentageWinBar
           bluePercentage={bluePercentage}
           redPercentage={redPercentage}
         />
       )}
-      <Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>
-        {chosenQuestionIndices.toString()}
-      </Text>
-      <Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>
-        {numReportsPerTeam.toString()}
-      </Text>
-      <PredictionConfidenceTag
-        confidence={predictionConfidence}
-        setModal={setPredictionExplainerModalVisible}
-      />
+      {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
+      {/*  {chosenQuestionIndices.toString()}*/}
+      {/*</Text>*/}
+      {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
+      {/*  {numReportsPerTeam.toString()}*/}
+      {/*</Text>*/}
+      {matchNumber !== 0 && allianceBreakdown.length !== 0 && (
+        <>
+          <View style={{height: 20}} />
+          <PredictionConfidenceTag
+            confidence={predictionConfidence}
+            setModal={setPredictionExplainerModalVisible}
+          />
+        </>
+      )}
       <PredictionExplainerModal
         visible={predictionExplainerModalVisible}
         setVisible={setPredictionExplainerModalVisible}
@@ -317,12 +337,12 @@ const MatchPredictor = () => {
                 <Text key={team} style={styles.team_item}>
                   {team}
                 </Text>
-                <Text key={team + '1'} style={styles.team_item}>
-                  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}
-                </Text>
-                <Text key={team + '2'} style={styles.team_item}>
-                  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}
-                </Text>
+                {/*<Text key={team + '1'} style={styles.team_item}>*/}
+                {/*  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}*/}
+                {/*</Text>*/}
+                {/*<Text key={team + '2'} style={styles.team_item}>*/}
+                {/*  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}*/}
+                {/*</Text>*/}
               </View>
             ))}
           </View>
@@ -336,92 +356,113 @@ const MatchPredictor = () => {
                 <Text key={team} style={styles.team_item}>
                   {team}
                 </Text>
-                <Text key={team + '1'} style={styles.team_item}>
-                  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}
-                </Text>
-                <Text key={team + '2'} style={styles.team_item}>
-                  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}
-                </Text>
+                {/*<Text key={team + '1'} style={styles.team_item}>*/}
+                {/*  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}*/}
+                {/*</Text>*/}
+                {/*<Text key={team + '2'} style={styles.team_item}>*/}
+                {/*  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}*/}
+                {/*</Text>*/}
               </View>
             ))}
           </View>
         </View>
       )}
-      {matchNumber !== 0 && teamsWithoutData.length > 0 && (
-        <View>
-          <Pressable
-            disabled={chosenQuestionIndices.length === 0}
-            onPress={() => {
-              getProcessedDataForTeams();
-            }}
-            style={{
-              backgroundColor:
-                chosenQuestionIndices.length === 0 ? 'gray' : 'yellow',
-              padding: 10,
-              borderRadius: 10,
-              marginHorizontal: '5%',
-            }}>
-            <Text
+      {matchNumber !== 0 &&
+        teamsWithoutData.length > 0 &&
+        allianceBreakdown.length === 0 && (
+          <View>
+            <Pressable
+              disabled={chosenQuestionIndices.length === 0}
+              onPress={() => {
+                setFindingReports(true);
+                getProcessedDataForTeams().then(() => {
+                  setFindingReports(false);
+                  setDeterminingWinner(true);
+                  finalWinnerCalculation();
+                  setDeterminingWinner(false);
+                });
+              }}
               style={{
-                color: 'black',
-                textAlign: 'center',
-                fontSize: 20,
-                fontWeight: '700',
+                backgroundColor:
+                  chosenQuestionIndices.length === 0 ? 'gray' : 'yellow',
+                padding: 10,
+                borderRadius: 10,
+                marginHorizontal: '5%',
+                flexDirection: 'row',
+                justifyContent: 'center',
               }}>
-              Predict
-            </Text>
-          </Pressable>
-          <Pressable
-            disabled={chosenQuestionIndices.length === 0}
-            onPress={() => {
-              console.log('debugging');
-              console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-              console.log(allTeams);
-              console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-            }}
-            style={{
-              backgroundColor:
-                chosenQuestionIndices.length === 0 ? 'gray' : 'cyan',
-              padding: 10,
-              borderRadius: 10,
-              marginHorizontal: '5%',
-              marginVertical: '4%',
-            }}>
-            <Text
-              style={{
-                color: 'black',
-                textAlign: 'center',
-                fontSize: 20,
-                fontWeight: '700',
-              }}>
-              Debug
-            </Text>
-          </Pressable>
-          <Pressable
-            // disabled={chosenQuestionIndices.length === 0}
-            onPress={() => {
-              finalWinnerCalculation();
-            }}
-            style={{
-              backgroundColor: 'lightgreen',
-              // chosenQuestionIndices.length === 0 ? 'green' : 'cyan',
-              padding: 10,
-              borderRadius: 10,
-              marginHorizontal: '5%',
-              marginVertical: '4%',
-            }}>
-            <Text
-              style={{
-                color: 'black',
-                textAlign: 'center',
-                fontSize: 20,
-                fontWeight: '700',
-              }}>
-              Final Solution
-            </Text>
-          </Pressable>
-        </View>
-      )}
+              {(findingReports || determiningWinner) && (
+                <ActivityIndicator size={'small'} color={'black'} />
+              )}
+              <Text
+                style={{
+                  color: 'black',
+                  textAlign: 'center',
+                  fontSize: 20,
+                  fontWeight: '700',
+                  marginLeft: 10,
+                }}>
+                Predict
+              </Text>
+            </Pressable>
+            {/*<Pressable*/}
+            {/*  disabled={chosenQuestionIndices.length === 0}*/}
+            {/*  onPress={() => {*/}
+            {/*    console.log('debugging');*/}
+            {/*    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');*/}
+            {/*    console.log(allTeams);*/}
+            {/*    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');*/}
+            {/*  }}*/}
+            {/*  style={{*/}
+            {/*    backgroundColor:*/}
+            {/*      chosenQuestionIndices.length === 0 ? 'gray' : 'cyan',*/}
+            {/*    padding: 10,*/}
+            {/*    borderRadius: 10,*/}
+            {/*    marginHorizontal: '5%',*/}
+            {/*    marginVertical: '4%',*/}
+            {/*  }}>*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      color: 'black',*/}
+            {/*      textAlign: 'center',*/}
+            {/*      fontSize: 20,*/}
+            {/*      fontWeight: '700',*/}
+            {/*    }}>*/}
+            {/*    Debug*/}
+            {/*  </Text>*/}
+            {/*</Pressable>*/}
+            {/*<Pressable*/}
+            {/*  // disabled={chosenQuestionIndices.length === 0}*/}
+            {/*  onPress={() => {*/}
+            {/*    setDeterminingWinner(true);*/}
+            {/*    finalWinnerCalculation();*/}
+            {/*    setDeterminingWinner(false);*/}
+            {/*  }}*/}
+            {/*  style={{*/}
+            {/*    backgroundColor: 'lightgreen',*/}
+            {/*    // chosenQuestionIndices.length === 0 ? 'green' : 'cyan',*/}
+            {/*    padding: 10,*/}
+            {/*    borderRadius: 10,*/}
+            {/*    marginHorizontal: '5%',*/}
+            {/*    marginVertical: '4%',*/}
+            {/*    flexDirection: 'row',*/}
+            {/*    justifyContent: 'center',*/}
+            {/*  }}>*/}
+            {/*  {determiningWinner && (*/}
+            {/*    <ActivityIndicator size={'small'} color={'black'} />*/}
+            {/*  )}*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      color: 'black',*/}
+            {/*      textAlign: 'center',*/}
+            {/*      fontSize: 20,*/}
+            {/*      fontWeight: '700',*/}
+            {/*    }}>*/}
+            {/*    Final Solution*/}
+            {/*  </Text>*/}
+            {/*</Pressable>*/}
+          </View>
+        )}
     </View>
   );
 };

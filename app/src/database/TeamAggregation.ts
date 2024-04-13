@@ -100,7 +100,7 @@ class TeamAggregation {
     redStdev: number,
   ) {
     if (blueMean === 0) {
-      console.warn('determineWinner called with blueMean of 0');
+      // console.warn('determineWinner called with blueMean of 0');
       return [
         {
           team: 'Blue',
@@ -113,7 +113,7 @@ class TeamAggregation {
       ];
     }
     if (redMean === 0) {
-      console.warn('determineWinner called with redMean of 0');
+      // console.warn('determineWinner called with redMean of 0');
       return [
         {
           team: 'Blue',
@@ -144,7 +144,7 @@ class TeamAggregation {
     const stdevVariance = diffVariance ** 0.5;
 
     if (stdevVariance === 0) {
-      console.warn('determineWinner called with stdevVariance of 0');
+      // console.warn('determineWinner called with stdevVariance of 0');
       return [
         {
           team: 'Blue',

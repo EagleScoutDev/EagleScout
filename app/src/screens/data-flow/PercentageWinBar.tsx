@@ -68,7 +68,7 @@ const PercentageWinBar = ({
           fontSize: 20,
         }}>
         {bluePercentage > redPercentage ? bluePercentage : redPercentage}%{' '}
-        confidence in {bluePercentage > redPercentage ? 'Blue' : 'Red'} Alliance
+        likelihood of {bluePercentage > redPercentage ? 'Blue' : 'Red'} Alliance
         win
       </Text>
     </View>
