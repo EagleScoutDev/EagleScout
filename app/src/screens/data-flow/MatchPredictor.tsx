@@ -44,9 +44,6 @@ const MatchPredictor = () => {
   const {competitionId, matches, getTeamsForMatch} =
     useCurrentCompetitionMatches();
 
-  // all teams in the match, with data
-  const [allTeams, setAllTeams] = useState<TeamWithData[]>([]);
-
   // teams in the match, from cache. no data except team number
   const [teamsWithoutData, setTeamsWithoutData] = useState<number[]>([]);
   const [numReportsPerTeam, setNumReportsPerTeam] = useState<number[]>([]);
@@ -665,11 +662,19 @@ const MatchPredictor = () => {
                 <Text style={styles.data_point}>
                   Blue Stdev: {calculatedMeanStdev.blueStdev.toFixed(2)}
                 </Text>
+                <View style={{height: 20}} />
                 <Text style={styles.data_point}>
                   Red Mean: {calculatedMeanStdev.redMean.toFixed(2)}
                 </Text>
                 <Text style={styles.data_point}>
                   Red Stdev: {calculatedMeanStdev.redStdev.toFixed(2)}
+                </Text>
+                <View style={{height: 20}} />
+                <Text style={styles.data_point}>
+                  Blue Probability: {bluePercentage}%
+                </Text>
+                <Text style={styles.data_point}>
+                  Red Probability: {redPercentage}%
                 </Text>
               </View>
               <View style={{flex: 1}}>

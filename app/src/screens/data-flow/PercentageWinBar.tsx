@@ -8,7 +8,8 @@ const PercentageWinBar = ({
   bluePercentage: number;
   redPercentage: number;
 }) => {
-  const {colors} = useTheme();
+  const bothZero = bluePercentage === 0 && redPercentage === 0;
+
   return (
     <View>
       <View
@@ -21,7 +22,7 @@ const PercentageWinBar = ({
           <View
             style={{
               backgroundColor: 'blue',
-              minWidth: `${bluePercentage}%`,
+              minWidth: bothZero ? '50%' : `${bluePercentage}%`,
               height: 24,
               borderTopLeftRadius: 10,
               borderBottomLeftRadius: 10,
@@ -42,7 +43,7 @@ const PercentageWinBar = ({
           <View
             style={{
               backgroundColor: 'red',
-              width: `${redPercentage}%`,
+              width: bothZero ? '50%' : `${redPercentage}%`,
               height: 24,
               borderBottomRightRadius: 10,
               borderTopRightRadius: 10,
