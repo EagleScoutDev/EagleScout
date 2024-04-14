@@ -29,12 +29,6 @@ enum InputStyle {
   TEAMS,
 }
 
-interface TeamWithData {
-  team_number: number;
-  mean: number;
-  stdev: number;
-}
-
 const MatchPredictor = () => {
   const {colors} = useTheme();
   const [matchNumber, setMatchNumber] = useState<number>(0);
@@ -327,7 +321,6 @@ const MatchPredictor = () => {
     },
     data_point_container: {
       flexDirection: 'column',
-      // justifyContent: 'space-between',
       marginHorizontal: '4%',
       flex: 1,
     },
@@ -466,16 +459,10 @@ const MatchPredictor = () => {
           <View
             style={{
               ...styles.team_container,
-              // backgroundColor: 'blue',
               borderWidth: 1,
               borderColor: 'blue',
               backgroundColor:
                 winningAllianceColor === AllianceColor.BLUE ? 'blue' : 'none',
-              // allianceBreakdown.length === 2 &&
-              // allianceBreakdown.find(a => a.team === 'Blue').probability >
-              //   allianceBreakdown.find(a => a.team === 'Red').probability
-              //   ? 'blue'
-              //   : 'none',
             }}>
             <Text
               style={{
@@ -500,12 +487,6 @@ const MatchPredictor = () => {
                   }>
                   {team}
                 </Text>
-                {/*<Text key={team + '1'} style={styles.team_item}>*/}
-                {/*  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}*/}
-                {/*</Text>*/}
-                {/*<Text key={team + '2'} style={styles.team_item}>*/}
-                {/*  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}*/}
-                {/*</Text>*/}
               </View>
             ))}
           </View>
@@ -514,11 +495,6 @@ const MatchPredictor = () => {
               ...styles.team_container,
               backgroundColor:
                 winningAllianceColor === AllianceColor.RED ? 'red' : 'none',
-              // allianceBreakdown.length === 2 &&
-              // allianceBreakdown.find(a => a.team === 'Red').probability >
-              //   allianceBreakdown.find(a => a.team === 'Blue').probability
-              //   ? 'red'
-              //   : 'none',
               borderWidth: 1,
               borderColor: 'red',
             }}>
@@ -545,12 +521,6 @@ const MatchPredictor = () => {
                   }>
                   {team}
                 </Text>
-                {/*<Text key={team + '1'} style={styles.team_item}>*/}
-                {/*  {allTeams.find(a => a.team_number === team)?.mean.toFixed(2)}*/}
-                {/*</Text>*/}
-                {/*<Text key={team + '2'} style={styles.team_item}>*/}
-                {/*  {allTeams.find(a => a.team_number === team)?.stdev.toFixed(2)}*/}
-                {/*</Text>*/}
               </View>
             ))}
           </View>
@@ -588,62 +558,6 @@ const MatchPredictor = () => {
                 Predict
               </Text>
             </Pressable>
-            {/*<Pressable*/}
-            {/*  disabled={chosenQuestionIndices.length === 0}*/}
-            {/*  onPress={() => {*/}
-            {/*    console.log('debugging');*/}
-            {/*    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');*/}
-            {/*    console.log(allTeams);*/}
-            {/*    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');*/}
-            {/*  }}*/}
-            {/*  style={{*/}
-            {/*    backgroundColor:*/}
-            {/*      chosenQuestionIndices.length === 0 ? 'gray' : 'cyan',*/}
-            {/*    padding: 10,*/}
-            {/*    borderRadius: 10,*/}
-            {/*    marginHorizontal: '5%',*/}
-            {/*    marginVertical: '4%',*/}
-            {/*  }}>*/}
-            {/*  <Text*/}
-            {/*    style={{*/}
-            {/*      color: 'black',*/}
-            {/*      textAlign: 'center',*/}
-            {/*      fontSize: 20,*/}
-            {/*      fontWeight: '700',*/}
-            {/*    }}>*/}
-            {/*    Debug*/}
-            {/*  </Text>*/}
-            {/*</Pressable>*/}
-            {/*<Pressable*/}
-            {/*  // disabled={chosenQuestionIndices.length === 0}*/}
-            {/*  onPress={() => {*/}
-            {/*    setDeterminingWinner(true);*/}
-            {/*    finalWinnerCalculation();*/}
-            {/*    setDeterminingWinner(false);*/}
-            {/*  }}*/}
-            {/*  style={{*/}
-            {/*    backgroundColor: 'lightgreen',*/}
-            {/*    // chosenQuestionIndices.length === 0 ? 'green' : 'cyan',*/}
-            {/*    padding: 10,*/}
-            {/*    borderRadius: 10,*/}
-            {/*    marginHorizontal: '5%',*/}
-            {/*    marginVertical: '4%',*/}
-            {/*    flexDirection: 'row',*/}
-            {/*    justifyContent: 'center',*/}
-            {/*  }}>*/}
-            {/*  {determiningWinner && (*/}
-            {/*    <ActivityIndicator size={'small'} color={'black'} />*/}
-            {/*  )}*/}
-            {/*  <Text*/}
-            {/*    style={{*/}
-            {/*      color: 'black',*/}
-            {/*      textAlign: 'center',*/}
-            {/*      fontSize: 20,*/}
-            {/*      fontWeight: '700',*/}
-            {/*    }}>*/}
-            {/*    Final Solution*/}
-            {/*  </Text>*/}
-            {/*</Pressable>*/}
           </View>
         )}
       {allianceBreakdown.length === 2 && (
@@ -707,7 +621,6 @@ const MatchPredictor = () => {
                         {numReportsPerTeam[index]}
                       </Text>
                     </View>
-                    {/*{index === 2 && <View style={{height: 20}} />}*/}
                   </>
                 ))}
               </View>
