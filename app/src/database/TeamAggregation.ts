@@ -1,7 +1,30 @@
 /**
  * This class is responsible for aggregating data for a team at a competition.
  * It does not make database calls, but rather, processes data retrieved from other APIs.
- */
+ *
+ * */
+import ScoutReportsDB from './ScoutReports';
+
+interface TeamWithData {
+  team_number: number;
+  mean: number;
+  stdev: number;
+}
+
+export enum AllianceColor {
+  RED,
+  BLUE,
+}
+
+interface AlliancePrediction {
+  alliance: AllianceColor;
+  probability: number;
+  mean: number;
+  stdev: number;
+}
+
+// alias
+export type MatchPredictionResults = AlliancePrediction[];
 
 class TeamAggregation {
   /**
@@ -43,7 +66,10 @@ class TeamAggregation {
    * @param indices an array of indices to include in the calculation
    * @returns a sum of the values at the given indices
    */
-  static createArrayFromIndices(reports: number[][], indices: number[]) {
+  private static createArrayFromIndices(
+    reports: number[][],
+    indices: number[],
+  ) {
     if (reports.length === 0) {
       console.warn('createArrayFromIndices called with empty reports array');
     }
@@ -93,22 +119,26 @@ class TeamAggregation {
    * @param redStdev sum of squares of the stdev per team in the red alliance
    * @return an array of objects with the alliance and the probability of winning
    */
-  static determineWinner(
+  private static determineWinner(
     blueMean: number,
     blueStdev: number,
     redMean: number,
     redStdev: number,
-  ) {
+  ): MatchPredictionResults {
     if (blueMean === 0) {
       // console.warn('determineWinner called with blueMean of 0');
       return [
         {
-          team: 'Blue',
+          alliance: AllianceColor.BLUE,
           probability: 0,
+          mean: 0,
+          stdev: blueStdev,
         },
         {
-          team: 'Red',
+          alliance: AllianceColor.RED,
           probability: 1,
+          mean: redMean,
+          stdev: redStdev,
         },
       ];
     }
@@ -116,12 +146,16 @@ class TeamAggregation {
       // console.warn('determineWinner called with redMean of 0');
       return [
         {
-          team: 'Blue',
+          alliance: AllianceColor.BLUE,
           probability: 1,
+          mean: blueMean,
+          stdev: blueStdev,
         },
         {
-          team: 'Red',
+          alliance: AllianceColor.RED,
           probability: 0,
+          mean: 0,
+          stdev: redStdev,
         },
       ];
     }
@@ -129,12 +163,16 @@ class TeamAggregation {
     if (blueMean === redMean && blueStdev === redStdev) {
       return [
         {
-          team: 'Blue',
+          alliance: AllianceColor.BLUE,
           probability: 0.5,
+          mean: blueMean,
+          stdev: blueStdev,
         },
         {
-          team: 'Red',
+          alliance: AllianceColor.RED,
           probability: 0.5,
+          mean: redMean,
+          stdev: redStdev,
         },
       ];
     }
@@ -147,12 +185,16 @@ class TeamAggregation {
       // console.warn('determineWinner called with stdevVariance of 0');
       return [
         {
-          team: 'Blue',
+          alliance: AllianceColor.BLUE,
           probability: 0.0,
+          mean: blueMean,
+          stdev: blueStdev,
         },
         {
-          team: 'Red',
+          alliance: AllianceColor.RED,
           probability: 0.0,
+          mean: redMean,
+          stdev: redStdev,
         },
       ];
     }
@@ -162,15 +204,112 @@ class TeamAggregation {
 
     return [
       {
-        team: 'Blue',
-        probability: probBlue,
+        alliance: AllianceColor.BLUE,
+        probability: Math.round(probBlue * 100),
+        mean: blueMean,
+        stdev: blueStdev,
       },
       {
-        team: 'Red',
-        probability: 1 - probBlue,
+        alliance: AllianceColor.RED,
+        probability: Math.round((1 - probBlue) * 100),
+        mean: redMean,
+        stdev: redStdev,
       },
     ];
   }
+
+  private static finalWinnerCalculation = (
+    teamsWithoutData: number[],
+    teamsWithData: TeamWithData[],
+  ) => {
+    let blueMean = 0;
+    let redMean = 0;
+
+    let blueStdev = 0;
+    let redStdev = 0;
+
+    for (let i = 0; i < teamsWithoutData.length; i++) {
+      let foundTeam = teamsWithData.find(
+        a => a.team_number === teamsWithoutData[i],
+      );
+      console.log('found team: ' + foundTeam);
+      if (i < 3) {
+        redMean += foundTeam?.mean || 0;
+        redStdev += (foundTeam?.stdev || 0) ** 2;
+      } else {
+        blueMean += foundTeam?.mean || 0;
+        blueStdev += (foundTeam?.stdev || 0) ** 2;
+      }
+    }
+
+    return TeamAggregation.determineWinner(
+      blueMean,
+      blueStdev,
+      redMean,
+      redStdev,
+    );
+  };
+
+  private static getProcessedDataForTeams = async (
+    teamsWithoutData: number[],
+    compId: number,
+    chosenQuestionIndices: number[],
+  ): Promise<TeamWithData[]> => {
+    let temp: TeamWithData[] = [];
+    let tempNumReports: number[] = [];
+    for (let i = 0; i < teamsWithoutData.length; i++) {
+      const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+        teamsWithoutData[i],
+        compId,
+      );
+      if (reports.length !== 0) {
+        let data = TeamAggregation.createArrayFromIndices(
+          reports.map(a => a.data),
+          chosenQuestionIndices,
+        );
+        temp.push({
+          team_number: teamsWithoutData[i],
+          mean: TeamAggregation.getMean(data),
+          stdev: TeamAggregation.getStandardDeviation(data),
+        });
+      }
+      tempNumReports.push(reports.length);
+    }
+    console.log('temp: ' + temp);
+    return temp;
+  };
+
+  /**
+   * Given a list of teams, a competition, and a list of questions, return the probability of each alliance winning.
+   * @param teams
+   * @param compId
+   * @param chosenQuestionIndices
+   */
+  static async getWinPrediction(
+    teams: number[],
+    compId: number,
+    chosenQuestionIndices: number[],
+  ) {
+    let teamsWithData: TeamWithData[] = await this.getProcessedDataForTeams(
+      teams,
+      compId,
+      chosenQuestionIndices,
+    );
+
+    return this.finalWinnerCalculation(teams, teamsWithData);
+  }
+
+  static getNumReportsPerTeam = async (teams: number[], compId: number) => {
+    let tempNumReports: number[] = [];
+    for (let i = 0; i < teams.length; i++) {
+      const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+        teams[i],
+        compId,
+      );
+      tempNumReports.push(reports.length);
+    }
+    return tempNumReports;
+  };
 }
 
 export default TeamAggregation;

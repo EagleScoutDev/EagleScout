@@ -1,19 +1,20 @@
 import React, {
   ActivityIndicator,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import PercentageWinBar from './PercentageWinBar';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 import QuestionFormulaCreator from './QuestionFormulaCreator';
-import ScoutReportsDB from '../../database/ScoutReports';
-import TeamAggregation from '../../database/TeamAggregation';
+import TeamAggregation, {
+  AllianceColor,
+  MatchPredictionResults,
+} from '../../database/TeamAggregation';
 import {PredictionConfidence} from '../../lib/PredictionConfidence';
 import PredictionConfidenceTag from './PredictionConfidenceTag';
 import PredictionExplainerModal from './PredictionExplainerModal';
@@ -64,8 +65,10 @@ const MatchPredictor = () => {
 
   const [findingReports, setFindingReports] = useState<boolean>(false);
   const [determiningWinner, setDeterminingWinner] = useState<boolean>(false);
-  const [allianceBreakdown, setAllianceBreakdown] = useState<Object[]>([]);
-  const [winningAllianceColor, setWinningAllianceColor] = useState<string>('');
+  const [allianceBreakdown, setAllianceBreakdown] =
+    useState<MatchPredictionResults>([]);
+  const [winningAllianceColor, setWinningAllianceColor] =
+    useState<AllianceColor | null>(null);
 
   const [compId, setCompID] = useState<number>(-1);
   const [currForm, setCurrForm] = useState<Array<Object>>();
@@ -167,7 +170,7 @@ const MatchPredictor = () => {
 
   useEffect(() => {
     setAllianceBreakdown([]);
-    setWinningAllianceColor('');
+    setWinningAllianceColor(null);
     setBreakdownVisible(false);
   }, [matchNumber]);
 
@@ -192,98 +195,46 @@ const MatchPredictor = () => {
     }
   }, [currForm]);
 
-  const finalWinnerCalculation = (teamsWithData: TeamWithData[]) => {
-    let blueMean = 0;
-    let redMean = 0;
+  const getMatchPrediction = async () => {
+    setFindingReports(true);
+    let results = await TeamAggregation.getWinPrediction(
+      teamsWithoutData,
+      compId,
+      chosenQuestionIndices,
+    );
+    setFindingReports(false);
+    setDeterminingWinner(true);
 
-    let blueStdev = 0;
-    let redStdev = 0;
+    setAllianceBreakdown(results);
 
-    for (let i = 0; i < teamsWithoutData.length; i++) {
-      let foundTeam = teamsWithData.find(
-        a => a.team_number === teamsWithoutData[i],
-      );
-      console.log('found team: ' + foundTeam);
-      if (i < 3) {
-        redMean += foundTeam?.mean || 0;
-        redStdev += (foundTeam?.stdev || 0) ** 2;
-      } else {
-        blueMean += foundTeam?.mean || 0;
-        blueStdev += (foundTeam?.stdev || 0) ** 2;
-      }
+    let blue_data = results.find(a => a.alliance === AllianceColor.BLUE);
+    let red_data = results.find(a => a.alliance === AllianceColor.RED);
+
+    if (!blue_data || !red_data) {
+      return;
     }
+
+    let winner =
+      blue_data?.probability > red_data?.probability
+        ? AllianceColor.BLUE
+        : AllianceColor.RED;
 
     setCalculatedMeanStdev({
-      blueMean: blueMean,
-      blueStdev: blueStdev,
-      redMean: redMean,
-      redStdev: redStdev,
+      blueMean: blue_data?.mean || 0,
+      blueStdev: blue_data?.stdev || 0,
+      redMean: red_data?.mean || 0,
+      redStdev: red_data?.stdev || 0,
     });
 
-    let finalWinner = TeamAggregation.determineWinner(
-      blueMean,
-      blueStdev,
-      redMean,
-      redStdev,
-    );
-
-    console.log('~~~~~~~~~~~~~~~~~~');
-    // print out finalWinner detailed
-    console.log('Blue Mean: ' + blueMean);
-    console.log('Blue Stdev: ' + blueStdev);
-    console.log();
-    console.log('Red Mean: ' + redMean);
-    console.log('Red Stdev: ' + redStdev);
-    console.log();
-
-    // print out every property of every object in finalWInner
-    for (let i = 0; i < finalWinner.length; i++) {
-      console.log('Team Number: ' + finalWinner[i].team);
-      console.log('Win Percentage: ' + finalWinner[i].probability);
-    }
-    console.log('~~~~~~~~~~~~~~~~~~');
-
-    let calculatedBluePercentage =
-      finalWinner.find(a => a.team === 'Blue')?.probability || 0;
-    let calculatedRedPercentage =
-      finalWinner.find(a => a.team === 'Red')?.probability || 0;
-
-    calculatedBluePercentage = Math.round(calculatedBluePercentage * 100);
-    calculatedRedPercentage = Math.round(calculatedRedPercentage * 100);
-    const winner =
-      calculatedBluePercentage > calculatedRedPercentage ? 'Blue' : 'Red';
-
-    setBluePercentage(calculatedBluePercentage);
-    setRedPercentage(calculatedRedPercentage);
-    setAllianceBreakdown(finalWinner);
+    setBluePercentage(blue_data.probability);
+    setRedPercentage(red_data.probability);
     setWinningAllianceColor(winner);
-  };
+    setDeterminingWinner(false);
 
-  const getProcessedDataForTeams = async () => {
-    let temp: TeamWithData[] = [];
-    let tempNumReports: number[] = [];
-    for (let i = 0; i < teamsWithoutData.length; i++) {
-      const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
-        teamsWithoutData[i],
-        compId,
-      );
-      if (reports.length !== 0) {
-        let data = TeamAggregation.createArrayFromIndices(
-          reports.map(a => a.data),
-          chosenQuestionIndices,
-        );
-        temp.push({
-          team_number: teamsWithoutData[i],
-          mean: TeamAggregation.getMean(data),
-          stdev: TeamAggregation.getStandardDeviation(data),
-        });
-      }
-      tempNumReports.push(reports.length);
-    }
-    console.log('temp: ' + temp);
-    // setAllTeams(temp);
-    setNumReportsPerTeam(tempNumReports);
-    return temp;
+    // getting prediction confidence
+    TeamAggregation.getNumReportsPerTeam(teamsWithoutData, compId).then(r => {
+      setNumReportsPerTeam(r);
+    });
   };
 
   const styles = StyleSheet.create({
@@ -522,7 +473,7 @@ const MatchPredictor = () => {
               borderWidth: 1,
               borderColor: 'blue',
               backgroundColor:
-                winningAllianceColor === 'Blue' ? 'blue' : 'none',
+                winningAllianceColor === AllianceColor.BLUE ? 'blue' : 'none',
               // allianceBreakdown.length === 2 &&
               // allianceBreakdown.find(a => a.team === 'Blue').probability >
               //   allianceBreakdown.find(a => a.team === 'Red').probability
@@ -531,7 +482,10 @@ const MatchPredictor = () => {
             }}>
             <Text
               style={{
-                color: winningAllianceColor === 'Blue' ? 'white' : colors.text,
+                color:
+                  winningAllianceColor === AllianceColor.BLUE
+                    ? 'white'
+                    : colors.text,
                 fontSize: 20,
                 marginBottom: 10,
                 fontWeight: 'bold',
@@ -543,7 +497,7 @@ const MatchPredictor = () => {
                 <Text
                   key={team}
                   style={
-                    winningAllianceColor === 'Blue'
+                    winningAllianceColor === AllianceColor.BLUE
                       ? styles.winning_team_item
                       : styles.team_item
                   }>
@@ -561,7 +515,8 @@ const MatchPredictor = () => {
           <View
             style={{
               ...styles.team_container,
-              backgroundColor: winningAllianceColor === 'Red' ? 'red' : 'none',
+              backgroundColor:
+                winningAllianceColor === AllianceColor.RED ? 'red' : 'none',
               // allianceBreakdown.length === 2 &&
               // allianceBreakdown.find(a => a.team === 'Red').probability >
               //   allianceBreakdown.find(a => a.team === 'Blue').probability
@@ -572,7 +527,10 @@ const MatchPredictor = () => {
             }}>
             <Text
               style={{
-                color: winningAllianceColor === 'Red' ? 'white' : colors.text,
+                color:
+                  winningAllianceColor === AllianceColor.RED
+                    ? 'white'
+                    : colors.text,
                 fontSize: 20,
                 marginBottom: 10,
                 fontWeight: 'bold',
@@ -584,7 +542,7 @@ const MatchPredictor = () => {
                 <Text
                   key={team}
                   style={
-                    winningAllianceColor === 'Red'
+                    winningAllianceColor === AllianceColor.RED
                       ? styles.winning_team_item
                       : styles.team_item
                   }>
@@ -608,13 +566,7 @@ const MatchPredictor = () => {
             <Pressable
               disabled={chosenQuestionIndices.length === 0}
               onPress={() => {
-                setFindingReports(true);
-                getProcessedDataForTeams().then(r => {
-                  setFindingReports(false);
-                  setDeterminingWinner(true);
-                  finalWinnerCalculation(r);
-                  setDeterminingWinner(false);
-                });
+                getMatchPrediction();
               }}
               style={{
                 backgroundColor:
