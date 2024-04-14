@@ -163,7 +163,7 @@ const MatchPredictor = () => {
     setAllianceBreakdown([]);
     setWinningAllianceColor(null);
     setBreakdownVisible(false);
-  }, [matchNumber]);
+  }, [matchNumber, chosenQuestionIndices]);
 
   useEffect(() => {
     assignPredictionConfidence();
