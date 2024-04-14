@@ -60,17 +60,17 @@ const PercentageWinBar = ({
           </View>
         )}
       </View>
-      <Text
-        style={{
-          color: bluePercentage > redPercentage ? colors.primary : 'red',
-          textAlign: 'center',
-          marginTop: 10,
-          fontSize: 20,
-        }}>
-        {bluePercentage > redPercentage ? bluePercentage : redPercentage}%{' '}
-        likelihood of {bluePercentage > redPercentage ? 'Blue' : 'Red'} Alliance
-        win
-      </Text>
+      {/*<Text*/}
+      {/*  style={{*/}
+      {/*    color: bluePercentage > redPercentage ? colors.primary : 'red',*/}
+      {/*    textAlign: 'center',*/}
+      {/*    marginTop: 10,*/}
+      {/*    fontSize: 20,*/}
+      {/*  }}>*/}
+      {/*  {bluePercentage > redPercentage ? bluePercentage : redPercentage}%{' '}*/}
+      {/*  likelihood of {bluePercentage > redPercentage ? 'Blue' : 'Red'} Alliance*/}
+      {/*  win*/}
+      {/*</Text>*/}
     </View>
   );
 };

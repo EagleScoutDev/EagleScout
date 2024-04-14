@@ -1,6 +1,7 @@
 import React, {
   ActivityIndicator,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -64,6 +65,7 @@ const MatchPredictor = () => {
   const [findingReports, setFindingReports] = useState<boolean>(false);
   const [determiningWinner, setDeterminingWinner] = useState<boolean>(false);
   const [allianceBreakdown, setAllianceBreakdown] = useState<Object[]>([]);
+  const [winningAllianceColor, setWinningAllianceColor] = useState<string>('');
 
   const [compId, setCompID] = useState<number>(-1);
   const [currForm, setCurrForm] = useState<Array<Object>>();
@@ -75,7 +77,20 @@ const MatchPredictor = () => {
     CompetitionReturnData[]
   >([]);
 
+  const [calculatedMeanStdev, setCalculatedMeanStdev] = useState<{
+    blueMean: number;
+    redMean: number;
+    blueStdev: number;
+    redStdev: number;
+  }>({
+    blueMean: 0,
+    redMean: 0,
+    blueStdev: 0,
+    redStdev: 0,
+  });
+
   const [onlineMatches, setOnlineMatches] = useState<TBAMatch[]>([]);
+  const [breakdownVisible, setBreakdownVisible] = useState<boolean>(false);
 
   useEffect(() => {
     CompetitionsDB.getCurrentCompetition().then(competition => {
@@ -152,6 +167,8 @@ const MatchPredictor = () => {
 
   useEffect(() => {
     setAllianceBreakdown([]);
+    setWinningAllianceColor('');
+    setBreakdownVisible(false);
   }, [matchNumber]);
 
   useEffect(() => {
@@ -196,6 +213,13 @@ const MatchPredictor = () => {
       }
     }
 
+    setCalculatedMeanStdev({
+      blueMean: blueMean,
+      blueStdev: blueStdev,
+      redMean: redMean,
+      redStdev: redStdev,
+    });
+
     let finalWinner = TeamAggregation.determineWinner(
       blueMean,
       blueStdev,
@@ -226,10 +250,13 @@ const MatchPredictor = () => {
 
     calculatedBluePercentage = Math.round(calculatedBluePercentage * 100);
     calculatedRedPercentage = Math.round(calculatedRedPercentage * 100);
+    const winner =
+      calculatedBluePercentage > calculatedRedPercentage ? 'Blue' : 'Red';
 
     setBluePercentage(calculatedBluePercentage);
     setRedPercentage(calculatedRedPercentage);
     setAllianceBreakdown(finalWinner);
+    setWinningAllianceColor(winner);
   };
 
   const getProcessedDataForTeams = async () => {
@@ -312,6 +339,11 @@ const MatchPredictor = () => {
       flex: 1,
     },
     team_item: {
+      color: colors.text,
+      fontSize: 20,
+      marginHorizontal: 4,
+    },
+    winning_team_item: {
       color: 'white',
       fontSize: 20,
       marginHorizontal: 4,
@@ -326,6 +358,30 @@ const MatchPredictor = () => {
       color: colors.primary,
       fontSize: 16,
       textAlign: 'right',
+    },
+    breakdown_button: {
+      backgroundColor: colors.card,
+      padding: 10,
+      borderRadius: 10,
+      marginHorizontal: '5%',
+      marginVertical: '4%',
+    },
+    breakdown_text: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      fontSize: 16,
+      marginVertical: '4%',
+    },
+    data_point: {
+      fontSize: 12,
+      color: colors.text,
+    },
+    data_point_container: {
+      flexDirection: 'column',
+      // justifyContent: 'space-between',
+      marginHorizontal: '4%',
+      flex: 1,
     },
   });
 
@@ -466,15 +522,16 @@ const MatchPredictor = () => {
               borderWidth: 1,
               borderColor: 'blue',
               backgroundColor:
-                allianceBreakdown.length === 2 &&
-                allianceBreakdown.find(a => a.team === 'Blue').probability >
-                  allianceBreakdown.find(a => a.team === 'Red').probability
-                  ? 'blue'
-                  : 'none',
+                winningAllianceColor === 'Blue' ? 'blue' : 'none',
+              // allianceBreakdown.length === 2 &&
+              // allianceBreakdown.find(a => a.team === 'Blue').probability >
+              //   allianceBreakdown.find(a => a.team === 'Red').probability
+              //   ? 'blue'
+              //   : 'none',
             }}>
             <Text
               style={{
-                color: 'white',
+                color: winningAllianceColor === 'Blue' ? 'white' : colors.text,
                 fontSize: 20,
                 marginBottom: 10,
                 fontWeight: 'bold',
@@ -483,7 +540,13 @@ const MatchPredictor = () => {
             </Text>
             {teamsWithoutData.slice(3, 6).map((team, index) => (
               <View style={{flexDirection: 'row'}}>
-                <Text key={team} style={styles.team_item}>
+                <Text
+                  key={team}
+                  style={
+                    winningAllianceColor === 'Blue'
+                      ? styles.winning_team_item
+                      : styles.team_item
+                  }>
                   {team}
                 </Text>
                 {/*<Text key={team + '1'} style={styles.team_item}>*/}
@@ -498,18 +561,18 @@ const MatchPredictor = () => {
           <View
             style={{
               ...styles.team_container,
-              backgroundColor:
-                allianceBreakdown.length === 2 &&
-                allianceBreakdown.find(a => a.team === 'Red').probability >
-                  allianceBreakdown.find(a => a.team === 'Blue').probability
-                  ? 'red'
-                  : 'none',
+              backgroundColor: winningAllianceColor === 'Red' ? 'red' : 'none',
+              // allianceBreakdown.length === 2 &&
+              // allianceBreakdown.find(a => a.team === 'Red').probability >
+              //   allianceBreakdown.find(a => a.team === 'Blue').probability
+              //   ? 'red'
+              //   : 'none',
               borderWidth: 1,
               borderColor: 'red',
             }}>
             <Text
               style={{
-                color: 'white',
+                color: winningAllianceColor === 'Red' ? 'white' : colors.text,
                 fontSize: 20,
                 marginBottom: 10,
                 fontWeight: 'bold',
@@ -518,7 +581,13 @@ const MatchPredictor = () => {
             </Text>
             {teamsWithoutData.slice(0, 3).map((team, index) => (
               <View style={{flexDirection: 'row'}}>
-                <Text key={team} style={styles.team_item}>
+                <Text
+                  key={team}
+                  style={
+                    winningAllianceColor === 'Red'
+                      ? styles.winning_team_item
+                      : styles.team_item
+                  }>
                   {team}
                 </Text>
                 {/*<Text key={team + '1'} style={styles.team_item}>*/}
@@ -628,6 +697,67 @@ const MatchPredictor = () => {
             {/*</Pressable>*/}
           </View>
         )}
+      {allianceBreakdown.length === 2 && (
+        <View>
+          <Pressable
+            style={styles.breakdown_button}
+            onPress={() => setBreakdownVisible(prevState => !prevState)}>
+            <Text style={styles.breakdown_text}>See Breakdown</Text>
+          </Pressable>
+          {breakdownVisible && (
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.data_point_container}>
+                <Text style={styles.data_point}>
+                  Blue Mean: {calculatedMeanStdev.blueMean.toFixed(2)}
+                </Text>
+                <Text style={styles.data_point}>
+                  Blue Stdev: {calculatedMeanStdev.blueStdev.toFixed(2)}
+                </Text>
+                <Text style={styles.data_point}>
+                  Red Mean: {calculatedMeanStdev.redMean.toFixed(2)}
+                </Text>
+                <Text style={styles.data_point}>
+                  Red Stdev: {calculatedMeanStdev.redStdev.toFixed(2)}
+                </Text>
+              </View>
+              <View style={{flex: 1}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginHorizontal: '4%',
+                  }}>
+                  <Text style={{color: colors.text}}>Team</Text>
+                  <Text style={{color: colors.text}}># Reports</Text>
+                </View>
+                {teamsWithoutData.map((team, index) => (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginHorizontal: '4%',
+                        backgroundColor: index < 3 ? 'crimson' : 'blue',
+                        paddingHorizontal: '4%',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'white',
+                        }}>
+                        {team}
+                      </Text>
+                      <Text style={{color: 'white'}}>
+                        {numReportsPerTeam[index]}
+                      </Text>
+                    </View>
+                    {/*{index === 2 && <View style={{height: 20}} />}*/}
+                  </>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 };
