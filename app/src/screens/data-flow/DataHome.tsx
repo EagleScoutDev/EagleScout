@@ -272,6 +272,25 @@ const DataHome = ({navigation}) => {
                 )}
               />
               <ListItem
+                text={'Scan QR Code'}
+                onPress={() => {
+                  navigation.navigate('QrView', {
+                    type: 'import',
+                  });
+                }}
+                caretVisible={false}
+                disabled={internetStatus !== InternetStatus.CONNECTED}
+                icon={() => (
+                  <Svg
+                    width="16"
+                    height="16"
+                    fill={colors.text}
+                    viewBox="0 0 16 16">
+                    <Path d="M8.5 1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5-.5zM9 1.5a.5.5 0 0 1 1 0v2a.5.5 0 0 1-1 0v-2zm-1 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zM8 3a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-1 0v-10A.5.5 0 0 1 8 3z" />
+                  </Svg>
+                )}
+              />
+              <ListItem
                 text={'Manage Users'}
                 onPress={() => {
                   navigation.navigate('Manage Users');

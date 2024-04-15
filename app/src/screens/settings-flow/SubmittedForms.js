@@ -15,7 +15,7 @@ import {
 import {useEffect, useState} from 'react';
 import ReportList from '../../components/ReportList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import SegmentedOption from '../../components/pickers/SegmentedOption';
 import DBManager from '../../DBManager';
 import React from 'react-native';
@@ -23,10 +23,12 @@ import StandardButton from '../../components/StandardButton';
 import Toast from 'react-native-toast-message';
 import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionsDB from '../../database/Competitions';
+import FormHelper from '../../FormHelper';
 
 const DEBUG = false;
 
 function SubmittedForms() {
+  const navigation = useNavigation();
   const [reports, setReports] = useState([]);
   const [offlineReports, setOfflineReports] = useState([]);
   const {colors} = useTheme();
@@ -205,6 +207,15 @@ function SubmittedForms() {
                     type: 'success',
                     text1: 'All offline reports have been pushed!',
                   });
+                });
+              }}
+            />
+            <StandardButton
+              color={'green'}
+              text={'Export QR Codes'}
+              onPress={() => {
+                navigation.navigate('QrView', {
+                  type: 'export',
                 });
               }}
             />
