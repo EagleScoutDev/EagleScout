@@ -1,6 +1,6 @@
 import React, {View, Text} from 'react-native';
 import Question from './Question';
-import CheckBox from 'react-native-check-box';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 function CheckboxFunction({
   title,
@@ -29,7 +29,7 @@ function CheckboxFunction({
                 alignItems: 'center',
                 marginVertical: 5,
               }}>
-              <CheckBox
+              <BouncyCheckbox
                 onClick={() => {
                   if (disabled) return;
                   if (value.includes(item)) {
@@ -42,8 +42,16 @@ function CheckboxFunction({
                 style={{
                   marginRight: '6%',
                 }}
+                textStyle={{
+                  textDecorationLine: 'none',
+                }}
+                iconStyle={{
+                  borderRadius: 3,
+                }}
+                fillColor={colors.primary}
+                innerIconStyle={{borderRadius: 3}}
+                text={item}
               />
-              <Text style={{color: colors.text}}>{item}</Text>
             </View>
           );
         })}
