@@ -160,16 +160,13 @@ const MatchPredictor = () => {
   };
 
   useEffect(() => {
-    setAllianceBreakdown([]);
-    setWinningAllianceColor(null);
-    setBreakdownVisible(false);
-  }, [matchNumber, chosenQuestionIndices]);
-
-  useEffect(() => {
     assignPredictionConfidence();
   }, [numReportsPerTeam]);
 
   useEffect(() => {
+    setAllianceBreakdown([]);
+    setWinningAllianceColor(null);
+    setBreakdownVisible(false);
     getTeamsInMatch()
       .then(r => {
         if (r) {
