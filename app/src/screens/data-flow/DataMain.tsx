@@ -18,6 +18,7 @@ import WeightedRank from './WeightedRank';
 import {ManageBets} from '../match-betting-flow/admin/ManageBets';
 import {ScoutcoinLedger} from '../scoutcoin-flow/ScoutcoinLedger';
 import {ScoutcoinLeaderboard} from '../scoutcoin-flow/ScoutcoinLeaderboard';
+import MatchPredictor from './MatchPredictor';
 
 const DataStack = createStackNavigator();
 
@@ -58,6 +59,14 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Weighted Team Rank'}
         component={WeightedRank}
+        options={{
+          headerBackTitle: 'Back',
+          // headerTitle: 'Team RankA',
+        }}
+      />
+      <DataStack.Screen
+        name={'Match Predictor'}
+        component={MatchPredictor}
         options={{
           headerBackTitle: 'Back',
           // headerTitle: 'Team RankA',
