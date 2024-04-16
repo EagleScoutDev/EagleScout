@@ -1,70 +1,68 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import React, {View, Text} from 'react-native';
 import Question from './Question';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
-// TODO: this should set the value of which items are selected one level higher.
-/**
- * A checkbox type, which allows for multiple items to be selected
- * @param key - unique key for rendering purposes
- * @param colors - the colors associated with the device's color scheme (light or dark)
- * @param title - the title of the checkbox
- * @param options - the options available in a checkbox
- * @param value - the indices of which items are selected, in an array
- * @param onValueChange - a method to update the checkbox's value in the parent
- * @param disabled - whether the checkbox can be interacted with or not
- * @returns {JSX.Element} renders the checkbox
- * @constructor
- */
-function Checkbox({
-  key,
-  colors,
+function CheckboxFunction({
   title,
   options,
-  value = [],
-  onValueChange,
   disabled,
-  required,
+  value,
+  onValueChange,
+  colors,
 }) {
+  if (!value) return null;
   return (
-    <View key={key}>
-      {/*<Text>checkbox!</Text>*/}
-      {/*{title && (*/}
-      {/*  <Text style={{color: colors.primary, fontWeight: 'bold'}}>{title}</Text>*/}
-      {/*)}*/}
-      <Question title={title} required={required} />
-      {/*<Text>{selected}</Text>*/}
-      {/*<Text>{JSON.stringify(value)}</Text>*/}
-      {options.map((option, index) => {
-        return (
-          <TouchableOpacity
-            disabled={disabled}
-            key={index}
-            onPress={() => {
-              onValueChange(option);
-            }}
-            style={{flexDirection: 'row', alignItems: 'center', margin: 10}}>
+    <View>
+      <Question
+        title={title}
+        onReset={() => {
+          onValueChange([]);
+        }}
+      />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}>
+        {options.map((item, index) => {
+          return (
             <View
+              key={index}
               style={{
-                borderWidth: 1,
-                borderColor: colors.text,
-                padding: 10,
-                marginRight: 10,
-                // if the index is a key in the value dictionary, then it is selected
-                backgroundColor: value.includes(options.indexOf(option))
-                  ? 'lightgreen'
-                  : 'transparent',
-              }}
-            />
-            <Text
-              style={{
-                color: colors.text,
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 5,
               }}>
-              {option}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+              <BouncyCheckbox
+                onPress={checked => {
+                  if (disabled) return;
+                  if (!checked) {
+                    onValueChange(value.filter(i => i !== item));
+                  } else {
+                    onValueChange([...value, item]);
+                  }
+                }}
+                isChecked={value.includes(item)}
+                style={{
+                  marginRight: '6%',
+                }}
+                textStyle={{
+                  textDecorationLine: 'none',
+                }}
+                iconStyle={{
+                  borderRadius: 3,
+                }}
+                fillColor={colors.primary}
+                innerIconStyle={{borderRadius: 3}}
+                text={item}
+              />
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }
 
-export default Checkbox;
+export default CheckboxFunction;
