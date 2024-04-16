@@ -4,4 +4,5 @@ export interface StoredUser {
   admin: boolean;
   first_name: string;
   last_name: string;
+  emoji: string;
 }
