@@ -109,9 +109,11 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
         value={arrayData[item.indice]}
         disabled={false}
         onValueChange={value => {
-          let a = [...arrayData];
-          a[item.indice] = value;
-          setArrayData(a);
+          setArrayData(prev => {
+            const newData = [...prev];
+            newData[item.indice] = value;
+            return newData;
+          });
         }}
         colors={colors}
       />

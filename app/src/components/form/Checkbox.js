@@ -13,7 +13,12 @@ function CheckboxFunction({
   if (!value) return null;
   return (
     <View>
-      <Question title={title} />
+      <Question
+        title={title}
+        onReset={() => {
+          onValueChange([]);
+        }}
+      />
       <View
         style={{
           flex: 1,
@@ -30,9 +35,9 @@ function CheckboxFunction({
                 marginVertical: 5,
               }}>
               <BouncyCheckbox
-                onClick={() => {
+                onPress={checked => {
                   if (disabled) return;
-                  if (value.includes(item)) {
+                  if (!checked) {
                     onValueChange(value.filter(i => i !== item));
                   } else {
                     onValueChange([...value, item]);
