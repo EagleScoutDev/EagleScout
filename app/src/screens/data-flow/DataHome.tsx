@@ -233,7 +233,7 @@ const DataHome = ({navigation}) => {
           <ListItem
             text={'Ledger'}
             onPress={() => {
-              navigation.navigate('Scoutcoin Ledger');
+              navigation.navigate('ScoutCoin Ledger');
             }}
             caretVisible={true}
             disabled={internetStatus !== InternetStatus.CONNECTED}
