@@ -93,6 +93,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
                   style={{
                     fontSize: 20,
                     textAlign: 'center',
+                    color: colors.text,
                   }}>
                   {option}
                 </Text>
