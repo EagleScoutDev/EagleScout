@@ -1,5 +1,11 @@
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {SectionGrid} from 'react-native-super-grid';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useState, useEffect} from 'react';
 import TBAMatches from '../../database/TBAMatches';
 import SetScoutAssignmentModal from '../../components/modals/SetScoutAssignmentModal';
@@ -20,34 +26,22 @@ function ScoutAssignmentsSpreadsheet({route}) {
   const [nextIdx, setNextIdx] = useState(0);
 
   const styles = StyleSheet.create({
-    gridView: {
-      marginTop: 40,
+    scoutAssignmentContainer: {
       flex: 1,
-    },
-    itemContainer: {
-      justifyContent: 'flex-end',
-      borderRadius: 5,
-      padding: 10,
       height: 50,
+      padding: 8,
+      margin: 5,
+      borderRadius: 5,
     },
-    itemName: {
+    scoutAssignmentCode: {
+      fontWeight: '600',
+      fontSize: 15,
+      color: '#fff',
+    },
+    scoutAssignmentName: {
       fontSize: 16,
       color: '#fff',
       fontWeight: '600',
-    },
-    itemCode: {
-      fontWeight: '600',
-      fontSize: 12,
-      color: '#fff',
-    },
-    sectionHeader: {
-      flex: 1,
-      fontSize: 15,
-      fontWeight: '600',
-      alignItems: 'center',
-      backgroundColor: '#636e72',
-      color: 'white',
-      padding: 10,
     },
   });
 
@@ -142,7 +136,6 @@ function ScoutAssignmentsSpreadsheet({route}) {
           let name = '';
           let assignmentExists = false;
           for (let i = 0; i < scoutAssignments.length; i++) {
-            console.log(scoutAssignments[i]);
             if (
               scoutAssignments[i].matchNumber === match.match &&
               scoutAssignments[i].position === match.position
@@ -191,7 +184,6 @@ function ScoutAssignmentsSpreadsheet({route}) {
   };
 
   const setScoutAssignment = item => {
-    console.log('setting scout assignment');
     if (selectMode) {
       if (selectedItems.length === 0) {
         Alert.alert('Select an item', 'Please select at least one item.');
@@ -339,37 +331,99 @@ function ScoutAssignmentsSpreadsheet({route}) {
           </TouchableOpacity>
         )}
       </View>
-      <SectionGrid
-        itemDimension={90}
-        // staticDimension={300}
-        // fixed
-        // spacing={20}
-        sections={matchesGrouped}
-        style={styles.gridView}
-        renderItem={({item, section, index}) => (
-          <TouchableOpacity
-            style={[
-              styles.itemContainer,
-              {
-                backgroundColor: getColor(item),
-              },
-            ]}
-            onPress={() =>
-              selectMode ? setSelected(item) : setScoutAssignment(item)
-            }>
-            <Text style={styles.itemName}>
-              {competition.scoutAssignmentsConfig ===
-              ScoutAssignmentsConfig.TEAM_BASED
-                ? item.teamFormatted
-                : getPosition(item.position)}
-            </Text>
-            <Text style={styles.itemCode}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-        renderSectionHeader={({section}) => (
-          <Text style={styles.sectionHeader}>{section.title}</Text>
-        )}
-      />
+      <ScrollView
+        style={{
+          marginTop: 40,
+        }}>
+        {matchesGrouped.map((matches, index) => (
+          <>
+            <View
+              style={{
+                height: 30,
+                backgroundColor: 'gray',
+                paddingTop: 6,
+                paddingLeft: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 400,
+                  color: '#fff',
+                }}>
+                {matches.title}
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.container,
+                {
+                  flexDirection: 'row',
+                },
+              ]}>
+              {[0, 1, 2].map(elem => (
+                <TouchableOpacity
+                  style={[
+                    styles.scoutAssignmentContainer,
+                    {
+                      backgroundColor: getColor(matches.data[elem]),
+                    },
+                  ]}
+                  onPress={() =>
+                    selectMode
+                      ? setSelected(matches.data[elem])
+                      : setScoutAssignment(matches.data[elem])
+                  }>
+                  <View>
+                    <Text style={styles.scoutAssignmentCode}>
+                      {competition.scoutAssignmentsConfig ===
+                      ScoutAssignmentsConfig.TEAM_BASED
+                        ? matches.data[elem].teamFormatted
+                        : getPosition(matches.data[elem].position)}
+                    </Text>
+                    <Text style={styles.scoutAssignmentName}>
+                      {matches.data[elem].name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View
+              style={[
+                styles.container,
+                {
+                  flexDirection: 'row',
+                },
+              ]}>
+              {[3, 4, 5].map(elem => (
+                <TouchableOpacity
+                  style={[
+                    styles.scoutAssignmentContainer,
+                    {
+                      backgroundColor: getColor(matches.data[elem]),
+                    },
+                  ]}
+                  onPress={() =>
+                    selectMode
+                      ? setSelected(matches.data[elem])
+                      : setScoutAssignment(matches.data[elem])
+                  }>
+                  <View>
+                    <Text style={styles.scoutAssignmentCode}>
+                      {competition.scoutAssignmentsConfig ===
+                      ScoutAssignmentsConfig.TEAM_BASED
+                        ? matches.data[elem].teamFormatted
+                        : getPosition(matches.data[elem].position)}
+                    </Text>
+                    <Text style={styles.scoutAssignmentName}>
+                      {matches.data[elem].name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
+        ))}
+      </ScrollView>
       <SetScoutAssignmentModal
         visible={scoutAssignmentModalVisible}
         setVisible={setScoutAssignmentModalVisible}
