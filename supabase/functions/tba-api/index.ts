@@ -30,7 +30,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         message: 'TBA API error',
-        tbaCode: eventRes.status,
+        tbaCode: response.status,
       }), { 
         headers: { 'Content-Type': 'application/json' },
         status: 400

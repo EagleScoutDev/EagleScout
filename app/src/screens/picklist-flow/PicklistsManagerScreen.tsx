@@ -31,25 +31,16 @@ function PicklistsManagerScreen({navigation}) {
           for (let i = 0; i < picklistsResponse.length; i++) {
             usersCopy.set(picklistsResponse[i].created_by, profiles[i].name);
           }
+          // sort picklists by created_at
+          picklistsResponse.sort((a, b) => {
+            return (
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+            );
+          });
           setPicklists(picklistsResponse);
           setUsers(usersCopy);
         });
-
-        if (cmpId != null) {
-          let exists = false;
-          for (let j = 0; j < picklistsResponse.length; j++) {
-            if (picklistsResponse[j].id === cmpId) {
-              exists = true;
-              break;
-            }
-          }
-          if (exists) {
-            Alert.alert(
-              'Unable to delete picklist',
-              'Please make sure you have sufficient permissions to delete this picklist.',
-            );
-          }
-        }
       })
       .catch(error => {
         console.error('Error getting picklists:', error);
@@ -107,6 +98,7 @@ function PicklistsManagerScreen({navigation}) {
             renderItem={({item}) => {
               return (
                 <Pressable
+                  key={item.id ?? Math.random()}
                   onPressIn={() => {
                     setHoveredPicklistID(item.name);
                   }}
@@ -133,7 +125,7 @@ function PicklistsManagerScreen({navigation}) {
                           text: 'Delete',
                           onPress: () => {
                             PicklistsDB.deletePicklist(item.id).then(() => {
-                              getPicklists(item.id);
+                              getPicklists(item.competition_id);
                             });
                           },
                         },
@@ -170,7 +162,8 @@ function PicklistsManagerScreen({navigation}) {
                         fontSize: 12,
                         color: 'gray',
                       }}>
-                      By {users.get(item.created_by) || 'Unknown'}
+                      By {users.get(item.created_by) || 'Unknown'}, at{' '}
+                      {new Date(item.created_at).toLocaleString()}
                     </Text>
                   </View>
                   <Svg

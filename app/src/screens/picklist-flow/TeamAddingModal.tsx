@@ -3,21 +3,21 @@ import Svg, {Path} from 'react-native-svg';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
+import {SimpleTeam} from '../../lib/TBAUtils';
+import {PicklistTeam} from '../../database/Picklists';
 
 interface TeamAddingModalProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  teams_list: number[];
-  setTeamsList: React.Dispatch<React.SetStateAction<number[]>>;
-  possibleTeams: number[];
-  addOrRemoveTeam: (team: number) => void;
+  teams_list: PicklistTeam[];
+  teamsAtCompetition: SimpleTeam[];
+  addOrRemoveTeam: (team: SimpleTeam) => void;
 }
 const TeamAddingModal = ({
   visible,
   setVisible,
   teams_list,
-  setTeamsList,
-  possibleTeams,
+  teamsAtCompetition,
   addOrRemoveTeam,
 }: TeamAddingModalProps) => {
   const {colors} = useTheme();
@@ -55,9 +55,10 @@ const TeamAddingModal = ({
                   text: 'Yes',
                   isPreferred: true,
                   onPress: () => {
-                    setTeamsList(possibleTeams);
+                    for (let i = 0; i < teamsAtCompetition.length; i++) {
+                      addOrRemoveTeam(teamsAtCompetition[i]);
+                    }
                     setVisible(false);
-                    // setVisible(true);
                   },
                 },
               ]);
@@ -66,7 +67,7 @@ const TeamAddingModal = ({
               width="24"
               height="24"
               stroke={
-                teams_list.length === possibleTeams.length
+                teams_list.length === teamsAtCompetition.length
                   ? 'gray'
                   : colors.primary
               }
@@ -105,30 +106,27 @@ const TeamAddingModal = ({
             marginTop: '5%',
             marginLeft: '5%',
           }}
-          data={
-            // filter_by_added
-            //   ? possibleTeams.filter(team => teams_list.includes(team))
-            possibleTeams
-          }
+          data={teamsAtCompetition}
           renderItem={({item}) => {
             return (
               <View
                 style={{
-                  // backgroundColor: 'red',
                   minWidth: '80%',
                 }}>
                 <BouncyCheckbox
                   size={30}
                   fillColor="blue"
                   unfillColor="#FFFFFF"
-                  text={String(item)}
+                  text={item.team_number.toString()}
                   textStyle={{
                     color: colors.text,
                     padding: '2%',
                     fontSize: 20,
                     textDecorationLine: 'none',
                   }}
-                  isChecked={teams_list.includes(item)}
+                  isChecked={teams_list.some(
+                    team => team.team_number === item.team_number,
+                  )}
                   onPress={() => {
                     addOrRemoveTeam(item);
                   }}
