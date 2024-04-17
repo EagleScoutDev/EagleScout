@@ -128,7 +128,10 @@ export const EditNoteModal = ({
             value={content}
             onChange={e => setContent(e.nativeEvent.text)}
           />
-          <Pressable style={styles.button} onPress={saveNote}>
+          <Pressable
+            style={styles.button}
+            onPress={saveNote}
+            disabled={!content || content === note.content}>
             <Text style={styles.buttonText}>Save</Text>
           </Pressable>
         </View>
