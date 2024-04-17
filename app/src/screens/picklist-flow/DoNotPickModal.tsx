@@ -29,18 +29,20 @@ const DoNotPickModal = ({
   teams: PicklistTeam[] | undefined;
   teamsAtCompetition: SimpleTeam[];
   numbersToNames: Map<number, string>;
-  addToDNP: (team: PicklistTeam) => void;
+  addToDNP: (team: SimpleTeam) => void;
 }) => {
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [addingTeams, setAddingTeams] = useState<boolean>(false);
 
   const addOrRemoveTeam = (team: SimpleTeam) => {
-    addToDNP(teams?.find(a => a.team_number === team.team_number)!);
+    console.log('Adding team to DNP:', team, teams);
+    addToDNP(team);
   };
 
   const addOrRemovePicklistTeam = (team: PicklistTeam) => {
-    addToDNP(team);
+    // wacky ts workaround because im too lazy to recreate a SimpleTeam
+    addToDNP(team as unknown as SimpleTeam);
   };
 
   return (

@@ -443,25 +443,19 @@ function PicklistCreator({
     return 255 - bgDelta < nThreshold ? '#000000' : '#ffffff';
   };
 
-  const addToDNP = (team: PicklistTeam) => {
-    let addingToDNP = false;
+  const addToDNP = (team: SimpleTeam) => {
+    let newTeams = teams_list;
 
-    // if it doesn't exist in the list, add it
-    addTeam(team.team_number);
-
-    let specificTeam = teams_list.find(t => t === team);
-    let newTeams = teams_list.map(t => {
-      if (t === team) {
-        addingToDNP = !t.dnp;
-        t.dnp = !t.dnp;
-      }
-      return t;
-    });
-
-    // if the team is being added to DNP, move it to the end of the list
-    if (addingToDNP) {
-      newTeams = newTeams.filter(t => t !== specificTeam);
-      newTeams.push(specificTeam!);
+    let specificTeam = teams_list.find(t => t.team_number === team.team_number);
+    if (!specificTeam) {
+      newTeams.push({
+        team_number: team.team_number,
+        dnp: true,
+        tags: [],
+        notes: '',
+      });
+    } else {
+      newTeams = newTeams.filter(t => t.team_number !== team.team_number);
     }
 
     setTeamsList(newTeams);

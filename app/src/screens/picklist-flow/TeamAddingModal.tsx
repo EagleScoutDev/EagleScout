@@ -117,7 +117,7 @@ const TeamAddingModal = ({
                   size={30}
                   fillColor="blue"
                   unfillColor="#FFFFFF"
-                  text={String(item)}
+                  text={item.team_number.toString()}
                   textStyle={{
                     color: colors.text,
                     padding: '2%',
