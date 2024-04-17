@@ -71,6 +71,13 @@ export const EditNoteModal = ({
       marginVertical: 10,
       alignItems: 'center',
     },
+    disabledButton: {
+      backgroundColor: 'gray',
+      padding: 10,
+      borderRadius: 5,
+      marginVertical: 10,
+      alignItems: 'center',
+    },
     buttonText: {
       color: colors.background,
     },
@@ -129,7 +136,11 @@ export const EditNoteModal = ({
             onChange={e => setContent(e.nativeEvent.text)}
           />
           <Pressable
-            style={styles.button}
+            style={
+              !content || content === note.content
+                ? styles.button
+                : styles.disabledButton
+            }
             onPress={saveNote}
             disabled={!content || content === note.content}>
             <Text style={styles.buttonText}>Save</Text>
