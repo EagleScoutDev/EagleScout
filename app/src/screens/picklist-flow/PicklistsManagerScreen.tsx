@@ -41,22 +41,6 @@ function PicklistsManagerScreen({navigation}) {
           setPicklists(picklistsResponse);
           setUsers(usersCopy);
         });
-
-        if (cmpId != null) {
-          let exists = false;
-          for (let j = 0; j < picklistsResponse.length; j++) {
-            if (picklistsResponse[j].id === cmpId) {
-              exists = true;
-              break;
-            }
-          }
-          if (exists) {
-            Alert.alert(
-              'Unable to delete picklist',
-              'Please make sure you have sufficient permissions to delete this picklist.',
-            );
-          }
-        }
       })
       .catch(error => {
         console.error('Error getting picklists:', error);
