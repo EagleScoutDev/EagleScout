@@ -62,6 +62,7 @@ export const EditNoteModal = ({
       borderRadius: 5,
       marginVertical: 10,
       height: '30%',
+      color: colors.text,
     },
     button: {
       backgroundColor: colors.primary,
