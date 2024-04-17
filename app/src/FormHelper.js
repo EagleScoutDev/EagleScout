@@ -37,7 +37,9 @@ class FormHelper {
    */
 
   static async saveFormOffline(dataToSubmit) {
-    dataToSubmit.createdAt = new Date();
+    if (!dataToSubmit.createdAt) {
+      dataToSubmit.createdAt = new Date();
+    }
 
     await AsyncStorage.setItem(
       'form-' + dataToSubmit.createdAt.getUTCMilliseconds(),
