@@ -52,6 +52,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   // for radio-type questions
   const [indexOfGreatestValue, setIndexOfGreatestValue] = useState<number>(0);
 
+  // for checkbox-type questions
+  const [frequencies, setFrequencies] = useState(new Map<string, number>());
+  const [valueOfMostOccurrences, setValueOfMostOccurrences] =
+    useState<number>(0);
+
   useEffect(() => {
     if (item.type === 'textbox' && generate_ai_summary) {
       let filteredData = data.filter(datum => datum.data !== '');
@@ -91,6 +96,26 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         return;
       }
       setIndexOfGreatestValue(index);
+    }
+    if (item.type === 'checkboxes') {
+      const freq = new Map<string, number>(
+        item.options.map((option: string) => [option, 0]),
+      );
+      for (const {data: matchData} of data) {
+        for (const selected of matchData) {
+          freq.set(selected, freq.get(selected)! + 1);
+        }
+      }
+      setFrequencies(freq);
+      const counts = Array.from(freq.values());
+      const index = counts.indexOf(Math.max(...counts));
+
+      // if the largest value appears multiple times, set the index to -1
+      if (counts.filter(count => count === counts[index]).length > 1) {
+        setValueOfMostOccurrences(-1);
+        return;
+      }
+      setValueOfMostOccurrences(index);
     }
   }, []);
 
@@ -229,6 +254,73 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         </View>
       )}
 
+      {item.type === 'checkboxes' && (
+        <View>
+          {item.options.map((label: string, index: number) => {
+            return (
+              <View>
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: '2%',
+                    // backgroundColor: colors.border,
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                      flex: 2,
+                    }}>
+                    {label}
+                  </Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      backgroundColor:
+                        index === valueOfMostOccurrences
+                          ? colors.primary
+                          : colors.card,
+                      paddingVertical:
+                        index === valueOfMostOccurrences ? '2%' : 0,
+                      borderCurve: 'continuous',
+                      borderRadius: 12,
+                    }}>
+                    <Text
+                      style={{
+                        color:
+                          index === valueOfMostOccurrences
+                            ? 'white'
+                            : colors.text,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                      }}>
+                      {((frequencies.get(label)! / data.length) * 100).toFixed(
+                        2,
+                      )}
+                      %
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    height: 1,
+                    width: '100%',
+                    backgroundColor: colors.border,
+                    marginVertical: '3%',
+                  }}
+                />
+              </View>
+            );
+          })}
+          <Text style={{color: 'gray', textAlign: 'center'}}>
+            {data.length} total responses
+          </Text>
+        </View>
+      )}
       {/*<Text style={{color: 'green'}}>*/}
       {/*  raw data - {data.map(datum => datum.data + '(' + datum.match + ')')}*/}
       {/*</Text>*/}

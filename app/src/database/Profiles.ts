@@ -5,6 +5,8 @@ export interface ProfilesReturnData {
   firstName: string;
   lastName: string;
   name: string;
+  emoji: string;
+  scoutcoins: number;
 }
 
 class ProfilesDB {
@@ -24,8 +26,28 @@ class ProfilesDB {
           firstName: data[0].first_name,
           lastName: data[0].last_name,
           name: data[0].name,
+          emoji: data[0].emoji,
+          scoutcoins: data[0].scoutcoins,
         };
       }
+    }
+  }
+
+  static async getAllProfiles(): Promise<ProfilesReturnData[]> {
+    const {data, error} = await supabase.from('profiles').select('*');
+    if (error) {
+      throw error;
+    } else {
+      return data.map(profile => {
+        return {
+          id: profile.id,
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          name: profile.name,
+          emoji: profile.emoji,
+          scoutcoins: profile.scoutcoins,
+        };
+      });
     }
   }
 

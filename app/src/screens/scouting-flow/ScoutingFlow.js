@@ -19,7 +19,7 @@ function ScoutingFlow({navigation, route, resetTimer}) {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
-      checkbox: [],
+      checkboxes: [],
       textbox: '',
       number: 0,
       slider: 0,
@@ -119,6 +119,8 @@ function ScoutingFlow({navigation, route, resetTimer}) {
           tempArray[i] = null;
         } else if (form[i].type === 'radio') {
           tempArray[i] = form[i].defaultIndex;
+        } else if (form[i].type === 'checkbox') {
+          tempArray[i] = form[i].checkedByDefault;
         } else {
           tempArray[i] = defaultValues[form[i].type];
         }
@@ -199,23 +201,6 @@ function ScoutingFlow({navigation, route, resetTimer}) {
 
     // array containing the raw values of the form
     let tempArray = [...arrayData];
-
-    // number of items in dictionary
-    const numItems = Object.keys(formStructure).length;
-
-    // converts each checkbox type into a format usable for the form
-    // remember: each checkbox stores the data as an array of indices
-    // but the database requires a dictionary, with the key representing the index (in terms of the dictionary)
-    // and the value representing the index of the answer relative to the array of checkbox options
-    for (let i = 0; i < numItems; i++) {
-      if (formStructure[i].type === 'checkbox') {
-        let tempDict = {};
-        for (let j = 0; j < tempArray[i].length; j++) {
-          tempDict[j] = tempArray[i][j];
-        }
-        tempArray[i] = tempDict;
-      }
-    }
 
     if (!checkRequiredFields(tempArray)) {
       setIsSubmitting(false);

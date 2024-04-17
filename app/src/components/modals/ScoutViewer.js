@@ -451,7 +451,7 @@ function ScoutViewer({
                     flexDirection:
                       field.type === 'radio' ||
                       field.type === 'textbox' ||
-                      field.type === 'checkbox' ||
+                      field.type === 'checkboxes' ||
                       (editingActive && field.type === 'number' && field.slider)
                         ? 'column'
                         : 'row',
@@ -466,9 +466,10 @@ function ScoutViewer({
                   {/*SliderType renders its own custom question text, so we shouldn't render a question here
                   if the field is a slider*/}
                   {/*SliderType is only used when editing is active*/}
-                  {(!editingActive || !field.slider) && (
-                    <Text style={styles.question}>{field.question}</Text>
-                  )}
+                  {(!editingActive || !field.slider) &&
+                    field.type !== 'checkboxes' && (
+                      <Text style={styles.question}>{field.question}</Text>
+                    )}
                   {field.type === 'radio' && (
                     <View>
                       <RadioButtons
@@ -558,38 +559,25 @@ function ScoutViewer({
                       />
                     </View>
                   )}
-                  {field.type === 'checkbox' && (
-                    <Checkbox
-                      title={''}
-                      disabled={!editingActive}
-                      colors={colors}
-                      options={field.options}
-                      value={
-                        tempData[index] &&
-                        tempData[index] != null &&
-                        tempData[index] !== ''
-                          ? Object.values(tempData[index]).map(value => {
-                              return Number.parseInt(value, 10);
-                            })
-                          : []
-                      }
-                      onValueChange={value => {
-                        console.log('new checkbox value: ' + value);
-                        // print out the values of the dictionary tempData[index]
-
-                        console.log(
-                          'values of temp data index: ' +
-                            Object.values(tempData[index]),
-                        );
-                        console.log(
-                          'tostring of temp data index: ' +
-                            tempData[index].toString(),
-                        );
-                      }}
-                    />
+                  {field.type === 'checkboxes' && (
+                    <View>
+                      <Checkbox
+                        title={field.question}
+                        options={field.options}
+                        value={tempData[index]}
+                        disabled={!editingActive}
+                        colors={colors}
+                        editingActive={editingActive}
+                        onValueChange={value => {
+                          let a = [...tempData];
+                          a[index] = value;
+                          setTempData(a);
+                        }}
+                      />
+                    </View>
                   )}
                   {field.type !== 'radio' &&
-                    field.type !== 'checkbox' &&
+                    field.type !== 'checkboxes' &&
                     !editingActive && (
                       <Text
                         style={{

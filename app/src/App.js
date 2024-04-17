@@ -51,6 +51,8 @@ import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
 import ResetPassword from './screens/login-flow/ResetPassword';
+import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
+import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
 
 const CustomLightTheme = {
   dark: false,
@@ -137,13 +139,6 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
     })();
   }, [url]);
 
-  const ScoutReportComponent = props => (
-    <ScoutingFlow
-      {...props}
-      isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
-    />
-  );
-
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
       if (value != null) {
@@ -199,7 +194,7 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
         .single();
       const {data: profilesData, error: profilesError} = await supabase
         .from('profiles')
-        .select('first_name, last_name')
+        .select('first_name, last_name, emoji')
         .eq('id', user.id)
         .single();
       if (userAttribError) {
@@ -445,6 +440,18 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
                 setOled={setOled}
               />
             )}
+          />
+          <Tab.Screen
+            name="MatchBetting"
+            options={{
+              tabBarButton: () => null,
+              headerShown: false,
+              tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
+            }}
+            component={MatchBettingNavigator}
           />
         </>
       )}
