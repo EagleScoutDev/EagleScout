@@ -1,10 +1,18 @@
-import React, { Alert, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import StandardModal from '../../components/modals/StandardModal';
 import StandardButton from '../../components/StandardButton';
 import {useEffect, useState} from 'react';
 import {supabase} from '../../lib/supabase';
 import CheckBox from 'react-native-check-box';
-import TextBox from "../form-creation-flow/components/questions/TextBox";
+import TextBox from '../form-creation-flow/components/questions/TextBox';
 
 function AutoAssignModal({visible, setVisible, colors, compId}) {
   const styles = StyleSheet.create({
@@ -15,6 +23,7 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
   const [usersKey, setUsersKey] = useState(0);
   const [numberOfRounds, setNumberOfRounds] = useState('0');
   const [numberOfRoundsInShift, setNumberOfRoundsInShift] = useState('0');
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     supabase
@@ -61,6 +70,7 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
       Alert.alert('Error', 'You must select at least 6 users');
       return;
     }
+    setProcessing(true);
     supabase
       .rpc('assign_rounds', {
         competition_id_arg: compId,
@@ -69,6 +79,7 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
         number_of_rounds_in_shift: numberOfRoundsInShiftInt,
       })
       .then(({data, error}) => {
+        setProcessing(false);
         if (error) {
           console.error(error);
           Alert.alert('Error', 'Failed to auto-assign rounds');
@@ -80,89 +91,106 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
   };
 
   return (
-    <StandardModal title={'Auto-Assign rounds'} visible={visible}>
-      <Text>This is the auto assign modal.</Text>
-      <ScrollView
-        style={{
-          maxHeight: '50%',
-          width: '100%',
-        }}>
-        {users.map((user, idx) => {
-          return (
-            <View
-              key={user.id}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <View style={{flex: 1}}>
-                <CheckBox
-                  key={usersKey}
-                  onClick={() => {
-                    let newUsersChecked = usersChecked;
-                    newUsersChecked[idx] = !newUsersChecked[idx];
-                    setUsersChecked(newUsersChecked);
-                    console.log(usersChecked);
-                    setUsersKey(usersKey + 1);
-                  }}
-                  isChecked={usersChecked[idx]}
-                />
-              </View>
-              <Text
+    <>
+      <StandardModal title={'Auto-Assign rounds'} visible={visible}>
+        {processing && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 10,
+            }}>
+            <ActivityIndicator size="large" />
+          </View>
+        )}
+        <Text>This is the auto assign modal.</Text>
+        <ScrollView
+          style={{
+            maxHeight: '50%',
+            width: '100%',
+          }}>
+          {users.map((user, idx) => {
+            return (
+              <View
+                key={user.id}
                 style={{
-                  flex: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                {user.name}
-              </Text>
-            </View>
-          );
-        })}
-      </ScrollView>
-      <Text>Number of rounds:</Text>
-      <TextInput
-        onChangeText={setNumberOfRounds}
-        value={numberOfRounds}
-        style={{
-          height: 40,
-          width: '100%',
-          margin: 5,
-          borderWidth: 1,
-          borderRadius: 10,
-          padding: 10,
-        }}
-        placeholder="Number of rounds"
-        keyboardType="numeric"
-      />
-      <Text>Number of rounds in a shift:</Text>
-      <TextInput
-        onChangeText={setNumberOfRoundsInShift}
-        value={numberOfRoundsInShift}
-        style={{
-          height: 40,
-          width: '100%',
-          margin: 5,
-          borderWidth: 1,
-          borderRadius: 10,
-          padding: 10,
-        }}
-        placeholder="Number of rounds in a shift:"
-        keyboardType="numeric"
-      />
-      <View style={styles.button_row}>
-        <StandardButton
-          color={colors.primary}
-          onPress={() => setVisible(false)}
-          text={'Cancel'}
-          width={'40%'}
+                <View style={{flex: 1}}>
+                  <CheckBox
+                    key={usersKey}
+                    onClick={() => {
+                      let newUsersChecked = usersChecked;
+                      newUsersChecked[idx] = !newUsersChecked[idx];
+                      setUsersChecked(newUsersChecked);
+                      console.log(usersChecked);
+                      setUsersKey(usersKey + 1);
+                    }}
+                    isChecked={usersChecked[idx]}
+                  />
+                </View>
+                <Text
+                  style={{
+                    flex: 8,
+                  }}>
+                  {user.name}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+        <Text>Number of rounds:</Text>
+        <TextInput
+          onChangeText={setNumberOfRounds}
+          value={numberOfRounds}
+          style={{
+            height: 40,
+            width: '100%',
+            margin: 5,
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 10,
+          }}
+          placeholder="Number of rounds"
+          keyboardType="numeric"
         />
-        <StandardButton
-          color={'#29a329'}
-          onPress={() => onSubmit()}
-          text={'Submit'}
-          width={'40%'}
+        <Text>Number of rounds in a shift:</Text>
+        <TextInput
+          onChangeText={setNumberOfRoundsInShift}
+          value={numberOfRoundsInShift}
+          style={{
+            height: 40,
+            width: '100%',
+            margin: 5,
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 10,
+          }}
+          placeholder="Number of rounds in a shift:"
+          keyboardType="numeric"
         />
-      </View>
-    </StandardModal>
+        <View style={styles.button_row}>
+          <StandardButton
+            color={colors.primary}
+            onPress={() => setVisible(false)}
+            text={'Cancel'}
+            width={'40%'}
+          />
+          <StandardButton
+            color={'#29a329'}
+            onPress={() => onSubmit()}
+            text={'Submit'}
+            width={'40%'}
+          />
+        </View>
+      </StandardModal>
+    </>
   );
 }
 

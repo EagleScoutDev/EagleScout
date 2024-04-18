@@ -1,11 +1,12 @@
-import {
+import React, {
+  ActivityIndicator,
   Alert,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 import {useState, useEffect} from 'react';
 import TBAMatches from '../../database/TBAMatches';
 import SetScoutAssignmentModal from '../../components/modals/SetScoutAssignmentModal';
@@ -26,6 +27,7 @@ function ScoutAssignmentsSpreadsheet({route}) {
   const {colors} = useTheme();
   const [nextIdx, setNextIdx] = useState(0);
   const [autoAssignModalVisible, setAutoAssignModalVisible] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const styles = StyleSheet.create({
     scoutAssignmentContainer: {
@@ -48,6 +50,7 @@ function ScoutAssignmentsSpreadsheet({route}) {
   });
 
   useEffect(() => {
+    setProcessing(true);
     (async () => {
       if (
         competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED
@@ -170,6 +173,7 @@ function ScoutAssignmentsSpreadsheet({route}) {
 
         setMatchesGrouped(matchesGrouped);
       }
+      setProcessing(false);
     })();
   }, [competition]); // eslint-disable-line react-hooks/exhaustive-deps
   // Eslint exhausting deps was disabled because we don't want to re-render
@@ -291,6 +295,20 @@ function ScoutAssignmentsSpreadsheet({route}) {
 
   return (
     <>
+      {processing && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
       <View>
         <TouchableOpacity
           onPress={() => setAutoAssignModalVisible(!selectMode)}
