@@ -20,7 +20,7 @@ function Stepper(props) {
     } else {
       if (props.value > 0) {
         props.onValueChange(props.value - 1);
-        ReactNativeHapticFeedback.trigger('impactMedium', {
+        ReactNativeHapticFeedback.trigger('impactSoft', {
           enableVibrateFallback: true,
           ignoreAndroidSystemSettings: false,
         });
