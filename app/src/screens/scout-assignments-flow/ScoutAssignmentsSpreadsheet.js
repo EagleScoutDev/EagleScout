@@ -13,6 +13,7 @@ import ScoutAssignments from '../../database/ScoutAssignments';
 import {useTheme} from '@react-navigation/native';
 import {ScoutAssignmentsConfig} from '../../database/Competitions';
 import {Position} from '../../database/ScoutAssignments';
+import AutoAssignModal from "./AutoAssignModal";
 
 function ScoutAssignmentsSpreadsheet({route}) {
   const {competition} = route.params;
@@ -24,6 +25,7 @@ function ScoutAssignmentsSpreadsheet({route}) {
   const [selectedItems, setSelectedItems] = useState([]);
   const {colors} = useTheme();
   const [nextIdx, setNextIdx] = useState(0);
+  const [autoAssignModalVisible, setAutoAssignModalVisible] = useState(false);
 
   const styles = StyleSheet.create({
     scoutAssignmentContainer: {
@@ -291,6 +293,24 @@ function ScoutAssignmentsSpreadsheet({route}) {
     <>
       <View>
         <TouchableOpacity
+          onPress={() => setAutoAssignModalVisible(!selectMode)}
+          style={{
+            alignSelf: 'flex-start',
+            // backgroundColor: colors.primary,
+            padding: 10,
+            borderRadius: 10,
+            position: 'absolute',
+          }}>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: 'bold',
+              fontSize: 17,
+            }}>
+            Auto-Assign
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => setSelectMode(!selectMode)}
           style={{
             alignSelf: 'flex-end',
@@ -434,6 +454,12 @@ function ScoutAssignmentsSpreadsheet({route}) {
           competition.scoutAssignmentsConfig ===
           ScoutAssignmentsConfig.TEAM_BASED
         }
+      />
+      <AutoAssignModal
+        visible={autoAssignModalVisible}
+        setVisible={setAutoAssignModalVisible}
+        colors={colors}
+        compId={competition.id}
       />
     </>
   );
