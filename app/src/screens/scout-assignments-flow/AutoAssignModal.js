@@ -108,7 +108,12 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
             <ActivityIndicator size="large" />
           </View>
         )}
-        <Text>This is the auto assign modal.</Text>
+        <Text
+          style={{
+            color: colors.text,
+          }}>
+          Select users that will scout:
+        </Text>
         <ScrollView
           style={{
             maxHeight: '50%',
@@ -133,11 +138,13 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
                       setUsersKey(usersKey + 1);
                     }}
                     isChecked={usersChecked[idx]}
+                    checkBoxColor={colors.text}
                   />
                 </View>
                 <Text
                   style={{
                     flex: 8,
+                    color: colors.text,
                   }}>
                   {user.name}
                 </Text>
@@ -145,7 +152,12 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
             );
           })}
         </ScrollView>
-        <Text>Number of rounds:</Text>
+        <Text
+          style={{
+            color: colors.text,
+          }}>
+          Number of rounds:
+        </Text>
         <TextInput
           onChangeText={setNumberOfRounds}
           value={numberOfRounds}
@@ -156,11 +168,18 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
             borderWidth: 1,
             borderRadius: 10,
             padding: 10,
+            color: colors.text,
+            borderColor: colors.text,
           }}
           placeholder="Number of rounds"
           keyboardType="numeric"
         />
-        <Text>Number of rounds in a shift:</Text>
+        <Text
+          style={{
+            color: colors.text,
+          }}>
+          Number of rounds in a shift:
+        </Text>
         <TextInput
           onChangeText={setNumberOfRoundsInShift}
           value={numberOfRoundsInShift}
@@ -171,6 +190,8 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
             borderWidth: 1,
             borderRadius: 10,
             padding: 10,
+            color: colors.text,
+            borderColor: colors.text,
           }}
           placeholder="Number of rounds in a shift:"
           keyboardType="numeric"
