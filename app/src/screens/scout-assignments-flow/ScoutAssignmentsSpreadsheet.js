@@ -6,7 +6,7 @@ import React, {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 import {useState, useEffect} from 'react';
 import TBAMatches from '../../database/TBAMatches';
 import SetScoutAssignmentModal from '../../components/modals/SetScoutAssignmentModal';
@@ -14,7 +14,7 @@ import ScoutAssignments from '../../database/ScoutAssignments';
 import {useTheme} from '@react-navigation/native';
 import {ScoutAssignmentsConfig} from '../../database/Competitions';
 import {Position} from '../../database/ScoutAssignments';
-import AutoAssignModal from "./AutoAssignModal";
+import AutoAssignModal from './AutoAssignModal';
 
 function ScoutAssignmentsSpreadsheet({route}) {
   const {competition} = route.params;
@@ -310,24 +310,27 @@ function ScoutAssignmentsSpreadsheet({route}) {
         </View>
       )}
       <View>
-        <TouchableOpacity
-          onPress={() => setAutoAssignModalVisible(!selectMode)}
-          style={{
-            alignSelf: 'flex-start',
-            // backgroundColor: colors.primary,
-            padding: 10,
-            borderRadius: 10,
-            position: 'absolute',
-          }}>
-          <Text
+        {competition.scoutAssignmentsConfig ===
+          ScoutAssignmentsConfig.POSITION_BASED && (
+          <TouchableOpacity
+            onPress={() => setAutoAssignModalVisible(!selectMode)}
             style={{
-              color: colors.primary,
-              fontWeight: 'bold',
-              fontSize: 17,
+              alignSelf: 'flex-start',
+              // backgroundColor: colors.primary,
+              padding: 10,
+              borderRadius: 10,
+              position: 'absolute',
             }}>
-            Auto-Assign
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: colors.primary,
+                fontWeight: 'bold',
+                fontSize: 17,
+              }}>
+              Auto-Assign
+            </Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => setSelectMode(!selectMode)}
           style={{
