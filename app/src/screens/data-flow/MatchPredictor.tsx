@@ -1,5 +1,6 @@
 import React, {
   ActivityIndicator,
+  Keyboard,
   Pressable,
   StyleSheet,
   Text,
@@ -531,6 +532,7 @@ const MatchPredictor = () => {
               disabled={chosenQuestionIndices.length === 0}
               onPress={() => {
                 getMatchPrediction();
+                Keyboard.dismiss();
               }}
               style={{
                 backgroundColor:
