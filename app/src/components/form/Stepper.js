@@ -3,6 +3,7 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native';
 import Question from './Question';
 import {useTheme} from '@react-navigation/native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 function Stepper(props) {
   const {colors} = useTheme();
@@ -12,9 +13,17 @@ function Stepper(props) {
       props.onValueChange(
         props.value === '' ? 0 : Number.parseInt(props.value, 10) + 1,
       );
+      ReactNativeHapticFeedback.trigger('impactMedium', {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false,
+      });
     } else {
       if (props.value > 0) {
         props.onValueChange(props.value - 1);
+        ReactNativeHapticFeedback.trigger('impactSoft', {
+          enableVibrateFallback: true,
+          ignoreAndroidSystemSettings: false,
+        });
       }
     }
   };
