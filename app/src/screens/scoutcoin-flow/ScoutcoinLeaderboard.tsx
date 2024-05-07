@@ -1,11 +1,21 @@
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {Alert, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Easing,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ProfilesDB from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
 import React from 'react-native';
 import Svg, {Path} from 'react-native-svg';
+import GradientShimmer from 'react-native-gradient-shimmer';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface LeaderboardUser {
   id: string;
@@ -92,10 +102,7 @@ export const ScoutcoinLeaderboard = () => {
       padding: 20,
       marginVertical: 4,
       marginHorizontal: 16,
-      backgroundColor: colors.card,
       borderRadius: 5,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
     },
     filter: {
       margin: 20,
@@ -164,44 +171,67 @@ export const ScoutcoinLeaderboard = () => {
       <FlatList
         data={filteredLeaderboardUsers}
         renderItem={({item}) => (
-          <Pressable
-            style={styles.item}
-            onLongPress={async () => {
-              await verifyThenSend(item.user);
-            }}>
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 16,
-                fontWeight: 'bold',
-                flex: 0.25,
-              }}>
-              #{item.place}
-            </Text>
-            <Text style={{color: colors.text, flex: 1}}>{item.user.name}</Text>
-            <Text style={{color: colors.text, flex: 0.3}}>
-              {item.user.scoutcoins}
-            </Text>
+          <LinearGradient
+            colors={
+              item.user.id === currentUser?.id
+                ? ['rgb(52,120,247)', 'rgb(32, 90, 255)']
+                : [colors.card, colors.card]
+            }
+            style={styles.item}>
             <Pressable
-              // style={{flex: 0.3}}
-              onPress={async () => {
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}
+              onLongPress={async () => {
                 await verifyThenSend(item.user);
               }}>
-              <Svg
-                width="16"
-                height="16"
-                fill={
-                  currentUser?.scoutcoins === 0 ||
-                  item.user.id === currentUser?.id
-                    ? 'grey'
-                    : colors.primary
-                }
-                viewBox="0 0 16 16">
-                <Path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z" />
-                <Path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5" />
-              </Svg>
+              <Text
+                style={{
+                  color:
+                    item.user.id === currentUser?.id ? 'white' : colors.text,
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  flex: 0.25,
+                }}>
+                #{item.place}
+              </Text>
+              <Text
+                style={{
+                  color:
+                    item.user.id === currentUser?.id ? 'white' : colors.text,
+                  flex: 1,
+                }}>
+                {item.user.name}
+              </Text>
+              <Text
+                style={{
+                  color:
+                    item.user.id === currentUser?.id ? 'white' : colors.text,
+                  flex: 0.3,
+                }}>
+                {item.user.scoutcoins}
+              </Text>
+              {item.user.id !== currentUser?.id && (
+                <Pressable
+                  // style={{flex: 0.3}}
+                  onPress={async () => {
+                    await verifyThenSend(item.user);
+                  }}>
+                  <Svg
+                    width="16"
+                    height="16"
+                    fill={
+                      currentUser?.scoutcoins === 0 ||
+                      item.user.id === currentUser?.id
+                        ? 'grey'
+                        : colors.primary
+                    }
+                    viewBox="0 0 16 16">
+                    <Path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z" />
+                    <Path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5" />
+                  </Svg>
+                </Pressable>
+              )}
             </Pressable>
-          </Pressable>
+          </LinearGradient>
         )}
         keyExtractor={item => item.user.id}
       />
