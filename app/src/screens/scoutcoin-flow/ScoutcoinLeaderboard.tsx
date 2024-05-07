@@ -5,9 +5,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import ProfilesDB from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
 import React from 'react-native';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import Svg, {Path} from 'react-native-svg';
-import * as os from 'os';
 
 interface LeaderboardUser {
   id: string;
@@ -29,14 +27,37 @@ export const ScoutcoinLeaderboard = () => {
     useState<LeaderboardUser | null>(null);
   const {colors} = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentUser, setCurrentUser] = useState<LeaderboardUser | null>(null);
 
   useEffect(() => {
     fetchingLeaderboard();
+    getCurrentUser();
   }, []);
 
   useEffect(() => {
     fetchingLeaderboard();
+    getCurrentUser();
   }, [sendingScoutcoinUser]);
+
+  const getCurrentUser = () => {
+    ProfilesDB.getCurrentUserProfile().then(profile => {
+      setCurrentUser(profile);
+    });
+  };
+
+  const verifyThenSend = async (item: LeaderboardUser) => {
+    if (item.id === currentUser?.id) {
+      Alert.alert('You cannot send Scoutcoin to yourself!');
+      return;
+    }
+
+    if (currentUser?.scoutcoins === 0) {
+      Alert.alert('No ScoutCoin', 'Start scouting to earn some!');
+      return;
+    }
+
+    setSendingScoutcoinUser(item);
+  };
 
   const fetchingLeaderboard = () => {
     ProfilesDB.getAllProfiles().then(profiles => {
@@ -146,25 +167,40 @@ export const ScoutcoinLeaderboard = () => {
           <Pressable
             style={styles.item}
             onLongPress={async () => {
-              let currentUser = await ProfilesDB.getCurrentUserProfile();
-              if (item.user.id === currentUser.id) {
-                Alert.alert('You cannot send Scoutcoin to yourself!');
-                return;
-              }
-
-              if (currentUser.scoutcoins === 0) {
-                Alert.alert('No ScoutCoin', 'Start scouting to earn some!');
-                return;
-              }
-
-              setSendingScoutcoinUser(item.user);
+              await verifyThenSend(item.user);
             }}>
             <Text
-              style={{color: colors.text, fontSize: 16, fontWeight: 'bold'}}>
+              style={{
+                color: colors.text,
+                fontSize: 16,
+                fontWeight: 'bold',
+                flex: 0.25,
+              }}>
               #{item.place}
             </Text>
-            <Text style={{color: colors.text}}>{item.user.name}</Text>
-            <Text style={{color: colors.text}}>{item.user.scoutcoins}</Text>
+            <Text style={{color: colors.text, flex: 1}}>{item.user.name}</Text>
+            <Text style={{color: colors.text, flex: 0.3}}>
+              {item.user.scoutcoins}
+            </Text>
+            <Pressable
+              // style={{flex: 0.3}}
+              onPress={async () => {
+                await verifyThenSend(item.user);
+              }}>
+              <Svg
+                width="16"
+                height="16"
+                fill={
+                  currentUser?.scoutcoins === 0 ||
+                  item.user.id === currentUser?.id
+                    ? 'grey'
+                    : colors.primary
+                }
+                viewBox="0 0 16 16">
+                <Path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z" />
+                <Path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5" />
+              </Svg>
+            </Pressable>
           </Pressable>
         )}
         keyExtractor={item => item.user.id}
