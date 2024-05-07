@@ -78,7 +78,7 @@ const SettingsPopup = ({
             Settings
           </Text>
         </Pressable>
-        <ThemePicker colors={colors} setTheme={setTheme} />
+        <ThemePicker setTheme={setTheme} />
         <ScoutingStylePicker
           colors={colors}
           setScoutingStyle={setScoutingStyle}

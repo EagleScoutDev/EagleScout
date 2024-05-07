@@ -4,11 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MinimalSectionHeader from '../MinimalSectionHeader';
 import SegmentedOption from './SegmentedOption';
 import FormHelper from '../../FormHelper';
+import {useTheme} from '@react-navigation/native';
 
-function ThemePicker({colors, setTheme}) {
+function ThemePicker({setTheme}: {setTheme: (arg0: string) => void}) {
+  const {colors} = useTheme();
   const [selectedTheme, setSelectedTheme] = useState('System');
 
-  const saveThemePreference = async value => {
+  const saveThemePreference = async (value: string) => {
     try {
       await AsyncStorage.setItem(FormHelper.THEME, value);
       console.log('[saveThemePreference] data: ' + value);
