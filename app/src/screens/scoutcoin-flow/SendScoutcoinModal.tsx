@@ -3,9 +3,11 @@ import {
   Alert,
   Button,
   Modal,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
