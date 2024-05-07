@@ -92,6 +92,8 @@ export const SendScoutcoinModal = ({
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
+      borderWidth: 2,
+      borderColor: colors.border,
     },
     modalText: {
       marginBottom: 15,
