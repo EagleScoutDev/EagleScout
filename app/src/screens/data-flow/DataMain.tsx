@@ -81,7 +81,7 @@ const DataMain = () => {
         }}
       />
       <DataStack.Screen
-        name={'Scoutcoin Leaderboard'}
+        name={'ScoutCoin Leaderboard'}
         component={ScoutcoinLeaderboard}
         options={{
           headerBackTitle: 'Back',

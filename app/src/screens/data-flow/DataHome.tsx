@@ -214,7 +214,7 @@ const DataHome = ({navigation}) => {
           <ListItem
             text={'Leaderboard'}
             onPress={() => {
-              navigation.navigate('Scoutcoin Leaderboard');
+              navigation.navigate('ScoutCoin Leaderboard');
             }}
             caretVisible={true}
             disabled={internetStatus !== InternetStatus.CONNECTED}

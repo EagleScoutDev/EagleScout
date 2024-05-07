@@ -4,6 +4,10 @@ import {Alert, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ProfilesDB from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
+import React from 'react-native';
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import Svg, {Path} from 'react-native-svg';
+import * as os from 'os';
 
 interface LeaderboardUser {
   id: string;
@@ -24,8 +28,17 @@ export const ScoutcoinLeaderboard = () => {
   const [sendingScoutcoinUser, setSendingScoutcoinUser] =
     useState<LeaderboardUser | null>(null);
   const {colors} = useTheme();
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    fetchingLeaderboard();
+  }, []);
+
+  useEffect(() => {
+    fetchingLeaderboard();
+  }, [sendingScoutcoinUser]);
+
+  const fetchingLeaderboard = () => {
     ProfilesDB.getAllProfiles().then(profiles => {
       const leaderboardUsers = profiles
         .map(profile => ({
@@ -42,7 +55,7 @@ export const ScoutcoinLeaderboard = () => {
         })),
       );
     });
-  }, []);
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -56,30 +69,32 @@ export const ScoutcoinLeaderboard = () => {
     },
     item: {
       padding: 20,
-      marginVertical: 8,
+      marginVertical: 4,
       marginHorizontal: 16,
       backgroundColor: colors.card,
       borderRadius: 5,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
     filter: {
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 16,
+      margin: 20,
+      padding: 6,
+      // marginVertical: 8,
+      // marginHorizontal: 16,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      backgroundColor: colors.card,
+      alignItems: 'center',
+
+      borderRadius: 5,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     filterText: {
       padding: 10,
       backgroundColor: colors.card,
-      borderRadius: 5,
+      color: colors.text,
+      flex: 1,
     },
     mask: {
       position: 'absolute',
@@ -91,26 +106,39 @@ export const ScoutcoinLeaderboard = () => {
     },
   });
 
+  useEffect(() => {
+    setFilteredLeaderboardUsers(
+      leaderboardUsers
+        .map((user, index) => ({
+          user,
+          place: index + 1,
+        }))
+        .filter(({user}) =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        ),
+    );
+  }, [searchTerm]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Scoutcoin Leaderboard</Text>
       <View style={styles.filter}>
         <TextInput
           placeholder="Search"
-          onChangeText={text => {
-            setFilteredLeaderboardUsers(
-              leaderboardUsers
-                .map((user, index) => ({
-                  user,
-                  place: index + 1,
-                }))
-                .filter(({user}) =>
-                  user.name.toLowerCase().includes(text.toLowerCase()),
-                ),
-            );
-          }}
+          placeholderTextColor={'gray'}
+          onChangeText={text => setSearchTerm(text)}
           style={styles.filterText}
+          value={searchTerm}
         />
+        {searchTerm.length > 0 && (
+          <Pressable
+            onPress={() => {
+              setSearchTerm('');
+            }}>
+            <Svg width="16" height="16" fill="grey" viewBox="0 0 16 16">
+              <Path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
+            </Svg>
+          </Pressable>
+        )}
       </View>
       <FlatList
         data={filteredLeaderboardUsers}
@@ -118,15 +146,23 @@ export const ScoutcoinLeaderboard = () => {
           <Pressable
             style={styles.item}
             onLongPress={async () => {
-              if (
-                item.user.id === (await ProfilesDB.getCurrentUserProfile()).id
-              ) {
+              let currentUser = await ProfilesDB.getCurrentUserProfile();
+              if (item.user.id === currentUser.id) {
                 Alert.alert('You cannot send Scoutcoin to yourself!');
                 return;
               }
+
+              if (currentUser.scoutcoins === 0) {
+                Alert.alert('No ScoutCoin', 'Start scouting to earn some!');
+                return;
+              }
+
               setSendingScoutcoinUser(item.user);
             }}>
-            <Text style={{color: colors.text}}>{item.place}</Text>
+            <Text
+              style={{color: colors.text, fontSize: 16, fontWeight: 'bold'}}>
+              #{item.place}
+            </Text>
             <Text style={{color: colors.text}}>{item.user.name}</Text>
             <Text style={{color: colors.text}}>{item.user.scoutcoins}</Text>
           </Pressable>

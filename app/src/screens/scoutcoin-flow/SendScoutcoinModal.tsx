@@ -11,6 +11,7 @@ import {
 import {useTheme} from '@react-navigation/native';
 import ProfilesDB from '../../database/Profiles';
 import {supabase} from '../../lib/supabase';
+import StandardButton from '../../components/StandardButton';
 
 interface LeaderboardUser {
   id: string;
@@ -78,8 +79,8 @@ export const SendScoutcoinModal = ({
       marginTop: 22,
     },
     modalView: {
-      margin: 20,
-      backgroundColor: colors.card,
+      margin: '10%',
+      backgroundColor: colors.background,
       borderRadius: 20,
       padding: 35,
       alignItems: 'center',
@@ -97,6 +98,7 @@ export const SendScoutcoinModal = ({
       textAlign: 'center',
       fontSize: 20,
       fontWeight: 'bold',
+      color: colors.text,
     },
     input: {
       height: 40,
@@ -104,6 +106,8 @@ export const SendScoutcoinModal = ({
       margin: 12,
       borderWidth: 1,
       padding: 10,
+      borderColor: colors.border,
+      color: colors.text,
     },
     buttonContainer: {
       flexDirection: 'row',
@@ -121,9 +125,11 @@ export const SendScoutcoinModal = ({
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
-            Send Scoutcoin to {targetUser.name}
+            Send ScoutCoin to {targetUser.name}
           </Text>
-          <Text>Current Scoutcoins: {currentScoutcoins}</Text>
+          <Text style={{color: colors.text}}>
+            Current ScoutCoins: {currentScoutcoins}
+          </Text>
           <TextInput
             style={styles.input}
             placeholder="Amount"
@@ -138,17 +144,22 @@ export const SendScoutcoinModal = ({
             onChangeText={setDescription}
           />
           <View style={styles.buttonContainer}>
-            <Button
-              title="Send"
+            <StandardButton
+              text={'Cancel'}
+              color={colors.background}
+              textColor={colors.notification}
+              onPress={onClose}
+              disabled={false}
+              width={'50%'}
+            />
+            <StandardButton
+              text={'Send'}
+              color={
+                amount !== '' && description !== '' ? colors.primary : 'gray'
+              }
               onPress={sendScoutcoin}
               disabled={sending}
-              color={colors.primary}
-            />
-            <Button
-              title="Cancel"
-              onPress={onClose}
-              disabled={sending}
-              color={colors.notification}
+              width={'50%'}
             />
           </View>
         </View>
