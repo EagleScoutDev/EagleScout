@@ -53,30 +53,32 @@ import ChangePassword from './screens/settings-flow/ChangePassword';
 import ResetPassword from './screens/login-flow/ResetPassword';
 import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
+import {UltraDarkTheme} from './themes/UltraDarkTheme';
+import {CustomLightTheme} from './themes/CustomLightTheme';
 
-const CustomLightTheme = {
-  dark: false,
-  colors: {
-    primary: 'rgb(0, 122, 255)',
-    card: 'rgb(242, 242, 242)',
-    background: 'rgb(255, 255, 255)',
-    text: 'rgb(0, 0, 0)',
-    border: 'rgb(216, 216, 216)',
-    notification: 'rgb(255, 59, 48)',
-  },
-};
-
-const CustomDarkTheme = {
-  dark: true,
-  colors: {
-    primary: 'rgb(10, 132, 255)',
-    background: 'rgb(0, 0, 0)',
-    card: 'rgb(0, 0, 0)',
-    text: 'rgb(255, 255, 255)',
-    border: 'rgb(39, 39, 41)',
-    notification: 'rgb(255, 69, 58)',
-  },
-};
+// const CustomLightTheme = {
+//   dark: false,
+//   colors: {
+//     primary: 'rgb(0, 122, 255)',
+//     card: 'rgb(242, 242, 242)',
+//     background: 'rgb(255, 255, 255)',
+//     text: 'rgb(0, 0, 0)',
+//     border: 'rgb(216, 216, 216)',
+//     notification: 'rgb(255, 59, 48)',
+//   },
+// };
+//
+// const CustomDarkTheme = {
+//   dark: true,
+//   colors: {
+//     primary: 'rgb(10, 132, 255)',
+//     background: 'rgb(0, 0, 0)',
+//     card: 'rgb(0, 0, 0)',
+//     text: 'rgb(255, 255, 255)',
+//     border: 'rgb(39, 39, 41)',
+//     notification: 'rgb(255, 69, 58)',
+//   },
+// };
 
 const Placeholder = () => <View />;
 
@@ -471,13 +473,13 @@ const RootNavigator = () => {
       theme={
         themePreference === 'Dark'
           ? oled
-            ? CustomDarkTheme
+            ? UltraDarkTheme
             : DarkTheme
           : themePreference === 'Light'
           ? CustomLightTheme
           : scheme === 'dark'
           ? oled
-            ? CustomDarkTheme
+            ? UltraDarkTheme
             : DarkTheme
           : CustomLightTheme
       }>
