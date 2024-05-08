@@ -21,6 +21,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
   const [headingKey, setHeadingKey] = useState(3);
   const [nextKey, setNextKey] = useState(4);
   const [checkBoxKey, setCheckBoxKey] = useState(5);
+  const {colors} = useTheme();
 
   return (
     <>
@@ -33,7 +34,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
         <Text
           style={{
             textAlign: 'center',
-            color: 'black',
+            color: colors.text,
             fontSize: 20,
             fontWeight: 'bold',
           }}>
