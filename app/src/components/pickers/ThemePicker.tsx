@@ -77,9 +77,14 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
                       ? colors.background
                       : colors.card,
                 }}>
-                <View style={{flexDirection: 'row', gap: 10}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{color: colors.text, flex: 1}}>
+                    {ThemeOptions[themeOption].toLowerCase()}
+                  </Text>
+
                   <View
                     style={{
+                      // flex: 1,
                       borderRadius: 200,
                       width: 40,
                       height: 40,
@@ -87,69 +92,11 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
                         ThemeOptionsMap.get(themeOption)?.colors.background,
                     }}
                   />
-                  {/*<View*/}
-                  {/*  style={{*/}
-                  {/*    borderRadius: 200,*/}
-                  {/*    width: 40,*/}
-                  {/*    height: 40,*/}
-                  {/*    backgroundColor:*/}
-                  {/*      ThemeOptionsMap.get(themeOption)?.colors.primary,*/}
-                  {/*  }}*/}
-                  {/*/>*/}
-                  {/*<View*/}
-                  {/*  style={{*/}
-                  {/*    borderRadius: 200,*/}
-                  {/*    width: 40,*/}
-                  {/*    height: 40,*/}
-                  {/*    backgroundColor:*/}
-                  {/*      ThemeOptionsMap.get(themeOption)?.colors.card,*/}
-                  {/*  }}*/}
-                  {/*/>*/}
-                  {/*<View*/}
-                  {/*  style={{*/}
-                  {/*    borderRadius: 200,*/}
-                  {/*    width: 40,*/}
-                  {/*    height: 40,*/}
-                  {/*    backgroundColor:*/}
-                  {/*      ThemeOptionsMap.get(themeOption)?.colors.text,*/}
-                  {/*  }}*/}
-                  {/*/>*/}
                 </View>
-
-                <Text style={{color: colors.text}}>
-                  {ThemeOptions[themeOption].toLowerCase()}
-                </Text>
               </Pressable>
             );
           })}
         </ScrollView>
-        {/*<SegmentedOption*/}
-        {/*  colors={colors}*/}
-        {/*  title="Light"*/}
-        {/*  selected={selectedTheme}*/}
-        {/*  onPress={() => {*/}
-        {/*    setSelectedTheme('Light');*/}
-        {/*    saveThemePreference('Light').then(r => setTheme('Light'));*/}
-        {/*  }}*/}
-        {/*/>*/}
-        {/*<SegmentedOption*/}
-        {/*  colors={colors}*/}
-        {/*  title="Dark"*/}
-        {/*  selected={selectedTheme}*/}
-        {/*  onPress={() => {*/}
-        {/*    setSelectedTheme('Dark');*/}
-        {/*    saveThemePreference('Dark').then(r => setTheme('Dark'));*/}
-        {/*  }}*/}
-        {/*/>*/}
-        {/*<SegmentedOption*/}
-        {/*  colors={colors}*/}
-        {/*  title="System"*/}
-        {/*  selected={selectedTheme}*/}
-        {/*  onPress={() => {*/}
-        {/*    setSelectedTheme('System');*/}
-        {/*    saveThemePreference('System').then(r => setTheme('System'));*/}
-        {/*  }}*/}
-        {/*/>*/}
       </View>
     </View>
   );

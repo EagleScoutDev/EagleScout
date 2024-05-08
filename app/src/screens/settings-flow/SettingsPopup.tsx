@@ -84,17 +84,6 @@ SettingsPopupProps) => {
           colors={colors}
           setScoutingStyle={setScoutingStyle}
         />
-        {/*<MinimalSectionHeader title={'TRUE DARK MODE'} />*/}
-        {/*<Switch*/}
-        {/*  style={{*/}
-        {/*    alignSelf: 'center',*/}
-        {/*  }}*/}
-        {/*  value={localOled}*/}
-        {/*  onValueChange={value => {*/}
-        {/*    setLocalOled(value);*/}
-        {/*    // setOled(value);*/}
-        {/*  }}*/}
-        {/*/>*/}
         <MinimalSectionHeader title={'Dev Tools'} />
         <StandardButton
           color={'black'}
