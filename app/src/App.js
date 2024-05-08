@@ -487,18 +487,6 @@ const RootNavigator = () => {
             ? DarkTheme
             : CustomLightTheme
           : ThemeOptionsMap.get(themePreference)
-        // DarkTheme
-        // themePreference === 'Dark'
-        //   ? oled
-        //     ? UltraDarkTheme
-        //     : DarkTheme
-        //   : themePreference === 'Light'
-        //   ? CustomLightTheme
-        //   : scheme === 'dark'
-        //   ? oled
-        //     ? UltraDarkTheme
-        //     : DarkTheme
-        //   : CustomLightTheme
       }>
       <RootStack.Navigator
         screenOptions={{
@@ -512,7 +500,6 @@ const RootNavigator = () => {
             <MyStack
               themePreference={themePreference}
               setThemePreference={setThemePreference}
-              // setOled={setOled}
             />
           )}
         />

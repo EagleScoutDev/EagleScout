@@ -1,4 +1,4 @@
-import {Pressable, Text, View} from 'react-native';
+import {Pressable, ScrollView, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MinimalSectionHeader from '../MinimalSectionHeader';
@@ -42,57 +42,87 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
           backgroundColor: colors.border,
           padding: 2,
           borderRadius: 10,
+          borderWidth: 1,
+          borderColor: colors.border,
           alignContent: 'center',
         }}>
-        {Array.from(ThemeOptionsMap.keys()).map(themeOption => {
-          return (
-            <Pressable
-              onPress={() => {
-                setSelectedTheme(themeOption);
-                saveThemePreference(themeOption).then(r =>
-                  setTheme(themeOption),
-                );
-              }}
-              key={themeOption}
-              style={{
-                flexDirection: 'column',
-                flex: 1,
-                borderWidth: 1,
-                borderColor:
-                  themeOption === selectedTheme
-                    ? colors.primary
-                    : colors.border,
-                borderRadius: 10,
-                padding: 10,
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  borderRadius: 200,
-                  width: 40,
-                  height: 40,
-                  backgroundColor:
-                    ThemeOptionsMap.get(themeOption)?.colors.background,
+        <ScrollView
+          style={{
+            flex: 1,
+          }}>
+          {Array.from(ThemeOptionsMap.keys()).map(themeOption => {
+            return (
+              <Pressable
+                onPress={() => {
+                  setSelectedTheme(themeOption);
+                  saveThemePreference(themeOption).then(r =>
+                    setTheme(themeOption),
+                  );
                 }}
-              />
-              <Text style={{color: colors.text}}>
-                {ThemeOptions[themeOption].toLowerCase()}
-              </Text>
-              {/*<SegmentedOption*/}
-              {/*  colors={colors}*/}
-              {/*  title={ThemeOptions[themeOption]}*/}
-              {/*  selected={ThemeOptions[selectedTheme]}*/}
-              {/*  onPress={() => {*/}
-              {/*    setSelectedTheme(themeOption);*/}
-              {/*    saveThemePreference(themeOption).then(r =>*/}
-              {/*      setTheme(themeOption),*/}
-              {/*    );*/}
-              {/*  }}*/}
-              {/*/>*/}
-            </Pressable>
-          );
-        })}
+                key={themeOption}
+                style={{
+                  flexDirection: 'row',
+                  flex: 1,
+                  borderWidth: 2,
+                  borderColor:
+                    themeOption === selectedTheme
+                      ? colors.primary
+                      : colors.card,
+                  // borderRadius: 10,
+                  padding: 10,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor:
+                    themeOption === selectedTheme
+                      ? colors.background
+                      : colors.card,
+                }}>
+                <View style={{flexDirection: 'row', gap: 10}}>
+                  <View
+                    style={{
+                      borderRadius: 200,
+                      width: 40,
+                      height: 40,
+                      backgroundColor:
+                        ThemeOptionsMap.get(themeOption)?.colors.background,
+                    }}
+                  />
+                  {/*<View*/}
+                  {/*  style={{*/}
+                  {/*    borderRadius: 200,*/}
+                  {/*    width: 40,*/}
+                  {/*    height: 40,*/}
+                  {/*    backgroundColor:*/}
+                  {/*      ThemeOptionsMap.get(themeOption)?.colors.primary,*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*<View*/}
+                  {/*  style={{*/}
+                  {/*    borderRadius: 200,*/}
+                  {/*    width: 40,*/}
+                  {/*    height: 40,*/}
+                  {/*    backgroundColor:*/}
+                  {/*      ThemeOptionsMap.get(themeOption)?.colors.card,*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*<View*/}
+                  {/*  style={{*/}
+                  {/*    borderRadius: 200,*/}
+                  {/*    width: 40,*/}
+                  {/*    height: 40,*/}
+                  {/*    backgroundColor:*/}
+                  {/*      ThemeOptionsMap.get(themeOption)?.colors.text,*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                </View>
+
+                <Text style={{color: colors.text}}>
+                  {ThemeOptions[themeOption].toLowerCase()}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
         {/*<SegmentedOption*/}
         {/*  colors={colors}*/}
         {/*  title="Light"*/}
