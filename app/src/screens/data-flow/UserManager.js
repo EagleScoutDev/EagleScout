@@ -11,14 +11,34 @@ import {useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {supabase} from '../../lib/supabase';
 
-function SortOption({onPress, title, colors, isActive}) {
+const getIdealTextColor = bgColor => {
+  const nThreshold = 110;
+  // Extract the numeric values from the RGB string
+  const rgbValues = bgColor.match(/\d+/g).map(Number);
+
+  const components = {
+    R: rgbValues[0],
+    G: rgbValues[1],
+    B: rgbValues[2],
+  };
+
+  // Calculate the luminance of the background color
+  const bgDelta =
+    components.R * 0.299 + components.G * 0.587 + components.B * 0.114;
+
+  // Determine if the text color should be black or white based on the luminance
+  return 255 - bgDelta < nThreshold ? '#000000' : '#ffffff';
+};
+
+function SortOption({onPress, title, isActive}) {
+  const {colors} = useTheme();
   return (
     <TouchableOpacity
       onPress={() => {
         onPress();
       }}
       style={{
-        backgroundColor: isActive ? 'blue' : colors.card,
+        backgroundColor: isActive ? colors.primary : colors.card,
         padding: 12,
         paddingHorizontal: 20,
         borderRadius: 25,
@@ -26,7 +46,12 @@ function SortOption({onPress, title, colors, isActive}) {
         borderWidth: 1,
         borderColor: colors.border,
       }}>
-      <Text style={{color: isActive ? 'white' : colors.text}}>{title}</Text>
+      <Text
+        style={{
+          color: isActive ? getIdealTextColor(colors.primary) : colors.text,
+        }}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -267,26 +292,27 @@ function UserManager({navigation}) {
       color: colors.text,
     },
     chosen: {
-      backgroundColor: 'blue',
-      color: 'white',
+      backgroundColor: colors.primary,
+      color: getIdealTextColor(colors.primary),
       padding: 10,
       borderWidth: 2,
       borderRadius: 10,
-      borderColor: 'blue',
+      borderColor: colors.primary,
       // prevent the background color from showing through the border
       overflow: 'hidden',
     },
     chosenRejected: {
-      backgroundColor: 'red',
+      backgroundColor: colors.notification,
       color: 'white',
       padding: 10,
       borderWidth: 2,
       borderRadius: 10,
-      borderColor: 'red',
+      borderColor: colors.notification,
       // prevent the background color from showing through the border
       overflow: 'hidden',
     },
   });
+
   const picker = user => {
     return (
       <View
@@ -350,7 +376,6 @@ function UserManager({navigation}) {
           onPress={() => {
             handleSort('All');
           }}
-          colors={colors}
           isActive={sort === 'All'}
         />
         <SortOption
@@ -358,7 +383,6 @@ function UserManager({navigation}) {
           onPress={() => {
             handleSort('Rejected');
           }}
-          colors={colors}
           isActive={sort === 'Rejected'}
         />
         <SortOption
@@ -366,7 +390,6 @@ function UserManager({navigation}) {
           onPress={() => {
             handleSort('Scouter');
           }}
-          colors={colors}
           isActive={sort === 'Scouter'}
         />
         <SortOption
@@ -374,7 +397,6 @@ function UserManager({navigation}) {
           onPress={() => {
             handleSort('Captain');
           }}
-          colors={colors}
           isActive={sort === 'Captain'}
         />
       </View>
