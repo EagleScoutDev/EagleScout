@@ -55,6 +55,8 @@ import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
 import {UltraDarkTheme} from './themes/UltraDarkTheme';
 import {CustomLightTheme} from './themes/CustomLightTheme';
+import {ThemeOptions} from './themes/ThemeOptions';
+import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
 
 // const CustomLightTheme = {
 //   dark: false,
@@ -82,7 +84,7 @@ import {CustomLightTheme} from './themes/CustomLightTheme';
 
 const Placeholder = () => <View />;
 
-const MyStack = ({themePreference, setThemePreference, setOled}) => {
+const MyStack = ({themePreference, setThemePreference}) => {
   const scheme = useColorScheme();
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
@@ -248,14 +250,14 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
     });
   }, []);
 
-  useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
-      if (value != null) {
-        console.log('[useEffect] data: ' + value);
-        setOled(JSON.parse(value));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
+  //     if (value != null) {
+  //       console.log('[useEffect] data: ' + value);
+  //       setOled(JSON.parse(value));
+  //     }
+  //   });
+  // }, []);
 
   const ChangePasswordContainer = ({navigation}) => (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
@@ -439,7 +441,7 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
                 onSignOut={redirectLogin}
                 setTheme={setThemePreference}
                 setScoutingStyle={setScoutStylePreference}
-                setOled={setOled}
+                // setOled={setOled}
               />
             )}
           />
@@ -465,23 +467,38 @@ const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
   const scheme = useColorScheme();
-  const [themePreference, setThemePreference] = useState('System');
-  const [oled, setOled] = useState(false);
+  const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
+  // const [oled, setOled] = useState(false);
+
+  useEffect(() => {
+    FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
+      if (r != null) {
+        console.log('theme found: ' + r);
+        setThemePreference(parseInt(r, 10));
+      }
+    });
+  }, []);
 
   return (
     <NavigationContainer
       theme={
-        themePreference === 'Dark'
-          ? oled
-            ? UltraDarkTheme
-            : DarkTheme
-          : themePreference === 'Light'
-          ? CustomLightTheme
-          : scheme === 'dark'
-          ? oled
-            ? UltraDarkTheme
-            : DarkTheme
-          : CustomLightTheme
+        themePreference === ThemeOptions.SYSTEM
+          ? scheme === 'dark'
+            ? DarkTheme
+            : CustomLightTheme
+          : ThemeOptionsMap.get(themePreference)
+        // DarkTheme
+        // themePreference === 'Dark'
+        //   ? oled
+        //     ? UltraDarkTheme
+        //     : DarkTheme
+        //   : themePreference === 'Light'
+        //   ? CustomLightTheme
+        //   : scheme === 'dark'
+        //   ? oled
+        //     ? UltraDarkTheme
+        //     : DarkTheme
+        //   : CustomLightTheme
       }>
       <RootStack.Navigator
         screenOptions={{
@@ -495,7 +512,7 @@ const RootNavigator = () => {
             <MyStack
               themePreference={themePreference}
               setThemePreference={setThemePreference}
-              setOled={setOled}
+              // setOled={setOled}
             />
           )}
         />

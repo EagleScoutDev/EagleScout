@@ -20,22 +20,23 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
+import {ThemeOptions} from '../../themes/ThemeOptions';
 
 const VERSION = '7.3 (OTA 7)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
-  setTheme: (arg0: string) => void;
+  setTheme: (arg0: ThemeOptions) => void;
   setScoutingStyle: (arg0: string) => void;
-  setOled: (arg0: boolean) => void;
+  // setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
   setScoutingStyle,
   setTheme,
-  setOled,
-}: SettingsHomeProps) => {
+}: // setOled,
+SettingsHomeProps) => {
   const {colors} = useTheme();
   const [settingsPopupActive, setSettingsPopupActive] = useState(false);
 
@@ -266,7 +267,7 @@ const SettingsHome = ({
       <SettingsPopup
         visible={settingsPopupActive}
         setVisible={setSettingsPopupActive}
-        setOled={setOled}
+        // setOled={setOled}
         setScoutingStyle={setScoutingStyle}
         setTheme={setTheme}
         navigation={navigation}

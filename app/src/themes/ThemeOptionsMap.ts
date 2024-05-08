@@ -1,0 +1,12 @@
+import {Theme} from '@react-navigation/native/src/types';
+import {CustomLightTheme} from './CustomLightTheme';
+import {DarkTheme} from '@react-navigation/native';
+import {UltraDarkTheme} from './UltraDarkTheme';
+import {ThemeOptions} from './ThemeOptions';
+
+export const ThemeOptionsMap: Map<ThemeOptions, Theme> = new Map([
+  [ThemeOptions.LIGHT, CustomLightTheme],
+  [ThemeOptions.DARK, DarkTheme],
+  [ThemeOptions.ULTRA_DARK, UltraDarkTheme],
+  [ThemeOptions.SYSTEM, CustomLightTheme], // Default to light theme, handles this in app.js
+]);
