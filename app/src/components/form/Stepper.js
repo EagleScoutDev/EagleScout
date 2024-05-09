@@ -74,7 +74,8 @@ function Stepper(props) {
           <View
             style={{
               ...styles.button,
-              backgroundColor: props.value === 0 ? 'darkgray' : colors.primary,
+              backgroundColor:
+                props.value === 0 ? 'darkgray' : colors.notification,
             }}>
             <Text style={styles.stepper_value}>-</Text>
           </View>
