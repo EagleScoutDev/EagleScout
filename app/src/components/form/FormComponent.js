@@ -59,7 +59,7 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
         />
         <TextInput
           placeholder={'Type here'}
-          placeholderTextColor={'gray'}
+          placeholderTextColor={colors.primary}
           style={styles.textInput}
           value={arrayData[item.indice]}
           onChangeText={text => {
