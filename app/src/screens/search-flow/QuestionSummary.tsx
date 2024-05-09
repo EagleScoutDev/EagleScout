@@ -6,7 +6,10 @@ import {OpenAI} from '../../lib/OpenAI';
 import {LineChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
 import StandardModal from '../../components/modals/StandardModal';
-import {getLighterColor} from '../../lib/ColorReadability';
+import {
+  getIdealTextColorFromRGB,
+  getLighterColor,
+} from '../../lib/ColorReadability';
 
 interface Props {
   item: any;
@@ -225,7 +228,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                       style={{
                         color:
                           index === indexOfGreatestValue
-                            ? 'white'
+                            ? getIdealTextColorFromRGB(colors.primary)
                             : colors.text,
                         fontWeight: 'bold',
                         textAlign: 'center',
@@ -466,9 +469,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               Match Number
             </Text>
           </View>
-          <Button title={'Close'} onPress={() => setModalActive(false)}>
-            <Text style={{color: colors.text}}>Close</Text>
-          </Button>
+          <Pressable
+            style={{marginTop: '4%'}}
+            onPress={() => setModalActive(false)}>
+            <Text style={{color: colors.primary, fontSize: 16}}>Close</Text>
+          </Pressable>
         </StandardModal>
       )}
     </View>
