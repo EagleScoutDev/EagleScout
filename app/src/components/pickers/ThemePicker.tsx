@@ -62,7 +62,7 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
                 style={{
                   flexDirection: 'row',
                   flex: 1,
-                  borderWidth: themeOption === selectedTheme ? 2 : 0,
+                  borderWidth: 2, //themeOption === selectedTheme ? 2 : 0,
                   borderRadius: 10,
                   borderColor:
                     themeOption === selectedTheme ? colors.text : colors.card,
