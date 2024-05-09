@@ -116,7 +116,7 @@ function ScoutViewer({
       marginTop: '10%',
     },
     close: {
-      color: 'red',
+      color: colors.notification,
       fontWeight: 'bold',
       fontSize: 17,
       padding: '2%',
@@ -356,7 +356,7 @@ function ScoutViewer({
                   <ClockHistory
                     style={{
                       padding: '2%',
-                      fill: historyButtonEnabled ? colors.primary : 'gray',
+                      fill: historyButtonEnabled ? colors.text : colors.primary,
                       width: 30,
                       height: 30,
                     }}
