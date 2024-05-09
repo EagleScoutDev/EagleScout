@@ -7,6 +7,7 @@ import {ScoutReportReturnData} from '../../database/ScoutReports';
 import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {Dropdown} from 'react-native-element-dropdown';
 import ScoutViewer from '../../components/modals/ScoutViewer';
+import {getLighterColor} from '../../lib/ColorReadability';
 
 enum FilterState {
   TEAM,

@@ -300,11 +300,13 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        backgroundColor: index < 3 ? 'crimson' : 'dodgerblue',
+                        borderWidth: 4,
+                        borderColor: index < 3 ? 'red' : 'dodgerblue',
                         margin: '2%',
                         padding: '6%',
                         borderRadius: 10,
                         minWidth: '25%',
+                        backgroundColor: colors.card,
                       }}>
                       <Text
                         style={{
