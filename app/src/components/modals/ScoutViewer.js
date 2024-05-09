@@ -108,7 +108,8 @@ function ScoutViewer({
       width: '100%',
     },
     breadcrumbs: {
-      color: 'gray',
+      color: colors.text,
+      opacity: 0.8,
       fontSize: 12,
       fontStyle: 'italic',
       textAlign: 'center',
@@ -338,7 +339,8 @@ function ScoutViewer({
                   <PencilSquare
                     style={{
                       padding: '2%',
-                      fill: editingActive ? colors.primary : 'gray',
+                      fill: editingActive ? colors.text : colors.primary,
+                      opacity: editingActive ? 1 : 0.9,
                       width: 30,
                       height: 30,
                     }}
@@ -503,15 +505,17 @@ function ScoutViewer({
                           alignSelf:
                             field.type === 'textbox' ? 'flex-start' : 'center',
                           // make text box seem editable
-                          backgroundColor: colors.card,
-                          borderColor:
-                            field.required && tempData[index] == null
-                              ? 'red'
-                              : colors.border,
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          // field.required && tempData[index] == null
+                          //   ? colors.notification
+                          //   : colors.border,
                           borderWidth: 1,
                           borderRadius: 5,
                           padding: 5,
                           width: '100%',
+                          fontSize: 20,
+                          color: colors.text,
                         }}
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
