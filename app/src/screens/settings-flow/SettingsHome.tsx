@@ -304,7 +304,7 @@ SettingsHomeProps) => {
       <Text
         selectable={true}
         style={{
-          color: colors.border,
+          color: colors.text,
           textAlign: 'center',
         }}>
         v{VERSION}
