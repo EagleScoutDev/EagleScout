@@ -10,7 +10,10 @@ import {
 import {useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {supabase} from '../../lib/supabase';
-import {getIdealTextColor} from '../../lib/ColorReadability';
+import {
+  getIdealTextColor,
+  getIdealTextColorFromRGB,
+} from '../../lib/ColorReadability';
 
 function SortOption({onPress, title, isActive}) {
   const {colors} = useTheme();
@@ -30,7 +33,9 @@ function SortOption({onPress, title, isActive}) {
       }}>
       <Text
         style={{
-          color: isActive ? getIdealTextColor(colors.primary) : colors.text,
+          color: isActive
+            ? getIdealTextColorFromRGB(colors.primary)
+            : colors.text,
         }}>
         {title}
       </Text>
@@ -275,7 +280,7 @@ function UserManager({navigation}) {
     },
     chosen: {
       backgroundColor: colors.primary,
-      color: getIdealTextColor(colors.primary),
+      color: getIdealTextColorFromRGB(colors.primary),
       padding: 10,
       borderWidth: 2,
       borderRadius: 10,
