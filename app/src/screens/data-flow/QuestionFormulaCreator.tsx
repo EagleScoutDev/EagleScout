@@ -115,7 +115,7 @@ const QuestionFormulaCreator = ({
                     marginHorizontal: '4%',
                   }}>
                   <BouncyCheckbox
-                    fillColor={'blue'}
+                    fillColor={colors.primary}
                     text={item.question}
                     isChecked={chosenQuestionIndices.includes(index)}
                     textStyle={{
