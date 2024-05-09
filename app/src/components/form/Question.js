@@ -20,7 +20,7 @@ function Question({title, required = false, onReset}) {
         </Text>
         <Text
           style={{
-            color: 'red',
+            color: colors.notification,
             textAlign: 'left',
             paddingBottom: 10,
             // paddingTop: 15,
