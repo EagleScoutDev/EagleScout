@@ -46,3 +46,24 @@ export const isColorDark = (bgColor: string) => {
 
   return 255 - bgDelta < nThreshold;
 };
+
+export const getLighterColor = (color: string) => {
+  if (!color) {
+    return 'rgb(255, 255, 255)';
+  }
+  const rgbValues = color.match(/\d+/g).map(Number);
+
+  const components = {
+    R: rgbValues[0],
+    G: rgbValues[1],
+    B: rgbValues[2],
+  };
+
+  const lighter = {
+    R: components.R + 50,
+    G: components.G + 50,
+    B: components.B + 50,
+  };
+
+  return 'rgb(' + lighter.R + ', ' + lighter.G + ', ' + lighter.B + ')';
+};
