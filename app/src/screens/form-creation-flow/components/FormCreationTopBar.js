@@ -23,7 +23,8 @@ const FormCreationTopBar = ({onSubmit, onCancel, questions}) => {
       justifyContent: 'space-between',
     },
     cancelButton: {
-      color: 'gray',
+      color: colors.text,
+      opacity: 0.6,
       fontWeight: 'bold',
       fontSize: 17,
       textAlign: 'center',
@@ -32,7 +33,7 @@ const FormCreationTopBar = ({onSubmit, onCancel, questions}) => {
       fontWeight: 'bold',
       fontSize: 17,
       textAlign: 'center',
-      color: colors.primary,
+      color: colors.text,
     },
   });
 

@@ -65,7 +65,7 @@ const FormCreationMain = ({navigation}) => {
       paddingRight: 20,
     },
     requiredStarText: {
-      color: 'red',
+      color: colors.notification,
       fontSize: 18,
     },
   });

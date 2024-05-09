@@ -48,7 +48,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
 
   return (
     <StandardModal
-      title="New checkboxes question"
+      title="New Checkboxes Question"
       visible={visible}
       onDismiss={() => {
         setVisible(false);
@@ -112,7 +112,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
         </TouchableOpacity>
       </ScrollView>
       <StandardModal
-        title={'New option'}
+        title={'New Option'}
         visible={addOptionModalVisible}
         onDismiss={() => {
           setVisible(false);
@@ -138,7 +138,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
             setOptionText('');
             setAddOptionModalVisible(false);
           }}
-          color={'blue'}
+          color={colors.primary}
         />
         <StandardButton
           text={'Cancel'}
@@ -146,7 +146,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
             setOptionText('');
             setAddOptionModalVisible(false);
           }}
-          color={'gray'}
+          color={colors.card}
         />
       </StandardModal>
       <Spacer />
@@ -155,14 +155,14 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(!submit());
         }}
-        color={'blue'}
+        color={colors.primary}
       />
       <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
         }}
-        color={'gray'}
+        color={colors.card}
       />
     </StandardModal>
   );
