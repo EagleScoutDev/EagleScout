@@ -581,10 +581,10 @@ function ScoutViewer({
                     !editingActive && (
                       <Text
                         style={{
-                          color: colors.primary,
+                          color: colors.text,
                           fontWeight: 'bold',
                           flexWrap: 'wrap',
-                          fontSize: 15,
+                          fontSize: 20,
                           flex: 1,
                           // move this to the rightmost side of the screen
                           textAlign:
