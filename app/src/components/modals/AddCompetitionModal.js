@@ -296,7 +296,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       <Spacer />
       <View style={styles.button_row}>
         <StandardButton
-          color={colors.notification}
+          textColor={colors.notification}
+          color={colors.background}
           onPress={() => setVisible(false)}
           text={'Cancel'}
           width={'40%'}
