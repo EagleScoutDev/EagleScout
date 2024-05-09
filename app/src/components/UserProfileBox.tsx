@@ -92,7 +92,9 @@ function UserProfileBox({user}: UserProfileBoxProps) {
           <Path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
           <Path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12" />
         </Svg>
-        <Text style={{color: colors.text, paddingLeft: 8, fontSize: 16}}>
+        <Text
+          selectable={true}
+          style={{color: colors.text, paddingLeft: 8, fontSize: 16}}>
           {numScoutCoins}
         </Text>
       </View>
