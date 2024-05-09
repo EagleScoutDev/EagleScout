@@ -302,8 +302,9 @@ SettingsHomeProps) => {
         navigation={navigation}
       />
       <Text
+        selectable={true}
         style={{
-          color: 'gray',
+          color: colors.border,
           textAlign: 'center',
         }}>
         v{VERSION}
