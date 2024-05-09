@@ -39,10 +39,9 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
         style={{
           flexDirection: 'row',
           margin: 20,
-          backgroundColor: colors.border,
           padding: 2,
           borderRadius: 10,
-          borderWidth: 1,
+          borderWidth: 2,
           borderColor: colors.border,
           alignContent: 'center',
         }}>
@@ -63,11 +62,10 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
                 style={{
                   flexDirection: 'row',
                   flex: 1,
-                  borderWidth: 2,
+                  borderWidth: themeOption === selectedTheme ? 2 : 0,
+                  borderRadius: 10,
                   borderColor:
-                    themeOption === selectedTheme
-                      ? colors.primary
-                      : colors.card,
+                    themeOption === selectedTheme ? colors.text : colors.card,
                   // borderRadius: 10,
                   padding: 10,
                   justifyContent: 'space-between',
@@ -78,8 +76,18 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
                       : colors.card,
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={{color: colors.text, flex: 1}}>
-                    {ThemeOptions[themeOption].toLowerCase()}
+                  <Text
+                    style={{
+                      color: colors.text,
+                      flex: 1,
+                      fontWeight: 'bold',
+                      fontSize: 16,
+                    }}>
+                    {ThemeOptions[themeOption]
+                      .toLowerCase()
+                      .charAt(0)
+                      .toUpperCase() +
+                      ThemeOptions[themeOption].toLowerCase().slice(1)}
                   </Text>
 
                   <View
