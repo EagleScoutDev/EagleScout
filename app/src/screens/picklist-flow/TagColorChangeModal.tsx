@@ -3,6 +3,7 @@ import {Modal, Pressable, Text, View} from 'react-native';
 import ColorPicker, {HueSlider} from 'reanimated-color-picker';
 import {useTheme} from '@react-navigation/native';
 import {TagsDB, TagStructure} from '../../database/Tags';
+import {getIdealTextColor} from '../../lib/ColorReadability';
 const TagColorChangeModal = ({
   visible,
   setVisible,
@@ -28,18 +29,6 @@ const TagColorChangeModal = ({
   const onChangeColor = ({hex}: {hex: string}) => {
     console.log('hex', hex);
     setColor(hex);
-  };
-
-  const getIdealTextColor = (bgColor: string) => {
-    const nThreshold = 110;
-    const components = {
-      R: parseInt(bgColor.substring(1, 3), 16),
-      G: parseInt(bgColor.substring(3, 5), 16),
-      B: parseInt(bgColor.substring(5, 7), 16),
-    };
-    const bgDelta =
-      components.R * 0.299 + components.G * 0.587 + components.B * 0.114;
-    return 255 - bgDelta < nThreshold ? '#000000' : '#ffffff';
   };
 
   return (
