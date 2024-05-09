@@ -25,6 +25,7 @@ import NotesDB, {
   NoteStructureWithMatchNumber,
 } from '../../database/Notes';
 import {NoteList} from '../../components/NoteList';
+import {getLighterColor} from '../../lib/ColorReadability';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -191,7 +192,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             }}>
             <Svg width={'20'} height="20" viewBox="0 0 16 16">
               <Path
-                fill={searchActive ? colors.primary : 'gray'}
+                fill={getLighterColor(colors.primary)}
                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
               />
             </Svg>
@@ -249,7 +250,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 }}>
                 <Text
                   style={{
-                    color: 'grey',
+                    color: getLighterColor(colors.primary),
                     marginHorizontal: '4%',
                     fontWeight: 'bold',
                     fontSize: 18,
@@ -259,7 +260,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 <View
                   style={{
                     height: 2,
-                    backgroundColor: colors.border,
+                    backgroundColor: getLighterColor(colors.primary),
                     flex: 1,
                   }}
                 />
@@ -278,11 +279,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                     width="16"
                     height="16"
                     viewBox="0 0 16 16"
-                    fill={colors.text}>
-                    <Path
-                      fill={'grey'}
-                      d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z"
-                    />
+                    fill={getLighterColor(colors.primary)}>
+                    <Path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z" />
                   </Svg>
                 </TouchableOpacity>
               </View>
