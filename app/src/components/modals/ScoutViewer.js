@@ -339,8 +339,8 @@ function ScoutViewer({
                   <PencilSquare
                     style={{
                       padding: '2%',
-                      fill: editingActive ? colors.text : colors.primary,
-                      opacity: editingActive ? 1 : 0.9,
+                      fill: editingActive ? colors.primary : colors.text,
+                      opacity: editingActive ? 1 : 0.6,
                       width: 30,
                       height: 30,
                     }}
