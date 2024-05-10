@@ -86,7 +86,9 @@ const FormList = ({navigation}) => {
 
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Form Creation Main');
+              navigation.navigate('Form Creation Main', {
+                form: null,
+              });
             }}
             style={{
               padding: '2%',
