@@ -108,14 +108,15 @@ function ScoutViewer({
       width: '100%',
     },
     breadcrumbs: {
-      color: 'gray',
+      color: colors.text,
+      opacity: 0.8,
       fontSize: 12,
       fontStyle: 'italic',
       textAlign: 'center',
       marginTop: '10%',
     },
     close: {
-      color: 'red',
+      color: colors.notification,
       fontWeight: 'bold',
       fontSize: 17,
       padding: '2%',
@@ -338,7 +339,8 @@ function ScoutViewer({
                   <PencilSquare
                     style={{
                       padding: '2%',
-                      fill: editingActive ? colors.primary : 'gray',
+                      fill: editingActive ? colors.primary : colors.text,
+                      opacity: editingActive ? 1 : 0.6,
                       width: 30,
                       height: 30,
                     }}
@@ -354,7 +356,7 @@ function ScoutViewer({
                   <ClockHistory
                     style={{
                       padding: '2%',
-                      fill: historyButtonEnabled ? colors.primary : 'gray',
+                      fill: historyButtonEnabled ? colors.text : colors.primary,
                       width: 30,
                       height: 30,
                     }}
@@ -503,15 +505,17 @@ function ScoutViewer({
                           alignSelf:
                             field.type === 'textbox' ? 'flex-start' : 'center',
                           // make text box seem editable
-                          backgroundColor: colors.card,
-                          borderColor:
-                            field.required && tempData[index] == null
-                              ? 'red'
-                              : colors.border,
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          // field.required && tempData[index] == null
+                          //   ? colors.notification
+                          //   : colors.border,
                           borderWidth: 1,
                           borderRadius: 5,
                           padding: 5,
                           width: '100%',
+                          fontSize: 20,
+                          color: colors.text,
                         }}
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
@@ -581,10 +585,10 @@ function ScoutViewer({
                     !editingActive && (
                       <Text
                         style={{
-                          color: colors.primary,
+                          color: colors.text,
                           fontWeight: 'bold',
                           flexWrap: 'wrap',
-                          fontSize: 15,
+                          fontSize: 20,
                           flex: 1,
                           // move this to the rightmost side of the screen
                           textAlign:

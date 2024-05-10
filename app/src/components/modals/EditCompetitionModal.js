@@ -1,4 +1,12 @@
-import React, { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, {
+  Alert,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import StandardButton from '../StandardButton';
 import {supabase} from '../../lib/supabase';
 import {useTheme} from '@react-navigation/native';
@@ -241,8 +249,9 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
             justifyContent: 'space-between',
           }}>
           <StandardButton
+            textColor={colors.notification}
             text={'Delete'}
-            color={colors.notification}
+            color={colors.background}
             width={'40%'}
             onPress={() => {
               Alert.alert(
@@ -271,14 +280,14 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
 
           <StandardButton
             text={'Cancel'}
-            color={colors.primary}
+            color={colors.card}
             width={'40%'}
             onPress={() => setVisible(false)}
           />
         </View>
         <StandardButton
           text={'Save'}
-          color={'green'}
+          color={colors.primary}
           width={'100%'}
           onPress={async () => {
             if (!changesMade()) {

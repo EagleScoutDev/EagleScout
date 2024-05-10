@@ -21,6 +21,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
   const [headingKey, setHeadingKey] = useState(3);
   const [nextKey, setNextKey] = useState(4);
   const [checkBoxKey, setCheckBoxKey] = useState(5);
+  const {colors} = useTheme();
 
   return (
     <>
@@ -33,7 +34,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
         <Text
           style={{
             textAlign: 'center',
-            color: 'black',
+            color: colors.text,
             fontSize: 20,
             fontWeight: 'bold',
           }}>
@@ -52,7 +53,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
               setVisible(false);
               setHeadingModalVisible(true);
             }}
-            color={'blue'}
+            color={colors.primary}
           />
           <StandardButton
             text={'Radio'}
@@ -62,7 +63,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
               setVisible(false);
               setRadioModalVisible(true);
             }}
-            color={'red'}
+            color={colors.primary}
           />
           <StandardButton
             text={'Checkboxes'}
@@ -72,7 +73,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
               setVisible(false);
               setCheckBoxModalVisible(true);
             }}
-            color={'purple'}
+            color={colors.primary}
           />
           <StandardButton
             text={'Number'}
@@ -82,7 +83,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
               setVisible(false);
               setNumberModalVisible(true);
             }}
-            color={'green'}
+            color={colors.primary}
           />
           <StandardButton
             text={'Text'}
@@ -92,7 +93,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
               setVisible(false);
               setTextModalVisible(true);
             }}
-            color={'orange'}
+            color={colors.primary}
           />
         </ScrollView>
         <StandardButton
@@ -100,7 +101,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
           onPress={() => {
             setVisible(false);
           }}
-          color={'gray'}
+          color={colors.background}
         />
       </StandardModal>
       <Heading

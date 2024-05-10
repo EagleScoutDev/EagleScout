@@ -6,6 +6,10 @@ import {OpenAI} from '../../lib/OpenAI';
 import {LineChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
 import StandardModal from '../../components/modals/StandardModal';
+import {
+  getIdealTextColorFromRGB,
+  getLighterColor,
+} from '../../lib/ColorReadability';
 
 interface Props {
   item: any;
@@ -138,7 +142,8 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
           }}>
           {item.title}
         </Text>
-        <Text style={{color: 'gray', fontWeight: 'bold'}}>
+        <Text
+          style={{color: getLighterColor(colors.primary), fontWeight: 'bold'}}>
           {item.description}
         </Text>
       </View>
@@ -223,7 +228,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                       style={{
                         color:
                           index === indexOfGreatestValue
-                            ? 'white'
+                            ? getIdealTextColorFromRGB(colors.primary)
                             : colors.text,
                         fontWeight: 'bold',
                         textAlign: 'center',
@@ -248,7 +253,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               </View>
             );
           })}
-          <Text style={{color: 'gray', textAlign: 'center'}}>
+          <Text
+            style={{
+              color: getLighterColor(colors.primary),
+              textAlign: 'center',
+            }}>
             {data.length} total responses
           </Text>
         </View>
@@ -316,7 +325,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               </View>
             );
           })}
-          <Text style={{color: 'gray', textAlign: 'center'}}>
+          <Text
+            style={{
+              color: getLighterColor(colors.primary),
+              textAlign: 'center',
+            }}>
             {data.length} total responses
           </Text>
         </View>
@@ -337,7 +350,13 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               style={{color: colors.text, fontWeight: 'bold', fontSize: 25}}>
               {stats ? stats.average.toFixed(2) : 'loading...'}
             </Text>
-            <Text style={{color: 'gray', fontWeight: 'bold'}}>AVERAGE</Text>
+            <Text
+              style={{
+                color: getLighterColor(colors.primary),
+                fontWeight: 'bold',
+              }}>
+              AVERAGE
+            </Text>
           </View>
           <View
             style={{
@@ -348,7 +367,13 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               style={{color: colors.text, fontWeight: 'bold', fontSize: 25}}>
               {stats ? stats.min : 'loading...'}
             </Text>
-            <Text style={{color: 'gray', fontWeight: 'bold'}}>MINIMUM</Text>
+            <Text
+              style={{
+                color: getLighterColor(colors.primary),
+                fontWeight: 'bold',
+              }}>
+              MINIMUM
+            </Text>
           </View>
           <View
             style={{
@@ -359,7 +384,13 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               style={{color: colors.text, fontWeight: 'bold', fontSize: 25}}>
               {stats ? stats.max : 'loading...'}
             </Text>
-            <Text style={{color: 'gray', fontWeight: 'bold'}}>MAXIMUM</Text>
+            <Text
+              style={{
+                color: getLighterColor(colors.primary),
+                fontWeight: 'bold',
+              }}>
+              MAXIMUM
+            </Text>
           </View>
         </Pressable>
       )}
@@ -438,9 +469,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
               Match Number
             </Text>
           </View>
-          <Button title={'Close'} onPress={() => setModalActive(false)}>
-            <Text style={{color: colors.text}}>Close</Text>
-          </Button>
+          <Pressable
+            style={{marginTop: '4%'}}
+            onPress={() => setModalActive(false)}>
+            <Text style={{color: colors.primary, fontSize: 16}}>Close</Text>
+          </Pressable>
         </StandardModal>
       )}
     </View>

@@ -5,7 +5,6 @@ import Toast from 'react-native-toast-message';
 
 import {
   NavigationContainer,
-  DefaultTheme,
   DarkTheme,
   useTheme,
   useNavigation,
@@ -46,41 +45,20 @@ import {createStackNavigator} from '@react-navigation/stack';
 const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
-import type {Theme} from '@react-navigation/native/src/types';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
 import ResetPassword from './screens/login-flow/ResetPassword';
 import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
-
-const CustomLightTheme = {
-  dark: false,
-  colors: {
-    primary: 'rgb(0, 122, 255)',
-    card: 'rgb(242, 242, 242)',
-    background: 'rgb(255, 255, 255)',
-    text: 'rgb(0, 0, 0)',
-    border: 'rgb(216, 216, 216)',
-    notification: 'rgb(255, 59, 48)',
-  },
-};
-
-const CustomDarkTheme = {
-  dark: true,
-  colors: {
-    primary: 'rgb(10, 132, 255)',
-    background: 'rgb(0, 0, 0)',
-    card: 'rgb(0, 0, 0)',
-    text: 'rgb(255, 255, 255)',
-    border: 'rgb(39, 39, 41)',
-    notification: 'rgb(255, 69, 58)',
-  },
-};
+import {UltraDarkTheme} from './themes/UltraDarkTheme';
+import {CustomLightTheme} from './themes/CustomLightTheme';
+import {ThemeOptions} from './themes/ThemeOptions';
+import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
 
 const Placeholder = () => <View />;
 
-const MyStack = ({themePreference, setThemePreference, setOled}) => {
+const MyStack = ({themePreference, setThemePreference}) => {
   const scheme = useColorScheme();
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
@@ -246,14 +224,14 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
     });
   }, []);
 
-  useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
-      if (value != null) {
-        console.log('[useEffect] data: ' + value);
-        setOled(JSON.parse(value));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
+  //     if (value != null) {
+  //       console.log('[useEffect] data: ' + value);
+  //       setOled(JSON.parse(value));
+  //     }
+  //   });
+  // }, []);
 
   const ChangePasswordContainer = ({navigation}) => (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
@@ -437,7 +415,7 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
                 onSignOut={redirectLogin}
                 setTheme={setThemePreference}
                 setScoutingStyle={setScoutStylePreference}
-                setOled={setOled}
+                // setOled={setOled}
               />
             )}
           />
@@ -463,23 +441,26 @@ const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
   const scheme = useColorScheme();
-  const [themePreference, setThemePreference] = useState('System');
-  const [oled, setOled] = useState(false);
+  const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
+  // const [oled, setOled] = useState(false);
+
+  useEffect(() => {
+    FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
+      if (r != null) {
+        console.log('theme found: ' + r);
+        setThemePreference(parseInt(r, 10));
+      }
+    });
+  }, []);
 
   return (
     <NavigationContainer
       theme={
-        themePreference === 'Dark'
-          ? oled
-            ? CustomDarkTheme
-            : DarkTheme
-          : themePreference === 'Light'
-          ? CustomLightTheme
-          : scheme === 'dark'
-          ? oled
-            ? CustomDarkTheme
-            : DarkTheme
-          : CustomLightTheme
+        themePreference === ThemeOptions.SYSTEM
+          ? scheme === 'dark'
+            ? DarkTheme
+            : CustomLightTheme
+          : ThemeOptionsMap.get(themePreference)
       }>
       <RootStack.Navigator
         screenOptions={{
@@ -493,7 +474,6 @@ const RootNavigator = () => {
             <MyStack
               themePreference={themePreference}
               setThemePreference={setThemePreference}
-              setOled={setOled}
             />
           )}
         />

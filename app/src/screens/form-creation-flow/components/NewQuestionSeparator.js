@@ -15,7 +15,7 @@ const NewQuestionSeparator = ({onPress, noDividerLine = false}) => {
         }),
       }}>
       {!noDividerLine && (
-        <View style={{flex: 1, height: 1, backgroundColor: 'black'}} />
+        <View style={{flex: 1, height: 1, backgroundColor: colors.border}} />
       )}
       <TouchableOpacity
         onPress={onPress}
@@ -31,7 +31,7 @@ const NewQuestionSeparator = ({onPress, noDividerLine = false}) => {
         }}>
         <Text
           style={{
-            color: 'white',
+            color: colors.text,
             fontWeight: 'bold',
             textAlign: 'center',
             fontSize: 22,
@@ -40,7 +40,7 @@ const NewQuestionSeparator = ({onPress, noDividerLine = false}) => {
         </Text>
       </TouchableOpacity>
       {!noDividerLine && (
-        <View style={{flex: 1, height: 1, backgroundColor: 'black'}} />
+        <View style={{flex: 1, height: 1, backgroundColor: colors.border}} />
       )}
     </View>
   );

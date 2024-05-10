@@ -115,7 +115,7 @@ const TeamAddingModal = ({
                 }}>
                 <BouncyCheckbox
                   size={30}
-                  fillColor="blue"
+                  fillColor={colors.primary}
                   unfillColor="#FFFFFF"
                   text={item.team_number.toString()}
                   textStyle={{

@@ -52,6 +52,8 @@ function SliderType({
         <Slider
           disabled={disabled}
           value={localValue}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.text}
           maximumValue={Number.parseInt(high, 10)}
           minimumValue={Number.parseInt(low, 10)}
           step={step ? Number.parseInt(step, 10) : 1}

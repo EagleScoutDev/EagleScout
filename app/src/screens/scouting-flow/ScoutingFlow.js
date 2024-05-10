@@ -344,7 +344,7 @@ function ScoutingFlow({navigation, route, resetTimer}) {
 
   const styles = StyleSheet.create({
     textInput: {
-      borderColor: 'gray',
+      borderColor: colors.border,
       borderWidth: 1,
       borderRadius: 10,
       marginBottom: 15,
