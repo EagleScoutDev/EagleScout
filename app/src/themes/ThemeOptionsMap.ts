@@ -6,6 +6,7 @@ import {ThemeOptions} from './ThemeOptions';
 import {DuneTheme} from './DuneTheme';
 import {WaterTheme} from './WaterTheme';
 import {PurpleTheme} from './PurpleTheme';
+import {ForestTheme} from './ForestTheme';
 
 export const ThemeOptionsMap: Map<ThemeOptions, Theme> = new Map([
   [ThemeOptions.LIGHT, CustomLightTheme],
@@ -15,4 +16,5 @@ export const ThemeOptionsMap: Map<ThemeOptions, Theme> = new Map([
   [ThemeOptions.DUNE, DuneTheme],
   [ThemeOptions.WATER, WaterTheme],
   [ThemeOptions.PURPLE, PurpleTheme],
+  [ThemeOptions.FOREST, ForestTheme],
 ]);

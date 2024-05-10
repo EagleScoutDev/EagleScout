@@ -5,5 +5,6 @@ export enum ThemeOptions {
   DUNE,
   WATER,
   PURPLE,
+  FOREST,
   SYSTEM,
 }
