@@ -251,7 +251,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 }}>
                 <Text
                   style={{
-                    color: getLighterColor(colors.primary),
+                    color: colors.text,
+                    opacity: 0.7,
                     marginHorizontal: '4%',
                     fontWeight: 'bold',
                     fontSize: 18,
@@ -261,7 +262,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 <View
                   style={{
                     height: 2,
-                    backgroundColor: getLighterColor(colors.primary),
+                    backgroundColor: colors.border,
                     flex: 1,
                   }}
                 />
@@ -301,13 +302,20 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        borderWidth: 4,
-                        borderColor: index < 3 ? 'red' : 'dodgerblue',
+                        // borderWidth: 1,
+                        backgroundColor: index < 3 ? 'red' : 'dodgerblue',
+                        // shadowColor: colors.card,
+                        // shadowOffset: {width: 0, height: 2},
+                        // shadowOpacity: 0.25,
+                        // shadowRadius: 4,
+                        // elevation: 5,
+                        borderColor: colors.text,
+
                         margin: '2%',
                         padding: '6%',
                         borderRadius: 10,
                         minWidth: '25%',
-                        backgroundColor: colors.card,
+                        // backgroundColor: colors.card,
                       }}>
                       <Text
                         style={{
