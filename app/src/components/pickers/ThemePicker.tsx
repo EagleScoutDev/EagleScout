@@ -54,9 +54,8 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
               <Pressable
                 onPress={() => {
                   setSelectedTheme(themeOption);
-                  saveThemePreference(themeOption).then(r =>
-                    setTheme(themeOption),
-                  );
+                  setTheme(themeOption);
+                  saveThemePreference(themeOption);
                 }}
                 key={themeOption}
                 style={{
