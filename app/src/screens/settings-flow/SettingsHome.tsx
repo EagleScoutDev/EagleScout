@@ -23,7 +23,7 @@ import Competitions from '../../database/Competitions';
 import {ThemeOptions} from '../../themes/ThemeOptions';
 import {getLighterColor} from '../../lib/ColorReadability';
 
-const VERSION = '7.3 (OTA 7)';
+const VERSION = '7.4';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
