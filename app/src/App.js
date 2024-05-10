@@ -5,7 +5,6 @@ import Toast from 'react-native-toast-message';
 
 import {
   NavigationContainer,
-  DefaultTheme,
   DarkTheme,
   useTheme,
   useNavigation,
@@ -46,7 +45,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
-import type {Theme} from '@react-navigation/native/src/types';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
@@ -57,30 +55,6 @@ import {UltraDarkTheme} from './themes/UltraDarkTheme';
 import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
 import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
-
-// const CustomLightTheme = {
-//   dark: false,
-//   colors: {
-//     primary: 'rgb(0, 122, 255)',
-//     card: 'rgb(242, 242, 242)',
-//     background: 'rgb(255, 255, 255)',
-//     text: 'rgb(0, 0, 0)',
-//     border: 'rgb(216, 216, 216)',
-//     notification: 'rgb(255, 59, 48)',
-//   },
-// };
-//
-// const CustomDarkTheme = {
-//   dark: true,
-//   colors: {
-//     primary: 'rgb(10, 132, 255)',
-//     background: 'rgb(0, 0, 0)',
-//     card: 'rgb(0, 0, 0)',
-//     text: 'rgb(255, 255, 255)',
-//     border: 'rgb(39, 39, 41)',
-//     notification: 'rgb(255, 69, 58)',
-//   },
-// };
 
 const Placeholder = () => <View />;
 
