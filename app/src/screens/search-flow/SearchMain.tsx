@@ -51,6 +51,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
   const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
   const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
+  const [lastRoundWithReports, setLastRoundWithReports] = useState<number>(0);
 
   const [officialMatchesByMatch, setOfficialMatchesByMatch] = useState<
     Map<number, TBAMatch[]>
@@ -81,13 +82,15 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
 
   useEffect(() => {
     let temp: Set<TBAMatch> = new Set();
+    let greatestRoundWithReports = 0;
     officialMatchesByMatch.forEach((value, key) => {
-      if (value.length === 0) {
+      const reports_for_match = reportsByMatch.get(key);
+      if (!reports_for_match || reports_for_match.length === 0) {
         return;
       }
       value.forEach(match => {
         if (
-          reportsByMatch.get(key)?.find(report => {
+          reports_for_match!.find(report => {
             return (
               report.teamNumber === Number.parseInt(match.team.slice(3), 10)
             );
@@ -96,8 +99,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           temp.add(match);
         }
       });
+      greatestRoundWithReports = Math.max(greatestRoundWithReports, key);
     });
     setMissingReports(temp);
+    setLastRoundWithReports(greatestRoundWithReports);
   }, [competitionId, reportsByMatch, officialMatchesByMatch]);
 
   // indicates if competition data is still being fetched
@@ -245,6 +250,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 flexWrap: 'wrap',
                 justifyContent: 'center',
                 alignItems: 'center',
+                opacity: item > lastRoundWithReports ? 0.5 : 1,
               }}>
               <View
                 style={{
@@ -301,6 +307,10 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                       onPress={() => {
                         console.log('pressed');
                         console.log(missingReports.size);
+                        console.log(
+                          'greatest round with reports is ' +
+                            lastRoundWithReports,
+                        );
 
                         if (missingReports.has(match)) {
                           Alert.alert(
