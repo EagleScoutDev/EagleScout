@@ -82,12 +82,12 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   useEffect(() => {
     let temp: Set<TBAMatch> = new Set();
     officialMatchesByMatch.forEach((value, key) => {
+      if (value.length === 0) {
+        return;
+      }
       value.forEach(match => {
-        if (!reportsByMatch.has(key)) {
-          return;
-        }
         if (
-          reportsByMatch.get(key)!.find(report => {
+          reportsByMatch.get(key)?.find(report => {
             return (
               report.teamNumber === Number.parseInt(match.team.slice(3), 10)
             );
@@ -98,7 +98,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
       });
     });
     setMissingReports(temp);
-  }, [reportsByMatch, officialMatchesByMatch]);
+  }, [competitionId, reportsByMatch, officialMatchesByMatch]);
 
   // indicates if competition data is still being fetched
   const [fetchingData, setFetchingData] = useState<boolean>(false);
