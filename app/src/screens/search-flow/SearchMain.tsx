@@ -68,24 +68,31 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     TBAMatches.getMatchesForCompetition(competitionId.toString()).then(
       matches => {
         let temp: Map<number, TBAMatch[]> = new Map();
-        matches.forEach(match => {
-          if (temp.has(match.match)) {
-            temp.get(match.match)?.push(match);
-          } else {
-            temp.set(match.match, [match]);
-          }
-        });
+        matches
+          .filter(match => match.compLevel === 'qm')
+          .forEach(match => {
+            if (temp.has(match.match)) {
+              temp.get(match.match)!.push(match);
+            } else {
+              temp.set(match.match, [match]);
+            }
+          });
         setOfficialMatchesByMatch(temp);
       },
     );
   }, [competitionId]);
 
   useEffect(() => {
+    console.log('IN EFFECT');
     let temp: Set<TBAMatch> = new Set();
     let greatestRoundWithReports = 0;
     officialMatchesByMatch.forEach((value, key) => {
       const reports_for_match = reportsByMatch.get(key);
+      console.log('EFFECT', key, reports_for_match);
       if (!reports_for_match || reports_for_match.length === 0) {
+        value.forEach(match => {
+          temp.add(match);
+        });
         return;
       }
       value.forEach(match => {
@@ -306,6 +313,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                       key={match.id}
                       onPress={() => {
                         console.log('pressed');
+                        console.log('match number is', match);
                         console.log(missingReports.size);
                         console.log(
                           'greatest round with reports is ' +
