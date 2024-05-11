@@ -57,7 +57,11 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
     Map<number, TBAMatch[]>
   >(new Map());
 
-  const [missingReports, setMissingReports] = useState<Set<TBAMatch>>(
+  const [missingRobots, setMissingRobots] = useState<Set<TBAMatch>>(new Set());
+  const [extraReports, setExtraReports] = useState<Map<number, TBAMatch[]>>(
+    new Map(),
+  );
+  const [extraReportsSet, setExtraReportsSet] = useState<Set<TBAMatch>>(
     new Set(),
   );
 
@@ -83,32 +87,55 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   }, [competitionId]);
 
   useEffect(() => {
-    console.log('IN EFFECT');
-    let temp: Set<TBAMatch> = new Set();
+    let missingRobotsTemp: Set<TBAMatch> = new Set();
+    let extraReportsTemp: Map<number, TBAMatch[]> = new Map();
     let greatestRoundWithReports = 0;
     officialMatchesByMatch.forEach((value, key) => {
       const reports_for_match = reportsByMatch.get(key);
-      console.log('EFFECT', key, reports_for_match);
       if (!reports_for_match || reports_for_match.length === 0) {
         value.forEach(match => {
-          temp.add(match);
+          missingRobotsTemp.add(match);
         });
         return;
       }
       value.forEach(match => {
         if (
-          reports_for_match!.find(report => {
-            return (
-              report.teamNumber === Number.parseInt(match.team.slice(3), 10)
-            );
-          }) === undefined
+          reports_for_match!.find(
+            report =>
+              report.teamNumber === Number.parseInt(match.team.slice(3), 10),
+          ) === undefined
         ) {
-          temp.add(match);
+          missingRobotsTemp.add(match);
         }
       });
+      extraReportsTemp.set(
+        key,
+        reports_for_match
+          .filter(
+            report =>
+              !value.find(match => match.team === 'frc' + report.teamNumber),
+          )
+          .map(report => ({
+            id: -1,
+            team: 'frc' + report.teamNumber,
+            match: key,
+            predictedTime: new Date(),
+            eventId: '',
+            alliance: '',
+            compLevel: '',
+          })),
+      );
       greatestRoundWithReports = Math.max(greatestRoundWithReports, key);
     });
-    setMissingReports(temp);
+    let extraReportsSetTemp: Set<TBAMatch> = new Set();
+    extraReportsTemp.forEach((value, key) => {
+      value.forEach(match => {
+        extraReportsSetTemp.add(match);
+      });
+    });
+    setExtraReportsSet(extraReportsSetTemp);
+    setExtraReports(extraReportsTemp);
+    setMissingRobots(missingRobotsTemp);
     setLastRoundWithReports(greatestRoundWithReports);
   }, [competitionId, reportsByMatch, officialMatchesByMatch]);
 
@@ -307,6 +334,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
               {officialMatchesByMatch
                 .get(item)
                 ?.sort((a, b) => a.alliance.localeCompare(b.alliance))
+                .concat(extraReports.get(item) ?? [])
                 .map((match, index) => {
                   return (
                     <Pressable
@@ -314,13 +342,13 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                       onPress={() => {
                         console.log('pressed');
                         console.log('match number is', match);
-                        console.log(missingReports.size);
+                        console.log(missingRobots.size);
                         console.log(
                           'greatest round with reports is ' +
                             lastRoundWithReports,
                         );
 
-                        if (missingReports.has(match)) {
+                        if (missingRobots.has(match)) {
                           Alert.alert(
                             'Report for Team ' +
                               match.team.slice(3) +
@@ -360,7 +388,11 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                         borderRadius: 10,
                         height: 80,
 
-                        borderWidth: missingReports.has(match) ? 4 : 0,
+                        borderWidth:
+                          item <= lastRoundWithReports &&
+                          missingRobots.has(match)
+                            ? 4
+                            : 0,
                         borderColor: colors.primary,
                       }}>
                       <Text
@@ -373,7 +405,19 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                         {match.team.slice(3)}
                       </Text>
 
-                      {missingReports.has(match) && (
+                      {item <= lastRoundWithReports &&
+                        missingRobots.has(match) && (
+                          <Text
+                            style={{
+                              color: colors.text,
+                              fontWeight: 'bold',
+                              textAlign: 'center',
+                              fontSize: 18,
+                            }}>
+                            Missing
+                          </Text>
+                        )}
+                      {extraReportsSet.has(match) && (
                         <Text
                           style={{
                             color: colors.text,
@@ -381,7 +425,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                             textAlign: 'center',
                             fontSize: 18,
                           }}>
-                          Missing
+                          Extra
                         </Text>
                       )}
                     </Pressable>
