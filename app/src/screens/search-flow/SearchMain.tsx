@@ -26,6 +26,8 @@ import NotesDB, {
 } from '../../database/Notes';
 import {NoteList} from '../../components/NoteList';
 import {getLighterColor} from '../../lib/ColorReadability';
+import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
+import number from '../form-creation-flow/components/questions/Number';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -50,21 +52,56 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
   const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
   const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
 
-  // const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  const [officialMatchesByMatch, setOfficialMatchesByMatch] = useState<
+    Map<number, TBAMatch[]>
+  >(new Map());
 
-  // used for hiding and showing header
-  const [prevScrollY, setPrevScrollY] = useState<number>(0);
+  const [missingReports, setMissingReports] = useState<Set<TBAMatch>>(
+    new Set(),
+  );
 
-  // for searching
-  const [searchActive, setSearchActive] = useState<boolean>(false);
+  useEffect(() => {
+    if (competitionId === -1) {
+      return;
+    }
+    TBAMatches.getMatchesForCompetition(competitionId.toString()).then(
+      matches => {
+        let temp: Map<number, TBAMatch[]> = new Map();
+        matches.forEach(match => {
+          if (temp.has(match.match)) {
+            temp.get(match.match)?.push(match);
+          } else {
+            temp.set(match.match, [match]);
+          }
+        });
+        setOfficialMatchesByMatch(temp);
+      },
+    );
+  }, [competitionId]);
+
+  useEffect(() => {
+    let temp: Set<TBAMatch> = new Set();
+    officialMatchesByMatch.forEach((value, key) => {
+      value.forEach(match => {
+        if (!reportsByMatch.has(key)) {
+          return;
+        }
+        if (
+          reportsByMatch.get(key)!.find(report => {
+            return (
+              report.teamNumber === Number.parseInt(match.team.slice(3), 10)
+            );
+          }) === undefined
+        ) {
+          temp.add(match);
+        }
+      });
+    });
+    setMissingReports(temp);
+  }, [reportsByMatch, officialMatchesByMatch]);
 
   // indicates if competition data is still being fetched
   const [fetchingData, setFetchingData] = useState<boolean>(false);
-
-  // used for animating the search bar hiding and showing
-  // useEffect(() => {
-  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  // }, [isScrolling]);
 
   const fetchData = useCallback(() => {
     if (competitionId !== -1) {
@@ -155,28 +192,6 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             setCurrentCompId={setCompetitionId}
             loading={fetchingData}
           />
-          {/*<Pressable*/}
-          {/*  onPress={() => {*/}
-          {/*    const sortedKeys = Array.from(reportsByMatch.keys()).reverse();*/}
-
-          {/*    const sortedMap = new Map<number, ScoutReportReturnData[]>();*/}
-          {/*    sortedKeys.forEach(key => {*/}
-          {/*      sortedMap.set(key, reportsByMatch.get(key)!);*/}
-          {/*    });*/}
-
-          {/*    setReportsByMatch(sortedMap);*/}
-          {/*  }}*/}
-          {/*  style={{*/}
-          {/*    marginRight: '2%',*/}
-          {/*    marginLeft: '6%',*/}
-          {/*  }}>*/}
-          {/*  <Svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">*/}
-          {/*    <Path*/}
-          {/*      fill="gray"*/}
-          {/*      d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"*/}
-          {/*    />*/}
-          {/*  </Svg>*/}
-          {/*</Pressable>*/}
           <Pressable
             style={{
               paddingHorizontal: '8%',
@@ -220,28 +235,17 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
         </View>
       )}
       <FlatList
-        // onScroll={scroll_event => {
-        //   // if scrolling down, hide search bar
-        //   if (scroll_event.nativeEvent.contentOffset.y > prevScrollY) {
-        //     setIsScrolling(true);
-        //   } else {
-        //     setIsScrolling(false);
-        //   }
-        //
-        //   // if at top of flatlist, show search bar
-        //   if (
-        //     scroll_event.nativeEvent.contentOffset.y <
-        //     0.005 * scroll_event.nativeEvent.contentSize.height
-        //   ) {
-        //     setIsScrolling(false);
-        //   }
-        //   setPrevScrollY(scroll_event.nativeEvent.contentOffset.y);
-        // }}
-        data={Array.from(reportsByMatch.keys()).reverse()}
-        keyExtractor={item => item.toString()}
+        data={Array.from(officialMatchesByMatch.keys()).sort((a, b) => b - a)}
         renderItem={({item}) => {
           return (
-            <View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <View
                 style={{
                   minWidth: '100%',
@@ -286,50 +290,85 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                   </Svg>
                 </TouchableOpacity>
               </View>
-              <View
-                style={{
-                  // make it like a 3x2 grid
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                }}>
-                {reportsByMatch.get(item)?.map((report, index) => {
+
+              {officialMatchesByMatch
+                .get(item)
+                ?.sort((a, b) => a.alliance.localeCompare(b.alliance))
+                .map((match, index) => {
                   return (
                     <Pressable
-                      key={report.reportId}
+                      key={match.id}
                       onPress={() => {
-                        navigateIntoReport(report);
+                        console.log('pressed');
+                        console.log(missingReports.size);
+
+                        if (missingReports.has(match)) {
+                          Alert.alert(
+                            'Report for Team ' +
+                              match.team.slice(3) +
+                              ' Missing',
+                            'No report found for this team in match ' +
+                              item +
+                              '.',
+                          );
+                          return;
+                        } else {
+                          let report = reportsByMatch
+                            .get(item)
+                            ?.find(
+                              r =>
+                                r.teamNumber ===
+                                Number.parseInt(match.team.slice(3), 10),
+                            );
+                          if (report) {
+                            navigateIntoReport(report);
+                          } else {
+                            Alert.alert(
+                              'Error: Report not found',
+                              'Report likely inputted with wrong team number.',
+                            );
+                          }
+                        }
                       }}
                       style={{
-                        flexDirection: 'row',
+                        flex: 1,
+                        flexBasis: '30%',
                         alignItems: 'center',
-                        // borderWidth: 1,
-                        backgroundColor: index < 3 ? 'red' : 'dodgerblue',
-                        // shadowColor: colors.card,
-                        // shadowOffset: {width: 0, height: 2},
-                        // shadowOpacity: 0.25,
-                        // shadowRadius: 4,
-                        // elevation: 5,
-                        borderColor: colors.text,
-
-                        margin: '2%',
-                        padding: '6%',
+                        justifyContent: 'center',
+                        backgroundColor:
+                          match.alliance === 'red' ? 'red' : 'blue',
+                        padding: '2%',
+                        margin: '1%',
                         borderRadius: 10,
-                        minWidth: '25%',
-                        // backgroundColor: colors.card,
+                        height: 80,
+
+                        borderWidth: missingReports.has(match) ? 4 : 0,
+                        borderColor: colors.primary,
                       }}>
                       <Text
                         style={{
                           color: colors.text,
                           fontWeight: 'bold',
                           textAlign: 'center',
-                          flex: 1,
+                          fontSize: 18,
                         }}>
-                        {report.teamNumber}
+                        {match.team.slice(3)}
                       </Text>
+
+                      {missingReports.has(match) && (
+                        <Text
+                          style={{
+                            color: colors.text,
+                            fontWeight: 'bold',
+                            textAlign: 'center',
+                            fontSize: 18,
+                          }}>
+                          Missing
+                        </Text>
+                      )}
                     </Pressable>
                   );
                 })}
-              </View>
             </View>
           );
         }}
