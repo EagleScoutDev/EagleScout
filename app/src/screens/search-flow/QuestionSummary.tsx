@@ -54,6 +54,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
 
       padding: '4%',
       paddingVertical: '2%',
+      marginHorizontal: '2%',
       // paddingHorizontal: '3%',
       // width: '40%',
       alignSelf: 'center',
