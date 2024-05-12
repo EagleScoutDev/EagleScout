@@ -9,6 +9,8 @@ import {
   getLighterColor,
 } from '../../lib/ColorReadability';
 import DataGraph from './DataGraph';
+import {PieChart} from 'react-native-chart-kit';
+import {Dimensions} from 'react-native';
 
 interface Props {
   item: any;
@@ -45,6 +47,8 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const [frequencies, setFrequencies] = useState(new Map<string, number>());
   const [valueOfMostOccurrences, setValueOfMostOccurrences] =
     useState<number>(0);
+
+  const [pieChartVisible, setPieChartVisible] = useState<boolean>(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -243,7 +247,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
     <View key={item.key} style={styles.container}>
       <Text style={styles.question}>{item.question}</Text>
       {item.type === 'radio' && (
-        <View>
+        <Pressable onPress={() => setModalActive(true)}>
           {item.options.map((label: string, index_of_item: number) => {
             return (
               <View>
@@ -286,7 +290,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
           <Text style={styles.multiple_option_response_count}>
             {data.length} total responses
           </Text>
-        </View>
+        </Pressable>
       )}
       {item.type === 'checkboxes' && (
         <View>
@@ -382,7 +386,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       )}
 
       <DataGraph
-        question={item.question}
+        item={item}
         modalActive={modalActive}
         setModalActive={setModalActive}
         data={data}

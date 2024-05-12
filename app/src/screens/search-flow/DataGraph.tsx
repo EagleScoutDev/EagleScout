@@ -1,16 +1,16 @@
 import {Dimensions, Pressable, Text, View} from 'react-native';
 import StandardModal from '../../components/modals/StandardModal';
-import {LineChart} from 'react-native-chart-kit';
+import {LineChart, PieChart} from 'react-native-chart-kit';
 import React, {useEffect} from 'react';
 import {useTheme} from '@react-navigation/native';
 
 const DataGraph = ({
-  question,
+  item,
   modalActive,
   setModalActive,
   data,
 }: {
-  question: string;
+  item: any;
   modalActive: boolean;
   setModalActive: (arg0: boolean) => void;
   data: {match: number; data: number}[];
@@ -41,7 +41,7 @@ const DataGraph = ({
 
   return (
     <StandardModal
-      title={question}
+      title={item.question}
       visible={modalActive}
       onDismiss={() => {
         setModalActive(false);
@@ -81,9 +81,20 @@ const DataGraph = ({
             color: colors.text,
             textAlign: 'center',
             marginVertical: '3%',
+            fontWeight: 'bold',
           }}>
           Match Number
         </Text>
+        <Text style={{color: colors.text, textAlign: 'center'}}>
+          Graph Interpretation
+        </Text>
+        {item.options?.map((option: string, index: number) => {
+          return (
+            <Text style={{color: colors.text, textAlign: 'center'}}>
+              {index + ' - ' + item.options![index]}
+            </Text>
+          );
+        })}
       </View>
       <Pressable
         style={{marginTop: '4%'}}
