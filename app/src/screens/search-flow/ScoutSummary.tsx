@@ -90,6 +90,7 @@ function ScoutSummary({
                 };
               })}
               generate_ai_summary={generateSummary}
+              graph_disabled={false}
             />
           );
         })

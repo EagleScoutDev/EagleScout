@@ -22,6 +22,7 @@ interface Props {
     },
   ];
   generate_ai_summary: boolean;
+  graph_disabled: boolean;
 }
 
 interface Statistics {
@@ -30,7 +31,13 @@ interface Statistics {
   min: number;
 }
 
-function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
+function QuestionSummary({
+  item,
+  index,
+  data,
+  generate_ai_summary,
+  graph_disabled,
+}: Props) {
   const {colors} = useTheme();
 
   // holds the response from the OpenAI API
@@ -247,7 +254,12 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
     <View key={item.key} style={styles.container}>
       <Text style={styles.question}>{item.question}</Text>
       {item.type === 'radio' && (
-        <Pressable onPress={() => setModalActive(true)}>
+        <Pressable
+          onPress={() => {
+            if (!graph_disabled) {
+              setModalActive(true);
+            }
+          }}>
           {item.options.map((label: string, index_of_item: number) => {
             return (
               <View>
@@ -336,7 +348,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       {item.type === 'number' && (
         <Pressable
           style={styles.overall_statistic_container}
-          onPress={() => setModalActive(true)}>
+          onPress={() => {
+            if (!graph_disabled) {
+              setModalActive(true);
+            }
+          }}>
           <View style={styles.statistic_container}>
             <Text style={styles.statistic_label}>AVG</Text>
             <Text style={styles.statistic}>
