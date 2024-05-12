@@ -134,7 +134,7 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
                 compId: competitionId,
               })
             }
-            caretVisible={false}
+            caretVisible={true}
             disabled={false}
             icon={() => {
               return (
