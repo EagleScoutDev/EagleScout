@@ -23,6 +23,7 @@ import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
 import {ThemeOptions} from '../../themes/ThemeOptions';
 import {getLighterColor} from '../../lib/ColorReadability';
+import TabHeader from '../../components/TabHeader';
 
 const VERSION = '7.4';
 
@@ -89,7 +90,6 @@ SettingsHomeProps) => {
       fontSize: 34,
       fontWeight: '600',
       color: colors.text,
-      flex: 1,
     },
   });
 
@@ -118,12 +118,12 @@ SettingsHomeProps) => {
       <View
         style={{
           flexDirection: 'row',
-          alignContent: 'center',
-          justifyContent: 'space-evenly',
-          padding: '3%',
-          paddingLeft: '5%',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: 30,
         }}>
         <Text style={styles.title}>Profile</Text>
+        {/*<TabHeader title={'Profile'} />*/}
 
         <Pressable onPress={() => setSettingsPopupActive(true)}>
           <Svg width={32} height={32} viewBox="0 0 16 16">

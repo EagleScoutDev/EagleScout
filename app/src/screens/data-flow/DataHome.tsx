@@ -22,6 +22,7 @@ import Svg, {Path} from 'react-native-svg';
 import {useColorScheme} from 'react-native';
 import Competitions from '../../database/Competitions';
 import {getLighterColor} from '../../lib/ColorReadability';
+import TabHeader from '../../components/TabHeader';
 
 const DataHome = ({navigation}) => {
   const {colors} = useTheme();
@@ -81,13 +82,6 @@ const DataHome = ({navigation}) => {
     nav_link_text: {
       color: colors.text,
     },
-    title: {
-      fontSize: 34,
-      fontWeight: '600',
-      color: colors.text,
-      padding: '3%',
-      paddingLeft: '5%',
-    },
   });
 
   return (
@@ -96,7 +90,7 @@ const DataHome = ({navigation}) => {
         marginTop: '0%',
         paddingHorizontal: '2%',
       }}>
-      <Text style={styles.title}>Data</Text>
+      <TabHeader title={'Data'} />
       {internetStatus === InternetStatus.FAILED && (
         <View
           style={{

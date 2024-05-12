@@ -10,6 +10,7 @@ import {
 import {useNavigation, useTheme} from '@react-navigation/native';
 import UpcomingRoundsView from '../UpcomingRoundsView';
 import Svg, {Path} from 'react-native-svg';
+import TabHeader from '../../components/TabHeader';
 
 const HomeMain = () => {
   const {colors} = useTheme();
@@ -19,18 +20,11 @@ const HomeMain = () => {
       paddingHorizontal: '2%',
       flex: 1,
     },
-    title: {
-      fontSize: 34,
-      fontWeight: '600',
-      color: colors.text,
-      padding: '3%',
-      paddingLeft: '5%',
-    },
     heading_two: {
       fontSize: 24,
       fontWeight: '600',
       color: colors.text,
-      paddingLeft: '5%',
+      paddingLeft: 30,
     },
     button_text: {
       color: 'white',
@@ -52,7 +46,7 @@ const HomeMain = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Home</Text>
+      <TabHeader title={'Home'} />
       <Text style={styles.heading_two}>Upcoming Rounds</Text>
       <UpcomingRoundsView navigation={navigation} />
       {/*<Text style={styles.heading_two}>Pit Scouting</Text>*/}
