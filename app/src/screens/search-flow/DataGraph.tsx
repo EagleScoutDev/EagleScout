@@ -1,7 +1,7 @@
 import {Dimensions, Pressable, Text, View} from 'react-native';
 import StandardModal from '../../components/modals/StandardModal';
 import {LineChart} from 'react-native-chart-kit';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useTheme} from '@react-navigation/native';
 
 const DataGraph = ({
@@ -23,12 +23,21 @@ const DataGraph = ({
     backgroundGradientToOpacity: 1.0,
     color: (opacity = 1) =>
       dark ? `rgba(255, 255, 255, ${opacity})` : 'rgba(0, 0, 0, 1)',
-    backgroundColor: 'blue',
+    backgroundColor: colors.card,
     strokeWidth: 2, // optional, default 3
     // barPercentage: 0.5,
     useShadowColorFromDataset: false, // optional
-    fillShadowGradient: 'blue',
+    fillShadowGradient: colors.card,
   };
+  const [avg, setAvg] = React.useState<number>(0);
+
+  useEffect(() => {
+    let sum = 0;
+    data.forEach(datum => {
+      sum += datum.data;
+    });
+    setAvg(sum / data.length);
+  }, []);
 
   return (
     <StandardModal
@@ -40,14 +49,26 @@ const DataGraph = ({
       <View>
         <LineChart
           data={{
-            labels: data.map(datum => String(datum.match)),
+            labels: data
+              .sort((a, b) => a.match - b.match)
+              .map(datum => String(datum.match)),
             datasets: [
               {
-                data: data.map(datum => datum.data),
+                data: data
+                  .sort((a, b) => a.match - b.match)
+                  .map(datum => datum.data),
+                color: (opacity = 1) => colors.primary,
+                strokeWidth: 2, // optional
+              },
+              {
+                data: data.map(() => avg),
+                strokeDashArray: [10],
+                withDots: false,
+                color: (opacity = 1) => colors.text,
                 strokeWidth: 2, // optional
               },
             ],
-            legend: ['Points Earned'], // optional
+            legend: ['Data', 'Average'], // optional
           }}
           width={Dimensions.get('window').width * 0.85} // from react-native
           height={Dimensions.get('window').height / 4}
