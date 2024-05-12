@@ -35,10 +35,10 @@ const ListItem = ({
       borderBottomColor: colors.border,
       flexDirection: 'row',
       backgroundColor: colors.card,
-      padding: '4%',
+      padding: 20,
     },
     icon_styling: {
-      paddingRight: '4%',
+      paddingRight: 20,
     },
   });
   return (
