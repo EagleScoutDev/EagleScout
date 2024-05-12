@@ -55,6 +55,7 @@ import {UltraDarkTheme} from './themes/UltraDarkTheme';
 import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
 import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
+import {isTablet} from 'react-native-device-info';
 
 const Placeholder = () => <View />;
 
@@ -344,8 +345,8 @@ const MyStack = ({themePreference, setThemePreference}) => {
               },
               tabBarIcon: ({color, size, focused}) => (
                 <Svg
-                  width={'120%'}
-                  height={'120%'}
+                  width={isTablet() ? '240%' : '120%'}
+                  height={isTablet() ? '240%' : '120%'}
                   viewBox="0 0 16 16"
                   style={{
                     bottom: '20%',

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
+import {isTablet} from 'react-native-device-info';
 
 const PlusNavigationModal = () => {
   const {colors} = useTheme();
@@ -24,6 +25,7 @@ const PlusNavigationModal = () => {
       left: 0,
       backgroundColor: colors.background,
       paddingBottom: '10%',
+      flexDirection: isTablet() ? 'row' : 'column',
     },
     title_text: {
       color: colors.text,
@@ -36,8 +38,9 @@ const PlusNavigationModal = () => {
       fontSize: 14,
     },
     grouping: {
-      flexDirection: 'row',
+      flexDirection: isTablet() ? 'column' : 'row',
       backgroundColor: colors.background,
+      justifyContent: isTablet() ? 'space-between' : 'flex-start',
       borderBottomWidth: 1,
       borderColor: colors.border,
       borderRadius: 10,
@@ -50,12 +53,13 @@ const PlusNavigationModal = () => {
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
-      // paddingHorizontal: '4%',
-      padding: '6%',
-      marginRight: '4%',
+      paddingHorizontal: isTablet() ? '0%' : '4%',
+      padding: isTablet() ? '4%' : '6%',
+      marginRight: isTablet() ? '0%' : '4%',
       flex: 1,
       aspectRatio: 1,
-      alignSelf: 'center',
+      alignSelf: isTablet() ? 'auto' : 'center',
+      marginBottom: isTablet() ? 30 : '0%',
     },
     text_container: {
       flexDirection: 'column',
