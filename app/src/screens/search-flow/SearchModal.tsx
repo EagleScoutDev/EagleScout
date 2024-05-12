@@ -8,6 +8,7 @@ import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {Dropdown} from 'react-native-element-dropdown';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import {getLighterColor} from '../../lib/ColorReadability';
+import {isTablet} from 'react-native-device-info';
 
 enum FilterState {
   TEAM,
@@ -95,7 +96,7 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
         style={{
           flex: 1,
           backgroundColor: colors.background,
-          paddingTop: '10%',
+          paddingTop: isTablet() ? '0%' : '10%',
         }}>
         <View
           style={{

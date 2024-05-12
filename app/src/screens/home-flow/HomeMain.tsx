@@ -30,9 +30,7 @@ const HomeMain = () => {
       fontSize: 24,
       fontWeight: '600',
       color: colors.text,
-      padding: '3%',
       paddingLeft: '5%',
-      marginTop: '3%',
     },
     button_text: {
       color: 'white',

@@ -113,6 +113,7 @@ SettingsHomeProps) => {
     <SafeAreaView
       style={{
         paddingHorizontal: '2%',
+        flex: 1,
       }}>
       <View
         style={{

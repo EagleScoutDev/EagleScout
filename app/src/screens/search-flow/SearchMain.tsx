@@ -26,6 +26,7 @@ import NotesDB, {
 } from '../../database/Notes';
 import {NoteList} from '../../components/NoteList';
 import {getLighterColor} from '../../lib/ColorReadability';
+import {isTablet} from 'react-native-device-info';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -148,7 +149,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '2%',
+            padding: isTablet() ? '0%' : '2%',
           }}>
           <CompetitionChanger
             currentCompId={competitionId}
