@@ -1,15 +1,13 @@
 import React, {useEffect} from 'react';
-import {View, Text, Button, Pressable} from 'react-native';
+import {View, Text, Pressable, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import {OpenAI} from '../../lib/OpenAI';
-import {LineChart} from 'react-native-chart-kit';
-import {Dimensions} from 'react-native';
-import StandardModal from '../../components/modals/StandardModal';
 import {
   getIdealTextColorFromRGB,
   getLighterColor,
 } from '../../lib/ColorReadability';
+import DataGraph from './DataGraph';
 
 interface Props {
   item: any;
@@ -30,7 +28,7 @@ interface Statistics {
 }
 
 function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
-  const {colors, dark} = useTheme();
+  const {colors} = useTheme();
 
   // holds the response from the OpenAI API
   const [response, setResponse] = useState<String | null>('');
@@ -39,20 +37,6 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const [stats, setStats] = useState<Statistics | null>(null);
   const [modalActive, setModalActive] = useState<boolean>(false);
 
-  const chartConfig = {
-    backgroundGradientFrom: colors.card,
-    backgroundGradientFromOpacity: 1.0,
-    backgroundGradientTo: colors.card,
-    backgroundGradientToOpacity: 1.0,
-    color: (opacity = 1) =>
-      dark ? `rgba(255, 255, 255, ${opacity})` : 'rgba(0, 0, 0, 1)',
-    backgroundColor: 'blue',
-    strokeWidth: 2, // optional, default 3
-    // barPercentage: 0.5,
-    useShadowColorFromDataset: false, // optional
-    fillShadowGradient: 'blue',
-  };
-
   // for radio-type questions
   const [indexOfGreatestValue, setIndexOfGreatestValue] = useState<number>(0);
 
@@ -60,6 +44,117 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
   const [frequencies, setFrequencies] = useState(new Map<string, number>());
   const [valueOfMostOccurrences, setValueOfMostOccurrences] =
     useState<number>(0);
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'column',
+      // alignItems: 'center',
+      justifyContent: 'space-between',
+
+      padding: '5%',
+      paddingHorizontal: '3%',
+      maxWidth: '90%',
+      alignSelf: 'center',
+      minWidth: '90%',
+
+      borderRadius: 12,
+
+      backgroundColor: colors.card,
+      marginVertical: '2%',
+    },
+    question: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'left',
+      // flex: 2,
+      fontSize: 20,
+    },
+    statistic_container: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    statistic_label: {
+      color: getLighterColor(colors.primary),
+      fontWeight: 'bold',
+    },
+    statistic: {
+      color: colors.text,
+      fontWeight: 'bold',
+      fontSize: 25,
+    },
+    section_heading_container: {
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      marginHorizontal: '5%',
+      marginTop: '10%',
+    },
+    section_heading: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'left',
+      fontSize: 30,
+    },
+    section_description: {
+      color: getLighterColor(colors.primary),
+      fontWeight: 'bold',
+    },
+    multiple_option_container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginVertical: '2%',
+    },
+    multiple_option_option: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'left',
+      flex: 2,
+    },
+    multiple_option_separator: {
+      height: 1,
+      width: '100%',
+      backgroundColor: colors.border,
+      marginVertical: '3%',
+    },
+    multiple_option_response_count: {
+      color: getLighterColor(colors.primary),
+      textAlign: 'center',
+    },
+    multiple_option_percentage_container: {
+      flex: 1,
+      borderCurve: 'continuous',
+      borderRadius: 12,
+    },
+    multiple_option_percentage_text: {
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    ai_summary_container: {
+      marginVertical: '2%',
+      backgroundColor: colors.card,
+      padding: '5%',
+      borderRadius: 12,
+      borderColor: colors.border,
+    },
+    ai_summary_header: {
+      color: 'gray',
+      fontWeight: 'bold',
+    },
+    ai_summary_text: {
+      color: colors.primary,
+      fontWeight: 'bold',
+    },
+    comment_container: {
+      marginVertical: '2%',
+    },
+    comment_match_number: {
+      color: colors.text,
+      fontWeight: 'bold',
+    },
+    comment_text: {
+      color: 'gray',
+    },
+  });
 
   useEffect(() => {
     if (item.type === 'textbox' && generate_ai_summary) {
@@ -125,116 +220,46 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
 
   if (item.type === 'heading') {
     return (
-      <View
-        key={item.key}
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          marginHorizontal: '5%',
-          marginTop: '10%',
-        }}>
-        <Text
-          style={{
-            color: colors.text,
-            fontWeight: 'bold',
-            textAlign: 'left',
-            fontSize: 30,
-          }}>
-          {item.title}
-        </Text>
-        <Text
-          style={{color: getLighterColor(colors.primary), fontWeight: 'bold'}}>
-          {item.description}
-        </Text>
+      <View key={item.key} style={styles.section_heading_container}>
+        <Text style={styles.section_heading}>{item.title}</Text>
+        <Text style={styles.section_description}>{item.description}</Text>
       </View>
     );
   }
 
   return (
-    <View
-      key={item.key}
-      style={{
-        flexDirection: 'column',
-        // alignItems: 'center',
-        justifyContent: 'space-between',
-
-        padding: '5%',
-        paddingHorizontal: '3%',
-        maxWidth: '90%',
-        alignSelf: 'center',
-        minWidth: '90%',
-
-        borderRadius: 12,
-
-        backgroundColor: colors.card,
-        marginVertical: '2%',
-      }}>
-      <Text
-        style={{
-          color: colors.text,
-          fontWeight: 'bold',
-          textAlign: 'left',
-          // flex: 2,
-          fontSize: 20,
-        }}>
-        {item.question}
-      </Text>
-      {/*<Text*/}
-      {/*  style={{*/}
-      {/*    color: colors.text,*/}
-      {/*    fontWeight: 'bold',*/}
-      {/*    textAlign: 'center',*/}
-      {/*    // flex: 1,*/}
-      {/*  }}>*/}
-      {/*  {item.type}*/}
-      {/*  /!*Rank {item.rank}*!/*/}
-      {/*</Text>*/}
+    <View key={item.key} style={styles.container}>
+      <Text style={styles.question}>{item.question}</Text>
       {item.type === 'radio' && (
         <View>
-          {item.options.map((label: string, index: number) => {
+          {item.options.map((label: string, index_of_item: number) => {
             return (
               <View>
                 <View
-                  key={index}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginVertical: '2%',
-                    // backgroundColor: colors.border,
-                  }}>
-                  <Text
-                    style={{
-                      color: colors.text,
-                      fontWeight: 'bold',
-                      textAlign: 'left',
-                      flex: 2,
-                    }}>
-                    {label}
-                  </Text>
+                  key={index_of_item}
+                  style={styles.multiple_option_container}>
+                  <Text style={styles.multiple_option_option}>{label}</Text>
                   <View
                     style={{
-                      flex: 1,
+                      ...styles.multiple_option_percentage_container,
                       backgroundColor:
-                        index === indexOfGreatestValue
+                        index_of_item === indexOfGreatestValue
                           ? colors.primary
                           : colors.card,
                       paddingVertical:
-                        index === indexOfGreatestValue ? '2%' : 0,
-                      borderCurve: 'continuous',
-                      borderRadius: 12,
+                        index_of_item === indexOfGreatestValue ? '2%' : 0,
                     }}>
                     <Text
                       style={{
+                        ...styles.multiple_option_percentage_text,
                         color:
-                          index === indexOfGreatestValue
+                          index_of_item === indexOfGreatestValue
                             ? getIdealTextColorFromRGB(colors.primary)
                             : colors.text,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
                       }}>
                       {(
-                        (data.filter(datum => datum.data === index).length /
+                        (data.filter(datum => datum.data === index_of_item)
+                          .length /
                           data.length) *
                         100
                       ).toFixed(2)}
@@ -242,70 +267,39 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={{
-                    height: 1,
-                    width: '100%',
-                    backgroundColor: colors.border,
-                    marginVertical: '3%',
-                  }}
-                />
+                <View style={styles.multiple_option_separator} />
               </View>
             );
           })}
-          <Text
-            style={{
-              color: getLighterColor(colors.primary),
-              textAlign: 'center',
-            }}>
+          <Text style={styles.multiple_option_response_count}>
             {data.length} total responses
           </Text>
         </View>
       )}
-
       {item.type === 'checkboxes' && (
         <View>
           {item.options.map((label: string, index: number) => {
             return (
               <View>
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginVertical: '2%',
-                    // backgroundColor: colors.border,
-                  }}>
-                  <Text
-                    style={{
-                      color: colors.text,
-                      fontWeight: 'bold',
-                      textAlign: 'left',
-                      flex: 2,
-                    }}>
-                    {label}
-                  </Text>
+                <View key={index} style={styles.multiple_option_container}>
+                  <Text style={styles.multiple_option_option}>{label}</Text>
                   <View
                     style={{
-                      flex: 1,
+                      ...styles.multiple_option_percentage_container,
                       backgroundColor:
                         index === valueOfMostOccurrences
                           ? colors.primary
                           : colors.card,
                       paddingVertical:
                         index === valueOfMostOccurrences ? '2%' : 0,
-                      borderCurve: 'continuous',
-                      borderRadius: 12,
                     }}>
                     <Text
                       style={{
+                        ...styles.multiple_option_percentage_text,
                         color:
                           index === valueOfMostOccurrences
-                            ? 'white'
+                            ? getIdealTextColorFromRGB(colors.primary)
                             : colors.text,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
                       }}>
                       {((frequencies.get(label)! / data.length) * 100).toFixed(
                         2,
@@ -314,102 +308,45 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={{
-                    height: 1,
-                    width: '100%',
-                    backgroundColor: colors.border,
-                    marginVertical: '3%',
-                  }}
-                />
+                <View style={styles.multiple_option_separator} />
               </View>
             );
           })}
-          <Text
-            style={{
-              color: getLighterColor(colors.primary),
-              textAlign: 'center',
-            }}>
+          <Text style={styles.multiple_option_response_count}>
             {data.length} total responses
           </Text>
         </View>
       )}
-      {/*<Text style={{color: 'green'}}>*/}
-      {/*  raw data - {data.map(datum => datum.data + '(' + datum.match + ')')}*/}
-      {/*</Text>*/}
       {item.type === 'number' && (
         <Pressable
           style={{flexDirection: 'row', justifyContent: 'space-around'}}
           onPress={() => setModalActive(true)}>
-          <View
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{color: colors.text, fontWeight: 'bold', fontSize: 25}}>
+          <View style={styles.statistic_container}>
+            <Text style={styles.statistic}>
               {stats ? stats.average.toFixed(2) : 'loading...'}
             </Text>
-            <Text
-              style={{
-                color: getLighterColor(colors.primary),
-                fontWeight: 'bold',
-              }}>
-              AVERAGE
-            </Text>
+            <Text style={styles.statistic_label}>AVERAGE</Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{color: colors.text, fontWeight: 'bold', fontSize: 25}}>
+          <View style={styles.statistic_container}>
+            <Text style={styles.statistic}>
               {stats ? stats.min : 'loading...'}
             </Text>
-            <Text
-              style={{
-                color: getLighterColor(colors.primary),
-                fontWeight: 'bold',
-              }}>
-              MINIMUM
-            </Text>
+            <Text style={styles.statistic_label}>MINIMUM</Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{color: colors.text, fontWeight: 'bold', fontSize: 25}}>
+          <View style={styles.statistic_container}>
+            <Text style={styles.statistic}>
               {stats ? stats.max : 'loading...'}
             </Text>
-            <Text
-              style={{
-                color: getLighterColor(colors.primary),
-                fontWeight: 'bold',
-              }}>
-              MAXIMUM
-            </Text>
+            <Text style={styles.statistic_label}>MAXIMUM</Text>
           </View>
         </Pressable>
       )}
       {response && (
-        <View
-          style={{
-            marginVertical: '2%',
-            backgroundColor: colors.card,
-            padding: '5%',
-            borderRadius: 12,
-            borderColor: colors.border,
-          }}>
-          <Text style={{color: 'gray', fontWeight: 'bold'}}>AI SUMMARY</Text>
-          <Text style={{color: colors.primary, fontWeight: 'bold'}}>
-            {response}
-          </Text>
+        <View style={styles.ai_summary_container}>
+          <Text style={styles.ai_summary_header}>AI SUMMARY</Text>
+          <Text style={styles.ai_summary_text}>{response}</Text>
         </View>
       )}
-
       {item.type === 'textbox' && (
         <View>
           {data
@@ -418,14 +355,11 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
                 return null;
               }
               return (
-                <View
-                  style={{
-                    marginVertical: '2%',
-                  }}>
-                  <Text style={{color: colors.text, fontWeight: 'bold'}}>
+                <View style={styles.comment_container}>
+                  <Text style={styles.comment_match_number}>
                     Match {datum.match}
                   </Text>
-                  <Text style={{color: 'gray'}}>
+                  <Text style={styles.comment_text}>
                     {datum.data.replace(/(\r\n|\n|\r)/gm, '')}
                   </Text>
                 </View>
@@ -435,47 +369,12 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
         </View>
       )}
 
-      {modalActive && (
-        <StandardModal
-          title={item.question}
-          visible={modalActive}
-          onDismiss={() => {
-            setModalActive(false);
-          }}>
-          <View>
-            <LineChart
-              data={{
-                labels: data.map(datum => String(datum.match)),
-                datasets: [
-                  {
-                    data: data.map(datum => datum.data),
-                    strokeWidth: 2, // optional
-                  },
-                ],
-                legend: ['Points Earned'], // optional
-              }}
-              width={Dimensions.get('window').width * 0.85} // from react-native
-              height={Dimensions.get('window').height / 4}
-              // verticalLabelRotation={30}
-              chartConfig={chartConfig}
-              bezier
-            />
-            <Text
-              style={{
-                color: colors.text,
-                textAlign: 'center',
-                marginVertical: '3%',
-              }}>
-              Match Number
-            </Text>
-          </View>
-          <Pressable
-            style={{marginTop: '4%'}}
-            onPress={() => setModalActive(false)}>
-            <Text style={{color: colors.primary, fontSize: 16}}>Close</Text>
-          </Pressable>
-        </StandardModal>
-      )}
+      <DataGraph
+        question={item.question}
+        modalActive={modalActive}
+        setModalActive={setModalActive}
+        data={data}
+      />
     </View>
   );
 }
