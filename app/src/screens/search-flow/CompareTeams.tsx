@@ -18,6 +18,7 @@ import QuestionSummary from './QuestionSummary';
 import StandardModal from '../../components/modals/StandardModal';
 import {Dimensions} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
+import CompetitionRank from './CompetitionRank';
 
 const CompareTeams = ({route}) => {
   const {team, compId} = route.params;
@@ -152,17 +153,24 @@ const CompareTeams = ({route}) => {
           justifyContent: 'space-evenly',
           alignItems: 'baseline',
         }}>
-        <Text style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
-          {team.team_number}
-        </Text>
+        <View style={{flex: 1}}>
+          <Text style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
+            {team.team_number}
+          </Text>
+          <CompetitionRank team_number={team.team_number} />
+        </View>
         <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
           vs
         </Text>
-        <Pressable onPress={() => setSecondTeam(null)}>
-          <Text style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
-            {secondTeam}
-          </Text>
-        </Pressable>
+        <View style={{flex: 1}}>
+          <Pressable onPress={() => setSecondTeam(null)}>
+            <Text
+              style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
+              {secondTeam}
+            </Text>
+            <CompetitionRank team_number={secondTeam} />
+          </Pressable>
+        </View>
       </View>
       <ScrollView>
         {formStructure && firstTeamScoutData && secondTeamScoutData ? (
