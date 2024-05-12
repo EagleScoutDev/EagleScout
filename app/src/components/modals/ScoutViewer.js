@@ -22,6 +22,7 @@ import SliderType from '../form/SliderType';
 import {ClockHistory, PencilSquare, X} from '../../SVGIcons';
 import {HistorySelectorModal} from './HistorySelectorModal';
 import Svg, {Path} from 'react-native-svg';
+import {isTablet} from 'react-native-device-info';
 
 const DEBUG = false;
 
@@ -113,7 +114,7 @@ function ScoutViewer({
       fontSize: 12,
       fontStyle: 'italic',
       textAlign: 'center',
-      marginTop: '10%',
+      marginTop: isTablet() ? '0%' : '10%',
     },
     close: {
       color: colors.notification,
