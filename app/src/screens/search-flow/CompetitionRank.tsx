@@ -156,8 +156,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
           maxWidth: '85%',
           padding: '5%',
           marginTop: '5%',
-          backgroundColor:
-            loading
+          backgroundColor: loading
             ? 'gray'
             : rankToColor(currentCompetitionRank!),
           borderRadius: 10,
@@ -269,7 +268,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
                   alignItems: 'center',
                   justifyContent: 'space-between',
 
-                  padding: '5%',
+                  padding: 20,
                   paddingHorizontal: '3%',
                   backgroundColor:
                     index % 2 == 0 ? colors.card : colors.background,

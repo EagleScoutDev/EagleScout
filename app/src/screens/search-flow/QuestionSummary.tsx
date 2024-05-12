@@ -3,6 +3,7 @@ import {View, Text, Pressable, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import {OpenAI} from '../../lib/OpenAI';
+import {isTablet} from 'react-native-device-info';
 import {
   getIdealTextColorFromRGB,
   getLighterColor,
@@ -51,12 +52,14 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       // alignItems: 'center',
       justifyContent: 'space-between',
 
-      padding: '5%',
-      paddingHorizontal: '3%',
-      maxWidth: '90%',
+      padding: '4%',
+      paddingVertical: '2%',
+      // paddingHorizontal: '3%',
+      // width: '40%',
       alignSelf: 'center',
-      minWidth: '90%',
-
+      // marginHorizontal: '2%',
+      flexBasis: '33%',
+      flexGrow: 1,
       borderRadius: 12,
 
       backgroundColor: colors.card,
@@ -70,8 +73,15 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       fontSize: 20,
     },
     statistic_container: {
-      flexDirection: 'column',
+      flexDirection: isTablet() ? 'row' : 'column',
       alignItems: 'center',
+      justifyContent: 'space-between',
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    overall_statistic_container: {
+      flexDirection: isTablet() ? 'column' : 'row',
+      justifyContent: 'space-around',
     },
     statistic_label: {
       color: getLighterColor(colors.primary),
@@ -87,6 +97,7 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       justifyContent: 'space-between',
       marginHorizontal: '5%',
       marginTop: '10%',
+      flexBasis: '100%',
     },
     section_heading: {
       color: colors.text,
@@ -319,25 +330,25 @@ function QuestionSummary({item, index, data, generate_ai_summary}: Props) {
       )}
       {item.type === 'number' && (
         <Pressable
-          style={{flexDirection: 'row', justifyContent: 'space-around'}}
+          style={styles.overall_statistic_container}
           onPress={() => setModalActive(true)}>
           <View style={styles.statistic_container}>
+            <Text style={styles.statistic_label}>AVG</Text>
             <Text style={styles.statistic}>
               {stats ? stats.average.toFixed(2) : 'loading...'}
             </Text>
-            <Text style={styles.statistic_label}>AVERAGE</Text>
           </View>
           <View style={styles.statistic_container}>
+            <Text style={styles.statistic_label}>MIN</Text>
             <Text style={styles.statistic}>
               {stats ? stats.min : 'loading...'}
             </Text>
-            <Text style={styles.statistic_label}>MINIMUM</Text>
           </View>
           <View style={styles.statistic_container}>
+            <Text style={styles.statistic_label}>MAX</Text>
             <Text style={styles.statistic}>
               {stats ? stats.max : 'loading...'}
             </Text>
-            <Text style={styles.statistic_label}>MAXIMUM</Text>
           </View>
         </Pressable>
       )}
