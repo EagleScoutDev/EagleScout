@@ -115,7 +115,7 @@ const CompareTeams = ({route}) => {
           </Text>
         </View>
         <View
-          style={{height: '100%', width: 1, backgroundColor: colors.text}}
+          style={{height: '90%', width: 1, backgroundColor: colors.border}}
         />
         <ScrollView style={{flex: 1}}>
           {uniqueTeams.map(team_number => {
