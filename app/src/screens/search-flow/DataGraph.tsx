@@ -85,16 +85,20 @@ const DataGraph = ({
           }}>
           Match Number
         </Text>
-        <Text style={{color: colors.text, textAlign: 'center'}}>
-          Graph Interpretation
-        </Text>
-        {item.options?.map((option: string, index: number) => {
-          return (
+        {item.options && item.options.length > 0 && (
+          <>
             <Text style={{color: colors.text, textAlign: 'center'}}>
-              {index + ' - ' + item.options![index]}
+              Graph Interpretation
             </Text>
-          );
-        })}
+            {item.options?.map((option: string, index: number) => {
+              return (
+                <Text style={{color: colors.text, textAlign: 'center'}}>
+                  {index + ' - ' + item.options![index]}
+                </Text>
+              );
+            })}
+          </>
+        )}
       </View>
       <Pressable
         style={{marginTop: '4%'}}
