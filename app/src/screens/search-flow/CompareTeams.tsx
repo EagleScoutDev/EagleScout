@@ -180,7 +180,9 @@ const CompareTeams = ({route}) => {
         style={{
           flexDirection: 'row',
           justifyContent: 'space-evenly',
-          alignItems: 'baseline',
+          alignItems: 'center',
+          borderBottomWidth: 1,
+          borderColor: colors.border,
         }}>
         <View style={{flex: 1}}>
           <Text style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
