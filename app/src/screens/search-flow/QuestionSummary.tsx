@@ -68,7 +68,7 @@ function QuestionSummary({
       marginHorizontal: '2%',
       // paddingHorizontal: '3%',
       // width: '40%',
-      alignSelf: 'center',
+      alignSelf: isTablet() ? 'center' : 'auto',
       // marginHorizontal: '2%',
       flexBasis: '33%',
       flexGrow: 1,
@@ -85,10 +85,10 @@ function QuestionSummary({
       fontSize: 20,
     },
     statistic_container: {
-      flexDirection: isTablet() ? 'row' : 'column',
+      flexDirection: isTablet() ? 'row' : 'column-reverse',
       alignItems: 'center',
       justifyContent: 'space-between',
-      borderBottomWidth: 1,
+      borderBottomWidth: isTablet() ? 1 : 0,
       borderBottomColor: colors.border,
     },
     overall_statistic_container: {
