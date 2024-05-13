@@ -2,6 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {CaretRight} from '../SVGIcons';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
+import {isTablet} from 'react-native-device-info';
 
 interface ListItemProps {
   text: string;
@@ -35,7 +36,7 @@ const ListItem = ({
       borderBottomColor: colors.border,
       flexDirection: 'row',
       backgroundColor: colors.card,
-      padding: 20,
+      padding: isTablet() ? 20 : 16,
     },
     icon_styling: {
       paddingRight: 20,
