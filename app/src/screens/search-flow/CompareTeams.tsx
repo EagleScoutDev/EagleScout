@@ -129,7 +129,7 @@ const CompareTeams = ({route}) => {
     },
   });
 
-  if (secondTeam === null) {
+  if (secondTeam === null || secondTeamScoutData === null) {
     return (
       <View style={styles.container}>
         <View style={{flex: 1}}>
@@ -140,9 +140,13 @@ const CompareTeams = ({route}) => {
             {team.team_number}
           </Text>
         </View>
-        <View
-          style={{height: '90%', width: 1, backgroundColor: colors.border}}
-        />
+        {(secondTeamScoutData === null) !== (secondTeam === null) ? (
+          <View
+            style={{height: '90%', width: 1, backgroundColor: colors.border}}
+          />
+        ) : (
+          <ActivityIndicator size={'large'} />
+        )}
         <ScrollView style={{flex: 1}}>
           {uniqueTeams.map(team_number => {
             return (
