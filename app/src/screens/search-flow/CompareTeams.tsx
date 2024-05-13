@@ -321,6 +321,26 @@ const CompareTeams = ({route}) => {
           style={{color: colors.text, textAlign: 'center', fontWeight: 'bold'}}>
           Match Number
         </Text>
+        {formStructure &&
+          formStructure[chosenQuestionIndex].options &&
+          formStructure[chosenQuestionIndex].options.length > 0 && (
+            <>
+              <Text style={{color: colors.text, textAlign: 'center'}}>
+                Graph Interpretation
+              </Text>
+              {formStructure[chosenQuestionIndex].options?.map(
+                (option: string, index: number) => {
+                  return (
+                    <Text style={{color: colors.text, textAlign: 'center'}}>
+                      {index +
+                        ' - ' +
+                        formStructure[chosenQuestionIndex].options![index]}
+                    </Text>
+                  );
+                },
+              )}
+            </>
+          )}
       </StandardModal>
     </View>
   );
