@@ -120,7 +120,7 @@ SettingsHomeProps) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: 30,
+          padding: 20,
         }}>
         <Text style={styles.title}>Profile</Text>
         {/*<TabHeader title={'Profile'} />*/}

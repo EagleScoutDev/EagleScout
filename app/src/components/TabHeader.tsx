@@ -8,7 +8,7 @@ const TabHeader = ({title}: {title: string}) => {
       fontSize: 34,
       fontWeight: '600',
       color: colors.text,
-      padding: 30,
+      padding: 20,
       // paddingLeft: 30,
     },
   });

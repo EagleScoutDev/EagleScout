@@ -24,7 +24,7 @@ const HomeMain = () => {
       fontSize: 24,
       fontWeight: '600',
       color: colors.text,
-      paddingLeft: 30,
+      paddingLeft: 20,
     },
     button_text: {
       color: 'white',
