@@ -19,6 +19,7 @@ import StandardModal from '../../components/modals/StandardModal';
 import {Dimensions} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import CompetitionRank from './CompetitionRank';
+import {getLighterColor} from '../../lib/ColorReadability';
 
 const CompareTeams = ({route}) => {
   const {team, compId} = route.params;
@@ -102,6 +103,30 @@ const CompareTeams = ({route}) => {
       justifyContent: 'space-evenly',
       flexDirection: 'row',
     },
+    section_heading_container: {
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      marginHorizontal: '5%',
+      marginTop: '10%',
+      flexBasis: '100%',
+    },
+    section_heading: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'left',
+      fontSize: 30,
+    },
+    section_description: {
+      color: getLighterColor(colors.primary),
+      fontWeight: 'bold',
+    },
+    question: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'left',
+      // flex: 2,
+      fontSize: 20,
+    },
   });
 
   if (secondTeam === null) {
@@ -157,7 +182,6 @@ const CompareTeams = ({route}) => {
           <Text style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
             {team.team_number}
           </Text>
-          <CompetitionRank team_number={team.team_number} />
         </View>
         <Text style={{color: colors.text, fontSize: 20, textAlign: 'center'}}>
           vs
@@ -168,13 +192,37 @@ const CompareTeams = ({route}) => {
               style={{color: colors.text, fontSize: 50, textAlign: 'center'}}>
               {secondTeam}
             </Text>
-            <CompetitionRank team_number={secondTeam} />
           </Pressable>
         </View>
       </View>
       <ScrollView>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            alignItems: 'baseline',
+          }}>
+          <View style={{flex: 1}}>
+            <CompetitionRank team_number={team.team_number} />
+          </View>
+          <View style={{flex: 1}}>
+            <CompetitionRank team_number={secondTeam} />
+          </View>
+        </View>
+
         {formStructure && firstTeamScoutData && secondTeamScoutData ? (
           formStructure.map((item, index) => {
+            if (item.type === 'heading') {
+              return (
+                <View key={index} style={styles.section_heading_container}>
+                  <Text style={styles.section_heading}>{item.title}</Text>
+                  <Text style={styles.section_description}>
+                    {item.description}
+                  </Text>
+                </View>
+              );
+            }
+
             return (
               <Pressable
                 onPress={() => {
@@ -182,33 +230,43 @@ const CompareTeams = ({route}) => {
                   setChosenQuestionIndex(index);
                 }}
                 style={{
-                  flexDirection: isTablet() ? 'row' : 'column',
-                  flexWrap: isTablet() ? 'wrap' : 'nowrap',
+                  padding: 10,
                 }}>
-                <QuestionSummary
-                  item={item}
-                  index={index}
-                  data={firstTeamScoutData.map(response => {
-                    return {
-                      data: response.data[index],
-                      match: response.matchNumber,
-                    };
-                  })}
-                  generate_ai_summary={false}
-                  graph_disabled={true}
-                />
-                <QuestionSummary
-                  item={item}
-                  index={index}
-                  data={secondTeamScoutData.map(response => {
-                    return {
-                      data: response.data[index],
-                      match: response.matchNumber,
-                    };
-                  })}
-                  generate_ai_summary={false}
-                  graph_disabled={true}
-                />
+                <Text style={styles.question}>{item.question}</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                  }}>
+                  <QuestionSummary
+                    item={item}
+                    index={index}
+                    data={firstTeamScoutData.map(response => {
+                      return {
+                        data: response.data[index],
+                        match: response.matchNumber,
+                      };
+                    })}
+                    generate_ai_summary={false}
+                    graph_disabled={true}
+                    show_question={false}
+                    only_average={!isTablet()}
+                  />
+                  <QuestionSummary
+                    item={item}
+                    index={index}
+                    data={secondTeamScoutData.map(response => {
+                      return {
+                        data: response.data[index],
+                        match: response.matchNumber,
+                      };
+                    })}
+                    generate_ai_summary={false}
+                    graph_disabled={true}
+                    show_question={false}
+                    only_average={!isTablet()}
+                  />
+                </View>
               </Pressable>
             );
           })
@@ -225,7 +283,9 @@ const CompareTeams = ({route}) => {
           <LineChart
             data={{
               // include both first and second team data for the labels
-              labels: firstTeamScoutData.map((report, index) => String(index)),
+              labels: firstTeamScoutData.map((report, index) =>
+                String(index + 1),
+              ),
 
               datasets: [
                 {

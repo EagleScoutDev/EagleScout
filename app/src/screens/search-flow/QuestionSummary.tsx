@@ -23,6 +23,8 @@ interface Props {
   ];
   generate_ai_summary: boolean;
   graph_disabled: boolean;
+  only_average: boolean;
+  show_question: boolean;
 }
 
 interface Statistics {
@@ -37,6 +39,8 @@ function QuestionSummary({
   data,
   generate_ai_summary,
   graph_disabled,
+  only_average = false,
+  show_question = true,
 }: Props) {
   const {colors} = useTheme();
 
@@ -252,7 +256,7 @@ function QuestionSummary({
 
   return (
     <View key={item.key} style={styles.container}>
-      <Text style={styles.question}>{item.question}</Text>
+      {show_question && <Text style={styles.question}>{item.question}</Text>}
       {item.type === 'radio' && (
         <Pressable
           onPress={() => {
@@ -359,18 +363,22 @@ function QuestionSummary({
               {stats ? stats.average.toFixed(2) : 'loading...'}
             </Text>
           </View>
-          <View style={styles.statistic_container}>
-            <Text style={styles.statistic_label}>MIN</Text>
-            <Text style={styles.statistic}>
-              {stats ? stats.min : 'loading...'}
-            </Text>
-          </View>
-          <View style={styles.statistic_container}>
-            <Text style={styles.statistic_label}>MAX</Text>
-            <Text style={styles.statistic}>
-              {stats ? stats.max : 'loading...'}
-            </Text>
-          </View>
+          {!only_average && (
+            <>
+              <View style={styles.statistic_container}>
+                <Text style={styles.statistic_label}>MIN</Text>
+                <Text style={styles.statistic}>
+                  {stats ? stats.min : 'loading...'}
+                </Text>
+              </View>
+              <View style={styles.statistic_container}>
+                <Text style={styles.statistic_label}>MAX</Text>
+                <Text style={styles.statistic}>
+                  {stats ? stats.max : 'loading...'}
+                </Text>
+              </View>
+            </>
+          )}
         </Pressable>
       )}
       {response && (

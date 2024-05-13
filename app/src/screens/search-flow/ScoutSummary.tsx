@@ -91,6 +91,8 @@ function ScoutSummary({
               })}
               generate_ai_summary={generateSummary}
               graph_disabled={false}
+              show_question={true}
+              only_average={false}
             />
           );
         })
