@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {SimpleTeam} from '../../lib/TBAUtils';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
@@ -267,22 +267,24 @@ const CompareTeams = ({route}) => {
                     show_question={false}
                     only_average={!isTablet()}
                   />
-                  {secondTeamScoutData && (
-                    <QuestionSummary
-                      item={item}
-                      index={index}
-                      data={secondTeamScoutData.map(response => {
-                        return {
-                          data: response.data[index],
-                          match: response.matchNumber,
-                        };
-                      })}
-                      generate_ai_summary={false}
-                      graph_disabled={true}
-                      show_question={false}
-                      only_average={!isTablet()}
-                    />
-                  )}
+                  {secondTeam &&
+                    secondTeamScoutData &&
+                    secondTeamScoutData.length > 0 && (
+                      <QuestionSummary
+                        item={item}
+                        index={index}
+                        data={secondTeamScoutData.map(response => {
+                          return {
+                            data: response.data[index],
+                            match: response.matchNumber,
+                          };
+                        })}
+                        generate_ai_summary={false}
+                        graph_disabled={true}
+                        show_question={false}
+                        only_average={!isTablet()}
+                      />
+                    )}
                 </View>
               </Pressable>
             );
