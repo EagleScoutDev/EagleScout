@@ -25,7 +25,7 @@ import {ThemeOptions} from '../../themes/ThemeOptions';
 import {getLighterColor} from '../../lib/ColorReadability';
 import TabHeader from '../../components/TabHeader';
 
-const VERSION = '7.4';
+const VERSION = '7.5';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
