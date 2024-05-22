@@ -57,7 +57,14 @@ const CompetitionChanger = ({
       });
     }
     CompetitionsDB.getCompetitions().then(competitions => {
-      setCompetitionsList(competitions);
+      // sort competitions by date, in descending order
+      let temp_comp = competitions;
+      temp_comp.sort((a, b) => {
+        return (
+          new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+        );
+      });
+      setCompetitionsList(temp_comp);
 
       // set the current competition name
       competitions.forEach(competition => {
