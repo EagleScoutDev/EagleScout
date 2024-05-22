@@ -25,7 +25,7 @@ const CompareTeams = ({route}) => {
   const {team, compId} = route.params;
   const {colors, dark} = useTheme();
   const [secondTeam, setSecondTeam] = useState<number | null>(null);
-  const [reports, setReports] = useState<ScoutReportReturnData[]>([]);
+  // const [reports, setReports] = useState<ScoutReportReturnData[]>([]);
 
   const [uniqueTeams, setUniqueTeams] = useState<number[]>([]);
 
@@ -57,11 +57,8 @@ const CompareTeams = ({route}) => {
     fillShadowGradient: colors.card,
   };
 
+  // initialization
   useEffect(() => {
-    if (secondTeam === null) {
-      return;
-    }
-
     CompetitionsDB.getCompetitionById(compId).then(competition => {
       if (!competition) {
         return;
@@ -73,19 +70,26 @@ const CompareTeams = ({route}) => {
         setFirstTeamScoutData(reports);
       });
       setFormStructure(competition.form);
-
-      ScoutReportsDB.getReportsForTeamAtCompetition(
-        secondTeam,
-        competition.id,
-      ).then(reports => {
-        setSecondTeamScoutData(reports);
-      });
     });
-  }, [compId, team, secondTeam]);
+  }, [compId, team]);
 
+  // fetch second team data
+  useEffect(() => {
+    if (secondTeam === null) {
+      return;
+    }
+
+    ScoutReportsDB.getReportsForTeamAtCompetition(secondTeam, compId).then(
+      reports => {
+        setSecondTeamScoutData(reports);
+      },
+    );
+  }, [secondTeam, compId]);
+
+  // fetch teams at competition that have a scout report filled out
   useEffect(() => {
     ScoutReportsDB.getReportsForCompetition(compId).then(reports => {
-      setReports(reports);
+      // setReports(reports);
       const teams = reports.map(report => report.teamNumber);
       let set = new Set(teams);
       set.delete(team.team_number);
@@ -129,6 +133,7 @@ const CompareTeams = ({route}) => {
     },
   });
 
+  // let the user choose a second team to compare
   if (secondTeam === null || secondTeamScoutData === null) {
     return (
       <View style={styles.container}>
@@ -154,9 +159,10 @@ const CompareTeams = ({route}) => {
                 onPress={() => setSecondTeam(team_number)}
                 style={{
                   padding: 16,
-                  backgroundColor: colors.card,
+                  backgroundColor: colors.background,
                   borderRadius: 10,
-                  margin: 5,
+                  borderBottomWidth: 1,
+                  borderColor: colors.border,
                 }}>
                 <Text
                   style={{
@@ -174,6 +180,7 @@ const CompareTeams = ({route}) => {
     );
   }
 
+  // main data comparison screen
   return (
     <View>
       <View
@@ -258,20 +265,22 @@ const CompareTeams = ({route}) => {
                     show_question={false}
                     only_average={!isTablet()}
                   />
-                  <QuestionSummary
-                    item={item}
-                    index={index}
-                    data={secondTeamScoutData.map(response => {
-                      return {
-                        data: response.data[index],
-                        match: response.matchNumber,
-                      };
-                    })}
-                    generate_ai_summary={false}
-                    graph_disabled={true}
-                    show_question={false}
-                    only_average={!isTablet()}
-                  />
+                  {secondTeamScoutData && (
+                    <QuestionSummary
+                      item={item}
+                      index={index}
+                      data={secondTeamScoutData.map(response => {
+                        return {
+                          data: response.data[index],
+                          match: response.matchNumber,
+                        };
+                      })}
+                      generate_ai_summary={false}
+                      graph_disabled={true}
+                      show_question={false}
+                      only_average={!isTablet()}
+                    />
+                  )}
                 </View>
               </Pressable>
             );
@@ -281,6 +290,7 @@ const CompareTeams = ({route}) => {
         )}
       </ScrollView>
 
+      {/*graph that can display data from both teams*/}
       <StandardModal
         title={formStructure ? formStructure[chosenQuestionIndex].question : ''}
         visible={graphActive}
