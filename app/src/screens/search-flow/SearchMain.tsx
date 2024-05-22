@@ -217,8 +217,23 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{color: colors.text, fontSize: 20}}>
-            No reports found.
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 20,
+              textAlign: 'center',
+            }}>
+            No reports found
+          </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 18,
+              textAlign: 'center',
+              marginTop: 20,
+              opacity: 0.7,
+            }}>
+            Select a competition above to get started
           </Text>
         </View>
       )}
