@@ -182,7 +182,7 @@ const CompareTeams = ({route}) => {
 
   // main data comparison screen
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -208,7 +208,7 @@ const CompareTeams = ({route}) => {
           </Pressable>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={{flex: 1}}>
         <View
           style={{
             flexDirection: 'row',
