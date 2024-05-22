@@ -239,8 +239,10 @@ const CompareTeams = ({route}) => {
             return (
               <Pressable
                 onPress={() => {
-                  setGraphActive(true);
-                  setChosenQuestionIndex(index);
+                  if (item.type === 'radio' || item.type === 'number') {
+                    setGraphActive(true);
+                    setChosenQuestionIndex(index);
+                  }
                 }}
                 style={{
                   padding: 10,
