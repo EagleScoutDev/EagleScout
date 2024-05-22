@@ -2,6 +2,7 @@ import React, {
   ActivityIndicator,
   Keyboard,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -326,7 +327,7 @@ const MatchPredictor = () => {
 
   if (noActiveCompetition) {
     return (
-      <View
+      <ScrollView
         style={{
           ...styles.container,
           paddingVertical: '10%',
@@ -355,7 +356,7 @@ const MatchPredictor = () => {
             </View>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
     );
   }
 

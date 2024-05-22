@@ -168,7 +168,7 @@ function DataAggregation({navigation}) {
 
   if (noActiveCompetition) {
     return (
-      <View
+      <ScrollView
         style={{
           ...styles.container,
           paddingVertical: '10%',
@@ -191,7 +191,7 @@ function DataAggregation({navigation}) {
             </View>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
     );
   }
 
