@@ -26,6 +26,16 @@ jobs:
       working-directory: app
       run: npm i
 
+    - name: Decode and save the keystore file
+      working-directory: app/android/app
+      run: |
+        echo "${{ secrets.ANDROID_UPLOAD_KEYSTORE_FILE_BASE64 }}" | base64 --decode > my-upload-key.keystore
+
     - name: Build Android App
       working-directory: app
       run: npx react-native build-android --mode=release
+      env:
+          KEYSTORE_FILE: my-upload-key.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_KEY_PASSWORD }}
