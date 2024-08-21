@@ -23,7 +23,9 @@ jobs:
         java-version: '11'
 
     - name: run npm install
+      working-directory: app
       run: npm i
 
     - name: Build Android App
-      run: ./android/gradlew build
+      working-directory: app/android
+      run: gradlew build
