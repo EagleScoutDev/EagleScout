@@ -33,7 +33,7 @@ jobs:
 
     - name: Build Android App
       working-directory: app
-      run: npx react-native build-android --mode=release
+      run: npx react-native build-android --mode=debug
       env:
           KEYSTORE_FILE: my-upload-key.keystore
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
