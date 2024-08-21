@@ -28,4 +28,4 @@ jobs:
 
     - name: Build Android App
       working-directory: app/android
-      run: gradlew build
+      run: ./gradlew build
