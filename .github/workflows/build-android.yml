@@ -22,10 +22,10 @@ jobs:
         distribution: 'zulu'
         java-version: '11'
 
-    - name: run npm install
+    - name: Install NPM Packages
       working-directory: app
       run: npm i
 
     - name: Build Android App
-      working-directory: app/android
-      run: ./gradlew build
+      working-directory: app
+      run: npx react-native build-android --mode=release
