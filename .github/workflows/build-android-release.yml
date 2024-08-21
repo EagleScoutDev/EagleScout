@@ -31,9 +31,18 @@ jobs:
       run: |
         echo "${{ secrets.ANDROID_UPLOAD_KEYSTORE_FILE_BASE64 }}" | base64 --decode > my-upload-key.keystore
 
-    - name: Build Android App
-      working-directory: app
-      run: npx react-native build-android --mode=release
+    - name: Build Android App AAB
+      working-directory: app/android
+      run: ./gradlew bundleRelease
+      env:
+          KEYSTORE_FILE: my-upload-key.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_KEY_PASSWORD }}
+  
+    - name: Build Android App APK
+      working-directory: app/android
+      run: ./gradlew assembleRelease
       env:
           KEYSTORE_FILE: my-upload-key.keystore
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
