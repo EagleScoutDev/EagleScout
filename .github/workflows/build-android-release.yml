@@ -1,4 +1,4 @@
-name: Build Android App Release AAB
+name: Build Android App Release
 
 on:
   push:
