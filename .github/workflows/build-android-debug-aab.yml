@@ -22,6 +22,11 @@ jobs:
         distribution: 'zulu'
         java-version: '11'
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
     - name: Install NPM Packages
       working-directory: app
       run: npm i
