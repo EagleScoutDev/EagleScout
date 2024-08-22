@@ -1,4 +1,4 @@
-name: Build iOS App Debug
+name: Build iOS App Release
 
 on:
   push:
@@ -29,5 +29,5 @@ jobs:
         working-directory: app
 
       - name: Build iOS app
-        run: npx react-native build-ios --mode=Debug
+        run: npx react-native build-ios --mode=Release
         working-directory: app
