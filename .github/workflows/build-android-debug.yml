@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build-aab:
+  build_aab:
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +41,7 @@ jobs:
         name: app-debug.aab
         path: app/android/app/build/outputs/bundle/release/app-debug.aab
 
-  build-apk:
+  build_apk:
     runs-on: ubuntu-latest
 
     steps:
