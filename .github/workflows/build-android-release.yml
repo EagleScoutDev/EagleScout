@@ -4,12 +4,9 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
+  build_aab:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,3 +47,45 @@ jobs:
       with:
         name: app-release.aab
         path: app/android/app/build/outputs/bundle/release/app-release.aab
+
+  build_apk:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install NPM Packages
+      working-directory: app
+      run: npm i
+
+    - name: Decode and save the keystore file
+      working-directory: app/android/app
+      run: |
+        echo "${{ secrets.ANDROID_UPLOAD_KEYSTORE_FILE_BASE64 }}" | base64 --decode > my-upload-key.keystore
+  
+    - name: Build Android App APK
+      working-directory: app/android
+      run: ./gradlew assembleRelease
+      env:
+          KEYSTORE_FILE: my-upload-key.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_KEY_PASSWORD }}
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release.apk
+        path: app/android/app/build/outputs/apk/release/app-release.apk
