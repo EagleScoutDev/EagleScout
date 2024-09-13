@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 import CompetitionsDB from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
 import Gamification from './Gamification';
-import ScoutingView from './ScoutingView';
 import Confetti from 'react-native-confetti';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 
@@ -419,62 +418,34 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
             }}>
             <Confetti ref={setConfettiView} timeout={10} duration={3000} />
           </View>
-          {isScoutStylePreferenceScrolling ? (
-            <ScoutingView
-              match={match}
-              setMatch={setMatch}
-              team={team}
-              setTeam={setTeam}
-              teamsForMatch={teamsForMatch}
-              colors={colors}
-              styles={styles}
-              competition={competition}
-              data={data}
-              arrayData={arrayData}
-              setArrayData={setArrayData}
-              submitForm={submitForm}
-              isSubmitting={isSubmitting}
-              startRelativeTime={startRelativeTime}
-              setStartRelativeTime={setStartRelativeTime}
-              timeline={timeline}
-              setTimeline={setTimeline}
-              fieldOrientation={fieldOrientation}
-              setFieldOrientation={setFieldOrientation}
-              selectedAlliance={selectedAlliance}
-              setSelectedAlliance={setSelectedAlliance}
-              autoPath={autoPath}
-              setAutoPath={setAutoPath}
-            />
-          ) : (
-            <Gamification
-              match={match}
-              setMatch={setMatch}
-              team={team}
-              setTeam={setTeam}
-              teamsForMatch={teamsForMatch}
-              colors={colors}
-              styles={styles}
-              navigation={navigation}
-              competition={competition}
-              data={data}
-              arrayData={arrayData}
-              setArrayData={setArrayData}
-              submitForm={submitForm}
-              isSubmitting={isSubmitting}
-              startRelativeTime={startRelativeTime}
-              setStartRelativeTime={setStartRelativeTime}
-              timeline={timeline}
-              setTimeline={setTimeline}
-              isModalActive={isModalActive}
-              setIsModalActive={setIsModalActive}
-              fieldOrientation={fieldOrientation}
-              setFieldOrientation={setFieldOrientation}
-              selectedAlliance={selectedAlliance}
-              setSelectedAlliance={setSelectedAlliance}
-              autoPath={autoPath}
-              setAutoPath={setAutoPath}
-            />
-          )}
+          <Gamification
+            match={match}
+            setMatch={setMatch}
+            team={team}
+            setTeam={setTeam}
+            teamsForMatch={teamsForMatch}
+            colors={colors}
+            styles={styles}
+            navigation={navigation}
+            competition={competition}
+            data={data}
+            arrayData={arrayData}
+            setArrayData={setArrayData}
+            submitForm={submitForm}
+            isSubmitting={isSubmitting}
+            startRelativeTime={startRelativeTime}
+            setStartRelativeTime={setStartRelativeTime}
+            timeline={timeline}
+            setTimeline={setTimeline}
+            isModalActive={isModalActive}
+            setIsModalActive={setIsModalActive}
+            fieldOrientation={fieldOrientation}
+            setFieldOrientation={setFieldOrientation}
+            selectedAlliance={selectedAlliance}
+            setSelectedAlliance={setSelectedAlliance}
+            autoPath={autoPath}
+            setAutoPath={setAutoPath}
+          />
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

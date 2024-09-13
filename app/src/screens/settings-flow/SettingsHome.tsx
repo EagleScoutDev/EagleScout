@@ -26,13 +26,11 @@ const VERSION = '7.2.1 (OTA 1)';
 interface SettingsHomeProps {
   onSignOut: () => void;
   setTheme: (arg0: string) => void;
-  setScoutingStyle: (arg0: string) => void;
   setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
-  setScoutingStyle,
   setTheme,
   setOled,
 }: SettingsHomeProps) => {
@@ -266,7 +264,6 @@ const SettingsHome = ({
         visible={settingsPopupActive}
         setVisible={setSettingsPopupActive}
         setOled={setOled}
-        setScoutingStyle={setScoutingStyle}
         setTheme={setTheme}
         navigation={navigation}
       />

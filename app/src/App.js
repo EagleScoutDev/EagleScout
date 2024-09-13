@@ -80,12 +80,14 @@ const Placeholder = () => <View />;
 
 const MyStack = ({themePreference, setThemePreference, setOled}) => {
   const scheme = useColorScheme();
-  const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const {url} = useDeepLinking();
   const nav = useNavigation();
 
+  useEffect(() => {
+    AsyncStorage.setItem(FormHelper.SCOUTING_STYLE, 'Paginated');
+  }, []);
   useEffect(() => {
     if (!url) {
       return;
@@ -136,17 +138,6 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
       }
     })();
   }, [url]);
-
-  useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
-      if (value != null) {
-        setScoutStylePreference(value);
-        console.log('scout style pref identified');
-      } else {
-        setScoutStylePreference('Paginated');
-      }
-    });
-  }, []);
 
   const [admin, setAdmin] = useState('0');
   let [error, setError] = useState('');
@@ -434,7 +425,6 @@ const MyStack = ({themePreference, setThemePreference, setOled}) => {
               <SettingsMain
                 onSignOut={redirectLogin}
                 setTheme={setThemePreference}
-                setScoutingStyle={setScoutStylePreference}
                 setOled={setOled}
               />
             )}

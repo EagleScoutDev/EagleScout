@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {View, Text, Modal, Pressable, Switch} from 'react-native';
 import ThemePicker from '../../components/pickers/ThemePicker';
-import ScoutingStylePicker from '../../components/pickers/ScoutingStylePicker';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
@@ -12,7 +11,6 @@ interface SettingsPopupProps {
   visible: boolean;
   setVisible: (arg0: boolean) => void;
   setTheme: (arg0: string) => void;
-  setScoutingStyle: (arg0: string) => void;
   navigation: ReactNavigation.RootParamList;
   setOled: (arg0: boolean) => void;
 }
@@ -21,7 +19,6 @@ const SettingsPopup = ({
   visible,
   setVisible,
   setTheme,
-  setScoutingStyle,
   navigation,
   setOled,
 }: SettingsPopupProps) => {
@@ -79,10 +76,7 @@ const SettingsPopup = ({
           </Text>
         </Pressable>
         <ThemePicker colors={colors} setTheme={setTheme} />
-        <ScoutingStylePicker
-          colors={colors}
-          setScoutingStyle={setScoutingStyle}
-        />
+
         <MinimalSectionHeader title={'TRUE DARK MODE'} />
         <Switch
           style={{
