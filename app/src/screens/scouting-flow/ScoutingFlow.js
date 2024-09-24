@@ -47,8 +47,7 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
-  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
-    useState(false);
+
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
 
   const {competitionId, matches, getTeamsForMatch} =
@@ -72,13 +71,6 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
     });
   }, []);
 
-  useEffect(() => {
-    if (scoutStylePreference === 'Scrolling') {
-      setIsScoutStylePreferenceScrolling(true);
-    } else {
-      setIsScoutStylePreferenceScrolling(false);
-    }
-  }, [scoutStylePreference]);
 
   /**
    * Initializes fields of the report before submitting it.
@@ -139,7 +131,7 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
       }
       setArrayData(tempArray);
     },
-    [defaultValues, isScoutStylePreferenceScrolling],
+    [defaultValues],
   );
 
   /**
@@ -196,17 +188,13 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
     let dataToSubmit = {};
     if (match > 400 || !match) {
       Alert.alert('Invalid Match Number', 'Please enter a valid match number');
-      if (!isScoutStylePreferenceScrolling) {
-        navigation.navigate('Match');
-      }
+      navigation.navigate('Match');
       return;
     }
 
     if (!team) {
       Alert.alert('Invalid Team Number', 'Please enter a valid team number');
-      if (!isScoutStylePreferenceScrolling) {
-        navigation.navigate('Match');
-      }
+      navigation.navigate('Match');
       return;
     }
     setIsSubmitting(true);
@@ -288,10 +276,8 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
         setTeam('');
         setAutoPath([]);
         initForm(formStructure);
-        if (!isScoutStylePreferenceScrolling) {
-          startConfetti();
-          navigation.navigate('Match');
-        }
+        startConfetti();
+        navigation.navigate('Match');
       });
     } else {
       console.log(dataToSubmit);
@@ -308,10 +294,8 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
         resetTimer();
         setAutoPath([]);
         initForm(formStructure);
-        if (!isScoutStylePreferenceScrolling) {
-          startConfetti();
-          navigation.navigate('Match');
-        }
+        startConfetti();
+        navigation.navigate('Match');
       } catch (error) {
         console.error(error);
         Alert.alert(
