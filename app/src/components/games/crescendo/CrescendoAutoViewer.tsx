@@ -15,19 +15,40 @@ const notePositions = [
   {x: 30, y: 284},
 ];
 
-const NoteToSpeakerLine = ({noteId}: {noteId: number}) => (
-  <>
+const NoteToSpeakerLine = ({noteId}: {noteId: number}) => {
+  return (
+    <>
+      <Line
+        x1={notePositions[noteId].x}
+        y1={notePositions[noteId].y}
+        x2="270"
+        y2="113.5"
+        stroke="#637AF4"
+        strokeWidth="4"
+      />
+      <Circle cx="270" cy="113.5" r="12" fill="#637AF4" />
+    </>
+  );
+};
+
+const NoteToNoteLine = ({
+  noteId1,
+  noteId2,
+}: {
+  noteId1: number;
+  noteId2: number;
+}) => {
+  return (
     <Line
-      x1={notePositions[noteId].x}
-      y1={notePositions[noteId].y}
-      x2="270"
-      y2="113.5"
+      x1={notePositions[noteId1].x}
+      y1={notePositions[noteId1].y}
+      x2={notePositions[noteId2].x}
+      y2={notePositions[noteId2].y}
       stroke="#637AF4"
       strokeWidth="4"
     />
-    <Circle cx="270" cy="113.5" r="12" fill="#637AF4" />
-  </>
-);
+  );
+};
 
 const DefaultNote = ({noteId}: {noteId: number}) => (
   <Circle
@@ -98,6 +119,64 @@ const FilledNote = ({
 );
 
 export const CrescendoAutoViewer = ({autoPath}: {autoPath: AutoPath}) => {
+  const autoPathSvgs = [];
+  autoPathSvgs.push(
+    autoPath.map(note => {
+      if (note.type !== CrescendoActionType.PickupGround) {
+        return;
+      }
+      const prevPickup = autoPath.findIndex(
+        n =>
+          n?.type === CrescendoActionType.PickupGround &&
+          n.order === note.order - 1,
+      );
+      return (
+        <>
+          {prevPickup !== -1 && (
+            <NoteToNoteLine
+              noteId1={autoPath[prevPickup].noteId! - 1}
+              noteId2={note.noteId! - 1}
+            />
+          )}
+        </>
+      );
+    }),
+  );
+  autoPathSvgs.push(
+    <>
+      {autoPath.find(n => n.type === CrescendoActionType.PickupGround) !==
+        undefined && (
+        <NoteToSpeakerLine
+          noteId={
+            autoPath.find(n => n.type === CrescendoActionType.PickupGround)!
+              .noteId! - 1
+          }
+        />
+      )}
+    </>,
+  );
+  autoPathSvgs.push(
+    autoPath.map(note => {
+      // if (note.type === CrescendoActionType.ScoreSpeaker) {
+      //   const noteId = autoPath.findIndex(
+      //     n =>
+      //       n?.type === CrescendoActionType.PickupGround &&
+      //       n.order === note.order,
+      //   );
+      //   if (noteId === -1) {
+      //     return null;
+      //   }
+      //   return <NoteToSpeakerLine noteId={noteId} />;
+      // }
+      if (note.type === CrescendoActionType.PickupGround) {
+        return (
+          <>
+            <FilledNote noteId={note.noteId! - 1} status={note.state!} />
+          </>
+        );
+      }
+    }),
+  );
   return (
     <View
       style={{
@@ -152,25 +231,7 @@ export const CrescendoAutoViewer = ({autoPath}: {autoPath: AutoPath}) => {
         {new Array(8).fill(0).map((_, i) => (
           <DefaultNote noteId={i} />
         ))}
-        {autoPath.map(note => {
-          if (note.type === CrescendoActionType.ScoreSpeaker) {
-            const noteId = autoPath.findIndex(
-              n =>
-                n?.type === CrescendoActionType.PickupGround &&
-                n.order === note.order,
-            );
-            if (noteId === -1) return null;
-            return <NoteToSpeakerLine noteId={noteId - 1} />;
-          }
-        })}
-        {autoPath.map(note => {
-          if (!note) return null;
-          if (note.type === CrescendoActionType.PickupGround) {
-            return (
-              <FilledNote noteId={note.noteId! - 1} status={note.state!} />
-            );
-          }
-        })}
+        {autoPathSvgs}
       </Svg>
     </View>
   );
