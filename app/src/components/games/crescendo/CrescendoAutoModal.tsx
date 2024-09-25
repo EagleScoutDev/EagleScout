@@ -369,21 +369,21 @@ const CrescendoAutoModal = ({
               flexDirection: 'row',
               gap: 10,
             }}>
-            <ActionButton
-              positiveAction={CrescendoActionType.ScoreAmp}
-              negativeAction={CrescendoActionType.MissAmp}
-              color="#86DF89"
-              flex={0.25}
-              setHistory={setHistory}
-              setAutoPath={setAutoPath}
-              setArrayData={setArrayData}
-              linkItemMap={linkItemMap}
-            />
+            {/*<ActionButton*/}
+            {/*  positiveAction={CrescendoActionType.ScoreAmp}*/}
+            {/*  negativeAction={CrescendoActionType.MissAmp}*/}
+            {/*  color="#86DF89"*/}
+            {/*  flex={0.25}*/}
+            {/*  setHistory={setHistory}*/}
+            {/*  setAutoPath={setAutoPath}*/}
+            {/*  setArrayData={setArrayData}*/}
+            {/*  linkItemMap={linkItemMap}*/}
+            {/*/>*/}
             <ActionButton
               positiveAction={CrescendoActionType.ScoreSpeaker}
               negativeAction={CrescendoActionType.MissSpeaker}
               color="#B098F3"
-              flex={0.75}
+              flex={1}
               setHistory={setHistory}
               setAutoPath={setAutoPath}
               setArrayData={setArrayData}

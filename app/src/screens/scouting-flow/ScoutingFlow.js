@@ -14,7 +14,7 @@ import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatch
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
 
-function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
+function ScoutingFlow({resetTimer}) {
   const route = useRoute();
   const navigation = useNavigation();
   const defaultValues = useMemo(() => {
@@ -70,7 +70,6 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
       }
     });
   }, []);
-
 
   /**
    * Initializes fields of the report before submitting it.
@@ -421,8 +420,6 @@ function ScoutingFlow({isModalActive, setIsModalActive, resetTimer}) {
             setStartRelativeTime={setStartRelativeTime}
             timeline={timeline}
             setTimeline={setTimeline}
-            isModalActive={isModalActive}
-            setIsModalActive={setIsModalActive}
             fieldOrientation={fieldOrientation}
             setFieldOrientation={setFieldOrientation}
             selectedAlliance={selectedAlliance}

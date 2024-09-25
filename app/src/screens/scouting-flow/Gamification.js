@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 import FormSection from '../../components/form/FormSection';
-import React from 'react';
+import React, {useState} from 'react';
 import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
@@ -36,8 +36,6 @@ function Gamification({
   setStartRelativeTime,
   timeline,
   setTimeline,
-  isModalActive,
-  setIsModalActive,
   fieldOrientation,
   setFieldOrientation,
   selectedAlliance,
@@ -45,7 +43,8 @@ function Gamification({
   autoPath,
   setAutoPath,
 }) {
-  const [activePage, setActivePage] = React.useState('Match');
+  const [activePage, setActivePage] = useState('Match');
+  const [modalIsOpen, setModalIsOpen] = useState(true);
 
   return (
     <>
@@ -79,9 +78,6 @@ function Gamification({
           }}
           children={() => (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              {/*{isActive && (*/}
-              {/*  <CrescendoModal isActive={isActive} setIsActive={setIsActive} />*/}
-              {/*)}*/}
               <View
                 style={{
                   flex: 1,
@@ -119,7 +115,11 @@ function Gamification({
                 <View style={{width: '100%', marginBottom: '5%'}}>
                   <StandardButton
                     text={'Next'}
-                    onPress={() => navigation.navigate(Object.keys(data)[0])}
+                    onPress={() => {
+                      navigation.navigate(Object.keys(data)[0]);
+                      setActivePage(Object.keys(data)[0]);
+                      setModalIsOpen(true);
+                    }}
                     color={colors.primary}
                   />
                 </View>
@@ -148,6 +148,7 @@ function Gamification({
                 listeners={{
                   tabPress: e => {
                     setActivePage(key);
+                    setModalIsOpen(true);
                   },
                 }}
                 children={() => (
@@ -184,9 +185,10 @@ function Gamification({
                         <StandardButton
                           text={'Next'}
                           width={'85%'}
-                          onPress={() =>
-                            navigation.navigate(Object.keys(data)[index + 1])
-                          }
+                          onPress={() => {
+                            navigation.navigate(Object.keys(data)[index + 1]);
+                            setActivePage(Object.keys(data)[index + 1]);
+                          }}
                           color={colors.primary}
                         />
                       </View>
@@ -211,8 +213,8 @@ function Gamification({
           })}
       </Tab.Navigator>
       <CrescendoAutoModal
-        isActive={activePage === 'Auto' && isModalActive}
-        setIsActive={setIsModalActive}
+        isActive={activePage === 'Auto' && modalIsOpen}
+        setIsActive={setModalIsOpen}
         fieldOrientation={fieldOrientation}
         setFieldOrientation={setFieldOrientation}
         selectedAlliance={selectedAlliance}
@@ -221,18 +223,19 @@ function Gamification({
         setAutoPath={setAutoPath}
         arrayData={arrayData}
         setArrayData={setArrayData}
-        form={data && data['Auto']}
+        form={data && data.Auto}
       />
       <CrescendoTeleopModal
         startRelativeTime={startRelativeTime}
         setStartRelativeTime={setStartRelativeTime}
         timeline={timeline}
         setTimeline={setTimeline}
-        isActive={activePage === 'Teleop' && isModalActive}
-        setIsActive={setIsModalActive}
+        // we are not going to use teleop modal
+        isActive={false}
+        setIsActive={() => {}}
         arrayData={arrayData}
         setArrayData={setArrayData}
-        form={data && data['Teleop']}
+        form={data && data.Teleop}
       />
     </>
   );
