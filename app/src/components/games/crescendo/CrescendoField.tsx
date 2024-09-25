@@ -70,11 +70,11 @@ export const CrescendoField = ({
         display: 'flex',
         height: '60%',
         flexDirection:
-          selectedAlliance === 'red'
-            ? fieldOrientation === 'red'
+          fieldOrientation === 'leftBlue'
+            ? selectedAlliance === 'blue'
               ? 'row-reverse'
               : 'row'
-            : fieldOrientation === 'red'
+            : selectedAlliance === 'blue'
             ? 'row'
             : 'row-reverse',
         justifyContent: 'space-between',

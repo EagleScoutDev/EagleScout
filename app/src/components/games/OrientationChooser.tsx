@@ -54,7 +54,8 @@ export const OrientationChooser = ({
         }}>
         <Pressable
           style={{
-            backgroundColor: selectedOrientation === 'blue' ? 'blue' : 'red',
+            backgroundColor:
+              selectedOrientation === 'leftBlue' ? 'blue' : 'red',
             paddingVertical: '3%',
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
@@ -63,13 +64,16 @@ export const OrientationChooser = ({
             justifyContent: 'center',
           }}
           onPress={() => {
-            if (selectedOrientation === 'blue') {
+            if (selectedOrientation === 'leftBlue') {
               setSelectedAlliance('blue');
             } else {
               setSelectedAlliance('red');
             }
           }}>
-          {selectedAlliance === 'red' ? <Checkmark /> : null}
+          {selectedAlliance ===
+          (selectedOrientation === 'leftBlue' ? 'blue' : 'red') ? (
+            <Checkmark />
+          ) : null}
         </Pressable>
         <View>
           <Pressable
@@ -81,10 +85,10 @@ export const OrientationChooser = ({
               alignItems: 'center',
             }}
             onPress={() => {
-              if (selectedOrientation === 'blue') {
-                setSelectedOrientation('red');
+              if (selectedOrientation === 'leftBlue') {
+                setSelectedOrientation('leftRed');
               } else {
-                setSelectedOrientation('blue');
+                setSelectedOrientation('leftBlue');
               }
             }}>
             <Svg width="24" height="22" viewBox="0 0 24 22" fill="none">
@@ -97,7 +101,8 @@ export const OrientationChooser = ({
         </View>
         <Pressable
           style={{
-            backgroundColor: selectedOrientation === 'blue' ? 'red' : 'blue',
+            backgroundColor:
+              selectedOrientation === 'leftBlue' ? 'red' : 'blue',
             paddingVertical: '3%',
             borderTopRightRadius: 10,
             borderBottomRightRadius: 10,
@@ -106,13 +111,16 @@ export const OrientationChooser = ({
             justifyContent: 'center',
           }}
           onPress={() => {
-            if (selectedOrientation === 'blue') {
+            if (selectedOrientation === 'leftBlue') {
               setSelectedAlliance('red');
             } else {
               setSelectedAlliance('blue');
             }
           }}>
-          {selectedAlliance === 'blue' ? <Checkmark /> : null}
+          {selectedAlliance ===
+          (selectedOrientation === 'leftBlue' ? 'red' : 'blue') ? (
+            <Checkmark />
+          ) : null}
         </Pressable>
       </View>
     </View>
