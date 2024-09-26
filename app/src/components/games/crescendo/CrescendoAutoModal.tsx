@@ -308,6 +308,7 @@ const CrescendoAutoModal = ({
                       newArrayData[index] = prevArrayData[index] - 1;
                       return newArrayData;
                     });
+                    setAutoPath(paths => paths.slice(0, -1));
                     break;
                 }
               }
