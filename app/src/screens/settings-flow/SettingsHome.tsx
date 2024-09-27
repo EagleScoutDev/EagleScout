@@ -30,13 +30,11 @@ const VERSION = '7.5';
 interface SettingsHomeProps {
   onSignOut: () => void;
   setTheme: (arg0: ThemeOptions) => void;
-  setScoutingStyle: (arg0: string) => void;
   // setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
-  setScoutingStyle,
   setTheme,
 }: // setOled,
 SettingsHomeProps) => {
@@ -300,7 +298,6 @@ SettingsHomeProps) => {
           visible={settingsPopupActive}
           setVisible={setSettingsPopupActive}
           // setOled={setOled}
-          setScoutingStyle={setScoutingStyle}
           setTheme={setTheme}
           navigation={navigation}
         />

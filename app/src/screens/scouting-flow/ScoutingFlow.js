@@ -1,5 +1,5 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
+import {useNavigation, useRoute, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import FormHelper from '../../FormHelper';
@@ -8,14 +8,15 @@ import Toast from 'react-native-toast-message';
 import CompetitionsDB from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
 import Gamification from './Gamification';
-import ScoutingView from './ScoutingView';
 import Confetti from 'react-native-confetti';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
 
-function ScoutingFlow({navigation, route, resetTimer}) {
+function ScoutingFlow({resetTimer}) {
+  const route = useRoute();
+  const navigation = useNavigation();
   const defaultValues = useMemo(() => {
     return {
       radio: '',
@@ -35,12 +36,18 @@ function ScoutingFlow({navigation, route, resetTimer}) {
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
+  const [autoPath, setAutoPath] = useState([]);
+
+  const [startRelativeTime, setStartRelativeTime] = useState(-1);
+  const [timeline, setTimeline] = useState([]);
+  const [fieldOrientation, setFieldOrientation] = useState('red');
+  const [selectedAlliance, setSelectedAlliance] = useState('red');
+
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
-  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
-    useState(false);
+
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
 
   const {competitionId, matches, getTeamsForMatch} =
@@ -64,14 +71,6 @@ function ScoutingFlow({navigation, route, resetTimer}) {
     });
   }, []);
 
-  useEffect(() => {
-    if (scoutStylePreference === 'Scrolling') {
-      setIsScoutStylePreferenceScrolling(true);
-    } else {
-      setIsScoutStylePreferenceScrolling(false);
-    }
-  }, [scoutStylePreference]);
-
   /**
    * Initializes fields of the report before submitting it.
    * @param dataToSubmit the object containing all report information
@@ -79,6 +78,12 @@ function ScoutingFlow({navigation, route, resetTimer}) {
    */
   function initData(dataToSubmit, tempArray) {
     dataToSubmit.data = tempArray;
+    const timelineRecord = {};
+    timeline.forEach((value, key) => {
+      timelineRecord[key] = value;
+    });
+    dataToSubmit.timelineData = timelineRecord;
+    dataToSubmit.autoPath = autoPath;
     dataToSubmit.matchNumber = match;
     dataToSubmit.teamNumber = team;
     dataToSubmit.competitionId = competition.id;
@@ -127,7 +132,7 @@ function ScoutingFlow({navigation, route, resetTimer}) {
       }
       setArrayData(tempArray);
     },
-    [defaultValues, isScoutStylePreferenceScrolling],
+    [defaultValues],
   );
 
   /**
@@ -184,17 +189,13 @@ function ScoutingFlow({navigation, route, resetTimer}) {
     let dataToSubmit = {};
     if (match > 400 || !match) {
       Alert.alert('Invalid Match Number', 'Please enter a valid match number');
-      if (!isScoutStylePreferenceScrolling) {
-        navigation.navigate('Match');
-      }
+      navigation.navigate('Match');
       return;
     }
 
     if (!team) {
       Alert.alert('Invalid Team Number', 'Please enter a valid team number');
-      if (!isScoutStylePreferenceScrolling) {
-        navigation.navigate('Match');
-      }
+      navigation.navigate('Match');
       return;
     }
     setIsSubmitting(true);
@@ -257,11 +258,10 @@ function ScoutingFlow({navigation, route, resetTimer}) {
         })();
         setMatch('');
         setTeam('');
+        setAutoPath([]);
         initForm(formStructure);
-        if (!isScoutStylePreferenceScrolling) {
-          startConfetti();
-          navigation.navigate('Match');
-        }
+        startConfetti();
+        navigation.navigate('Match');
       });
     } else {
       console.log(dataToSubmit);
@@ -276,11 +276,10 @@ function ScoutingFlow({navigation, route, resetTimer}) {
         setMatch('');
         setTeam('');
         resetTimer();
+        setAutoPath([]);
         initForm(formStructure);
-        if (!isScoutStylePreferenceScrolling) {
-          startConfetti();
-          navigation.navigate('Match');
-        }
+        startConfetti();
+        navigation.navigate('Match');
       } catch (error) {
         console.error(error);
         Alert.alert(
@@ -387,40 +386,32 @@ function ScoutingFlow({navigation, route, resetTimer}) {
             }}>
             <Confetti ref={setConfettiView} timeout={10} duration={3000} />
           </View>
-          {isScoutStylePreferenceScrolling ? (
-            <ScoutingView
-              match={match}
-              setMatch={setMatch}
-              team={team}
-              setTeam={setTeam}
-              teamsForMatch={teamsForMatch}
-              colors={colors}
-              styles={styles}
-              competition={competition}
-              data={data}
-              arrayData={arrayData}
-              setArrayData={setArrayData}
-              submitForm={submitForm}
-              isSubmitting={isSubmitting}
-            />
-          ) : (
-            <Gamification
-              match={match}
-              setMatch={setMatch}
-              team={team}
-              setTeam={setTeam}
-              teamsForMatch={teamsForMatch}
-              colors={colors}
-              styles={styles}
-              navigation={navigation}
-              competition={competition}
-              data={data}
-              arrayData={arrayData}
-              setArrayData={setArrayData}
-              submitForm={submitForm}
-              isSubmitting={isSubmitting}
-            />
-          )}
+          <Gamification
+            match={match}
+            setMatch={setMatch}
+            team={team}
+            setTeam={setTeam}
+            teamsForMatch={teamsForMatch}
+            colors={colors}
+            styles={styles}
+            navigation={navigation}
+            competition={competition}
+            data={data}
+            arrayData={arrayData}
+            setArrayData={setArrayData}
+            submitForm={submitForm}
+            isSubmitting={isSubmitting}
+            startRelativeTime={startRelativeTime}
+            setStartRelativeTime={setStartRelativeTime}
+            timeline={timeline}
+            setTimeline={setTimeline}
+            fieldOrientation={fieldOrientation}
+            setFieldOrientation={setFieldOrientation}
+            selectedAlliance={selectedAlliance}
+            setSelectedAlliance={setSelectedAlliance}
+            autoPath={autoPath}
+            setAutoPath={setAutoPath}
+          />
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

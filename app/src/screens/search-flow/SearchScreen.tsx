@@ -5,6 +5,7 @@ import TeamViewer from './TeamViewer';
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {createStackNavigator} from '@react-navigation/stack';
 import ReportsForTeam from './ReportsForTeam';
+import {AutoPathsForTeam} from './AutoPathsForTeam';
 import {useTheme} from '@react-navigation/native';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import SearchModal from './SearchModal';
@@ -47,6 +48,14 @@ function SearchScreen() {
       <Stack.Screen
         name={'Reports for Team'}
         component={ReportsForTeam}
+        options={{
+          headerBackTitle: 'Back',
+          headerTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name={'Auto Paths'}
+        component={AutoPathsForTeam}
         options={{
           headerBackTitle: 'Back',
           headerTitle: '',

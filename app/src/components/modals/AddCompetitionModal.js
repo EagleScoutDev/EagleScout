@@ -71,7 +71,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       },
     );
     if (fetchTbaEventError) {
-      Alert.alert('Error', 'Invalid TBA Key');
+      Alert.alert('Error', await fetchTbaEventError.context.json());
       return false;
     }
     const {data: eventData, error: eventError} = await supabase

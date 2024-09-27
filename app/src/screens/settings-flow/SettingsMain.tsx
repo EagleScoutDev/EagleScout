@@ -16,14 +16,12 @@ const Stack = createStackNavigator();
 interface SettingsMainProps {
   onSignOut: () => void;
   setTheme: (arg0: ThemeOptions) => void;
-  setScoutingStyle: (arg0: string) => void;
   // setOled: (arg0: boolean) => void;
 }
 
 function SettingsMain({
   onSignOut,
   setTheme,
-  setScoutingStyle,
 }: // setOled,
 SettingsMainProps) {
   const [user, setUser] = useState<StoredUser | null>(null);
@@ -53,7 +51,6 @@ SettingsMainProps) {
         children={() => (
           <SettingsHome
             onSignOut={onSignOut}
-            setScoutingStyle={setScoutingStyle}
             setTheme={setTheme}
             // setOled={setOled}
           />

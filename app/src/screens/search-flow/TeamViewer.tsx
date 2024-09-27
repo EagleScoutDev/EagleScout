@@ -109,6 +109,21 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
               );
             }}
           />
+		<ListItem
+			text={'See auto paths'}
+			onPress={() => {
+				navigation.navigate('Auto Paths', {
+					team_number: team.team_number,
+					competitionId: competitionId,
+				});
+			}}
+			caretVisible={true}
+			disabled={false}
+			icon={() => {
+				return (
+				);
+			}}
+		/>
           <ListItem
             text={'Create Performance Graph'}
             onPress={() => setGraphCreationModalVisible(true)}
