@@ -2,6 +2,7 @@ import StandardModal from '../../../components/modals/StandardModal';
 import StandardButton from '../../../components/StandardButton';
 import Forms from '../../../database/Forms';
 import React, {Alert} from 'react-native';
+import {useTheme} from '@react-navigation/native';
 
 const FormOptionsModal = ({
   form,
@@ -10,6 +11,7 @@ const FormOptionsModal = ({
   onSuccess,
   navigation,
 }) => {
+  const {colors} = useTheme();
   return (
     <StandardModal
       title={`Form '${form && form.name}'`}
@@ -25,7 +27,7 @@ const FormOptionsModal = ({
             questions: form.formStructure,
           });
         }}
-        color={'blue'}
+        color={colors.primary}
       />
       <StandardButton
         text={'Delete'}
@@ -45,14 +47,24 @@ const FormOptionsModal = ({
             }
           })();
         }}
-        color={'red'}
+        color={colors.notification}
+      />
+      <StandardButton
+        text={'Duplicate'}
+        onPress={() => {
+          setVisible(false);
+          navigation.navigate('Form Creation Main', {
+            form: form,
+          });
+        }}
+        color={'green'}
       />
       <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
         }}
-        color={'gray'}
+        color={colors.card}
       />
     </StandardModal>
   );

@@ -31,12 +31,12 @@ function MatchInformation({
     },
     badInput: {
       // height: 40,
-      borderColor: 'red',
+      borderColor: colors.notification,
       borderBottomWidth: 2,
       // borderRadius: 10,
       // marginBottom: 15,
       padding: 10,
-      color: 'red',
+      color: colors.notification,
       fontFamily: 'monospace',
       minWidth: '20%',
       textAlign: 'center',
@@ -44,7 +44,8 @@ function MatchInformation({
     subtitle: {
       textAlign: 'left',
       padding: '2%',
-      color: 'gray',
+      color: colors.text, //getLighterColor(colors.primary),
+      opacity: 0.6,
       fontWeight: 'bold',
     },
     label: {
@@ -90,12 +91,12 @@ function MatchInformation({
         />
       </View>
       {Number.parseInt(match, 10) === 0 && (
-        <Text style={{color: 'red', textAlign: 'center'}}>
+        <Text style={{color: colors.notification, textAlign: 'center'}}>
           Match number cannot be 0
         </Text>
       )}
       {match > 400 && (
-        <Text style={{color: 'red', textAlign: 'center'}}>
+        <Text style={{color: colors.notification, textAlign: 'center'}}>
           Match number cannot be greater than 400
         </Text>
       )}
@@ -113,7 +114,7 @@ function MatchInformation({
         />
       </View>
       {team !== '' && !teamsForMatch.includes(Number.parseInt(team, 10)) && (
-        <Text style={{color: 'red', textAlign: 'center'}}>
+        <Text style={{color: colors.notification, textAlign: 'center'}}>
           Warning: Team {team} is not in this match
         </Text>
       )}

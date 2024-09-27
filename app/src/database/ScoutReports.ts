@@ -154,8 +154,6 @@ class ScoutReportsDB {
       throw error;
     } else {
       for (let i = 0; i < data.length; i += 1) {
-        console.log('here4');
-        console.log('data: ' + JSON.stringify(data[0]));
         res.push({
           reportId: data[i].id,
           matchNumber: data[i].matches.number,

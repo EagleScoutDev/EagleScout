@@ -59,7 +59,7 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
         />
         <TextInput
           placeholder={'Type here'}
-          placeholderTextColor={'gray'}
+          placeholderTextColor={colors.primary}
           style={styles.textInput}
           value={arrayData[item.indice]}
           onChangeText={text => {
@@ -101,28 +101,21 @@ function FormComponent({item, styles, colors, arrayData, setArrayData}) {
         />
       );
     }
-  } else if (item.type === 'checkbox') {
+  } else if (item.type === 'checkboxes') {
     return (
       <Checkbox
-        colors={colors}
         title={item.question}
-        required={item.required}
         options={item.options}
         value={arrayData[item.indice]}
+        disabled={false}
         onValueChange={value => {
-          const itemIndex = item.options.indexOf(value);
-          let tempArray = [...arrayData[item.indice]];
-
-          if (tempArray.includes(itemIndex)) {
-            tempArray = tempArray.filter(b => b !== itemIndex);
-          } else {
-            tempArray.push(itemIndex);
-          }
-
-          let a = [...arrayData];
-          a[item.indice] = tempArray;
-          setArrayData(a);
+          setArrayData(prev => {
+            const newData = [...prev];
+            newData[item.indice] = value;
+            return newData;
+          });
         }}
+        colors={colors}
       />
     );
   }

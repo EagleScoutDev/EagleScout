@@ -115,8 +115,8 @@ export default function Statbotics({team}) {
   const styles = StyleSheet.create({
     formSection: {
       flexDirection: 'column',
-      minWidth: '85%',
-      maxWidth: '85%',
+      minWidth: '95%',
+      maxWidth: '95%',
       padding: '5%',
       backgroundColor: colors.card,
       borderRadius: 10,

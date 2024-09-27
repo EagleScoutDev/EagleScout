@@ -9,20 +9,21 @@ import {StoredUser} from '../../lib/StoredUser';
 import SubmittedForms from './SubmittedForms';
 import DeleteAccountModal from './DeleteAccountModal';
 import {SubmittedNotes} from './SubmittedNotes';
+import {ThemeOptions} from '../../themes/ThemeOptions';
 
 const Stack = createStackNavigator();
 
 interface SettingsMainProps {
   onSignOut: () => void;
-  setTheme: (arg0: string) => void;
-  setOled: (arg0: boolean) => void;
+  setTheme: (arg0: ThemeOptions) => void;
+  // setOled: (arg0: boolean) => void;
 }
 
 function SettingsMain({
   onSignOut,
   setTheme,
-  setOled,
-}: SettingsMainProps) {
+}: // setOled,
+SettingsMainProps) {
   const [user, setUser] = useState<StoredUser | null>(null);
 
   const getUser = async () => {
@@ -51,7 +52,7 @@ function SettingsMain({
           <SettingsHome
             onSignOut={onSignOut}
             setTheme={setTheme}
-            setOled={setOled}
+            // setOled={setOled}
           />
         )}
       />

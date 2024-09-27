@@ -25,6 +25,8 @@ import NotesDB, {
   NoteStructureWithMatchNumber,
 } from '../../database/Notes';
 import {NoteList} from '../../components/NoteList';
+import {getLighterColor} from '../../lib/ColorReadability';
+import {isTablet} from 'react-native-device-info';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;
@@ -147,7 +149,7 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '2%',
+            padding: isTablet() ? '0%' : '2%',
           }}>
           <CompetitionChanger
             currentCompId={competitionId}
@@ -176,26 +178,29 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
           {/*    />*/}
           {/*  </Svg>*/}
           {/*</Pressable>*/}
-          <Pressable
-            style={{
-              paddingHorizontal: '8%',
-              paddingVertical: '4%',
-              // backgroundColor: colors.card,
-            }}
-            onPress={() => {
-              navigation.navigate('SearchModal', {
-                teams: listOfTeams,
-                reportsByMatch: reportsByMatch,
-                competitionId: competitionId,
-              });
-            }}>
-            <Svg width={'20'} height="20" viewBox="0 0 16 16">
-              <Path
-                fill={searchActive ? colors.primary : 'gray'}
-                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-              />
-            </Svg>
-          </Pressable>
+          {!fetchingData && (
+            <Pressable
+              style={{
+                paddingHorizontal: '8%',
+                paddingVertical: '4%',
+                // backgroundColor: colors.card,
+              }}
+              onPress={() => {
+                navigation.navigate('SearchModal', {
+                  teams: listOfTeams,
+                  reportsByMatch: reportsByMatch,
+                  competitionId: competitionId,
+                });
+              }}>
+              <Svg width={'20'} height="20" viewBox="0 0 16 16">
+                <Path
+                  fill={colors.text}
+                  opacity={0.7}
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+                />
+              </Svg>
+            </Pressable>
+          )}
         </View>
         <View
           style={{
@@ -212,8 +217,23 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{color: colors.text, fontSize: 20}}>
-            No reports found.
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 20,
+              textAlign: 'center',
+            }}>
+            No reports found
+          </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 18,
+              textAlign: 'center',
+              marginTop: 20,
+              opacity: 0.7,
+            }}>
+            Select a competition above to get started
           </Text>
         </View>
       )}
@@ -249,7 +269,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                 }}>
                 <Text
                   style={{
-                    color: 'grey',
+                    color: colors.text,
+                    opacity: 0.7,
                     marginHorizontal: '4%',
                     fontWeight: 'bold',
                     fontSize: 18,
@@ -278,11 +299,8 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                     width="16"
                     height="16"
                     viewBox="0 0 16 16"
-                    fill={colors.text}>
-                    <Path
-                      fill={'grey'}
-                      d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z"
-                    />
+                    fill={getLighterColor(colors.primary)}>
+                    <Path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z" />
                   </Svg>
                 </TouchableOpacity>
               </View>
@@ -302,11 +320,20 @@ const SearchMain: React.FC<Props> = ({navigation}) => {
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        backgroundColor: index < 3 ? 'crimson' : 'dodgerblue',
+                        // borderWidth: 1,
+                        backgroundColor: index < 3 ? 'red' : 'dodgerblue',
+                        // shadowColor: colors.card,
+                        // shadowOffset: {width: 0, height: 2},
+                        // shadowOpacity: 0.25,
+                        // shadowRadius: 4,
+                        // elevation: 5,
+                        borderColor: colors.text,
+
                         margin: '2%',
                         padding: '6%',
                         borderRadius: 10,
                         minWidth: '25%',
+                        // backgroundColor: colors.card,
                       }}>
                       <Text
                         style={{

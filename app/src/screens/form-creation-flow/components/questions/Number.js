@@ -7,11 +7,12 @@ import React, {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-import { useEffect, useState } from "react";
+} from 'react-native';
+import {useEffect, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
 import RadioOptionsSeparator from './RadioOptionsSeparator';
 import CheckBox from 'react-native-check-box';
+import {useTheme} from '@react-navigation/native';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -23,6 +24,7 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
   const [low, setLow] = useState('');
   const [high, setHigh] = useState('');
   const [step, setStep] = useState('1');
+  const {colors} = useTheme();
 
   useEffect(() => {
     if (value && value.type === 'number') {
@@ -91,7 +93,7 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
 
   return (
     <StandardModal
-      title="New number question"
+      title="New Number Question"
       visible={visible}
       onDismiss={() => {
         setVisible(false);
@@ -154,14 +156,14 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(!submit());
         }}
-        color={'blue'}
+        color={colors.primary}
       />
       <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
         }}
-        color={'gray'}
+        color={colors.card}
       />
     </StandardModal>
   );

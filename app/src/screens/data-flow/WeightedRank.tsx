@@ -206,7 +206,7 @@ function WeightedRank() {
 
   if (noActiveCompetition) {
     return (
-      <View
+      <ScrollView
         style={{
           ...styles.container,
           paddingVertical: '10%',
@@ -229,7 +229,7 @@ function WeightedRank() {
             </View>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
     );
   }
 

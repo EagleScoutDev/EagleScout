@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {SimpleEvent, TBA} from '../../lib/TBAUtils';
 import {useTheme} from '@react-navigation/native';
-import {View, Text, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Pressable,
+} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 
 // TODO: Add a loading indicator
@@ -147,30 +154,35 @@ function CompetitionRank({team_number}: {team_number: number}) {
 
   return (
     <View>
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           setHistoryVisible(!historyVisible);
         }}
         style={{
-          minWidth: '85%',
-          maxWidth: '85%',
+          minWidth: '95%',
+          maxWidth: '95%',
           padding: '5%',
           marginTop: '5%',
-          backgroundColor:
-            loading
-            ? 'gray'
-            : rankToColor(currentCompetitionRank!),
+          marginBottom: historyVisible ? 6 : 20,
+          borderColor: loading ? 'gray' : rankToColor(currentCompetitionRank!),
+          borderWidth: 4,
+          backgroundColor: colors.background,
           borderRadius: 10,
           alignSelf: 'center',
+
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+          flexDirection: 'row',
         }}>
-        <View>
+        <View style={{flex: 1}}>
           <Text
             style={{
               color: 'white',
               textAlign: 'center',
               fontSize: 20,
-              marginTop: '2%',
+              // marginTop: '2%',
               fontWeight: '800',
+              // flex: 1,
             }}>
             {loading ? (
               'Loading...'
@@ -191,7 +203,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
               color: 'white',
               textAlign: 'center',
               fontSize: 20,
-              marginTop: '2%',
+              // marginTop: '2%',
             }}>
             {loading ? (
               ' '
@@ -204,61 +216,70 @@ function CompetitionRank({team_number}: {team_number: number}) {
             )}
           </Text>
         </View>
-        {historyVisible ? (
-          <Svg
-            width={20}
-            height={20}
-            viewBox="0 0 24 24"
-            stroke={'white'}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              position: 'absolute',
-              right: '8%',
-              top: '60%',
-              transform: [{rotate: '90deg'}],
-            }}>
-            <Path
-              fill-rule="evenodd"
-              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-            />
-          </Svg>
-        ) : (
-          <Svg
-            width={20}
-            height={20}
-            viewBox="0 0 24 24"
-            stroke={'white'}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              position: 'absolute',
-              right: '5%',
-              top: '60%',
-            }}>
-            <Path
-              fill-rule="evenodd"
-              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-            />
-          </Svg>
-        )}
-      </TouchableOpacity>
+        <View style={{flex: 0}}>
+          {historyVisible ? (
+            <Svg
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              stroke={'white'}
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                // position: 'absolute',
+                // right: '8%',
+                // top: '60%',
+                transform: [{rotate: '90deg'}],
+              }}>
+              <Path
+                fill-rule="evenodd"
+                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+              />
+            </Svg>
+          ) : (
+            <Svg
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              stroke={'white'}
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={
+                {
+                  // position: 'absolute',
+                  // right: '5%',
+                  // top: '60%',
+                }
+              }>
+              <Path
+                fill-rule="evenodd"
+                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+              />
+            </Svg>
+          )}
+        </View>
+      </Pressable>
       {historyVisible && (
         <ScrollView
           style={{
-            marginBottom: '5%',
+            marginTop: 10,
+            marginBottom: 20,
             // borderWidth: 2,
             // borderColor: colors.border,
             // marginHorizontal: '5%',
-            minWidth: '85%',
-            maxWidth: '85%',
+            minWidth: '95%',
+            maxWidth: '95%',
             alignSelf: 'center',
             // padding: '5%',
             // borderRadius: 0,
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
+            // borderBottomLeftRadius: 10,
+            // borderBottomRightRadius: 10,
+
+            borderColor: rankToColor(currentCompetitionRank!),
+            borderWidth: 1,
+            borderRadius: 10,
           }}>
           {allCompetitions.map((item, index) => {
             return (
@@ -269,7 +290,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
                   alignItems: 'center',
                   justifyContent: 'space-between',
 
-                  padding: '5%',
+                  padding: 20,
                   paddingHorizontal: '3%',
                   backgroundColor:
                     index % 2 == 0 ? colors.card : colors.background,

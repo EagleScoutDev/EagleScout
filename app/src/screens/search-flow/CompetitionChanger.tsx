@@ -57,7 +57,14 @@ const CompetitionChanger = ({
       });
     }
     CompetitionsDB.getCompetitions().then(competitions => {
-      setCompetitionsList(competitions);
+      // sort competitions by date, in descending order
+      let temp_comp = competitions;
+      temp_comp.sort((a, b) => {
+        return (
+          new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+        );
+      });
+      setCompetitionsList(temp_comp);
 
       // set the current competition name
       competitions.forEach(competition => {
@@ -104,6 +111,7 @@ const CompetitionChanger = ({
           padding: '2%',
           marginVertical: '2%',
           backgroundColor: colors.background,
+          paddingLeft: '6%',
         }}
         selectedTextStyle={{
           color: colors.text,
@@ -137,30 +145,30 @@ const CompetitionChanger = ({
               />
             );
           }
-          return (
-            <View
-              style={{
-                backgroundColor: colors.card,
-                borderRadius: 200,
-
-                width: 40 + (compnameToIcon(competitionName).length - 1) * 20,
-                height: 40,
-                justifyContent: 'center',
-                marginRight: '4%',
-              }}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontSize: 20,
-                  textAlign: 'center',
-                  fontWeight: '700',
-                }}>
-                {competitionName === 'Loading...'
-                  ? ''
-                  : compnameToIcon(competitionName)}
-              </Text>
-            </View>
-          );
+          // return (
+          //   <View
+          //     style={{
+          //       backgroundColor: colors.card,
+          //       borderRadius: 200,
+          //
+          //       width: 40 + (compnameToIcon(competitionName).length - 1) * 20,
+          //       height: 40,
+          //       justifyContent: 'center',
+          //       marginRight: '4%',
+          //     }}>
+          //     <Text
+          //       style={{
+          //         color: colors.text,
+          //         fontSize: 20,
+          //         textAlign: 'center',
+          //         fontWeight: '700',
+          //       }}>
+          //       {competitionName === 'Loading...'
+          //         ? ''
+          //         : compnameToIcon(competitionName)}
+          //     </Text>
+          //   </View>
+          // );
         }}
       />
     </View>

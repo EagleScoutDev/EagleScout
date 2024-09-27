@@ -13,6 +13,7 @@ import StandardButton from '../../../../components/StandardButton';
 import NewQuestionSeparator from '../NewQuestionSeparator';
 import RadioOptionsSeparator from './RadioOptionsSeparator';
 import CheckBox from 'react-native-check-box';
+import {useTheme} from '@react-navigation/native';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -28,6 +29,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
   const [setIndex, setSetIndex] = useState(0);
   const [required, setRequired] = useState(false);
   const [defaultIndex, setDefaultIndex] = useState(-1);
+  const {colors} = useTheme();
 
   useEffect(() => {
     if (value && value.type === 'radio') {
@@ -59,7 +61,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
 
   return (
     <StandardModal
-      title="New radio question"
+      title="New Radio Question"
       visible={visible}
       onDismiss={() => {
         setVisible(false);
@@ -74,7 +76,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
           value={question}
         />
       </View>
-      <Text>
+      <Text style={{color: colors.text}}>
         Click '+' to add a new radio option. To delete an option, long press on
         it.
       </Text>
@@ -124,7 +126,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
         </TouchableOpacity>
       </ScrollView>
       <StandardModal
-        title={'New option'}
+        title={'New Option'}
         visible={addOptionModalVisible}
         onDismiss={() => {
           setVisible(false);
@@ -150,7 +152,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
             setOptionText('');
             setAddOptionModalVisible(false);
           }}
-          color={'blue'}
+          color={colors.primary}
         />
         <StandardButton
           text={'Cancel'}
@@ -158,7 +160,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
             setOptionText('');
             setAddOptionModalVisible(false);
           }}
-          color={'gray'}
+          color={colors.card}
         />
       </StandardModal>
       <StandardModal
@@ -216,14 +218,14 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(!submit());
         }}
-        color={'blue'}
+        color={colors.primary}
       />
       <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
         }}
-        color={'gray'}
+        color={colors.card}
       />
     </StandardModal>
   );

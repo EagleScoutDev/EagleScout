@@ -8,7 +8,7 @@ import React, {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import NewQuestionSeparator from './components/NewQuestionSeparator';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import NewQuestionModal from './components/NewQuestionModal';
 import HeadingSummary from './components/question-summaries/HeadingSummary';
 import RadioSummary from './components/question-summaries/RadioSummary';
@@ -20,8 +20,10 @@ import Heading from './components/questions/Heading';
 import Number from './components/questions/Number';
 import Radio from './components/questions/Radio';
 import TextBox from './components/questions/TextBox';
+import Checkboxes from './components/questions/Checkboxes';
+import CheckboxesSummary from './components/question-summaries/CheckboxesSummary';
 
-const FormCreationMain = ({navigation}) => {
+const FormCreationMain = ({route, navigation}) => {
   const {colors} = useTheme();
   const [newQuestionModalVisible, setNewQuestionModalVisible] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -29,7 +31,16 @@ const FormCreationMain = ({navigation}) => {
   const [headingModalVisible, setHeadingModalVisible] = useState(false);
   const [numberModalVisible, setNumberModalVisible] = useState(false);
   const [radioModalVisible, setRadioModalVisible] = useState(false);
+  const [checkBoxModalVisible, setCheckBoxModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false);
+
+  const {form} = route.params;
+
+  useEffect(() => {
+    if (form) {
+      setQuestions(form.formStructure);
+    }
+  }, []);
 
   const newQuestionStyles = StyleSheet.create({
     textInput: {
@@ -62,7 +73,7 @@ const FormCreationMain = ({navigation}) => {
       paddingRight: 20,
     },
     requiredStarText: {
-      color: 'red',
+      color: colors.notification,
       fontSize: 18,
     },
   });
@@ -135,10 +146,23 @@ const FormCreationMain = ({navigation}) => {
         onCancel={onFormCancel}
         questions={questions}
       />
+      {questions.length === 0 && (
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 18,
+            fontWeight: '600',
+            textAlign: 'center',
+            marginTop: 50,
+            paddingHorizontal: '5%',
+          }}>
+          Press the + button to begin adding questions.
+        </Text>
+      )}
       <ScrollView>
         {questions.map((question, index) => {
           return (
-            <>
+            <View key={question.text}>
               <NewQuestionSeparator
                 onPress={() => {
                   setIndex(index);
@@ -186,6 +210,21 @@ const FormCreationMain = ({navigation}) => {
                       />
                     </TouchableOpacity>
                   )}
+                  {question.type === 'checkboxes' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIndex(index);
+                        setCheckBoxModalVisible(true);
+                      }}>
+                      <CheckboxesSummary
+                        question={question}
+                        onDelete={() => {
+                          setIndex(index);
+                          onDelete();
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
                   {question.type === 'number' && (
                     <TouchableOpacity
                       onPress={() => {
@@ -218,7 +257,7 @@ const FormCreationMain = ({navigation}) => {
                   )}
                 </View>
               </View>
-            </>
+            </View>
           );
         })}
         <NewQuestionSeparator
@@ -245,6 +284,13 @@ const FormCreationMain = ({navigation}) => {
       <Radio
         visible={radioModalVisible}
         setVisible={setRadioModalVisible}
+        styles={newQuestionStyles}
+        onSubmit={onReplace}
+        value={questions[index]}
+      />
+      <Checkboxes
+        visible={checkBoxModalVisible}
+        setVisible={setCheckBoxModalVisible}
         styles={newQuestionStyles}
         onSubmit={onReplace}
         value={questions[index]}

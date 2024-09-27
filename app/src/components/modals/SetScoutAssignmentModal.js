@@ -214,7 +214,12 @@ function SetScoutAssignmentModal({
               </Text>
             </>
           )}
-          <Text style={styles.label_background}>Search for a user</Text>
+          <Text
+            style={{
+              color: colors.text,
+            }}>
+            Search for a user
+          </Text>
           <Spacer />
           <TextInput
             style={styles.user_name_input}

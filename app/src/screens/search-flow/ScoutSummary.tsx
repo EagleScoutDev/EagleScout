@@ -8,6 +8,7 @@ import ScoutReportsDB, {
 } from '../../database/ScoutReports';
 import Svg, {Path} from 'react-native-svg';
 import CompetitionsDB from '../../database/Competitions';
+import {isTablet} from 'react-native-device-info';
 
 function ScoutSummary({
   team_number,
@@ -70,7 +71,12 @@ function ScoutSummary({
   }
 
   return (
-    <View style={{marginTop: '10%'}}>
+    <View
+      style={{
+        marginTop: '10%',
+        flexDirection: isTablet() ? 'row' : 'column',
+        flexWrap: isTablet() ? 'wrap' : 'nowrap',
+      }}>
       {formStructure && responses ? (
         formStructure.map((item, index) => {
           return (
@@ -84,6 +90,9 @@ function ScoutSummary({
                 };
               })}
               generate_ai_summary={generateSummary}
+              graph_disabled={false}
+              show_question={true}
+              only_average={false}
             />
           );
         })

@@ -267,7 +267,7 @@ const NoteScreen = () => {
               <TouchableOpacity
                 style={{
                   backgroundColor:
-                    selectedAlliance === 'blue' ? colors.primary : colors.card,
+                    selectedAlliance === 'blue' ? 'blue' : colors.card,
                   padding: '5%',
                   borderRadius: 10,
                   flex: 1,

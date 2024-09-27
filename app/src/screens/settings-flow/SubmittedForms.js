@@ -90,13 +90,13 @@ function SubmittedForms() {
     offline_text: {
       textAlign: 'center',
       fontSize: 20,
-      color: 'green',
+      color: colors.text,
       fontWeight: 'bold',
     },
     offline_subtext: {
       textAlign: 'center',
       fontSize: 15,
-      color: 'gray',
+      color: colors.text,
     },
   });
 

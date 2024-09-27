@@ -6,13 +6,15 @@ import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../../FormHelper';
+import {Theme} from '@react-navigation/native/src/types';
+import {ThemeOptions} from '../../themes/ThemeOptions';
 
 interface SettingsPopupProps {
   visible: boolean;
   setVisible: (arg0: boolean) => void;
-  setTheme: (arg0: string) => void;
+  setTheme: (arg0: ThemeOptions) => void;
   navigation: ReactNavigation.RootParamList;
-  setOled: (arg0: boolean) => void;
+  // setOled: (arg0: boolean) => void;
 }
 
 const SettingsPopup = ({
@@ -20,37 +22,36 @@ const SettingsPopup = ({
   setVisible,
   setTheme,
   navigation,
-  setOled,
-}: SettingsPopupProps) => {
+}: // setOled,
+SettingsPopupProps) => {
   const {colors} = useTheme();
-  const [localOled, setLocalOled] = React.useState(false);
 
-  const saveOledPreference = async value => {
-    try {
-      await AsyncStorage.setItem(FormHelper.OLED, value);
-      console.log('[saveOledPreference] data: ' + value);
-    } catch (e) {
-      // saving error
-      console.log('[saveOledPreference] error: ' + e);
-    }
-  };
+  // const saveOledPreference = async value => {
+  //   try {
+  //     await AsyncStorage.setItem(FormHelper.OLED, value);
+  //     console.log('[saveOledPreference] data: ' + value);
+  //   } catch (e) {
+  //     // saving error
+  //     console.log('[saveOledPreference] error: ' + e);
+  //   }
+  // };
 
-  useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
-      if (value != null) {
-        console.log('[useEffect] data: ' + value);
-        setLocalOled(JSON.parse(value));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
+  //     if (value != null) {
+  //       console.log('[useEffect] data: ' + value);
+  //       // setLocalOled(JSON.parse(value));
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    if (localOled != null) {
-      saveOledPreference(JSON.stringify(localOled)).then(() => {
-        console.log('Saved OLED preference');
-      });
-    }
-  }, [localOled]);
+  // useEffect(() => {
+  //   if (localOled != null) {
+  //     saveOledPreference(JSON.stringify(localOled)).then(() => {
+  //       console.log('Saved OLED preference');
+  //     });
+  //   }
+  // }, [localOled]);
 
   return (
     <Modal
@@ -75,19 +76,7 @@ const SettingsPopup = ({
             Settings
           </Text>
         </Pressable>
-        <ThemePicker colors={colors} setTheme={setTheme} />
-
-        <MinimalSectionHeader title={'TRUE DARK MODE'} />
-        <Switch
-          style={{
-            alignSelf: 'center',
-          }}
-          value={localOled}
-          onValueChange={value => {
-            setLocalOled(value);
-            setOled(value);
-          }}
-        />
+        <ThemePicker setTheme={setTheme} />
         <MinimalSectionHeader title={'Dev Tools'} />
         <StandardButton
           color={'black'}

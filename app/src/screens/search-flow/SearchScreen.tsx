@@ -9,6 +9,7 @@ import {AutoPathsForTeam} from './AutoPathsForTeam';
 import {useTheme} from '@react-navigation/native';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import SearchModal from './SearchModal';
+import CompareTeams from './CompareTeams';
 
 const Stack = createStackNavigator();
 function SearchScreen() {
@@ -65,6 +66,14 @@ function SearchScreen() {
         component={SearchModal}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'Compare Teams'}
+        component={CompareTeams}
+        options={{
+          headerBackTitle: 'Back',
+          headerTitle: '',
         }}
       />
     </Stack.Navigator>

@@ -3,6 +3,7 @@ import HeadingSummary from './question-summaries/HeadingSummary';
 import RadioSummary from './question-summaries/RadioSummary';
 import NumberSummary from './question-summaries/NumberSummary';
 import TextBoxSummary from './question-summaries/TextBoxSummary';
+import CheckboxesSummary from './question-summaries/CheckboxesSummary';
 
 const FormViewer = ({route}) => {
   const {questions} = route.params;
@@ -34,6 +35,9 @@ const FormViewer = ({route}) => {
               )}
               {question.type === 'textbox' && (
                 <TextBoxSummary question={question} />
+              )}
+              {question.type === 'checkboxes' && (
+                <CheckboxesSummary question={question} />
               )}
             </>
           );
