@@ -119,6 +119,21 @@ const FilledNote = ({
 );
 
 export const CrescendoAutoViewer = ({autoPath}: {autoPath: AutoPath}) => {
+  if (!autoPath || autoPath.length === 0) {
+    return (
+      <View
+        style={{
+          backgroundColor: '#5F5F5F',
+          alignItems: 'center',
+          padding: 10,
+          borderRadius: 10,
+        }}>
+        <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+          No Auto Paths found.
+        </Text>
+      </View>
+    );
+  }
   const autoPathSvgs = [];
   autoPathSvgs.push(
     autoPath.map(note => {
