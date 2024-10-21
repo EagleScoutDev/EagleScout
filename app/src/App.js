@@ -55,7 +55,7 @@ import {UltraDarkTheme} from './themes/UltraDarkTheme';
 import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
 import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from './lib/deviceType';
 
 const Placeholder = () => <View />;
 

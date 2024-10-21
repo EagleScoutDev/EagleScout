@@ -26,7 +26,7 @@ import NotesDB, {
 } from '../../database/Notes';
 import {NoteList} from '../../components/NoteList';
 import {getLighterColor} from '../../lib/ColorReadability';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../../lib/deviceType';
 
 interface Props {
   setChosenTeam: (team: SimpleTeam) => void;

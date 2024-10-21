@@ -13,7 +13,7 @@ import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
 import CompetitionsDB from '../../database/Competitions';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../../lib/deviceType';
 import QuestionSummary from './QuestionSummary';
 import StandardModal from '../../components/modals/StandardModal';
 import {Dimensions} from 'react-native';

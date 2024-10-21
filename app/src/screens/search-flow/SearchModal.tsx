@@ -8,7 +8,7 @@ import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {Dropdown} from 'react-native-element-dropdown';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import {getLighterColor} from '../../lib/ColorReadability';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../../lib/deviceType';
 
 enum FilterState {
   TEAM,

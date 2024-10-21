@@ -8,7 +8,7 @@ import ScoutReportsDB, {
 } from '../../database/ScoutReports';
 import Svg, {Path} from 'react-native-svg';
 import CompetitionsDB from '../../database/Competitions';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../../lib/deviceType';
 
 function ScoutSummary({
   team_number,

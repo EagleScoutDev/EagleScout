@@ -3,7 +3,7 @@ import {View, Text, Pressable, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import {OpenAI} from '../../lib/OpenAI';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../../lib/deviceType';
 import {
   getIdealTextColorFromRGB,
   getLighterColor,

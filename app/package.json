@@ -30,7 +30,6 @@
     "react-native-check-box": "^2.1.7",
     "react-native-code-push": "^8.1.0",
     "react-native-confetti": "^0.1.0",
-    "react-native-device-info": "^10.13.2",
     "react-native-dotenv": "^3.4.9",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-element-dropdown": "^2.10.1",

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from './lib/deviceType';
 
 const PlusNavigationModal = () => {
   const {colors} = useTheme();

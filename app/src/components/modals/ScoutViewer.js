@@ -22,7 +22,7 @@ import SliderType from '../form/SliderType';
 import {ClockHistory, PencilSquare, X} from '../../SVGIcons';
 import {HistorySelectorModal} from './HistorySelectorModal';
 import Svg, {Path} from 'react-native-svg';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../../lib/deviceType';
 
 const DEBUG = false;
 

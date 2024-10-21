@@ -2,7 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {CaretRight} from '../SVGIcons';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import {isTablet} from 'react-native-device-info';
+import {isTablet} from '../lib/deviceType';
 
 interface ListItemProps {
   text: string;
