@@ -126,7 +126,7 @@ const ExportToCSV = () => {
         } else if (q.type === 'number') {
           row.push(report.data[i]);
         } else if (q.type === 'textbox') {
-          row.push(report.data[i]);
+          row.push(`"${report.data[i]}"`);
         } else if (q.type === 'checkboxes') {
           row.push('"' + report.data[i].join(',') + '"');
         }
