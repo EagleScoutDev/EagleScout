@@ -7,4 +7,5 @@ export enum ThemeOptions {
   PURPLE,
   FOREST,
   SYSTEM,
+  COFFEE,
 }
