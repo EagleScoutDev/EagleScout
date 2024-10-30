@@ -260,7 +260,7 @@ export default function Statbotics({team}) {
           }}>
           Overall Statistics
         </Text>
-        {overall && (
+        {overall && 'epa' in overall && (
           <InfoRow>
             <InfoCapsule
               title="Auto EPA"
@@ -289,7 +289,7 @@ export default function Statbotics({team}) {
           Past Competition Stats
         </Text>
         <ScrollView>
-          {competitions != null &&
+          {'epa' in overall && competitions != null &&
             competitions[0] != null &&
             competitions.map(comp => (
               <View style={{paddingVertical: 10}}>
