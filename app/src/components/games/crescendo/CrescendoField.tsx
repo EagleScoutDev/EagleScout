@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {Pressable, View, Text} from 'react-native';
+import {Pressable, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import {AutoPath} from './AutoPath';
 
@@ -99,10 +99,20 @@ export const CrescendoField = ({
         }}>
         <Svg
           height="100"
-          width="100"
           viewBox="0 0 16 16"
-          fill="#8886FF"
-          style={{transform: [{rotate: '30deg'}]}}>
+          width="100"
+          strokeWidth="1"
+          stroke={selectedAlliance === 'blue' ? '#0b6fdf' : '#e43737'}
+          fill="#404040"
+          style={
+            fieldOrientation === 'leftBlue'
+              ? selectedAlliance === 'blue'
+                ? {transform: [{rotate: '30deg'}]}
+                : {transform: [{rotate: '210deg'}]}
+              : selectedAlliance === 'blue'
+              ? {transform: [{rotate: '210deg'}]}
+              : {transform: [{rotate: '30deg'}]}
+          }>
           <Path d="M7.022 1.566a1.13 1.13 0 0 1 1.96 0l6.857 11.667c.457.778-.092 1.767-.98 1.767H1.144c-.889 0-1.437-.99-.98-1.767z" />
         </Svg>
       </View>
