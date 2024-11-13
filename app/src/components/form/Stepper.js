@@ -3,6 +3,7 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native';
 import Question from './Question';
 import {useTheme} from '@react-navigation/native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 function Stepper(props) {
   const {colors} = useTheme();
@@ -70,6 +71,7 @@ function Stepper(props) {
           disabled={props.value === 0}
           onPress={() => {
             changeValue('minus');
+            ReactNativeHapticFeedback.trigger('impactLight');
           }}>
           <View
             style={{
@@ -82,7 +84,11 @@ function Stepper(props) {
         </TouchableOpacity>
 
         <Text style={styles.number}>{props.value}</Text>
-        <TouchableOpacity onPress={() => changeValue('increment')}>
+        <TouchableOpacity
+          onPress={() => {
+            changeValue('increment');
+            ReactNativeHapticFeedback.trigger('impactLight');
+          }}>
           <View style={styles.button}>
             <Text style={styles.stepper_value}>+</Text>
           </View>
