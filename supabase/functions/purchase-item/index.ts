@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const items = {
   "emoji-change": {
-    amount: 50,
+    amount: 10,
     description: "Change your emoji",
   },
 };
