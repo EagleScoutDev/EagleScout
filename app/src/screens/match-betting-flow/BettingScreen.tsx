@@ -1,12 +1,12 @@
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {RouteProp, useNavigation, useTheme} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
-  SafeAreaView,
-  Pressable,
   Image,
   ImageBackground,
+  Pressable,
+  SafeAreaView,
+  Text,
+  View,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Svg, {Path} from 'react-native-svg';
@@ -25,14 +25,23 @@ interface Player {
   betAlliance: string;
 }
 
-export const BettingScreen = ({route}) => {
+export const BettingScreen = ({
+  route,
+}: {
+  route: RouteProp<
+    {
+      BettingScreen: {matchNumber: number};
+    },
+    'BettingScreen'
+  >;
+}) => {
   const {matchNumber} = route.params;
   console.log('matchNumber', matchNumber);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const {colors} = useTheme();
-  const [players, setPlayers] = useState([]);
-  const [selectedAlliance, setSelectedAlliance] = useState();
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [selectedAlliance, setSelectedAlliance] = useState<string>();
   const [betAmount, setBetAmount] = useState(0);
   const [userProfile, setUserProfile] = useState<ProfilesReturnData | null>(
     null,
@@ -130,13 +139,10 @@ export const BettingScreen = ({route}) => {
           setSubscribed(true);
         });
     })();
-  }, []);
+  }, [matchNumber]);
 
   useEffect(() => {
     console.log('effect', subscribed, supabaseChannel, selectedAlliance);
-    //if (!subscribed || !supabaseChannel || !selectedAlliance) {
-    // return;
-    //}
     if (!selectedAlliance || !supabaseChannel) {
       return;
     }
@@ -223,6 +229,12 @@ export const BettingScreen = ({route}) => {
                 </Text>
               </View>
             ))}
+          {!players ||
+            (players.length < 2 && (
+              <Text style={{color: colors.text, fontSize: 18}}>
+                Waiting for players...
+              </Text>
+            ))}
         </View>
 
         <Text style={{color: colors.text, fontSize: 30, fontWeight: 'bold'}}>
@@ -300,10 +312,9 @@ export const BettingScreen = ({route}) => {
               containerStyle={{
                 flex: 1,
                 alignSelf: 'center',
-                justifySelf: 'center',
               }}
               value={currentBet}
-              onValueChange={setCurrentBet}
+              onValueChange={(value: Array<number>) => setCurrentBet(value[0])}
               minimumValue={1}
               maximumValue={1000}
               step={1}
