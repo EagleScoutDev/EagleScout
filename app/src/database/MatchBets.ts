@@ -13,6 +13,11 @@ export interface MatchBet {
   updated_at: Date;
 }
 
+export interface MatchBetWithUserData extends MatchBet {
+  user_name: string;
+  user_emoji: string;
+}
+
 export class MatchBets {
   static async checkIfMatchExists(
     match_number: number,
@@ -151,6 +156,71 @@ export class MatchBets {
         created_at: bet.created_at,
         updated_at: bet.updated_at,
       }));
+    }
+  }
+
+  static async getMatchBetsForMatch(
+    match_number: number,
+  ): Promise<MatchBetWithUserData[]> {
+    const activeCompId = await CompetitionsDB.getCurrentCompetition();
+    let {exists, id} = await this.checkIfMatchExists(
+      match_number,
+      activeCompId!.id,
+    );
+    if (!exists) {
+      return [];
+    }
+    const {data, error} = await supabase
+      .from('match_bets')
+      .select('*, profiles!inner(name, emoji)')
+      .eq('match_id', id);
+    if (error) {
+      throw error;
+    }
+    return data.map((bet: any) => ({
+      id: bet.id,
+      user_id: bet.user_id,
+      match_id: bet.match_id,
+      match_number: match_number,
+      alliance: bet.alliance,
+      amount: bet.amount,
+      created_at: bet.created_at,
+      updated_at: bet.updated_at,
+      user_name: bet.profiles.name,
+      user_emoji: bet.profiles.emoji,
+    }));
+  }
+
+  static async getMatchBetForUser(
+    user_id: string,
+    match_number: number,
+  ): Promise<MatchBet | null> {
+    const activeCompId = await CompetitionsDB.getCurrentCompetition();
+    let {exists, id} = await this.checkIfMatchExists(
+      match_number,
+      activeCompId!.id,
+    );
+    if (!exists) {
+      return null;
+    }
+    const {data, error} = await supabase
+      .from('match_bets')
+      .select('*, matches!inner(number)')
+      .eq('user_id', user_id)
+      .eq('match_id', id);
+    if (error) {
+      throw error;
+    } else {
+      return data.map((bet: any) => ({
+        id: bet.id,
+        user_id: bet.user_id,
+        match_id: bet.match_id,
+        match_number: bet.matches.number,
+        alliance: bet.alliance,
+        amount: bet.amount,
+        created_at: bet.created_at,
+        updated_at: bet.updated_at,
+      }))[0];
     }
   }
 }

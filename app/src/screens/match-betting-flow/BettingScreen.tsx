@@ -62,6 +62,14 @@ export const BettingScreen = ({
       }
       const profile = await ProfilesDB.getProfile(user.id);
       setUserProfile(profile);
+      const existingData = await MatchBets.getMatchBetsForMatch(matchNumber);
+      const userExistingData = existingData.find(
+        data => data.user_id === user.id,
+      );
+      if (userExistingData) {
+        setBetAmount(userExistingData.amount);
+        setSelectedAlliance(userExistingData.alliance);
+      }
       const channel = supabase.channel(`match-betting-${matchNumber}`, {
         config: {
           presence: {
@@ -74,40 +82,41 @@ export const BettingScreen = ({
         .on('presence', {event: 'sync'}, () => {
           const newState = channel.presenceState();
           console.log('sync', newState);
-          setPlayers(
-            Object.entries(newState).map(([key, [value]]: [string, any]) => ({
+          const newPlayers = Object.entries(newState).map(
+            ([key, [value]]: [string, any]) => ({
               id: key,
               name: value.user_name,
               emoji: value.user_emoji,
               betAmount: value.bet_amount,
               betAlliance: value.bet_alliance,
-            })),
+            }),
           );
-        })
-        .on('presence', {event: 'join'}, ({key, newPresences}) => {
-          console.log('join', key, newPresences);
-          if (key === user.id) {
-            return;
+          for (const player of existingData) {
+            const existingPlayer = existingData.find(
+              p => p.user_id === player.user_id,
+            );
+            if (!newPlayers.find(p => p.id === player.user_id)) {
+              newPlayers.push({
+                id: player.user_id,
+                name: player.user_name,
+                emoji: player.user_emoji,
+                betAmount: existingPlayer?.amount || 0,
+                betAlliance: existingPlayer?.alliance || '',
+              });
+            } else {
+              newPlayers.map(p => {
+                if (p.id === player.user_id) {
+                  return {
+                    ...p,
+                    betAmount: existingPlayer?.amount || 0,
+                    betAlliance: existingPlayer?.alliance || '',
+                  };
+                }
+                return p;
+              });
+            }
           }
-          const newPlayer = Object.values(newPresences).find(
-            (presence: any) => presence.user_id === key,
-          );
-          if (!newPlayer) {
-            return;
-          }
-          setPlayers(prev => [
-            ...prev,
-            {
-              id: key,
-              name: newPlayer.user_name,
-              emoji: newPlayer.user_emoji,
-              betAmount: newPlayer.bet_amount,
-              betAlliance: newPlayer.bet_alliance,
-            },
-          ]);
-        })
-        .on('presence', {event: 'leave'}, ({key, leftPresences}) => {
-          console.log('leave', key, leftPresences);
+          setPlayers(newPlayers);
         })
         .on('broadcast', {event: 'bet'}, ({payload}) => {
           console.log('broadcast', payload);
@@ -125,39 +134,57 @@ export const BettingScreen = ({
           );
         })
         .subscribe(async status => {
+          console.log('status', status);
           if (status !== 'SUBSCRIBED') {
             return;
           }
+          console.log('sending track');
           const presenceTrackStatus = await channel.track({
             user_id: user.id,
             user_name: profile?.name,
             user_emoji: profile?.emoji,
-            bet_amount: 0,
-            bet_alliance: '',
+            bet_amount: userExistingData?.amount || 0,
+            bet_alliance: userExistingData?.alliance || '',
           });
           console.log('presenceTrackStatus', presenceTrackStatus);
           setSubscribed(true);
         });
     })();
+    return () => {
+      if (supabaseChannel) {
+        supabaseChannel
+          .untrack()
+          .catch(e => console.error('error untracking', e));
+        supabaseChannel
+          .unsubscribe()
+          .catch(e => console.error('error unsubscribing', e));
+      }
+    };
+    // supabaseChannel is not a dependency because it is not used in the effect. if set, will result in inf loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchNumber]);
 
   useEffect(() => {
-    console.log('effect', subscribed, supabaseChannel, selectedAlliance);
+    console.log('effect', subscribed, !!supabaseChannel, selectedAlliance);
     if (!selectedAlliance || !supabaseChannel) {
       return;
     }
-    console.log('sending bet', betAmount, selectedAlliance);
-    supabaseChannel.send({
-      type: 'broadcast',
-      event: 'bet',
-      payload: {
-        user_id: userProfile?.id,
-        user_name: userProfile?.name,
-        user_emoji: userProfile?.emoji,
-        bet_amount: betAmount,
-        bet_alliance: selectedAlliance,
-      },
-    });
+    console.log('sending bet update', betAmount, selectedAlliance);
+    supabaseChannel
+      .send({
+        type: 'broadcast',
+        event: 'bet',
+        payload: {
+          user_id: userProfile?.id,
+          user_name: userProfile?.name,
+          user_emoji: userProfile?.emoji,
+          bet_amount: betAmount,
+          bet_alliance: selectedAlliance,
+        },
+      })
+      .catch(e => console.error('error sending bet', e));
+    // userProfile is not a dependency because it should never change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscribed, supabaseChannel, selectedAlliance, betAmount]);
 
   if (!userProfile) {
@@ -198,37 +225,40 @@ export const BettingScreen = ({
           marginTop: '5%',
         }}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          {players
-            .filter((p: Player) => p.id !== userProfile.id)
-            .map((player: Player) => (
-              <View style={{flexDirection: 'column', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontSize: 60,
-                    fontWeight: 'bold',
-                  }}>
-                  {player.emoji}
-                </Text>
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontSize: 14,
-                  }}>
-                  {player.name}
-                </Text>
-                <Text
-                  style={{
-                    color: player.betAlliance
-                      ? player.betAlliance
-                      : colors.text,
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                  }}>
-                  {player.betAmount}
-                </Text>
-              </View>
-            ))}
+          {players.length >= 2 &&
+            players
+              .filter((p: Player) => p.id !== userProfile.id)
+              .map((player: Player) => (
+                <View
+                  style={{flexDirection: 'column', alignItems: 'center'}}
+                  key={player.id}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: 60,
+                      fontWeight: 'bold',
+                    }}>
+                    {player.emoji}
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: 14,
+                    }}>
+                    {player.name}
+                  </Text>
+                  <Text
+                    style={{
+                      color: player.betAlliance
+                        ? player.betAlliance
+                        : colors.text,
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                    }}>
+                    {player.betAmount}
+                  </Text>
+                </View>
+              ))}
           {!players ||
             (players.length < 2 && (
               <Text style={{color: colors.text, fontSize: 18}}>
