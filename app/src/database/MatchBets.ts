@@ -223,4 +223,23 @@ export class MatchBets {
       }))[0];
     }
   }
+
+  static async isMatchOver(match_number: number): Promise<boolean> {
+    const activeCompId = await CompetitionsDB.getCurrentCompetition();
+    let {exists, id} = await this.checkIfMatchExists(
+      match_number,
+      activeCompId!.id,
+    );
+    if (!exists) {
+      return false;
+    }
+    const {data, error} = await supabase
+      .from('match_bets_results')
+      .select('id')
+      .eq('match_id', id);
+    if (error) {
+      throw error;
+    }
+    return data.length > 0;
+  }
 }

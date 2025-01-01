@@ -47,6 +47,7 @@ export const BettingScreen = ({
   const [userProfile, setUserProfile] = useState<ProfilesReturnData | null>(
     null,
   );
+  const [matchOver, setMatchOver] = useState(false);
 
   const [betActive, setBetActive] = useState(false);
   const [currentBet, setCurrentBet] = useState(0);
@@ -57,6 +58,11 @@ export const BettingScreen = ({
 
   useEffect(() => {
     (async () => {
+      const isMatchOver = await MatchBets.isMatchOver(matchNumber);
+      setMatchOver(isMatchOver);
+      if (isMatchOver) {
+        return;
+      }
       const user = await UserAttributesDB.getCurrentUserAttribute();
       if (!user) {
         return;
@@ -187,6 +193,53 @@ export const BettingScreen = ({
     // userProfile is not a dependency because it should never change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscribed, supabaseChannel, selectedAlliance, betAmount]);
+
+  if (matchOver) {
+    return (
+      <SafeAreaView>
+        <Pressable
+          style={{
+            position: 'absolute',
+            top: insets.top,
+            left: 20,
+          }}
+          onPress={() => {
+            navigation.goBack();
+          }}>
+          <Svg
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="black"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round">
+            <Path d="M15 18l-6-6 6-6" />
+          </Svg>
+        </Pressable>
+        <View
+          style={{
+            height: '95%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 20,
+            marginTop: '5%',
+            padding: 20,
+          }}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 24,
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}>
+            Hey, you! Don't try to bet on a match that's over 😉
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!userProfile) {
     return null;
