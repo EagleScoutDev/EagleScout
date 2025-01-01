@@ -16,6 +16,7 @@ import UserAttributesDB from '../../database/UserAttributes';
 import {RealtimeChannel} from '@supabase/supabase-js';
 import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {MatchBets} from '../../database/MatchBets';
+import {BettingInfoBottomSheet} from './components/BettingInfoBottomSheet';
 
 interface Player {
   id: string;
@@ -477,6 +478,7 @@ export const BettingScreen = ({
           </View>
         </View>
       </View>
+      <BettingInfoBottomSheet />
     </SafeAreaView>
   );
 };

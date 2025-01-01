@@ -509,11 +509,27 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.12.1):
+  - RNGestureHandler (2.21.2):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNReactNativeHapticFeedback (2.2.0):
     - React-Core
-  - RNReanimated (3.7.2):
+  - RNReanimated (3.16.6):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated (= 3.16.6)
+    - RNReanimated/worklets (= 3.16.6)
+  - RNReanimated/reanimated (3.16.6):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated/apple (= 3.16.6)
+  - RNReanimated/reanimated/apple (3.16.6):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
+  - RNReanimated/worklets (3.16.6):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
@@ -802,9 +818,9 @@ SPEC CHECKSUMS:
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
+  RNGestureHandler: 21ec7c46741881c8f164961da99c6ec42e9d544b
   RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
-  RNReanimated: a8b800d5b74008211fc6c4e3f8c6dd1833b12c7c
+  RNReanimated: 3844cfbbbde769fea774709b892b07dd5036e528
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
   RNSVG: ed492aaf3af9ca01bc945f7a149d76d62e73ec82
