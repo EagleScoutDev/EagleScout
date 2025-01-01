@@ -1,16 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Button,
-  Modal,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Alert, Modal, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import ProfilesDB from '../../database/Profiles';
 import {supabase} from '../../lib/supabase';
+import StandardButton from '../../components/StandardButton';
+import {ScoutcoinIcon} from '../../SVGIcons';
 
 interface LeaderboardUser {
   id: string;
@@ -49,12 +43,12 @@ export const SendScoutcoinModal = ({
       setSending(false);
       return;
     }
-    if (parseInt(amount) <= 0) {
+    if (parseInt(amount, 10) <= 0) {
       Alert.alert('Please enter a positive amount!');
       setSending(false);
       return;
     }
-    if (parseInt(amount) > currentScoutcoins) {
+    if (parseInt(amount, 10) > currentScoutcoins) {
       Alert.alert('You do not have enough scoutcoins!');
       setSending(false);
       return;
@@ -62,7 +56,7 @@ export const SendScoutcoinModal = ({
     await supabase.functions.invoke('send-scoutcoin', {
       body: JSON.stringify({
         targetUserId: targetUser.id,
-        amount: parseInt(amount),
+        amount: parseInt(amount, 10),
         description,
       }),
     });
@@ -72,6 +66,7 @@ export const SendScoutcoinModal = ({
 
   const styles = StyleSheet.create({
     centeredView: {
+      margin: 20,
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
@@ -83,14 +78,12 @@ export const SendScoutcoinModal = ({
       borderRadius: 20,
       padding: 35,
       alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
+      width: '100%',
+    },
+    coinContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 2,
     },
     modalText: {
       marginBottom: 15,
@@ -99,16 +92,20 @@ export const SendScoutcoinModal = ({
       fontWeight: 'bold',
     },
     input: {
-      height: 40,
-      width: 200,
+      width: '100%',
       margin: 12,
       borderWidth: 1,
+      borderRadius: 10,
       padding: 10,
     },
     buttonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-around',
       width: '100%',
+    },
+    mask: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
   });
 
@@ -118,12 +115,16 @@ export const SendScoutcoinModal = ({
       transparent={true}
       visible={true}
       onRequestClose={onClose}>
+      <View style={styles.mask} />
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
             Send Scoutcoin to {targetUser.name}
           </Text>
-          <Text>Current Scoutcoins: {currentScoutcoins}</Text>
+          <View style={styles.coinContainer}>
+            <Text>Your Scoutcoin: {currentScoutcoins}</Text>
+            <ScoutcoinIcon width="12" height="12" fill="gray" />
+          </View>
           <TextInput
             style={styles.input}
             placeholder="Amount"
@@ -138,17 +139,19 @@ export const SendScoutcoinModal = ({
             onChangeText={setDescription}
           />
           <View style={styles.buttonContainer}>
-            <Button
-              title="Send"
-              onPress={sendScoutcoin}
-              disabled={sending}
-              color={colors.primary}
-            />
-            <Button
-              title="Cancel"
+            <StandardButton
+              width="40%"
+              text="Cancel"
               onPress={onClose}
               disabled={sending}
               color={colors.notification}
+            />
+            <StandardButton
+              width="50%"
+              text="Send"
+              onPress={sendScoutcoin}
+              disabled={sending}
+              color={colors.primary}
             />
           </View>
         </View>
