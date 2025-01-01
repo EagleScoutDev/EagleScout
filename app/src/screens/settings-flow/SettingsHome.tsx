@@ -4,7 +4,6 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
-  Settings,
   StyleSheet,
   Text,
   View,
@@ -16,14 +15,12 @@ import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import SettingsPopup from './SettingsPopup';
 import React, {useEffect, useState} from 'react';
-import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
 import {ThemeOptions} from '../../themes/ThemeOptions';
 import {getLighterColor} from '../../lib/ColorReadability';
-import TabHeader from '../../components/TabHeader';
 
 const VERSION = '7.6.1';
 
@@ -251,6 +248,26 @@ SettingsHomeProps) => {
                 viewBox="0 0 16 16">
                 <Path d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
                 <Path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+              </Svg>
+            )}
+          />
+        </ListItemContainer>
+        <ListItemContainer title={'Scoutcoin'}>
+          <ListItem
+            text={'Shop'}
+            onPress={() => {}}
+            caretVisible={false}
+            disabled={false}
+            icon={() => (
+              <Svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill={getLighterColor(colors.primary)}>
+                <Path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                <Path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                <Path d="M17 17h-11v-14h-2" />
+                <Path d="M6 5l14 1l-1 7h-13" />
               </Svg>
             )}
           />
