@@ -17,6 +17,7 @@ import {RealtimeChannel} from '@supabase/supabase-js';
 import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {MatchBets} from '../../database/MatchBets';
 import {BettingInfoBottomSheet} from './components/BettingInfoBottomSheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Player {
   id: string;
@@ -55,6 +56,8 @@ export const BettingScreen = ({
   const [subscribed, setSubscribed] = useState(false);
   const [supabaseChannel, setSupabaseChannel] =
     useState<RealtimeChannel | null>(null);
+
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -193,6 +196,17 @@ export const BettingScreen = ({
     // userProfile is not a dependency because it should never change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscribed, supabaseChannel, selectedAlliance, betAmount]);
+
+  useEffect(() => {
+    AsyncStorage.getItem('bettingTutorialCompleted').then(value => {
+      if (value === 'true') {
+        setShowBottomSheet(false);
+      } else {
+        setShowBottomSheet(true);
+        AsyncStorage.setItem('bettingTutorialCompleted', 'true');
+      }
+    });
+  }, []);
 
   if (matchOver) {
     return (
@@ -531,7 +545,7 @@ export const BettingScreen = ({
           </View>
         </View>
       </View>
-      <BettingInfoBottomSheet />
+      {showBottomSheet && <BettingInfoBottomSheet />}
     </SafeAreaView>
   );
 };
