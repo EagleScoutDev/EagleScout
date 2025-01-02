@@ -1,18 +1,18 @@
+import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {ActivityIndicator, Pressable, Text, View} from 'react-native';
 import {MatchBet, MatchBets} from '../../../database/MatchBets';
 import {supabase} from '../../../lib/supabase';
+import {getIdealTextColor} from '../../../lib/ColorReadability';
 
 const BetCard = ({
   matchNumber,
-  matchId,
   onConfirm,
 }: {
   matchNumber: number;
-  matchId: number;
   onConfirm: (result: 'red' | 'blue' | 'tie') => void;
 }) => {
+  const [pressed, setPressed] = useState(false);
   const {colors} = useTheme();
   return (
     <View
@@ -20,17 +20,35 @@ const BetCard = ({
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: colors.card,
-        padding: 10,
+        padding: 15,
         margin: 10,
         borderRadius: 10,
       }}>
-      <Text
+      <View
         style={{
-          fontSize: 16,
-          fontWeight: 'bold',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
         }}>
-        Match {matchNumber}
-      </Text>
+        {pressed && (
+          <ActivityIndicator
+            size="small"
+            color={colors.text}
+            style={{marginRight: 10}}
+          />
+        )}
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: colors.text,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          Match {matchNumber}
+        </Text>
+      </View>
       <View
         style={{
           display: 'flex',
@@ -44,10 +62,16 @@ const BetCard = ({
             borderRadius: 10,
             margin: 10,
           }}
-          onPress={() => onConfirm('blue')}>
+          onPress={() => {
+            if (pressed) {
+              return;
+            }
+            setPressed(true);
+            onConfirm('blue');
+          }}>
           <Text
             style={{
-              color: colors.text,
+              color: getIdealTextColor('blue'),
             }}>
             Blue win
           </Text>
@@ -58,10 +82,16 @@ const BetCard = ({
             borderRadius: 10,
             margin: 10,
           }}
-          onPress={() => onConfirm('tie')}>
+          onPress={() => {
+            if (pressed) {
+              return;
+            }
+            setPressed(true);
+            onConfirm('tie');
+          }}>
           <Text
             style={{
-              color: colors.card,
+              color: colors.text,
             }}>
             Tie
           </Text>
@@ -73,10 +103,16 @@ const BetCard = ({
             borderRadius: 10,
             margin: 10,
           }}
-          onPress={() => onConfirm('red')}>
+          onPress={() => {
+            if (pressed) {
+              return;
+            }
+            setPressed(true);
+            onConfirm('red');
+          }}>
           <Text
             style={{
-              color: colors.text,
+              color: getIdealTextColor('red'),
             }}>
             Red win
           </Text>
@@ -118,6 +154,7 @@ export const ManageBets = () => {
       }}>
       <Text
         style={{
+          paddingTop: 20,
           fontSize: 20,
           fontWeight: 'bold',
           color: colors.text,
@@ -133,13 +170,13 @@ export const ManageBets = () => {
         {matches.map(({matchNumber, matchId}) => (
           <BetCard
             matchNumber={matchNumber}
-            matchId={matchId}
             onConfirm={async result => {
               await supabase.functions.invoke('confirm-bet', {
                 body: JSON.stringify({matchId, result}),
               });
               refresh();
             }}
+            key={matchId}
           />
         ))}
       </View>

@@ -1,16 +1,11 @@
 import React from 'react';
-import {View, Text} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import DataHome from './DataHome';
-import Picklists from '../../database/Picklists';
-import PicklistsManagerScreen from '../picklist-flow/PicklistsManagerScreen';
 import PicklistsManager from '../picklist-flow/PicklistsManager';
 import DataAggregator from './DataAggregator';
-import CompetitionsList from '../competitions-flow/CompetitionsList';
 import CompetitionsView from '../competitions-flow/CompetitionsView';
 import UserManager from './UserManager';
-import FormCreationMain from '../form-creation-flow/FormCreationMain';
 import FormCreation from '../form-creation-flow/FormCreation';
 import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
 import ScoutAssignments from '../scout-assignments-flow/ScoutAssignments';
@@ -19,6 +14,7 @@ import {ManageBets} from '../match-betting-flow/admin/ManageBets';
 import {ScoutcoinLedger} from '../scoutcoin-flow/ScoutcoinLedger';
 import {ScoutcoinLeaderboard} from '../scoutcoin-flow/ScoutcoinLeaderboard';
 import MatchPredictor from './MatchPredictor';
+import {ScoutcoinShop} from '../scoutcoin-flow/ScoutcoinShop';
 
 const DataStack = createStackNavigator();
 
@@ -90,6 +86,13 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Scoutcoin Ledger'}
         component={ScoutcoinLedger}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Scoutcoin Shop'}
+        component={ScoutcoinShop}
         options={{
           headerBackTitle: 'Back',
         }}

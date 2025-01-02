@@ -1,6 +1,4 @@
 import {supabase} from '../lib/supabase';
-import ProfilesDB from './Profiles';
-import {TagStructure} from './Tags';
 
 export interface SimpleTeam {
   key: string;
@@ -63,13 +61,6 @@ class PicklistsDB {
     } else {
       return data;
     }
-  }
-
-  static async getUserId() {
-    ProfilesDB.getCurrentUserProfile().then(profile => {
-      console.log('Profile id:', profile.id);
-      return profile.id;
-    });
   }
 
   static async createPicklist(name: string, teams: PicklistTeam[], cmpId: any) {

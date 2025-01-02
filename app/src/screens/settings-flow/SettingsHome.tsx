@@ -4,7 +4,6 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
-  Settings,
   StyleSheet,
   Text,
   View,
@@ -16,26 +15,21 @@ import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import SettingsPopup from './SettingsPopup';
 import React, {useEffect, useState} from 'react';
-import PicklistsDB from '../../database/Picklists';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
-import {ThemeOptions} from '../../themes/ThemeOptions';
 import {getLighterColor} from '../../lib/ColorReadability';
-import TabHeader from '../../components/TabHeader';
 
 const VERSION = '7.6.1 (OTA 1)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
-  setTheme: (arg0: ThemeOptions) => void;
   // setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
-  setTheme,
 }: // setOled,
 SettingsHomeProps) => {
   const {colors} = useTheme();
@@ -167,7 +161,6 @@ SettingsHomeProps) => {
               navigation.navigate('Edit Profile', {
                 initialFirstName: user ? user.first_name : '',
                 initialLastName: user ? user.last_name : '',
-                initialEmoji: user ? user.emoji : '🙂',
                 //initialEmail: user.email,
               });
             }}
@@ -298,7 +291,6 @@ SettingsHomeProps) => {
           visible={settingsPopupActive}
           setVisible={setSettingsPopupActive}
           // setOled={setOled}
-          setTheme={setTheme}
           navigation={navigation}
         />
         <Text

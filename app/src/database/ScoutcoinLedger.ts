@@ -18,10 +18,10 @@ import {supabase} from '../lib/supabase';
 export interface ScoutcoinLedgerItem {
   id: number;
   description: string;
-  src_user: string;
-  src_user_name: string;
-  dest_user: string;
-  dest_user_name: string;
+  src_user: string | null;
+  src_user_name: string | null;
+  dest_user: string | null;
+  dest_user_name: string | null;
   amount_change: number;
   created_at: Date;
 }
@@ -44,10 +44,8 @@ export class ScoutcoinLedger {
           description: item.description,
           src_user: item.src_user,
           dest_user: item.dest_user,
-          src_user_name: item.src_user_name ? item.src_user_name.name : 'Bank',
-          dest_user_name: item.dest_user_name
-            ? item.dest_user_name.name
-            : 'Bank',
+          src_user_name: item.src_user_name?.name,
+          dest_user_name: item.dest_user_name?.name,
           amount_change: item.amount_change,
           created_at: new Date(item.created_at),
         };

@@ -21,8 +21,6 @@ alter table "public"."profiles" add column "emoji" text not null default '😎':
 
 alter table "public"."profiles" add column "scoutcoins" integer not null default 0;
 
-alter table "public"."scout_reports" add column "auto_path" jsonb;
-
 CREATE UNIQUE INDEX match_bets_pkey ON public.match_bets USING btree (id);
 
 alter table "public"."match_bets" add constraint "match_bets_pkey" PRIMARY KEY using index "match_bets_pkey";
@@ -48,7 +46,7 @@ begin
     FROM matches
     WHERE number = match_number_arg
         AND competition_id = competition_id_arg;
-    
+
     IF match_id_var IS NULL THEN
         INSERT INTO matches (number, competition_id)
         VALUES (match_number_arg, competition_id_arg)
@@ -76,7 +74,7 @@ begin
     FROM matches
     WHERE number = match_number_arg
         AND competition_id = competition_id_arg;
-    
+
     IF match_id_var IS NULL THEN
         INSERT INTO matches (number, competition_id)
         VALUES (match_number_arg, competition_id_arg)
@@ -92,5 +90,3 @@ begin
 end;
 $function$
 ;
-
-

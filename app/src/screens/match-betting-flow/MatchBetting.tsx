@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {
-  View,
+  Keyboard,
+  Pressable,
+  StyleSheet,
   Text,
   TextInput,
-  StyleSheet,
-  Pressable,
-  Keyboard,
+  View,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import UserAttributesDB from '../../database/UserAttributes';

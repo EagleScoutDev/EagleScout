@@ -19,8 +19,6 @@ create table "public"."scoutcoin_ledger" (
 
 alter table "public"."scoutcoin_ledger" enable row level security;
 
-alter table "public"."scout_reports" add column "timeline_data" jsonb;
-
 CREATE UNIQUE INDEX match_bets_results_pkey ON public.match_bets_results USING btree (id);
 
 CREATE UNIQUE INDEX scoutcoin_ledger_pkey ON public.scoutcoin_ledger USING btree (id);
@@ -95,5 +93,3 @@ begin
 end;
 $function$
 ;
-
-

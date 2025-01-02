@@ -1,27 +1,16 @@
-import React, {
-  StyleSheet,
-  TextInput,
-  View,
-  Alert,
-  Pressable,
-} from 'react-native';
+import React, {StyleSheet, TextInput, View, Alert} from 'react-native';
 import StandardButton from '../../components/StandardButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
-import EmojiPicker from 'rn-emoji-keyboard';
-import {Text} from 'react-native';
 
 function EditProfile({navigation, route, getUser}) {
-  const {initialFirstName, initialLastName, initialEmoji} = route.params;
+  const {initialFirstName, initialLastName} = route.params;
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
   const [isLoading, setIsLoading] = useState(false);
-  const [emojiModalVisible, setEmojiModalVisible] = useState(false);
-  const [emoji, setEmoji] = useState(initialEmoji);
-  const [emojiChanged, setEmojiChanged] = useState(false);
 
   const {colors} = useTheme();
   const styles = StyleSheet.create({
@@ -55,37 +44,11 @@ function EditProfile({navigation, route, getUser}) {
           value={lastName}
           defaultValue={initialLastName}
         />
-        <MinimalSectionHeader title={'Emoji'} />
-        <Pressable onPress={() => setEmojiModalVisible(true)}>
-          <Text
-            style={{
-              fontSize: 60,
-              fontWeight: 'bold',
-              color: colors.text,
-              backgroundColor: colors.card,
-              padding: 10,
-              margin: 10,
-              borderRadius: 10,
-              alignSelf: 'flex-start',
-            }}>
-            {emoji}
-          </Text>
-        </Pressable>
-        <EmojiPicker
-          onEmojiSelected={e => {
-            setEmoji(e.emoji);
-            setEmojiChanged(true);
-          }}
-          open={emojiModalVisible}
-          onClose={() => setEmojiModalVisible(false)}
-        />
       </View>
       <View style={styles.button_row}>
         <StandardButton
           color={
-            firstName === initialFirstName &&
-            lastName === initialLastName &&
-            emoji === initialEmoji
+            firstName === initialFirstName && lastName === initialLastName
               ? 'grey'
               : colors.primary
           }
@@ -97,7 +60,7 @@ function EditProfile({navigation, route, getUser}) {
             } = await supabase.auth.getUser();
             const {error} = await supabase
               .from('profiles')
-              .update({first_name: firstName, last_name: lastName, emoji})
+              .update({first_name: firstName, last_name: lastName})
               .eq('id', user.id);
             if (error) {
               console.error(error);
@@ -106,7 +69,7 @@ function EditProfile({navigation, route, getUser}) {
 
             const {data: data2, error: error2} = await supabase
               .from('profiles')
-              .select('first_name, last_name, emoji')
+              .select('first_name, last_name')
               .eq('id', user.id)
               .single();
             if (error2) {
@@ -124,22 +87,6 @@ function EditProfile({navigation, route, getUser}) {
                 }),
               );
             }
-
-            if (emojiChanged) {
-              const {data, error} = await supabase.functions.invoke(
-                'purchase-item',
-                {
-                  body: JSON.stringify({
-                    itemName: 'emoji-change',
-                  }),
-                },
-              );
-              if (data !== 'success') {
-                Alert.alert(data);
-              }
-              setEmojiChanged(false);
-            }
-
             setFirstName('');
             setLastName('');
             setIsLoading(false);
@@ -153,7 +100,6 @@ function EditProfile({navigation, route, getUser}) {
         />
       </View>
     </View>
-    // </StandardModal>
   );
 }
 

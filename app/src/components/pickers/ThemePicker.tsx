@@ -1,13 +1,10 @@
 import {Pressable, ScrollView, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MinimalSectionHeader from '../MinimalSectionHeader';
-import SegmentedOption from './SegmentedOption';
 import FormHelper from '../../FormHelper';
 import {useTheme} from '@react-navigation/native';
 import {ThemeOptions} from '../../themes/ThemeOptions';
 import {ThemeOptionsMap} from '../../themes/ThemeOptionsMap';
-import {Circle} from 'react-native-svg';
 
 function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
   const {colors} = useTheme();
@@ -34,7 +31,6 @@ function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
 
   return (
     <View>
-      <MinimalSectionHeader title="Theme" />
       <ScrollView
         style={{
           margin: 20,
