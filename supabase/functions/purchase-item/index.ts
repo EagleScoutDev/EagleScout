@@ -3,15 +3,15 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js";
 const items = {
   "emoji-change": {
     amount: 5,
-    description: "Emoji Change",
+    name: "Emoji Change",
   },
   "theme-change": {
-    amount: 10,
-    description: "Theme Change",
+    amount: 8,
+    name: "Theme Change",
   },
   "icon-change": {
-    amount: 15,
-    description: "Icon Change",
+    amount: 20,
+    name: "Icon Change",
   },
 };
 
@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
     }
     await adminSupabase.from("scoutcoin_ledger").insert([
       {
-        description: `Bought item: ${item.description}`,
+        description: `Bought item: ${item.name}`,
         src_user: user.id,
         dest_user: null,
         amount_change: -item.amount,
