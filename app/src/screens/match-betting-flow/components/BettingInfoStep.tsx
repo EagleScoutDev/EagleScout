@@ -1,8 +1,9 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {BottomSheetView} from '@gorhom/bottom-sheet';
 import {StyleSheet, Text} from 'react-native';
 import StandardButton from '../../../components/StandardButton';
+import {Theme} from '@react-navigation/native/src/types';
 
 export const BettingInfoStep = ({
   index,
@@ -19,7 +20,8 @@ export const BettingInfoStep = ({
   handleBottomSheetClose: () => void;
   children: React.ReactNode;
 }) => {
-  const {colors} = useTheme();
+  const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const {navigate} = useNavigation();
 
   const handleNavigatePress = useCallback(() => {
@@ -35,7 +37,7 @@ export const BettingInfoStep = ({
       <BottomSheetView style={styles.buttonBox}>
         <StandardButton
           width={'100%'}
-          color={colors.primary}
+          color={theme.colors.primary}
           onPress={isFinalScreen ? handleBottomSheetClose : handleNavigatePress}
           text={isFinalScreen ? 'Close' : 'Next'}
         />
@@ -44,33 +46,34 @@ export const BettingInfoStep = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  heading: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: 'black',
-    paddingBottom: 20,
-  },
-  subheading: {
-    fontSize: 20,
-    color: 'black',
-    paddingBottom: 10,
-  },
-  infoBox: {
-    borderWidth: 2,
-    borderColor: 'gray',
-    borderRadius: 12,
-    padding: 10,
-    width: '100%',
-  },
-  buttonBox: {
-    width: '100%',
-    alignSelf: 'flex-end',
-  },
-});
+const makeStyles = ({colors}: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    heading: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      color: colors.text,
+      paddingBottom: 20,
+    },
+    subheading: {
+      fontSize: 20,
+      color: colors.text,
+      paddingBottom: 10,
+    },
+    infoBox: {
+      borderWidth: 2,
+      borderColor: colors.text,
+      borderRadius: 12,
+      padding: 10,
+      width: '100%',
+    },
+    buttonBox: {
+      width: '100%',
+      alignSelf: 'flex-end',
+    },
+  });

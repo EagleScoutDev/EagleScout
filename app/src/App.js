@@ -3,12 +3,7 @@ import Login from './screens/login-flow/Login';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
-import {
-  NavigationContainer,
-  DarkTheme,
-  useTheme,
-  useNavigation,
-} from '@react-navigation/native';
+import {useTheme, useNavigation} from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -21,42 +16,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
-import {
-  ClipboardWithGraph,
-  MagnifyingGlass,
-  DocumentWithPlus,
-  Trophy,
-  ListWithDots,
-  TwoPeople,
-  Gear,
-  CheckList,
-  ViewStacked,
-} from './SVGIcons';
-import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/home-flow/Home';
-import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
-import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
 import ResetPassword from './screens/login-flow/ResetPassword';
-import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
-import {UltraDarkTheme} from './themes/UltraDarkTheme';
-import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
-import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
 import {isTablet} from './lib/deviceType';
 import {ThemeContext} from './lib/contexts/ThemeContext';
+import {ThemedNavigationContainer} from './components/ThemedNavigationContainer';
 
 const Placeholder = () => <View />;
 
@@ -421,7 +399,6 @@ const MyStack = () => {
 const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
-  const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
   // const [oled, setOled] = useState(false);
 
@@ -436,14 +413,7 @@ const RootNavigator = () => {
 
   return (
     <ThemeContext.Provider value={{themePreference, setThemePreference}}>
-      <NavigationContainer
-        theme={
-          themePreference === ThemeOptions.SYSTEM
-            ? scheme === 'dark'
-              ? DarkTheme
-              : CustomLightTheme
-            : ThemeOptionsMap.get(themePreference)
-        }>
+      <ThemedNavigationContainer>
         <RootStack.Navigator
           screenOptions={{
             headerShown: false,
@@ -458,7 +428,7 @@ const RootNavigator = () => {
           />
         </RootStack.Navigator>
         <Toast />
-      </NavigationContainer>
+      </ThemedNavigationContainer>
     </ThemeContext.Provider>
   );
 };

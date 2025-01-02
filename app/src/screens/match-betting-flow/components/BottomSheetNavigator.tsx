@@ -4,10 +4,11 @@ import {
   StackNavigationOptions,
   TransitionPresets,
 } from '@react-navigation/stack';
-import {NavigationContainer, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import {BettingInfoStep} from './BettingInfoStep';
 import {Image, Pressable, Text} from 'react-native';
 import {BottomSheetView} from '@gorhom/bottom-sheet';
+import {ThemedNavigationContainer} from '../../../components/ThemedNavigationContainer';
 
 const Stack = createStackNavigator();
 
@@ -134,6 +135,7 @@ export const BottomSheetNavigator = ({
 }: {
   handleBottomSheetClose: () => void;
 }) => {
+  const {colors} = useTheme();
   const screenOptions = useMemo<StackNavigationOptions>(
     () => ({
       ...TransitionPresets.SlideFromRightIOS,
@@ -141,7 +143,7 @@ export const BottomSheetNavigator = ({
       headerShown: false,
       safeAreaInsets: {top: 0},
       cardStyle: {
-        backgroundColor: 'white',
+        backgroundColor: colors.card,
         overflow: 'visible',
       },
     }),
@@ -149,7 +151,7 @@ export const BottomSheetNavigator = ({
   );
 
   return (
-    <NavigationContainer independent={true}>
+    <ThemedNavigationContainer navigationContainerProps={{independent: true}}>
       <Stack.Navigator screenOptions={screenOptions}>
         <Stack.Screen name="WaitForPlayers">
           {() => (
@@ -166,6 +168,6 @@ export const BottomSheetNavigator = ({
           )}
         </Stack.Screen>
       </Stack.Navigator>
-    </NavigationContainer>
+    </ThemedNavigationContainer>
   );
 };

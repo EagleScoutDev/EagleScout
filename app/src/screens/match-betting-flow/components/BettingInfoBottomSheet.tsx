@@ -2,8 +2,10 @@ import React, {useCallback, useRef, useState} from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {BottomSheetNavigator} from './BottomSheetNavigator';
 import {View} from 'react-native';
+import {useTheme} from '@react-navigation/native';
 
 export const BettingInfoBottomSheet = () => {
+  const {colors} = useTheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [bottomSheetOpen, setBottomSheetOpen] = useState(true);
 
@@ -32,7 +34,14 @@ export const BettingInfoBottomSheet = () => {
         enableDynamicSizing={false}
         snapPoints={['55%']}
         enablePanDownToClose={true}
-        animateOnMount={true}>
+        animateOnMount={true}
+        onClose={handleBottomSheetClose}
+        handleIndicatorStyle={{
+          backgroundColor: colors.text,
+        }}
+        backgroundStyle={{
+          backgroundColor: colors.card,
+        }}>
         <BottomSheetNavigator handleBottomSheetClose={handleBottomSheetClose} />
       </BottomSheet>
     </>
