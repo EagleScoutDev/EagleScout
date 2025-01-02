@@ -164,7 +164,6 @@ SettingsHomeProps) => {
               navigation.navigate('Edit Profile', {
                 initialFirstName: user ? user.first_name : '',
                 initialLastName: user ? user.last_name : '',
-                initialEmoji: user ? user.emoji : '🙂',
                 //initialEmail: user.email,
               });
             }}
