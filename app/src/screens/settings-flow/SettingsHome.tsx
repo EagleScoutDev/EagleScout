@@ -19,20 +19,17 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
-import {ThemeOptions} from '../../themes/ThemeOptions';
 import {getLighterColor} from '../../lib/ColorReadability';
 
 const VERSION = '7.6.1 (OTA 1)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
-  setTheme: (arg0: ThemeOptions) => void;
   // setOled: (arg0: boolean) => void;
 }
 
 const SettingsHome = ({
   onSignOut,
-  setTheme,
 }: // setOled,
 SettingsHomeProps) => {
   const {colors} = useTheme();
@@ -294,7 +291,6 @@ SettingsHomeProps) => {
           visible={settingsPopupActive}
           setVisible={setSettingsPopupActive}
           // setOled={setOled}
-          setTheme={setTheme}
           navigation={navigation}
         />
         <Text

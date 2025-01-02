@@ -42,6 +42,7 @@ const makeStyles = ({colors}: Theme) =>
       padding: 35,
       alignItems: 'center',
       width: '100%',
+      maxHeight: '60%',
     },
     mask: {
       ...StyleSheet.absoluteFillObject,
