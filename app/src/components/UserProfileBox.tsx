@@ -1,11 +1,11 @@
+import React from 'react';
 import {Easing, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {StoredUser} from '../lib/StoredUser';
-import React, {useEffect} from 'react';
 import LinearGradient from 'react-native-linear-gradient'; // or 'expo-linear-gradient'
 import GradientShimmer from 'react-native-gradient-shimmer';
-import ProfilesDB from '../database/Profiles';
 import {ScoutcoinIcon} from '../SVGIcons';
+import {useProfile} from '../lib/hooks/useProfile';
 
 interface UserProfileBoxProps {
   user: StoredUser | null;
@@ -13,13 +13,7 @@ interface UserProfileBoxProps {
 
 function UserProfileBox({user}: UserProfileBoxProps) {
   const {colors} = useTheme();
-  const [numScoutCoins, setNumScoutCoins] = React.useState<number>(0);
-
-  useEffect(() => {
-    ProfilesDB.getCurrentUserProfile().then(profile => {
-      setNumScoutCoins(profile.scoutcoins);
-    });
-  }, []);
+  const {profile} = useProfile();
 
   const styles = StyleSheet.create({
     container: {
@@ -91,7 +85,7 @@ function UserProfileBox({user}: UserProfileBoxProps) {
         <Text
           selectable={true}
           style={{color: colors.text, paddingLeft: 8, fontSize: 16}}>
-          {numScoutCoins}
+          {profile?.scoutcoins}
         </Text>
       </View>
     </View>

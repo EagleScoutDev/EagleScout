@@ -13,6 +13,7 @@ import ProfilesDB from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
 import Svg, {Path, Text as SvgText, SvgProps} from 'react-native-svg';
 import {ScoutcoinIcon} from '../../SVGIcons';
+import {useProfile} from '../../lib/hooks/useProfile';
 
 interface LeaderboardUser {
   id: string;
@@ -48,6 +49,7 @@ const LeaderboardUserItem = ({
   setSendingScoutcoinUser: (user: LeaderboardUser) => void;
 }) => {
   const {colors} = useTheme();
+  const {profile} = useProfile();
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -84,7 +86,7 @@ const LeaderboardUserItem = ({
     <TouchableOpacity
       style={styles.container}
       onPress={async () => {
-        if (user.id === (await ProfilesDB.getCurrentUserProfile()).id) {
+        if (user.id === profile?.id) {
           Alert.alert('You cannot send Scoutcoin to yourself!');
           return;
         }

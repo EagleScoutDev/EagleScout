@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import ProfilesDB from '../../database/Profiles';
 import {supabase} from '../../lib/supabase';
 import StandardButton from '../../components/StandardButton';
 import {ScoutcoinIcon} from '../../SVGIcons';
+import {useProfile} from '../../lib/hooks/useProfile';
 
 interface LeaderboardUser {
   id: string;
@@ -22,16 +22,13 @@ export const SendScoutcoinModal = ({
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [sending, setSending] = useState(false);
-  const [currentScoutcoins, setCurrentScoutcoins] = useState<number>(0);
+  const {profile} = useProfile();
   const {colors} = useTheme();
 
-  useEffect(() => {
-    ProfilesDB.getCurrentUserProfile().then(profile => {
-      setCurrentScoutcoins(profile.scoutcoins);
-    });
-  }, []);
-
   const sendScoutcoin = async () => {
+    if (!profile) {
+      return;
+    }
     setSending(true);
     if (description === '') {
       Alert.alert('Please enter a reason!');
@@ -48,7 +45,7 @@ export const SendScoutcoinModal = ({
       setSending(false);
       return;
     }
-    if (parseInt(amount, 10) > currentScoutcoins) {
+    if (parseInt(amount, 10) > profile.scoutcoins) {
       Alert.alert('You do not have enough scoutcoins!');
       setSending(false);
       return;
@@ -122,7 +119,7 @@ export const SendScoutcoinModal = ({
             Send Scoutcoin to {targetUser.name}
           </Text>
           <View style={styles.coinContainer}>
-            <Text>Your Scoutcoin: {currentScoutcoins}</Text>
+            <Text>Your Scoutcoin: {profile?.scoutcoins}</Text>
             <ScoutcoinIcon width="12" height="12" fill="gray" />
           </View>
           <TextInput
