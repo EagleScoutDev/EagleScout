@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import {
   Alert,
@@ -14,6 +14,7 @@ import {SendScoutcoinModal} from './SendScoutcoinModal';
 import Svg, {Path, Text as SvgText, SvgProps} from 'react-native-svg';
 import {ScoutcoinIcon} from '../../SVGIcons';
 import {useProfile} from '../../lib/hooks/useProfile';
+import {Theme} from '@react-navigation/native/src/types';
 
 interface LeaderboardUser {
   id: string;
@@ -64,6 +65,9 @@ const LeaderboardUserItem = ({
       textAlign: 'center',
       alignItems: 'center',
     },
+    placeText: {
+      color: colors.text,
+    },
     emoji: {
       fontSize: 34,
     },
@@ -72,9 +76,10 @@ const LeaderboardUserItem = ({
     },
     name: {
       color: colors.text,
+      fontWeight: 'bold',
     },
     coins: {
-      color: 'gray',
+      color: colors.text,
     },
     coinContainer: {
       flexDirection: 'row',
@@ -94,7 +99,7 @@ const LeaderboardUserItem = ({
       }}>
       <View style={styles.place}>
         {place > 3 ? (
-          <Text style={{}}>{place}</Text>
+          <Text style={styles.placeText}>{place}</Text>
         ) : (
           <AwardIcon
             props={{
@@ -111,7 +116,7 @@ const LeaderboardUserItem = ({
         <Text style={styles.name}>{user.name}</Text>
         <View style={styles.coinContainer}>
           <Text style={styles.coins}>{user.scoutcoins}</Text>
-          <ScoutcoinIcon width="12" height="12" fill="gray" />
+          <ScoutcoinIcon width="12" height="12" fill={colors.text} />
         </View>
       </View>
     </TouchableOpacity>
@@ -119,6 +124,8 @@ const LeaderboardUserItem = ({
 };
 
 export const ScoutcoinLeaderboard = () => {
+  const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const [leaderboardUsers, setLeaderboardUsers] = useState<LeaderboardUser[]>(
     [],
   );
@@ -130,7 +137,6 @@ export const ScoutcoinLeaderboard = () => {
   >([]);
   const [sendingScoutcoinUser, setSendingScoutcoinUser] =
     useState<LeaderboardUser | null>(null);
-  const {colors} = useTheme();
 
   useEffect(() => {
     ProfilesDB.getAllProfiles().then(profiles => {
@@ -152,22 +158,6 @@ export const ScoutcoinLeaderboard = () => {
     });
   }, []);
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    filter: {
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 16,
-    },
-    filterText: {
-      padding: 10,
-      backgroundColor: colors.card,
-      borderRadius: 5,
-    },
-  });
-
   return (
     <View style={styles.container}>
       <View style={styles.filter}>
@@ -186,6 +176,9 @@ export const ScoutcoinLeaderboard = () => {
             );
           }}
           style={styles.filterText}
+          selectionColor={theme.colors.text}
+          cursorColor={theme.colors.text}
+          placeholderTextColor={theme.colors.text}
         />
       </View>
       <FlatList
@@ -208,3 +201,20 @@ export const ScoutcoinLeaderboard = () => {
     </View>
   );
 };
+
+const makeStyles = ({colors}: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    filter: {
+      padding: 20,
+      marginVertical: 8,
+      marginHorizontal: 16,
+    },
+    filterText: {
+      padding: 10,
+      backgroundColor: colors.card,
+      borderRadius: 5,
+    },
+  });

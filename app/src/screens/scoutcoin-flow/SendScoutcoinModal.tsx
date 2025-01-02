@@ -87,12 +87,14 @@ export const SendScoutcoinModal = ({
       textAlign: 'center',
       fontSize: 20,
       fontWeight: 'bold',
+      color: colors.text,
     },
     input: {
       width: '100%',
       margin: 12,
       borderWidth: 1,
       borderRadius: 10,
+      borderColor: colors.text,
       padding: 10,
     },
     buttonContainer: {
@@ -103,6 +105,9 @@ export const SendScoutcoinModal = ({
     mask: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    text: {
+      color: colors.text,
     },
   });
 
@@ -119,11 +124,16 @@ export const SendScoutcoinModal = ({
             Send Scoutcoin to {targetUser.name}
           </Text>
           <View style={styles.coinContainer}>
-            <Text>Your Scoutcoin: {profile?.scoutcoins}</Text>
-            <ScoutcoinIcon width="12" height="12" fill="gray" />
+            <Text style={styles.text}>
+              Your Scoutcoin: {profile?.scoutcoins}
+            </Text>
+            <ScoutcoinIcon width="12" height="12" fill={colors.text} />
           </View>
           <TextInput
             style={styles.input}
+            selectionColor={colors.text}
+            cursorColor={colors.text}
+            placeholderTextColor={colors.text}
             placeholder="Amount"
             value={amount}
             onChangeText={setAmount}
@@ -131,6 +141,9 @@ export const SendScoutcoinModal = ({
           />
           <TextInput
             style={styles.input}
+            selectionColor={colors.text}
+            cursorColor={colors.text}
+            placeholderTextColor={colors.text}
             placeholder="Reason"
             value={description}
             onChangeText={setDescription}
