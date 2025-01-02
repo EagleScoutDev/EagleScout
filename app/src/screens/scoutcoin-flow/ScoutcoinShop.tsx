@@ -47,19 +47,19 @@ const shopItems = {
     ),
     modal: ({onClose}: ModalProps) => <AppThemeModal onClose={onClose} />,
   },
-  'icon-change': {
-    id: 'icon-change',
-    name: 'App Icon',
-    description: 'Change the app icon!',
-    cost: 20,
-    icon: (props: SvgProps) => (
-      <Svg viewBox="0 0 16 16" {...props}>
-        <Path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
-        <Path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
-      </Svg>
-    ),
-    modal: ({onClose}: ModalProps) => <ProfileEmojiModal onClose={onClose} />,
-  },
+  // 'icon-change': {
+  //   id: 'icon-change',
+  //   name: 'App Icon',
+  //   description: 'Change the app icon!',
+  //   cost: 20,
+  //   icon: (props: SvgProps) => (
+  //     <Svg viewBox="0 0 16 16" {...props}>
+  //       <Path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+  //       <Path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+  //     </Svg>
+  //   ),
+  //   modal: ({onClose}: ModalProps) => <ProfileEmojiModal onClose={onClose} />,
+  // },
 } as Record<string, ShopItem>;
 
 export const ScoutcoinShop = () => {
