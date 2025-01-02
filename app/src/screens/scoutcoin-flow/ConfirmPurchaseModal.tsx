@@ -40,7 +40,7 @@ export const ConfirmPurchaseModal = ({
     }
     const {data} = await supabase.functions.invoke('purchase-item', {
       body: JSON.stringify({
-        itemName: 'emoji-change',
+        itemName: item.id,
       }),
     });
     if (data !== 'Success') {
