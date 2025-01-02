@@ -1,4 +1,3 @@
-import StandardButton from '../../components/StandardButton';
 import {
   ActivityIndicator,
   Alert,
@@ -67,7 +66,7 @@ export const ConfirmPurchaseModal = ({
             <XCircle width={30} height={30} fill={theme.colors.text} />
           </TouchableOpacity>
           <View style={styles.itemInfoContainer}>
-            <item.icon width={100} height={100} />
+            <item.icon width={100} height={100} fill={theme.colors.text} />
             <Text style={styles.itemNameText}>{item.name}</Text>
             <Text style={styles.itemDescriptionText}>{item.description}</Text>
           </View>
@@ -119,10 +118,12 @@ const makeStyles = ({colors}: Theme) =>
       fontSize: 28,
       fontWeight: 'bold',
       textAlign: 'center',
+      color: colors.text,
     },
     itemDescriptionText: {
       fontSize: 16,
       textAlign: 'center',
+      color: colors.text,
     },
     coinContainer: {
       flexDirection: 'row',

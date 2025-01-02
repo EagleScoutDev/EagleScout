@@ -63,6 +63,7 @@ const makeStyles = ({colors}: Theme) =>
       fontWeight: 'bold',
       marginBottom: 20,
       textAlign: 'center',
+      color: colors.text,
     },
     emojiContainer: {
       alignItems: 'center',

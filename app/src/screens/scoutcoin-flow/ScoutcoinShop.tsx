@@ -83,10 +83,10 @@ export const ScoutcoinShop = () => {
               setActiveItem(value);
               setConfirmPurchaseModalVisible(true);
             }}>
-            <value.icon width={50} height={50} />
+            <value.icon width={50} height={50} fill={theme.colors.text} />
             <Text style={styles.itemNameText}>{value.name}</Text>
             <View style={styles.coinContainer}>
-              <Text>{value.cost}</Text>
+              <Text style={styles.costText}>{value.cost}</Text>
               <ScoutcoinIcon width="12" height="12" fill={theme.colors.text} />
             </View>
           </TouchableOpacity>
@@ -127,6 +127,7 @@ const makeStyles = ({colors}: Theme) =>
       fontWeight: 'bold',
       textAlign: 'center',
       marginBottom: 20,
+      color: colors.text,
     },
     itemsContainer: {
       flexDirection: 'row',
@@ -148,10 +149,14 @@ const makeStyles = ({colors}: Theme) =>
       fontSize: 14,
       fontWeight: 'bold',
       textAlign: 'center',
+      color: colors.text,
     },
     coinContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 2,
+    },
+    costText: {
+      color: colors.text,
     },
   });
