@@ -22,20 +22,6 @@ const CompleteSignup = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
 
-  const checkFields = () => {
-    if (firstName == '') {
-      Alert.alert('First name cannot be empty');
-      return false;
-    } else if (lastName == '') {
-      Alert.alert('Last name cannot be empty');
-      return false;
-    } else if (team == '') {
-      Alert.alert('Team cannot be empty');
-      return false;
-    }
-    return true;
-  };
-
   return (
     // <Modal animationType={'slide'} visible={visible} transparent={false}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -89,44 +75,42 @@ const CompleteSignup = () => {
             }
             disabled={firstName === '' || lastName === '' || team === ''}
             onPress={async () => {
-              if (checkFields()) {
-                const {
-                  data: {user},
-                } = await supabase.auth.getUser();
-                const {error: profilesSetError} = await supabase
-                  .from('profiles')
-                  .update({
-                    first_name: firstName,
-                    last_name: lastName,
-                  })
-                  .eq('id', user.id);
-                if (profilesSetError) {
-                  console.error(profilesSetError);
-                  Alert.alert(
-                    'Error setting profile',
-                    'Unable to set profile information. Please try logging in again.',
-                  );
-                }
-                const {error: registerUserWithTeamError} = await supabase.rpc(
-                  'register_user_with_organization',
-                  {
-                    organization_number: team,
-                  },
+              const {
+                data: {user},
+              } = await supabase.auth.getUser();
+              const {error: profilesSetError} = await supabase
+                .from('profiles')
+                .update({
+                  first_name: firstName,
+                  last_name: lastName,
+                })
+                .eq('id', user.id);
+              if (profilesSetError) {
+                console.error(profilesSetError);
+                Alert.alert(
+                  'Error setting profile',
+                  'Unable to set profile information. Please try logging in again.',
                 );
-                if (registerUserWithTeamError) {
-                  console.error(registerUserWithTeamError);
-                  Alert.alert(
-                    'Error registering with team',
-                    'Unable to register you with the team provided. Please check if the team number is correct.',
-                  );
-                } else {
-                  await supabase.auth.signOut();
-                  Alert.alert(
-                    'Sign up complete!',
-                    "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
-                  );
-                  navigation.navigate('Login');
-                }
+              }
+              const {error: registerUserWithTeamError} = await supabase.rpc(
+                'register_user_with_organization',
+                {
+                  organization_number: team,
+                },
+              );
+              if (registerUserWithTeamError) {
+                console.error(registerUserWithTeamError);
+                Alert.alert(
+                  'Error registering with team',
+                  'Unable to register you with the team provided. Please check if the team number is correct.',
+                );
+              } else {
+                await supabase.auth.signOut();
+                Alert.alert(
+                  'Sign up complete!',
+                  "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
+                );
+                navigation.navigate('Login');
               }
             }}
           />
