@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -11,82 +10,15 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
+import {styles} from './styles';
 import {supabase} from '../../lib/supabase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
-
-function InputLabel(props) {
-  return (
-    <Text
-      style={{
-        color: 'gray',
-        fontWeight: 'bold',
-        fontSize: 12,
-        paddingTop: 10,
-      }}>
-      {props.visible ? props.title.toUpperCase() : ''}
-    </Text>
-  );
-}
 
 function SignUpModal({setVisible, navigation}) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const {colors} = useTheme();
-
-  const styles = StyleSheet.create({
-    input: {
-      textAlign: 'left',
-      padding: '5%',
-      borderRadius: 10,
-      borderBottomWidth: 1,
-      borderColor: 'gray',
-      // margin: 10,
-      // marginHorizontal: 30,
-      color: 'white',
-    },
-    titleText: {
-      textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: 'rgb(191, 219, 247)',
-      // marginVertical: 20,
-    },
-    button: {
-      textAlign: 'center',
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: 'red',
-    },
-    link_container: {
-      flexDirection: 'row',
-      padding: '4%',
-      borderRadius: 20,
-    },
-    background: {
-      flexDirection: 'column',
-      backgroundColor: 'rgb(0,0,25)',
-      flex: 1,
-    },
-    error: {
-      backgroundColor: 'red',
-      padding: '5%',
-      margin: '3%',
-      borderRadius: 10,
-      position: 'absolute',
-      top: '5%',
-      right: '5%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-    },
-    error_text: {
-      color: 'white',
-      textAlign: 'center',
-    },
-  });
 
   return (
     // <Modal animationType={'slide'} visible={visible} transparent={false}>
@@ -110,6 +42,8 @@ function SignUpModal({setVisible, navigation}) {
               <MinimalSectionHeader title={'Password'} />
               <TextInput
                 onChangeText={text => setPassword(text)}
+                placeholder={'Password'}
+                placeholderTextColor={'gray'}
                 value={password}
                 style={styles.input}
                 secureTextEntry={true}

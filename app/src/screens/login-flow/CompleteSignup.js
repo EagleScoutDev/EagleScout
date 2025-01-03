@@ -1,6 +1,5 @@
 import {useNavigation, useTheme} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {
   Keyboard,
   SafeAreaView,
@@ -11,6 +10,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+import {styles} from './styles';
 import {supabase} from '../../lib/supabase';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
@@ -21,59 +21,6 @@ const CompleteSignup = () => {
   const [team, setTeam] = React.useState('');
   const {colors} = useTheme();
   const navigation = useNavigation();
-
-  const styles = StyleSheet.create({
-    input: {
-      textAlign: 'left',
-      padding: '5%',
-      borderRadius: 10,
-      borderBottomWidth: 1,
-      borderColor: 'gray',
-      // margin: 10,
-      // marginHorizontal: 30,
-      color: 'white',
-    },
-    titleText: {
-      textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: 'rgb(191, 219, 247)',
-      // marginVertical: 20,
-    },
-    button: {
-      textAlign: 'center',
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: 'red',
-    },
-    link_container: {
-      flexDirection: 'row',
-      padding: '4%',
-      borderRadius: 20,
-    },
-    background: {
-      flexDirection: 'column',
-      backgroundColor: 'rgb(0,0,25)',
-      flex: 1,
-    },
-    error: {
-      backgroundColor: 'red',
-      padding: '5%',
-      margin: '3%',
-      borderRadius: 10,
-      position: 'absolute',
-      top: '5%',
-      right: '5%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-    },
-    error_text: {
-      color: 'white',
-      textAlign: 'center',
-    },
-  });
 
   const checkFields = () => {
     if (firstName == '') {
@@ -109,9 +56,8 @@ const CompleteSignup = () => {
                   onChangeText={setFirstName}
                   value={firstName}
                   placeholder="First Name"
-                  style={{
-                    ...styles.input,
-                  }}
+                  placeholderTextColor="gray"
+                  style={styles.input}
                 />
               </View>
               <View style={{flex: 1}}>
@@ -120,9 +66,8 @@ const CompleteSignup = () => {
                   onChangeText={setLastName}
                   value={lastName}
                   placeholder="Last Name"
-                  style={{
-                    ...styles.input,
-                  }}
+                  placeholderTextColor="gray"
+                  style={styles.input}
                 />
               </View>
             </View>
@@ -131,9 +76,8 @@ const CompleteSignup = () => {
               onChangeText={setTeam}
               value={team}
               placeholder="Team"
-              style={{
-                ...styles.input,
-              }}
+              placeholderTextColor="gray"
+              style={styles.input}
             />
           </View>
           <StandardButton

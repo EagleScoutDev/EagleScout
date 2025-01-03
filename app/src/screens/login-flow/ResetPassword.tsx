@@ -9,8 +9,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {StyleSheet} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
+import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
@@ -19,43 +19,6 @@ const ResetPassword = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
-
-  const styles = StyleSheet.create({
-    input: {
-      textAlign: 'left',
-      padding: '5%',
-      borderRadius: 10,
-      borderBottomWidth: 1,
-      borderColor: 'gray',
-      // margin: 10,
-      // marginHorizontal: 30,
-      color: 'white',
-    },
-    titleText: {
-      textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: 'rgb(191, 219, 247)',
-      // marginVertical: 20,
-    },
-    button: {
-      textAlign: 'center',
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: 'red',
-    },
-    link_container: {
-      flexDirection: 'row',
-      padding: '4%',
-      borderRadius: 20,
-    },
-    background: {
-      flexDirection: 'column',
-      backgroundColor: 'rgb(0,0,25)',
-      flex: 1,
-    },
-  });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -134,7 +97,6 @@ const ResetPassword = () => {
             onPress={() => {
               navigation.navigate('Login');
               setEmail('');
-              setPassword('');
             }}>
             <Text style={{color: 'gray'}}>Log In</Text>
           </TouchableOpacity>

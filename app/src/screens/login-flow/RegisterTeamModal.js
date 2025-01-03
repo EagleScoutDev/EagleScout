@@ -2,7 +2,6 @@ import {
   Alert,
   Keyboard,
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,22 +11,9 @@ import {
 import {supabase} from '../../lib/supabase';
 import React, {useState} from 'react';
 import {useTheme} from '@react-navigation/native';
+import {styles} from './styles';
 import RadioButtons from '../../components/form/RadioButtons';
 import StandardButton from '../../components/StandardButton';
-
-function InputLabel(props) {
-  return (
-    <Text
-      style={{
-        color: 'gray',
-        fontWeight: 'bold',
-        fontSize: 12,
-        paddingTop: 10,
-      }}>
-      {props.visible ? props.title.toUpperCase() : ''}
-    </Text>
-  );
-}
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -38,65 +24,6 @@ const RegisterTeamModal = ({navigation}) => {
   const [team, setTeam] = useState('');
   const [teamOption, setTeamOption] = useState(null);
   const [email, setEmail] = useState('');
-
-  const styles = StyleSheet.create({
-    input: {
-      textAlign: 'left',
-      padding: '5%',
-      borderRadius: 10,
-      borderBottomWidth: 1,
-      borderColor: 'gray',
-      // margin: 10,
-      // marginHorizontal: 30,
-      color: 'white',
-    },
-    titleText: {
-      textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: 'rgb(191, 219, 247)',
-      // marginVertical: 20,
-    },
-    button: {
-      textAlign: 'center',
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: 'red',
-    },
-    link_container: {
-      flexDirection: 'row',
-      padding: '4%',
-      borderRadius: 20,
-    },
-    background: {
-      flexDirection: 'column',
-      backgroundColor: 'rgb(0,0,25)',
-      flex: 1,
-    },
-    error: {
-      backgroundColor: 'red',
-      padding: '5%',
-      margin: '3%',
-      borderRadius: 10,
-      position: 'absolute',
-      top: '5%',
-      right: '5%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-    },
-    error_text: {
-      color: 'white',
-      textAlign: 'center',
-    },
-    label: {
-      color: 'gray',
-      fontWeight: 'bold',
-      fontSize: 12,
-      paddingTop: 10,
-    },
-  });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -125,9 +52,8 @@ const RegisterTeamModal = ({navigation}) => {
                 onChangeText={setTeam}
                 value={team}
                 placeholder="Your team number"
-                style={{
-                  ...styles.input,
-                }}
+                placeholderTextColor="gray"
+                style={styles.input}
                 inputMode={'text'}
               />
             </>
@@ -143,10 +69,8 @@ const RegisterTeamModal = ({navigation}) => {
             onChangeText={setEmail}
             value={email}
             placeholder="Email"
-            placeholderTextColor={'gray'}
-            style={{
-              ...styles.input,
-            }}
+            placeholderTextColor="gray"
+            style={styles.input}
             inputMode={'email'}
           />
         </View>
