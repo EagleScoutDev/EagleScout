@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {Theme, useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import PitScoutingCamera from './PitScoutingCamera';
 import FormSection from '../../components/form/FormSection';
@@ -22,12 +22,12 @@ import FormHelper from '../../FormHelper';
 import PitScoutReports, {
   PitScoutReportWithoutId,
 } from '../../database/PitScoutReports';
-import ScoutReportsDB from '../../database/ScoutReports';
 
 const ListSeparator = () => <View style={{width: 10}} />;
 
 export default function PitScoutingFlow() {
-  const {colors} = useTheme();
+  const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const [images, setImages] = useState<string[]>(['plus']);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [team, setTeam] = useState('');
@@ -37,6 +37,7 @@ export default function PitScoutingFlow() {
   const [competitionLoading, setCompetitionLoading] = useState(true);
   const [currentCompetition, setCurrentCompetition] = useState<any>();
 
+  const [isOffline, setIsOffline] = useState(false);
   const [noActiveCompetition, setNoActiveCompetition] = useState(false);
 
   const defaultValues = useMemo(() => {
@@ -132,14 +133,6 @@ export default function PitScoutingFlow() {
     return true;
   };
   const submitForm = async () => {
-    if (noActiveCompetition) {
-      Alert.alert(
-        'Error: No Active Competition',
-        "There is no active competition. You can't submit a pit scouting report without an active competition",
-      );
-      return;
-    }
-
     setIsSubmitting(true);
     console.log('Submitting form', formData);
     if (team === '') {
@@ -199,25 +192,30 @@ export default function PitScoutingFlow() {
         });
     }
   };
+  if (noActiveCompetition) {
+    return (
+      <View style={styles.centeredContainer}>
+        <Text style={styles.text}>
+          There is no competition happening currently.
+        </Text>
+
+        {isOffline && (
+          <Text>
+            To check for competitions, please connect to the internet.
+          </Text>
+        )}
+      </View>
+    );
+  }
   return (
     <ScrollView>
-      <Text
-        style={{
-          color: colors.text,
-          textAlign: 'center',
-          paddingBottom: 15,
-          fontWeight: 'bold',
-          fontSize: 30,
-          marginTop: 20,
-        }}>
-        Pit Scouting Report
-      </Text>
+      <Text style={styles.heading}>Pit Scouting Report</Text>
       <TeamInformation team={team} setTeam={setTeam} />
       {!competitionLoading &&
         formData.length !== 0 &&
         formStructure.map((section, i) => (
-          <FormSection colors={colors} title={section.title} key={i}>
-            {section.questions.map((item: any, j) => (
+          <FormSection colors={theme.colors} title={section.title} key={i}>
+            {section.questions.map((item: any, j: number) => (
               <>
                 {/* @ts-ignore */}
                 <FormComponent
@@ -230,7 +228,7 @@ export default function PitScoutingFlow() {
             ))}
           </FormSection>
         ))}
-      <FormSection colors={colors} title={'Attach Images'}>
+      <FormSection colors={theme.colors} title={'Attach Images'}>
         <FlatList
           style={styles.imageList}
           ItemSeparatorComponent={ListSeparator}
@@ -264,31 +262,49 @@ export default function PitScoutingFlow() {
       )}
       <StandardButton
         text={'Submit'}
-        color={colors.primary}
+        color={theme.colors.primary}
         width={'85%'}
         isLoading={isSubmitting}
         onPress={submitForm}
       />
-      <View style={{marginBottom: 300}} />
+      <View style={styles.bottomMargin} />
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  imageList: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  image: {
-    width: 200,
-    height: 250,
-  },
-  plusButton: {
-    width: 200,
-    height: 250,
-    backgroundColor: 'lightgray',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const makeStyles = ({colors}: Theme) =>
+  StyleSheet.create({
+    heading: {
+      color: colors.text,
+      textAlign: 'center',
+      paddingBottom: 15,
+      fontWeight: 'bold',
+      fontSize: 30,
+      marginTop: 20,
+    },
+    imageList: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    image: {
+      width: 200,
+      height: 250,
+    },
+    plusButton: {
+      width: 200,
+      height: 250,
+      backgroundColor: 'lightgray',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: {
+      color: colors.text,
+    },
+    centeredContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    bottomMargin: {marginBottom: 300},
+  });
