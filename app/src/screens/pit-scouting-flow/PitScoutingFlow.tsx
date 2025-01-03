@@ -22,6 +22,7 @@ import FormHelper from '../../FormHelper';
 import PitScoutReports, {
   PitScoutReportWithoutId,
 } from '../../database/PitScoutReports';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ListSeparator = () => <View style={{width: 10}} />;
 
@@ -98,13 +99,8 @@ export default function PitScoutingFlow() {
     newStructure.push(currentSection);
     return newStructure;
   };
-  useEffect(() => {
-    CompetitionsDB.getCurrentCompetition().then(competition => {
-      if (!competition) {
-        setNoActiveCompetition(true);
-        return;
-      }
-      setNoActiveCompetition(false);
+  const initializeStructureFromCompetition = useCallback(
+    (competition: any) => {
       const transformedStructure = transformStructure(
         competition.pitScoutFormStructure,
       );
@@ -112,8 +108,38 @@ export default function PitScoutingFlow() {
       initializeValues(transformedStructure);
       setCompetitionLoading(false);
       setCurrentCompetition(competition);
-    });
-  }, [initializeValues]);
+    },
+    [initializeValues],
+  );
+  useEffect(() => {
+    CompetitionsDB.getCurrentCompetition()
+      .then(async competition => {
+        if (!competition) {
+          setNoActiveCompetition(true);
+          return;
+        }
+        setNoActiveCompetition(false);
+        await AsyncStorage.setItem(
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+          JSON.stringify(competition),
+        );
+        initializeStructureFromCompetition(competition);
+      })
+      .catch(async e => {
+        if (e.message && e.message.includes('Network request failed')) {
+          setIsOffline(true);
+        }
+        const storedComp = await FormHelper.readAsyncStorage(
+          FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+        );
+        if (storedComp != null) {
+          const competition = JSON.parse(storedComp);
+          initializeStructureFromCompetition(competition);
+        } else {
+          setNoActiveCompetition(true);
+        }
+      });
+  }, [initializeStructureFromCompetition]);
   const checkRequiredFields = () => {
     for (const section of formStructure) {
       for (const question of section.questions) {
