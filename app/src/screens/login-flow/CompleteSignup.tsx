@@ -126,7 +126,7 @@ const CompleteSignup = ({navigation}: CompleteSignUpProps) => {
             onPress={() => {
               navigation.goBack();
             }}>
-            <Text style={{color: 'gray'}}>Return to Login</Text>
+            <Text style={styles.text}>Return to Login</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

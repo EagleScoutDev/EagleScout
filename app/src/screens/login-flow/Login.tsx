@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Keyboard,
   SafeAreaView,
@@ -87,7 +87,7 @@ const Login = ({onSubmit, error}: LoginProps) => {
               setUsername('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Reset Password</Text>
+            <Text style={styles.text}>Reset Password</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -96,7 +96,7 @@ const Login = ({onSubmit, error}: LoginProps) => {
               setUsername('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Create Account</Text>
+            <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -105,9 +105,7 @@ const Login = ({onSubmit, error}: LoginProps) => {
               setUsername('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>
-              Register your team with EagleScout
-            </Text>
+            <Text style={styles.text}>Register your team with EagleScout</Text>
           </TouchableOpacity>
         </>
       </SafeAreaView>

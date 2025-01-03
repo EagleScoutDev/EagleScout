@@ -98,7 +98,7 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
               navigation.navigate('Login');
               setEmail('');
             }}>
-            <Text style={{color: 'gray'}}>Log In</Text>
+            <Text style={styles.text}>Log In</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -106,7 +106,7 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
               navigation.navigate('Sign');
               setEmail('');
             }}>
-            <Text style={{color: 'gray'}}>Create Account</Text>
+            <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -114,9 +114,7 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
               navigation.navigate('RegisterNewTeam');
               setEmail('');
             }}>
-            <Text style={{color: 'gray'}}>
-              Register your team with EagleScout
-            </Text>
+            <Text style={styles.text}>Register your team with EagleScout</Text>
           </TouchableOpacity>
         </>
       </SafeAreaView>

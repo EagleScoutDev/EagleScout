@@ -107,7 +107,7 @@ const RegisterTeam = ({navigation}: RegisterNewTeamProps) => {
             }
             let teamVal;
             if (teamOption.substring(0, 1) === 'Y') {
-              teamVal = parseInt(team);
+              teamVal = parseInt(team, 10);
             } else {
               teamVal = null;
             }
@@ -138,7 +138,7 @@ const RegisterTeam = ({navigation}: RegisterNewTeamProps) => {
             setTeam('');
             setTeamOption(null);
           }}>
-          <Text style={{color: 'gray'}}>Log In</Text>
+          <Text style={styles.text}>Log In</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link_container}
@@ -148,7 +148,7 @@ const RegisterTeam = ({navigation}: RegisterNewTeamProps) => {
             setTeam('');
             setTeamOption(null);
           }}>
-          <Text style={{color: 'gray'}}>Create Account</Text>
+          <Text style={styles.text}>Create Account</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </TouchableWithoutFeedback>

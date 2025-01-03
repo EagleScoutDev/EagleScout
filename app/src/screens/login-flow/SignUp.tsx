@@ -81,7 +81,7 @@ function SignUp({navigation}: SignUpProps) {
               setEmail('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Log In</Text>
+            <Text style={styles.text}>Log In</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -90,9 +90,7 @@ function SignUp({navigation}: SignUpProps) {
               setEmail('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>
-              Register your team with EagleScout
-            </Text>
+            <Text style={styles.text}>Register your team with EagleScout</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

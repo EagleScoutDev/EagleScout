@@ -57,4 +57,7 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     paddingTop: 10,
   },
+  text: {
+    color: 'gray',
+  },
 });
