@@ -18,7 +18,7 @@ import CompleteSignup from './screens/login-flow/CompleteSignup';
 import SearchScreen from './screens/search-flow/SearchScreen';
 import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SignUpModal from './screens/login-flow/SignUpModal';
+import SignUp from './screens/login-flow/SignUp';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
 import codePush from 'react-native-code-push';
@@ -28,7 +28,7 @@ import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
-import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
+import RegisterTeam from './screens/login-flow/RegisterTeam';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
@@ -237,14 +237,14 @@ const MyStack = ({themePreference, setThemePreference}) => {
             name="Login"
             children={() => <Login onSubmit={submitForm} error={error} />}
           />
-          <Tab.Screen name="Sign" component={SignUpModal} />
+          <Tab.Screen name="Sign" component={SignUp} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
           <Tab.Screen
             name="ChangePassword"
             component={ChangePasswordContainer}
           />
           <Tab.Screen name="ResetPassword" component={ResetPassword} />
-          <Tab.Screen name="Register new team" component={RegisterTeamModal} />
+          <Tab.Screen name="Register new team" component={RegisterTeam} />
         </Tab.Group>
       ) : (
         <>

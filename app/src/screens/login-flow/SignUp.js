@@ -15,7 +15,7 @@ import {supabase} from '../../lib/supabase';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
 
-function SignUpModal({setVisible, navigation}) {
+function SignUp({navigation}) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const {colors} = useTheme();
@@ -102,4 +102,4 @@ function SignUpModal({setVisible, navigation}) {
   );
 }
 
-export default SignUpModal;
+export default SignUp;

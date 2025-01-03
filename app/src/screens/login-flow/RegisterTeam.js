@@ -19,7 +19,7 @@ function Spacer() {
   return <View style={{height: '2%'}} />;
 }
 
-const RegisterTeamModal = ({navigation}) => {
+const RegisterTeam = ({navigation}) => {
   const {colors} = useTheme();
   const [team, setTeam] = useState('');
   const [teamOption, setTeamOption] = useState(null);
@@ -154,4 +154,4 @@ const RegisterTeamModal = ({navigation}) => {
   );
 };
 
-export default RegisterTeamModal;
+export default RegisterTeam;
