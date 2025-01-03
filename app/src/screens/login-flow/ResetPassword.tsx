@@ -9,15 +9,15 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
+import {ResetPasswordProps} from './types';
 
-const ResetPassword = () => {
+const ResetPassword = ({navigation}: ResetPasswordProps) => {
   const {colors} = useTheme();
-  const navigation = useNavigation();
   const [email, setEmail] = useState('');
 
   return (
@@ -59,7 +59,7 @@ const ResetPassword = () => {
                   );
                   return;
                 }
-                const {data, error} = await supabase.auth.resetPasswordForEmail(
+                const {error} = await supabase.auth.resetPasswordForEmail(
                   email,
                 );
                 if (error) {
@@ -111,7 +111,7 @@ const ResetPassword = () => {
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
-              navigation.navigate('Register new team');
+              navigation.navigate('RegisterNewTeam');
               setEmail('');
             }}>
             <Text style={{color: 'gray'}}>

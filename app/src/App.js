@@ -244,7 +244,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
             component={ChangePasswordContainer}
           />
           <Tab.Screen name="ResetPassword" component={ResetPassword} />
-          <Tab.Screen name="Register new team" component={RegisterTeam} />
+          <Tab.Screen name="RegisterNewTeam" component={RegisterTeam} />
         </Tab.Group>
       ) : (
         <>

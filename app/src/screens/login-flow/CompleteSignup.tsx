@@ -1,4 +1,4 @@
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import React from 'react';
 import {
   Keyboard,
@@ -14,16 +14,15 @@ import {styles} from './styles';
 import {supabase} from '../../lib/supabase';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import {CompleteSignUpProps} from './types';
 
-const CompleteSignup = () => {
+const CompleteSignup = ({navigation}: CompleteSignUpProps) => {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [team, setTeam] = React.useState('');
   const {colors} = useTheme();
-  const navigation = useNavigation();
 
   return (
-    // <Modal animationType={'slide'} visible={visible} transparent={false}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.background}>
         <View>
@@ -78,6 +77,14 @@ const CompleteSignup = () => {
               const {
                 data: {user},
               } = await supabase.auth.getUser();
+              if (!user) {
+                console.error('No user found');
+                Alert.alert(
+                  'Error setting profile',
+                  'Unable to set profile information. Please try logging in again.',
+                );
+                return;
+              }
               const {error: profilesSetError} = await supabase
                 .from('profiles')
                 .update({

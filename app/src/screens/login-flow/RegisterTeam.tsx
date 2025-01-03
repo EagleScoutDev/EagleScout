@@ -14,15 +14,16 @@ import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import RadioButtons from '../../components/form/RadioButtons';
 import StandardButton from '../../components/StandardButton';
+import {RegisterNewTeamProps} from './types';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
 }
 
-const RegisterTeam = ({navigation}) => {
+const RegisterTeam = ({navigation}: RegisterNewTeamProps) => {
   const {colors} = useTheme();
   const [team, setTeam] = useState('');
-  const [teamOption, setTeamOption] = useState(null);
+  const [teamOption, setTeamOption] = useState<string | null>(null);
   const [email, setEmail] = useState('');
 
   return (

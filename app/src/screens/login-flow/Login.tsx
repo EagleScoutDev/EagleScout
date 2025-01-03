@@ -12,17 +12,22 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import {LoginNavigationProps} from './types';
 
-const Login = ({onSubmit, error}) => {
+interface LoginProps {
+  onSubmit: (username: string, password: string, navigation: any) => void;
+  error: string;
+}
+
+const Login = ({onSubmit, error}: LoginProps) => {
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
   const {colors} = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<LoginNavigationProps>();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.background}>
-        {/*<Text style={styles.titleText}>EagleScout</Text>*/}
         {error !== '' && (
           <View style={styles.error}>
             <Text style={styles.error_text}>{error}</Text>
@@ -96,7 +101,7 @@ const Login = ({onSubmit, error}) => {
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
-              navigation.navigate('Register new team');
+              navigation.navigate('RegisterNewTeam');
               setUsername('');
               setPassword('');
             }}>
