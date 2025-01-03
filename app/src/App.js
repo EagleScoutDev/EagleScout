@@ -31,7 +31,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import RegisterTeam from './screens/login-flow/RegisterTeam';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
-import ChangePassword from './screens/settings-flow/ChangePassword';
 import ResetPassword from './screens/login-flow/ResetPassword';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
 import {CustomLightTheme} from './themes/CustomLightTheme';
@@ -209,12 +208,6 @@ const MyStack = ({themePreference, setThemePreference}) => {
   //   });
   // }, []);
 
-  const ChangePasswordContainer = ({navigation}) => (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
-      <ChangePassword navigation={navigation} />
-    </SafeAreaView>
-  );
-
   return (
     <Tab.Navigator
       initialRouteName="Entrypoint"
@@ -239,10 +232,6 @@ const MyStack = ({themePreference, setThemePreference}) => {
           />
           <Tab.Screen name="Sign" component={SignUp} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
-          <Tab.Screen
-            name="ChangePassword"
-            component={ChangePasswordContainer}
-          />
           <Tab.Screen name="ResetPassword" component={ResetPassword} />
           <Tab.Screen name="RegisterNewTeam" component={RegisterTeam} />
         </Tab.Group>
