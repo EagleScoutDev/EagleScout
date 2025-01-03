@@ -13,20 +13,7 @@ import {
 } from 'react-native';
 import {supabase} from '../../lib/supabase';
 import StandardButton from '../../components/StandardButton';
-
-function InputLabel(props) {
-  return (
-    <Text
-      style={{
-        color: 'gray',
-        fontWeight: 'bold',
-        fontSize: 12,
-        paddingTop: '8%',
-      }}>
-      {props.visible ? props.title.toUpperCase() : ''}
-    </Text>
-  );
-}
+import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 
 const CompleteSignup = () => {
   const [firstName, setFirstName] = React.useState('');
@@ -117,7 +104,7 @@ const CompleteSignup = () => {
                 style={{
                   flex: 1,
                 }}>
-                <InputLabel title="First Name" visible={firstName !== ''} />
+                <MinimalSectionHeader title="First Name" />
                 <TextInput
                   onChangeText={setFirstName}
                   value={firstName}
@@ -128,7 +115,7 @@ const CompleteSignup = () => {
                 />
               </View>
               <View style={{flex: 1}}>
-                <InputLabel title="Last Name" visible={lastName !== ''} />
+                <MinimalSectionHeader title="Last Name" />
                 <TextInput
                   onChangeText={setLastName}
                   value={lastName}
@@ -139,7 +126,7 @@ const CompleteSignup = () => {
                 />
               </View>
             </View>
-            <InputLabel title="Team" visible={team !== ''} />
+            <MinimalSectionHeader title="Team" />
             <TextInput
               onChangeText={setTeam}
               value={team}

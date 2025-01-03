@@ -1,61 +1,45 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import Login from './screens/login-flow/Login';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 import {
-  NavigationContainer,
   DarkTheme,
-  useTheme,
+  NavigationContainer,
   useNavigation,
+  useTheme,
 } from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import CompleteSignup from './screens/login-flow/CompleteSignup';
-import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
 import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
-import {
-  ClipboardWithGraph,
-  MagnifyingGlass,
-  DocumentWithPlus,
-  Trophy,
-  ListWithDots,
-  TwoPeople,
-  Gear,
-  CheckList,
-  ViewStacked,
-} from './SVGIcons';
-import PicklistsManager from './screens/picklist-flow/PicklistsManager';
 import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/home-flow/Home';
-import ScoutingFlow from './screens/scouting-flow/ScoutingFlow';
 import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
-
-const Tab = createBottomTabNavigator();
-import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import EntrypointHome from './screens/login-flow/EntrypointHome';
 import ChangePassword from './screens/settings-flow/ChangePassword';
 import ResetPassword from './screens/login-flow/ResetPassword';
-import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
-import {UltraDarkTheme} from './themes/UltraDarkTheme';
 import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
 import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
 import {isTablet} from './lib/deviceType';
+
+const Tab = createBottomTabNavigator();
 
 const Placeholder = () => <View />;
 
@@ -434,6 +418,7 @@ const RootNavigator = () => {
   const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
   // const [oled, setOled] = useState(false);
+  const [onboardingActive, setOnboardingActive] = useState(true);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
@@ -443,11 +428,28 @@ const RootNavigator = () => {
       }
     });
   }, []);
+  const {colors} = useTheme();
+  const checkAuthenticated = async () => {
+    const authenticated = await AsyncStorage.getItem('authenticated');
+    if (authenticated != null) {
+      setOnboardingActive(false);
+    }
+  };
+  if (!onboardingActive) {
+    console.log('onboarding active: ' + onboardingActive);
+    checkAuthenticated().then(r =>
+      console.log('check authenticated response: ' + r),
+    );
+  }
+
+  console.log('onboarding active: ' + onboardingActive, colors.text);
 
   return (
     <NavigationContainer
       theme={
-        themePreference === ThemeOptions.SYSTEM
+        onboardingActive
+          ? DarkTheme
+          : themePreference === ThemeOptions.SYSTEM
           ? scheme === 'dark'
             ? DarkTheme
             : CustomLightTheme
