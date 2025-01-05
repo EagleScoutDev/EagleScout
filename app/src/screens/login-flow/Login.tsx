@@ -98,15 +98,6 @@ const Login = ({onSubmit, error}: LoginProps) => {
             }}>
             <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('RegisterNewTeam');
-              setUsername('');
-              setPassword('');
-            }}>
-            <Text style={styles.text}>Register your team with EagleScout</Text>
-          </TouchableOpacity>
         </>
       </SafeAreaView>
     </TouchableWithoutFeedback>

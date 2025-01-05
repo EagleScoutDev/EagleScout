@@ -108,14 +108,6 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
             }}>
             <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('RegisterNewTeam');
-              setEmail('');
-            }}>
-            <Text style={styles.text}>Register your team with EagleScout</Text>
-          </TouchableOpacity>
         </>
       </SafeAreaView>
     </TouchableWithoutFeedback>

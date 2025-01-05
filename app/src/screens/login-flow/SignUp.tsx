@@ -83,15 +83,6 @@ function SignUp({navigation}: SignUpProps) {
             }}>
             <Text style={styles.text}>Log In</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('RegisterNewTeam');
-              setEmail('');
-              setPassword('');
-            }}>
-            <Text style={styles.text}>Register your team with EagleScout</Text>
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import Login from './screens/login-flow/Login';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
@@ -14,11 +13,9 @@ import {
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import CompleteSignup from './screens/login-flow/CompleteSignup';
 import SearchScreen from './screens/search-flow/SearchScreen';
 import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SignUp from './screens/login-flow/SignUp';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
 import codePush from 'react-native-code-push';
@@ -28,15 +25,20 @@ import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
-import RegisterTeam from './screens/login-flow/RegisterTeam';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
-import EntrypointHome from './screens/login-flow/EntrypointHome';
-import ResetPassword from './screens/login-flow/ResetPassword';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
 import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
 import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
 import {isTablet} from './lib/deviceType';
+
+import EntrypointHome from './screens/login-flow/EntrypointHome';
+import SignUp from './screens/login-flow/SignUp';
+import Login from './screens/login-flow/Login';
+import ResetPassword from './screens/login-flow/ResetPassword';
+import {EnterTeamEmail} from './screens/login-flow/steps/EnterTeamEmail';
+import {EnterUserInfo} from './screens/login-flow/steps/EnterUserInfo';
+import {SelectTeam} from './screens/login-flow/steps/SelectTeam';
 
 const Tab = createBottomTabNavigator();
 
@@ -159,7 +161,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
       } else {
         if (!userAttribData.organization_id) {
           setError('');
-          navigation.navigate('CompleteSignUp');
+          navigation.navigate('EnterUserInfo');
         } else if (!userAttribData.scouter) {
           setError(
             'Your account has not been approved yet.\n Please contact a captain for approval.',
@@ -231,9 +233,10 @@ const MyStack = ({themePreference, setThemePreference}) => {
             children={() => <Login onSubmit={submitForm} error={error} />}
           />
           <Tab.Screen name="Sign" component={SignUp} />
-          <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
           <Tab.Screen name="ResetPassword" component={ResetPassword} />
-          <Tab.Screen name="RegisterNewTeam" component={RegisterTeam} />
+          <Tab.Screen name="EnterTeamEmail" component={EnterTeamEmail} />
+          <Tab.Screen name="EnterUserInfo" component={EnterUserInfo} />
+          <Tab.Screen name="SelectTeam" component={SelectTeam} />
         </Tab.Group>
       ) : (
         <>

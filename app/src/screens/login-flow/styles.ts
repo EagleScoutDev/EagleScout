@@ -46,6 +46,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+    zIndex: 1,
   },
   error_text: {
     color: 'white',

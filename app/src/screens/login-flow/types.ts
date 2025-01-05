@@ -7,9 +7,10 @@ type LoginBottomTabParamList = {
   Entrypoint: undefined;
   Login: undefined;
   Sign: undefined;
-  CompleteSignUp: undefined;
   ResetPassword: undefined;
-  RegisterNewTeam: undefined;
+  EnterTeamEmail: undefined;
+  EnterUserInfo: undefined;
+  SelectTeam: undefined;
 };
 
 export type EntrypointNavigationProps = BottomTabNavigationProp<
@@ -21,15 +22,19 @@ export type LoginNavigationProps = BottomTabNavigationProp<
   'Login'
 >;
 export type SignUpProps = BottomTabScreenProps<LoginBottomTabParamList, 'Sign'>;
-export type CompleteSignUpProps = BottomTabScreenProps<
-  LoginBottomTabParamList,
-  'CompleteSignUp'
->;
 export type ResetPasswordProps = BottomTabScreenProps<
   LoginBottomTabParamList,
   'ResetPassword'
 >;
-export type RegisterNewTeamProps = BottomTabScreenProps<
+export type EnterTeamEmailProps = BottomTabScreenProps<
   LoginBottomTabParamList,
-  'RegisterNewTeam'
+  'EnterTeamEmail'
+>;
+export type EnterUserInfoProps = BottomTabScreenProps<
+  LoginBottomTabParamList,
+  'EnterUserInfo'
+>;
+export type SelectTeamProps = BottomTabScreenProps<
+  LoginBottomTabParamList,
+  'SelectTeam'
 >;
