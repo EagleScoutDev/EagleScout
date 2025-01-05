@@ -92,7 +92,9 @@ const styles = StyleSheet.create({
   teamContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     borderBottomWidth: 1,
     borderColor: 'gray',
     gap: 10,
