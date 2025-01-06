@@ -6,11 +6,13 @@ import React, {
 } from 'react-native';
 
 function StandardButton({
+  textColor = 'white',
   color,
   onPress,
   width = '80%',
   text,
   isLoading = false,
+  disabled = false,
 }) {
   const baseButtonStyle = {
     backgroundColor: color,
@@ -34,7 +36,7 @@ function StandardButton({
     button_text: {
       fontSize: 20,
       textAlign: 'center',
-      color: 'white',
+      color: textColor,
       fontWeight: '600',
     },
   });
@@ -42,7 +44,7 @@ function StandardButton({
     <TouchableOpacity
       style={isLoading ? styles.button_loading : styles.button}
       onPress={onPress}
-      disabled={isLoading}>
+      disabled={isLoading || disabled}>
       {isLoading && <ActivityIndicator size="small" color="#ffffff" />}
       <Text style={styles.button_text}>{text}</Text>
     </TouchableOpacity>

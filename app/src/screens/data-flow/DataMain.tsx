@@ -13,7 +13,12 @@ import UserManager from './UserManager';
 import FormCreationMain from '../form-creation-flow/FormCreationMain';
 import FormCreation from '../form-creation-flow/FormCreation';
 import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
-import ScoutAssignments from "../scout-assignments-flow/ScoutAssignments";
+import ScoutAssignments from '../scout-assignments-flow/ScoutAssignments';
+import WeightedRank from './WeightedRank';
+import {ManageBets} from '../match-betting-flow/admin/ManageBets';
+import {ScoutcoinLedger} from '../scoutcoin-flow/ScoutcoinLedger';
+import {ScoutcoinLeaderboard} from '../scoutcoin-flow/ScoutcoinLeaderboard';
+import MatchPredictor from './MatchPredictor';
 
 const DataStack = createStackNavigator();
 
@@ -52,11 +57,41 @@ const DataMain = () => {
         }}
       />
       <DataStack.Screen
+        name={'Weighted Team Rank'}
+        component={WeightedRank}
+        options={{
+          headerBackTitle: 'Back',
+          // headerTitle: 'Team RankA',
+        }}
+      />
+      <DataStack.Screen
+        name={'Match Predictor'}
+        component={MatchPredictor}
+        options={{
+          headerBackTitle: 'Back',
+          // headerTitle: 'Team RankA',
+        }}
+      />
+      <DataStack.Screen
         name={'Export to CSV'}
         component={ExportToCSV}
         options={{
           headerBackTitle: 'Back',
           // headerTitle: 'Team RankA',
+        }}
+      />
+      <DataStack.Screen
+        name={'Scoutcoin Leaderboard'}
+        component={ScoutcoinLeaderboard}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Scoutcoin Ledger'}
+        component={ScoutcoinLedger}
+        options={{
+          headerBackTitle: 'Back',
         }}
       />
       <DataStack.Screen
@@ -85,6 +120,13 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Manage Scout Assignments'}
         component={ScoutAssignments}
+        options={{
+          headerBackTitle: 'Back',
+        }}
+      />
+      <DataStack.Screen
+        name={'Manage Match Bets'}
+        component={ManageBets}
         options={{
           headerBackTitle: 'Back',
         }}

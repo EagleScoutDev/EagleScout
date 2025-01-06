@@ -13,7 +13,7 @@ export enum FormQuestionTypes {
   heading = 'heading',
 }
 
-interface FormReturnData extends Form {
+export interface FormReturnData extends Form {
   id: number;
 }
 

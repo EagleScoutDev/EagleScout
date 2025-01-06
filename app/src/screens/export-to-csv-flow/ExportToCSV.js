@@ -104,7 +104,12 @@ const ExportToCSV = () => {
     header.push('match number');
     header.push('team number');
     form.formStructure.forEach(q => {
-      if (q.type === 'radio' || q.type === 'textbox' || q.type === 'number') {
+      if (
+        q.type === 'radio' ||
+        q.type === 'textbox' ||
+        q.type === 'number' ||
+        q.type === 'checkboxes'
+      ) {
         header.push(q.question);
       }
     });
@@ -121,7 +126,9 @@ const ExportToCSV = () => {
         } else if (q.type === 'number') {
           row.push(report.data[i]);
         } else if (q.type === 'textbox') {
-          row.push(report.data[i]);
+          row.push(`"${report.data[i]}"`);
+        } else if (q.type === 'checkboxes') {
+          row.push('"' + report.data[i].join(',') + '"');
         }
       });
       csvrows.push(row.join(','));

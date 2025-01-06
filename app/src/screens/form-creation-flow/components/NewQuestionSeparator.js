@@ -1,18 +1,22 @@
 import {Text, TouchableOpacity, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
-const NewQuestionSeparator = ({onPress}) => {
+const NewQuestionSeparator = ({onPress, noDividerLine = false}) => {
   const {colors} = useTheme();
 
   return (
     <View
       style={{
-        flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: '5%',
-        marginRight: '5%',
+        ...(!noDividerLine && {
+          flexDirection: 'row',
+          marginLeft: '5%',
+          marginRight: '5%',
+        }),
       }}>
-      <View style={{flex: 1, height: 1, backgroundColor: 'black'}} />
+      {!noDividerLine && (
+        <View style={{flex: 1, height: 1, backgroundColor: colors.border}} />
+      )}
       <TouchableOpacity
         onPress={onPress}
         style={{
@@ -27,7 +31,7 @@ const NewQuestionSeparator = ({onPress}) => {
         }}>
         <Text
           style={{
-            color: 'white',
+            color: colors.text,
             fontWeight: 'bold',
             textAlign: 'center',
             fontSize: 22,
@@ -35,7 +39,9 @@ const NewQuestionSeparator = ({onPress}) => {
           +
         </Text>
       </TouchableOpacity>
-      <View style={{flex: 1, height: 1, backgroundColor: 'black'}} />
+      {!noDividerLine && (
+        <View style={{flex: 1, height: 1, backgroundColor: colors.border}} />
+      )}
     </View>
   );
 };

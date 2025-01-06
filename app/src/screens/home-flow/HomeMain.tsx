@@ -1,8 +1,16 @@
 import React from 'react';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import UpcomingRoundsView from '../UpcomingRoundsView';
 import Svg, {Path} from 'react-native-svg';
+import TabHeader from '../../components/TabHeader';
 
 const HomeMain = () => {
   const {colors} = useTheme();
@@ -12,20 +20,11 @@ const HomeMain = () => {
       paddingHorizontal: '2%',
       flex: 1,
     },
-    title: {
-      fontSize: 34,
-      fontWeight: '600',
-      color: colors.text,
-      padding: '3%',
-      paddingLeft: '5%',
-    },
     heading_two: {
       fontSize: 24,
       fontWeight: '600',
       color: colors.text,
-      padding: '3%',
-      paddingLeft: '5%',
-      marginTop: '3%',
+      paddingLeft: 20,
     },
     button_text: {
       color: 'white',
@@ -47,15 +46,13 @@ const HomeMain = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView scrollEnabled={false}>
-        <Text style={styles.title}>Home</Text>
-        <Text style={styles.heading_two}>Upcoming Rounds</Text>
-        <UpcomingRoundsView navigation={navigation} />
-        {/*<Text style={styles.heading_two}>Pit Scouting</Text>*/}
-        {/*<Text style={{paddingLeft: '5%', color: colors.text}}>*/}
-        {/*  Pit scouting is not yet available. Please check back later.*/}
-        {/*</Text>*/}
-      </ScrollView>
+      <TabHeader title={'Home'} />
+      <Text style={styles.heading_two}>Upcoming Rounds</Text>
+      <UpcomingRoundsView navigation={navigation} />
+      {/*<Text style={styles.heading_two}>Pit Scouting</Text>*/}
+      {/*<Text style={{paddingLeft: '5%', color: colors.text}}>*/}
+      {/*  Pit scouting is not yet available. Please check back later.*/}
+      {/*</Text>*/}
       {/*<Pressable*/}
       {/*  style={styles.scout_button}*/}
       {/*  onPress={() => {*/}

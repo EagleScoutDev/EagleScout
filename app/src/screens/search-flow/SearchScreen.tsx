@@ -5,9 +5,11 @@ import TeamViewer from './TeamViewer';
 import {SimpleTeam} from '../../lib/TBAUtils';
 import {createStackNavigator} from '@react-navigation/stack';
 import ReportsForTeam from './ReportsForTeam';
+import {AutoPathsForTeam} from './AutoPathsForTeam';
 import {useTheme} from '@react-navigation/native';
 import ScoutViewer from '../../components/modals/ScoutViewer';
-import SearchModal from "./SearchModal";
+import SearchModal from './SearchModal';
+import CompareTeams from './CompareTeams';
 
 const Stack = createStackNavigator();
 function SearchScreen() {
@@ -52,10 +54,26 @@ function SearchScreen() {
         }}
       />
       <Stack.Screen
+        name={'Auto Paths'}
+        component={AutoPathsForTeam}
+        options={{
+          headerBackTitle: 'Back',
+          headerTitle: '',
+        }}
+      />
+      <Stack.Screen
         name={'SearchModal'}
         component={SearchModal}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'Compare Teams'}
+        component={CompareTeams}
+        options={{
+          headerBackTitle: 'Back',
+          headerTitle: '',
         }}
       />
     </Stack.Navigator>

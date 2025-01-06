@@ -1,4 +1,10 @@
 import {supabase} from '../lib/supabase';
+import {AutoPath} from '../components/games/crescendo/AutoPath';
+
+interface TimelineElement {
+  time: number;
+  label: string;
+}
 
 interface ScoutReport {
   reportId: number;
@@ -6,6 +12,8 @@ interface ScoutReport {
   teamNumber: number;
   data: [];
   competitionId: number;
+  timelineData?: TimelineElement[];
+  autoPath?: AutoPath;
 }
 
 interface ScoutReportWithDate extends ScoutReport {
@@ -54,6 +62,8 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
+          autoPath: data[i].auto_path,
         });
       }
     }
@@ -88,6 +98,8 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
+          autoPath: data[i].auto_path,
         });
       }
     }
@@ -118,6 +130,8 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
+          autoPath: data[i].auto_path,
         });
       }
     }
@@ -150,6 +164,8 @@ class ScoutReportsDB {
           userId: data[i].user_id,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
+          timelineData: data[i].timeline_data,
+          autoPath: data[i].auto_path,
         });
       }
     }
@@ -162,6 +178,8 @@ class ScoutReportsDB {
       match_number_arg: report.matchNumber,
       team_number_arg: report.teamNumber,
       data_arg: report.data,
+      timeline_data: report.timelineData,
+      auto_path: report.autoPath,
     });
     if (error) {
       throw error;
@@ -179,6 +197,8 @@ class ScoutReportsDB {
       team_number_arg: report.teamNumber,
       data_arg: report.data,
       created_at_arg: report.createdAt,
+      timeline_data: report.timelineData,
+      auto_path: report.autoPath,
     });
     if (error) {
       throw error;

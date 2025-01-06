@@ -14,6 +14,8 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
 import SelectMenu from '../form/SelectMenu';
+import {getLighterColor} from '../../lib/ColorReadability';
+import {FunctionsHttpError} from '@supabase/supabase-js';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -81,7 +83,15 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       },
     );
     if (fetchTbaEventError) {
-      Alert.alert('Error', 'Invalid TBA Key');
+      if (fetchTbaEventError instanceof FunctionsHttpError) {
+        const errorMessage = await fetchTbaEventError.context.json();
+        Alert.alert('Error', errorMessage.message);
+      } else {
+        Alert.alert(
+          'Error',
+          'An unknown error has occurred. Try again or contact support.',
+        );
+      }
       return false;
     }
     const {data: eventData, error: eventError} = await supabase
@@ -161,6 +171,7 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       <TextInput
         style={styles.competition_name_input}
         placeholder="Name"
+        placeholderTextColor={colors.text}
         onChangeText={text => setName(text)}
         value={name}
       />
@@ -322,7 +333,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       <Spacer />
       <View style={styles.button_row}>
         <StandardButton
-          color={colors.notification}
+          textColor={colors.notification}
+          color={colors.background}
           onPress={() => setVisible(false)}
           text={'Cancel'}
           width={'40%'}

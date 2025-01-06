@@ -43,6 +43,11 @@ function FormComponent({item, arrayData, setArrayData}) {
           options={item.options}
           value={item.options[arrayData[item.indice]]}
           colors={colors}
+          onReset={() => {
+            let a = [...arrayData];
+            a[item.indice] = null;
+            setArrayData(a);
+          }}
           onValueChange={value => {
             let a = [...arrayData];
             a[item.indice] = item.options.indexOf(value);
@@ -54,8 +59,18 @@ function FormComponent({item, arrayData, setArrayData}) {
   } else if (item.type === 'textbox') {
     return (
       <View>
-        <Question title={item.question} required={item.required} />
+        <Question
+          title={item.question}
+          required={item.required}
+          onReset={() => {
+            let a = [...arrayData];
+            a[item.indice] = '';
+            setArrayData(a);
+          }}
+        />
         <TextInput
+          placeholder={'Type here'}
+          placeholderTextColor={colors.primary}
           style={styles.textInput}
           value={arrayData[item.indice]}
           onChangeText={text => {
@@ -87,7 +102,6 @@ function FormComponent({item, arrayData, setArrayData}) {
     } else {
       return (
         <Stepper
-          colors={colors}
           title={item.question + (item.required ? '*' : '')}
           value={arrayData[item.indice]}
           onValueChange={newValue => {
@@ -98,28 +112,21 @@ function FormComponent({item, arrayData, setArrayData}) {
         />
       );
     }
-  } else if (item.type === 'checkbox') {
+  } else if (item.type === 'checkboxes') {
     return (
       <Checkbox
-        colors={colors}
         title={item.question}
-        required={item.required}
         options={item.options}
         value={arrayData[item.indice]}
+        disabled={false}
         onValueChange={value => {
-          const itemIndex = item.options.indexOf(value);
-          let tempArray = [...arrayData[item.indice]];
-
-          if (tempArray.includes(itemIndex)) {
-            tempArray = tempArray.filter(b => b !== itemIndex);
-          } else {
-            tempArray.push(itemIndex);
-          }
-
-          let a = [...arrayData];
-          a[item.indice] = tempArray;
-          setArrayData(a);
+          setArrayData(prev => {
+            const newData = [...prev];
+            newData[item.indice] = value;
+            return newData;
+          });
         }}
+        colors={colors}
       />
     );
   }

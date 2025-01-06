@@ -11,9 +11,10 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		65CF7C5DB74DAD4FDE7B660F /* libPods-EagleScout.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC8F5D86D62AF08F4CDF3C6 /* libPods-EagleScout.a */; };
+		261995F8998BC9DEE3A3F1F2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 80FEEBFBC609D5F4CB4DA3B8 /* PrivacyInfo.xcprivacy */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		AF10E921FAE62D87821944E0 /* libPods-EagleScout-EagleScoutTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE07EA4205303ABBFEB0115 /* libPods-EagleScout-EagleScoutTests.a */; };
+		94C0976EE598C5D13675451D /* libPods-EagleScout-EagleScoutTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D05AEE004E50585260C80CF /* libPods-EagleScout-EagleScoutTests.a */; };
+		FF6972335B691F5E6A557345 /* libPods-EagleScout.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23A9E50C23D6A6B300F1B472 /* libPods-EagleScout.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,20 +31,21 @@
 		00E356EE1AD99517003FC87E /* EagleScoutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EagleScoutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* EagleScoutTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EagleScoutTests.m; sourceTree = "<group>"; };
-		0B5DEE82A893F8631E932900 /* Pods-EagleScout.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout.debug.xcconfig"; path = "Target Support Files/Pods-EagleScout/Pods-EagleScout.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* EagleScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EagleScout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = EagleScout/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = EagleScout/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EagleScout/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = EagleScout/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = EagleScout/main.m; sourceTree = "<group>"; };
-		5891F268932DF6B759F5938D /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout-EagleScoutTests.debug.xcconfig"; path = "Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests.debug.xcconfig"; sourceTree = "<group>"; };
+		23A9E50C23D6A6B300F1B472 /* libPods-EagleScout.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EagleScout.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		386F2CBB4D77587C515C0D15 /* Pods-EagleScout.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout.release.xcconfig"; path = "Target Support Files/Pods-EagleScout/Pods-EagleScout.release.xcconfig"; sourceTree = "<group>"; };
+		4D05AEE004E50585260C80CF /* libPods-EagleScout-EagleScoutTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EagleScout-EagleScoutTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		80FEEBFBC609D5F4CB4DA3B8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = EagleScout/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EagleScout/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		C3038D844B7FD48F9988B877 /* Pods-EagleScout.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout.release.xcconfig"; path = "Target Support Files/Pods-EagleScout/Pods-EagleScout.release.xcconfig"; sourceTree = "<group>"; };
-		C414584FE3AC4CF40CB63167 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout-EagleScoutTests.release.xcconfig"; path = "Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests.release.xcconfig"; sourceTree = "<group>"; };
-		CEE07EA4205303ABBFEB0115 /* libPods-EagleScout-EagleScoutTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EagleScout-EagleScoutTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D553373413C19FDA75683D8 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout-EagleScoutTests.release.xcconfig"; path = "Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests.release.xcconfig"; sourceTree = "<group>"; };
+		A63E29EEEFA3EA4653BB2D7A /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout-EagleScoutTests.debug.xcconfig"; path = "Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B2C34370BA21017445633DB5 /* Pods-EagleScout.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout.debug.xcconfig"; path = "Target Support Files/Pods-EagleScout/Pods-EagleScout.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EFC8F5D86D62AF08F4CDF3C6 /* libPods-EagleScout.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EagleScout.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF10E921FAE62D87821944E0 /* libPods-EagleScout-EagleScoutTests.a in Frameworks */,
+				94C0976EE598C5D13675451D /* libPods-EagleScout-EagleScoutTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65CF7C5DB74DAD4FDE7B660F /* libPods-EagleScout.a in Frameworks */,
+				FF6972335B691F5E6A557345 /* libPods-EagleScout.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +94,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				80FEEBFBC609D5F4CB4DA3B8 /* PrivacyInfo.xcprivacy */,
 			);
 			name = EagleScout;
 			sourceTree = "<group>";
@@ -100,8 +103,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				EFC8F5D86D62AF08F4CDF3C6 /* libPods-EagleScout.a */,
-				CEE07EA4205303ABBFEB0115 /* libPods-EagleScout-EagleScoutTests.a */,
+				23A9E50C23D6A6B300F1B472 /* libPods-EagleScout.a */,
+				4D05AEE004E50585260C80CF /* libPods-EagleScout-EagleScoutTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -140,10 +143,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0B5DEE82A893F8631E932900 /* Pods-EagleScout.debug.xcconfig */,
-				C3038D844B7FD48F9988B877 /* Pods-EagleScout.release.xcconfig */,
-				5891F268932DF6B759F5938D /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */,
-				C414584FE3AC4CF40CB63167 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */,
+				B2C34370BA21017445633DB5 /* Pods-EagleScout.debug.xcconfig */,
+				386F2CBB4D77587C515C0D15 /* Pods-EagleScout.release.xcconfig */,
+				A63E29EEEFA3EA4653BB2D7A /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */,
+				8D553373413C19FDA75683D8 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -155,12 +158,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "EagleScoutTests" */;
 			buildPhases = (
-				7EBE32847B43D761502661F9 /* [CP] Check Pods Manifest.lock */,
+				4382B76CC8129166D6F68703 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				1A64FBCA1EFBDE1AE57104CA /* [CP] Embed Pods Frameworks */,
-				28A36743E902D8FD06CBABBB /* [CP] Copy Pods Resources */,
+				5E00E7518DD8019BD8080109 /* [CP] Embed Pods Frameworks */,
+				A0CEEADE1AEC645AA283999C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -176,14 +179,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "EagleScout" */;
 			buildPhases = (
-				9D0576C57D7A775EC83FC435 /* [CP] Check Pods Manifest.lock */,
+				DA284134396637B186619C48 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				688B442B8D3317E4273DA2D9 /* [CP] Embed Pods Frameworks */,
-				D5230658226B2A6C5E4BCE72 /* [CP] Copy Pods Resources */,
+				6BFB11121CB27DAF6091F97B /* [CP] Embed Pods Frameworks */,
+				1C0C2DE55FC2C238AD1B098C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -244,6 +247,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				261995F8998BC9DEE3A3F1F2 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,58 +270,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		1A64FBCA1EFBDE1AE57104CA /* [CP] Embed Pods Frameworks */ = {
+		1C0C2DE55FC2C238AD1B098C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		28A36743E902D8FD06CBABBB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		688B442B8D3317E4273DA2D9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7EBE32847B43D761502661F9 /* [CP] Check Pods Manifest.lock */ = {
+		4382B76CC8129166D6F68703 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -339,7 +309,58 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9D0576C57D7A775EC83FC435 /* [CP] Check Pods Manifest.lock */ = {
+		5E00E7518DD8019BD8080109 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6BFB11121CB27DAF6091F97B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A0CEEADE1AEC645AA283999C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DA284134396637B186619C48 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -359,23 +380,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D5230658226B2A6C5E4BCE72 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EagleScout/Pods-EagleScout-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -430,7 +434,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5891F268932DF6B759F5938D /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */;
+			baseConfigurationReference = A63E29EEEFA3EA4653BB2D7A /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -457,7 +461,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C414584FE3AC4CF40CB63167 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */;
+			baseConfigurationReference = 8D553373413C19FDA75683D8 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -481,7 +485,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B5DEE82A893F8631E932900 /* Pods-EagleScout.debug.xcconfig */;
+			baseConfigurationReference = B2C34370BA21017445633DB5 /* Pods-EagleScout.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -489,11 +493,12 @@
 				DEVELOPMENT_TEAM = 7S8859644D;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = EagleScout/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EagleScout;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 7.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -502,26 +507,30 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.team114.--PRODUCT-NAME-rfc1034identifier-";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.team114.eaglescout;
 				PRODUCT_NAME = EagleScout;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C3038D844B7FD48F9988B877 /* Pods-EagleScout.release.xcconfig */;
+			baseConfigurationReference = 386F2CBB4D77587C515C0D15 /* Pods-EagleScout.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7S8859644D;
 				INFOPLIST_FILE = EagleScout/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EagleScout;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 7.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -530,7 +539,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.team114.--PRODUCT-NAME-rfc1034identifier-";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.team114.eaglescout;
 				PRODUCT_NAME = EagleScout;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -576,6 +588,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -602,6 +615,10 @@
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -644,6 +661,10 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -667,6 +688,10 @@
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;

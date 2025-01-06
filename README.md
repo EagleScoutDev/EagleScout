@@ -1,6 +1,6 @@
 # EagleScout
 
-![Eagle Scout](https://github.com/EagleScoutDev/EagleScout/assets/53363059/8c5609f7-69a7-4697-8cb4-41ec15fdc2bf)
+![Eagle Scout (1)](https://github.com/EagleScoutDev/EagleScout/assets/53363059/12968b92-e4ee-4aee-865b-98c7c75e06a7)
 
 
 ## Introduction

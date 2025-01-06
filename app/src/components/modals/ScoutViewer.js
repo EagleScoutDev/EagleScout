@@ -22,6 +22,7 @@ import SliderType from '../form/SliderType';
 import {ClockHistory, PencilSquare, X} from '../../SVGIcons';
 import {HistorySelectorModal} from './HistorySelectorModal';
 import Svg, {Path} from 'react-native-svg';
+import {isTablet} from '../../lib/deviceType';
 
 const DEBUG = false;
 
@@ -108,14 +109,15 @@ function ScoutViewer({
       width: '100%',
     },
     breadcrumbs: {
-      color: 'gray',
+      color: colors.text,
+      opacity: 0.8,
       fontSize: 12,
       fontStyle: 'italic',
       textAlign: 'center',
-      marginTop: '10%',
+      marginTop: isTablet() ? '0%' : '10%',
     },
     close: {
-      color: 'red',
+      color: colors.notification,
       fontWeight: 'bold',
       fontSize: 17,
       padding: '2%',
@@ -338,7 +340,8 @@ function ScoutViewer({
                   <PencilSquare
                     style={{
                       padding: '2%',
-                      fill: editingActive ? colors.primary : 'gray',
+                      fill: editingActive ? colors.primary : colors.text,
+                      opacity: editingActive ? 1 : 0.6,
                       width: 30,
                       height: 30,
                     }}
@@ -354,7 +357,7 @@ function ScoutViewer({
                   <ClockHistory
                     style={{
                       padding: '2%',
-                      fill: historyButtonEnabled ? colors.primary : 'gray',
+                      fill: historyButtonEnabled ? colors.text : colors.primary,
                       width: 30,
                       height: 30,
                     }}
@@ -441,8 +444,8 @@ function ScoutViewer({
           {data.form.map((field, index) => (
             <View key={index}>
               {/*If the entry has a text property, this indicates that it is a header, or section divider*/}
-              {field.text && (
-                <Text style={styles.section_title}>{field.text}</Text>
+              {field.title && (
+                <Text style={styles.section_title}>{field.title}</Text>
               )}
               {/*If the entry has a question property, this indicates that it is a question*/}
               {field.question && formData[index] != null && (
@@ -451,7 +454,7 @@ function ScoutViewer({
                     flexDirection:
                       field.type === 'radio' ||
                       field.type === 'textbox' ||
-                      field.type === 'checkbox' ||
+                      field.type === 'checkboxes' ||
                       (editingActive && field.type === 'number' && field.slider)
                         ? 'column'
                         : 'row',
@@ -466,9 +469,10 @@ function ScoutViewer({
                   {/*SliderType renders its own custom question text, so we shouldn't render a question here
                   if the field is a slider*/}
                   {/*SliderType is only used when editing is active*/}
-                  {(!editingActive || !field.slider) && (
-                    <Text style={styles.question}>{field.question}</Text>
-                  )}
+                  {(!editingActive || !field.slider) &&
+                    field.type !== 'checkboxes' && (
+                      <Text style={styles.question}>{field.question}</Text>
+                    )}
                   {field.type === 'radio' && (
                     <View>
                       <RadioButtons
@@ -502,15 +506,17 @@ function ScoutViewer({
                           alignSelf:
                             field.type === 'textbox' ? 'flex-start' : 'center',
                           // make text box seem editable
-                          backgroundColor: colors.card,
-                          borderColor:
-                            field.required && tempData[index] == null
-                              ? 'red'
-                              : colors.border,
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          // field.required && tempData[index] == null
+                          //   ? colors.notification
+                          //   : colors.border,
                           borderWidth: 1,
                           borderRadius: 5,
                           padding: 5,
                           width: '100%',
+                          fontSize: 20,
+                          color: colors.text,
                         }}
                         keyboardType={
                           field.type === 'number' ? 'numeric' : 'default'
@@ -558,45 +564,32 @@ function ScoutViewer({
                       />
                     </View>
                   )}
-                  {field.type === 'checkbox' && (
-                    <Checkbox
-                      title={''}
-                      disabled={!editingActive}
-                      colors={colors}
-                      options={field.options}
-                      value={
-                        tempData[index] &&
-                        tempData[index] != null &&
-                        tempData[index] !== ''
-                          ? Object.values(tempData[index]).map(value => {
-                              return Number.parseInt(value, 10);
-                            })
-                          : []
-                      }
-                      onValueChange={value => {
-                        console.log('new checkbox value: ' + value);
-                        // print out the values of the dictionary tempData[index]
-
-                        console.log(
-                          'values of temp data index: ' +
-                            Object.values(tempData[index]),
-                        );
-                        console.log(
-                          'tostring of temp data index: ' +
-                            tempData[index].toString(),
-                        );
-                      }}
-                    />
+                  {field.type === 'checkboxes' && (
+                    <View>
+                      <Checkbox
+                        title={field.question}
+                        options={field.options}
+                        value={tempData[index]}
+                        disabled={!editingActive}
+                        colors={colors}
+                        editingActive={editingActive}
+                        onValueChange={value => {
+                          let a = [...tempData];
+                          a[index] = value;
+                          setTempData(a);
+                        }}
+                      />
+                    </View>
                   )}
                   {field.type !== 'radio' &&
-                    field.type !== 'checkbox' &&
+                    field.type !== 'checkboxes' &&
                     !editingActive && (
                       <Text
                         style={{
-                          color: colors.primary,
+                          color: colors.text,
                           fontWeight: 'bold',
                           flexWrap: 'wrap',
-                          fontSize: 15,
+                          fontSize: 20,
                           flex: 1,
                           // move this to the rightmost side of the screen
                           textAlign:

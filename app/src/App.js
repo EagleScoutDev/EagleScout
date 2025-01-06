@@ -5,9 +5,9 @@ import Toast from 'react-native-toast-message';
 
 import {
   NavigationContainer,
-  DefaultTheme,
   DarkTheme,
   useTheme,
+  useNavigation,
 } from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -16,7 +16,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CompleteSignup from './screens/login-flow/CompleteSignup';
 import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {useColorScheme, View} from 'react-native';
+import {SafeAreaView, useColorScheme, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
@@ -46,44 +46,80 @@ import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 const Tab = createBottomTabNavigator();
 import FormCreation from './screens/form-creation-flow/FormCreation';
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
-
-const CustomLightTheme = {
-  dark: false,
-  colors: {
-    primary: 'rgb(0, 122, 255)',
-    card: 'rgb(242, 242, 242)',
-    background: 'rgb(255, 255, 255)',
-    text: 'rgb(0, 0, 0)',
-    border: 'rgb(216, 216, 216)',
-    notification: 'rgb(255, 59, 48)',
-  },
-};
+import {useDeepLinking} from './lib/hooks/useDeepLinking';
+import EntrypointHome from './screens/login-flow/EntrypointHome';
+import ChangePassword from './screens/settings-flow/ChangePassword';
+import ResetPassword from './screens/login-flow/ResetPassword';
+import {MatchBetting} from './screens/match-betting-flow/MatchBetting';
+import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
+import {UltraDarkTheme} from './themes/UltraDarkTheme';
+import {CustomLightTheme} from './themes/CustomLightTheme';
+import {ThemeOptions} from './themes/ThemeOptions';
+import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
+import {isTablet} from './lib/deviceType';
 
 const Placeholder = () => <View />;
 
 const MyStack = ({themePreference, setThemePreference}) => {
   const scheme = useColorScheme();
-  const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
   const {colors} = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
-
-  const ScoutReportComponent = props => (
-    <ScoutingFlow
-      {...props}
-      isScoutStylePreferenceScrolling={scoutStylePreference === 'Scrolling'}
-    />
-  );
+  const {url} = useDeepLinking();
+  const nav = useNavigation();
 
   useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
-      if (value != null) {
-        setScoutStylePreference(value);
-        console.log('scout style pref identified');
-      } else {
-        setScoutStylePreference('Paginated');
-      }
-    });
+    AsyncStorage.setItem(FormHelper.SCOUTING_STYLE, 'Paginated');
   }, []);
+  useEffect(() => {
+    if (!url) {
+      return;
+    }
+    (async () => {
+      console.log('[DEEP LINKING] initial url: ' + url);
+      const route = url.split('://')[1].split('#')[0];
+      const params = url
+        .split('#')[1]
+        .split('&')
+        .reduce((acc, cur) => {
+          const [key, value] = cur.split('=');
+          acc[key] = value;
+          return acc;
+        }, {});
+      console.log('[DEEP LINKING] route: ' + route);
+      console.log('[DEEP LINKING] params: ' + JSON.stringify(params));
+      if (route === 'forgot-password' || params.type === 'recovery') {
+        // for the Reset Password email template
+        const {access_token, refresh_token} = params;
+        if (!access_token || !refresh_token) {
+          return;
+        }
+        const {error} = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error(error);
+        }
+        console.log('navigating to reset password');
+        nav.navigate('ChangePassword');
+      } else if (route === 'confirm-signup') {
+        // for the Confirm Signup email template
+        const {access_token, refresh_token} = params;
+        if (!access_token || !refresh_token) {
+          return;
+        }
+        const {error} = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) {
+          console.error(error);
+        }
+        console.log('navigating to complete sign up');
+        nav.navigate('CompleteSignUp');
+      }
+    })();
+  }, [url]);
 
   const [admin, setAdmin] = useState('0');
   let [error, setError] = useState('');
@@ -129,7 +165,7 @@ const MyStack = ({themePreference, setThemePreference}) => {
         .single();
       const {data: profilesData, error: profilesError} = await supabase
         .from('profiles')
-        .select('first_name, last_name')
+        .select('first_name, last_name, emoji')
         .eq('id', user.id)
         .single();
       if (userAttribError) {
@@ -188,9 +224,24 @@ const MyStack = ({themePreference, setThemePreference}) => {
     })();
   }, []);
 
+  // useEffect(() => {
+  //   FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
+  //     if (value != null) {
+  //       console.log('[useEffect] data: ' + value);
+  //       setOled(JSON.parse(value));
+  //     }
+  //   });
+  // }, []);
+
+  const ChangePasswordContainer = ({navigation}) => (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+      <ChangePassword navigation={navigation} />
+    </SafeAreaView>
+  );
+
   return (
     <Tab.Navigator
-      initialRouteName="Login"
+      initialRouteName="Entrypoint"
       options={{
         headerShown: false,
       }}>
@@ -203,13 +254,20 @@ const MyStack = ({themePreference, setThemePreference}) => {
             },
           }}>
           <Tab.Screen
+            name={'Entrypoint'}
+            children={() => <EntrypointHome ifAuth={skipAuth} />}
+          />
+          <Tab.Screen
             name="Login"
-            children={() => (
-              <Login onSubmit={submitForm} error={error} ifAuth={skipAuth} />
-            )}
+            children={() => <Login onSubmit={submitForm} error={error} />}
           />
           <Tab.Screen name="Sign" component={SignUpModal} />
           <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
+          <Tab.Screen
+            name="ChangePassword"
+            component={ChangePasswordContainer}
+          />
+          <Tab.Screen name="ResetPassword" component={ResetPassword} />
           <Tab.Screen name="Register new team" component={RegisterTeamModal} />
         </Tab.Group>
       ) : (
@@ -274,8 +332,6 @@ const MyStack = ({themePreference, setThemePreference}) => {
                   enableVibrateFallback: true,
                   ignoreAndroidSystemSettings: false,
                 });
-                // navigation.navigate('Home', {screen: 'Scout Report'});
-
                 navigation.navigate('CustomModal');
                 setModalVisible(true);
               },
@@ -288,8 +344,8 @@ const MyStack = ({themePreference, setThemePreference}) => {
               },
               tabBarIcon: ({color, size, focused}) => (
                 <Svg
-                  width={'120%'}
-                  height={'120%'}
+                  width={isTablet() ? '240%' : '120%'}
+                  height={isTablet() ? '240%' : '120%'}
                   viewBox="0 0 16 16"
                   style={{
                     bottom: '20%',
@@ -358,9 +414,21 @@ const MyStack = ({themePreference, setThemePreference}) => {
               <SettingsMain
                 onSignOut={redirectLogin}
                 setTheme={setThemePreference}
-                setScoutingStyle={setScoutStylePreference}
+                // setOled={setOled}
               />
             )}
+          />
+          <Tab.Screen
+            name="MatchBetting"
+            options={{
+              tabBarButton: () => null,
+              headerShown: false,
+              tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: colors.background,
+              },
+            }}
+            component={MatchBettingNavigator}
           />
         </>
       )}
@@ -372,18 +440,26 @@ const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
   const scheme = useColorScheme();
-  const [themePreference, setThemePreference] = useState('System');
+  const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
+  // const [oled, setOled] = useState(false);
+
+  useEffect(() => {
+    FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
+      if (r != null) {
+        console.log('theme found: ' + r);
+        setThemePreference(parseInt(r, 10));
+      }
+    });
+  }, []);
 
   return (
     <NavigationContainer
       theme={
-        themePreference === 'Dark'
-          ? DarkTheme
-          : themePreference === 'Light'
-          ? CustomLightTheme
-          : scheme === 'dark'
-          ? DarkTheme
-          : CustomLightTheme
+        themePreference === ThemeOptions.SYSTEM
+          ? scheme === 'dark'
+            ? DarkTheme
+            : CustomLightTheme
+          : ThemeOptionsMap.get(themePreference)
       }>
       <RootStack.Navigator
         screenOptions={{

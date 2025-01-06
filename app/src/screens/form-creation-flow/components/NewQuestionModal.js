@@ -1,16 +1,18 @@
 import StandardModal from '../../../components/modals/StandardModal';
 import StandardButton from '../../../components/StandardButton';
-import {Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, ScrollView} from 'react-native';
 import Heading from './questions/Heading';
 import React, {useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Radio from './questions/Radio';
 import Number from './questions/Number';
 import TextQuestion from './questions/TextBox';
+import Checkboxes from './questions/Checkboxes';
 
 const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
   const [headingModalVisible, setHeadingModalVisible] = useState(false);
   const [radioModalVisible, setRadioModalVisible] = useState(false);
+  const [checkBoxModalVisible, setCheckBoxModalVisible] = useState(false);
   const [numberModalVisible, setNumberModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false);
   const [radioKey, setRadioKey] = useState(0);
@@ -18,6 +20,8 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
   const [textKey, setTextKey] = useState(2);
   const [headingKey, setHeadingKey] = useState(3);
   const [nextKey, setNextKey] = useState(4);
+  const [checkBoxKey, setCheckBoxKey] = useState(5);
+  const {colors} = useTheme();
 
   return (
     <>
@@ -30,58 +34,74 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
         <Text
           style={{
             textAlign: 'center',
-            color: 'black',
+            color: colors.text,
             fontSize: 20,
             fontWeight: 'bold',
           }}>
           What type of question do you want to add?
         </Text>
-        <StandardButton
-          text={'Heading'}
-          onPress={() => {
-            setHeadingKey(nextKey);
-            setNextKey(nextKey + 1);
-            setVisible(false);
-            setHeadingModalVisible(true);
-          }}
-          color={'blue'}
-        />
-        <StandardButton
-          text={'Radio'}
-          onPress={() => {
-            setRadioKey(nextKey);
-            setNextKey(nextKey + 1);
-            setVisible(false);
-            setRadioModalVisible(true);
-          }}
-          color={'red'}
-        />
-        <StandardButton
-          text={'Number'}
-          onPress={() => {
-            setNumberKey(nextKey);
-            setNextKey(nextKey + 1);
-            setVisible(false);
-            setNumberModalVisible(true);
-          }}
-          color={'green'}
-        />
-        <StandardButton
-          text={'Text'}
-          onPress={() => {
-            setTextKey(nextKey);
-            setNextKey(nextKey + 1);
-            setVisible(false);
-            setTextModalVisible(true);
-          }}
-          color={'orange'}
-        />
+        <ScrollView
+          style={{
+            width: '100%',
+            height: '70%',
+          }}>
+          <StandardButton
+            text={'Heading'}
+            onPress={() => {
+              setHeadingKey(nextKey);
+              setNextKey(nextKey + 1);
+              setVisible(false);
+              setHeadingModalVisible(true);
+            }}
+            color={colors.primary}
+          />
+          <StandardButton
+            text={'Radio'}
+            onPress={() => {
+              setRadioKey(nextKey);
+              setNextKey(nextKey + 1);
+              setVisible(false);
+              setRadioModalVisible(true);
+            }}
+            color={colors.primary}
+          />
+          <StandardButton
+            text={'Checkboxes'}
+            onPress={() => {
+              setCheckBoxKey(nextKey);
+              setNextKey(nextKey + 1);
+              setVisible(false);
+              setCheckBoxModalVisible(true);
+            }}
+            color={colors.primary}
+          />
+          <StandardButton
+            text={'Number'}
+            onPress={() => {
+              setNumberKey(nextKey);
+              setNextKey(nextKey + 1);
+              setVisible(false);
+              setNumberModalVisible(true);
+            }}
+            color={colors.primary}
+          />
+          <StandardButton
+            text={'Text'}
+            onPress={() => {
+              setTextKey(nextKey);
+              setNextKey(nextKey + 1);
+              setVisible(false);
+              setTextModalVisible(true);
+            }}
+            color={colors.primary}
+          />
+        </ScrollView>
         <StandardButton
           text={'Cancel'}
           onPress={() => {
             setVisible(false);
           }}
-          color={'gray'}
+          color={colors.background}
         />
       </StandardModal>
       <Heading
@@ -96,6 +116,13 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
         setVisible={setRadioModalVisible}
         styles={styles}
         key={radioKey}
+        onSubmit={onSubmit}
+      />
+      <Checkboxes
+        visible={checkBoxModalVisible}
+        setVisible={setCheckBoxModalVisible}
+        styles={styles}
+        key={checkBoxKey}
         onSubmit={onSubmit}
       />
       <Number

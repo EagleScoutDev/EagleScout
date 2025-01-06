@@ -7,6 +7,8 @@ import {ScoutReportReturnData} from '../../database/ScoutReports';
 import ProfilesDB, {ProfilesReturnData} from '../../database/Profiles';
 import {Dropdown} from 'react-native-element-dropdown';
 import ScoutViewer from '../../components/modals/ScoutViewer';
+import {getLighterColor} from '../../lib/ColorReadability';
+import {isTablet} from '../../lib/deviceType';
 
 enum FilterState {
   TEAM,
@@ -94,7 +96,7 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
         style={{
           flex: 1,
           backgroundColor: colors.background,
-          paddingTop: '10%',
+          paddingTop: isTablet() ? '0%' : '10%',
         }}>
         <View
           style={{
@@ -132,7 +134,7 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
               keyboardType={
                 filterState === FilterState.MATCH ? 'numeric' : 'default'
               }
-              placeholderTextColor={'gray'}
+              placeholderTextColor={'lightgray'}
               placeholder={getSearchPrompt()}
               onEndEditing={() => {
                 console.log('onEndEditing');
@@ -327,7 +329,8 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
                     }}>
                     <Text
                       style={{
-                        color: 'grey',
+                        color: colors.text,
+                        opacity: 0.6,
                         marginHorizontal: '4%',
                         fontWeight: 'bold',
                         fontSize: 18,
@@ -430,7 +433,7 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
               }}
               placeholder={'Select a user'}
               placeholderStyle={{
-                color: 'gray',
+                color: colors.primary,
               }}
               value={{
                 label: selectedUser?.name ?? 'Select a user',
@@ -444,13 +447,10 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
                     }}
                     width="20"
                     height="20"
-                    fill="currentColor"
+                    fill={colors.primary}
                     viewBox="0 0 16 16">
-                    <Path fill="gray" d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                    <Path
-                      fill="gray"
-                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
-                    />
+                    <Path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <Path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
                   </Svg>
                 );
               }}

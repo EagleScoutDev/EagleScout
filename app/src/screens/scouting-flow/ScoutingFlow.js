@@ -1,5 +1,5 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
+import {useNavigation, useRoute, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import FormHelper from '../../FormHelper';
@@ -8,16 +8,19 @@ import Toast from 'react-native-toast-message';
 import CompetitionsDB from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
 import Gamification from './Gamification';
-import ScoutingView from './ScoutingView';
 import Confetti from 'react-native-confetti';
+import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
-function ScoutingFlow({navigation, route}) {
+
+function ScoutingFlow({resetTimer}) {
+  const route = useRoute();
+  const navigation = useNavigation();
   const defaultValues = useMemo(() => {
     return {
       radio: '',
-      checkbox: [],
+      checkboxes: [],
       textbox: '',
       number: 0,
       slider: 0,
@@ -25,21 +28,40 @@ function ScoutingFlow({navigation, route}) {
   }, []);
 
   const {colors} = useTheme();
-  const [match, setMatch] = useState();
-  const [team, setTeam] = useState();
+  const [match, setMatch] = useState('');
+  const [team, setTeam] = useState('');
   const [competition, setCompetition] = useState();
   const [formStructure, setFormStructure] = useState();
   const [formId, setFormId] = useState();
 
   const [data, setData] = useState(null);
   const [arrayData, setArrayData] = useState();
+  const [autoPath, setAutoPath] = useState([]);
+
+  const [startRelativeTime, setStartRelativeTime] = useState(-1);
+  const [timeline, setTimeline] = useState([]);
+  const [fieldOrientation, setFieldOrientation] = useState('red');
+  const [selectedAlliance, setSelectedAlliance] = useState('red');
+
   const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confettiView, setConfettiView] = useState(null);
-  const [isScoutStylePreferenceScrolling, setIsScoutStylePreferenceScrolling] =
-    useState(false);
+
   const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
+
+  const {competitionId, matches, getTeamsForMatch} =
+    useCurrentCompetitionMatches();
+  const [teamsForMatch, setTeamsForMatch] = useState([]);
+  useEffect(() => {
+    if (!match || match > 400) {
+      return;
+    }
+    const teams = getTeamsForMatch(Number(match));
+    if (teams.length > 0) {
+      setTeamsForMatch(teams);
+    }
+  }, [match, competitionId, matches]);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
@@ -49,14 +71,6 @@ function ScoutingFlow({navigation, route}) {
     });
   }, []);
 
-  useEffect(() => {
-    if (scoutStylePreference === 'Scrolling') {
-      setIsScoutStylePreferenceScrolling(true);
-    } else {
-      setIsScoutStylePreferenceScrolling(false);
-    }
-  }, [scoutStylePreference]);
-
   /**
    * Initializes fields of the report before submitting it.
    * @param dataToSubmit the object containing all report information
@@ -64,6 +78,12 @@ function ScoutingFlow({navigation, route}) {
    */
   function initData(dataToSubmit, tempArray) {
     dataToSubmit.data = tempArray;
+    const timelineRecord = {};
+    timeline.forEach((value, key) => {
+      timelineRecord[key] = value;
+    });
+    dataToSubmit.timelineData = timelineRecord;
+    dataToSubmit.autoPath = autoPath;
     dataToSubmit.matchNumber = match;
     dataToSubmit.teamNumber = team;
     dataToSubmit.competitionId = competition.id;
@@ -79,7 +99,7 @@ function ScoutingFlow({navigation, route}) {
     for (let i = 0; i < formStructure.length; i++) {
       if (
         formStructure[i].required &&
-        tempArray[i] === defaultValues[formStructure[i].type] &&
+        (tempArray[i] === '' || tempArray[i] == null) &&
         formStructure[i].type !== 'number'
       ) {
         Alert.alert(
@@ -104,13 +124,15 @@ function ScoutingFlow({navigation, route}) {
           tempArray[i] = null;
         } else if (form[i].type === 'radio') {
           tempArray[i] = form[i].defaultIndex;
+        } else if (form[i].type === 'checkbox') {
+          tempArray[i] = form[i].checkedByDefault;
         } else {
           tempArray[i] = defaultValues[form[i].type];
         }
       }
       setArrayData(tempArray);
     },
-    [defaultValues, isScoutStylePreferenceScrolling],
+    [defaultValues],
   );
 
   /**
@@ -165,42 +187,21 @@ function ScoutingFlow({navigation, route}) {
 
   const submitForm = async () => {
     let dataToSubmit = {};
-    if (match > 100 || !match) {
+    if (match > 400 || !match) {
       Alert.alert('Invalid Match Number', 'Please enter a valid match number');
-      if (!isScoutStylePreferenceScrolling) {
-        navigation.navigate('Match');
-      }
+      navigation.navigate('Match');
       return;
     }
 
     if (!team) {
       Alert.alert('Invalid Team Number', 'Please enter a valid team number');
-      if (!isScoutStylePreferenceScrolling) {
-        navigation.navigate('Match');
-      }
+      navigation.navigate('Match');
       return;
     }
     setIsSubmitting(true);
 
     // array containing the raw values of the form
     let tempArray = [...arrayData];
-
-    // number of items in dictionary
-    const numItems = Object.keys(formStructure).length;
-
-    // converts each checkbox type into a format usable for the form
-    // remember: each checkbox stores the data as an array of indices
-    // but the database requires a dictionary, with the key representing the index (in terms of the dictionary)
-    // and the value representing the index of the answer relative to the array of checkbox options
-    for (let i = 0; i < numItems; i++) {
-      if (formStructure[i].type === 'checkbox') {
-        let tempDict = {};
-        for (let j = 0; j < tempArray[i].length; j++) {
-          tempDict[j] = tempArray[i][j];
-        }
-        tempArray[i] = tempDict;
-      }
-    }
 
     if (!checkRequiredFields(tempArray)) {
       setIsSubmitting(false);
@@ -209,10 +210,11 @@ function ScoutingFlow({navigation, route}) {
 
     initData(dataToSubmit, tempArray);
 
-    // make a request to google.com and get the response
-    const googleResponse = await fetch('https://google.com').catch(() => {});
+    const internetResponse = await CompetitionsDB.getCurrentCompetition()
+      .then(() => true)
+      .catch(() => false);
 
-    if (!googleResponse) {
+    if (!internetResponse) {
       FormHelper.saveFormOffline({
         ...dataToSubmit,
         form: formStructure,
@@ -223,13 +225,43 @@ function ScoutingFlow({navigation, route}) {
           text1: 'Saved offline successfully!',
           visibilityTime: 3000,
         });
+        const matchCopy = match;
+        const teamCopy = team;
+        (async () => {
+          const data = await AsyncStorage.getItem('scout-assignments');
+          if (data != null) {
+            const assignments = JSON.parse(data);
+            const newAssignments = assignments.filter(assignment => {
+              console.log(assignment.matchNumber);
+              console.log(assignment.team.substring(3));
+              console.log(matchCopy);
+              console.log(teamCopy);
+              if (
+                assignment.matchNumber === parseInt(matchCopy, 10) &&
+                assignment.team == null
+              ) {
+                return false;
+              } else if (
+                assignment.matchNumber === parseInt(matchCopy, 10) &&
+                assignment.team.substring(3) === teamCopy
+              ) {
+                return false;
+              } else {
+                return true;
+              }
+            });
+            await AsyncStorage.setItem(
+              'scout-assignments',
+              JSON.stringify(newAssignments),
+            );
+          }
+        })();
         setMatch('');
         setTeam('');
+        setAutoPath([]);
         initForm(formStructure);
-        if (!isScoutStylePreferenceScrolling) {
-          startConfetti();
-          navigation.navigate('Match');
-        }
+        startConfetti();
+        navigation.navigate('Match');
       });
     } else {
       console.log(dataToSubmit);
@@ -243,11 +275,11 @@ function ScoutingFlow({navigation, route}) {
         });
         setMatch('');
         setTeam('');
+        resetTimer();
+        setAutoPath([]);
         initForm(formStructure);
-        if (!isScoutStylePreferenceScrolling) {
-          startConfetti();
-          navigation.navigate('Match');
-        }
+        startConfetti();
+        navigation.navigate('Match');
       } catch (error) {
         console.error(error);
         Alert.alert(
@@ -309,6 +341,32 @@ function ScoutingFlow({navigation, route}) {
     //console.log('dict: ', dict);
   }, [formStructure]);
 
+  const styles = StyleSheet.create({
+    textInput: {
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 10,
+      marginBottom: 15,
+      padding: 10,
+      color: colors.text,
+    },
+    badInput: {
+      height: 40,
+      borderColor: 'red',
+      borderWidth: 1,
+      borderRadius: 10,
+      padding: 10,
+      marginBottom: 15,
+      color: 'red',
+    },
+    subtitle: {
+      textAlign: 'left',
+      paddingBottom: 15,
+      color: colors.primary,
+      fontWeight: 'bold',
+    },
+  });
+
   return (
     <>
       {isCompetitionHappening ? (
@@ -328,36 +386,32 @@ function ScoutingFlow({navigation, route}) {
             }}>
             <Confetti ref={setConfettiView} timeout={10} duration={3000} />
           </View>
-          {isScoutStylePreferenceScrolling ? (
-            <ScoutingView
-              match={match}
-              setMatch={setMatch}
-              team={team}
-              setTeam={setTeam}
-              colors={colors}
-              competition={competition}
-              data={data}
-              arrayData={arrayData}
-              setArrayData={setArrayData}
-              submitForm={submitForm}
-              isSubmitting={isSubmitting}
-            />
-          ) : (
-            <Gamification
-              match={match}
-              setMatch={setMatch}
-              team={team}
-              setTeam={setTeam}
-              colors={colors}
-              navigation={navigation}
-              competition={competition}
-              data={data}
-              arrayData={arrayData}
-              setArrayData={setArrayData}
-              submitForm={submitForm}
-              isSubmitting={isSubmitting}
-            />
-          )}
+          <Gamification
+            match={match}
+            setMatch={setMatch}
+            team={team}
+            setTeam={setTeam}
+            teamsForMatch={teamsForMatch}
+            colors={colors}
+            styles={styles}
+            navigation={navigation}
+            competition={competition}
+            data={data}
+            arrayData={arrayData}
+            setArrayData={setArrayData}
+            submitForm={submitForm}
+            isSubmitting={isSubmitting}
+            startRelativeTime={startRelativeTime}
+            setStartRelativeTime={setStartRelativeTime}
+            timeline={timeline}
+            setTimeline={setTimeline}
+            fieldOrientation={fieldOrientation}
+            setFieldOrientation={setFieldOrientation}
+            selectedAlliance={selectedAlliance}
+            setSelectedAlliance={setSelectedAlliance}
+            autoPath={autoPath}
+            setAutoPath={setAutoPath}
+          />
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

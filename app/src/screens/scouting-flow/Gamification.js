@@ -1,18 +1,18 @@
 import {
   Keyboard,
-  Modal,
   ScrollView,
   Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import FullScreenIncrementer from '../../components/form/FullScreenIncrementer';
 import FormSection from '../../components/form/FormSection';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import CrescendoTeleopModal from '../../components/games/crescendo/CrescendoTeleopModal';
+import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();
@@ -22,7 +22,9 @@ function Gamification({
   setMatch,
   team,
   setTeam,
+  teamsForMatch,
   colors,
+  styles,
   navigation,
   competition,
   data,
@@ -30,7 +32,19 @@ function Gamification({
   setArrayData,
   submitForm,
   isSubmitting,
+  startRelativeTime,
+  setStartRelativeTime,
+  timeline,
+  setTimeline,
+  fieldOrientation,
+  setFieldOrientation,
+  selectedAlliance,
+  setSelectedAlliance,
+  autoPath,
+  setAutoPath,
 }) {
+  const [activePage, setActivePage] = useState('Match');
+  const [modalIsOpen, setModalIsOpen] = useState(true);
 
   return (
     <>
@@ -54,7 +68,7 @@ function Gamification({
           options={{
             headerTintColor: colors.text,
             tabBarLabelStyle: {
-              fontSize: 7.5,
+              fontSize: 12,
               fontWeight: 'bold',
             },
 
@@ -91,13 +105,21 @@ function Gamification({
                     setMatch={setMatch}
                     team={team}
                     setTeam={setTeam}
-                    disabled={true}
+                    teamsForMatch={teamsForMatch}
+                    selectedOrientation={fieldOrientation}
+                    setSelectedOrientation={setFieldOrientation}
+                    selectedAlliance={selectedAlliance}
+                    setSelectedAlliance={setSelectedAlliance}
                   />
                 </View>
                 <View style={{width: '100%', marginBottom: '5%'}}>
                   <StandardButton
                     text={'Next'}
-                    onPress={() => navigation.navigate(Object.keys(data)[0])}
+                    onPress={() => {
+                      navigation.navigate(Object.keys(data)[0]);
+                      setActivePage(Object.keys(data)[0]);
+                      setModalIsOpen(true);
+                    }}
                     color={colors.primary}
                   />
                 </View>
@@ -105,7 +127,6 @@ function Gamification({
             </TouchableWithoutFeedback>
           )}
         />
-
         {data &&
           Object.entries(data).map(([key, value], index) => {
             return (
@@ -116,7 +137,7 @@ function Gamification({
                   // change font color in header
                   headerTintColor: colors.text,
                   tabBarLabelStyle: {
-                    fontSize: 7.5,
+                    fontSize: 12,
                     fontWeight: 'bold',
                   },
 
@@ -124,30 +145,50 @@ function Gamification({
                     backgroundColor: colors.background,
                   },
                 }}
+                listeners={{
+                  tabPress: e => {
+                    setActivePage(key);
+                    setModalIsOpen(true);
+                  },
+                }}
                 children={() => (
                   // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
-                    <FormSection colors={colors} title={''} key={key.length}>
-                      {value.map((item, vIndex) => {
-                        return (
-                          <FormComponent
-                            key={item.question}
-                            item={item}
-                            arrayData={arrayData}
-                            setArrayData={setArrayData}
-                          />
-                        );
-                      })}
-                    </FormSection>
+                    <View
+                      style={{
+                        marginHorizontal: '5%',
+                      }}>
+                      <FormSection colors={colors} title={''} key={key.length}>
+                        {value.map(item => {
+                          return (
+                            <View
+                              key={item.question}
+                              style={{
+                                marginVertical: '5%',
+                              }}>
+                              <FormComponent
+                                key={item.question}
+                                colors={colors}
+                                item={item}
+                                styles={styles}
+                                arrayData={arrayData}
+                                setArrayData={setArrayData}
+                              />
+                            </View>
+                          );
+                        })}
+                      </FormSection>
+                    </View>
                     {/*if the index is not the last one, add a button that navigates users to the next tab*/}
                     {index !== Object.keys(data).length - 1 && (
                       <View style={{width: '100%', marginBottom: '5%'}}>
                         <StandardButton
                           text={'Next'}
                           width={'85%'}
-                          onPress={() =>
-                            navigation.navigate(Object.keys(data)[index + 1])
-                          }
+                          onPress={() => {
+                            navigation.navigate(Object.keys(data)[index + 1]);
+                            setActivePage(Object.keys(data)[index + 1]);
+                          }}
                           color={colors.primary}
                         />
                       </View>
@@ -171,6 +212,31 @@ function Gamification({
             );
           })}
       </Tab.Navigator>
+      <CrescendoAutoModal
+        isActive={activePage === 'Auto' && modalIsOpen}
+        setIsActive={setModalIsOpen}
+        fieldOrientation={fieldOrientation}
+        setFieldOrientation={setFieldOrientation}
+        selectedAlliance={selectedAlliance}
+        setSelectedAlliance={setSelectedAlliance}
+        autoPath={autoPath}
+        setAutoPath={setAutoPath}
+        arrayData={arrayData}
+        setArrayData={setArrayData}
+        form={data && data.Auto}
+      />
+      <CrescendoTeleopModal
+        startRelativeTime={startRelativeTime}
+        setStartRelativeTime={setStartRelativeTime}
+        timeline={timeline}
+        setTimeline={setTimeline}
+        // we are not going to use teleop modal
+        isActive={false}
+        setIsActive={() => {}}
+        arrayData={arrayData}
+        setArrayData={setArrayData}
+        form={data && data.Teleop}
+      />
     </>
   );
 }

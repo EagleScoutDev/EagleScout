@@ -41,14 +41,22 @@ function SliderType({
         flexDirection: 'column',
         marginVertical: 10,
       }}>
-      <Question title={`${question} (${low} - ${high})`} />
+      <Question
+        title={`${question} (${low} - ${high})`}
+        onReset={() => {
+          setLocalValue(low);
+          onValueChange(low);
+        }}
+      />
       <View>
         <Slider
           disabled={disabled}
           value={localValue}
-          maximumValue={Number.parseInt(high)}
-          minimumValue={Number.parseInt(low)}
-          step={step ? Number.parseInt(step) : 1}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.text}
+          maximumValue={Number.parseInt(high, 10)}
+          minimumValue={Number.parseInt(low, 10)}
+          step={step ? Number.parseInt(step, 10) : 1}
           // This setup allows user to see live slider value update, but only on release does it update the state
           // This minimizes the number of rewrites of the array required.
           onValueChange={setLocalValue}
