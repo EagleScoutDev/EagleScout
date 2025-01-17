@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Alert,
   Pressable,
@@ -25,7 +25,8 @@ import Reanimated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
-import {useTheme} from '@react-navigation/native';
+import {Theme, useTheme} from '@react-navigation/native';
+import {getIdealTextColor} from '../../lib/ColorReadability';
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 // Reanimated.addWhitelistedNativeProps({
@@ -42,7 +43,9 @@ export default function PitScoutingCamera({
   onPhotoTaken: (photoData: string) => void;
   onCancel: () => void;
 }) {
-  const {colors} = useTheme();
+  const theme = useTheme();
+  const colors = theme.colors;
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const [isCapturing, setIsCapturing] = useState(false);
   const {hasPermission, requestPermission} = useCameraPermission();
   const device = useCameraDevice('back');
@@ -57,9 +60,7 @@ export default function PitScoutingCamera({
       return;
     }
     setIsCapturing(true);
-    const file = await camera.current
-      .takePhoto()
-      .catch(e => {
+    const file = await camera.current.takePhoto().catch(e => {
       console.log(e);
     });
     console.log('hi');
@@ -148,7 +149,10 @@ export default function PitScoutingCamera({
         <Pressable style={styles.cancelButton} onPress={onCancel}>
           <Text
             style={{
-              color: colors.text,
+              width: 20,
+              height: 20,
+              color: 'black',
+              textAlign: 'center',
             }}>
             X
           </Text>
@@ -169,22 +173,26 @@ export default function PitScoutingCamera({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  camera: {
-    flex: 1,
-  },
-  cancelButtonContainer: {
-    position: 'absolute',
-    top: 30,
-    right: 30,
-    zIndex: 1,
-  },
-  cancelButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 999,
-  },
-});
+const makeStyles = ({colors}: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    camera: {
+      flex: 1,
+    },
+    cancelButtonContainer: {
+      position: 'absolute',
+      top: 50,
+      right: 30,
+      zIndex: 1,
+    },
+    cancelButton: {
+      backgroundColor: 'white',
+      padding: 10,
+      borderRadius: 999,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
