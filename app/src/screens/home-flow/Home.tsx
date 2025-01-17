@@ -104,7 +104,13 @@ function Home() {
         }}
         component={NoteScreen}
       />
-      <HomeStack.Screen name={'Pit Scout'} component={PitScoutingFlow} />
+      <HomeStack.Screen
+        name={'Pit Scout'}
+        options={{
+          headerBackTitle: 'Home',
+        }}
+        component={PitScoutingFlow}
+      />
     </HomeStack.Navigator>
   );
 }

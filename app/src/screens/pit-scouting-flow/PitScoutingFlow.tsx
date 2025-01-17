@@ -3,14 +3,16 @@ import {
   Alert,
   FlatList,
   Image,
+  Keyboard,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {Theme, useTheme} from '@react-navigation/native';
+import {Theme, useNavigation, useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import PitScoutingCamera from './PitScoutingCamera';
 import FormSection from '../../components/form/FormSection';
@@ -23,11 +25,16 @@ import PitScoutReports, {
   PitScoutReportWithoutId,
 } from '../../database/PitScoutReports';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+const Tab = createMaterialTopTabNavigator();
 
 const ListSeparator = () => <View style={{width: 10}} />;
 
 export default function PitScoutingFlow() {
+  const navigation = useNavigation();
   const theme = useTheme();
+  const colors = theme.colors;
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const [images, setImages] = useState<string[]>(['plus']);
   const [cameraOpen, setCameraOpen] = useState(false);
@@ -35,11 +42,11 @@ export default function PitScoutingFlow() {
   const [formData, setFormData] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStructure, setFormStructure] = useState<any[]>([]);
-  const [competitionLoading, setCompetitionLoading] = useState(true);
   const [currentCompetition, setCurrentCompetition] = useState<any>();
 
   const [isOffline, setIsOffline] = useState(false);
   const [noActiveCompetition, setNoActiveCompetition] = useState(false);
+  console.log('images', images);
 
   const defaultValues = useMemo(() => {
     return {
@@ -106,7 +113,6 @@ export default function PitScoutingFlow() {
       );
       setFormStructure(transformedStructure);
       initializeValues(transformedStructure);
-      setCompetitionLoading(false);
       setCurrentCompetition(competition);
     },
     [initializeValues],
@@ -234,47 +240,195 @@ export default function PitScoutingFlow() {
     );
   }
   return (
-    <ScrollView>
-      <Text style={styles.heading}>Pit Scouting Report</Text>
-      <TeamInformation team={team} setTeam={setTeam} />
-      {!competitionLoading &&
-        formData.length !== 0 &&
-        formStructure.map((section, i) => (
-          <FormSection colors={theme.colors} title={section.title} key={i}>
-            {section.questions.map((item: any, j: number) => (
-              <>
-                {/* @ts-ignore */}
-                <FormComponent
-                  key={j}
-                  item={item}
-                  arrayData={formData}
-                  setArrayData={setFormData}
-                />
-              </>
-            ))}
-          </FormSection>
-        ))}
-      <FormSection colors={theme.colors} title={'Attach Images'}>
-        <FlatList
-          style={styles.imageList}
-          ItemSeparatorComponent={ListSeparator}
-          data={images}
-          renderItem={({item}) => {
-            if (item === 'plus') {
-              return (
-                <Pressable onPress={() => setCameraOpen(true)}>
-                  <View style={styles.plusButton}>
-                    <Text>+</Text>
-                  </View>
-                </Pressable>
-              );
-            }
-            return <Image source={{uri: item}} style={styles.image} />;
+    <>
+      <Tab.Navigator
+        // change the position to be on the bottom
+        screenOptions={{
+          tabBarStyle: {
+            backgroundColor: colors.background,
+            borderTopColor: colors.background,
+          },
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.text,
+          // make the distance between each tab smaller
+          tabBarGap: 0,
+          tabBarLabelStyle: {
+            fontSize: 10,
+          },
+        }}>
+        <Tab.Screen
+          name={'Match'}
+          options={{
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: 'bold',
+            },
+
+            tabBarStyle: {
+              backgroundColor: colors.background,
+            },
           }}
-          keyExtractor={item => item}
-          horizontal={true}
+          children={() => (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    width: '100%',
+                  }}>
+                  {currentCompetition != null && (
+                    <Text
+                      style={{
+                        color: colors.text,
+                        fontWeight: 'bold',
+                        fontSize: 20,
+                        textAlign: 'center',
+                        margin: '5%',
+                      }}>
+                      {currentCompetition.name} - Pit Scouting
+                    </Text>
+                  )}
+                  <TeamInformation team={team} setTeam={setTeam} />
+                </View>
+                <View style={{width: '100%', marginBottom: '5%'}}>
+                  <StandardButton
+                    text={'Next'}
+                    onPress={() => {
+                      navigation.navigate(formStructure[0].title);
+                    }}
+                    color={colors.primary}
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
         />
-      </FormSection>
+        {formStructure &&
+          formStructure.map(({title: key, questions: value}, index) => {
+            return (
+              <Tab.Screen
+                key={key}
+                name={key}
+                options={{
+                  // change font color in header
+                  tabBarLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                  },
+
+                  tabBarStyle: {
+                    backgroundColor: colors.background,
+                  },
+                }}
+                children={() => (
+                  // <KeyboardAvoidingView behavior={'height'}>
+                  <ScrollView keyboardShouldPersistTaps="handled">
+                    <View
+                      style={{
+                        marginHorizontal: '5%',
+                      }}>
+                      <FormSection colors={colors} title={''} key={key.length}>
+                        {value.map(item => {
+                          return (
+                            <View
+                              key={item.question}
+                              style={{
+                                marginVertical: '5%',
+                              }}>
+                              <FormComponent
+                                key={item.question}
+                                colors={colors}
+                                item={item}
+                                styles={styles}
+                                arrayData={formData}
+                                setArrayData={setFormData}
+                              />
+                            </View>
+                          );
+                        })}
+                      </FormSection>
+                    </View>
+                    <View style={{width: '100%', marginBottom: '5%'}}>
+                      <StandardButton
+                        text={'Next'}
+                        width={'85%'}
+                        onPress={() => {
+                          if (index === formStructure.length - 1) {
+                            navigation.navigate('Images');
+                            return;
+                          }
+                          navigation.navigate(formStructure[index + 1].title);
+                        }}
+                        color={colors.primary}
+                      />
+                    </View>
+                  </ScrollView>
+                  // </KeyboardAvoidingView>
+                )}
+              />
+            );
+          })}
+        <Tab.Screen
+          name={'Images'}
+          options={{
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: 'bold',
+            },
+
+            tabBarStyle: {
+              backgroundColor: colors.background,
+            },
+          }}
+          children={() => (
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <View
+                style={{
+                  marginHorizontal: '5%',
+                }}>
+                <FormSection colors={theme.colors} title={'Attach Images'}>
+                  <FlatList
+                    style={styles.imageList}
+                    ItemSeparatorComponent={ListSeparator}
+                    data={images}
+                    renderItem={({item}) => {
+                      console.log('rendering item', item);
+                      if (item === 'plus') {
+                        return (
+                          <Pressable onPress={() => setCameraOpen(true)}>
+                            <View style={styles.plusButton}>
+                              <Text style={styles.plusText}>+</Text>
+                            </View>
+                          </Pressable>
+                        );
+                      }
+                      return (
+                        <Image source={{uri: item}} style={styles.image} />
+                      );
+                    }}
+                    keyExtractor={item => item}
+                    horizontal={true}
+                  />
+                </FormSection>
+                <View style={{width: '100%'}}>
+                  <StandardButton
+                    text={'Submit'}
+                    width={'85%'}
+                    color={colors.primary}
+                    isLoading={isSubmitting}
+                    onPress={submitForm}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          )}
+        />
+      </Tab.Navigator>
+
       {cameraOpen && (
         <Modal animationType="slide" visible={cameraOpen}>
           <PitScoutingCamera
@@ -286,15 +440,7 @@ export default function PitScoutingFlow() {
           />
         </Modal>
       )}
-      <StandardButton
-        text={'Submit'}
-        color={theme.colors.primary}
-        width={'85%'}
-        isLoading={isSubmitting}
-        onPress={submitForm}
-      />
-      <View style={styles.bottomMargin} />
-    </ScrollView>
+    </>
   );
 }
 
@@ -316,13 +462,21 @@ const makeStyles = ({colors}: Theme) =>
     image: {
       width: 200,
       height: 250,
+      margin: 10,
+      borderRadius: 10,
     },
     plusButton: {
       width: 200,
       height: 250,
-      backgroundColor: 'lightgray',
+      margin: 10,
+      borderRadius: 10,
+      backgroundColor: colors.card,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    plusText: {
+      fontSize: 50,
+      color: colors.text,
     },
     text: {
       color: colors.text,
