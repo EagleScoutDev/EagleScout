@@ -141,6 +141,7 @@ export const PitScoutViewer = ({
     <Modal
       animationType="slide"
       visible={visible}
+      transparent={true}
       presentationStyle={'overFullScreen'}>
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
