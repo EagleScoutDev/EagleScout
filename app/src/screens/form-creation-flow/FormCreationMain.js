@@ -149,19 +149,20 @@ const FormCreationMain = ({route, navigation}) => {
         onCancel={onFormCancel}
         questions={questions}
       />
-    {questions.length === 0 && (
+      {questions.length === 0 && (
         <Text
-            style={{
-                color: colors.text,
-                fontSize: 18,
-                fontWeight: '600',
-                textAlign: 'center',
-                marginTop: 50,
-                paddingHorizontal: '5%',
-            }}>
-            Press the + button to begin adding questions.
+          style={{
+            color: colors.text,
+            fontSize: 18,
+            fontWeight: '600',
+            textAlign: 'center',
+            marginTop: 25,
+            marginBottom: 25,
+            paddingHorizontal: '5%',
+          }}>
+          Press the + button to begin adding questions.
         </Text>
-    )}
+      )}
       <View
         style={{
           flexDirection: 'row',
