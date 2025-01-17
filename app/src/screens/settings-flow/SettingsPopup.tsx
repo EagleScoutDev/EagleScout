@@ -1,18 +1,12 @@
-import React, {useEffect} from 'react';
-import {View, Text, Modal, Pressable, Switch} from 'react-native';
-import ThemePicker from '../../components/pickers/ThemePicker';
+import React from 'react';
+import {View, Text, Modal, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import FormHelper from '../../FormHelper';
-import {Theme} from '@react-navigation/native/src/types';
-import {ThemeOptions} from '../../themes/ThemeOptions';
 
 interface SettingsPopupProps {
   visible: boolean;
   setVisible: (arg0: boolean) => void;
-  setTheme: (arg0: ThemeOptions) => void;
   navigation: ReactNavigation.RootParamList;
   // setOled: (arg0: boolean) => void;
 }
@@ -20,7 +14,6 @@ interface SettingsPopupProps {
 const SettingsPopup = ({
   visible,
   setVisible,
-  setTheme,
   navigation,
 }: // setOled,
 SettingsPopupProps) => {
@@ -76,7 +69,6 @@ SettingsPopupProps) => {
             Settings
           </Text>
         </Pressable>
-        <ThemePicker setTheme={setTheme} />
         <MinimalSectionHeader title={'Dev Tools'} />
         <StandardButton
           color={'black'}
