@@ -50,7 +50,7 @@ export default function PitScoutingFlow() {
   const defaultValues = useMemo(() => {
     return {
       radio: '',
-      checkbox: [],
+      checkboxes: [],
       textbox: '',
       number: 0,
       slider: 0,

@@ -190,7 +190,7 @@ export const PitScoutViewer = ({
                       flexDirection:
                         field.type === 'radio' ||
                         field.type === 'textbox' ||
-                        field.type === 'checkbox'
+                        field.type === 'checkboxes'
                           ? 'column'
                           : 'row',
                       justifyContent: 'space-between',
@@ -207,25 +207,25 @@ export const PitScoutViewer = ({
                         <RadioButtons
                           title={''}
                           colors={colors}
-                          options={field.labels}
-                          value={field.labels[field.data]}
+                          options={field.options}
+                          value={field.options[field.data]}
                           disabled={true}
                         />
                       </View>
                     )}
-                    {field.type === 'checkbox' && (
+                    {field.type === 'checkboxes' && (
                       <>
                         {/* @ts-ignore */}
                         <Checkbox
                           title={''}
                           disabled={true}
                           colors={colors}
-                          options={field.labels}
-                          value={field.labels[data.data[index]]}
+                          options={field.options}
+                          value={field.options[data.data[index]]}
                         />
                       </>
                     )}
-                    {field.type !== 'radio' && field.type !== 'checkbox' && (
+                    {field.type !== 'radio' && field.type !== 'checkboxes' && (
                       <Text
                         style={{
                           color: colors.primary,
