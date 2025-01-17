@@ -4,6 +4,7 @@ import BackgroundFetch from 'react-native-background-fetch';
 
 export class BackgroundFetchManager {
   static syncActive = false;
+
   /**
    * sync offline pit scouting reports
    */
@@ -17,7 +18,9 @@ export class BackgroundFetchManager {
       const data = JSON.parse((await AsyncStorage.getItem(report))!);
       const images = [];
       const imageKeys = allOffline.filter(key =>
-        key.startsWith(`pit-form-image-${data.createdAt.getUTCMilliseconds()}`),
+        key.startsWith(
+          `pit-form-image-${new Date(data.createdAt).getUTCMilliseconds()}`,
+        ),
       );
       for (const imageKey of imageKeys) {
         images.push((await AsyncStorage.getItem(imageKey))!);
