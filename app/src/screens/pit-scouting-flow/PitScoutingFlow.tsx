@@ -26,6 +26,7 @@ import PitScoutReports, {
 } from '../../database/PitScoutReports';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {TrashCan} from '../../SVGIcons';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -404,7 +405,24 @@ export default function PitScoutingFlow() {
                         );
                       }
                       return (
-                        <Image source={{uri: item}} style={styles.image} />
+                        <View>
+                          <Pressable
+                            style={styles.deleteContainer}
+                            onPress={() => {
+                              setImages(images.filter(i => i !== item));
+                            }}>
+                            <View style={styles.deleteButton}>
+                              <TrashCan
+                                color={colors.text}
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                }}
+                              />
+                            </View>
+                          </Pressable>
+                          <Image source={{uri: item}} style={styles.image} />
+                        </View>
                       );
                     }}
                     keyExtractor={item => item}
@@ -474,6 +492,20 @@ const makeStyles = ({colors}: Theme) =>
     plusText: {
       fontSize: 50,
       color: colors.text,
+    },
+    deleteContainer: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      zIndex: 1,
+    },
+    deleteButton: {
+      backgroundColor: colors.card,
+      padding: 10,
+      borderRadius: 999,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     text: {
       color: colors.text,
