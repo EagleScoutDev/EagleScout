@@ -46,7 +46,6 @@ export default function PitScoutingFlow() {
 
   const [isOffline, setIsOffline] = useState(false);
   const [noActiveCompetition, setNoActiveCompetition] = useState(false);
-  console.log('images', images);
 
   const defaultValues = useMemo(() => {
     return {
@@ -325,7 +324,6 @@ export default function PitScoutingFlow() {
                   },
                 }}
                 children={() => (
-                  // <KeyboardAvoidingView behavior={'height'}>
                   <ScrollView keyboardShouldPersistTaps="handled">
                     <View
                       style={{
@@ -396,7 +394,6 @@ export default function PitScoutingFlow() {
                     ItemSeparatorComponent={ListSeparator}
                     data={images}
                     renderItem={({item}) => {
-                      console.log('rendering item', item);
                       if (item === 'plus') {
                         return (
                           <Pressable onPress={() => setCameraOpen(true)}>
