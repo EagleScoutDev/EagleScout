@@ -38,7 +38,7 @@ function SubmittedForms() {
     if (DEBUG) {
       console.log('all offline: ' + allOffline);
     }
-    const offReports = allOffline.filter(key => key.includes('form-'));
+    const offReports = allOffline.filter(key => key.startsWith('form-'));
     if (DEBUG) {
       console.log('offline reports: ' + offReports);
     }

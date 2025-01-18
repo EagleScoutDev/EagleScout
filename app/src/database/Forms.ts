@@ -2,6 +2,7 @@ import {supabase} from '../lib/supabase';
 
 interface Form {
   formStructure: [];
+  pitScouting: boolean;
   name: string;
 }
 export enum FormQuestionTypes {
@@ -20,6 +21,7 @@ class FormsDB {
   static async addForm(form: Form): Promise<void> {
     const {data, error} = await supabase.from('forms').insert({
       form_structure: form.formStructure,
+      pit_scouting: form.pitScouting,
       name: form.name,
     });
     if (error) {
@@ -45,6 +47,7 @@ class FormsDB {
         return {
           id: data[0].id,
           formStructure: data[0].form_structure,
+          pitScouting: data[0].pit_scouting,
           name: data[0].name,
         };
       }
@@ -61,6 +64,7 @@ class FormsDB {
         res.push({
           id: data[i].id,
           formStructure: data[i].form_structure,
+          pitScouting: data[i].pit_scouting,
           name: data[i].name,
         });
       }

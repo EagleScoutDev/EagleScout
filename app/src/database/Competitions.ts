@@ -5,6 +5,7 @@ interface Competition {
   startTime: Date;
   endTime: Date;
   formId: number;
+  pitScoutFormId: number;
 }
 
 export enum ScoutAssignmentsConfig {
@@ -17,13 +18,12 @@ export interface CompetitionReturnData extends Competition {
   id: number;
   form: [];
   scoutAssignmentsConfig: ScoutAssignmentsConfig;
+  pitScoutFormStructure: [];
 }
 
 class CompetitionsDB {
   static async getCompetitions(): Promise<CompetitionReturnData[]> {
-    const {data, error} = await supabase
-      .from('competitions')
-      .select('*, forms( form_structure )');
+    const {data, error} = await supabase.rpc('list_all_competitions');
     if (error) {
       throw error;
     } else {
@@ -37,26 +37,22 @@ class CompetitionsDB {
           scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
         }
         return {
-          id: competition.id,
-          name: competition.name,
+          id: competition.competition_id,
+          name: competition.competition_name,
           startTime: competition.start_time,
           endTime: competition.end_time,
           formId: competition.form_id,
-          form: competition.forms.form_structure,
+          form: competition.form_structure,
           scoutAssignmentsConfig: scoutAssignmentsConfig,
+          pitScoutFormId: competition.pit_scout_form_id,
+          pitScoutFormStructure: competition.pit_scout_form_structure,
         };
       });
     }
   }
 
   static async getCurrentCompetition(): Promise<CompetitionReturnData | null> {
-    // select the competiton from supabase where the current time is between the start and end time
-    const currentTime = new Date().toISOString();
-    const {data, error} = await supabase
-      .from('competitions')
-      .select('*, forms( form_structure )')
-      .lte('start_time', currentTime)
-      .gte('end_time', currentTime);
+    const {data, error} = await supabase.rpc('get_current_competition');
     if (error) {
       throw error;
     } else {
@@ -72,13 +68,15 @@ class CompetitionsDB {
           scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
         }
         return {
-          id: data[0].id,
-          name: data[0].name,
+          id: data[0].competition_id,
+          name: data[0].competition_name,
           startTime: data[0].start_time,
           endTime: data[0].end_time,
           formId: data[0].form_id,
-          form: data[0].forms.form_structure,
+          form: data[0].form_structure,
           scoutAssignmentsConfig: scoutAssignmentsConfig,
+          pitScoutFormId: data[0].pit_scout_form_id,
+          pitScoutFormStructure: data[0].pit_scout_form_structure,
         };
       }
     }
@@ -126,11 +124,13 @@ class CompetitionsDB {
   static async getCompetitionById(
     competitionId: number,
   ): Promise<CompetitionReturnData> {
-    const {data, error} = await supabase
-      .from('competitions')
-      .select('*, forms( form_structure )')
-      .eq('id', competitionId)
-      .single();
+    const {data, error} = await supabase.rpc('get_competition_by_id', {
+      id_arg: competitionId,
+    });
+    // .from('competitions')
+    // .select('*, forms( form_structure )')
+    // .eq('id', competitionId)
+    // .single();
     if (error) {
       throw error;
     } else {
@@ -143,13 +143,15 @@ class CompetitionsDB {
         scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
       }
       return {
-        id: data.id,
-        name: data.name,
-        startTime: data.start_time,
-        endTime: data.end_time,
-        formId: data.form_id,
-        form: data.forms.form_structure,
+        id: data[0].competition_id,
+        name: data[0].competition_name,
+        startTime: data[0].start_time,
+        endTime: data[0].end_time,
+        formId: data[0].form_id,
+        form: data[0].form_structure,
         scoutAssignmentsConfig: scoutAssignmentsConfig,
+        pitScoutFormId: data[0].pit_scout_form_id,
+        pitScoutFormStructure: data[0].pit_scout_form_structure,
       };
     }
   }

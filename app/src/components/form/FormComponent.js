@@ -1,23 +1,34 @@
-import {TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import RadioButtons from './RadioButtons';
 import React from 'react';
 import Stepper from './Stepper';
 import Checkbox from './Checkbox';
 import SliderType from './SliderType';
 import Question from './Question';
+import {useTheme} from '@react-navigation/native';
 
-// TODO: Experiment with not passing in styles and just using the styles from the parent component
 /**
  * A component that renders the appropriate data input type based on a string passed in.
  * @param item -
- * @param styles - styling passed in by the parent
- * @param colors - the color scheme associated with the device scheme (light or dark)
  * @param arrayData - an array containing the raw data per question
  * @param setArrayData - a function to update the above array
  * @returns {JSX.Element|null} the JSX component
  * @constructor
  */
-function FormComponent({item, styles, colors, arrayData, setArrayData}) {
+function FormComponent({item, arrayData, setArrayData}) {
+  const {colors} = useTheme();
+  const styles = StyleSheet.create({
+    textInput: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 10,
+      marginBottom: 15,
+      padding: 10,
+      color: colors.text,
+    },
+  });
+
   if (!arrayData) {
     return null;
   }

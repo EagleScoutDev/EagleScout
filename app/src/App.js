@@ -25,11 +25,16 @@ import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
+import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
+
+const Tab = createBottomTabNavigator();
+import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
 import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
-import {ThemeOptionsMap} from './themes/ThemeOptionsMap';
+import {ThemeContext} from './lib/contexts/ThemeContext';
+import {ThemedNavigationContainer} from './components/ThemedNavigationContainer';
 import {isTablet} from './lib/deviceType';
 
 import EntrypointHome from './screens/login-flow/EntrypointHome';
@@ -44,8 +49,7 @@ const Tab = createBottomTabNavigator();
 
 const Placeholder = () => <View />;
 
-const MyStack = ({themePreference, setThemePreference}) => {
-  const scheme = useColorScheme();
+const MyStack = () => {
   const {colors} = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const {url} = useDeepLinking();
@@ -192,15 +196,6 @@ const MyStack = ({themePreference, setThemePreference}) => {
     setAdmin('0');
   };
 
-  useEffect(() => {
-    FormHelper.readAsyncStorage(FormHelper.THEME).then(value => {
-      if (value != null) {
-        console.log('[useEffect] data: ' + value);
-        setThemePreference(value);
-      }
-    });
-  }, []);
-
   // useEffect(() => {
   //   FormHelper.readAsyncStorage(FormHelper.OLED).then(value => {
   //     if (value != null) {
@@ -209,6 +204,19 @@ const MyStack = ({themePreference, setThemePreference}) => {
   //     }
   //   });
   // }, []);
+
+  useEffect(() => {
+    (async () => {
+      await BackgroundFetchManager.syncReports();
+      await BackgroundFetchManager.startBackgroundFetch();
+    })();
+  }, []);
+
+  const ChangePasswordContainer = ({navigation}) => (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+      <ChangePassword navigation={navigation} />
+    </SafeAreaView>
+  );
 
   return (
     <Tab.Navigator
@@ -381,7 +389,6 @@ const MyStack = ({themePreference, setThemePreference}) => {
             children={() => (
               <SettingsMain
                 onSignOut={redirectLogin}
-                setTheme={setThemePreference}
                 // setOled={setOled}
               />
             )}
@@ -407,7 +414,6 @@ const MyStack = ({themePreference, setThemePreference}) => {
 const RootStack = createStackNavigator();
 
 const RootNavigator = () => {
-  const scheme = useColorScheme();
   const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
   // const [oled, setOled] = useState(false);
   const [onboardingActive, setOnboardingActive] = useState(true);
@@ -437,39 +443,24 @@ const RootNavigator = () => {
   console.log('onboarding active: ' + onboardingActive, colors.text);
 
   return (
-    <NavigationContainer
-      theme={
-        onboardingActive
-          ? DarkTheme
-          : themePreference === ThemeOptions.SYSTEM
-          ? scheme === 'dark'
-            ? DarkTheme
-            : CustomLightTheme
-          : ThemeOptionsMap.get(themePreference)
-      }>
-      <RootStack.Navigator
-        screenOptions={{
-          headerShown: false,
-          presentation: 'transparentModal',
-          animationEnabled: false,
-        }}>
-        <RootStack.Screen
-          name={'S'}
-          children={() => (
-            <MyStack
-              themePreference={themePreference}
-              setThemePreference={setThemePreference}
-            />
-          )}
-        />
-        <RootStack.Screen
-          name="CustomModal"
-          component={PlusNavigationModal}
-          options={{animationEnabled: true}}
-        />
-      </RootStack.Navigator>
-      <Toast />
-    </NavigationContainer>
+    <ThemeContext.Provider value={{themePreference, setThemePreference}}>
+      <ThemedNavigationContainer>
+        <RootStack.Navigator
+          screenOptions={{
+            headerShown: false,
+            presentation: 'transparentModal',
+            animationEnabled: false,
+          }}>
+          <RootStack.Screen name={'S'} component={MyStack} />
+          <RootStack.Screen
+            name="CustomModal"
+            component={PlusNavigationModal}
+            options={{animationEnabled: true}}
+          />
+        </RootStack.Navigator>
+        <Toast />
+      </ThemedNavigationContainer>
+    </ThemeContext.Provider>
   );
 };
 

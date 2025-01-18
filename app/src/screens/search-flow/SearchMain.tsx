@@ -18,7 +18,6 @@ import {TBA} from '../../lib/TBAUtils';
 import ScoutReportsDB from '../../database/ScoutReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
-import SearchModal from './SearchModal';
 import Competitions from '../../database/Competitions';
 import NotesDB, {
   NoteStructure,
