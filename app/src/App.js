@@ -1,20 +1,15 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
-import {
-  DarkTheme,
-  NavigationContainer,
-  useNavigation,
-  useTheme,
-} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {SafeAreaView, useColorScheme, View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
@@ -27,11 +22,8 @@ import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
 import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
-const Tab = createBottomTabNavigator();
-import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
-import {CustomLightTheme} from './themes/CustomLightTheme';
 import {ThemeOptions} from './themes/ThemeOptions';
 import {ThemeContext} from './lib/contexts/ThemeContext';
 import {ThemedNavigationContainer} from './components/ThemedNavigationContainer';
@@ -54,6 +46,7 @@ const MyStack = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const {url} = useDeepLinking();
   const nav = useNavigation();
+  const {setOnboardingActive} = useContext(ThemeContext);
 
   useEffect(() => {
     AsyncStorage.setItem(FormHelper.SCOUTING_STYLE, 'Paginated');
@@ -89,7 +82,7 @@ const MyStack = () => {
           console.error(error);
         }
         console.log('navigating to reset password');
-        nav.navigate('ChangePassword');
+        nav.navigate('ResetPassword');
       } else if (route === 'confirm-signup') {
         // for the Confirm Signup email template
         const {access_token, refresh_token} = params;
@@ -104,7 +97,7 @@ const MyStack = () => {
           console.error(error);
         }
         console.log('navigating to complete sign up');
-        nav.navigate('CompleteSignUp');
+        nav.navigate('EnterUserInfo');
       }
     })();
   }, [url]);
@@ -181,6 +174,7 @@ const MyStack = () => {
             }),
           );
           await AsyncStorage.setItem('authenticated', 'true');
+          setOnboardingActive(false);
         }
       }
     }
@@ -416,7 +410,7 @@ const RootStack = createStackNavigator();
 const RootNavigator = () => {
   const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
   // const [oled, setOled] = useState(false);
-  const [onboardingActive, setOnboardingActive] = useState(true);
+  const [onboardingActive, setOnboardingActive] = useState(false);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
@@ -426,24 +420,26 @@ const RootNavigator = () => {
       }
     });
   }, []);
-  const {colors} = useTheme();
+
   const checkAuthenticated = async () => {
     const authenticated = await AsyncStorage.getItem('authenticated');
-    if (authenticated != null) {
-      setOnboardingActive(false);
+    if (!authenticated) {
+      setOnboardingActive(true);
     }
   };
-  if (!onboardingActive) {
-    console.log('onboarding active: ' + onboardingActive);
-    checkAuthenticated().then(r =>
-      console.log('check authenticated response: ' + r),
-    );
-  }
 
-  console.log('onboarding active: ' + onboardingActive, colors.text);
+  useEffect(() => {
+    checkAuthenticated();
+  }, []);
 
   return (
-    <ThemeContext.Provider value={{themePreference, setThemePreference}}>
+    <ThemeContext.Provider
+      value={{
+        themePreference,
+        setThemePreference,
+        onboardingActive,
+        setOnboardingActive,
+      }}>
       <ThemedNavigationContainer>
         <RootStack.Navigator
           screenOptions={{

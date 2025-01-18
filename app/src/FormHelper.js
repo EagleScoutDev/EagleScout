@@ -10,6 +10,13 @@ class FormHelper {
   static THEME = 'themePreference';
   static OLED = 'oled';
 
+  static EXCLUDE_DELETE_KEYS = [
+    FormHelper.LATEST_FORM,
+    FormHelper.SCOUTING_STYLE,
+    FormHelper.THEME,
+    FormHelper.OLED,
+  ];
+
   /**
    * Reads form data from AsyncStorage
    * @returns {Promise<null|string>}
