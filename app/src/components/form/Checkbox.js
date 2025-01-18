@@ -10,7 +10,9 @@ function CheckboxFunction({
   onValueChange,
   colors,
 }) {
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
   return (
     <View>
       <Question
@@ -36,7 +38,9 @@ function CheckboxFunction({
               }}>
               <BouncyCheckbox
                 onPress={checked => {
-                  if (disabled) return;
+                  if (disabled) {
+                    return;
+                  }
                   if (!checked) {
                     onValueChange(value.filter(i => i !== item));
                   } else {
@@ -48,12 +52,13 @@ function CheckboxFunction({
                   marginRight: '6%',
                 }}
                 textStyle={{
+                  color: colors.text,
                   textDecorationLine: 'none',
                 }}
                 iconStyle={{
                   borderRadius: 3,
                 }}
-                fillColor={colors.primary}
+                fillColor={colors.text}
                 innerIconStyle={{borderRadius: 3}}
                 text={item}
               />
