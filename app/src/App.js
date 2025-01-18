@@ -23,6 +23,7 @@ import DataMain from './screens/data-flow/DataMain';
 import SettingsMain from './screens/settings-flow/SettingsMain';
 import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
+import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
 const Tab = createBottomTabNavigator();
 import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
@@ -193,6 +194,13 @@ const MyStack = () => {
   //     }
   //   });
   // }, []);
+
+  useEffect(() => {
+    (async () => {
+      await BackgroundFetchManager.syncReports();
+      await BackgroundFetchManager.startBackgroundFetch();
+    })();
+  }, []);
 
   const ChangePasswordContainer = ({navigation}) => (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>

@@ -45,7 +45,7 @@ class ScoutReportsDB {
     const {data, error} = await supabase
       .from('scout_reports')
       .select(
-        '*, matches!inner( number, competition_id, competitions(name, forms(form_structure)) )',
+        '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
       )
       .eq('matches.competition_id', id);
     if (error) {
@@ -81,7 +81,7 @@ class ScoutReportsDB {
     const {data, error} = await supabase
       .from('scout_reports')
       .select(
-        '*, matches( number, competition_id, competitions(name, forms(form_structure)) )',
+        '*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
       )
       .eq('user_id', user.id);
     if (error) {
@@ -113,7 +113,7 @@ class ScoutReportsDB {
     const {data, error} = await supabase
       .from('scout_reports')
       .select(
-        '*, matches( number, competition_id, competitions(name, forms(form_structure)) )',
+        '*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
       )
       .eq('team', team);
     if (error) {
@@ -146,7 +146,7 @@ class ScoutReportsDB {
     const {data, error} = await supabase
       .from('scout_reports')
       .select(
-        '*, matches!inner( number, competition_id, competitions(name, forms(form_structure)) )',
+        '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
       )
       .eq('team', team)
       .eq('matches.competition_id', compId);

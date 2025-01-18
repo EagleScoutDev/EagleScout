@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -6,7 +6,7 @@ import ScoutingFlow from '../scouting-flow/ScoutingFlow';
 import HomeMain from './HomeMain';
 import NoteScreen from './Note';
 import Svg, {Path} from 'react-native-svg';
-import FormHelper from '../../FormHelper';
+import PitScoutingFlow from '../pit-scouting-flow/PitScoutingFlow';
 
 const HomeStack = createStackNavigator();
 
@@ -22,7 +22,7 @@ function Home() {
         setSeconds(seconds => seconds + 1);
       }, 1000);
     } else if (!isTimerActive && seconds !== 0) {
-      clearInterval(isTimerActive);
+      clearInterval(interval);
     }
     return () => clearInterval(interval);
   }, [isTimerActive, seconds]);
@@ -103,6 +103,13 @@ function Home() {
           headerBackTitle: 'Home',
         }}
         component={NoteScreen}
+      />
+      <HomeStack.Screen
+        name={'Pit Scout'}
+        options={{
+          headerBackTitle: 'Home',
+        }}
+        component={PitScoutingFlow}
       />
     </HomeStack.Navigator>
   );
