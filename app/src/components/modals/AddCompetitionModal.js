@@ -14,7 +14,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
 import SelectMenu from '../form/SelectMenu';
-import {getLighterColor} from '../../lib/ColorReadability';
+import {getIdealTextColor, getLighterColor} from '../../lib/ColorReadability';
 import {FunctionsHttpError} from '@supabase/supabase-js';
 
 function Spacer() {
@@ -333,8 +333,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
       <Spacer />
       <View style={styles.button_row}>
         <StandardButton
-          textColor={colors.notification}
-          color={colors.background}
+          textColor={getIdealTextColor(colors.notification)}
+          color={colors.notification}
           onPress={() => setVisible(false)}
           text={'Cancel'}
           width={'40%'}
