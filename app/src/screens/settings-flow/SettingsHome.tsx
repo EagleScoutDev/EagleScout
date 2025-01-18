@@ -14,12 +14,14 @@ import UserProfileBox from '../../components/UserProfileBox';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import SettingsPopup from './SettingsPopup';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StoredUser} from '../../lib/StoredUser';
 import Competitions from '../../database/Competitions';
 import {getLighterColor} from '../../lib/ColorReadability';
+import {ThemeContext} from '../../lib/contexts/ThemeContext';
+import FormHelper from '../../FormHelper';
 
 const VERSION = '7.6.1 (OTA 1)';
 
@@ -41,6 +43,7 @@ SettingsHomeProps) => {
 
   const [user, setUser] = useState<StoredUser | null>(null);
   const navigation = useNavigation();
+  const {setOnboardingActive} = useContext(ThemeContext);
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
@@ -65,11 +68,14 @@ SettingsHomeProps) => {
   };
 
   const signOutFunction = () => {
-    // AsyncStorage.setItem('authenticated', 'false');
-    // TODO: triple check if this is the right way to do this
-    AsyncStorage.clear().then(() => {
-      console.log('Sign out successful');
-      onSignOut();
+    AsyncStorage.getAllKeys().then(keys => {
+      AsyncStorage.multiRemove(
+        keys.filter(key => FormHelper.EXCLUDE_DELETE_KEYS.indexOf(key) === -1),
+      ).then(() => {
+        console.log('Sign out successful');
+        setOnboardingActive(true);
+        onSignOut();
+      });
     });
   };
 

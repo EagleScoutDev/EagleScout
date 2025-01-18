@@ -3,21 +3,21 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
 import React, {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {EntrypointNavigationProps} from './types';
 
-interface Props {
+interface EntrypointProps {
   ifAuth: () => void;
 }
 
-const EntrypointHome: React.FC<Props> = ({ifAuth}) => {
+const EntrypointHome = ({ifAuth}: EntrypointProps) => {
   const {colors} = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<EntrypointNavigationProps>();
 
   useEffect(() => {
     AsyncStorage.getItem('authenticated').then(r => {
       if (r) {
         console.log('Login page redirecting to Scout Report...');
         console.log(r);
-        // navigation.navigate('Scout Report');
         ifAuth();
       }
     });

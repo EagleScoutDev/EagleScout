@@ -7,7 +7,7 @@ import React, {
 
 function StandardButton({
   textColor = 'white',
-  color,
+  color = '',
   onPress,
   width = '80%',
   text,

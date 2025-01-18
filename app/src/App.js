@@ -1,19 +1,16 @@
 import * as React from 'react';
-import Login from './screens/login-flow/Login';
+import {useContext, useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
-import {useTheme, useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import CompleteSignup from './screens/login-flow/CompleteSignup';
-import {useEffect, useState} from 'react';
 import SearchScreen from './screens/search-flow/SearchScreen';
-import {SafeAreaView, useColorScheme, View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SignUpModal from './screens/login-flow/SignUpModal';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
 import codePush from 'react-native-code-push';
@@ -25,17 +22,22 @@ import PlusNavigationModal from './PlusNavigationModal';
 import {createStackNavigator} from '@react-navigation/stack';
 import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
-const Tab = createBottomTabNavigator();
-import RegisterTeamModal from './screens/login-flow/RegisterTeamModal';
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
-import EntrypointHome from './screens/login-flow/EntrypointHome';
-import ChangePassword from './screens/settings-flow/ChangePassword';
-import ResetPassword from './screens/login-flow/ResetPassword';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
 import {ThemeOptions} from './themes/ThemeOptions';
-import {isTablet} from './lib/deviceType';
 import {ThemeContext} from './lib/contexts/ThemeContext';
 import {ThemedNavigationContainer} from './components/ThemedNavigationContainer';
+import {isTablet} from './lib/deviceType';
+
+import EntrypointHome from './screens/login-flow/EntrypointHome';
+import SignUp from './screens/login-flow/SignUp';
+import Login from './screens/login-flow/Login';
+import ResetPassword from './screens/login-flow/ResetPassword';
+import {EnterTeamEmail} from './screens/login-flow/steps/EnterTeamEmail';
+import {EnterUserInfo} from './screens/login-flow/steps/EnterUserInfo';
+import {SelectTeam} from './screens/login-flow/steps/SelectTeam';
+
+const Tab = createBottomTabNavigator();
 
 const Placeholder = () => <View />;
 
@@ -44,6 +46,7 @@ const MyStack = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const {url} = useDeepLinking();
   const nav = useNavigation();
+  const {setOnboardingActive} = useContext(ThemeContext);
 
   useEffect(() => {
     AsyncStorage.setItem(FormHelper.SCOUTING_STYLE, 'Paginated');
@@ -79,7 +82,7 @@ const MyStack = () => {
           console.error(error);
         }
         console.log('navigating to reset password');
-        nav.navigate('ChangePassword');
+        nav.navigate('ResetPassword');
       } else if (route === 'confirm-signup') {
         // for the Confirm Signup email template
         const {access_token, refresh_token} = params;
@@ -94,7 +97,7 @@ const MyStack = () => {
           console.error(error);
         }
         console.log('navigating to complete sign up');
-        nav.navigate('CompleteSignUp');
+        nav.navigate('EnterUserInfo');
       }
     })();
   }, [url]);
@@ -155,7 +158,7 @@ const MyStack = () => {
       } else {
         if (!userAttribData.organization_id) {
           setError('');
-          navigation.navigate('CompleteSignUp');
+          navigation.navigate('EnterUserInfo');
         } else if (!userAttribData.scouter) {
           setError(
             'Your account has not been approved yet.\n Please contact a captain for approval.',
@@ -171,6 +174,7 @@ const MyStack = () => {
             }),
           );
           await AsyncStorage.setItem('authenticated', 'true');
+          setOnboardingActive(false);
         }
       }
     }
@@ -230,14 +234,11 @@ const MyStack = () => {
             name="Login"
             children={() => <Login onSubmit={submitForm} error={error} />}
           />
-          <Tab.Screen name="Sign" component={SignUpModal} />
-          <Tab.Screen name="CompleteSignUp" component={CompleteSignup} />
-          <Tab.Screen
-            name="ChangePassword"
-            component={ChangePasswordContainer}
-          />
+          <Tab.Screen name="Sign" component={SignUp} />
           <Tab.Screen name="ResetPassword" component={ResetPassword} />
-          <Tab.Screen name="Register new team" component={RegisterTeamModal} />
+          <Tab.Screen name="EnterTeamEmail" component={EnterTeamEmail} />
+          <Tab.Screen name="EnterUserInfo" component={EnterUserInfo} />
+          <Tab.Screen name="SelectTeam" component={SelectTeam} />
         </Tab.Group>
       ) : (
         <>
@@ -409,6 +410,7 @@ const RootStack = createStackNavigator();
 const RootNavigator = () => {
   const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
   // const [oled, setOled] = useState(false);
+  const [onboardingActive, setOnboardingActive] = useState(false);
 
   useEffect(() => {
     FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
@@ -419,8 +421,25 @@ const RootNavigator = () => {
     });
   }, []);
 
+  const checkAuthenticated = async () => {
+    const authenticated = await AsyncStorage.getItem('authenticated');
+    if (!authenticated) {
+      setOnboardingActive(true);
+    }
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{themePreference, setThemePreference}}>
+    <ThemeContext.Provider
+      value={{
+        themePreference,
+        setThemePreference,
+        onboardingActive,
+        setOnboardingActive,
+      }}>
       <ThemedNavigationContainer>
         <RootStack.Navigator
           screenOptions={{
