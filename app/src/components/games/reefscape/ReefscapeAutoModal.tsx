@@ -6,15 +6,15 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {ReefscapeField} from './ReefscapeField';
 import {AutoPath} from './AutoPath';
 import {
-  CrescendoActionIcon,
+  ReefscapeActionIcon,
   ReefscapeActions,
-  CrescendoActionType,
+  ReefscapeActionType,
 } from './ReefscapeActions';
 import {ReefscapeLevels} from './ReefscapeLevels';
 
 interface HistoryAction {
   action: string;
-  noteId: number;
+  pieceID: number;
 }
 
 interface LinkItemMap {
@@ -33,8 +33,8 @@ const ActionButton = ({
   setArrayData,
   linkItemMap,
 }: {
-  positiveAction: CrescendoActionType;
-  negativeAction: CrescendoActionType;
+  positiveAction: ReefscapeActionType;
+  negativeAction: ReefscapeActionType;
   flex: number;
   setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
   setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
@@ -42,12 +42,12 @@ const ActionButton = ({
   linkItemMap: LinkItemMap;
 }) => {
   const {colors} = useTheme();
-  const doAction = (action: CrescendoActionType, change: number) => {
+  const doAction = (action: ReefscapeActionType, change: number) => {
     setHistory(history => [
       ...history,
       {
         action: ReefscapeActions[action].link_name,
-        noteId: positiveAction,
+        pieceID: positiveAction,
       },
     ]);
     setArrayData(prevArrayData => {
@@ -88,7 +88,7 @@ const ActionButton = ({
         onPress={() => {
           doAction(negativeAction, 1);
         }}>
-        <CrescendoActionIcon action={negativeAction} />
+        <ReefscapeActionIcon action={negativeAction} />
         <View
           style={{
             flexDirection: 'column',
@@ -121,7 +121,7 @@ const ActionButton = ({
         onPress={() => {
           doAction(positiveAction, 1);
         }}>
-        <CrescendoActionIcon action={positiveAction} />
+        <ReefscapeActionIcon action={positiveAction} />
         <View
           style={{
             flexDirection: 'column',
@@ -242,15 +242,16 @@ const ReefscapeAutoModal = ({
               const lastAction = history.pop();
               if (lastAction) {
                 switch (lastAction.action) {
+                  case 'score':
                   case 'intake':
                     setAutoPath(paths =>
-                      paths.filter(path => path.noteId !== lastAction.noteId),
+                      paths.filter(path => path.nodeId !== lastAction.pieceID),
                     );
                     break;
                   case 'miss':
                     setAutoPath(paths =>
                       paths.map(path =>
-                        path.noteId === lastAction.noteId
+                        path.nodeId === lastAction.pieceID
                           ? {...path, state: 'success'}
                           : path,
                       ),
@@ -260,18 +261,24 @@ const ReefscapeAutoModal = ({
                     setAutoPath(paths => [
                       ...paths,
                       {
-                        type: CrescendoActionType.PickupGround,
-                        noteId: lastAction.noteId,
+                        type: ReefscapeActionType.PickupGround,
+                        nodeId: lastAction.pieceID,
                         order: paths.length,
                         state: 'success',
                       },
                     ]);
                     break;
-                  case ReefscapeActions[CrescendoActionType.ScoreAmp].link_name:
-                  case ReefscapeActions[CrescendoActionType.ScoreSpeaker]
+                  case ReefscapeActions[ReefscapeActionType.ScoreProcessor]
                     .link_name:
-                  case ReefscapeActions[CrescendoActionType.MissAmp].link_name:
-                  case ReefscapeActions[CrescendoActionType.MissSpeaker]
+                  case ReefscapeActions[ReefscapeActionType.MissCoral]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL1]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL2]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL3]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL4]
                     .link_name:
                     setArrayData(prevArrayData => {
                       const {index} = linkItemMap[lastAction.action];
@@ -298,7 +305,26 @@ const ReefscapeAutoModal = ({
             </Text>
           </Pressable>
           {levelChooserActive ? (
-            <ReefscapeLevels onSubmit={} piece={} position={} />
+            <ReefscapeLevels
+              onSubmit={(level: ReefscapeActionType) => {
+                setAutoPath(paths => [
+                  ...paths,
+                  {
+                    type: level,
+                    nodeId: chosenReefPosition,
+                    order: paths.at(-1) ? paths.at(-1)!.order + 1 : 0,
+                    state: 'success',
+                  },
+                ]);
+                setHistory(history => [
+                  ...history,
+                  {
+                    action: ReefscapeActions[level].link_name,
+                    pieceID: chosenReefPosition,
+                  },
+                ]);
+              }}
+            />
           ) : (
             <>
               <ReefscapeField
@@ -306,39 +332,40 @@ const ReefscapeAutoModal = ({
                 selectedAlliance={selectedAlliance}
                 setLevelChooserActive={setLevelChooserActive}
                 setChosenReefPosition={setChosenReefPosition}
-                onNoteIntake={(note: number) => {
+                onPieceIntake={(piece: number) => {
                   setAutoPath(paths => [
                     ...paths,
                     {
-                      type: CrescendoActionType.PickupGround,
-                      noteId: note,
+                      type: ReefscapeActionType.PickupGround,
+                      nodeId: piece,
                       order: paths.at(-1) ? paths.at(-1)!.order + 1 : 0,
                       state: 'success',
                     },
                   ]);
                   setHistory(history => [
                     ...history,
-                    {action: 'intake', noteId: note},
+                    {action: 'intake', pieceID: piece},
                   ]);
                 }}
-                onNoteMissed={(note: number) => {
+                onPieceMissed={(piece: number) => {
                   setAutoPath(paths =>
                     paths.map(path =>
-                      path.noteId === note ? {...path, state: 'missed'} : path,
+                      path.nodeId === piece ? {...path, state: 'missed'} : path,
                     ),
                   );
+                  // eslint-disable-next-line @typescript-eslint/no-shadow
                   setHistory(history => [
                     ...history,
-                    {action: 'miss', noteId: note},
+                    {action: 'miss', pieceID: piece},
                   ]);
                 }}
-                onNoteReset={(note: number) => {
+                onPieceReset={(piece: number) => {
                   setAutoPath(paths =>
-                    paths.filter(path => path.noteId !== note),
+                    paths.filter(path => path.nodeId !== piece),
                   );
                   setHistory(history => [
                     ...history,
-                    {action: 'reset', noteId: note},
+                    {action: 'reset', pieceID: piece},
                   ]);
                 }}
                 autoPath={autoPath}
@@ -350,8 +377,8 @@ const ReefscapeAutoModal = ({
                   gap: 10,
                 }}>
                 <ActionButton
-                  positiveAction={CrescendoActionType.ScoreSpeaker}
-                  negativeAction={CrescendoActionType.MissSpeaker}
+                  positiveAction={ReefscapeActionType.ScoreProcessor}
+                  negativeAction={ReefscapeActionType.MissProcessor}
                   flex={1}
                   setHistory={setHistory}
                   setAutoPath={setAutoPath}

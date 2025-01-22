@@ -5,13 +5,13 @@ import {useTheme} from '@react-navigation/native';
 export enum ReefscapeActionType {
   PickupCoralSource,
   PickupAlgaeReef,
-  PickupAlgaeGround,
-  PickupCoralGround,
+  PickupGround,
   ScoreCoralL1,
   ScoreCoralL2,
   ScoreCoralL3,
   ScoreCoralL4,
   ScoreProcessor,
+  MissProcessor,
   MissCoral,
 }
 
@@ -33,13 +33,9 @@ export const getActionForLink = (link: string): ReefscapeActionType | null => {
 };
 
 export const ReefscapeActions: Record<ReefscapeActionType, ActionMetadata> = {
-  [ReefscapeActionType.PickupCoralGround]: {
-    name: 'Pickup Coral Ground',
-    link_name: 'pickup_coral_ground',
-  },
-  [ReefscapeActionType.PickupAlgaeGround]: {
-    name: 'Pickup Algae Ground',
-    link_name: 'pickup_algae_ground',
+  [ReefscapeActionType.PickupGround]: {
+    name: 'Pickup Ground',
+    link_name: 'pickup_ground',
   },
   [ReefscapeActionType.PickupAlgaeReef]: {
     name: 'Pickup Algae Reef',
@@ -61,7 +57,7 @@ export const ReefscapeActions: Record<ReefscapeActionType, ActionMetadata> = {
         />
       </svg>
     ),
-    link_name: 'pickup_coral_ground',
+    link_name: 'pickup_coral_source',
   },
   [ReefscapeActionType.ScoreCoralL1]: {
     name: 'Score Coral L1',
@@ -82,6 +78,10 @@ export const ReefscapeActions: Record<ReefscapeActionType, ActionMetadata> = {
   [ReefscapeActionType.ScoreProcessor]: {
     name: 'Score Processor',
     link_name: 'score_processor',
+  },
+  [ReefscapeActionType.MissProcessor]: {
+    name: 'Miss Processor',
+    link_name: 'miss_processor',
   },
   [ReefscapeActionType.MissCoral]: {
     name: 'Miss Coral',

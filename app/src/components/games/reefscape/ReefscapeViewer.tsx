@@ -137,20 +137,20 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
   const autoPathSvgs = [];
   autoPathSvgs.push(
     autoPath.map(note => {
-      if (note.type !== CrescendoActionType.PickupGround) {
+      if (note.type !== ReefscapeActionType.PickupGround) {
         return;
       }
       const prevPickup = autoPath.findIndex(
         n =>
-          n?.type === CrescendoActionType.PickupGround &&
+          n?.type === ReefscapeActionType.PickupGround &&
           n.order === note.order - 1,
       );
       return (
         <>
           {prevPickup !== -1 && (
             <NoteToNoteLine
-              noteId1={autoPath[prevPickup].noteId! - 1}
-              noteId2={note.noteId! - 1}
+              noteId1={autoPath[prevPickup].nodeId! - 1}
+              noteId2={note.nodeId! - 1}
             />
           )}
         </>
@@ -159,12 +159,12 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
   );
   autoPathSvgs.push(
     <>
-      {autoPath.find(n => n.type === CrescendoActionType.PickupGround) !==
+      {autoPath.find(n => n.type === ReefscapeActionType.PickupGround) !==
         undefined && (
         <NoteToSpeakerLine
           noteId={
-            autoPath.find(n => n.type === CrescendoActionType.PickupGround)!
-              .noteId! - 1
+            autoPath.find(n => n.type === ReefscapeActionType.PickupGround)!
+              .nodeId! - 1
           }
         />
       )}
@@ -183,10 +183,10 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
       //   }
       //   return <NoteToSpeakerLine noteId={noteId} />;
       // }
-      if (note.type === CrescendoActionType.PickupGround) {
+      if (note.type === ReefscapeActionType.PickupGround) {
         return (
           <>
-            <FilledNote noteId={note.noteId! - 1} status={note.state!} />
+            <FilledNote noteId={note.nodeId! - 1} status={note.state!} />
           </>
         );
       }

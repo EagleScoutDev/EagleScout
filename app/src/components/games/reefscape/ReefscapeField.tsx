@@ -24,7 +24,7 @@ export const ReefscapeField = ({
 }) => {
   const Piece = ({pieceID, type}: {pieceID: number; type: string}) => {
     const autoPiece = useMemo(
-      () => autoPath.find(piece => piece.pieceId === pieceID),
+      () => autoPath.find(piece => piece.nodeId === pieceID),
       [autoPath],
     );
     return (
