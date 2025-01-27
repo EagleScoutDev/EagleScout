@@ -1,13 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  Modal,
   Pressable,
-  SafeAreaView,
   StyleSheet,
+  Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
@@ -105,6 +102,29 @@ const PlusNavigationModal = () => {
             <Text style={styles.subtitle_text}>
               Scouting reports are used to collect data on a robot for a single
               match.
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.grouping}
+          onPress={() => {
+            navigation.navigate('Home', {screen: 'Pit Scout'});
+          }}>
+          <View style={styles.icon_box}>
+            <Svg
+              width="100%"
+              height="100%"
+              fill={colors.text}
+              viewBox="0 0 16 16">
+              <Path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0" />
+              <Path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z" />
+            </Svg>
+          </View>
+          <View style={styles.text_container}>
+            <Text style={styles.title_text}>Pit Scout</Text>
+            <Text style={styles.subtitle_text}>
+              Pit scouting reports are used to collect data on a robot's
+              capabilities and features.
             </Text>
           </View>
         </TouchableOpacity>

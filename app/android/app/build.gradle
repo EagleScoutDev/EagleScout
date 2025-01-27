@@ -78,8 +78,8 @@ android {
         applicationId "com.eaglescout"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
-        versionName "7.6.1"
+        versionCode 20
+        versionName "7.7"
     }
     signingConfigs {
         debug {

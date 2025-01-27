@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
 class FormHelper {
   static DEBUG = false;
@@ -8,6 +9,13 @@ class FormHelper {
   static SCOUTING_STYLE = 'scoutingStyle';
   static THEME = 'themePreference';
   static OLED = 'oled';
+
+  static EXCLUDE_DELETE_KEYS = [
+    FormHelper.LATEST_FORM,
+    FormHelper.SCOUTING_STYLE,
+    FormHelper.THEME,
+    FormHelper.OLED,
+  ];
 
   /**
    * Reads form data from AsyncStorage
@@ -43,6 +51,27 @@ class FormHelper {
       'form-' + dataToSubmit.createdAt.getUTCMilliseconds(),
       JSON.stringify(dataToSubmit),
     );
+  }
+
+  /**
+   * Saves a pit scouting form offline
+   * @param dataToSubmit
+   * @param images - array of image base64 strings
+   */
+  static async savePitFormOffline(dataToSubmit, images) {
+    await BackgroundFetchManager.startBackgroundFetch();
+    dataToSubmit.createdAt = new Date();
+
+    await AsyncStorage.setItem(
+      'pit-form-' + dataToSubmit.createdAt.getUTCMilliseconds(),
+      JSON.stringify(dataToSubmit),
+    );
+    for (let i = 0; i < images.length; i++) {
+      await AsyncStorage.setItem(
+        `pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`,
+        images[i],
+      );
+    }
   }
 
   /**

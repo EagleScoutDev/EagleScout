@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Keyboard,
   SafeAreaView,
@@ -8,75 +8,26 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {StyleSheet} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useTheme} from '@react-navigation/native';
+import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import {LoginNavigationProps} from './types';
 
-const Login = ({onSubmit, error}) => {
+interface LoginProps {
+  onSubmit: (username: string, password: string, navigation: any) => void;
+  error: string;
+}
+
+const Login = ({onSubmit, error}: LoginProps) => {
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
   const {colors} = useTheme();
-  const navigation = useNavigation();
-
-  const styles = StyleSheet.create({
-    input: {
-      textAlign: 'left',
-      padding: '5%',
-      borderRadius: 10,
-      borderBottomWidth: 1,
-      borderColor: 'gray',
-      // margin: 10,
-      // marginHorizontal: 30,
-      color: 'white',
-    },
-    titleText: {
-      textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: 'rgb(191, 219, 247)',
-      // marginVertical: 20,
-    },
-    button: {
-      textAlign: 'center',
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: 'red',
-    },
-    link_container: {
-      flexDirection: 'row',
-      padding: '4%',
-      borderRadius: 20,
-    },
-    background: {
-      flexDirection: 'column',
-      backgroundColor: 'rgb(0,0,25)',
-      flex: 1,
-    },
-    error: {
-      backgroundColor: 'red',
-      padding: '5%',
-      margin: '3%',
-      borderRadius: 10,
-      position: 'absolute',
-      top: '5%',
-      right: '5%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-    },
-    error_text: {
-      color: 'white',
-      textAlign: 'center',
-    },
-  });
+  const navigation = useNavigation<LoginNavigationProps>();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.background}>
-        {/*<Text style={styles.titleText}>EagleScout</Text>*/}
         {error !== '' && (
           <View style={styles.error}>
             <Text style={styles.error_text}>{error}</Text>
@@ -108,6 +59,8 @@ const Login = ({onSubmit, error}) => {
             <TextInput
               onChangeText={text => setPassword(text)}
               value={password}
+              placeholder={'Password'}
+              placeholderTextColor={'gray'}
               style={{
                 ...styles.input,
                 borderColor:
@@ -134,7 +87,7 @@ const Login = ({onSubmit, error}) => {
               setUsername('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Reset Password</Text>
+            <Text style={styles.text}>Reset Password</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -143,18 +96,7 @@ const Login = ({onSubmit, error}) => {
               setUsername('');
               setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Create Account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('Register new team');
-              setUsername('');
-              setPassword('');
-            }}>
-            <Text style={{color: 'gray'}}>
-              Register your team with EagleScout
-            </Text>
+            <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
         </>
       </SafeAreaView>

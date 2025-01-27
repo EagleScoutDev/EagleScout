@@ -9,53 +9,16 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {StyleSheet} from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
+import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
+import {ResetPasswordProps} from './types';
 
-const ResetPassword = () => {
+const ResetPassword = ({navigation}: ResetPasswordProps) => {
   const {colors} = useTheme();
-  const navigation = useNavigation();
   const [email, setEmail] = useState('');
-
-  const styles = StyleSheet.create({
-    input: {
-      textAlign: 'left',
-      padding: '5%',
-      borderRadius: 10,
-      borderBottomWidth: 1,
-      borderColor: 'gray',
-      // margin: 10,
-      // marginHorizontal: 30,
-      color: 'white',
-    },
-    titleText: {
-      textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: 'rgb(191, 219, 247)',
-      // marginVertical: 20,
-    },
-    button: {
-      textAlign: 'center',
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: 'red',
-    },
-    link_container: {
-      flexDirection: 'row',
-      padding: '4%',
-      borderRadius: 20,
-    },
-    background: {
-      flexDirection: 'column',
-      backgroundColor: 'rgb(0,0,25)',
-      flex: 1,
-    },
-  });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -96,7 +59,7 @@ const ResetPassword = () => {
                   );
                   return;
                 }
-                const {data, error} = await supabase.auth.resetPasswordForEmail(
+                const {error} = await supabase.auth.resetPasswordForEmail(
                   email,
                 );
                 if (error) {
@@ -134,9 +97,8 @@ const ResetPassword = () => {
             onPress={() => {
               navigation.navigate('Login');
               setEmail('');
-              setPassword('');
             }}>
-            <Text style={{color: 'gray'}}>Log In</Text>
+            <Text style={styles.text}>Log In</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.link_container}
@@ -144,17 +106,7 @@ const ResetPassword = () => {
               navigation.navigate('Sign');
               setEmail('');
             }}>
-            <Text style={{color: 'gray'}}>Create Account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('Register new team');
-              setEmail('');
-            }}>
-            <Text style={{color: 'gray'}}>
-              Register your team with EagleScout
-            </Text>
+            <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
         </>
       </SafeAreaView>
