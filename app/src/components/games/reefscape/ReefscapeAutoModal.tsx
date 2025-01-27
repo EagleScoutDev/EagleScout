@@ -27,6 +27,8 @@ interface LinkItemMap {
 const ActionButton = ({
   positiveAction,
   negativeAction,
+  goodLabel,
+  badLabel,
   flex,
   setHistory,
   setAutoPath,
@@ -35,6 +37,8 @@ const ActionButton = ({
 }: {
   positiveAction: ReefscapeActionType;
   negativeAction: ReefscapeActionType;
+  goodLabel: string;
+  badLabel: string;
   flex: number;
   setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
   setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
@@ -100,7 +104,7 @@ const ActionButton = ({
               paddingTop: '5%',
               fontWeight: 'bold',
             }}>
-            Missed:{' '}
+            {badLabel}
             {linkItemMap[ReefscapeActions[negativeAction].link_name]?.value ??
               0}
           </Text>
@@ -133,7 +137,7 @@ const ActionButton = ({
               paddingTop: '5%',
               fontWeight: 'bold',
             }}>
-            In:{' '}
+            {goodLabel}
             {linkItemMap[ReefscapeActions[positiveAction].link_name]?.value ??
               0}
           </Text>
@@ -270,6 +274,9 @@ const ReefscapeAutoModal = ({
                     break;
                   case ReefscapeActions[ReefscapeActionType.ScoreProcessor]
                     .link_name:
+                  case ReefscapeActions[ReefscapeActionType.MissProcessor]
+                    .link_name:
+
                   case ReefscapeActions[ReefscapeActionType.MissCoral]
                     .link_name:
                   case ReefscapeActions[ReefscapeActionType.ScoreCoralL1]
@@ -323,6 +330,7 @@ const ReefscapeAutoModal = ({
                     pieceID: chosenReefPosition,
                   },
                 ]);
+                setLevelChooserActive(false);
               }}
             />
           ) : (
@@ -379,6 +387,8 @@ const ReefscapeAutoModal = ({
                 <ActionButton
                   positiveAction={ReefscapeActionType.ScoreProcessor}
                   negativeAction={ReefscapeActionType.MissProcessor}
+                  goodLabel={'Scored Processor'}
+                  badLabel={'Missed Processor'}
                   flex={1}
                   setHistory={setHistory}
                   setAutoPath={setAutoPath}

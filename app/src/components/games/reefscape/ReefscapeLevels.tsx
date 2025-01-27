@@ -2,7 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {ReefscapeActionType} from "./ReefscapeActions";
+import {ReefscapeActionType} from './ReefscapeActions';
 
 export const ReefscapeLevels = ({
   onSubmit,
@@ -17,8 +17,9 @@ export const ReefscapeLevels = ({
       justifyContent: 'center',
       borderRadius: 8,
       padding: 10,
-      width: 180,
-      height: 100,
+      margin: 10,
+      width: 160,
+      height: 80,
     },
   });
   const Button = ({
@@ -52,11 +53,31 @@ export const ReefscapeLevels = ({
       <Text style={{color: colors.text, fontSize: 24, fontWeight: 'bold'}}>
         Select Scoring Position
       </Text>
-      <Button text={'Level 4'} onPress={onSubmit} level={ReefscapeActionType.ScoreCoralL4} />
-      <Button text={'Level 3'} onPress={onSubmit} level={ReefscapeActionType.ScoreCoralL3} />
-      <Button text={'Level 2'} onPress={onSubmit} level={ReefscapeActionType.ScoreCoralL2} />
-      <Button text={'Level 1'} onPress={onSubmit} level={ReefscapeActionType.ScoreCoralL1} />
-      <Button text={'Dropped'} onPress={onSubmit} level={ReefscapeActionType.MissCoral} />
+      <Button
+        text={'Level 4'}
+        onPress={onSubmit}
+        level={ReefscapeActionType.ScoreCoralL4}
+      />
+      <Button
+        text={'Level 3'}
+        onPress={onSubmit}
+        level={ReefscapeActionType.ScoreCoralL3}
+      />
+      <Button
+        text={'Level 2'}
+        onPress={onSubmit}
+        level={ReefscapeActionType.ScoreCoralL2}
+      />
+      <Button
+        text={'Level 1'}
+        onPress={onSubmit}
+        level={ReefscapeActionType.ScoreCoralL1}
+      />
+      <Button
+        text={'Dropped'}
+        onPress={onSubmit}
+        level={ReefscapeActionType.MissCoral}
+      />
     </View>
   );
 };

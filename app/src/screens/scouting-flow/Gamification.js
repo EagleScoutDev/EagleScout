@@ -12,7 +12,8 @@ import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CrescendoTeleopModal from '../../components/games/crescendo/CrescendoTeleopModal';
-import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
+import ReefscapeAutoModal from '../../components/games/reefscape/ReefscapeAutoModal';
+// import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();
@@ -212,7 +213,7 @@ function Gamification({
             );
           })}
       </Tab.Navigator>
-      <CrescendoAutoModal
+      <ReefscapeAutoModal
         isActive={activePage === 'Auto' && modalIsOpen}
         setIsActive={setModalIsOpen}
         fieldOrientation={fieldOrientation}
