@@ -13,6 +13,7 @@ import {useTheme} from '@react-navigation/native';
 import {useState} from 'react';
 import StandardModal from './StandardModal';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import {getIdealTextColor} from '../../lib/ColorReadability';
 
 const DEBUG = true;
 
@@ -249,9 +250,9 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
             justifyContent: 'space-between',
           }}>
           <StandardButton
-            textColor={colors.notification}
+            textColor={getIdealTextColor(colors.notification)}
             text={'Delete'}
-            color={colors.background}
+            color={colors.notification}
             width={'40%'}
             onPress={() => {
               Alert.alert(
@@ -280,7 +281,8 @@ const EditCompetitionModal = ({setVisible, onRefresh, tempComp}) => {
 
           <StandardButton
             text={'Cancel'}
-            color={colors.card}
+            color={colors.border}
+            textColor={colors.text}
             width={'40%'}
             onPress={() => setVisible(false)}
           />

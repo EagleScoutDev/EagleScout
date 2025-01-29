@@ -14,8 +14,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {FC, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
 import {ChevronDown, MagnifyingGlass, X} from '../../SVGIcons';
+import {Theme, useTheme} from '@react-navigation/native';
 
 interface Data {
   key: any;
@@ -80,6 +81,8 @@ const SelectList: FC<SelectListProps> = ({
   notFoundText = 'No forms found',
   onSelect = () => {},
 }) => {
+  const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const oldOption = useRef(null);
   const [_firstRender, _setFirstRender] = useState<boolean>(true);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -166,11 +169,13 @@ const SelectList: FC<SelectListProps> = ({
               </>
             ) : (
               <View style={{flex: 1}}>
-                <Text>{placeholder ? placeholder : 'Select'}</Text>
+                <Text style={styles.optionText}>
+                  {placeholder ? placeholder : 'Select'}
+                </Text>
               </View>
             )}
             <TouchableOpacity onPress={() => closeDropdown()}>
-              <X width={20} height={20} />
+              <X width={20} height={20} fill={theme.colors.text} />
             </TouchableOpacity>
           </View>
         </View>
@@ -185,7 +190,7 @@ const SelectList: FC<SelectListProps> = ({
               closeDropdown();
             }
           }}>
-          <Text>
+          <Text style={styles.optionText}>
             {selectedVal ? selectedVal : placeholder ? placeholder : 'Select'}
           </Text>
           <ChevronDown width={20} height={20} />
@@ -212,7 +217,7 @@ const SelectList: FC<SelectListProps> = ({
                         setFilteredData(data);
                       }, 800);
                     }}>
-                    <Text>{value}</Text>
+                    <Text style={styles.optionText}>{value}</Text>
                   </TouchableOpacity>
                 );
               })
@@ -225,7 +230,7 @@ const SelectList: FC<SelectListProps> = ({
                   closeDropdown();
                   setTimeout(() => setFilteredData(data), 800);
                 }}>
-                <Text>{notFoundText}</Text>
+                <Text style={styles.optionText}>{notFoundText}</Text>
               </TouchableOpacity>
             )}
           </ScrollView>
@@ -237,22 +242,30 @@ const SelectList: FC<SelectListProps> = ({
 
 export default SelectList;
 
-const styles = StyleSheet.create({
-  wrapper: {
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: 'gray',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dropdown: {
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: 'gray',
-    marginTop: 10,
-    overflow: 'hidden',
-  },
-  option: {paddingHorizontal: 20, paddingVertical: 8, overflow: 'hidden'},
-});
+const makeStyles = ({colors}: Theme) =>
+  StyleSheet.create({
+    wrapper: {
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: 'gray',
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    dropdown: {
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: 'gray',
+      marginTop: 10,
+      overflow: 'hidden',
+    },
+    option: {
+      paddingHorizontal: 20,
+      paddingVertical: 8,
+      overflow: 'hidden',
+    },
+    optionText: {
+      color: colors.text,
+    },
+  });
