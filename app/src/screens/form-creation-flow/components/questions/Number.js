@@ -11,7 +11,7 @@ import React, {
 import {useEffect, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
 import RadioOptionsSeparator from './RadioOptionsSeparator';
-import CheckBox from 'react-native-check-box';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useTheme} from '@react-navigation/native';
 
 function Spacer() {
@@ -110,11 +110,24 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
       </View>
       <View style={styles.rowContainer}>
         <Text style={styles.label}>Slider</Text>
-        <CheckBox
+        <BouncyCheckbox
           onClick={() => {
             setSlider(!slider);
           }}
           isChecked={slider}
+          bounceEffectIn={1}
+          bounceEffectOut={1}
+          style={{
+            marginRight: '6%',
+          }}
+          textStyle={{
+            textDecorationLine: 'none',
+          }}
+          iconStyle={{
+            borderRadius: 3,
+          }}
+          fillColor={colors.text}
+          innerIconStyle={{borderRadius: 3}}
         />
       </View>
       <Spacer />

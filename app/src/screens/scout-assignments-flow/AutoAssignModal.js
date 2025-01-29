@@ -11,7 +11,7 @@ import StandardModal from '../../components/modals/StandardModal';
 import StandardButton from '../../components/StandardButton';
 import {useEffect, useState} from 'react';
 import {supabase} from '../../lib/supabase';
-import CheckBox from 'react-native-check-box';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import TextBox from '../form-creation-flow/components/questions/TextBox';
 
 function AutoAssignModal({visible, setVisible, colors, compId}) {
@@ -128,7 +128,7 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
                   alignItems: 'center',
                 }}>
                 <View style={{flex: 1}}>
-                  <CheckBox
+                  <BouncyCheckbox
                     key={usersKey}
                     onClick={() => {
                       let newUsersChecked = usersChecked;
@@ -138,7 +138,19 @@ function AutoAssignModal({visible, setVisible, colors, compId}) {
                       setUsersKey(usersKey + 1);
                     }}
                     isChecked={usersChecked[idx]}
-                    checkBoxColor={colors.text}
+                    bounceEffectIn={1}
+                    bounceEffectOut={1}
+                    style={{
+                      marginRight: '6%',
+                    }}
+                    textStyle={{
+                      textDecorationLine: 'none',
+                    }}
+                    iconStyle={{
+                      borderRadius: 3,
+                    }}
+                    fillColor={colors.text}
+                    innerIconStyle={{borderRadius: 3}}
                   />
                 </View>
                 <Text

@@ -18,6 +18,7 @@ import Toast from 'react-native-toast-message';
 import Confetti from 'react-native-confetti/confettiView';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
+import StandardButton from '../../components/StandardButton';
 // import ScoutingCamera from '../../components/camera/ScoutingCamera';
 
 const NoteScreen = () => {
@@ -160,10 +161,10 @@ const NoteScreen = () => {
     submit_button_styling: {
       backgroundColor:
         matchNumber === '' || selectedAlliance === '' ? 'grey' : colors.primary,
-      padding: '5%',
-      margin: '2%',
       borderRadius: 10,
-      bottom: '5%',
+      marginHorizontal: '5%',
+      marginBottom: '10%',
+      paddingVertical: '0%',
     },
     title_text_input: {
       color: colors.text,
@@ -286,23 +287,22 @@ const NoteScreen = () => {
           </View>
         )}
         <View style={{flex: 1}} />
-        <TouchableOpacity
-          style={styles.submit_button_styling}
-          onPress={() => {
-            if (matchNumberValid) {
-              setModalVisible(true);
-            } else {
-              Alert.alert(
-                'Match number invalid',
-                'Match number invalid. Please check if the match number you entered is correct.',
-              );
-            }
-          }}
-          disabled={matchNumber === '' || selectedAlliance === ''}>
-          <Text style={{color: 'white', textAlign: 'center', fontSize: 24}}>
-            Next
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.submit_button_styling}>
+          <StandardButton
+            text={'Next'}
+            onPress={() => {
+              if (matchNumberValid) {
+                setModalVisible(true);
+              } else {
+                Alert.alert(
+                  'Match number invalid',
+                  'Match number invalid. Please check if the match number you entered is correct.',
+                );
+              }
+            }}
+            disabled={matchNumber === '' || selectedAlliance === ''}
+          />
+        </View>
       </KeyboardAvoidingView>
       {modalVisible && (
         <NoteInputModal

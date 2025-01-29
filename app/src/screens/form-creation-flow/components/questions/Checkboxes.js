@@ -9,7 +9,6 @@ import React, {
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
-import CheckBox from 'react-native-check-box';
 import {useTheme} from '@react-navigation/native';
 import NewQuestionSeparator from '../NewQuestionSeparator';
 

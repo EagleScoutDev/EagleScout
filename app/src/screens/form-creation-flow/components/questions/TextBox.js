@@ -1,14 +1,16 @@
 import React, {Alert, Text, TextInput, View} from 'react-native';
 import StandardButton from '../../../../components/StandardButton';
 import StandardModal from '../../../../components/modals/StandardModal';
-import CheckBox from 'react-native-check-box';
-import { useEffect, useState } from "react";
+import {useEffect, useState} from 'react';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {useTheme} from '@react-navigation/native';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
 }
 
 const TextBox = ({visible, setVisible, styles, onSubmit, value}) => {
+  const {colors} = useTheme();
   const [question, setQuestion] = useState('');
   const [required, setRequired] = useState(false);
 
@@ -51,11 +53,24 @@ const TextBox = ({visible, setVisible, styles, onSubmit, value}) => {
       <Spacer />
       <View style={styles.rowContainer}>
         <Text style={styles.label}>Required</Text>
-        <CheckBox
+        <BouncyCheckbox
           onClick={() => {
             setRequired(!required);
           }}
           isChecked={required}
+          bounceEffectIn={1}
+          bounceEffectOut={1}
+          style={{
+            marginRight: '6%',
+          }}
+          textStyle={{
+            textDecorationLine: 'none',
+          }}
+          iconStyle={{
+            borderRadius: 3,
+          }}
+          fillColor={colors.text}
+          innerIconStyle={{borderRadius: 3}}
         />
       </View>
       <StandardButton

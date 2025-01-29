@@ -12,8 +12,8 @@ import {useEffect, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
 import NewQuestionSeparator from '../NewQuestionSeparator';
 import RadioOptionsSeparator from './RadioOptionsSeparator';
-import CheckBox from 'react-native-check-box';
 import {useTheme} from '@react-navigation/native';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -206,11 +206,24 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
       <Spacer />
       <View style={styles.rowContainer}>
         <Text style={styles.label}>Required</Text>
-        <CheckBox
+        <BouncyCheckbox
           onClick={() => {
             setRequired(!required);
           }}
           isChecked={required}
+          bounceEffectIn={1}
+          bounceEffectOut={1}
+          style={{
+            marginRight: '6%',
+          }}
+          textStyle={{
+            textDecorationLine: 'none',
+          }}
+          iconStyle={{
+            borderRadius: 3,
+          }}
+          fillColor={colors.text}
+          innerIconStyle={{borderRadius: 3}}
         />
       </View>
       <StandardButton

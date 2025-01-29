@@ -73,13 +73,14 @@ function ReportsForTeam({route}) {
               fontSize: 25,
               paddingLeft: '5%',
               color: colors.text,
-              marginTop: '5%',
+              marginVertical: '5%',
             }}>
             Reports for Team #{team_number}
           </Text>
           <ReportList
             reports={scoutReports}
             isOffline={false}
+            expandable={false}
             displayHeaders={false}
           />
         </View>
