@@ -105,6 +105,15 @@ const ActionButton = ({
               fontWeight: 'bold',
             }}>
             {badLabel}
+          </Text>
+          <Text
+            style={{
+              color: colors.text,
+              paddingTop: '5%',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              fontSize: 38,
+            }}>
             {linkItemMap[ReefscapeActions[negativeAction].link_name]?.value ??
               0}
           </Text>
@@ -138,6 +147,15 @@ const ActionButton = ({
               fontWeight: 'bold',
             }}>
             {goodLabel}
+          </Text>
+          <Text
+            style={{
+              color: colors.text,
+              paddingTop: '5%',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              fontSize: 38,
+            }}>
             {linkItemMap[ReefscapeActions[positiveAction].link_name]?.value ??
               0}
           </Text>
@@ -276,7 +294,6 @@ const ReefscapeAutoModal = ({
                     .link_name:
                   case ReefscapeActions[ReefscapeActionType.MissProcessor]
                     .link_name:
-
                   case ReefscapeActions[ReefscapeActionType.MissCoral]
                     .link_name:
                   case ReefscapeActions[ReefscapeActionType.ScoreCoralL1]
@@ -330,6 +347,18 @@ const ReefscapeAutoModal = ({
                     pieceID: chosenReefPosition,
                   },
                 ]);
+                setArrayData(prevArrayData => {
+                  const linkItem =
+                    linkItemMap[ReefscapeActions[level].link_name];
+                  if (linkItem) {
+                    const {index} = linkItem;
+                    const newArrayData = [...prevArrayData];
+                    newArrayData[index] = prevArrayData[index] + 1;
+                    return newArrayData;
+                  } else {
+                    return prevArrayData;
+                  }
+                });
                 setLevelChooserActive(false);
               }}
             />
