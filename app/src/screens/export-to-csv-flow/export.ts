@@ -84,6 +84,7 @@ export const exportPitReportsToCsv = async (comp: CompetitionReturnData) => {
       csvBuilder.addHeader(q.question);
     }
   });
+  csvBuilder.addHeader('images');
 
   reports.forEach(report => {
     const row = [];
@@ -101,6 +102,7 @@ export const exportPitReportsToCsv = async (comp: CompetitionReturnData) => {
         row.push('"' + report.data[i].join(',') + '"');
       }
     });
+    row.push(report.imageUrls!.join(','));
     csvBuilder.addRow(row);
   });
 

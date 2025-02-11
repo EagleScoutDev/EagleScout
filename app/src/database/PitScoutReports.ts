@@ -20,6 +20,7 @@ export interface PitScoutReportReturnData extends PitScoutReportWithDate {
   competitionName: string;
   submittedId: string;
   submittedName: string;
+  imageUrls?: string[];
 }
 
 export type PitScoutReportWithoutIdWithDate = Omit<
@@ -186,6 +187,30 @@ class PitScoutReports {
     return resultingImages;
   }
 
+  static async getImageUrlsForReport(
+    orgId: number,
+    teamId: number,
+    reportId: number,
+  ) {
+    const bucket = supabase.storage.from('organizations');
+    const {data: images, error} = await bucket.list(
+      `${orgId}/${teamId}/pit_images/${reportId}`,
+    );
+    if (error) {
+      throw error;
+    }
+    const {data: urls, error: urlError} = await bucket.createSignedUrls(
+      images.map(
+        image => `${orgId}/${teamId}/pit_images/${reportId}/${image.name}`,
+      ),
+      60 * 60 * 24,
+    );
+    if (urlError) {
+      throw urlError;
+    }
+    return urls.map(url => url.signedUrl);
+  }
+
   static async getReportsForCompetition(
     competitionId: number,
   ): Promise<PitScoutReportReturnData[]> {
@@ -198,6 +223,17 @@ class PitScoutReports {
     if (error) {
       throw error;
     }
+    const imageUrls = await Promise.all(
+      data.map(async report =>
+        this.getImageUrlsForReport(
+          (
+            await userAttributes.getCurrentUserAttribute()
+          ).organization_id,
+          report.team_id,
+          report.id,
+        ),
+      ),
+    );
     return data.map(report => ({
       reportId: report.id,
       teamNumber: report.team_id,
@@ -208,6 +244,7 @@ class PitScoutReports {
       competitionName: report.competitions.name,
       submittedName: report.profiles.name,
       submittedId: report.profiles.id,
+      imageUrls: imageUrls.shift(),
     }));
   }
 }
