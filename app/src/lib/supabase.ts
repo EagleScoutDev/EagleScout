@@ -4,8 +4,9 @@ import {createClient} from '@supabase/supabase-js';
 import {SUPABASE_ANON_KEY, SUPABASE_URL} from '@env';
 import {AppState} from 'react-native';
 
-const supabaseUrl = SUPABASE_URL;
-const supabaseAnonKey = SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://ltbaymxtkftdtqyjjuoi.supabase.co';
+const supabaseAnonKey =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0YmF5bXh0a2Z0ZHRxeWpqdW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2OTE5NDksImV4cCI6MjA1MTI2Nzk0OX0.dmJGiYmwxk-AOAOn1AXToR6pcB-jBADDavbkD4xC4OA';
 
 console.log(
   'Supabase url:',

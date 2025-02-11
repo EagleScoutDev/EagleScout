@@ -1,10 +1,11 @@
 import {supabase} from '../lib/supabase';
 
 interface Form {
-  formStructure: [];
+  formStructure: any[];
   pitScouting: boolean;
   name: string;
 }
+
 export enum FormQuestionTypes {
   radio = 'radio',
   checkbox = 'checkbox',

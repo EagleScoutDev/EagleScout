@@ -16,9 +16,9 @@ export enum ScoutAssignmentsConfig {
 
 export interface CompetitionReturnData extends Competition {
   id: number;
-  form: [];
+  form: any[];
   scoutAssignmentsConfig: ScoutAssignmentsConfig;
-  pitScoutFormStructure: [];
+  pitScoutFormStructure: any[];
 }
 
 class CompetitionsDB {

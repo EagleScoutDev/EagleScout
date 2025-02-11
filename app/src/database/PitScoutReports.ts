@@ -18,7 +18,8 @@ export interface PitScoutReportWithDate extends PitScoutReport {
 export interface PitScoutReportReturnData extends PitScoutReportWithDate {
   formStructure: any[];
   competitionName: string;
-  submittedBy: string;
+  submittedId: string;
+  submittedName: string;
 }
 
 export type PitScoutReportWithoutIdWithDate = Omit<
@@ -63,6 +64,7 @@ class PitScoutReports {
       }
     }
   }
+
   /**
    * Creates a new pit scout report
    * @param report
@@ -130,7 +132,7 @@ class PitScoutReports {
     const {data, error} = await supabase
       .from('pit_scout_reports')
       .select(
-        'id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name), profiles(name)',
+        'id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name), profiles(name, id)',
       )
       .eq('team_id', teamId)
       .eq('competition_id', competitionId);
@@ -145,7 +147,8 @@ class PitScoutReports {
       createdAt: new Date(report.created_at),
       formStructure: report.competitions.forms.form_structure,
       competitionName: report.competitions.name,
-      submittedBy: report.profiles.name,
+      submittedName: report.profiles.name,
+      submittedId: report.profiles.id,
     }));
   }
 
@@ -181,6 +184,31 @@ class PitScoutReports {
       };
     }
     return resultingImages;
+  }
+
+  static async getReportsForCompetition(
+    competitionId: number,
+  ): Promise<PitScoutReportReturnData[]> {
+    const {data, error} = await supabase
+      .from('pit_scout_reports')
+      .select(
+        'id, team_id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name), profiles(name, id)',
+      )
+      .eq('competition_id', competitionId);
+    if (error) {
+      throw error;
+    }
+    return data.map(report => ({
+      reportId: report.id,
+      teamNumber: report.team_id,
+      data: report.data,
+      competitionId: report.competitions.id,
+      createdAt: new Date(report.created_at),
+      formStructure: report.competitions.forms.form_structure,
+      competitionName: report.competitions.name,
+      submittedName: report.profiles.name,
+      submittedId: report.profiles.id,
+    }));
   }
 }
 
