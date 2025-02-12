@@ -1,95 +1,118 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import {Svg, Line, Path, Circle} from 'react-native-svg';
+import {Svg, Line, Path, Circle, Rect} from 'react-native-svg';
 import {AutoPath} from './AutoPath';
 import {ReefscapeActionType} from './ReefscapeActions';
 
-const notePositions = [
-  {x: 229.5, y: 63.5},
-  {x: 229.5, y: 113.5},
-  {x: 229.5, y: 164.5},
-  {x: 30, y: 49},
-  {x: 30, y: 107},
-  {x: 30, y: 166},
-  {x: 30, y: 225},
-  {x: 30, y: 284},
+const nodePositions = [
+  //gamepices
+  {x: 439, y: 318},
+  {x: 439, y: 223},
+  {x: 439, y: 125},
+  {x: 439, y: 318},
+  {x: 439, y: 223},
+  {x: 439, y: 125},
+
+  //scoring on field
+  {x: 200, y: 225},
+  {x: 232, y: 163},
+  {x: 340, y: 225},
+  {x: 308, y: 287},
+  {x: 308, y: 163},
+  {x: 232, y: 287},
 ];
 
-const NoteToSpeakerLine = ({noteId}: {noteId: number}) => {
+{
+  /*<Circle cx="439" cy="318" r="11" fill="#65D354" />*/
+}
+{
+  /*<Circle cx="439" cy="223" r="11" fill="#65D354" />*/
+}
+{
+  /*<Circle cx="439" cy="125" r="11" fill="#65D354" />*/
+}
+
+const NodeToStartingLine = ({nodeId}: {nodeId: number}) => {
   return (
     <>
       <Line
-        x1={notePositions[noteId].x}
-        y1={notePositions[noteId].y}
-        x2="270"
-        y2="113.5"
-        stroke="#637AF4"
-        strokeWidth="4"
+        x1={nodePositions[nodeId].x}
+        y1={nodePositions[nodeId].y}
+        x2="105"
+        y2="224"
+        stroke="hsl(230,85%,30%)"
+        strokeWidth="7"
       />
-      <Circle cx="270" cy="113.5" r="12" fill="#637AF4" />
+      <Circle cx="105" cy="224" r="12" fill="#637AF4" />
     </>
   );
 };
 
-const NoteToNoteLine = ({
-  noteId1,
-  noteId2,
+const NodeToNodeLine = ({
+  nodeId1,
+  nodeId2,
+  index,
 }: {
-  noteId1: number;
-  noteId2: number;
+  nodeId1: number;
+  nodeId2: number;
+  index: number;
 }) => {
+  const light = Math.min(90, 30 + index * 10);
   return (
     <Line
-      x1={notePositions[noteId1].x}
-      y1={notePositions[noteId1].y}
-      x2={notePositions[noteId2].x}
-      y2={notePositions[noteId2].y}
-      stroke="#637AF4"
-      strokeWidth="4"
+      x1={nodePositions[nodeId1].x}
+      y1={nodePositions[nodeId1].y}
+      x2={nodePositions[nodeId2].x}
+      y2={nodePositions[nodeId2].y}
+      // stroke="#1f42ef"
+      // stroke="hsl(230,85%,80%)"
+      stroke={`hsl(230,85%,${light}%)`}
+      strokeWidth={6 - index * 0.3}
+      // strokeWidth="3"
     />
   );
 };
 
-const DefaultNote = ({noteId}: {noteId: number}) => (
+const DefaultNode = ({nodeId}: {nodeId: number}) => (
   <Circle
-    cx={notePositions[noteId].x}
-    cy={notePositions[noteId].y}
+    cx={nodePositions[nodeId].x}
+    cy={nodePositions[nodeId].y}
     r="10.5"
     fill="white"
     stroke="#FF7A00"
-    strokeWidth="3"
+    strokeWidth="2"
   />
 );
 
-const FilledNote = ({
-  noteId,
+const FilledNode = ({
+  nodeId,
   status,
 }: {
-  noteId: number;
+  nodeId: number;
   status: 'success' | 'missed';
 }) => (
   <>
     <Circle
-      cx={notePositions[noteId].x}
-      cy={notePositions[noteId].y}
+      cx={nodePositions[nodeId].x}
+      cy={nodePositions[nodeId].y}
       r="12"
       fill="#637AF4"
     />
     {status === 'success' && (
       <>
         <Line
-          x1={notePositions[noteId].x - 5}
-          y1={notePositions[noteId].y}
-          x2={notePositions[noteId].x - 2}
-          y2={notePositions[noteId].y + 5}
+          x1={nodePositions[nodeId].x - 5}
+          y1={nodePositions[nodeId].y}
+          x2={nodePositions[nodeId].x - 2}
+          y2={nodePositions[nodeId].y + 5}
           stroke="white"
           strokeWidth="3"
         />
         <Line
-          x1={notePositions[noteId].x - 2}
-          y1={notePositions[noteId].y + 5}
-          x2={notePositions[noteId].x + 5}
-          y2={notePositions[noteId].y - 5}
+          x1={nodePositions[nodeId].x - 2}
+          y1={nodePositions[nodeId].y + 5}
+          x2={nodePositions[nodeId].x + 5}
+          y2={nodePositions[nodeId].y - 5}
           stroke="white"
           strokeWidth="3"
         />
@@ -98,18 +121,18 @@ const FilledNote = ({
     {status === 'missed' && (
       <>
         <Line
-          x1={notePositions[noteId].x - 5}
-          y1={notePositions[noteId].y - 5}
-          x2={notePositions[noteId].x + 5}
-          y2={notePositions[noteId].y + 5}
+          x1={nodePositions[nodeId].x - 5}
+          y1={nodePositions[nodeId].y - 5}
+          x2={nodePositions[nodeId].x + 5}
+          y2={nodePositions[nodeId].y + 5}
           stroke="white"
           strokeWidth="3"
         />
         <Line
-          x1={notePositions[noteId].x - 5}
-          y1={notePositions[noteId].y + 5}
-          x2={notePositions[noteId].x + 5}
-          y2={notePositions[noteId].y - 5}
+          x1={nodePositions[nodeId].x - 5}
+          y1={nodePositions[nodeId].y + 5}
+          x2={nodePositions[nodeId].x + 5}
+          y2={nodePositions[nodeId].y - 5}
           stroke="white"
           strokeWidth="3"
         />
@@ -126,7 +149,7 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
           backgroundColor: '#5F5F5F',
           alignItems: 'center',
           padding: 10,
-          borderRadius: 10,
+          borderRadius: 8,
         }}>
         <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
           No Auto Paths found.
@@ -136,21 +159,34 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
   }
   const autoPathSvgs = [];
   autoPathSvgs.push(
-    autoPath.map(note => {
-      if (note.type !== ReefscapeActionType.PickupGround) {
+    autoPath.map(node => {
+      if (
+        node.type !== ReefscapeActionType.PickupGround &&
+        node.type !== ReefscapeActionType.ScoreCoralL1 &&
+        node.type !== ReefscapeActionType.ScoreCoralL2 &&
+        node.type !== ReefscapeActionType.ScoreCoralL3 &&
+        node.type !== ReefscapeActionType.ScoreCoralL4 &&
+        node.type !== ReefscapeActionType.MissCoral
+      ) {
         return;
       }
       const prevPickup = autoPath.findIndex(
         n =>
-          n?.type === ReefscapeActionType.PickupGround &&
-          n.order === note.order - 1,
+          (n.type === ReefscapeActionType.PickupGround ||
+            n.type === ReefscapeActionType.ScoreCoralL1 ||
+            n.type === ReefscapeActionType.ScoreCoralL2 ||
+            n.type === ReefscapeActionType.ScoreCoralL3 ||
+            n.type === ReefscapeActionType.ScoreCoralL4 ||
+            n.type === ReefscapeActionType.MissCoral) &&
+          n.order === node.order - 1,
       );
       return (
         <>
           {prevPickup !== -1 && (
-            <NoteToNoteLine
-              noteId1={autoPath[prevPickup].nodeId! - 1}
-              noteId2={note.nodeId! - 1}
+            <NodeToNodeLine
+              nodeId1={autoPath[prevPickup].nodeId! - 1}
+              nodeId2={node.nodeId! - 1}
+              index={prevPickup}
             />
           )}
         </>
@@ -159,34 +195,55 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
   );
   autoPathSvgs.push(
     <>
-      {autoPath.find(n => n.type === ReefscapeActionType.PickupGround) !==
-        undefined && (
-        <NoteToSpeakerLine
-          noteId={
-            autoPath.find(n => n.type === ReefscapeActionType.PickupGround)!
-              .nodeId! - 1
+      {autoPath.find(
+        n =>
+          n.type === ReefscapeActionType.PickupGround ||
+          n.type === ReefscapeActionType.ScoreCoralL1 ||
+          n.type === ReefscapeActionType.ScoreCoralL2 ||
+          n.type === ReefscapeActionType.ScoreCoralL3 ||
+          n.type === ReefscapeActionType.ScoreCoralL4 ||
+          n.type === ReefscapeActionType.MissCoral,
+      ) !== undefined && (
+        <NodeToStartingLine
+          nodeId={
+            autoPath.find(
+              n =>
+                n.type === ReefscapeActionType.PickupGround ||
+                n.type === ReefscapeActionType.ScoreCoralL1 ||
+                n.type === ReefscapeActionType.ScoreCoralL2 ||
+                n.type === ReefscapeActionType.ScoreCoralL3 ||
+                n.type === ReefscapeActionType.ScoreCoralL4 ||
+                n.type === ReefscapeActionType.MissCoral,
+            )!.nodeId! - 1
           }
         />
       )}
     </>,
   );
   autoPathSvgs.push(
-    autoPath.map(note => {
-      // if (note.type === CrescendoActionType.ScoreSpeaker) {
-      //   const noteId = autoPath.findIndex(
+    autoPath.map(node => {
+      // if (node.type === CrescendoActionType.ScoreSpeaker) {
+      //   const nodeId = autoPath.findIndex(
       //     n =>
       //       n?.type === CrescendoActionType.PickupGround &&
-      //       n.order === note.order,
+      //       n.order === node.order,
       //   );
-      //   if (noteId === -1) {
+      //   if (nodeId === -1) {
       //     return null;
       //   }
-      //   return <NoteToSpeakerLine noteId={noteId} />;
+      //   return <NodeToSpeakerLine nodeId={nodeId} />;
       // }
-      if (note.type === ReefscapeActionType.PickupGround) {
+      if (
+        node.type === ReefscapeActionType.PickupGround ||
+        node.type === ReefscapeActionType.ScoreCoralL1 ||
+        node.type === ReefscapeActionType.ScoreCoralL2 ||
+        node.type === ReefscapeActionType.ScoreCoralL3 ||
+        node.type === ReefscapeActionType.ScoreCoralL4 ||
+        node.type === ReefscapeActionType.MissCoral
+      ) {
         return (
           <>
-            <FilledNote noteId={note.nodeId! - 1} status={note.state!} />
+            <FilledNode nodeId={node.nodeId! - 1} status={node.state!} />
           </>
         );
       }
@@ -200,51 +257,59 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
         padding: 10,
         borderRadius: 10,
       }}>
-      <Svg width="319" height="311" viewBox="0 0 319 311" fill="none">
-        <Line
-          x1="119.543"
-          y1="111.77"
-          x2="148.543"
-          y2="162.77"
-          stroke="#353535"
-          strokeWidth="7"
+      <Svg width="357" height="315" viewBox="0 0 513 448" fill="none">
+        <Rect width="513" height="448" fill="#0F1216" />
+        <Rect
+          x="14"
+          y="17"
+          width="58"
+          height="186"
+          stroke="#677EF5"
+          stroke-width="6"
         />
-        <Line
-          x1="205.5"
-          y1="163"
-          x2="148.5"
-          y2="163"
-          stroke="#353535"
-          strokeWidth="7"
-        />
-        <Line
-          x1="119.457"
-          y1="213.77"
-          x2="148.457"
-          y2="162.77"
-          stroke="#353535"
-          strokeWidth="7"
-        />
-        <Path d="M29.5 19V309" stroke="#737373" strokeWidth="3" />
-        <Path d="M253.5 309V289.5L317.5 252" stroke="#677EF5" strokeWidth="3" />
-        <Path
-          d="M317.5 77.5L286.5 95.5V131L317.5 149.5"
-          stroke="#F94545"
-          strokeWidth="3"
+        <Rect
+          x="14"
+          y="240"
+          width="58"
+          height="186"
+          stroke="#FB4949"
+          stroke-width="6"
         />
         <Path
-          d="M0 19H317.5V271L254.5 309H0"
-          stroke="#353535"
-          strokeWidth="3"
+          d="M219.905 195.232L268 167.464L316.095 195.232V250.768L268 278.536L219.905 250.768V195.232Z"
+          stroke="#3A3A3A"
+          stroke-width="6"
         />
         <Path
-          d="M114 210.5V116L124 110L207 158V169.5L124 217L114 210.5Z"
-          stroke="#F94545"
-          strokeWidth="3"
+          d="M6 432H414.5L501.5 367.5V77L414.5 13.5H6"
+          stroke="#3A3A3A"
+          stroke-width="6"
         />
-        <Path d="M114 19V309" stroke="#FB4949" strokeWidth="3" />
-        {new Array(8).fill(0).map((_, i) => (
-          <DefaultNote noteId={i} />
+        <Path
+          d="M206.847 187.482L267.5 152.464L328.153 187.482V257.518L267.5 292.536L206.847 257.518V187.482Z"
+          stroke="#FB4949"
+          stroke-width="6"
+        />
+        {/*<Circle cx="439" cy="318" r="11" fill="#65D354" />*/}
+        {/*<Circle cx="439" cy="223" r="11" fill="#65D354" />*/}
+        {/*<Circle cx="439" cy="125" r="11" fill="#65D354" />*/}
+        <Line
+          x1="106"
+          y1="14"
+          x2="106"
+          y2="432"
+          stroke="#3A3A3A"
+          stroke-width="6"
+        />
+        <Rect x="38" y="271" width="11" height="11" fill="#FB4949" />
+        <Rect x="38" y="327" width="11" height="11" fill="#FB4949" />
+        <Rect x="38" y="383" width="11" height="11" fill="#FB4949" />
+        <Rect x="38" y="48" width="11" height="11" fill="#677EF5" />
+        <Rect x="38" y="104" width="11" height="11" fill="#677EF5" />
+        <Rect x="38" y="160" width="11" height="11" fill="#677EF5" />
+        <Rect x="28" y="206" width="30" height="31" fill="#3A3A3A" />
+        {new Array(12).fill(0).map((_, i) => (
+          <DefaultNode nodeId={i} />
         ))}
         {autoPathSvgs}
       </Svg>

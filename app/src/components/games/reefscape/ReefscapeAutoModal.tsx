@@ -262,6 +262,7 @@ const ReefscapeAutoModal = ({
             }}
             onPress={() => {
               const lastAction = history.pop();
+              ReactNativeHapticFeedback.trigger('impactLight');
               if (lastAction) {
                 switch (lastAction.action) {
                   case 'score':
