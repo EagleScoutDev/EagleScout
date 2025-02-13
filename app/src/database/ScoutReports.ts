@@ -10,7 +10,7 @@ interface ScoutReport {
   reportId: number;
   matchNumber: number;
   teamNumber: number;
-  data: [];
+  data: any[];
   competitionId: number;
   timelineData?: TimelineElement[];
   autoPath?: AutoPath;
@@ -23,6 +23,7 @@ interface ScoutReportWithDate extends ScoutReport {
 export interface ScoutReportReturnData extends ScoutReportWithDate {
   form: [];
   userId: string;
+  userName?: string;
   competitionName: string;
 }
 
@@ -40,12 +41,14 @@ interface ScoutReportHistory {
 class ScoutReportsDB {
   static async getReportsForCompetition(
     id: number,
+    fetchUserNames = false,
   ): Promise<ScoutReportReturnData[]> {
     const res: ScoutReportReturnData[] = [];
     const {data, error} = await supabase
       .from('scout_reports')
       .select(
-        '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+        '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )' +
+          (fetchUserNames ? ', profiles(name)' : ''),
       )
       .eq('matches.competition_id', id);
     if (error) {
@@ -60,6 +63,7 @@ class ScoutReportsDB {
           competitionId: data[i].matches.competition_id,
           form: data[i].matches.competitions.forms.form_structure,
           userId: data[i].user_id,
+          userName: fetchUserNames ? data[i].profiles.name : undefined,
           createdAt: data[i].created_at,
           competitionName: data[i].matches.competitions.name,
           timelineData: data[i].timeline_data,
