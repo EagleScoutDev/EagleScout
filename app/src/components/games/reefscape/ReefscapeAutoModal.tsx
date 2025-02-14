@@ -210,7 +210,6 @@ const ReefscapeAutoModal = ({
       }, {}),
     [form, arrayData],
   );
-
   return (
     <Modal
       visible={isActive}
@@ -229,10 +228,11 @@ const ReefscapeAutoModal = ({
           onPress={() => setIsActive(false)}>
           <Text style={{color: colors.text}}>Close</Text>
         </Pressable>
+        {/*<View style={{display: 'flex', flexDirection: 'row'}}>*/}
         <Text
           style={{
             color: colors.text,
-            fontSize: 40,
+            fontSize: 30,
             fontWeight: 'bold',
           }}>
           AUTO
@@ -329,6 +329,7 @@ const ReefscapeAutoModal = ({
               Undo
             </Text>
           </Pressable>
+          {/*</View>*/}
           {levelChooserActive ? (
             <ReefscapeLevels
               onSubmit={(level: ReefscapeActionType) => {

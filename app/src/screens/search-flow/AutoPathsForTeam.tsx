@@ -5,8 +5,8 @@ import ScoutReportsDB, {
   ScoutReportReturnData,
 } from '../../database/ScoutReports';
 import {useTheme} from '@react-navigation/native';
-import {AutoPath} from '../../components/games/crescendo/AutoPath';
-import {CrescendoAutoViewer} from '../../components/games/crescendo/CrescendoAutoViewer';
+import {AutoPath} from '../../components/games/reefscape/AutoPath';
+import {ReefscapeViewer} from '../../components/games/reefscape/ReefscapeViewer';
 
 export const AutoPathsForTeam = ({route}) => {
   const {team_number, competitionId} = route.params;
@@ -54,7 +54,7 @@ export const AutoPathsForTeam = ({route}) => {
           {autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ''}
         </Text>
         {autoPaths ? (
-          <CrescendoAutoViewer autoPath={autoPaths[currentIndex]} />
+          <ReefscapeViewer autoPath={autoPaths[currentIndex]} />
         ) : (
           <Text style={{color: colors.text}}>No auto paths found</Text>
         )}

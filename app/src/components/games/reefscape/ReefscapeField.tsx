@@ -1,9 +1,19 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Pressable, Text, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {Pressable, SafeAreaView, Text, View, StyleSheet} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import {AutoPath} from './AutoPath';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import Orientation from 'react-native-orientation-locker';
+import {
+  useAnimatedSensor,
+  SensorType,
+  interpolate,
+} from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
+
 // import {AnimatedView} from 'react-native-reanimated/lib/typescript/component/View';
 
 export const ReefscapeField = ({
@@ -25,6 +35,13 @@ export const ReefscapeField = ({
   onPieceReset: (piece: number) => void;
   autoPath: AutoPath;
 }) => {
+  const ref = useRef<View | null>(null);
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    console.log(ref.current);
+  }, [ref]);
   const Piece = ({pieceID, type}: {pieceID: number; type: string}) => {
     const autoPiece = useMemo(
       () => autoPath.find(piece => piece.nodeId === pieceID),
@@ -44,7 +61,7 @@ export const ReefscapeField = ({
               : !autoPiece
               ? '#ffffff'
               : autoPiece.state === 'success'
-              ? '#ff852d'
+              ? '#b1a7a0'
               : 'black',
           borderWidth: 8,
           width: type === 'algae' ? 50 : 40,
@@ -52,6 +69,7 @@ export const ReefscapeField = ({
           marginVertical: 14,
           borderRadius: 25,
           justifyContent: 'center',
+          flexShrink: 1,
         }}
         onPress={() => {
           if (autoPiece && autoPiece.state === 'success') {
@@ -76,14 +94,17 @@ export const ReefscapeField = ({
     );
   };
   const Reef = () => {
+    // const [yaw, setYaw] = useEffect();
     return (
       <View
         style={{
-          flex: 1,
+          flex: 12,
+          flexShrink: 1,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
         <Svg
+          style={{flexShrink: 1}}
           width="220"
           height="200"
           viewBox="0 0 310 283"
@@ -92,13 +113,12 @@ export const ReefscapeField = ({
             d="M188.285 134.344C179.047 134.344 173.274 124.344 177.892 116.344L232.452 21.8442C237.071 13.8442 248.618 13.8442 253.237 21.8442L307.796 116.344C312.415 124.344 306.641 134.344 297.404 134.344L188.285 134.344Z"
             onPress={() => {
               ReactNativeHapticFeedback.trigger('impactLight');
-              setChosenReefPosition(7);
+              setChosenReefPosition(8);
               setLevelChooserActive(true);
             }}
           />
           <Path
             d="M143.524 169.91C148.143 161.91 159.69 161.91 164.309 169.91L218.868 264.41C223.487 272.41 217.714 282.41 208.476 282.41H99.3568C90.1192 282.41 84.3457 272.41 88.9645 264.41L143.524 169.91Z"
-            fill="green"
             onPress={() => {
               ReactNativeHapticFeedback.trigger('impactLight');
 
@@ -116,6 +136,7 @@ export const ReefscapeField = ({
           />
           <Path
             d="M164.392 113C159.773 121 148.226 121 143.608 113L89.0481 18.5C84.4293 10.5 90.2028 0.500014 99.4404 0.500015L208.56 0.500027C217.797 0.500028 223.571 10.5 218.952 18.5L164.392 113Z"
+            fill="green"
             onPress={() => {
               ReactNativeHapticFeedback.trigger('impactLight');
               setChosenReefPosition(7);
@@ -144,47 +165,77 @@ export const ReefscapeField = ({
     );
   };
 
+  const sensor = useAnimatedSensor(SensorType.ROTATION, {
+    interval: 100, // Update every 100ms
+  });
+  const animatedStyle = useAnimatedStyle(() => {
+    const {yaw} = sensor.sensor.value;
+
+    // Roll calculation only (rotation around X-axis)
+    const rotation = (yaw * 180) / Math.PI; // Convert to degrees
+    return {
+      transform: [
+        {rotate: `${rotation}deg`},
+        {
+          scale: interpolate(
+            rotation,
+            [0, 90, 180, 270, 360],
+            [1, 0.9, 1, 0.9, 1],
+          ),
+        }, // Scale dynamically
+      ],
+    };
+  });
   return (
     <View
+      ref={ref}
       style={{
         backgroundColor: '#D9D9D9',
         width: '100%',
-        paddingHorizontal: '5%',
+        height: '60%',
+        padding: '0.01%',
         borderRadius: 10,
         marginHorizontal: '10%',
-        display: 'flex',
-        height: '60%',
-        // fieldOrientation === 'leftBlue'
-        //   ? selectedAlliance === 'blue'
-        //     ? 'row-reverse'
-        //     : 'row'
-        //   : selectedAlliance === 'blue'
-        //   ? 'row'
-        //   : 'row-reverse',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        overflow: 'hidden',
       }}>
-      <Reef/>
-      <View
-        style={{
-          flexDirection: 'columnl',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-        }}>
-        <Piece pieceID={1} type={'algae'} />
-        <Piece pieceID={2} type={'algae'} />
-        <Piece pieceID={3} type={'algae'} />
-      </View>
-      <View
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-        }}>
-        <Piece pieceID={4} type={'Coral'} />
-        <Piece pieceID={5} type={'Coral'} />
-        <Piece pieceID={6} type={'Coral'} />
-      </View>
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFillObject,
+          animatedStyle,
+          {
+            backgroundColor: 'grey',
+            aspectRatio: 1,
+            flexDirection: 'column',
+            alignSelf: 'center',
+            justifyContent: 'space-between',
+          },
+        ]}>
+        <Reef />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            flexGrow: 1, // Allow it to grow naturally
+            flexShrink: 2,
+          }}>
+          <Piece pieceID={1} type={'algae'} />
+          <Piece pieceID={2} type={'algae'} />
+          <Piece pieceID={3} type={'algae'} />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            flexGrow: 1, // Allow it to grow naturally
+            flexShrink: 2,
+          }}>
+          <Piece pieceID={4} type={'Coral'} />
+          <Piece pieceID={5} type={'Coral'} />
+          <Piece pieceID={6} type={'Coral'} />
+        </View>
+      </Animated.View>
     </View>
   );
 };
