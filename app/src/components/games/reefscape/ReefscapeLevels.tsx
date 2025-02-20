@@ -18,8 +18,8 @@ export const ReefscapeLevels = ({
       borderRadius: 8,
       padding: 10,
       margin: 10,
-      width: 160,
-      height: 80,
+      width: 170,
+      height: 90,
     },
   });
   const Button = ({
@@ -38,7 +38,7 @@ export const ReefscapeLevels = ({
           ReactNativeHapticFeedback.trigger('impactLight');
         }}>
         <View style={styles.button}>
-          <Text style={{color: colors.text}}>{text}</Text>
+          <Text style={{color: colors.text, fontSize: 20}}>{text}</Text>
         </View>
       </TouchableOpacity>
     );
