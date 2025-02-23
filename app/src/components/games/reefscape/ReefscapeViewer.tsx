@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, Text} from 'react-native';
-import {Svg, Line, Path, Circle, Rect} from 'react-native-svg';
+import {Text, View} from 'react-native';
+import {Circle, Line, Path, Rect, Svg} from 'react-native-svg';
 import {AutoPath} from './AutoPath';
 import {ReefscapeActionType} from './ReefscapeActions';
 
@@ -21,16 +21,6 @@ const nodePositions = [
   {x: 308, y: 163},
   {x: 232, y: 287},
 ];
-
-{
-  /*<Circle cx="439" cy="318" r="11" fill="#65D354" />*/
-}
-{
-  /*<Circle cx="439" cy="223" r="11" fill="#65D354" />*/
-}
-{
-  /*<Circle cx="439" cy="125" r="11" fill="#65D354" />*/
-}
 
 const NodeToStartingLine = ({nodeId}: {nodeId: number}) => {
   return (
@@ -222,17 +212,6 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
   );
   autoPathSvgs.push(
     autoPath.map(node => {
-      // if (node.type === CrescendoActionType.ScoreSpeaker) {
-      //   const nodeId = autoPath.findIndex(
-      //     n =>
-      //       n?.type === CrescendoActionType.PickupGround &&
-      //       n.order === node.order,
-      //   );
-      //   if (nodeId === -1) {
-      //     return null;
-      //   }
-      //   return <NodeToSpeakerLine nodeId={nodeId} />;
-      // }
       if (
         node.type === ReefscapeActionType.PickupGround ||
         node.type === ReefscapeActionType.ScoreCoralL1 ||
@@ -290,9 +269,6 @@ export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
           stroke="#FB4949"
           stroke-width="6"
         />
-        {/*<Circle cx="439" cy="318" r="11" fill="#65D354" />*/}
-        {/*<Circle cx="439" cy="223" r="11" fill="#65D354" />*/}
-        {/*<Circle cx="439" cy="125" r="11" fill="#65D354" />*/}
         <Line
           x1="106"
           y1="14"
