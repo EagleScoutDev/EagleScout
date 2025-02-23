@@ -1,14 +1,14 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Pressable, SafeAreaView, Text, View, StyleSheet} from 'react-native';
+import React, {useMemo} from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import {AutoPath} from './AutoPath';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {
-  useAnimatedSensor,
-  SensorType,
+import Animated, {
   interpolate,
+  SensorType,
+  useAnimatedSensor,
+  useAnimatedStyle,
 } from 'react-native-reanimated';
-import Animated, {useAnimatedStyle} from 'react-native-reanimated';
 
 // import {AnimatedView} from 'react-native-reanimated/lib/typescript/component/View';
 
@@ -31,13 +31,6 @@ export const ReefscapeField = ({
   onPieceReset: (piece: number) => void;
   autoPath: AutoPath;
 }) => {
-  const ref = useRef<View | null>(null);
-  useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    console.log(ref.current);
-  }, [ref]);
   const Piece = ({pieceID, type}: {pieceID: number; type: string}) => {
     const autoPiece = useMemo(
       () => autoPath.find(piece => piece.nodeId === pieceID),
@@ -202,7 +195,6 @@ export const ReefscapeField = ({
   });
   return (
     <View
-      ref={ref}
       style={{
         backgroundColor: '#cfcfcf',
         width: '100%',
