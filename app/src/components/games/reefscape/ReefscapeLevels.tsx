@@ -11,18 +11,36 @@ export const ReefscapeLevels = ({
 }) => {
   const {colors} = useTheme();
   const styles = StyleSheet.create({
-    button: {
+    select_container: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 4,
+      width: '100%',
+    },
+    level_container: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '90%',
+      gap: 20,
+    },
+    level_button: {
       backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 8,
-      padding: 10,
-      margin: 10,
-      width: 170,
-      height: 90,
+      padding: 8,
+      paddingVertical: '9%',
+      width: '90%',
+    },
+    level_text: {
+      color: colors.text,
+      fontSize: 20,
     },
   });
-  const Button = ({
+
+  const LevelButton = ({
     level,
     onPress,
     text,
@@ -33,51 +51,48 @@ export const ReefscapeLevels = ({
   }) => {
     return (
       <TouchableOpacity
+        style={styles.level_button}
         onPress={() => {
           onPress(level);
           ReactNativeHapticFeedback.trigger('impactLight');
         }}>
-        <View style={styles.button}>
-          <Text style={{color: colors.text, fontSize: 20}}>{text}</Text>
-        </View>
+        <Text style={styles.level_text}>{text}</Text>
       </TouchableOpacity>
     );
   };
+
   return (
-    <View
-      style={{
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
+    <View style={styles.select_container}>
       <Text style={{color: colors.text, fontSize: 24, fontWeight: 'bold'}}>
         Select Scoring Position
       </Text>
-      <Button
-        text={'Level 4'}
-        onPress={onSubmit}
-        level={ReefscapeActionType.ScoreCoralL4}
-      />
-      <Button
-        text={'Level 3'}
-        onPress={onSubmit}
-        level={ReefscapeActionType.ScoreCoralL3}
-      />
-      <Button
-        text={'Level 2'}
-        onPress={onSubmit}
-        level={ReefscapeActionType.ScoreCoralL2}
-      />
-      <Button
-        text={'Level 1'}
-        onPress={onSubmit}
-        level={ReefscapeActionType.ScoreCoralL1}
-      />
-      <Button
-        text={'Dropped'}
-        onPress={onSubmit}
-        level={ReefscapeActionType.MissCoral}
-      />
+      <View style={styles.level_container}>
+        <LevelButton
+          text={'Level 4'}
+          onPress={onSubmit}
+          level={ReefscapeActionType.ScoreCoralL4}
+        />
+        <LevelButton
+          text={'Level 3'}
+          onPress={onSubmit}
+          level={ReefscapeActionType.ScoreCoralL3}
+        />
+        <LevelButton
+          text={'Level 2'}
+          onPress={onSubmit}
+          level={ReefscapeActionType.ScoreCoralL2}
+        />
+        <LevelButton
+          text={'Level 1'}
+          onPress={onSubmit}
+          level={ReefscapeActionType.ScoreCoralL1}
+        />
+        <LevelButton
+          text={'Dropped'}
+          onPress={onSubmit}
+          level={ReefscapeActionType.MissCoral}
+        />
+      </View>
     </View>
   );
 };

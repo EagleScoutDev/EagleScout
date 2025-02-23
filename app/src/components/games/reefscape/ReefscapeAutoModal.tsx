@@ -29,7 +29,6 @@ const ActionButton = ({
   negativeAction,
   goodLabel,
   badLabel,
-  flex,
   setHistory,
   setAutoPath,
   setArrayData,
@@ -39,7 +38,6 @@ const ActionButton = ({
   negativeAction: ReefscapeActionType;
   goodLabel: string;
   badLabel: string;
-  flex: number;
   setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
   setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
@@ -87,7 +85,7 @@ const ActionButton = ({
           width: '40%',
           justifyContent: 'center',
           alignItems: 'center',
-          flex: flex / 2,
+          flex: 1 / 2,
         }}
         onPress={() => {
           doAction(negativeAction, 1);
@@ -129,7 +127,7 @@ const ActionButton = ({
           width: '40%',
           justifyContent: 'center',
           alignItems: 'center',
-          flex: flex / 2,
+          flex: 1 / 2,
         }}
         onPress={() => {
           doAction(positiveAction, 1);
@@ -228,7 +226,6 @@ const ReefscapeAutoModal = ({
           onPress={() => setIsActive(false)}>
           <Text style={{color: colors.text}}>Close</Text>
         </Pressable>
-        {/*<View style={{display: 'flex', flexDirection: 'row'}}>*/}
         <Text
           style={{
             color: colors.text,
@@ -329,7 +326,6 @@ const ReefscapeAutoModal = ({
               Undo
             </Text>
           </Pressable>
-          {/*</View>*/}
           {levelChooserActive ? (
             <ReefscapeLevels
               onSubmit={(level: ReefscapeActionType) => {
@@ -420,7 +416,6 @@ const ReefscapeAutoModal = ({
                   negativeAction={ReefscapeActionType.MissProcessor}
                   goodLabel={'Scored Processor'}
                   badLabel={'Missed Processor'}
-                  flex={1}
                   setHistory={setHistory}
                   setAutoPath={setAutoPath}
                   setArrayData={setArrayData}
