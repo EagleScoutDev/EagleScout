@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {CrescendoField} from './CrescendoField';
-import {AutoPath} from './AutoPath';
+import {CrescendoAutoPath} from './CrescendoAutoPath';
 import {
   CrescendoActionIcon,
   CrescendoActions,
@@ -36,7 +36,7 @@ const ActionButton = ({
   negativeAction: CrescendoActionType;
   flex: number;
   setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
-  setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
+  setAutoPath: React.Dispatch<React.SetStateAction<CrescendoAutoPath>>;
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   linkItemMap: LinkItemMap;
 }) => {
@@ -159,8 +159,8 @@ const CrescendoAutoModal = ({
   setFieldOrientation: React.Dispatch<React.SetStateAction<string>>;
   selectedAlliance: string;
   setSelectedAlliance: React.Dispatch<React.SetStateAction<string>>;
-  autoPath: AutoPath;
-  setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
+  autoPath: CrescendoAutoPath;
+  setAutoPath: React.Dispatch<React.SetStateAction<CrescendoAutoPath>>;
   arrayData: any[];
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   form: any;

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import {Circle, Line, Path, Rect, Svg} from 'react-native-svg';
-import {AutoPath} from './AutoPath';
+import {ReefscapeAutoPath} from './ReefscapeAutoPath';
 import {ReefscapeActionType} from './ReefscapeActions';
 
 const nodePositions = [
@@ -131,7 +131,7 @@ const FilledNode = ({
   </>
 );
 
-export const ReefscapeViewer = ({autoPath}: {autoPath: AutoPath}) => {
+export const ReefscapeViewer = ({autoPath}: {autoPath: ReefscapeAutoPath}) => {
   if (!autoPath || autoPath.length === 0) {
     return (
       <View

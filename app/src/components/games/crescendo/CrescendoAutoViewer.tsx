@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {Svg, Line, Path, Circle} from 'react-native-svg';
-import {AutoPath} from './AutoPath';
+import {CrescendoAutoPath} from './CrescendoAutoPath';
 import {CrescendoActionType} from './CrescendoActions';
 
 const notePositions = [
@@ -118,7 +118,7 @@ const FilledNote = ({
   </>
 );
 
-export const CrescendoAutoViewer = ({autoPath}: {autoPath: AutoPath}) => {
+export const CrescendoAutoViewer = ({autoPath}: {autoPath: CrescendoAutoPath}) => {
   if (!autoPath || autoPath.length === 0) {
     return (
       <View

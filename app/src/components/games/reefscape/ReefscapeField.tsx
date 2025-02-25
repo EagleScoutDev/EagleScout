@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import {AutoPath} from './AutoPath';
+import {ReefscapeAutoPath} from './ReefscapeAutoPath';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Animated, {
   interpolate,
@@ -29,7 +29,7 @@ export const ReefscapeField = ({
   onPieceIntake: (piece: number) => void;
   onPieceMissed: (piece: number) => void;
   onPieceReset: (piece: number) => void;
-  autoPath: AutoPath;
+  autoPath: ReefscapeAutoPath;
 }) => {
   const Piece = ({pieceID, type}: {pieceID: number; type: string}) => {
     const autoPiece = useMemo(

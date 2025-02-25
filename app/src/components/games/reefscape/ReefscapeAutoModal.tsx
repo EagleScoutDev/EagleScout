@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {ReefscapeField} from './ReefscapeField';
-import {AutoPath} from './AutoPath';
+import {ReefscapeAutoPath} from './ReefscapeAutoPath';
 import {
   ReefscapeActionIcon,
   ReefscapeActions,
@@ -39,7 +39,7 @@ const ActionButton = ({
   goodLabel: string;
   badLabel: string;
   setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
-  setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
+  setAutoPath: React.Dispatch<React.SetStateAction<ReefscapeAutoPath>>;
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   linkItemMap: LinkItemMap;
 }) => {
@@ -180,8 +180,8 @@ const ReefscapeAutoModal = ({
   setFieldOrientation: React.Dispatch<React.SetStateAction<string>>;
   selectedAlliance: string;
   setSelectedAlliance: React.Dispatch<React.SetStateAction<string>>;
-  autoPath: AutoPath;
-  setAutoPath: React.Dispatch<React.SetStateAction<AutoPath>>;
+  autoPath: ReefscapeAutoPath;
+  setAutoPath: React.Dispatch<React.SetStateAction<ReefscapeAutoPath>>;
   arrayData: any[];
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   form: any;

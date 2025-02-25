@@ -9,4 +9,4 @@ export interface AutoNode {
   state?: 'success' | 'missed';
 }
 
-export type AutoPath = AutoNode[];
+export type ReefscapeAutoPath = AutoNode[];
