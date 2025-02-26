@@ -5,12 +5,10 @@ import React, {
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
-import NewQuestionSeparator from '../NewQuestionSeparator';
 import RadioOptionsSeparator from './RadioOptionsSeparator';
 import {useTheme} from '@react-navigation/native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -108,6 +106,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
                   style={{
                     fontSize: 20,
                     textAlign: 'center',
+                    color: colors.text,
                     fontWeight: defaultIndex === index ? 'bold' : 'normal',
                   }}>
                   {option}
@@ -160,7 +159,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
             setOptionText('');
             setAddOptionModalVisible(false);
           }}
-          color={colors.card}
+          color={colors.notification}
         />
       </StandardModal>
       <StandardModal
@@ -179,7 +178,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
             }
             setManageOptionModalVisible(false);
           }}
-          color={'blue'}
+          color={colors.primary}
         />
         <StandardButton
           text={'Delete'}
@@ -193,7 +192,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
             ]);
             setManageOptionModalVisible(false);
           }}
-          color={'red'}
+          color={colors.notification}
         />
         <StandardButton
           text={'Cancel'}
@@ -238,7 +237,7 @@ const Radio = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(false);
         }}
-        color={colors.card}
+        color={colors.notification}
       />
     </StandardModal>
   );

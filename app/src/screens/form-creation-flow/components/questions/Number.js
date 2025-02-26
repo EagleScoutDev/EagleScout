@@ -1,18 +1,11 @@
 import StandardModal from '../../../../components/modals/StandardModal';
-import React, {
-  Alert,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import {useEffect, useState} from 'react';
+import React, {Alert, Text, TextInput, View} from 'react-native';
+import {useEffect, useMemo, useState} from 'react';
 import StandardButton from '../../../../components/StandardButton';
-import RadioOptionsSeparator from './RadioOptionsSeparator';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useTheme} from '@react-navigation/native';
+import {ReefscapeActions} from '../../../../components/games/reefscape/ReefscapeActions';
+import SelectMenu from '../../../../components/form/SelectMenu';
 
 function Spacer() {
   return <View style={{height: '2%'}} />;
@@ -24,7 +17,15 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
   const [low, setLow] = useState('');
   const [high, setHigh] = useState('');
   const [step, setStep] = useState('1');
+  const [linkTo, setLinkTo] = useState('');
   const {colors} = useTheme();
+
+  const linkOptions = useMemo(() => {
+    return Object.values(ReefscapeActions).map(action => ({
+      key: action.link_name,
+      value: action.name,
+    }));
+  }, [ReefscapeActions]);
 
   useEffect(() => {
     if (value && value.type === 'number') {
@@ -33,6 +34,7 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
       setLow(value.low == null ? '' : value.low.toString());
       setHigh(value.high == null ? '' : value.high.toString());
       setStep(value.step.toString());
+      setLinkTo(value.link_to || '');
     }
   }, [value]);
 
@@ -87,6 +89,7 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
       low: lowParsed,
       high: highParsed,
       step: stepParsed,
+      link_to: linkTo,
     });
     return true;
   };
@@ -162,6 +165,17 @@ const Number = ({visible, setVisible, styles, onSubmit, value}) => {
           onChangeText={setStep}
           value={step}
           keyboardType="numeric"
+        />
+      </View>
+      <View style={styles.rowContainer}>
+        <Text style={styles.rowLabel}>Link to</Text>
+        <SelectMenu
+          setSelected={setLinkTo}
+          data={linkOptions}
+          searchEnabled={false}
+          searchPlaceholder={'Search for a link to...'}
+          placeholder={'Select a link to...'}
+          maxHeight={100}
         />
       </View>
       <StandardButton

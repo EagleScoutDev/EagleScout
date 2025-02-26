@@ -74,7 +74,7 @@ const Heading = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(false);
         }}
-        color={colors.card}
+        color={colors.notification}
       />
     </StandardModal>
   );

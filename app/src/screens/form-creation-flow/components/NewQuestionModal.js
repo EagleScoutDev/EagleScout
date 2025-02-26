@@ -1,6 +1,6 @@
 import StandardModal from '../../../components/modals/StandardModal';
 import StandardButton from '../../../components/StandardButton';
-import {Text, StyleSheet, ScrollView} from 'react-native';
+import {ScrollView, Text} from 'react-native';
 import Heading from './questions/Heading';
 import React, {useState} from 'react';
 import {useTheme} from '@react-navigation/native';
@@ -37,13 +37,14 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
             color: colors.text,
             fontSize: 20,
             fontWeight: 'bold',
+            paddingBottom: 20,
           }}>
           What type of question do you want to add?
         </Text>
         <ScrollView
           style={{
             width: '100%',
-            height: '70%',
+            paddingBottom: 10,
           }}>
           <StandardButton
             text={'Heading'}
@@ -101,7 +102,7 @@ const NewQuestionModal = ({visible, setVisible, onSubmit, styles}) => {
           onPress={() => {
             setVisible(false);
           }}
-          color={colors.background}
+          color={colors.notification}
         />
       </StandardModal>
       <Heading

@@ -1,5 +1,5 @@
 import StandardModal from '../../../components/modals/StandardModal';
-import React, { TextInput, Text, StyleSheet, Alert, View } from "react-native";
+import React, {Alert, StyleSheet, Text, TextInput, View} from 'react-native';
 import StandardButton from '../../../components/StandardButton';
 import {useState} from 'react';
 import {useTheme} from '@react-navigation/native';
@@ -56,14 +56,14 @@ const FormNameModal = ({visible, setVisible, onSubmit}) => {
           setVisible(false);
           onSubmit(name);
         }}
-        color={'blue'}
+        color={colors.primary}
       />
       <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
         }}
-        color={'gray'}
+        color={colors.notification}
       />
     </StandardModal>
   );
