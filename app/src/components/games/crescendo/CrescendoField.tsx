@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {Pressable, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import {AutoPath} from './AutoPath';
+import {CrescendoAutoPath} from './CrescendoAutoPath';
 
 export const CrescendoField = ({
   fieldOrientation,
@@ -16,7 +16,7 @@ export const CrescendoField = ({
   onNoteIntake: (note: number) => void;
   onNoteMissed: (note: number) => void;
   onNoteReset: (note: number) => void;
-  autoPath: AutoPath;
+  autoPath: CrescendoAutoPath;
 }) => {
   const Note = ({noteId}) => {
     const autoNote = useMemo(

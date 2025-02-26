@@ -3,17 +3,18 @@ import React, {useMemo, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {CrescendoField} from './CrescendoField';
-import {CrescendoAutoPath} from './CrescendoAutoPath';
+import {ReefscapeField} from './ReefscapeField';
+import {ReefscapeAutoPath} from './ReefscapeAutoPath';
 import {
-  CrescendoActionIcon,
-  CrescendoActions,
-  CrescendoActionType,
-} from './CrescendoActions';
+  ReefscapeActionIcon,
+  ReefscapeActions,
+  ReefscapeActionType,
+} from './ReefscapeActions';
+import {ReefscapeLevels} from './ReefscapeLevels';
 
 interface HistoryAction {
   action: string;
-  noteId: number;
+  pieceID: number;
 }
 
 interface LinkItemMap {
@@ -26,31 +27,33 @@ interface LinkItemMap {
 const ActionButton = ({
   positiveAction,
   negativeAction,
-  flex,
+  goodLabel,
+  badLabel,
   setHistory,
   setAutoPath,
   setArrayData,
   linkItemMap,
 }: {
-  positiveAction: CrescendoActionType;
-  negativeAction: CrescendoActionType;
-  flex: number;
+  positiveAction: ReefscapeActionType;
+  negativeAction: ReefscapeActionType;
+  goodLabel: string;
+  badLabel: string;
   setHistory: React.Dispatch<React.SetStateAction<HistoryAction[]>>;
-  setAutoPath: React.Dispatch<React.SetStateAction<CrescendoAutoPath>>;
+  setAutoPath: React.Dispatch<React.SetStateAction<ReefscapeAutoPath>>;
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   linkItemMap: LinkItemMap;
 }) => {
   const {colors} = useTheme();
-  const doAction = (action: CrescendoActionType, change: number) => {
+  const doAction = (action: ReefscapeActionType, change: number) => {
     setHistory(history => [
       ...history,
       {
-        action: CrescendoActions[action].link_name,
-        noteId: positiveAction,
+        action: ReefscapeActions[action].link_name,
+        pieceID: positiveAction,
       },
     ]);
     setArrayData(prevArrayData => {
-      const linkItem = linkItemMap[CrescendoActions[action].link_name];
+      const linkItem = linkItemMap[ReefscapeActions[action].link_name];
       if (linkItem) {
         const {index} = linkItem;
         const newArrayData = [...prevArrayData];
@@ -82,12 +85,12 @@ const ActionButton = ({
           width: '40%',
           justifyContent: 'center',
           alignItems: 'center',
-          flex: flex / 2,
+          flex: 1 / 2,
         }}
         onPress={() => {
           doAction(negativeAction, 1);
         }}>
-        <CrescendoActionIcon action={negativeAction} />
+        <ReefscapeActionIcon action={negativeAction} />
         <View
           style={{
             flexDirection: 'column',
@@ -99,8 +102,17 @@ const ActionButton = ({
               paddingTop: '5%',
               fontWeight: 'bold',
             }}>
-            Missed:{' '}
-            {linkItemMap[CrescendoActions[negativeAction].link_name]?.value ??
+            {badLabel}
+          </Text>
+          <Text
+            style={{
+              color: colors.text,
+              paddingTop: '5%',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              fontSize: 38,
+            }}>
+            {linkItemMap[ReefscapeActions[negativeAction].link_name]?.value ??
               0}
           </Text>
         </View>
@@ -115,12 +127,12 @@ const ActionButton = ({
           width: '40%',
           justifyContent: 'center',
           alignItems: 'center',
-          flex: flex / 2,
+          flex: 1 / 2,
         }}
         onPress={() => {
           doAction(positiveAction, 1);
         }}>
-        <CrescendoActionIcon action={positiveAction} />
+        <ReefscapeActionIcon action={positiveAction} />
         <View
           style={{
             flexDirection: 'column',
@@ -132,8 +144,17 @@ const ActionButton = ({
               paddingTop: '5%',
               fontWeight: 'bold',
             }}>
-            In:{' '}
-            {linkItemMap[CrescendoActions[positiveAction].link_name]?.value ??
+            {goodLabel}
+          </Text>
+          <Text
+            style={{
+              color: colors.text,
+              paddingTop: '5%',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              fontSize: 38,
+            }}>
+            {linkItemMap[ReefscapeActions[positiveAction].link_name]?.value ??
               0}
           </Text>
         </View>
@@ -142,7 +163,7 @@ const ActionButton = ({
   );
 };
 
-const CrescendoAutoModal = ({
+const ReefscapeAutoModal = ({
   isActive,
   setIsActive,
   fieldOrientation,
@@ -159,8 +180,8 @@ const CrescendoAutoModal = ({
   setFieldOrientation: React.Dispatch<React.SetStateAction<string>>;
   selectedAlliance: string;
   setSelectedAlliance: React.Dispatch<React.SetStateAction<string>>;
-  autoPath: CrescendoAutoPath;
-  setAutoPath: React.Dispatch<React.SetStateAction<CrescendoAutoPath>>;
+  autoPath: ReefscapeAutoPath;
+  setAutoPath: React.Dispatch<React.SetStateAction<ReefscapeAutoPath>>;
   arrayData: any[];
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   form: any;
@@ -168,6 +189,8 @@ const CrescendoAutoModal = ({
   const {colors} = useTheme();
 
   const [history, setHistory] = useState<HistoryAction[]>([]);
+  const [levelChooserActive, setLevelChooserActive] = useState(false);
+  const [chosenReefPosition, setChosenReefPosition] = useState<number>(-1);
 
   // for each linked item, map the link name to the item within the arrayData and the index
   const linkItemMap = useMemo<LinkItemMap>(
@@ -185,7 +208,6 @@ const CrescendoAutoModal = ({
       }, {}),
     [form, arrayData],
   );
-
   return (
     <Modal
       visible={isActive}
@@ -207,7 +229,7 @@ const CrescendoAutoModal = ({
         <Text
           style={{
             color: colors.text,
-            fontSize: 40,
+            fontSize: 30,
             fontWeight: 'bold',
           }}>
           AUTO
@@ -237,17 +259,19 @@ const CrescendoAutoModal = ({
             }}
             onPress={() => {
               const lastAction = history.pop();
+              ReactNativeHapticFeedback.trigger('impactLight');
               if (lastAction) {
                 switch (lastAction.action) {
+                  case 'score':
                   case 'intake':
                     setAutoPath(paths =>
-                      paths.filter(path => path.noteId !== lastAction.noteId),
+                      paths.filter(path => path.nodeId !== lastAction.pieceID),
                     );
                     break;
                   case 'miss':
                     setAutoPath(paths =>
                       paths.map(path =>
-                        path.noteId === lastAction.noteId
+                        path.nodeId === lastAction.pieceID
                           ? {...path, state: 'success'}
                           : path,
                       ),
@@ -257,18 +281,26 @@ const CrescendoAutoModal = ({
                     setAutoPath(paths => [
                       ...paths,
                       {
-                        type: CrescendoActionType.PickupGround,
-                        noteId: lastAction.noteId,
+                        type: ReefscapeActionType.PickupGround,
+                        nodeId: lastAction.pieceID,
                         order: paths.length,
                         state: 'success',
                       },
                     ]);
                     break;
-                  case CrescendoActions[CrescendoActionType.ScoreAmp].link_name:
-                  case CrescendoActions[CrescendoActionType.ScoreSpeaker]
+                  case ReefscapeActions[ReefscapeActionType.ScoreProcessor]
                     .link_name:
-                  case CrescendoActions[CrescendoActionType.MissAmp].link_name:
-                  case CrescendoActions[CrescendoActionType.MissSpeaker]
+                  case ReefscapeActions[ReefscapeActionType.MissProcessor]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.MissCoral]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL1]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL2]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL3]
+                    .link_name:
+                  case ReefscapeActions[ReefscapeActionType.ScoreCoralL4]
                     .link_name:
                     setArrayData(prevArrayData => {
                       const {index} = linkItemMap[lastAction.action];
@@ -294,74 +326,108 @@ const CrescendoAutoModal = ({
               Undo
             </Text>
           </Pressable>
-          <CrescendoField
-            fieldOrientation={fieldOrientation}
-            selectedAlliance={selectedAlliance}
-            onNoteIntake={(note: number) => {
-              setAutoPath(paths => [
-                ...paths,
-                {
-                  type: CrescendoActionType.PickupGround,
-                  noteId: note,
-                  order: paths.at(-1) ? paths.at(-1)!.order + 1 : 0,
-                  state: 'success',
-                },
-              ]);
-              setHistory(history => [
-                ...history,
-                {action: 'intake', noteId: note},
-              ]);
-            }}
-            onNoteMissed={(note: number) => {
-              setAutoPath(paths =>
-                paths.map(path =>
-                  path.noteId === note ? {...path, state: 'missed'} : path,
-                ),
-              );
-              setHistory(history => [
-                ...history,
-                {action: 'miss', noteId: note},
-              ]);
-            }}
-            onNoteReset={(note: number) => {
-              setAutoPath(paths => paths.filter(path => path.noteId !== note));
-              setHistory(history => [
-                ...history,
-                {action: 'reset', noteId: note},
-              ]);
-            }}
-            autoPath={autoPath}
-          />
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 10,
-            }}>
-            {/*<ActionButton*/}
-            {/*  positiveAction={CrescendoActionType.ScoreAmp}*/}
-            {/*  negativeAction={CrescendoActionType.MissAmp}*/}
-            {/*  color="#86DF89"*/}
-            {/*  flex={0.25}*/}
-            {/*  setHistory={setHistory}*/}
-            {/*  setAutoPath={setAutoPath}*/}
-            {/*  setArrayData={setArrayData}*/}
-            {/*  linkItemMap={linkItemMap}*/}
-            {/*/>*/}
-            <ActionButton
-              positiveAction={CrescendoActionType.ScoreSpeaker}
-              negativeAction={CrescendoActionType.MissSpeaker}
-              flex={1}
-              setHistory={setHistory}
-              setAutoPath={setAutoPath}
-              setArrayData={setArrayData}
-              linkItemMap={linkItemMap}
+          {levelChooserActive ? (
+            <ReefscapeLevels
+              onSubmit={(level: ReefscapeActionType) => {
+                setAutoPath(paths => [
+                  ...paths,
+                  {
+                    type: level,
+                    nodeId: chosenReefPosition,
+                    order: paths.at(-1) ? paths.at(-1)!.order + 1 : 0,
+                    state: 'success',
+                  },
+                ]);
+                setHistory(history => [
+                  ...history,
+                  {
+                    action: ReefscapeActions[level].link_name,
+                    pieceID: chosenReefPosition,
+                  },
+                ]);
+                setArrayData(prevArrayData => {
+                  const linkItem =
+                    linkItemMap[ReefscapeActions[level].link_name];
+                  if (linkItem) {
+                    const {index} = linkItem;
+                    const newArrayData = [...prevArrayData];
+                    newArrayData[index] = prevArrayData[index] + 1;
+                    return newArrayData;
+                  } else {
+                    return prevArrayData;
+                  }
+                });
+                setLevelChooserActive(false);
+              }}
             />
-          </View>
+          ) : (
+            <>
+              <ReefscapeField
+                fieldOrientation={fieldOrientation}
+                selectedAlliance={selectedAlliance}
+                setLevelChooserActive={setLevelChooserActive}
+                setChosenReefPosition={setChosenReefPosition}
+                onPieceIntake={(piece: number) => {
+                  setAutoPath(paths => [
+                    ...paths,
+                    {
+                      type: ReefscapeActionType.PickupGround,
+                      nodeId: piece,
+                      order: paths.at(-1) ? paths.at(-1)!.order + 1 : 0,
+                      state: 'success',
+                    },
+                  ]);
+                  setHistory(history => [
+                    ...history,
+                    {action: 'intake', pieceID: piece},
+                  ]);
+                }}
+                onPieceMissed={(piece: number) => {
+                  setAutoPath(paths =>
+                    paths.map(path =>
+                      path.nodeId === piece ? {...path, state: 'missed'} : path,
+                    ),
+                  );
+                  // eslint-disable-next-line @typescript-eslint/no-shadow
+                  setHistory(history => [
+                    ...history,
+                    {action: 'miss', pieceID: piece},
+                  ]);
+                }}
+                onPieceReset={(piece: number) => {
+                  setAutoPath(paths =>
+                    paths.filter(path => path.nodeId !== piece),
+                  );
+                  setHistory(history => [
+                    ...history,
+                    {action: 'reset', pieceID: piece},
+                  ]);
+                }}
+                autoPath={autoPath}
+              />
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 10,
+                }}>
+                <ActionButton
+                  positiveAction={ReefscapeActionType.ScoreProcessor}
+                  negativeAction={ReefscapeActionType.MissProcessor}
+                  goodLabel={'Scored Processor'}
+                  badLabel={'Missed Processor'}
+                  setHistory={setHistory}
+                  setAutoPath={setAutoPath}
+                  setArrayData={setArrayData}
+                  linkItemMap={linkItemMap}
+                />
+              </View>
+            </>
+          )}
         </View>
       </View>
     </Modal>
   );
 };
 
-export default CrescendoAutoModal;
+export default ReefscapeAutoModal;
