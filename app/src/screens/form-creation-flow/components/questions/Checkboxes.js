@@ -145,7 +145,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
             setOptionText('');
             setAddOptionModalVisible(false);
           }}
-          color={colors.card}
+          color={colors.notification}
         />
       </StandardModal>
       <Spacer />
@@ -161,7 +161,7 @@ const Checkboxes = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(false);
         }}
-        color={colors.card}
+        color={colors.notification}
       />
     </StandardModal>
   );

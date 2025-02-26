@@ -64,7 +64,7 @@ const FormOptionsModal = ({
         onPress={() => {
           setVisible(false);
         }}
-        color={colors.card}
+        color={'gray'}
       />
     </StandardModal>
   );

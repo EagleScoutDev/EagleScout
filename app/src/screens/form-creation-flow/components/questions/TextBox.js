@@ -78,14 +78,14 @@ const TextBox = ({visible, setVisible, styles, onSubmit, value}) => {
         onPress={() => {
           setVisible(!submit());
         }}
-        color={'blue'}
+        color={colors.primary}
       />
       <StandardButton
         text={'Cancel'}
         onPress={() => {
           setVisible(false);
         }}
-        color={'gray'}
+        color={colors.notification}
       />
     </StandardModal>
   );
