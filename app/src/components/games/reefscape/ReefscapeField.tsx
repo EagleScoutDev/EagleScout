@@ -3,12 +3,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import {ReefscapeAutoPath} from './ReefscapeAutoPath';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import Animated, {
-  interpolate,
-  SensorType,
-  useAnimatedSensor,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 // import {AnimatedView} from 'react-native-reanimated/lib/typescript/component/View';
 
@@ -160,39 +155,39 @@ export const ReefscapeField = ({
       ? -90
       : 90;
 
-  const sensor = useAnimatedSensor(SensorType.ROTATION, {
-    interval: 114, // Update every 114ms
-  });
-  const animatedStyle = useAnimatedStyle(() => {
-    const {qw, qx, qy, qz} = sensor.sensor.value;
-
-    // Convert quaternion to Euler angles (roll, pitch, yaw)
-    const yaw = Math.atan2(
-      2 * (qw * qz + qx * qy),
-      1 - 2 * (qy * qy + qz * qz),
-    );
-
-    let yawDeg = (yaw * 180) / Math.PI + offset;
-    // Find the nearest multiple of 90 degrees
-    const snappedYaw = Math.round(yawDeg / 90) * 90;
-    // Only snap if within 10 degrees of the target
-    if (Math.abs(yawDeg - snappedYaw) <= 11) {
-      // yawDeg = withTiming(snappedYaw, {duration: 300});
-      yawDeg = snappedYaw;
-    }
-    return {
-      transform: [
-        {rotate: `${yawDeg}deg`},
-        {
-          scale: interpolate(
-            Math.abs(yawDeg),
-            [0, 90, 180, 270, 360],
-            [1, 0.8, 1, 0.8, 1],
-          ),
-        }, // Scale dynamically
-      ],
-    };
-  });
+  // const sensor = useAnimatedSensor(SensorType.ROTATION, {
+  //   interval: 114, // Update every 114ms
+  // });
+  // const animatedStyle = useAnimatedStyle(() => {
+  //   const {qw, qx, qy, qz} = sensor.sensor.value;
+  //
+  //   // Convert quaternion to Euler angles (roll, pitch, yaw)
+  //   const yaw = Math.atan2(
+  //     2 * (qw * qz + qx * qy),
+  //     1 - 2 * (qy * qy + qz * qz),
+  //   );
+  //
+  //   let yawDeg = (yaw * 180) / Math.PI + offset;
+  //   // Find the nearest multiple of 90 degrees
+  //   const snappedYaw = Math.round(yawDeg / 90) * 90;
+  //   // Only snap if within 10 degrees of the target
+  //   if (Math.abs(yawDeg - snappedYaw) <= 11) {
+  //     // yawDeg = withTiming(snappedYaw, {duration: 300});
+  //     yawDeg = snappedYaw;
+  //   }
+  //   return {
+  //     transform: [
+  //       {rotate: `${yawDeg}deg`},
+  //       {
+  //         scale: interpolate(
+  //           Math.abs(yawDeg),
+  //           [0, 90, 180, 270, 360],
+  //           [1, 0.8, 1, 0.8, 1],
+  //         ),
+  //       }, // Scale dynamically
+  //     ],
+  //   };
+  // });
   return (
     <View
       style={{
@@ -207,7 +202,16 @@ export const ReefscapeField = ({
       <Animated.View
         style={[
           StyleSheet.absoluteFillObject,
-          animatedStyle,
+          {
+            transform: [
+              {
+                rotate: `${offset}deg`,
+              },
+              {
+                scale: 0.8,
+              },
+            ],
+          },
           {
             aspectRatio: 1,
             flexDirection: 'column',
