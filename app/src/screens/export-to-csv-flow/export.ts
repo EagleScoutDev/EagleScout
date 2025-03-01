@@ -99,7 +99,11 @@ export const exportPitReportsToCsv = async (comp: CompetitionReturnData) => {
       } else if (q.type === 'textbox') {
         row.push(`"${report.data[i]}"`);
       } else if (q.type === 'checkboxes') {
-        row.push('"' + report.data[i].join(',') + '"');
+        if (report.data[i]) {
+          row.push('"' + report.data[i].join(',') + '"');
+        } else {
+          row.push('""');
+        }
       }
     });
     row.push(report.imageUrls!.join(','));
