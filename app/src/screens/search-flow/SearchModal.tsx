@@ -9,6 +9,8 @@ import {Dropdown} from 'react-native-element-dropdown';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import {getLighterColor} from '../../lib/ColorReadability';
 import {isTablet} from '../../lib/deviceType';
+import MatchOverviewSelector from './MatchOverviewSelector';
+import MatchOverview from './MatchOverview';
 
 enum FilterState {
   TEAM,
@@ -265,52 +267,55 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
           }}
         />
         {filterState === FilterState.TEAM && (
-          <FlatList
-            data={teams.filter(team => {
-              return (
-                team.team_number.toString().includes(searchTerm) ||
-                team.nickname.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-            })}
-            renderItem={({item}) => {
-              return (
-                <Pressable
-                  onPress={() => {
-                    navigation.navigate('TeamViewer', {
-                      team: item,
-                      competitionId: competitionId,
-                    });
-                  }}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    padding: '4%',
-                    borderBottomWidth: 1,
-                    borderBottomColor: colors.border,
-                  }}>
-                  <Text style={{color: colors.text, flex: 1, fontSize: 16}}>
-                    {item.team_number}
-                  </Text>
-                  <Text style={{color: colors.text, flex: 5, fontSize: 16}}>
-                    {item.nickname}
-                  </Text>
-                  <Svg
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
+          <View style={{flexDirection: "column"}}>
+            <MatchOverviewSelector />
+            <FlatList
+              data={teams.filter(team => {
+                return (
+                  team.team_number.toString().includes(searchTerm) ||
+                  team.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+              })}
+              renderItem={({item}) => {
+                return (
+                  <Pressable
+                    onPress={() => {
+                      navigation.navigate('TeamViewer', {
+                        team: item,
+                        competitionId: competitionId,
+                      });
+                    }}
                     style={{
-                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      padding: '4%',
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.border,
                     }}>
-                    <Path
-                      fill="gray"
-                      d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                    />
-                  </Svg>
-                </Pressable>
-              );
-            }}
-          />
+                    <Text style={{color: colors.text, flex: 1, fontSize: 16}}>
+                      {item.team_number}
+                    </Text>
+                    <Text style={{color: colors.text, flex: 5, fontSize: 16}}>
+                      {item.nickname}
+                    </Text>
+                    <Svg
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                      style={{
+                        flex: 1,
+                      }}>
+                      <Path
+                        fill="gray"
+                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                      />
+                    </Svg>
+                  </Pressable>
+                );
+              }}
+            />
+          </View>
         )}
         {filterState === FilterState.MATCH && (
           <FlatList
