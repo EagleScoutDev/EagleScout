@@ -2,8 +2,10 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {SimpleTeam, TBA} from '../../lib/TBAUtils';
 import {Pressable, View, TextInput, Text} from 'react-native';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
+import getCompetitionTeams from '../../database/Competitions';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
 import {useNavigation, useTheme} from '@react-navigation/native';
+import TBATeams, {TBATeam} from '../../../database/TBATeams';
 
 interface OverviewProps {
   route: {
@@ -19,7 +21,8 @@ const MatchOverview = ({route}: OverviewProps) => {
   const navigation = useNavigation();
   const {matchNumber, alliance} = route.params;
   const {competitionId, matches} = useCurrentCompetitionMatches();
-  const teams = useMemo(
+
+  const matchTeams = useMemo(
     () =>
       matches
         .filter(match => match.compLevel === 'qm')
@@ -31,20 +34,22 @@ const MatchOverview = ({route}: OverviewProps) => {
         .map(match => Number(match)),
     [matches],
   );
+  const simpleTeams = matchTeams.map(TBA.getTeam);
+  console.log(matchTeams);
   return (
     <View>
       <View style={{flexDirection: 'row'}}>
-        {teams.map(team => (
+        {simpleTeams.map(team => (
           <Pressable
-            key={team}
+            key={team.key}
             onPress={() => {
               navigation.navigate('TeamViewer', {
-                team: team,
+                team: {team},
                 competitionId: competitionId,
               });
             }}>
             <View style={{}}>
-              <Text>{team}</Text>
+              <Text>{team.team_number}</Text>
             </View>
           </Pressable>
         ))}

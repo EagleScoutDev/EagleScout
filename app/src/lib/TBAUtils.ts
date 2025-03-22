@@ -54,6 +54,16 @@ export class TBA {
     // TODO
   }
 
+  static async getTeam(team: number): Promise<SimpleTeam> {
+    const {data, error} = await supabase.functions.invoke('tba-api', {
+      body: {endpoint: `/team/${team}/simple`},
+    });
+    if (error) {
+      throw error;
+    }
+    return data;
+  }
+
   static async getEventsForYear(year: number): Promise<SimpleEvent[]> {
     const {data, error} = await supabase.functions.invoke('tba-api', {
       body: {endpoint: `/events/${year}/simple`},

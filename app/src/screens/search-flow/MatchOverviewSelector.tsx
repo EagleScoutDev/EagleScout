@@ -26,13 +26,16 @@ const MatchOverviewSelector = () => {
       // margin: 10,
       // marginHorizontal: 30,
       color: colors.text,
+        paddingLeft:'3%',
     },
     titleText: {
       textAlign: 'left',
-      padding: '5%',
-      fontSize: 30,
+      paddingTop: '5%',
+      paddingBottom: '1%',
+      paddingLeft: '2%',
+      fontSize: 20,
       fontWeight: 'bold',
-      color: 'colors.text',
+      color: colors.text,
       // marginVertical: 20,
     },
     button: {
@@ -40,7 +43,10 @@ const MatchOverviewSelector = () => {
       fontSize: 20,
       fontWeight: 'bold',
       fontColor: colors.text,
-      color: colors.primary,
+      backgroundColor: colors.primary,
+      marginX: '3%',
+      marginBottom: '2%',
+      borderRadius: 10,
     },
   });
 
@@ -56,7 +62,7 @@ const MatchOverviewSelector = () => {
   }, [matchNumber]);
 
   return (
-    <View style={{backgroundColor: colors.card}}>
+    <View style={{backgroundColor: colors.card, padding: '3%'}}>
       <Text style={styles.titleText}>Match #: </Text>
       <TextInput
         style={styles.input}
@@ -64,6 +70,29 @@ const MatchOverviewSelector = () => {
         value={matchNumber}
         onChangeText={text => setMatchNumber(text)}
       />
+      {Number.parseInt(matchNumber, 10) === 0 && (
+        <Text
+          style={{
+            color: colors.notification,
+            textAlign: 'center',
+            paddingTop: '2%',
+          }}>
+          Match number cannot be 0!
+        </Text>
+      )}
+      {Number(matchNumber) > 400 ? (
+        <Text
+          style={{
+            color: colors.notification,
+            textAlign: 'center',
+            paddingTop: '2%',
+          }}>
+          Please Enter Valid Match!
+        </Text>
+      ) : (
+        <View />
+      )}
+
       <Text style={styles.titleText}>Side: </Text>
       <OrientationChooser
         selectedOrientation={fieldOrientation}
@@ -78,8 +107,17 @@ const MatchOverviewSelector = () => {
             alliance: selectedAlliance,
           });
         }}>
-        <View>
-          <Text style={styles.titleText}>Generate Alliance Overview</Text>
+        <View style={styles.button}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              padding: '2%',
+              textAlign: 'center',
+              color: colors.text,
+            }}>
+            Generate Alliance Overview
+          </Text>
         </View>
       </Pressable>
     </View>

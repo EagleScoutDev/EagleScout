@@ -267,129 +267,129 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
           }}
         />
         {filterState === FilterState.TEAM && (
-          <View style={{flexDirection: "column"}}>
+          <FlatList
+            data={teams.filter(team => {
+              return (
+                team.team_number.toString().includes(searchTerm) ||
+                team.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+            })}
+            renderItem={({item}) => {
+              return (
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate('TeamViewer', {
+                      team: item,
+                      competitionId: competitionId,
+                    });
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: '4%',
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.border,
+                  }}>
+                  <Text style={{color: colors.text, flex: 1, fontSize: 16}}>
+                    {item.team_number}
+                  </Text>
+                  <Text style={{color: colors.text, flex: 5, fontSize: 16}}>
+                    {item.nickname}
+                  </Text>
+                  <Svg
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                    style={{
+                      flex: 1,
+                    }}>
+                    <Path
+                      fill="gray"
+                      d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                    />
+                  </Svg>
+                </Pressable>
+              );
+            }}
+          />
+        )}
+        {filterState === FilterState.MATCH && (
+          <View style={{flexDirection: 'column'}}>
             <MatchOverviewSelector />
             <FlatList
-              data={teams.filter(team => {
-                return (
-                  team.team_number.toString().includes(searchTerm) ||
-                  team.nickname.toLowerCase().includes(searchTerm.toLowerCase())
-                );
+              data={Array.from(reportsByMatch.keys()).filter(match => {
+                return match.toString().includes(searchTerm);
               })}
               renderItem={({item}) => {
                 return (
-                  <Pressable
-                    onPress={() => {
-                      navigation.navigate('TeamViewer', {
-                        team: item,
-                        competitionId: competitionId,
-                      });
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      padding: '4%',
-                      borderBottomWidth: 1,
-                      borderBottomColor: colors.border,
-                    }}>
-                    <Text style={{color: colors.text, flex: 1, fontSize: 16}}>
-                      {item.team_number}
-                    </Text>
-                    <Text style={{color: colors.text, flex: 5, fontSize: 16}}>
-                      {item.nickname}
-                    </Text>
-                    <Svg
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
+                  <View>
+                    <View
                       style={{
-                        flex: 1,
+                        minWidth: '100%',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginVertical: '3%',
                       }}>
-                      <Path
-                        fill="gray"
-                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                      <Text
+                        style={{
+                          color: colors.text,
+                          opacity: 0.6,
+                          marginHorizontal: '4%',
+                          fontWeight: 'bold',
+                          fontSize: 18,
+                        }}>
+                        {item}
+                      </Text>
+                      <View
+                        style={{
+                          height: 2,
+                          width: '100%',
+                          backgroundColor: colors.border,
+                        }}
                       />
-                    </Svg>
-                  </Pressable>
+                    </View>
+                    <View
+                      style={{
+                        // make it like a 3x2 grid
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                      }}>
+                      {reportsByMatch.get(item)?.map((report, index) => {
+                        return (
+                          <Pressable
+                            onPress={() => {
+                              setCurrentReport(report);
+                              setScoutViewerVisible(true);
+                            }}
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              backgroundColor:
+                                index < 3 ? 'crimson' : 'dodgerblue',
+                              margin: '2%',
+                              padding: '6%',
+                              borderRadius: 10,
+                              minWidth: '25%',
+                            }}>
+                            <Text
+                              style={{
+                                color: colors.text,
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                                flex: 1,
+                              }}>
+                              {report.teamNumber}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  </View>
                 );
               }}
             />
           </View>
-        )}
-        {filterState === FilterState.MATCH && (
-          <FlatList
-            data={Array.from(reportsByMatch.keys()).filter(match => {
-              return match.toString().includes(searchTerm);
-            })}
-            renderItem={({item}) => {
-              return (
-                <View>
-                  <View
-                    style={{
-                      minWidth: '100%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: '3%',
-                    }}>
-                    <Text
-                      style={{
-                        color: colors.text,
-                        opacity: 0.6,
-                        marginHorizontal: '4%',
-                        fontWeight: 'bold',
-                        fontSize: 18,
-                      }}>
-                      {item}
-                    </Text>
-                    <View
-                      style={{
-                        height: 2,
-                        width: '100%',
-                        backgroundColor: colors.border,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      // make it like a 3x2 grid
-                      flexDirection: 'row',
-                      flexWrap: 'wrap',
-                    }}>
-                    {reportsByMatch.get(item)?.map((report, index) => {
-                      return (
-                        <Pressable
-                          onPress={() => {
-                            setCurrentReport(report);
-                            setScoutViewerVisible(true);
-                          }}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            backgroundColor:
-                              index < 3 ? 'crimson' : 'dodgerblue',
-                            margin: '2%',
-                            padding: '6%',
-                            borderRadius: 10,
-                            minWidth: '25%',
-                          }}>
-                          <Text
-                            style={{
-                              color: colors.text,
-                              fontWeight: 'bold',
-                              textAlign: 'center',
-                              flex: 1,
-                            }}>
-                            {report.teamNumber}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                </View>
-              );
-            }}
-          />
         )}
         {filterState === FilterState.PERSON && users.length > 0 && (
           <View style={{flex: 1, marginBottom: '10%'}}>
