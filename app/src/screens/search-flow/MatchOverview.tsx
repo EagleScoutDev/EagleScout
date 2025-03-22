@@ -1,11 +1,10 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {SimpleTeam, TBA} from '../../lib/TBAUtils';
-import {Pressable, View, TextInput, Text} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {TBA} from '../../lib/TBAUtils';
+import {Pressable, Text, View} from 'react-native';
 import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
-import getCompetitionTeams from '../../database/Competitions';
-import {ScoutReportReturnData} from '../../database/ScoutReports';
+import CompetitionsDB from '../../database/Competitions';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import TBATeams, {TBATeam} from '../../../database/TBATeams';
+import {TBATeam} from '../../../database/TBATeams';
 
 interface OverviewProps {
   route: {
@@ -20,39 +19,47 @@ const MatchOverview = ({route}: OverviewProps) => {
   const colors = useTheme();
   const navigation = useNavigation();
   const {matchNumber, alliance} = route.params;
-  const {competitionId, matches} = useCurrentCompetitionMatches();
+  const {competitionId, getTeamsForMatchDetailed} =
+    useCurrentCompetitionMatches();
+  const [competitionTeams, setCompetitionTeams] = useState<TBATeam[]>([]);
 
-  const matchTeams = useMemo(
-    () =>
-      matches
-        .filter(match => match.compLevel === 'qm')
-        .filter(match => match.match === matchNumber)
-        .filter(match => match.alliance === alliance)
-        .sort((a, b) => (a.alliance === 'red' ? -1 : 1))
-        .map(match => match.team.replace('frc', ''))
-        .map(match => match.replace(/[A-Za-z]/g, ' '))
-        .map(match => Number(match)),
-    [matches],
-  );
-  const simpleTeams = matchTeams.map(TBA.getTeam);
-  console.log(matchTeams);
+  useEffect(() => {
+    CompetitionsDB.getCompetitionTBAKey(competitionId).then(key => {
+      TBA.getTeamsAtCompetition(key).then(teams => {
+        setCompetitionTeams(teams);
+      });
+    });
+  }, []);
+
+  const teamsInMatch = useMemo(() => {
+    return getTeamsForMatchDetailed(matchNumber);
+  }, [matchNumber]);
+
   return (
     <View>
       <View style={{flexDirection: 'row'}}>
-        {simpleTeams.map(team => (
-          <Pressable
-            key={team.key}
-            onPress={() => {
-              navigation.navigate('TeamViewer', {
-                team: {team},
-                competitionId: competitionId,
-              });
-            }}>
-            <View style={{}}>
-              <Text>{team.team_number}</Text>
-            </View>
-          </Pressable>
-        ))}
+        {teamsInMatch
+          .map(team => (team.alliance === alliance ? team.team : null))
+          .filter(team => team !== null)
+          .map(teamId =>
+            competitionTeams.find(
+              team => team.key.replace('frc', '') === teamId,
+            ),
+          )
+          .map(team => (
+            <Pressable
+              key={team.key}
+              onPress={() => {
+                navigation.navigate('TeamViewer', {
+                  team: {team},
+                  competitionId: competitionId,
+                });
+              }}>
+              <View style={{}}>
+                <Text>{team.team_number}</Text>
+              </View>
+            </Pressable>
+          ))}
       </View>
     </View>
   );
