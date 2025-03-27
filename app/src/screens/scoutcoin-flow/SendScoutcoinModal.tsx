@@ -96,6 +96,7 @@ export const SendScoutcoinModal = ({
       borderRadius: 10,
       borderColor: colors.text,
       padding: 10,
+      color: colors.text,
     },
     buttonContainer: {
       flexDirection: 'row',

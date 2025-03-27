@@ -1,11 +1,4 @@
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
@@ -175,6 +168,7 @@ function WeightedRank() {
       // backgroundColor: colors.card,
       paddingHorizontal: '10%',
       flex: 1,
+      marginBottom: '10%',
     },
     list_item: {
       borderBottomWidth: 1,

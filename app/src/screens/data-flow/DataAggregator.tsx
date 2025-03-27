@@ -1,20 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
   ActivityIndicator,
-  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import CompetitionsDB, {
   CompetitionReturnData,
 } from '../../database/Competitions';
 import ScoutReportsDB from '../../database/ScoutReports';
-import StandardButton from '../../components/StandardButton';
-import WeightedRank from './WeightedRank';
 
 interface Question {
   question: string;
@@ -196,7 +193,7 @@ function DataAggregation({navigation}) {
   }
 
   return (
-    <View>
+    <View style={{marginBottom: '60%', paddingHorizontal: '5%'}}>
       {chosenQuestion !== null && (
         <View>
           <Pressable
@@ -315,7 +312,6 @@ function DataAggregation({navigation}) {
               // margin: '10%',
               paddingHorizontal: '10%',
               // borderRadius: 20,
-              maxHeight: '80%',
             }}>
             {teamsToAverage &&
               Array.from(teamsToAverage)

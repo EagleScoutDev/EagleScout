@@ -100,11 +100,9 @@ const DataMain = () => {
       <DataStack.Screen
         name={'Manage Competitions'}
         component={CompetitionsView}
-        options={
-          {
-            // headerBackTitle: 'Back',
-          }
-        }
+        options={{
+          headerBackTitle: 'Back',
+        }}
       />
       <DataStack.Screen
         name={'Manage Users'}

@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, FlatList, Pressable, Alert} from 'react-native';
+import {Alert, FlatList, Pressable, Text, View} from 'react-native';
 
 import {useTheme} from '@react-navigation/native';
 import PicklistsDB, {PicklistStructure} from '../../database/Picklists';
 import ProfilesDB from '../../database/Profiles';
-import {CaretRight} from '../../SVGIcons';
 import Svg, {Path} from 'react-native-svg';
 import CompetitionsDB from '../../database/Competitions';
-import Competitions from '../../database/Competitions';
+import StandardButton from '../../components/StandardButton';
 
 function PicklistsManagerScreen({navigation}) {
   const {colors} = useTheme();
@@ -69,7 +68,7 @@ function PicklistsManagerScreen({navigation}) {
 
   // Render function using FlatList
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, paddingBottom: 10}}>
       {!currentCompHappening ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Text style={{color: colors.text}}>
@@ -188,29 +187,16 @@ function PicklistsManagerScreen({navigation}) {
               );
             }}
           />
-          <Pressable
-            style={{
-              backgroundColor: 'blue',
-              padding: '5%',
-              borderRadius: 10,
-              margin: '5%',
-            }}
+          <StandardButton
+            color={colors.primary}
             onPress={() => {
               navigation.navigate('Picklist Creator', {
                 picklist_id: -1,
                 currentCompID: currentCompID,
               });
-            }}>
-            <Text
-              style={{
-                color: 'white',
-                textAlign: 'center',
-                fontSize: 20,
-                fontWeight: 'bold',
-              }}>
-              Create Picklist
-            </Text>
-          </Pressable>
+            }}
+            text="Create Picklist"
+          />
         </>
       )}
     </View>

@@ -24,6 +24,7 @@ import CompetitionsDB, {
   CompetitionReturnData,
 } from '../../database/Competitions';
 import TBAMatches, {TBAMatch} from '../../database/TBAMatches';
+import {getIdealTextColor} from '../../lib/ColorReadability';
 
 enum InputStyle {
   NONE,
@@ -459,9 +460,11 @@ const MatchPredictor = () => {
             style={{
               ...styles.team_container,
               borderWidth: 1,
-              borderColor: 'blue',
+              borderColor: 'dodgerblue',
               backgroundColor:
-                winningAllianceColor === AllianceColor.BLUE ? 'blue' : 'none',
+                winningAllianceColor === AllianceColor.BLUE
+                  ? 'dodgerblue'
+                  : 'none',
             }}>
             <Text
               style={{
@@ -537,7 +540,7 @@ const MatchPredictor = () => {
               }}
               style={{
                 backgroundColor:
-                  chosenQuestionIndices.length === 0 ? 'gray' : 'yellow',
+                  chosenQuestionIndices.length === 0 ? 'gray' : colors.primary,
                 padding: 10,
                 borderRadius: 10,
                 marginHorizontal: '5%',
@@ -549,7 +552,7 @@ const MatchPredictor = () => {
               )}
               <Text
                 style={{
-                  color: 'black',
+                  color: getIdealTextColor(colors.primary),
                   textAlign: 'center',
                   fontSize: 20,
                   fontWeight: '700',
@@ -608,7 +611,7 @@ const MatchPredictor = () => {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         marginHorizontal: '4%',
-                        backgroundColor: index < 3 ? 'crimson' : 'blue',
+                        backgroundColor: index < 3 ? 'red' : 'dodgerblue',
                         paddingHorizontal: '4%',
                       }}>
                       <Text

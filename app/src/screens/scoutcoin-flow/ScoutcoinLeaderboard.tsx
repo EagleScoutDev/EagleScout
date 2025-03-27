@@ -11,7 +11,7 @@ import {
 import {TextInput} from 'react-native-gesture-handler';
 import ProfilesDB from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
-import Svg, {Path, Text as SvgText, SvgProps} from 'react-native-svg';
+import Svg, {Path, SvgProps, Text as SvgText} from 'react-native-svg';
 import {ScoutcoinIcon} from '../../SVGIcons';
 import {useProfile} from '../../lib/hooks/useProfile';
 import {Theme} from '@react-navigation/native/src/types';
@@ -213,6 +213,7 @@ const makeStyles = ({colors}: Theme) =>
       marginHorizontal: 16,
     },
     filterText: {
+      color: colors.text,
       padding: 10,
       backgroundColor: colors.card,
       borderRadius: 5,

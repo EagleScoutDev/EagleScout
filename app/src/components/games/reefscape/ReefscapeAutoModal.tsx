@@ -213,7 +213,10 @@ const ReefscapeAutoModal = ({
       visible={isActive}
       transparent={false}
       animationType={'slide'}
-      presentationStyle={'formSheet'}>
+      presentationStyle={'formSheet'}
+      onRequestClose={() => {
+        setIsActive(false);
+      }}>
       <View
         style={{
           flex: 1,
