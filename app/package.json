@@ -28,7 +28,7 @@
     "react": "18.2.0",
     "react-native": "^0.72.17",
     "react-native-background-fetch": "^4.2.1",
-    "react-native-bouncy-checkbox": "^3.0.7",
+    "react-native-bouncy-checkbox": "^4.1.2",
     "react-native-chart-kit": "^6.12.0",
     "react-native-code-push": "^8.1.0",
     "react-native-confetti": "^0.1.0",

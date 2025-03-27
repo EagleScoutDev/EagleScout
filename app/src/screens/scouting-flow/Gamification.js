@@ -11,9 +11,7 @@ import FormComponent from '../../components/form/FormComponent';
 import StandardButton from '../../components/StandardButton';
 import MatchInformation from '../../components/form/MatchInformation';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import CrescendoTeleopModal from '../../components/games/crescendo/CrescendoTeleopModal';
 import ReefscapeAutoModal from '../../components/games/reefscape/ReefscapeAutoModal';
-// import CrescendoAutoModal from '../../components/games/crescendo/CrescendoAutoModal';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();
@@ -225,18 +223,6 @@ function Gamification({
         arrayData={arrayData}
         setArrayData={setArrayData}
         form={data && data.Auto}
-      />
-      <CrescendoTeleopModal
-        startRelativeTime={startRelativeTime}
-        setStartRelativeTime={setStartRelativeTime}
-        timeline={timeline}
-        setTimeline={setTimeline}
-        // we are not going to use teleop modal
-        isActive={false}
-        setIsActive={() => {}}
-        arrayData={arrayData}
-        setArrayData={setArrayData}
-        form={data && data.Teleop}
       />
     </>
   );

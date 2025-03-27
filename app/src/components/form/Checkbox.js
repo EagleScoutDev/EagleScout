@@ -1,4 +1,4 @@
-import React, {View, Text} from 'react-native';
+import React, {View} from 'react-native';
 import Question from './Question';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
