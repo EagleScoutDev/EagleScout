@@ -199,6 +199,9 @@ class PitScoutReports {
     if (error) {
       throw error;
     }
+    if (images.length === 0) {
+      return [];
+    }
     const {data: urls, error: urlError} = await bucket.createSignedUrls(
       images.map(
         image => `${orgId}/${teamId}/pit_images/${reportId}/${image.name}`,

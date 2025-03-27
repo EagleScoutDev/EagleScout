@@ -2,7 +2,6 @@ import {
   FlatList,
   Image,
   Modal,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -216,13 +215,12 @@ export const PitScoutViewer = ({
                     )}
                     {field.type === 'checkboxes' && (
                       <>
-                        {/* @ts-ignore */}
                         <Checkbox
                           title={''}
                           disabled={true}
                           colors={colors}
                           options={field.options}
-                          value={field.options[data.data[index]]}
+                          value={data.data[field.indice]}
                         />
                       </>
                     )}
