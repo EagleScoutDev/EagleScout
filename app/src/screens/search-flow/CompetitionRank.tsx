@@ -1,14 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {SimpleEvent, TBA} from '../../lib/TBAUtils';
 import {useTheme} from '@react-navigation/native';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  Pressable,
-} from 'react-native';
+import {Pressable, ScrollView, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 
 // TODO: Add a loading indicator
@@ -118,8 +111,9 @@ function CompetitionRank({team_number}: {team_number: number}) {
               last_event = findClosestDate(sorted);
             }
             console.log('last event: ' + Object.entries(last_event));
+            console.log('success: ' + success);
 
-            if (!success) {
+            if (success) {
               setCurrentCompetition(last_event);
               console.log('detected last rank: ' + last_event.rank);
               setCurrentCompetitionRank(last_event.rank);
@@ -177,7 +171,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
         <View style={{flex: 1}}>
           <Text
             style={{
-              color: 'white',
+              color: colors.text,
               textAlign: 'center',
               fontSize: 20,
               // marginTop: '2%',
@@ -200,7 +194,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
           </Text>
           <Text
             style={{
-              color: 'white',
+              color: colors.text,
               textAlign: 'center',
               fontSize: 20,
               // marginTop: '2%',
@@ -222,7 +216,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
               width={20}
               height={20}
               viewBox="0 0 24 24"
-              stroke={'white'}
+              stroke={colors.text}
               strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -242,7 +236,7 @@ function CompetitionRank({team_number}: {team_number: number}) {
               width={20}
               height={20}
               viewBox="0 0 24 24"
-              stroke={'white'}
+              stroke={colors.text}
               strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"

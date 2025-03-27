@@ -39,17 +39,10 @@ export class StatboticsAPI {
   }
 
   public static async getTeamEvents(team: number) {
-    // this route is broken
-    // return await fetch(`${this.APIv2}/team_events/`)
-    //   .then(res => res.json())
-    //   .then(res => res.map((evt: any) => evt.event));
-    const comps = (await this.getTeamCompetitions(team)).map(
-      (comp: any) => comp.event,
-    );
-    const promises = [];
-    for (const comp of comps) {
-      promises.push(this.getTeamEvent(team, comp));
-    }
-    return await Promise.all(promises);
+    return await fetch(
+      `${this.APIv3}/team_events?team=${team}&year=${this.YEAR}`,
+    )
+      .then(res => res.json())
+      .then(res => res.map((evt: any) => evt));
   }
 }

@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {StatboticsAPI} from '../lib/Statbotics';
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
-const DEBUG = true;
+const DEBUG = false;
 
 /**
  * A capsule that displays a value and a label.
@@ -264,17 +264,17 @@ export default function Statbotics({team}) {
           <InfoRow>
             <InfoCapsule
               title="Auto EPA"
-              value={overall.epa.breakdown.auto_points.mean}
+              value={overall.epa.breakdown.auto_points}
               textColor={colors.text}
             />
             <InfoCapsule
               title="Teleop EPA"
-              value={overall.epa.breakdown.teleop_points.mean}
+              value={overall.epa.breakdown.teleop_points}
               textColor={colors.text}
             />
             <InfoCapsule
               title="Endgame EPA"
-              value={overall.epa.breakdown.endgame_points.mean}
+              value={overall.epa.breakdown.endgame_points}
               textColor={colors.text}
             />
           </InfoRow>
@@ -289,7 +289,8 @@ export default function Statbotics({team}) {
           Past Competition Stats
         </Text>
         <ScrollView>
-          {'epa' in overall && competitions != null &&
+          {'epa' in overall &&
+            competitions != null &&
             competitions[0] != null &&
             competitions.map(comp => (
               <View style={{paddingVertical: 10}}>
@@ -299,17 +300,17 @@ export default function Statbotics({team}) {
                 <InfoRow>
                   <InfoCapsule
                     title="Auto EPA"
-                    value={comp.epa.breakdown.auto_points.mean}
+                    value={comp.epa.breakdown.auto_points}
                     textColor={colors.text}
                   />
                   <InfoCapsule
                     title="Teleop EPA"
-                    value={comp.epa.breakdown.teleop_points.mean}
+                    value={comp.epa.breakdown.teleop_points}
                     textColor={colors.text}
                   />
                   <InfoCapsule
                     title="Endgame EPA"
-                    value={comp.epa.breakdown.endgame_points.mean}
+                    value={comp.epa.breakdown.endgame_points}
                     textColor={colors.text}
                   />
                 </InfoRow>

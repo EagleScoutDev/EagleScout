@@ -2,7 +2,6 @@ import {supabase} from '../lib/supabase';
 import {CrescendoAutoPath} from '../components/games/crescendo/CrescendoAutoPath';
 import {ReefscapeAutoPath} from '../components/games/reefscape/ReefscapeAutoPath';
 
-
 interface TimelineElement {
   time: number;
   label: string;
@@ -156,7 +155,7 @@ class ScoutReportsDB {
       )
       .eq('team', team)
       .eq('matches.competition_id', compId);
-    console.log("Got scout reports");
+    console.log('Got scout reports');
     if (error) {
       throw error;
     } else {
@@ -176,7 +175,6 @@ class ScoutReportsDB {
         });
       }
     }
-    console.log("res res", res);
     return res;
   }
 

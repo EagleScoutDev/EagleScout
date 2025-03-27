@@ -1,7 +1,6 @@
-import React, {useEffect} from 'react';
-import {View, Text, Pressable, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import {useState} from 'react';
 import {OpenAI} from '../../lib/OpenAI';
 import {isTablet} from '../../lib/deviceType';
 import {
@@ -9,8 +8,6 @@ import {
   getLighterColor,
 } from '../../lib/ColorReadability';
 import DataGraph from './DataGraph';
-import {PieChart} from 'react-native-chart-kit';
-import {Dimensions} from 'react-native';
 
 interface Props {
   item: any;
