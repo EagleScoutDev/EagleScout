@@ -1,6 +1,6 @@
 import {
-  BottomTabScreenProps,
   BottomTabNavigationProp,
+  BottomTabScreenProps,
 } from '@react-navigation/bottom-tabs';
 
 type LoginBottomTabParamList = {
@@ -8,6 +8,7 @@ type LoginBottomTabParamList = {
   Login: undefined;
   Sign: undefined;
   ResetPassword: undefined;
+  SetNewPassword: undefined;
   EnterTeamEmail: undefined;
   EnterUserInfo: undefined;
   SelectTeam: undefined;
@@ -25,6 +26,10 @@ export type SignUpProps = BottomTabScreenProps<LoginBottomTabParamList, 'Sign'>;
 export type ResetPasswordProps = BottomTabScreenProps<
   LoginBottomTabParamList,
   'ResetPassword'
+>;
+export type SetNewPasswordProps = BottomTabScreenProps<
+  LoginBottomTabParamList,
+  'SetNewPassword'
 >;
 export type EnterTeamEmailProps = BottomTabScreenProps<
   LoginBottomTabParamList,

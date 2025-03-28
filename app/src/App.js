@@ -36,6 +36,7 @@ import ResetPassword from './screens/login-flow/ResetPassword';
 import {EnterTeamEmail} from './screens/login-flow/steps/EnterTeamEmail';
 import {EnterUserInfo} from './screens/login-flow/steps/EnterUserInfo';
 import {SelectTeam} from './screens/login-flow/steps/SelectTeam';
+import SetNewPassword from './screens/login-flow/SetNewPassword';
 
 const Tab = createBottomTabNavigator();
 
@@ -81,8 +82,8 @@ const MyStack = () => {
         if (error) {
           console.error(error);
         }
-        console.log('navigating to reset password');
-        nav.navigate('ResetPassword');
+        console.log('navigating to set new password');
+        nav.navigate('SetNewPassword');
       } else if (route === 'confirm-signup') {
         // for the Confirm Signup email template
         const {access_token, refresh_token} = params;
@@ -236,6 +237,7 @@ const MyStack = () => {
           />
           <Tab.Screen name="Sign" component={SignUp} />
           <Tab.Screen name="ResetPassword" component={ResetPassword} />
+          <Tab.Screen name="SetNewPassword" component={SetNewPassword} />
           <Tab.Screen name="EnterTeamEmail" component={EnterTeamEmail} />
           <Tab.Screen name="EnterUserInfo" component={EnterUserInfo} />
           <Tab.Screen name="SelectTeam" component={SelectTeam} />

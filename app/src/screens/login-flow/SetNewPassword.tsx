@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   Text,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -14,40 +13,38 @@ import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
-import {ResetPasswordProps} from './types';
+import {SetNewPasswordProps} from './types';
 
-const ResetPassword = ({navigation}: ResetPasswordProps) => {
+const SetNewPassword = ({navigation}: SetNewPasswordProps) => {
   const {colors} = useTheme();
-  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.background}>
-        <Text style={styles.titleText}>Reset Password</Text>
+        <Text style={styles.titleText}>Set New Password</Text>
         <>
           <View>
-            <MinimalSectionHeader title={'Email'} />
+            <MinimalSectionHeader title={'New Password'} />
             <TextInput
-              autoCapitalize={'none'}
-              onChangeText={text => setEmail(text)}
-              value={email}
-              placeholder="john.doe@team114.org"
+              onChangeText={text => setPassword(text)}
+              value={password}
+              placeholder={'Password'}
               placeholderTextColor={'gray'}
               style={{
                 ...styles.input,
-                borderColor: email === '' ? 'gray' : colors.primary,
+                borderColor: password === '' ? 'gray' : colors.primary,
               }}
-              inputMode={'email'}
+              secureTextEntry={true}
             />
             <StandardButton
-              text={'Reset Password'}
-              textColor={email === '' ? 'dimgray' : colors.primary}
-              disabled={email === ''}
+              text={'Set New Password'}
+              textColor={password === '' ? 'dimgray' : colors.primary}
+              disabled={password === ''}
               onPress={async () => {
-                if (email === '') {
-                  console.log('Email cannot be blank.');
+                if (password === '') {
                   Alert.alert(
-                    'Email cannot be blank.',
+                    'Password cannot be blank.',
                     'Please try again',
                     [
                       {
@@ -59,14 +56,10 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
                   );
                   return;
                 }
-                const {error} = await supabase.auth.resetPasswordForEmail(
-                  email,
-                  {
-                    redirectTo: 'eaglescout://forgot-password',
-                  },
-                );
+                const {error} = await supabase.auth.updateUser({
+                  password,
+                });
                 if (error) {
-                  console.log('Error resetting password:', error);
                   Alert.alert(
                     'Error resetting password',
                     'Please try again',
@@ -79,14 +72,17 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
                     {cancelable: false},
                   );
                 } else {
-                  console.log('Password reset email sent');
                   Alert.alert(
-                    'Password reset email sent',
-                    'Please check your email',
+                    'Successfully reset password',
+                    'Please log in again to continue',
                     [
                       {
                         text: 'OK',
-                        onPress: () => console.log('OK Pressed'),
+                        onPress: () => {
+                          supabase.auth.signOut();
+                          navigation.navigate('Login');
+                          setPassword('');
+                        },
                       },
                     ],
                     {cancelable: false},
@@ -95,26 +91,10 @@ const ResetPassword = ({navigation}: ResetPasswordProps) => {
               }}
             />
           </View>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('Login');
-              setEmail('');
-            }}>
-            <Text style={styles.text}>Log In</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.link_container}
-            onPress={() => {
-              navigation.navigate('Sign');
-              setEmail('');
-            }}>
-            <Text style={styles.text}>Create Account</Text>
-          </TouchableOpacity>
         </>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
 
-export default ResetPassword;
+export default SetNewPassword;
