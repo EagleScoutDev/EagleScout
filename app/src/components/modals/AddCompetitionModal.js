@@ -1,11 +1,11 @@
 import React, {
   Alert,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
 } from 'react-native';
 import StandardButton from '../StandardButton';
 import {useTheme} from '@react-navigation/native';
@@ -14,7 +14,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import StandardModal from './StandardModal';
 import {supabase} from '../../lib/supabase';
 import SelectMenu from '../form/SelectMenu';
-import {getIdealTextColor, getLighterColor} from '../../lib/ColorReadability';
+import {getIdealTextColor} from '../../lib/ColorReadability';
 import {FunctionsHttpError} from '@supabase/supabase-js';
 
 function Spacer() {
@@ -38,6 +38,8 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
   const [showStartTime, setShowStartTime] = useState(Platform.OS === 'ios');
   const [showEndDate, setShowEndDate] = useState(Platform.OS === 'ios');
   const [showEndTime, setShowEndTime] = useState(Platform.OS === 'ios');
+
+  const [loading, setLoading] = useState(false);
 
   const getFormIDs = async () => {
     // get form ids
@@ -341,12 +343,15 @@ function AddCompetitionModal({visible, setVisible, onRefresh}) {
         />
         <StandardButton
           color={colors.primary}
+          isLoading={loading}
           onPress={() => {
+            setLoading(true);
             submitCompetition().then(success => {
               if (success) {
                 setVisible(false);
                 onRefresh();
               }
+              setLoading(false);
             });
           }}
           text={'Submit'}
