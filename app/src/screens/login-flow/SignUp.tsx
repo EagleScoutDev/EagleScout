@@ -1,12 +1,12 @@
 import {
+  Alert,
+  Keyboard,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Alert,
   TouchableWithoutFeedback,
-  Keyboard,
-  SafeAreaView,
+  View,
 } from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
@@ -19,6 +19,7 @@ import {SignUpProps} from './types';
 function SignUp({navigation}: SignUpProps) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
   const {colors} = useTheme();
 
   return (
@@ -47,13 +48,40 @@ function SignUp({navigation}: SignUpProps) {
               style={styles.input}
               secureTextEntry={true}
             />
+            <MinimalSectionHeader title={'Confirm Password'} />
+            <TextInput
+              onChangeText={text => setConfirmPassword(text)}
+              placeholder={'Password'}
+              placeholderTextColor={'gray'}
+              value={confirmPassword}
+              style={styles.input}
+              secureTextEntry={true}
+            />
             <StandardButton
               text={'Register'}
               textColor={
-                email === '' || password === '' ? 'dimgray' : colors.primary
+                email === '' || password === '' || confirmPassword === ''
+                  ? 'dimgray'
+                  : colors.primary
               }
-              disabled={email === '' || password === ''}
+              disabled={
+                email === '' || password === '' || confirmPassword === ''
+              }
               onPress={async () => {
+                if (password !== confirmPassword) {
+                  Alert.alert(
+                    'Passwords do not match',
+                    'Please try again',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => console.log('OK Pressed'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                  return;
+                }
                 const {error} = await supabase.auth.signUp({
                   email: email,
                   password: password,
