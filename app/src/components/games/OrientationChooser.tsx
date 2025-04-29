@@ -17,6 +17,79 @@ const Checkmark = () => {
   );
 };
 
+// export const allianceChooser (selectedAlliance, ) => {};
+
+export const ColorChooser = ({
+  selectedColor,
+  setSelectedColor,
+}: {
+  selectedColor: string;
+  setSelectedColor: (color: string) => void;
+}) => {
+  const {colors} = useTheme();
+  return (
+    <View
+      style={{
+        padding: '5%',
+        borderRadius: 10,
+        justifyContent: 'center',
+      }}>
+      <Text
+        style={{
+          color: colors.text,
+          fontSize: 20,
+          textAlign: 'center',
+          fontWeight: 'bold',
+          paddingBottom: '3%',
+        }}>
+        Select Color
+      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginVertical: '1%',
+          width: '80%',
+          alignSelf: 'center',
+        }}>
+        <Pressable
+          style={{
+            backgroundColor: 'blue',
+            paddingVertical: '3%',
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+            flex: 3,
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 43,
+          }}
+          onPress={() => {
+            setSelectedColor('blue');
+          }}>
+          {selectedColor === 'blue' ? <Checkmark /> : null}
+        </Pressable>
+        {/*<View style={{flex: 1, backgroundColor: colors.text}} />*/}
+        <Pressable
+          style={{
+            backgroundColor: 'red',
+            paddingVertical: '3%',
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+            flex: 3,
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 43,
+          }}
+          onPress={() => {
+            setSelectedColor('red');
+          }}>
+          {selectedColor === 'red' ? <Checkmark /> : null}
+        </Pressable>
+      </View>
+    </View>
+  );
+};
+
 export const OrientationChooser = ({
   selectedOrientation,
   setSelectedOrientation,

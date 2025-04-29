@@ -28,7 +28,6 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
   // team is a SimpleTeam
   const {team, competitionId} = route.params;
   const navigation = useNavigation();
-
   const [graphCreationModalVisible, setGraphCreationModalVisible] =
     useState(false);
   const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>(

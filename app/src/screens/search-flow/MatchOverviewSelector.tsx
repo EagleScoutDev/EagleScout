@@ -8,10 +8,9 @@ import {
   Text,
 } from 'react-native';
 import {SimpleTeam, TBA} from '../../lib/TBAUtils';
-import {OrientationChooser} from '../../components/games/OrientationChooser';
+import {ColorChooser} from '../../components/games/OrientationChooser';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {ScoutReportReturnData} from '../../database/ScoutReports';
-import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
 
 const MatchOverviewSelector = () => {
   const {colors} = useTheme();
@@ -26,7 +25,7 @@ const MatchOverviewSelector = () => {
       // margin: 10,
       // marginHorizontal: 30,
       color: colors.text,
-        paddingLeft:'3%',
+      paddingLeft: '3%',
     },
     titleText: {
       textAlign: 'left',
@@ -55,6 +54,7 @@ const MatchOverviewSelector = () => {
   const [selectedAlliance, setSelectedAlliance] = useState<string>('Blue');
   const [matchNumber, setMatchNumber] = useState('');
   const [fieldOrientation, setFieldOrientation] = useState('red');
+  const [error, setError] = useState('');
   useEffect(() => {
     if (!matchNumber || Number(matchNumber) > 400) {
       return;
@@ -62,7 +62,12 @@ const MatchOverviewSelector = () => {
   }, [matchNumber]);
 
   return (
-    <View style={{backgroundColor: colors.card, padding: '3%'}}>
+    <View
+      style={{
+        backgroundColor: colors.card,
+        padding: '3%',
+        position: 'relative',
+      }}>
       <Text style={styles.titleText}>Match #: </Text>
       <TextInput
         style={styles.input}
@@ -70,38 +75,31 @@ const MatchOverviewSelector = () => {
         value={matchNumber}
         onChangeText={text => setMatchNumber(text)}
       />
-      {Number.parseInt(matchNumber, 10) === 0 && (
-        <Text
-          style={{
-            color: colors.notification,
-            textAlign: 'center',
-            paddingTop: '2%',
-          }}>
-          Match number cannot be 0!
-        </Text>
-      )}
-      {Number(matchNumber) > 400 ? (
-        <Text
-          style={{
-            color: colors.notification,
-            textAlign: 'center',
-            paddingTop: '2%',
-          }}>
-          Please Enter Valid Match!
-        </Text>
-      ) : (
-        <View />
-      )}
 
+      <View />
       <Text style={styles.titleText}>Side: </Text>
-      <OrientationChooser
-        selectedOrientation={fieldOrientation}
-        setSelectedOrientation={setFieldOrientation}
-        selectedAlliance={selectedAlliance}
-        setSelectedAlliance={setSelectedAlliance}
-      />
+      <View>
+        <ColorChooser
+          selectedColor={selectedAlliance}
+          setSelectedColor={setSelectedAlliance}
+        />
+      </View>
+
+      {error && (
+        <Text style={{color: colors.notification, paddingVertical: 9}}>
+          {error}
+        </Text>
+      )}
       <Pressable
         onPress={() => {
+          if (!Number) {
+            setError('Please enter a match number!');
+            return;
+          }
+          if (Number(matchNumber) < 0 || Number(matchNumber) > 400) {
+            setError('Match number must be between 1 and 400!');
+            return;
+          }
           navigation.navigate('MatchOverview', {
             matchNumber: Number(matchNumber),
             alliance: selectedAlliance,

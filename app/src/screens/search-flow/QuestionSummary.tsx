@@ -215,7 +215,6 @@ function QuestionSummary({
         counts.push(data.filter(datum => datum.data === i).length);
       }
       const index = counts.indexOf(Math.max(...counts));
-
       // if the largest value appears multiple times, set the index to -1
       if (counts.filter(count => count === counts[index]).length > 1) {
         setIndexOfGreatestValue(-1);

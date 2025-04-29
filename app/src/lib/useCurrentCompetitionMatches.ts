@@ -88,6 +88,7 @@ export const useCurrentCompetitionMatches = () => {
       return matches
         .filter(match => match.compLevel === 'qm')
         .filter(match => match.match === matchNumber);
+      // .filter(match => match.alliance === alliance);
     },
     [matches],
   );

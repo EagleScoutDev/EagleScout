@@ -10,7 +10,6 @@ import ScoutViewer from '../../components/modals/ScoutViewer';
 import {getLighterColor} from '../../lib/ColorReadability';
 import {isTablet} from '../../lib/deviceType';
 import MatchOverviewSelector from './MatchOverviewSelector';
-import MatchOverview from './MatchOverview';
 
 enum FilterState {
   TEAM,
@@ -316,11 +315,11 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
         )}
         {filterState === FilterState.MATCH && (
           <View style={{flexDirection: 'column'}}>
-            <MatchOverviewSelector />
             <FlatList
               data={Array.from(reportsByMatch.keys()).filter(match => {
                 return match.toString().includes(searchTerm);
               })}
+              ListHeaderComponent={MatchOverviewSelector}
               renderItem={({item}) => {
                 return (
                   <View>

@@ -2,7 +2,6 @@ import {supabase} from '../lib/supabase';
 import {CrescendoAutoPath} from '../components/games/crescendo/CrescendoAutoPath';
 import {ReefscapeAutoPath} from '../components/games/reefscape/ReefscapeAutoPath';
 
-
 interface TimelineElement {
   time: number;
   label: string;
@@ -156,7 +155,7 @@ class ScoutReportsDB {
       )
       .eq('team', team)
       .eq('matches.competition_id', compId);
-    console.log("Got scout reports");
+    console.log('Got scout reports');
     if (error) {
       throw error;
     } else {
@@ -176,7 +175,7 @@ class ScoutReportsDB {
         });
       }
     }
-    console.log("res res", res);
+    console.log('res res', res);
     return res;
   }
 
@@ -251,6 +250,47 @@ class ScoutReportsDB {
       }
     }
     return res;
+  }
+  static async getAllianceReports(
+    teams: number[],
+    compId: number,
+  ): Promise<ScoutReportReturnData[][]> {
+
+    const {data, error} = await supabase
+      .from('scout_reports')
+      .select(
+        '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+      )
+      .eq('matches.competition_id', compId)
+      .in('team', teams);
+    if (error) {
+      throw error;
+    } else {
+      const res: ScoutReportReturnData[][] = [];
+      for (let i = 0; i < teams.length; i += 1) {
+        const sus = data.filter(datum => datum.team === teams[i]);
+        const temp: ScoutReportReturnData[] = [];
+        for (let j = 0; j < sus.length; j += 1) {
+          temp.push({
+            reportId: sus[j].id,
+            matchNumber: sus[j].matches.number,
+            teamNumber: sus[j].team,
+            data: sus[j].data,
+            competitionId: sus[j].matches.competition_id,
+            form: sus[j].matches.competitions.forms.form_structure,
+            userId: sus[j].user_id,
+            createdAt: sus[j].created_at,
+            competitionName: sus[j].matches.competitions.name,
+            timelineData: sus[j].timeline_data,
+            autoPath: sus[j].auto_path,
+          });
+        }
+        // console.log("temp ",i,":",temp);
+        res.push(temp);
+      }
+      // console.log('res res AMONGUS', res);
+      return res;
+    }
   }
 }
 
