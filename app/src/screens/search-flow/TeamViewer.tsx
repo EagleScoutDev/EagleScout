@@ -1,22 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import {SimpleEvent, SimpleTeam, TBA} from '../../lib/TBAUtils';
+import {SimpleTeam} from '../../lib/TBAUtils';
 import Statbotics from '../../components/Statbotics';
 import CompetitionRank from './CompetitionRank';
 import ScoutSummary from './ScoutSummary';
-import {CaretRight} from '../../SVGIcons';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import Svg, {Path} from 'react-native-svg';
 import QuestionFormulaCreator from '../data-flow/QuestionFormulaCreator';
-import CombinedGraph from './CombinedGraph'; // adjust the import path to match your file structur
+import CombinedGraph from './CombinedGraph';
+import {DerivedValueCreator} from './DerivedValueCreator'; // adjust the import path to match your file structur
 
 interface TeamViewerProps {
   team: SimpleTeam;
@@ -189,6 +183,9 @@ const TeamViewer: React.FC<TeamViewerProps> = ({route}) => {
         />
 
         <Statbotics team={team.team_number} />
+
+        <DerivedValueCreator competitionId={competitionId} />
+
         <ScoutSummary
           team_number={team.team_number}
           competitionId={competitionId}
