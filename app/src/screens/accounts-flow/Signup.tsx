@@ -14,9 +14,12 @@ import {styles} from './styles';
 import {supabase} from '../../lib/supabase';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
-import {SignUpProps} from './types';
+import { AccountsScreenProps } from '.';
 
-function SignUp({navigation}: SignUpProps) {
+export interface SignupProps extends AccountsScreenProps<"Signup"> {
+  
+}
+export const Signup = ({navigation}: SignupProps) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -116,5 +119,3 @@ function SignUp({navigation}: SignUpProps) {
     </TouchableWithoutFeedback>
   );
 }
-
-export default SignUp;

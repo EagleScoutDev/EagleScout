@@ -5,7 +5,7 @@ import SettingsHome from './SettingsHome';
 import ChangePassword from './ChangePassword';
 import EditProfile from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StoredUser} from '../../lib/StoredUser';
+import { Account } from "../../lib/account";
 import SubmittedForms from './SubmittedForms';
 import DeleteAccountModal from './DeleteAccountModal';
 import {SubmittedNotes} from './SubmittedNotes';
@@ -21,12 +21,12 @@ function SettingsMain({
   onSignOut,
 }: // setOled,
 SettingsMainProps) {
-  const [user, setUser] = useState<StoredUser | null>(null);
+  const [user, setUser] = useState<Account | null>(null);
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
     if (foundUser != null) {
-      let foundUserObject: StoredUser = JSON.parse(foundUser);
+      let foundUserObject: Account = JSON.parse(foundUser);
       setUser(foundUserObject);
     }
   };

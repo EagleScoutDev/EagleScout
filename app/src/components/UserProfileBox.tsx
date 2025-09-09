@@ -1,14 +1,14 @@
 import React from 'react';
 import {Easing, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import {StoredUser} from '../lib/StoredUser';
+import { Account } from "../lib/account";
 import LinearGradient from 'react-native-linear-gradient'; // or 'expo-linear-gradient'
 import GradientShimmer from 'react-native-gradient-shimmer';
 import {ScoutcoinIcon} from '../SVGIcons';
 import {useProfile} from '../lib/hooks/useProfile';
 
 interface UserProfileBoxProps {
-  user: StoredUser | null;
+  user: Account | null;
 }
 
 function UserProfileBox({user}: UserProfileBoxProps) {

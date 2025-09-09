@@ -8,15 +8,21 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {EnterTeamEmailProps} from '../types';
 import UserAttributes from '../../../database/UserAttributes';
 import {styles} from '../styles';
 import MinimalSectionHeader from '../../../components/MinimalSectionHeader';
 import StandardButton from '../../../components/StandardButton';
 import {supabase} from '../../../lib/supabase';
 import {useTheme} from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AccountsFlowParamList } from '..';
 
-export const EnterTeamEmail = ({navigation}: EnterTeamEmailProps) => {
+type EnterTeamEmailNavProps = StackNavigationProp<AccountsFlowParamList, 'EnterTeamEmail'>;
+interface EnterTeamEmailProps {
+
+}
+
+export const EnterTeamEmail = ({}: EnterTeamEmailProps) => {
   const {colors} = useTheme();
   const [orgId, setOrgId] = useState<number | null>();
   const [email, setEmail] = useState<string>('');

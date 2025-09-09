@@ -17,7 +17,7 @@ import SettingsPopup from './SettingsPopup';
 import React, {useContext, useEffect, useState} from 'react';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StoredUser} from '../../lib/StoredUser';
+import { Account } from "../../lib/account";
 import Competitions from '../../database/Competitions';
 import {getLighterColor} from '../../lib/ColorReadability';
 import {ThemeContext} from '../../lib/contexts/ThemeContext';
@@ -41,14 +41,14 @@ SettingsHomeProps) => {
     InternetStatus.NOT_ATTEMPTED,
   );
 
-  const [user, setUser] = useState<StoredUser | null>(null);
+  const [user, setUser] = useState<Account | null>(null);
   const navigation = useNavigation();
   const {setOnboardingActive} = useContext(ThemeContext);
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
     if (foundUser != null) {
-      let foundUserObject: StoredUser = JSON.parse(foundUser);
+      let foundUserObject: Account = JSON.parse(foundUser);
       setUser(foundUserObject);
     }
   };

@@ -8,17 +8,24 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {useTheme} from '@react-navigation/native';
-import {EnterUserInfoProps} from '../types';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {styles} from '../styles';
 import MinimalSectionHeader from '../../../components/MinimalSectionHeader';
 import StandardButton from '../../../components/StandardButton';
 import {supabase} from '../../../lib/supabase';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AccountsFlowParamList } from '..';
 
-export const EnterUserInfo = ({navigation}: EnterUserInfoProps) => {
+type EnterUserInfoNavProps = StackNavigationProp<AccountsFlowParamList, 'EnterUserInfo'>;
+interface EnterUserInfoProps {
+
+}
+
+export const EnterUserInfo = ({}: EnterUserInfoProps) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const {colors} = useTheme();
+  const navigation = useNavigation<EnterUserInfoNavProps>();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

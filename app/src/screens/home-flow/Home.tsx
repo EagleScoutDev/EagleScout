@@ -3,10 +3,17 @@ import {View, Text, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ScoutingFlow from '../scouting-flow/ScoutingFlow';
-import HomeMain from './HomeMain';
+import HomeMain from './Dashboard';
 import NoteScreen from './Note';
 import Svg, {Path} from 'react-native-svg';
 import PitScoutingFlow from '../pit-scouting-flow/PitScoutingFlow';
+
+export type HomeParamList = {
+  Dashboard: undefined;
+  "Scout Report": undefined;
+  "Note": undefined;
+  "Pit Scout": undefined;
+}
 
 const HomeStack = createStackNavigator();
 
@@ -16,15 +23,15 @@ function Home() {
   const {colors} = useTheme();
   
   useEffect(() => {
-    let interval: NodeJS.Timeout = null;
+    let interval: NodeJS.Timeout | null = null;
     if (isTimerActive) {
       interval = setInterval(() => {
         setSeconds(seconds => seconds + 1);
       }, 1000);
     } else if (!isTimerActive && seconds !== 0) {
-      clearInterval(interval);
+      if(interval) clearInterval(interval);
     }
-    return () => clearInterval(interval);
+    return () => { interval && clearInterval(interval) };
   }, [isTimerActive, seconds]);
 
   const toggleTimer = () => {
@@ -39,7 +46,7 @@ function Home() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
-        name="Home Main"
+        name="Dashboard"
         component={HomeMain}
         options={{
           headerShown: false,

@@ -8,22 +8,20 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
-import {LoginNavigationProps} from './types';
+import { AccountsScreenProps } from '.';
 
-interface LoginProps {
-  onSubmit: (username: string, password: string, navigation: any) => void;
+export interface LoginProps extends AccountsScreenProps<"Login"> {
+  onSubmit: (username: string, password: string) => void;
   error: string;
 }
-
-const Login = ({onSubmit, error}: LoginProps) => {
+export const LoginForm = ({route, navigation, onSubmit, error}: LoginProps) => {
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
   const {colors} = useTheme();
-  const navigation = useNavigation<LoginNavigationProps>();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -77,13 +75,13 @@ const Login = ({onSubmit, error}: LoginProps) => {
                 username === '' || password === '' ? 'dimgray' : colors.primary
               }
               disabled={username === '' || password === ''}
-              onPress={() => onSubmit(username, password, navigation)}
+              onPress={() => onSubmit(username, password)}
             />
           </View>
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
-              navigation.navigate('ResetPassword');
+              navigation.navigate("Login");
               setUsername('');
               setPassword('');
             }}>
@@ -92,7 +90,7 @@ const Login = ({onSubmit, error}: LoginProps) => {
           <TouchableOpacity
             style={styles.link_container}
             onPress={() => {
-              navigation.navigate('Sign');
+              navigation.navigate("Signup");
               setUsername('');
               setPassword('');
             }}>
@@ -103,5 +101,3 @@ const Login = ({onSubmit, error}: LoginProps) => {
     </TouchableWithoutFeedback>
   );
 };
-
-export default Login;

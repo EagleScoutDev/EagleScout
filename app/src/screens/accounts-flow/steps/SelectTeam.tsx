@@ -11,14 +11,22 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {SelectTeamProps} from '../types';
 import {styles as sharedStyles} from '../styles';
 import TBATeams, {TBATeam} from '../../../database/TBATeams';
 import {supabase} from '../../../lib/supabase';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AccountsFlowParamList } from '..';
 
-export const SelectTeam = ({navigation}: SelectTeamProps) => {
+export type SelectTeamNavProps = StackNavigationProp<AccountsFlowParamList, 'SelectTeam'>;
+export interface SelectTeamProps {
+
+}
+
+export const SelectTeam = ({}: SelectTeamProps) => {
   const [team, setTeam] = useState('');
   const [queriedTeams, setQueriedTeams] = useState<TBATeam[]>([]);
+  const navigation = useNavigation<SelectTeamNavProps>();
 
   useEffect(() => {
     (async () => {

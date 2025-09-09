@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {isTablet} from './lib/deviceType';
+import { RootStackScreenProps } from './App';
 
-const PlusNavigationModal = () => {
+interface PlusMenuProps extends RootStackScreenProps<"PlusMenu"> {
+
+}
+const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
   const {colors} = useTheme();
-  const navigation = useNavigation();
 
   const styles = StyleSheet.create({
     container: {
@@ -84,7 +87,7 @@ const PlusNavigationModal = () => {
         <TouchableOpacity
           style={styles.grouping}
           onPress={() => {
-            navigation.navigate('Home', {screen: 'Scout Report'});
+            navigation.navigate('App', {screen: 'Home', params: {screen: 'Scout Report'}});
           }}>
           <View style={styles.icon_box}>
             <Svg
@@ -108,7 +111,10 @@ const PlusNavigationModal = () => {
         <TouchableOpacity
           style={styles.grouping}
           onPress={() => {
-            navigation.navigate('Home', {screen: 'Pit Scout'});
+            navigation.navigate('App', {
+              screen: 'Home',
+              params: { screen: "Pit Scout" }
+            })
           }}>
           <View style={styles.icon_box}>
             <Svg
@@ -131,7 +137,10 @@ const PlusNavigationModal = () => {
         <TouchableOpacity
           style={styles.grouping}
           onPress={() => {
-            navigation.navigate('Home', {screen: 'Note'});
+            navigation.navigate('App', {
+              screen: 'Home',
+              params: { screen: 'Note' }
+          });
           }}>
           <View style={styles.icon_box}>
             <Svg
@@ -153,7 +162,9 @@ const PlusNavigationModal = () => {
         <TouchableOpacity
           style={styles.grouping}
           onPress={() => {
-            navigation.navigate('MatchBetting');
+            navigation.navigate('App', {
+              screen: 'MatchBetting'
+          });
           }}>
           <View style={styles.icon_box}>
             <Svg

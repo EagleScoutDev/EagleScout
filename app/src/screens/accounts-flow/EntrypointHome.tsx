@@ -1,28 +1,27 @@
 import {StyleSheet, Text, View} from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
-import React, {useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {EntrypointNavigationProps} from './types';
+import React, { useContext, useEffect } from 'react';
+import { AccountsScreenProps } from '.';
+import { AccountContext } from '../../lib/contexts/AccountContext';
+import { recallAccount } from '../../lib/account';
 
-interface EntrypointProps {
-  ifAuth: () => void;
+export interface EntrypointProps extends AccountsScreenProps<'Entrypoint'> {
+  
 }
-
-const EntrypointHome = ({ifAuth}: EntrypointProps) => {
+export const EntrypointHome = ({ route, navigation }: EntrypointProps) => {
   const {colors} = useTheme();
-  const navigation = useNavigation<EntrypointNavigationProps>();
+  const {account, setAccount} = useContext(AccountContext);
 
   useEffect(() => {
-    AsyncStorage.getItem('authenticated').then(r => {
-      if (r) {
-        console.log('Login page redirecting to Scout Report...');
-        console.log(r);
-        ifAuth();
-      }
-    });
-  });
-
+    if(account === null) {
+      recallAccount().then(r => {
+        console.log("account loaded:", r)
+        if(r !== null) setAccount(r)
+      })
+    }
+  }, [])
+  
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -41,6 +40,7 @@ const EntrypointHome = ({ifAuth}: EntrypointProps) => {
       fontWeight: 'bold',
     },
   });
+
   return (
     <View style={styles.container}>
       {/*    logo*/}
@@ -63,7 +63,7 @@ const EntrypointHome = ({ifAuth}: EntrypointProps) => {
           color={'rgb(0,0,25)'}
           isLoading={false}
           onPress={() => {
-            navigation.navigate('Sign');
+            navigation.navigate('Signup');
           }}
           text={'Sign Up'}
         />
@@ -71,5 +71,3 @@ const EntrypointHome = ({ifAuth}: EntrypointProps) => {
     </View>
   );
 };
-
-export default EntrypointHome;

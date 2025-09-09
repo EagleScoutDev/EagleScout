@@ -16,7 +16,7 @@ import PicklistsDB from '../../database/Picklists';
 import ListItem from '../../components/ListItem';
 import ListItemContainer from '../../components/ListItemContainer';
 import InternetStatus from '../../lib/InternetStatus';
-import {StoredUser} from '../../lib/StoredUser';
+import { Account } from "../../lib/account";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, {Path} from 'react-native-svg';
 import {useColorScheme} from 'react-native';
@@ -32,7 +32,7 @@ const DataHome = ({navigation}) => {
   const [internetStatus, setInternetStatus] = useState<InternetStatus>(
     InternetStatus.NOT_ATTEMPTED,
   );
-  const [user, setUser] = useState<StoredUser | null>(null);
+  const [user, setUser] = useState<Account | null>(null);
 
   const colorScheme = useColorScheme();
 
@@ -43,7 +43,7 @@ const DataHome = ({navigation}) => {
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
     if (foundUser != null) {
-      let foundUserObject: StoredUser = JSON.parse(foundUser);
+      let foundUserObject: Account = JSON.parse(foundUser);
       setUser(foundUserObject);
     }
   };
