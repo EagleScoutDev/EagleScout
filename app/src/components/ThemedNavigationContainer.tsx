@@ -1,11 +1,10 @@
 import React, {useContext, useState} from 'react';
 import {DarkTheme, NavigationContainer} from '@react-navigation/native';
-import {ThemeOptions} from '../themes/ThemeOptions';
-import {CustomLightTheme} from '../themes/CustomLightTheme';
-import {ThemeOptionsMap} from '../themes/ThemeOptionsMap';
+import {ThemeOptions, ThemeOptionsMap} from '../themes';
 import {ThemeContext} from '../lib/contexts/ThemeContext';
 import {useColorScheme} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CustomLightTheme } from '../themes';
 
 export const ThemedNavigationContainer = ({
   children,

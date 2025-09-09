@@ -23,7 +23,7 @@ import {BackgroundFetchManager} from './lib/BackgroundFetchManager';
 
 import {useDeepLinking} from './lib/hooks/useDeepLinking';
 import {MatchBettingNavigator} from './screens/match-betting-flow/MatchBettingNavigator';
-import {ThemeOptions} from './themes/ThemeOptions';
+import {ThemeOptions} from './themes';
 import {ThemeContext} from './lib/contexts/ThemeContext';
 import {ThemedNavigationContainer} from './components/ThemedNavigationContainer';
 import {isTablet} from './lib/deviceType';

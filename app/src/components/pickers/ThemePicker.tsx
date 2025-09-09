@@ -3,8 +3,7 @@ import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../../FormHelper';
 import {useTheme} from '@react-navigation/native';
-import {ThemeOptions} from '../../themes/ThemeOptions';
-import {ThemeOptionsMap} from '../../themes/ThemeOptionsMap';
+import {ThemeOptions, ThemeOptionsMap} from '../../themes';
 
 function ThemePicker({setTheme}: {setTheme: (arg0: ThemeOptions) => void}) {
   const {colors} = useTheme();
