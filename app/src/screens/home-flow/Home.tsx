@@ -14,7 +14,7 @@ function Home() {
   const [seconds, setSeconds] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const {colors} = useTheme();
-
+  
   useEffect(() => {
     let interval: NodeJS.Timeout = null;
     if (isTimerActive) {

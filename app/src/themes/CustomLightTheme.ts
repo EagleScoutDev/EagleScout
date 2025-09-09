@@ -1,4 +1,4 @@
-import {Theme} from '@react-navigation/native/src/types';
+import { Theme } from "@react-navigation/native";
 
 export const CustomLightTheme: Theme = {
   dark: false,
@@ -10,4 +10,22 @@ export const CustomLightTheme: Theme = {
     border: 'rgb(216, 216, 216)',
     notification: 'rgb(255, 59, 48)',
   },
+  fonts: {
+    regular: {
+      fontFamily: "sans-serif",
+      fontWeight: "normal"
+    },
+    medium: {
+      fontFamily: "sans-serif",
+      fontWeight: "500"
+    },
+    bold: {
+      fontFamily: "sans-serif",
+      fontWeight: "700"
+    },
+    heavy: {
+      fontFamily: "sans-serif",
+      fontWeight: "900"
+    }
+  }
 };
