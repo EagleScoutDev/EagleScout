@@ -1,4 +1,4 @@
-import {supabase} from './lib/supabase';
+import {supabase} from "./lib/supabase";
 
 /**
  * This class provides common methods to scout reports and competitions from the database.
@@ -11,34 +11,34 @@ class DBManager {
    */
   static async getReportsForTeam(team) {
     const {data, error} = await supabase
-      .from('scout_reports')
-      .select('*, match:match_id(number, competition_id), matches(*)')
-      .eq('team', team);
+      .from("scout_reports")
+      .select("*, match:match_id(number, competition_id), matches(*)")
+      .eq("team", team);
     if (error) {
       console.error(error);
       return [];
     } else {
-      console.log('hey');
+      console.log("hey");
       if (DBManager.DEBUG) {
-        console.log('Finished searching for scout reports');
+        console.log("Finished searching for scout reports");
       }
 
       const reports = [];
       for (let i = 0; i < data.length; i++) {
         const doc = data[i];
-        /*console.log('dffdsajfdsadfsdfdfsfd' + doc.match.competition_id);
-        const res = await supabase.from('scout_reports')
-        .select('*, match:match_id(number, competition_id), matches(*)').eq('matches.competition_id', chosenComp.id);
+        /*console.log("dffdsajfdsadfsdfdfsfd" + doc.match.competition_id);
+        const res = await supabase.from("scout_reports")
+        .select("*, match:match_id(number, competition_id), matches(*)").eq("matches.competition_id", chosenComp.id);
         const data2 = res.data;
         const error2 = res.error;
         let compname;
         if (error2) {
           console.error(error2);
-          compname = ''
+          compname = ""
         } else {
           compname = data.name;
         }*/
-        const compname = 'Unavailable';
+        const compname = "Unavailable";
         reports.push({
           created_at: doc.created_at,
           match_number: doc.match.number,
@@ -66,34 +66,34 @@ class DBManager {
       data: {user},
     } = await supabase.auth.getUser();
     const {data, error} = await supabase
-      .from('scout_reports')
-      .select('*, match:match_id(number, competition_id), matches(*)')
-      .eq('user_id', user.id);
+      .from("scout_reports")
+      .select("*, match:match_id(number, competition_id), matches(*)")
+      .eq("user_id", user.id);
     if (error) {
       console.error(error);
       return [];
     } else {
-      console.log('hey');
+      console.log("hey");
       if (DBManager.DEBUG) {
-        console.log('Finished searching for scout reports');
+        console.log("Finished searching for scout reports");
       }
 
       const reports = [];
       for (let i = 0; i < data.length; i++) {
         const doc = data[i];
-        /*console.log('dffdsajfdsadfsdfdfsfd' + doc.match.competition_id);
-        const res = await supabase.from('scout_reports')
-        .select('*, match:match_id(number, competition_id), matches(*)').eq('matches.competition_id', chosenComp.id);
+        /*console.log("dffdsajfdsadfsdfdfsfd" + doc.match.competition_id);
+        const res = await supabase.from("scout_reports")
+        .select("*, match:match_id(number, competition_id), matches(*)").eq("matches.competition_id", chosenComp.id);
         const data2 = res.data;
         const error2 = res.error;
         let compname;
         if (error2) {
           console.error(error2);
-          compname = ''
+          compname = ""
         } else {
           compname = data.name;
         }*/
-        const compname = 'Unavailable';
+        const compname = "Unavailable";
         reports.push({
           created_at: doc.created_at,
           match_number: doc.match.number,
@@ -119,40 +119,40 @@ class DBManager {
    */
   static async getReportsForCompetition(chosenComp) {
     if (DBManager.DEBUG) {
-      console.log('Starting to look for scout reports');
-      console.log('Chosen comp is: ' + chosenComp.name);
-      console.log('Chosen comp id: ' + chosenComp.id);
+      console.log("Starting to look for scout reports");
+      console.log("Chosen comp is: " + chosenComp.name);
+      console.log("Chosen comp id: " + chosenComp.id);
     }
 
     const {data, error} = await supabase
-      .from('scout_reports')
-      .select('*, match:match_id(number, competition_id), matches(*)')
-      .eq('matches.competition_id', chosenComp.id);
+      .from("scout_reports")
+      .select("*, match:match_id(number, competition_id), matches(*)")
+      .eq("matches.competition_id", chosenComp.id);
     if (error) {
       console.error(error);
       return [];
     } else {
-      console.log('hey');
+      console.log("hey");
       if (DBManager.DEBUG) {
-        console.log('Finished searching for scout reports');
+        console.log("Finished searching for scout reports");
       }
 
       const reports = [];
       for (let i = 0; i < data.length; i++) {
         const doc = data[i];
-        /*console.log('dffdsajfdsadfsdfdfsfd' + doc.match.competition_id);
-        const res = await supabase.from('scout_reports')
-        .select('*, match:match_id(number, competition_id), matches(*)').eq('matches.competition_id', chosenComp.id);
+        /*console.log("dffdsajfdsadfsdfdfsfd" + doc.match.competition_id);
+        const res = await supabase.from("scout_reports")
+        .select("*, match:match_id(number, competition_id), matches(*)").eq("matches.competition_id", chosenComp.id);
         const data2 = res.data;
         const error2 = res.error;
         let compname;
         if (error2) {
           console.error(error2);
-          compname = ''
+          compname = ""
         } else {
           compname = data.name;
         }*/
-        const compname = 'Unavailable';
+        const compname = "Unavailable";
         reports.push({
           created_at: doc.created_at,
           match_number: doc.match.number,
@@ -176,11 +176,11 @@ class DBManager {
    * @returns {Promise<void>}
    */
   static async getCompetitionFromDatabase() {
-    console.log('beginning getCompetitionFromDatabase');
+    console.log("beginning getCompetitionFromDatabase");
     const {data, error} = await supabase
-      .from('competitions')
-      .select('*')
-      .order('start_time', {ascending: false})
+      .from("competitions")
+      .select("*")
+      .order("start_time", {ascending: false})
       .single();
     if (error) {
       console.error(error);
@@ -195,13 +195,13 @@ class DBManager {
    * @returns {Promise<any|null>}
    */
   static async getFormFromDatabase() {
-    const {data, error} = await supabase.from('forms').select('*').eq('id', 1);
+    const {data, error} = await supabase.from("forms").select("*").eq("id", 1);
     if (error) {
       console.error(error);
       return null;
     } else {
-      console.log('hereeee' + typeof data[0].scout_data.questions);
-      console.log('hereeee' + JSON.stringify(data[0].scout_data.questions));
+      console.log("hereeee" + typeof data[0].scout_data.questions);
+      console.log("hereeee" + JSON.stringify(data[0].scout_data.questions));
       data[0].scout_data.questions.map(question => {
         console.log(question);
       });
@@ -210,7 +210,7 @@ class DBManager {
   }
 
   static async getFormIdFromDatabase() {
-    const {data, error} = await supabase.from('forms').select('*').eq('id', 1);
+    const {data, error} = await supabase.from("forms").select("*").eq("id", 1);
     if (error) {
       console.error(error);
       return null;

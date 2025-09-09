@@ -6,47 +6,44 @@ export async function handleDeepLink({ url }: { url: string | null }) {
 
     const nav = useNavigation()
 
-    const route = url.split('://')[1].split('#')[0];
-    const params = Object.fromEntries(url.split('#')[1].split('&').map(kv => kv.split("=")));
-    console.log('[DEEP LINKING] initial url: ' + url);
-    console.log('[DEEP LINKING] route: ' + route);
-    console.log('[DEEP LINKING] params: ' + JSON.stringify(params));
+    const route = url.split("://")[1].split("#")[0];
+    const params = Object.fromEntries(url.split("#")[1].split("&").map(kv => kv.split("=")));
 
     switch(route) {
-        case 'forgot-password': {
+        case "forgot-password": {
             // for the Reset Password email template
             const {access_token, refresh_token} = params;
             if (!access_token || !refresh_token) return;
-            
+
             const {error} = await supabase.auth.setSession({
                 access_token,
                 refresh_token,
             });
             if (error) console.error(error);
 
-            console.log('navigating to set new password');
-            nav.navigate('App', {
+            console.log("navigating to set new password");
+            nav.navigate("App", {
                 screen: "Accounts",
-                params: { screen: 'SetNewPassword' }
+                params: { screen: "SetNewPassword" }
             });
             break
         }
-    
-        case 'confirm-signup': {
+
+        case "confirm-signup": {
             // for the Confirm Signup email template
             const {access_token, refresh_token} = params;
             if (!access_token || !refresh_token) return;
-            
+
             const {error} = await supabase.auth.setSession({
                 access_token,
                 refresh_token,
             });
             if (error) console.error(error);
 
-            console.log('navigating to complete sign up');
-            nav.navigate('App', {
+            console.log("navigating to complete sign up");
+            nav.navigate("App", {
                 screen: "Accounts",
-                params: { screen: 'EnterUserInfo' }
+                params: { screen: "EnterUserInfo" }
             });
             break
         }
