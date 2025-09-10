@@ -32,9 +32,22 @@ export const AppTabs = ({ route, navigation }: AppMainProps) => {
     const { account, setAccount } = useContext(AccountContext);
 
     const redirectLogin = () => {
+        console.log("logout")
         saveAccount(null)
         setAccount(null)
     }
+
+    useEffect(() => {
+        print(account)
+        if(account === null) {
+            navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "Onboarding", params: { state: undefined } }
+                ]
+            })
+        }
+    }, [account])
 
     return <Tab.Navigator
         tabBar={FilteringBottomTabBar(["Home", "Search", "PlusMenuLauncher", "Data", "Profile"])}

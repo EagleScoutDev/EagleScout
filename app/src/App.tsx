@@ -4,17 +4,17 @@ import "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import FormHelper from "./FormHelper";
 import PlusMenu from "./PlusMenu";
-import { createStackNavigator, StackScreenProps } from "@react-navigation/stack";
 import { useDeepLinking } from "./lib/hooks/useDeepLinking";
-import { ThemeOptions } from "./themes";
+import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { ThemedNavigationContainer } from "./components/ThemedNavigationContainer";
 import { handleDeepLink } from "./deepLink";
 import { AccountContext } from "./lib/contexts/AccountContext";
 import { Account, recallAccount } from "./lib/account";
 import { AppTabs, AppTabsParamList } from "./AppTabs";
-import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
+import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
 import { OnboardingFlow, OnboardingParamList } from "./screens/onboarding-flow";
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
 
 declare global {
     namespace ReactNavigation {
@@ -22,8 +22,8 @@ declare global {
     }
 }
 
-const RootStack = createStackNavigator<RootStackParamList>();
-export type RootStackScreenProps<K extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, K>;
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, K>;
 export type RootStackParamList = {
     App: NavigatorScreenParams<AppTabsParamList>,
     PlusMenu: undefined,
@@ -52,7 +52,7 @@ const RootNavigator = () => {
 
     useEffect(() => {
         recallAccount().then(r => {
-            console.log("account loaded:", r)
+            console.log("local account:", r)
             setAccount(r)
         })
     }, [])
@@ -67,26 +67,26 @@ const RootNavigator = () => {
                     account, setAccount
                 }}>
 
-                <ThemedNavigationContainer>
+                <NavigationContainer theme={ThemeOptionsMap.get(themePreference)}>
                     <RootStack.Navigator
+                        initialRouteName="Onboarding"
                         screenOptions={{
-                            headerShown: false,
-                            presentation: "transparentModal",
-                        }}>{
-                        account !== null
-                            ? <RootStack.Group>
-                                <RootStack.Screen name="App" component={AppTabs} />
+                            headerShown: false
+                        }}>
+                            <RootStack.Group>
+                                <RootStack.Screen name="App" component={AppTabs} options={{
+                                    animationTypeForReplace: "pop"
+                                }}/>
 
                                 <RootStack.Screen name="PlusMenu" component={PlusMenu} options={{
                                     presentation: "transparentModal"
                                 }} />
                             </RootStack.Group>
 
-                            :<RootStack.Screen name="Onboarding" component={OnboardingFlow} />
-                        }
+                            <RootStack.Screen name="Onboarding" component={OnboardingFlow} />
                     </RootStack.Navigator>
                     <Toast />
-                </ThemedNavigationContainer>
+                </NavigationContainer>
 
             </AccountContext.Provider>
         </ThemeContext.Provider>

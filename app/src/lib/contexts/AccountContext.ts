@@ -1,5 +1,4 @@
-import {createContext, Dispatch, SetStateAction} from 'react';
-import {ThemeOptions} from '../../themes';
+import { createContext, Dispatch, SetStateAction } from 'react';
 import { Account } from '../account';
 
 export const AccountContext = createContext<{

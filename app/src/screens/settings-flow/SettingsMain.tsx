@@ -13,14 +13,10 @@ import {SubmittedNotes} from './SubmittedNotes';
 const Stack = createStackNavigator();
 
 interface SettingsMainProps {
-  onSignOut: () => void;
-  // setOled: (arg0: boolean) => void;
+  onSignOut: () => void
 }
 
-function SettingsMain({
-  onSignOut,
-}: // setOled,
-SettingsMainProps) {
+function SettingsMain({ onSignOut }: SettingsMainProps) {
   const [user, setUser] = useState<Account | null>(null);
 
   const getUser = async () => {

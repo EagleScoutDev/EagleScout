@@ -43,7 +43,6 @@ SettingsHomeProps) => {
 
   const [user, setUser] = useState<Account | null>(null);
   const navigation = useNavigation();
-  const {setOnboardingActive} = useContext(ThemeContext);
 
   const getUser = async () => {
     let foundUser = await AsyncStorage.getItem('user');
@@ -73,7 +72,6 @@ SettingsHomeProps) => {
         keys.filter(key => FormHelper.EXCLUDE_DELETE_KEYS.indexOf(key) === -1),
       ).then(() => {
         console.log('Sign out successful');
-        setOnboardingActive(true);
         onSignOut();
       });
     });

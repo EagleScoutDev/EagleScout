@@ -16,13 +16,16 @@ const Stack = createStackNavigator<OnboardingParamList>();
 export type OnboardingScreenProps<K extends keyof OnboardingParamList> = StackScreenProps<OnboardingParamList, K>
 export type OnboardingParamList = {
     Entrypoint: undefined
+
     Login: undefined
-    Signup: undefined
     ResetPassword: undefined
     SetNewPassword: undefined
-    EnterTeamEmail: undefined
-    EnterUserInfo: undefined
+
+    Signup: undefined
     SelectTeam: undefined
+    EnterUserInfo: undefined
+    EnterTeamEmail: undefined
+
 };
 
 export interface OnboardingProps extends RootStackScreenProps<"Onboarding"> {
@@ -35,21 +38,20 @@ export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
     async function doLogin(username: string, password: string) {
         try {
             const account = await login(username, password)
-            if (account === null) {
+            if(account === null) {
                 setError("Account does not exist.")
                 return
             }
             setAccount(account)
         }
-        catch (e) {
+        catch(e) {
             console.error(e)
             setError(e instanceof Error ? e.message : "An error occured");
         }
     }
 
     useEffect(() => {
-        console.log("check")
-
+        console.debug("check account status:", account?.status)
         switch(account?.status) {
             case undefined:
                 navigation.navigate("Onboarding", { screen: "Entrypoint" })
