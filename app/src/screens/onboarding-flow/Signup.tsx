@@ -14,10 +14,10 @@ import {styles} from './styles';
 import {supabase} from '../../lib/supabase';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
-import { AccountsScreenProps } from '.';
+import { OnboardingScreenProps } from '.';
 
-export interface SignupProps extends AccountsScreenProps<"Signup"> {
-  
+export interface SignupProps extends OnboardingScreenProps<"Signup"> {
+
 }
 export const Signup = ({navigation}: SignupProps) => {
   const [email, setEmail] = React.useState('');

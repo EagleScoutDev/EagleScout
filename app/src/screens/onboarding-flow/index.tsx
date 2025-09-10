@@ -9,31 +9,28 @@ import { EnterUserInfo } from "./steps/EnterUserInfo";
 import { SelectTeam } from "./steps/SelectTeam";
 import { useState, useContext, useEffect } from "react";
 import { AccountStatus, login, saveAccount } from "../../lib/account";
-import { ThemeContext } from "../../lib/contexts/ThemeContext";
 import { AccountContext } from "../../lib/contexts/AccountContext";
-import { AppTabsScreenProps } from "../../AppTabs";
+import { RootStackScreenProps } from "../../App";
 
-const Stack = createStackNavigator<AccountsParamList>();
-export type AccountsScreenProps<K extends keyof AccountsParamList> = StackScreenProps<AccountsParamList, K>
-export type AccountsParamList = {
-    Entrypoint: undefined;
-    Login: undefined;
-    Signup: undefined;
-    ResetPassword: undefined;
-    SetNewPassword: undefined;
-    EnterTeamEmail: undefined;
-    EnterUserInfo: undefined;
-    SelectTeam: undefined;
+const Stack = createStackNavigator<OnboardingParamList>();
+export type OnboardingScreenProps<K extends keyof OnboardingParamList> = StackScreenProps<OnboardingParamList, K>
+export type OnboardingParamList = {
+    Entrypoint: undefined
+    Login: undefined
+    Signup: undefined
+    ResetPassword: undefined
+    SetNewPassword: undefined
+    EnterTeamEmail: undefined
+    EnterUserInfo: undefined
+    SelectTeam: undefined
 };
 
-export interface AccountsProps extends AppTabsScreenProps<"Accounts"> {
+export interface OnboardingProps extends RootStackScreenProps<"Onboarding"> {
 
 }
-export const AccountsFlow = ({ route, navigation }: AccountsProps) => {
-    const { setOnboardingActive } = useContext(ThemeContext);
-    const { account, setAccount } = useContext(AccountContext);
-
-    const [error, setError] = useState('');
+export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
+    const { account, setAccount } = useContext(AccountContext)
+    const [ error, setError ] = useState("")
 
     async function doLogin(username: string, password: string) {
         try {
@@ -49,41 +46,35 @@ export const AccountsFlow = ({ route, navigation }: AccountsProps) => {
             setError(e instanceof Error ? e.message : "An error occured");
         }
     }
-    async function checkAccount() {
-        if (account === null) {
-            navigation.navigate("Accounts", { screen: "Entrypoint" })
-            return
-        }
 
-        switch (account.status) {
+    useEffect(() => {
+        console.log("check")
+
+        switch(account?.status) {
+            case undefined:
+                navigation.navigate("Onboarding", { screen: "Entrypoint" })
+                break
             case AccountStatus.Deleted:
-                setError("Your account has been marked for deletion.");
-                navigation.navigate("Accounts", { screen: "Entrypoint" })
-                break;
+                setError("Your account has been marked for deletion.")
+                navigation.replace("Onboarding", { screen: "Entrypoint" })
+                break
             case AccountStatus.Onboarding:
                 setError("");
-                navigation.navigate("Accounts", { screen: "EnterUserInfo" });
-                break;
+                navigation.navigate("Onboarding", { screen: "EnterUserInfo" });
+                break
             case AccountStatus.Approval:
                 setError("Your account has not been approved yet.\nPlease contact a captain for approval.");
-                navigation.navigate("Accounts", { screen: "Entrypoint" })
-                break;
+                navigation.replace("Onboarding", { screen: "Entrypoint" })
+                break
             case AccountStatus.Approved:
-                console.log("account saved:", account)
                 saveAccount(account);
-
                 setAccount(account);
-                setOnboardingActive(false);
-                navigation.navigate("Home", { state: undefined });
-                break;
+                navigation.replace("App", { state: undefined })
+                break
 
             default:
                 throw new Error("Assertion failed") // TODO: better handling of this
         }
-    }
-
-    useEffect(() => {
-        checkAccount()
     }, [account])
 
     return <Stack.Navigator
@@ -92,7 +83,7 @@ export const AccountsFlow = ({ route, navigation }: AccountsProps) => {
             headerShown: false
         }}
     >
-        <Stack.Screen name='Entrypoint' component={EntrypointHome} />
+        <Stack.Screen name="Entrypoint" component={EntrypointHome} />
         <Stack.Screen name="Login" children={(props) => <LoginForm {...props} onSubmit={doLogin} error={error} />} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />

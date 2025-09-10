@@ -88,7 +88,11 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                 <TouchableOpacity
                     style={styles.grouping}
                     onPress={() => {
-                        navigation.navigate('App', { screen: 'Home', params: { screen: 'Scout Report' } });
+                        navigation.pop()
+                        navigation.navigate('App', {
+                            screen: 'Home',
+                            params: { screen: 'Scout Report' }
+                        });
                     }}>
                     <View style={styles.icon_box}>
                         <JournalPlus size="100%" fill={colors.text} />
@@ -104,6 +108,7 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                 <TouchableOpacity
                     style={styles.grouping}
                     onPress={() => {
+                        navigation.pop()
                         navigation.navigate('App', {
                             screen: 'Home',
                             params: { screen: "Pit Scout" }
@@ -123,6 +128,7 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                 <TouchableOpacity
                     style={styles.grouping}
                     onPress={() => {
+                        navigation.pop()
                         navigation.navigate('App', {
                             screen: 'Home',
                             params: { screen: 'Note' }
@@ -142,9 +148,10 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                 <TouchableOpacity
                     style={styles.grouping}
                     onPress={() => {
+                        navigation.pop()
                         navigation.navigate('App', {
                             screen: 'MatchBetting'
-                        });
+                        })
                     }}>
                     <View style={styles.icon_box}>
                         <CashCoin size="100%" fill={colors.text} />

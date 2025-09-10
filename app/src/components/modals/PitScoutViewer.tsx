@@ -2,7 +2,6 @@ import {
   FlatList,
   Image,
   Modal,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,6 +16,7 @@ import PitScoutReports, {
 } from '../../database/PitScoutReports';
 import RadioButtons from '../form/RadioButtons';
 import Checkbox from '../form/Checkbox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ListSeparator = () => <View style={{width: 10}} />;
 

@@ -11,10 +11,10 @@ import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { ThemedNavigationContainer } from "./components/ThemedNavigationContainer";
 import { handleDeepLink } from "./deepLink";
 import { AccountContext } from "./lib/contexts/AccountContext";
-import { Account } from "./lib/account";
+import { Account, recallAccount } from "./lib/account";
 import { AppTabs, AppTabsParamList } from "./AppTabs";
-import { NavigatorScreenParams } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigatorScreenParams, useNavigation } from "@react-navigation/native";
+import { OnboardingFlow, OnboardingParamList } from "./screens/onboarding-flow";
 
 declare global {
     namespace ReactNavigation {
@@ -22,18 +22,18 @@ declare global {
     }
 }
 
-const RootStack = createStackNavigator<RootStackParamList, "RootStack">();
-export type RootStackScreenProps<K extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, K, "RootStack">;
+const RootStack = createStackNavigator<RootStackParamList>();
+export type RootStackScreenProps<K extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, K>;
 export type RootStackParamList = {
     App: NavigatorScreenParams<AppTabsParamList>,
-    PlusMenu: undefined
+    PlusMenu: undefined,
+    Onboarding: NavigatorScreenParams<OnboardingParamList>,
 };
 
 const RootNavigator = () => {
     const deepLink = useDeepLinking();
 
     const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
-    const [onboardingActive, setOnboardingActive] = useState(false);
     const [account, setAccount] = useState<Account | null>(null);
 
     useEffect(() => {
@@ -46,20 +46,21 @@ const RootNavigator = () => {
     }, []);
 
     useEffect(() => {
-        AsyncStorage.getItem("authenticated").then(r => {
-            setOnboardingActive(!r)
-        })
-    }, []);
-
-    useEffect(() => {
         handleDeepLink(deepLink);
     }, [deepLink])
+
+
+    useEffect(() => {
+        recallAccount().then(r => {
+            console.log("account loaded:", r)
+            setAccount(r)
+        })
+    }, [])
 
     return (
         <ThemeContext.Provider
             value={{
                 themePreference, setThemePreference,
-                onboardingActive, setOnboardingActive,
             }}>
             <AccountContext.Provider
                 value={{
@@ -68,14 +69,18 @@ const RootNavigator = () => {
 
                 <ThemedNavigationContainer>
                     <RootStack.Navigator
-                        id="RootStack"
-                        initialRouteName="App"
                         screenOptions={{
                             headerShown: false,
                             presentation: "transparentModal",
-                        }}>
-                        <RootStack.Screen name="App" component={AppTabs} />
-                        <RootStack.Screen name="PlusMenu" component={PlusNavigationModal} />
+                        }}>{
+                        account !== null
+                            ? <RootStack.Group>
+                                <RootStack.Screen name="App" component={AppTabs} />
+                                <RootStack.Screen name="PlusMenu" component={PlusNavigationModal} />
+                            </RootStack.Group>
+
+                            :<RootStack.Screen name="Onboarding" component={OnboardingFlow} />
+                        }
                     </RootStack.Navigator>
                     <Toast />
                 </ThemedNavigationContainer>

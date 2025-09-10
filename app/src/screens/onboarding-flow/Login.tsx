@@ -12,9 +12,9 @@ import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
-import { AccountsScreenProps } from '.';
+import { OnboardingScreenProps } from '.';
 
-export interface LoginProps extends AccountsScreenProps<"Login"> {
+export interface LoginProps extends OnboardingScreenProps<"Login"> {
   onSubmit: (username: string, password: string) => void;
   error: string;
 }

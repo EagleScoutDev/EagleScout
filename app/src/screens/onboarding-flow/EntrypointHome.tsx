@@ -2,25 +2,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
 import React, { useContext, useEffect } from 'react';
-import { AccountsScreenProps } from '.';
+import { OnboardingScreenProps } from '.';
 import { AccountContext } from '../../lib/contexts/AccountContext';
-import { recallAccount } from '../../lib/account';
 
-export interface EntrypointProps extends AccountsScreenProps<'Entrypoint'> {
+export interface EntrypointProps extends OnboardingScreenProps<'Entrypoint'> {
 
 }
 export const EntrypointHome = ({ route, navigation }: EntrypointProps) => {
     const { colors } = useTheme();
-    const { account, setAccount } = useContext(AccountContext);
-
-    useEffect(() => {
-        if (account === null) {
-            recallAccount().then(r => {
-                console.log("account loaded:", r)
-                if (r !== null) setAccount(r)
-            })
-        }
-    }, [])
 
     const styles = StyleSheet.create({
         container: {
