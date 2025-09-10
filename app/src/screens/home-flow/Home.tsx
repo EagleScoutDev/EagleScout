@@ -21,7 +21,7 @@ function Home() {
   const [seconds, setSeconds] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const {colors} = useTheme();
-  
+
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isTimerActive) {
@@ -44,7 +44,8 @@ function Home() {
   };
 
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator
+    initialRouteName='Dashboard'>
       <HomeStack.Screen
         name="Dashboard"
         component={HomeMain}

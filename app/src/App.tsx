@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import FormHelper from "./FormHelper";
-import PlusNavigationModal from "./PlusNavigationModal";
+import PlusMenu from "./PlusMenu";
 import { createStackNavigator, StackScreenProps } from "@react-navigation/stack";
 import { useDeepLinking } from "./lib/hooks/useDeepLinking";
 import { ThemeOptions } from "./themes";
@@ -76,7 +76,10 @@ const RootNavigator = () => {
                         account !== null
                             ? <RootStack.Group>
                                 <RootStack.Screen name="App" component={AppTabs} />
-                                <RootStack.Screen name="PlusMenu" component={PlusNavigationModal} />
+
+                                <RootStack.Screen name="PlusMenu" component={PlusMenu} options={{
+                                    presentation: "transparentModal"
+                                }} />
                             </RootStack.Group>
 
                             :<RootStack.Screen name="Onboarding" component={OnboardingFlow} />

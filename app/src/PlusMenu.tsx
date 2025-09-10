@@ -7,15 +7,15 @@ import {
     View,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import Svg, { Path } from 'react-native-svg';
 import { isTablet } from './lib/deviceType';
 import { RootStackScreenProps } from './App';
 import { CashCoin, JournalPlus, Sticky, Tag } from './components/icons/icons.generated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface PlusMenuProps extends RootStackScreenProps<"PlusMenu"> {
 
 }
-const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
+const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -71,9 +71,7 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
     return (
         <>
             <Pressable
-                onPress={() => {
-                    navigation.goBack();
-                }}
+                onPress={() => { navigation.pop() }}
                 style={{
                     backgroundColor: 'grey',
                     // make the blue part semi-transparent
@@ -89,9 +87,9 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                     style={styles.grouping}
                     onPress={() => {
                         navigation.pop()
-                        navigation.navigate('App', {
+                        navigation.replace('App', {
                             screen: 'Home',
-                            params: { screen: 'Scout Report' }
+                            params: { screen: 'Scout Report', initial: false }
                         });
                     }}>
                     <View style={styles.icon_box}>
@@ -109,9 +107,9 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                     style={styles.grouping}
                     onPress={() => {
                         navigation.pop()
-                        navigation.navigate('App', {
+                        navigation.replace('App', {
                             screen: 'Home',
-                            params: { screen: "Pit Scout" }
+                            params: { screen: "Pit Scout", initial: false }
                         })
                     }}>
                     <View style={styles.icon_box}>
@@ -129,9 +127,9 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
                     style={styles.grouping}
                     onPress={() => {
                         navigation.pop()
-                        navigation.navigate('App', {
+                        navigation.replace('App', {
                             screen: 'Home',
-                            params: { screen: 'Note' }
+                            params: { screen: 'Note', initial: false }
                         });
                     }}>
                     <View style={styles.icon_box}>
@@ -166,4 +164,4 @@ const PlusNavigationModal = ({ route, navigation }: PlusMenuProps) => {
     );
 };
 
-export default PlusNavigationModal;
+export default PlusMenu;
