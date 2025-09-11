@@ -1,7 +1,6 @@
 import {ActivityIndicator, Pressable, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import FormsDB from '../../database/Forms';
 import QuestionSummary from './QuestionSummary';
 import ScoutReportsDB, {
   ScoutReportReturnData,
@@ -73,7 +72,6 @@ function ScoutSummary({
   return (
     <View
       style={{
-        marginTop: '10%',
         flexDirection: isTablet() ? 'row' : 'column',
         flexWrap: isTablet() ? 'wrap' : 'nowrap',
       }}>
