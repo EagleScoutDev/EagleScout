@@ -15,7 +15,7 @@ import {CaretRight} from '../../SVGIcons';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import Svg, {Path} from 'react-native-svg';
-import QuestionFormulaCreator from '../data-flow/QuestionFormulaCreator';
+import QuestionFormulaCreator from '../data/QuestionFormulaCreator';
 import CombinedGraph from './CombinedGraph'; // adjust the import path to match your file structur
 
 interface TeamViewerProps {

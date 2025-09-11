@@ -15,24 +15,21 @@ import {
 import {Theme, useNavigation, useTheme} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import PitScoutingCamera from './PitScoutingCamera';
-import FormSection from '../../components/form/FormSection';
-import FormComponent from '../../components/form/FormComponent';
-import StandardButton from '../../components/StandardButton';
-import TeamInformation from '../../components/form/TeamInformation';
-import CompetitionsDB from '../../database/Competitions';
-import FormHelper from '../../FormHelper';
-import PitScoutReports, {
-  PitScoutReportWithoutId,
-} from '../../database/PitScoutReports';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {TrashCan} from '../../SVGIcons';
+import TeamInformation from '../../../components/form/TeamInformation';
+import StandardButton from '../../../components/StandardButton';
+import CompetitionsDB from '../../../database/Competitions';
+import PitScoutReports, { PitScoutReportWithoutId } from '../../../database/PitScoutReports';
+import FormHelper from '../../../FormHelper';
+import { TrashCan } from '../../../SVGIcons';
+import FormSection from '../../../components/form/FormSection';
 
 const Tab = createMaterialTopTabNavigator();
 
 const ListSeparator = () => <View style={{width: 10}} />;
 
-export default function PitScoutingFlow() {
+export function PitScoutingFlow() {
   const navigation = useNavigation();
   const theme = useTheme();
   const colors = theme.colors;

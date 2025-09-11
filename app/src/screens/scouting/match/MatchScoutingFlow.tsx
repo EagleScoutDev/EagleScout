@@ -2,19 +2,21 @@ import {Alert, Modal, StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import FormHelper from '../../FormHelper';
+import FormHelper from '../../../FormHelper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Toast from 'react-native-toast-message';
-import CompetitionsDB from '../../database/Competitions';
-import ScoutReportsDB from '../../database/ScoutReports';
+import CompetitionsDB from '../../../database/Competitions';
+import ScoutReportsDB from '../../../database/ScoutReports';
 import Gamification from './Gamification';
 import Confetti from 'react-native-confetti';
-import {useCurrentCompetitionMatches} from '../../lib/useCurrentCompetitionMatches';
+import {useCurrentCompetitionMatches} from '../../../lib/useCurrentCompetitionMatches';
 
 // TODO: add three lines to open drawer
 createMaterialTopTabNavigator();
 
-function ScoutingFlow({resetTimer}) {
+export function MatchScoutingFlow() {
+
+
   const route = useRoute();
   const navigation = useNavigation();
   const defaultValues = useMemo(() => {
@@ -429,5 +431,3 @@ function ScoutingFlow({resetTimer}) {
     </>
   );
 }
-
-export default ScoutingFlow;

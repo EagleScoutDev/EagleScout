@@ -7,13 +7,12 @@ import PlusMenu from "./PlusMenu";
 import { useDeepLinking } from "./lib/hooks/useDeepLinking";
 import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
-import { ThemedNavigationContainer } from "./components/ThemedNavigationContainer";
 import { handleDeepLink } from "./deepLink";
 import { AccountContext } from "./lib/contexts/AccountContext";
 import { Account, recallAccount } from "./lib/account";
-import { AppTabs, AppTabsParamList } from "./AppTabs";
+import { AppHome, AppHomeParamList } from "./AppHome";
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
-import { OnboardingFlow, OnboardingParamList } from "./screens/onboarding-flow";
+import { OnboardingFlow, OnboardingParamList } from "./screens/onboarding";
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
 
 declare global {
@@ -25,7 +24,7 @@ declare global {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, K>;
 export type RootStackParamList = {
-    App: NavigatorScreenParams<AppTabsParamList>,
+    App: NavigatorScreenParams<AppHomeParamList>,
     PlusMenu: undefined,
     Onboarding: NavigatorScreenParams<OnboardingParamList>,
 };
@@ -74,7 +73,7 @@ const RootNavigator = () => {
                             headerShown: false
                         }}>
                             <RootStack.Group>
-                                <RootStack.Screen name="App" component={AppTabs} options={{
+                                <RootStack.Screen name="App" component={AppHome} options={{
                                     animationTypeForReplace: "pop"
                                 }}/>
 

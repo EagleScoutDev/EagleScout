@@ -5,13 +5,13 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import FormSection from '../../components/form/FormSection';
+import FormSection from '../../../components/form/FormSection';
 import React, {useState} from 'react';
-import FormComponent from '../../components/form/FormComponent';
-import StandardButton from '../../components/StandardButton';
-import MatchInformation from '../../components/form/MatchInformation';
+import FormComponent from '../../../components/form/FormComponent';
+import StandardButton from '../../../components/StandardButton';
+import MatchInformation from '../../../components/form/MatchInformation';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import ReefscapeAutoModal from '../../components/games/reefscape/ReefscapeAutoModal';
+import ReefscapeAutoModal from '../../../components/games/reefscape/ReefscapeAutoModal';
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator();

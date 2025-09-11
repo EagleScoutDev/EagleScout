@@ -27,10 +27,10 @@ export async function login(username: string, password: string): Promise<Account
     password: password,
   });
   if (error) throw error
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (user === null) return null
-  
+
   const {data: uattrData, error: uattrError} = await supabase
     .from('user_attributes')
     .select('org_id:organization_id, scouter, admin')
@@ -64,7 +64,6 @@ export async function login(username: string, password: string): Promise<Account
     status
   }
 }
-
 
 export async function saveAccount(acc: Account | null) {
   await AsyncStorage.setItem('user', JSON.stringify(acc));

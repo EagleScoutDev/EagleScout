@@ -156,7 +156,7 @@ const SearchModal = ({route, navigation}: SearchModalProps) => {
               marginLeft: '5%',
               marginRight: '5%',
             }}
-            onPress={() => navigation.navigate('Main Search')}>
+            onPress={() => navigation.popTo("Main Search")}>
             <Text
               style={{
                 color: colors.text,
