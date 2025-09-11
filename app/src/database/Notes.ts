@@ -1,6 +1,4 @@
 import {supabase} from '../lib/supabase';
-import {CompetitionReturnData} from './Competitions';
-import ProfilesDB from './Profiles';
 
 export interface NoteStructure {
   id?: string;
@@ -67,8 +65,6 @@ class NotesDB {
     match_number: number,
     competition_id: number,
   ): Promise<number> {
-    // console.log('createMatch match_number: ', match_number);
-    // console.log('createMatch competition_id: ', competition_id);
     const {data, error} = await supabase
       .from('matches')
       .insert([
