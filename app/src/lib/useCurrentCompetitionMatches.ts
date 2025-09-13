@@ -1,4 +1,4 @@
-import TBAMatches, {TBAMatch} from '../database/TBAMatches';
+import TBAMatches, {type TBAMatch} from '../database/TBAMatches';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../FormHelper';
 import CompetitionsDB from '../database/Competitions';

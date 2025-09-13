@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {ReefscapeField} from './ReefscapeField';
-import {ReefscapeAutoPath} from './ReefscapeAutoPath';
+import type { ReefscapeAutoPath } from './ReefscapeAutoPath';
 import {
   ReefscapeActionIcon,
   ReefscapeActions,

@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {CrescendoField} from './CrescendoField';
-import {CrescendoAutoPath} from './CrescendoAutoPath';
+import type { CrescendoAutoPath } from './CrescendoAutoPath';
 import {
   CrescendoActionIcon,
   CrescendoActions,

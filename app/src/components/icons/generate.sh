@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 icons_loc=$(realpath ../../../node_modules/bootstrap-icons/icons)
 
 cat > ./icons.generated.tsx <<EOF
-import _svg, { Path as _path, Rect as _rect, Circle as _circle, SvgProps } from "react-native-svg";
+import _svg, { Path as _path, Rect as _rect, Circle as _circle, type SvgProps } from "react-native-svg";
 export interface IconProps extends SvgProps {
     size?: string | number | undefined
 }

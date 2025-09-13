@@ -12,7 +12,7 @@ import {X} from '../../SVGIcons';
 import {useTheme} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import PitScoutReports, {
-  PitScoutReportReturnData,
+  type PitScoutReportReturnData,
 } from '../../database/PitScoutReports';
 import RadioButtons from '../form/RadioButtons';
 import Checkbox from '../form/Checkbox';

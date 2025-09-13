@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {Svg, Line, Path, Circle} from 'react-native-svg';
-import {CrescendoAutoPath} from './CrescendoAutoPath';
+import type { CrescendoAutoPath } from './CrescendoAutoPath';
 import {CrescendoActionType} from './CrescendoActions';
 
 const notePositions = [

@@ -1,5 +1,5 @@
 import React from 'react';
-import {PitScoutReportReturnData} from '../database/PitScoutReports';
+import {type PitScoutReportReturnData} from '../database/PitScoutReports';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {PitScoutViewer} from './modals/PitScoutViewer';

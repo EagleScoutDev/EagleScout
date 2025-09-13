@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import {Circle, Line, Path, Rect, Svg} from 'react-native-svg';
-import {ReefscapeAutoPath} from './ReefscapeAutoPath';
+import type { ReefscapeAutoPath } from './ReefscapeAutoPath';
 import {ReefscapeActionType} from './ReefscapeActions';
 
 const nodePositions = [

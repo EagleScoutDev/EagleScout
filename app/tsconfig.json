@@ -4,6 +4,8 @@
   "exclude": ["**/node_modules", "**/Pods"],
 
   "compilerOptions": {
-    "typeRoots": ["./src/types"]
+    "typeRoots": ["./src/types"],
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true
   }
 }

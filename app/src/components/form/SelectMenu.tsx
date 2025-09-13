@@ -14,9 +14,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
+import React, {type FC, useEffect, useMemo, useRef, useState} from 'react';
 import {ChevronDown, MagnifyingGlass, X} from '../../SVGIcons';
-import {Theme, useTheme} from '@react-navigation/native';
+import {type Theme, useTheme} from '@react-navigation/native';
 
 interface Data {
   key: any;
