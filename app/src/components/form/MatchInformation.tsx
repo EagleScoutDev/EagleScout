@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import { OrientationChooser } from '../games/OrientationChooser';
-import type { Alliance, Orientation } from '../../lib/game';
+import type { Alliance, Orientation } from '../../games/common';
 
 export interface MatchInformation {
     match: number | null,
@@ -15,7 +15,7 @@ export interface MatchInformation {
     alliance: Alliance
     setAlliance: React.Dispatch<React.SetStateAction<Alliance>>
 }
-function MatchInformation({
+export function MatchInformation({
     match,
     setMatch,
     team,
@@ -125,7 +125,7 @@ function MatchInformation({
                     keyboardType={'numeric'}
                 />
             </View>
-            {!teamsForMatch.includes(team!) && (
+            {team !== null && !teamsForMatch.includes(team) && (
                 <Text style={{ color: colors.notification, textAlign: 'center' }}>
                     Warning: Team {team} is not in this match
                 </Text>
@@ -139,5 +139,3 @@ function MatchInformation({
         </View>
     );
 }
-
-export default MatchInformation;

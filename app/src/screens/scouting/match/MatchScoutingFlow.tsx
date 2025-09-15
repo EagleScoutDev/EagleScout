@@ -1,22 +1,22 @@
-import { Alert, Modal, StyleSheet, Text, View } from 'react-native';
-import { useNavigation, useRoute, useTheme } from '@react-navigation/native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { useRoute, useTheme } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import FormHelper from '../../../FormHelper';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Toast from 'react-native-toast-message';
 import CompetitionsDB from '../../../database/Competitions';
 import MatchReportsDB from '../../../database/ScoutMatchReports';
 import Gamification from './Gamification';
 import Confetti from 'react-native-confetti';
 import { useCurrentCompetitionMatches } from '../../../lib/useCurrentCompetitionMatches';
+import { Alliance, Orientation } from '../../../games/common';
+import type { ScoutingHomeScreenProps } from '../ScoutFlow';
 
-// TODO: add three lines to open drawer
-createMaterialTopTabNavigator();
+export interface MatchScoutingFlowProps extends ScoutingHomeScreenProps<"Match"> {
 
-export function MatchScoutingFlow() {
+}
+export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     const route = useRoute();
-    const navigation = useNavigation();
     const defaultValues = useMemo(() => {
         return {
             radio: '',
@@ -28,8 +28,8 @@ export function MatchScoutingFlow() {
     }, []);
 
     const { colors } = useTheme();
-    const [match, setMatch] = useState('');
-    const [team, setTeam] = useState('');
+    const [match, setMatch] = useState<number | null>(null);
+    const [team, setTeam] = useState<number | null>(null);
     const [competition, setCompetition] = useState();
     const [formStructure, setFormStructure] = useState();
     const [formId, setFormId] = useState();
@@ -40,15 +40,13 @@ export function MatchScoutingFlow() {
 
     const [startRelativeTime, setStartRelativeTime] = useState(-1);
     const [timeline, setTimeline] = useState([]);
-    const [fieldOrientation, setFieldOrientation] = useState('red');
-    const [selectedAlliance, setSelectedAlliance] = useState('red');
+    const [fieldOrientation, setFieldOrientation] = useState<Orientation>(Orientation.leftRed);
+    const [selectedAlliance, setSelectedAlliance] = useState<Alliance>(Alliance.red);
 
     const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
     const [isOffline, setIsOffline] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [confettiView, setConfettiView] = useState(null);
-
-    const [scoutStylePreference, setScoutStylePreference] = useState('Paginated');
 
     const { competitionId, matches, getTeamsForMatch } =
         useCurrentCompetitionMatches();
@@ -62,14 +60,6 @@ export function MatchScoutingFlow() {
             setTeamsForMatch(teams);
         }
     }, [match, competitionId, matches]);
-
-    useEffect(() => {
-        FormHelper.readAsyncStorage(FormHelper.SCOUTING_STYLE).then(value => {
-            if (value != null) {
-                setScoutStylePreference(value);
-            }
-        });
-    }, []);
 
     /**
      * Initializes fields of the report before submitting it.
@@ -394,7 +384,6 @@ export function MatchScoutingFlow() {
                         teamsForMatch={teamsForMatch}
                         colors={colors}
                         styles={styles}
-                        navigation={navigation}
                         competition={competition}
                         data={data}
                         arrayData={arrayData}
@@ -405,10 +394,10 @@ export function MatchScoutingFlow() {
                         setStartRelativeTime={setStartRelativeTime}
                         timeline={timeline}
                         setTimeline={setTimeline}
-                        fieldOrientation={fieldOrientation}
-                        setFieldOrientation={setFieldOrientation}
-                        selectedAlliance={selectedAlliance}
-                        setSelectedAlliance={setSelectedAlliance}
+                        orientation={fieldOrientation}
+                        setOrientation={setFieldOrientation}
+                        alliance={selectedAlliance}
+                        setAlliance={setSelectedAlliance}
                         autoPath={autoPath}
                         setAutoPath={setAutoPath}
                     />

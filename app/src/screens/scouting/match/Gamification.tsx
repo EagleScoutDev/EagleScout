@@ -7,41 +7,59 @@ import {
 } from 'react-native';
 import FormSection from '../../../components/form/FormSection';
 import React, { useState } from 'react';
-import FormComponent from '../../../components/form/FormComponent';
+import { FormComponent } from '../../../components/form/FormComponent';
 import StandardButton from '../../../components/StandardButton';
-import MatchInformation from '../../../components/form/MatchInformation';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { MatchInformation } from '../../../components/form/MatchInformation';
+import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import ReefscapeAutoModal from '../../../components/games/reefscape/ReefscapeAutoModal';
+import type { Setter } from '../../../lib/react-utils/types';
+import type { ScoutingHomeParamList, ScoutingHomeScreenProps } from '../ScoutFlow';
+import type { Alliance, Orientation } from '../../../games/common';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // TODO: add three lines to open drawer
-const Tab = createMaterialTopTabNavigator();
+const Tab = createMaterialTopTabNavigator<GamificationParamList>();
+export type GamificationScreenProps<K extends keyof GamificationParamList> = MaterialTopTabScreenProps<GamificationParamList, K>
+export type GamificationParamList = {
+    Match: undefined,
 
+}
+
+export interface GamificationProps {
+    match: number | null, setMatch: Setter<number | null>
+    team: number | null, setTeam: Setter<number | null>
+    teamsForMatch: number[]
+    competition: unknown
+
+    orientation: Orientation, setOrientation: Setter<Orientation>
+    alliance: Alliance, setAlliance: Setter<Alliance>
+
+    startRelativeTime: number, setStartRelativeTime: Setter<number>
+    timeline: unknown, setTimeline: Setter<unknown>
+
+    arrayData: unknown, setArrayData: Setter<unknown>
+
+    autoPath: unknown, setAutoPath: Setter<unknown>
+    navigation: NativeStackNavigationProp<ScoutingHomeParamList, "Match">
+}
 function Gamification({
-    match,
-    setMatch,
-    team,
-    setTeam,
+    match, setMatch,
+    team, setTeam,
     teamsForMatch,
+    competition,
+    orientation, setOrientation,
+    alliance, setAlliance,
+    startRelativeTime, setStartRelativeTime,
+    timeline, setTimeline,
+    arrayData, setArrayData,
+    autoPath, setAutoPath,
+
     colors,
     styles,
-    navigation,
-    competition,
     data,
-    arrayData,
-    setArrayData,
     submitForm,
-    isSubmitting,
-    startRelativeTime,
-    setStartRelativeTime,
-    timeline,
-    setTimeline,
-    fieldOrientation,
-    setFieldOrientation,
-    selectedAlliance,
-    setSelectedAlliance,
-    autoPath,
-    setAutoPath,
-}) {
+    isSubmitting
+}: GamificationProps) {
     const [activePage, setActivePage] = useState('Match');
     const [modalIsOpen, setModalIsOpen] = useState(true);
 
@@ -75,8 +93,8 @@ function Gamification({
                             backgroundColor: colors.background,
                         },
                     }}
-                    children={() => (
-                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    children={({ navigation }: GamificationScreenProps<"Match">) => {
+                        return <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <View
                                 style={{
                                     flex: 1,
@@ -105,10 +123,10 @@ function Gamification({
                                         team={team}
                                         setTeam={setTeam}
                                         teamsForMatch={teamsForMatch}
-                                        selectedOrientation={fieldOrientation}
-                                        setSelectedOrientation={setFieldOrientation}
-                                        selectedAlliance={selectedAlliance}
-                                        setSelectedAlliance={setSelectedAlliance}
+                                        orientation={orientation}
+                                        setOrientation={setOrientation}
+                                        alliance={alliance}
+                                        setAlliance={setAlliance}
                                     />
                                 </View>
                                 <View style={{ width: '100%', marginBottom: '5%' }}>
@@ -124,7 +142,7 @@ function Gamification({
                                 </View>
                             </View>
                         </TouchableWithoutFeedback>
-                    )}
+                    }}
                 />
                 {data &&
                     Object.entries(data).map(([key, value], index) => {
@@ -178,6 +196,7 @@ function Gamification({
                                                 })}
                                             </FormSection>
                                         </View>
+
                                         {/*if the index is not the last one, add a button that navigates users to the next tab*/}
                                         {index !== Object.keys(data).length - 1 && (
                                             <View style={{ width: '100%', marginBottom: '5%' }}>
@@ -185,8 +204,6 @@ function Gamification({
                                                     text={'Next'}
                                                     width={'85%'}
                                                     onPress={() => {
-                                                        navigation.navigate(Object.keys(data)[index + 1]);
-                                                        setActivePage(Object.keys(data)[index + 1]);
                                                     }}
                                                     color={colors.primary}
                                                 />
@@ -214,10 +231,10 @@ function Gamification({
             <ReefscapeAutoModal
                 isActive={activePage === 'Auto' && modalIsOpen}
                 setIsActive={setModalIsOpen}
-                fieldOrientation={fieldOrientation}
-                setFieldOrientation={setFieldOrientation}
-                selectedAlliance={selectedAlliance}
-                setSelectedAlliance={setSelectedAlliance}
+                fieldOrientation={orientation}
+                setFieldOrientation={setOrientation}
+                selectedAlliance={alliance}
+                setSelectedAlliance={setAlliance}
                 autoPath={autoPath}
                 setAutoPath={setAutoPath}
                 arrayData={arrayData}

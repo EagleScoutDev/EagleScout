@@ -35,6 +35,10 @@ local.properties
 !debug.keystore
 .kotlin/
 
+# VSCode
+#
+.vscode
+
 # node.js
 #
 node_modules/

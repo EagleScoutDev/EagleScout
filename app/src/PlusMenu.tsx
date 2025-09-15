@@ -88,7 +88,7 @@ const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
                         navigation.pop()
                         navigation.replace('App', {
                             screen: 'Home',
-                            params: { screen: 'Scout Report', initial: false }
+                            params: { screen: 'Match', initial: false }
                         });
                     }}>
                     <View style={styles.icon_box}>
@@ -108,7 +108,7 @@ const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
                         navigation.pop()
                         navigation.replace('App', {
                             screen: 'Home',
-                            params: { screen: "Pit Scout", initial: false }
+                            params: { screen: "Pit", initial: false }
                         })
                     }}>
                     <View style={styles.icon_box}>
@@ -128,7 +128,7 @@ const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
                         navigation.pop()
                         navigation.replace('App', {
                             screen: 'Home',
-                            params: { screen: 'Note', initial: false }
+                            params: { screen: "Note", initial: false }
                         });
                     }}>
                     <View style={styles.icon_box}>

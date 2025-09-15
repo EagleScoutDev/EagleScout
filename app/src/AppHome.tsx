@@ -6,7 +6,7 @@ import { View } from "react-native";
 import { saveAccount } from "./lib/account";
 import { AccountContext } from "./lib/contexts/AccountContext";
 import DataMain from "./screens/data/DataMain";
-import Home, { type HomeParamList } from "./screens/scouting/ScoutFlow";
+import ScoutingHome, { type ScoutingHomeParamList } from "./screens/scouting/ScoutFlow";
 import { MatchBettingNavigator } from "./screens/match-betting-flow/MatchBettingNavigator";
 import SearchScreen from "./screens/search/SearchScreen";
 import type { RootStackScreenProps } from "./App";
@@ -16,7 +16,7 @@ import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings-men
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>
 export type AppHomeParamList = {
-    Home: NavigatorScreenParams<HomeParamList>
+    Home: NavigatorScreenParams<ScoutingHomeParamList>
     Search: undefined
     PlusMenuLauncher: undefined
     Data: undefined
@@ -54,7 +54,7 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
         }}>
         <Tab.Screen
             name="Home"
-            component={Home}
+            component={ScoutingHome}
             options={{
                 tabBarIcon: ({ color, size, focused }) =>
                     focused ? <HouseFill color={color} size={size} />
