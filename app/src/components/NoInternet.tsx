@@ -2,8 +2,15 @@ import { Text, View } from 'react-native';
 import React from 'react';
 import StandardButton from './StandardButton';
 import { WifiOff } from './icons/icons.generated';
+import { useTheme } from '@react-navigation/native';
 
-function NoInternet({ colors, onRefresh }) {
+export interface NoInternetProps {
+    onRefresh: () => void
+}
+
+export function NoInternet({ onRefresh }: NoInternetProps) {
+    const { colors } = useTheme()
+
     return (
         <View
             style={{
@@ -35,11 +42,9 @@ function NoInternet({ colors, onRefresh }) {
                 <StandardButton
                     text={'Refresh'}
                     color={'red'}
-                    onPress={() => onRefresh}
+                    onPress={() => onRefresh()}
                 />
             </View>
         </View>
     );
 }
-
-export default NoInternet;

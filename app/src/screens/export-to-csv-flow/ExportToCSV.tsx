@@ -4,7 +4,7 @@ import CompetitionsDB, {
 } from '../../database/Competitions';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import NoInternet from '../../components/NoInternet';
+import { NoInternet } from '../../components/NoInternet';
 import { CompetitionList } from './CompetitionList';
 import { ExportCompetitionSheet } from './ExportCompetitionSheet';
 import {

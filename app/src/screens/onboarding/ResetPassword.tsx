@@ -12,7 +12,7 @@ import {
 import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
 import { type OnboardingScreenProps } from '.';
 

@@ -17,13 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from '../FormHelper';
 import { Badge } from './Badge';
 
-if (
-    Platform.OS === 'android' &&
-    UIManager.setLayoutAnimationEnabledExperimental
-) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-}
-
 function CompetitionFlatList({
     compName,
     data,

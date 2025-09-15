@@ -1,7 +1,10 @@
 import { Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-function MinimalSectionHeader(props) {
+export interface MinimalSectionHeaderProps {
+    title: string
+}
+export function MinimalSectionHeader({ title }: MinimalSectionHeaderProps) {
     const { colors } = useTheme();
 
     return (
@@ -14,9 +17,7 @@ function MinimalSectionHeader(props) {
                 paddingLeft: '2%',
                 paddingTop: '2%',
             }}>
-            {props.title.toUpperCase()}
+            {title.toUpperCase()}
         </Text>
     );
 }
-
-export default MinimalSectionHeader;

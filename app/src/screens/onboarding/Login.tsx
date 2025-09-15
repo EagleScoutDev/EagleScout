@@ -11,7 +11,7 @@ import {
 import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
 import type { OnboardingScreenProps } from '.';
 
 export interface LoginProps extends OnboardingScreenProps<"Login"> {

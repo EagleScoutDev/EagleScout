@@ -1,8 +1,8 @@
 import React, { Text, Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
-import { useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import RadioButtons from "../../../components/form/RadioButtons";
-import MinimalSectionHeader from "../../../components/MinimalSectionHeader";
+import { MinimalSectionHeader } from "../../../components/MinimalSectionHeader";
 import StandardButton from "../../../components/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
@@ -14,6 +14,8 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
     const [password, setPassword] = useState("");
     const [reason, setReason] = useState("");
     const { colors } = useTheme();
+
+    const rootNavigation = useNavigation()
 
     const styles = StyleSheet.create({
         text_input: {
@@ -56,7 +58,6 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                             "Concerns over data usage",
                             "Other",
                         ]}
-                        colors={colors}
                     />
                 </View>
                 <Text style={{ color: colors.text }}>
@@ -119,7 +120,6 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                                         );
                                         signOut();
                                         await supabase.auth.signOut();
-                                        navigation.navigate("Login");
                                         return;
                                     }
                                     Alert.alert("Error checking password", authError.name);
@@ -140,7 +140,6 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                                     )
                                     .then(() => signOut())
                                     .then(() => supabase.auth.signOut())
-                                    .then(() => navigation.navigate("Login"))
                                     .finally(() =>
                                         Alert.alert("Success", "Account delete requested."),
                                     );

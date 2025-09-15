@@ -12,7 +12,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import RadioButtons from '../form/RadioButtons';
-import Checkbox from '../form/Checkboxes';
+import { Checkboxes } from '../form/Checkboxes';
 import { supabase } from '../../lib/supabase';
 import FormHelper from '../../FormHelper';
 import UserAttributes, { type UserAttributeReturnData } from '../../database/UserAttributes';
@@ -21,6 +21,7 @@ import SliderType from '../form/SliderType';
 import { HistorySelectorModal } from './HistorySelectorModal';
 import Svg, { Path } from 'react-native-svg';
 import { isTablet } from '../../lib/deviceType';
+import { ClockHistory, PencilSquare, SendFill, X } from '../icons/icons.generated';
 
 const DEBUG = false;
 
@@ -335,12 +336,11 @@ function ScoutViewer({
                                             }
                                         }}>
                                         <PencilSquare
+                                            size="30"
+                                            fill={editingActive ? colors.primary : colors.text}
                                             style={{
                                                 padding: '2%',
-                                                fill: editingActive ? colors.primary : colors.text,
                                                 opacity: editingActive ? 1 : 0.6,
-                                                width: 30,
-                                                height: 30,
                                             }}
                                         />
                                     </TouchableOpacity>
@@ -352,11 +352,10 @@ function ScoutViewer({
                                             setHistoryButtonEnabled(true);
                                         }}>
                                         <ClockHistory
+                                            size="30"
+                                            fill={historyButtonEnabled ? colors.text : colors.primary}
                                             style={{
                                                 padding: '2%',
-                                                fill: historyButtonEnabled ? colors.text : colors.primary,
-                                                width: 30,
-                                                height: 30,
                                             }}
                                         />
                                     </TouchableOpacity>
@@ -395,11 +394,10 @@ function ScoutViewer({
                             setVisible(false);
                         }}>
                         <X
+                            size="40"
+                            fill={colors.notification}
                             style={{
                                 padding: '2%',
-                                width: 40,
-                                height: 40,
-                                fill: colors.notification,
                             }}
                         />
                     </TouchableOpacity>
@@ -416,17 +414,7 @@ function ScoutViewer({
                                 onPress={() => {
                                     navigateToTeamViewer();
                                 }}>
-                                <Svg
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className="bi bi-send-fill"
-                                    viewBox="0 0 16 16">
-                                    <Path
-                                        fill={'gray'}
-                                        d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"
-                                    />
-                                </Svg>
+                                <SendFill size="16" fill="gray" />
                             </Pressable>
                         </View>
                         <Text style={styles.report_info}>
@@ -563,7 +551,7 @@ function ScoutViewer({
                                     )}
                                     {field.type === 'checkboxes' && (
                                         <View>
-                                            <Checkbox
+                                            <Checkboxes
                                                 title={field.question}
                                                 options={field.options}
                                                 value={tempData[index]}

@@ -14,7 +14,7 @@ import UserProfileBox from '../../components/UserProfileBox';
 import ListItemContainer from '../../components/ListItemContainer';
 import ListItem from '../../components/ListItem';
 import SettingsPopup from './SettingsPopup';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Account } from "../../lib/account";
@@ -23,6 +23,7 @@ import { getLighterColor, parseColor } from '../../lib/color';
 import FormHelper from '../../FormHelper';
 import { type SettingsMenuScreenProps } from './SettingsMenu';
 import { Asterisk, Ban, BoxArrowRight, JournalBookmarkFill, PenFill, QuestionCircle, Sticky } from '../../components/icons/icons.generated';
+import { AccountContext } from '../../lib/contexts/AccountContext';
 
 const VERSION = '7.7.1';
 
@@ -32,6 +33,7 @@ export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {
 export function SettingsHome({ navigation }: SettingsHomeProps) {
     const { colors } = useTheme();
     const [settingsPopupActive, setSettingsPopupActive] = useState(false);
+    const { account, setAccount } = useContext(AccountContext)
 
     const [internetStatus, setInternetStatus] = useState(
         InternetStatus.NOT_ATTEMPTED,
@@ -62,6 +64,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
     };
 
     const signOutFunction = () => {
+        setAccount(null)
         AsyncStorage.getAllKeys().then(keys => {
             AsyncStorage.multiRemove(
                 keys.filter(key => FormHelper.EXCLUDE_DELETE_KEYS.indexOf(key) === -1),

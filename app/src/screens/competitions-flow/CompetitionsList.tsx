@@ -1,7 +1,7 @@
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import NoInternet from '../../components/NoInternet';
+import { NoInternet } from '../../components/NoInternet';
 import EditCompetitionModal from '../../components/modals/EditCompetitionModal';
 import CompetitionsDB from '../../database/Competitions';
 

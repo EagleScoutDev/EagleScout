@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import UserAttributes from '../../../database/UserAttributes';
 import { styles } from '../styles';
-import MinimalSectionHeader from '../../../components/MinimalSectionHeader';
+import { MinimalSectionHeader } from '../../../components/MinimalSectionHeader';
 import StandardButton from '../../../components/StandardButton';
 import { supabase } from '../../../lib/supabase';
 import { useTheme } from '@react-navigation/native';

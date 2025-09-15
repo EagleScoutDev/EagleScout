@@ -14,7 +14,7 @@ import PitReportsDB, {
     type PitReportReturnData,
 } from '../../database/ScoutPitReports';
 import RadioButtons from '../form/RadioButtons';
-import Checkbox from '../form/Checkboxes';
+import { Checkboxes } from '../form/Checkboxes';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ListSeparator = () => <View style={{ width: 10 }} />;
@@ -214,7 +214,7 @@ export const PitScoutViewer = ({
                                         )}
                                         {field.type === 'checkboxes' && (
                                             <>
-                                                <Checkbox
+                                                <Checkboxes
                                                     title={''}
                                                     disabled={true}
                                                     colors={colors}

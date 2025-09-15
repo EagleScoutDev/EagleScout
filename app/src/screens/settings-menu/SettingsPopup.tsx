@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, Pressable } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import MinimalSectionHeader from '../../components/MinimalSectionHeader';
+import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
 import { type SettingsHomeProps } from './SettingsHome';
 

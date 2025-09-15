@@ -143,11 +143,11 @@ export const PitScoutReportList = ({
                     </TouchableOpacity>
                 )}
             />
-            <PitScoutViewer
+            { chosenReport !== null && <PitScoutViewer
                 visible={modalVisible}
                 setVisible={setModalVisible}
                 data={chosenReport}
-            />
+            /> }
         </View>
     );
 };

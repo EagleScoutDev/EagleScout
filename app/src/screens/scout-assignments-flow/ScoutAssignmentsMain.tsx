@@ -2,7 +2,7 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import EnableScoutAssignmentsModal from '../../components/modals/EnableScoutAssignmentsModal';
 import React, { useEffect, useState } from 'react';
 import CompetitionsDB, { ScoutAssignmentsConfig } from "../../database/Competitions";
-import NoInternet from '../../components/NoInternet';
+import { NoInternet } from '../../components/NoInternet';
 import { useTheme } from '@react-navigation/native';
 
 function ScoutAssignmentsMain({ navigation }) {

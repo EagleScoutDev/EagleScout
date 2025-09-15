@@ -3,8 +3,19 @@ import React, {
     StyleSheet,
     Text,
     TouchableOpacity,
+    type DimensionValue,
 } from 'react-native';
 
+
+export interface StandardButtonProps {
+    textColor?: string
+    color?: string
+    onPress: () => void
+    width?: DimensionValue | undefined
+    text: string
+    isLoading?: boolean
+    disabled?: boolean
+}
 function StandardButton({
     textColor = 'white',
     color = '',
@@ -13,15 +24,15 @@ function StandardButton({
     text,
     isLoading = false,
     disabled = false,
-}) {
+}: StandardButtonProps) {
     const baseButtonStyle = {
         backgroundColor: color,
         padding: 10,
         margin: 10,
         borderRadius: 10,
-        width: width,
+        width,
         alignSelf: 'center',
-    };
+    } as const;
     const styles = StyleSheet.create({
         button: baseButtonStyle,
         button_loading: {
