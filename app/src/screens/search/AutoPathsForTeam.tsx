@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import CompetitionsDB from '../../database/Competitions';
-import ScoutReportsDB from '../../database/ScoutMatchReports';
+import MatchReportsDB from '../../database/ScoutMatchReports';
 import { useTheme } from '@react-navigation/native';
 import { type CrescendoAutoPath } from '../../components/games/crescendo/CrescendoAutoPath';
 import { CrescendoAutoViewer } from '../../components/games/crescendo/CrescendoAutoViewer';
@@ -26,7 +26,7 @@ export const AutoPathsForTeam = ({ route }) => {
             console.log(competition.startTime.toString());
             setYear(parseInt(competition.startTime.toString().split('-')[0]));
             console.log(year);
-            const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
                 team_number,
                 competition.id,
             );

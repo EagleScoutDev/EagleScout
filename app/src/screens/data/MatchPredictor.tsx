@@ -198,8 +198,8 @@ const MatchPredictor = () => {
 
         setAllianceBreakdown(results);
 
-        let blue_data = results.find(a => a.alliance === AllianceColor.BLUE);
-        let red_data = results.find(a => a.alliance === AllianceColor.RED);
+        let blue_data = results.find(a => a.alliance === Alliance.blue);
+        let red_data = results.find(a => a.alliance === Alliance.red);
 
         if (!blue_data || !red_data) {
             return;
@@ -207,8 +207,8 @@ const MatchPredictor = () => {
 
         let winner =
             blue_data?.probability > red_data?.probability
-                ? AllianceColor.BLUE
-                : AllianceColor.RED;
+                ? Alliance.blue
+                : Alliance.red;
 
         setCalculatedMeanStdev({
             blueMean: blue_data?.mean || 0,
@@ -462,14 +462,14 @@ const MatchPredictor = () => {
                             borderWidth: 1,
                             borderColor: 'dodgerblue',
                             backgroundColor:
-                                winningAllianceColor === AllianceColor.BLUE
+                                winningAllianceColor === Alliance.blue
                                     ? 'dodgerblue'
                                     : 'none',
                         }}>
                         <Text
                             style={{
                                 color:
-                                    winningAllianceColor === AllianceColor.BLUE
+                                    winningAllianceColor === Alliance.blue
                                         ? 'white'
                                         : colors.text,
                                 fontSize: 20,
@@ -483,7 +483,7 @@ const MatchPredictor = () => {
                                 <Text
                                     key={team}
                                     style={
-                                        winningAllianceColor === AllianceColor.BLUE
+                                        winningAllianceColor === Alliance.blue
                                             ? styles.winning_team_item
                                             : styles.team_item
                                     }>
@@ -496,14 +496,14 @@ const MatchPredictor = () => {
                         style={{
                             ...styles.team_container,
                             backgroundColor:
-                                winningAllianceColor === AllianceColor.RED ? 'red' : 'none',
+                                winningAllianceColor === Alliance.red ? 'red' : 'none',
                             borderWidth: 1,
                             borderColor: 'red',
                         }}>
                         <Text
                             style={{
                                 color:
-                                    winningAllianceColor === AllianceColor.RED
+                                    winningAllianceColor === Alliance.red
                                         ? 'white'
                                         : colors.text,
                                 fontSize: 20,
@@ -517,7 +517,7 @@ const MatchPredictor = () => {
                                 <Text
                                     key={team}
                                     style={
-                                        winningAllianceColor === AllianceColor.RED
+                                        winningAllianceColor === Alliance.red
                                             ? styles.winning_team_item
                                             : styles.team_item
                                     }>

@@ -20,7 +20,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import TeamInformation from '../../../components/form/TeamInformation';
 import StandardButton from '../../../components/StandardButton';
 import CompetitionsDB from '../../../database/Competitions';
-import PitScoutReports, { type PitScoutReportWithoutId } from '../../../database/ScoutPitReports';
+import PitReportsDB, { type PitReportWithoutId } from '../../../database/ScoutPitReports';
 import FormHelper from '../../../FormHelper';
 import FormSection from '../../../components/form/FormSection';
 import FormComponent from '../../../components/form/FormComponent';
@@ -173,7 +173,7 @@ export function PitScoutingFlow() {
             setIsSubmitting(false);
             return;
         }
-        const data: PitScoutReportWithoutId = {
+        const data: PitReportWithoutId = {
             data: formData,
             teamNumber: parseInt(team, 10),
             competitionId: currentCompetition!.id,
@@ -195,7 +195,7 @@ export function PitScoutingFlow() {
                 setIsSubmitting(false);
             });
         } else {
-            PitScoutReports.createOnlinePitScoutReport(
+            PitReportsDB.createOnlinePitScoutReport(
                 data,
                 images.filter(item => item !== 'plus'),
             )

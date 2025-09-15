@@ -2,15 +2,15 @@ export type RGB = [r: number, g: number, b: number]
 
 export function parseColor(raw: string): RGB {
     if (raw.startsWith("rgb(")) {
-        return raw.match(/\d+/g)!.slice(3).map(Number) as RGB
+        return raw.match(/\d+/g)!.slice(0, 3).map(Number) as RGB
     }
     else if (raw.startsWith("#")) {
-        return raw.match(/[a-z0-9]{2}/gi)!.slice(3).map(x => parseInt(x, 16)) as RGB
+        return raw.match(/[a-z0-9]{2}/gi)!.slice(0, 3).map(x => parseInt(x, 16)) as RGB
     }
     else throw new Error("unrecognized rgb color format")
 }
 export function stringifyRGB(color: RGB): string {
-    return "#" + color.slice(3).map(x => x.toString(16)).join("")
+    return `rgb(${color.slice(0, 3).map(x => x.toString()).join(", ")})`
 }
 
 export function getLuminance([r, g, b]: RGB) {

@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-export interface NoteStructure {
+export interface Note {
     id?: string;
 
     content: string;
@@ -13,12 +13,12 @@ export interface NoteStructure {
     scouter_name?: string;
 }
 
-export type NoteStructureWithMatchNumber = NoteStructure & {
+export interface NoteWithMatch extends Note {
     match_number: number;
     competition_name?: string;
 };
 
-export type OfflineNote = {
+export interface OfflineNote {
     content: string;
     team_number: number;
     comp_id: number;
@@ -124,8 +124,8 @@ class NotesDB {
 
     static async getNotesForCompetition(
         competitionId: number,
-    ): Promise<NoteStructureWithMatchNumber[]> {
-        const res: NoteStructureWithMatchNumber[] = [];
+    ): Promise<NoteWithMatch[]> {
+        const res: NoteWithMatch[] = [];
         // TODO: query is including values where the competition_id is wrong
         const { data, error } = await supabase
             .from('notes')
@@ -150,8 +150,8 @@ class NotesDB {
         return res;
     }
 
-    static async getNotesForTeam(teamNumber: number): Promise<NoteStructure[]> {
-        const res: NoteStructure[] = [];
+    static async getNotesForTeam(teamNumber: number): Promise<Note[]> {
+        const res: Note[] = [];
         const { data, error } = await supabase
             .from('notes')
             .select('*, profiles(name)')
@@ -177,8 +177,8 @@ class NotesDB {
     static async getNotesForTeamAtCompetition(
         teamNumber: number,
         competitionId: number,
-    ): Promise<NoteStructureWithMatchNumber[]> {
-        const res: NoteStructureWithMatchNumber[] = [];
+    ): Promise<NoteWithMatch[]> {
+        const res: NoteWithMatch[] = [];
         const { data: compIds } = await supabase
             .from('matches')
             .select('id')
@@ -216,14 +216,14 @@ class NotesDB {
         return res;
     }
 
-    static async getNotesForSelf(): Promise<NoteStructureWithMatchNumber[]> {
+    static async getNotesForSelf(): Promise<NoteWithMatch[]> {
         const {
             data: { user },
         } = await supabase.auth.getUser();
         if (user == null) {
             throw new Error('User not logged in');
         }
-        const res: NoteStructureWithMatchNumber[] = [];
+        const res: NoteWithMatch[] = [];
         const { data, error } = await supabase
             .from('notes')
             .select('*, matches(number, competitions(name))')

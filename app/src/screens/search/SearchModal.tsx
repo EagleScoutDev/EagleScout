@@ -3,7 +3,7 @@ import Svg, { Path } from 'react-native-svg';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import type { SimpleTeam } from '../../lib/TBAUtils';
-import type { ScoutReportReturnData } from '../../database/ScoutMatchReports';
+import type { MatchReportReturnData } from '../../database/ScoutMatchReports';
 import ProfilesDB, { type ProfilesReturnData } from '../../database/Profiles';
 import { Dropdown } from 'react-native-element-dropdown';
 import ScoutViewer from '../../components/modals/ScoutViewer';
@@ -20,7 +20,7 @@ interface SearchModalProps {
     route: {
         params: {
             teams: SimpleTeam[];
-            reportsByMatch: Map<number, ScoutReportReturnData[]>;
+            reportsByMatch: Map<number, MatchReportReturnData[]>;
             competitionId: number;
         };
     };
@@ -43,7 +43,7 @@ const SearchModal = ({ route, navigation }: SearchModalProps) => {
     );
 
     const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
-    const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
+    const [currentReport, setCurrentReport] = useState<MatchReportReturnData>();
 
     const getSearchPrompt = (): string => {
         switch (filterState) {

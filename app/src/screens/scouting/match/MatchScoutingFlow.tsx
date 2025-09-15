@@ -6,7 +6,7 @@ import FormHelper from '../../../FormHelper';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Toast from 'react-native-toast-message';
 import CompetitionsDB from '../../../database/Competitions';
-import ScoutReportsDB from '../../../database/ScoutMatchReports';
+import MatchReportsDB from '../../../database/ScoutMatchReports';
 import Gamification from './Gamification';
 import Confetti from 'react-native-confetti';
 import { useCurrentCompetitionMatches } from '../../../lib/useCurrentCompetitionMatches';
@@ -267,7 +267,7 @@ export function MatchScoutingFlow() {
             console.log(dataToSubmit);
 
             try {
-                await ScoutReportsDB.createOnlineScoutReport(dataToSubmit);
+                await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
                     type: 'success',
                     text1: 'Scouting report submitted!',

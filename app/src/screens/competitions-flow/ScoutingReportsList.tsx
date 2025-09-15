@@ -1,7 +1,7 @@
 import { ActivityIndicator } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import ScoutReportsDB from '../../database/ScoutMatchReports';
+import MatchReportsDB from '../../database/ScoutMatchReports';
 import ReportList from '../../components/ReportList';
 
 const ScoutingReportsList = ({ navigation, competition }) => {
@@ -20,7 +20,7 @@ const ScoutingReportsList = ({ navigation, competition }) => {
 
     useEffect(() => {
         console.log('HERE');
-        ScoutReportsDB.getReportsForCompetition(competition.id).then(reports => {
+        MatchReportsDB.getReportsForCompetition(competition.id).then(reports => {
             // console.log('reports found!');
             // console.log(reports);
             console.log('number of reports: ' + reports.length);

@@ -1,15 +1,15 @@
 import { CompetitionReturnData } from '../../database/Competitions';
 import { Alert } from 'react-native';
-import ScoutReports, { ScoutReportReturnData } from '../../database/ScoutMatchReports';
+import ScoutReports, { MatchReportReturnData } from '../../database/ScoutMatchReports';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
-import PitScoutReports, {
-    PitScoutReportReturnData,
+import PitReportsDB, {
+    PitReportReturnData,
 } from '../../database/ScoutPitReports';
 import { CsvBuilder } from './CsvBuilder';
 
 export const exportScoutReportsToCsv = async (comp: CompetitionReturnData) => {
-    let reports: ScoutReportReturnData[];
+    let reports: MatchReportReturnData[];
     try {
         reports = await ScoutReports.getReportsForCompetition(comp.id, true);
     } catch (error) {
@@ -59,9 +59,9 @@ export const exportScoutReportsToCsv = async (comp: CompetitionReturnData) => {
 };
 
 export const exportPitReportsToCsv = async (comp: CompetitionReturnData) => {
-    let reports: PitScoutReportReturnData[];
+    let reports: PitReportReturnData[];
     try {
-        reports = await PitScoutReports.getReportsForCompetition(comp.id);
+        reports = await PitReportsDB.getReportsForCompetition(comp.id);
     } catch (error) {
         console.error(error);
         Alert.alert(

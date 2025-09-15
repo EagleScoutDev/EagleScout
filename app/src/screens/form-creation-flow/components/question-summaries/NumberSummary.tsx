@@ -1,4 +1,3 @@
-import React from 'react-native';
 import SummaryTemplate from './SummaryTemplate';
 import SummaryText from './SummaryText';
 import {

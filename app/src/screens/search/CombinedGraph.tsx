@@ -3,8 +3,8 @@ import StandardModal from '../../components/modals/StandardModal';
 import { LineChart } from 'react-native-chart-kit';
 import React, { useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
-import ScoutReportsDB, {
-    type ScoutReportReturnData,
+import MatchReportsDB, {
+    type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
 import FormsDB, { type FormReturnData } from '../../database/Forms';
 import CompetitionsDB from '../../database/Competitions';
@@ -37,7 +37,7 @@ const CombinedGraph = ({
         fillShadowGradient: colors.card,
     };
     const [relevantReports, setRelevantReports] = React.useState<
-        ScoutReportReturnData[]
+        MatchReportReturnData[]
     >([]);
     const [form, setForm] = React.useState<FormReturnData>();
     const [questionToColor, setQuestionToColor] = React.useState<
@@ -46,7 +46,7 @@ const CombinedGraph = ({
 
     useEffect(() => {
         if (modalActive) {
-            ScoutReportsDB.getReportsForTeamAtCompetition(
+            MatchReportsDB.getReportsForTeamAtCompetition(
                 team_number,
                 competitionId,
             ).then(reports => {

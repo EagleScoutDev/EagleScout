@@ -7,7 +7,7 @@ interface TimelineElement {
     label: string;
 }
 
-interface ScoutReport {
+interface MatchReport {
     reportId: number;
     matchNumber: number;
     teamNumber: number;
@@ -17,18 +17,18 @@ interface ScoutReport {
     autoPath?: CrescendoAutoPath | ReefscapeAutoPath;
 }
 
-interface ScoutReportWithDate extends ScoutReport {
+interface MatchReportWithDate extends MatchReport {
     createdAt: Date;
 }
 
-export interface ScoutReportReturnData extends ScoutReportWithDate {
+export interface MatchReportReturnData extends MatchReportWithDate {
     form: [];
     userId: string;
     userName?: string;
     competitionName: string;
 }
 
-export interface ScoutReportHistory {
+export interface MatchReportHistory {
     // id col in db
     historyId: number;
     editedAt: Date;
@@ -39,11 +39,11 @@ export interface ScoutReportHistory {
     name: string;
 }
 
-class ScoutReportsDB {
+class MatchReportsDB {
     static async getReportsForCompetition(
         id: number,
         fetchUserNames = false,
-    ): Promise<ScoutReportReturnData[]> {
+    ): Promise<MatchReportReturnData[]> {
         const { data, error } = await supabase
             .from('scout_reports')
             .select(
@@ -69,7 +69,7 @@ class ScoutReportsDB {
         }))
     }
 
-    static async getReportsForSelf(): Promise<ScoutReportReturnData[]> {
+    static async getReportsForSelf(): Promise<MatchReportReturnData[]> {
         const {
             data: { user },
         } = await supabase.auth.getUser();
@@ -101,8 +101,8 @@ class ScoutReportsDB {
 
     static async getReportsForTeam(
         team: number,
-    ): Promise<ScoutReportReturnData[]> {
-        const res: ScoutReportReturnData[] = [];
+    ): Promise<MatchReportReturnData[]> {
+        const res: MatchReportReturnData[] = [];
         const { data, error } = await supabase
             .from('scout_reports')
             .select(
@@ -129,7 +129,7 @@ class ScoutReportsDB {
     static async getReportsForTeamAtCompetition(
         team: number,
         compId: number,
-    ): Promise<ScoutReportReturnData[]> {
+    ): Promise<MatchReportReturnData[]> {
         const { data, error } = await supabase
             .from('scout_reports')
             .select(
@@ -155,7 +155,7 @@ class ScoutReportsDB {
         }))
     }
 
-    static async createOnlineScoutReport(report: ScoutReport): Promise<void> {
+    static async createOnlineScoutReport(report: MatchReport): Promise<void> {
         const { data, error } = await supabase.rpc('add_online_scout_report', {
             competition_id_arg: report.competitionId,
             match_number_arg: report.matchNumber,
@@ -172,7 +172,7 @@ class ScoutReportsDB {
     }
 
     static async createOfflineScoutReport(
-        report: ScoutReportWithDate,
+        report: MatchReportWithDate,
     ): Promise<void> {
         const { data, error } = await supabase.rpc('add_offline_scout_report', {
             competition_id_arg: report.competitionId,
@@ -205,7 +205,7 @@ class ScoutReportsDB {
 
     static async getReportHistory(
         reportId: number,
-    ): Promise<ScoutReportHistory[]> {
+    ): Promise<MatchReportHistory[]> {
         const { data, error } = await supabase.rpc('get_scout_report_history', {
             report_id_arg: reportId,
         });
@@ -221,4 +221,4 @@ class ScoutReportsDB {
     }
 }
 
-export default ScoutReportsDB;
+export default MatchReportsDB;

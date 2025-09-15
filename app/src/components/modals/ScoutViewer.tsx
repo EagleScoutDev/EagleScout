@@ -12,11 +12,11 @@ import {
 import { useTheme } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import RadioButtons from '../form/RadioButtons';
-import Checkbox from '../form/Checkbox';
+import Checkbox from '../form/Checkboxes';
 import { supabase } from '../../lib/supabase';
 import FormHelper from '../../FormHelper';
 import UserAttributes, { type UserAttributeReturnData } from '../../database/UserAttributes';
-import ScoutReportsDB, { type ScoutReportHistory, type ScoutReportReturnData } from '../../database/ScoutMatchReports';
+import MatchReportsDB, { type MatchReportHistory, type MatchReportReturnData } from '../../database/ScoutMatchReports';
 import SliderType from '../form/SliderType';
 import { HistorySelectorModal } from './HistorySelectorModal';
 import Svg, { Path } from 'react-native-svg';
@@ -37,7 +37,7 @@ const DEBUG = false;
 export interface ScoutViewerProps {
     visible: boolean
     setVisible: React.Dispatch<React.SetStateAction<boolean>>
-    data: ScoutReportReturnData
+    data: MatchReportReturnData
     chosenComp: string
     updateFormData: () => void
     isOfflineForm: boolean
@@ -74,12 +74,12 @@ function ScoutViewer({
     // this holds the metadata of the form (comp id, match id, etc)
     const [formMetaData, setFormMetaData] = useState(null);
     // this is the history of the form fetched from scout_edit_reports
-    const [formHistory, setFormHistory] = useState<ScoutReportHistory[]>([]);
+    const [formHistory, setFormHistory] = useState<MatchReportHistory[]>([]);
 
     const refreshHistory = useCallback(async () => {
         setHistoryButtonVisible(false);
         if (data && !isOfflineForm) {
-            const history = await ScoutReportsDB.getReportHistory(data.reportId);
+            const history = await MatchReportsDB.getReportHistory(data.reportId);
             if (history.length !== 0) {
                 setHistoryButtonVisible(true);
                 setFormHistory(history);
@@ -227,7 +227,7 @@ function ScoutViewer({
                 setVisible={setHistorySelectorModalVisible}
                 onHistorySelect={(id: number | null) => {
                     setHistorySelectorModalVisible(false);
-                    if(id == null) {
+                    if (id == null) {
                         // user dismissed the modal
                         return;
                     }
@@ -317,7 +317,7 @@ function ScoutViewer({
                                                                     );
                                                                     setEditingActive(false);
                                                                 } else {
-                                                                    await ScoutReportsDB.editOnlineScoutReport(
+                                                                    await MatchReportsDB.editOnlineScoutReport(
                                                                         formMetaData.reportId,
                                                                         tempData,
                                                                     );
@@ -545,8 +545,8 @@ function ScoutViewer({
                                         // it is a number slider
                                         <View>
                                             <SliderType
-                                                low={field.low ? Number.parseInt(field.low, 10) : 0}
-                                                high={field.high ? Number.parseInt(field.high, 10) : 10}
+                                                min={field.low ? Number.parseInt(field.low, 10) : 0}
+                                                max={field.high ? Number.parseInt(field.high, 10) : 10}
                                                 step={field.step ? Number.parseInt(field.step, 10) : 1}
                                                 question={field.question}
                                                 value={tempData[index]}

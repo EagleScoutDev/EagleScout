@@ -1,34 +1,33 @@
-import React, {useContext, useState} from 'react';
-import {DarkTheme, NavigationContainer} from '@react-navigation/native';
-import {ThemeOptions, ThemeOptionsMap} from '../themes';
-import {ThemeContext} from '../lib/contexts/ThemeContext';
-import {useColorScheme} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useContext } from 'react';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
+import { ThemeOptions, ThemeOptionsMap } from '../themes';
+import { ThemeContext } from '../lib/contexts/ThemeContext';
+import { useColorScheme } from 'react-native';
 import { CustomLightTheme } from '../themes';
 
 export const ThemedNavigationContainer = ({
-  children,
-  navigationContainerProps = {},
+    children,
+    navigationContainerProps = {},
 }: {
-  children: React.ReactNode;
-  navigationContainerProps?: any;
+    children: React.ReactNode;
+    navigationContainerProps?: any;
 }) => {
-  const scheme = useColorScheme();
-  const {themePreference, onboardingActive} = useContext(ThemeContext);
+    const scheme = useColorScheme();
+    const { themePreference, onboardingActive } = useContext(ThemeContext);
 
-  return (
-    <NavigationContainer
-      theme={
-        onboardingActive
-          ? DarkTheme
-          : themePreference === ThemeOptions.SYSTEM
-          ? scheme === 'dark'
-            ? DarkTheme
-            : CustomLightTheme
-          : ThemeOptionsMap.get(themePreference)
-      }
-      {...navigationContainerProps}>
-      {children}
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer
+            theme={
+                onboardingActive
+                    ? DarkTheme
+                    : themePreference === ThemeOptions.SYSTEM
+                        ? scheme === 'dark'
+                            ? DarkTheme
+                            : CustomLightTheme
+                        : ThemeOptionsMap.get(themePreference)
+            }
+            {...navigationContainerProps}>
+            {children}
+        </NavigationContainer>
+    );
 };

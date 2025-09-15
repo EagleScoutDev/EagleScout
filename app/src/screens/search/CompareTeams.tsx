@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import ScoutReportsDB, {
-    type ScoutReportReturnData,
+import MatchReportsDB, {
+    type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
 import CompetitionsDB from '../../database/Competitions';
 import { isTablet } from '../../lib/deviceType';
@@ -18,7 +18,7 @@ import StandardModal from '../../components/modals/StandardModal';
 import { Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import CompetitionRank from './CompetitionRank';
-import { getLighterColor } from '../../lib/color';
+import { getLighterColor, parseColor } from '../../lib/color';
 
 const CompareTeams = ({ route }) => {
     const { team, compId } = route.params;
@@ -33,10 +33,10 @@ const CompareTeams = ({ route }) => {
     );
 
     const [firstTeamScoutData, setFirstTeamScoutData] = useState<
-        ScoutReportReturnData[] | null
+        MatchReportReturnData[] | null
     >([]);
     const [secondTeamScoutData, setSecondTeamScoutData] = useState<
-        ScoutReportReturnData[] | null
+        MatchReportReturnData[] | null
     >([]);
 
     const [graphActive, setGraphActive] = useState(false);
@@ -62,7 +62,7 @@ const CompareTeams = ({ route }) => {
             if (!competition) {
                 return;
             }
-            ScoutReportsDB.getReportsForTeamAtCompetition(
+            MatchReportsDB.getReportsForTeamAtCompetition(
                 team.team_number,
                 competition.id,
             ).then(reports => {
@@ -78,7 +78,7 @@ const CompareTeams = ({ route }) => {
             return;
         }
 
-        ScoutReportsDB.getReportsForTeamAtCompetition(secondTeam, compId).then(
+        MatchReportsDB.getReportsForTeamAtCompetition(secondTeam, compId).then(
             reports => {
                 setSecondTeamScoutData(reports);
             },
@@ -87,7 +87,7 @@ const CompareTeams = ({ route }) => {
 
     // fetch teams at competition that have a scout report filled out
     useEffect(() => {
-        ScoutReportsDB.getReportsForCompetition(compId).then(reports => {
+        MatchReportsDB.getReportsForCompetition(compId).then(reports => {
             // setReports(reports);
             const teams = reports.map(report => report.teamNumber);
             let set = new Set(teams);
@@ -120,7 +120,7 @@ const CompareTeams = ({ route }) => {
             fontSize: 30,
         },
         section_description: {
-            color: getLighterColor(parseRGB(colors.primary)),
+            color: getLighterColor(parseColor(colors.primary)),
             fontWeight: 'bold',
         },
         question: {

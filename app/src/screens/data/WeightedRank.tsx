@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 import Svg, { Path } from 'react-native-svg';
-import ScoutReportsDB, {
-    type ScoutReportReturnData,
+import MatchReportsDB, {
+    type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
 import CompetitionsDB, {
     type CompetitionReturnData,
@@ -40,7 +40,7 @@ function WeightedRank() {
 
     const [numberQuestions, setNumberQuestions] = React.useState<Object[]>([]);
 
-    const [allReports, setAllReports] = React.useState<ScoutReportReturnData[]>(
+    const [allReports, setAllReports] = React.useState<MatchReportReturnData[]>(
         [],
     );
 
@@ -154,7 +154,7 @@ function WeightedRank() {
         }
 
         setStatus(WeightedRankStatus.FETCHING_REPORTS);
-        ScoutReportsDB.getReportsForCompetition(compId).then(reports => {
+        MatchReportsDB.getReportsForCompetition(compId).then(reports => {
             setAllReports(reports);
         });
     };

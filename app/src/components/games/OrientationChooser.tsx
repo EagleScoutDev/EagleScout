@@ -2,6 +2,7 @@ import React from 'react';
 import {Pressable, View, Text} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
+import { Alliance, Orientation } from '../../lib/game';
 
 const Checkmark = () => {
   return (
@@ -17,17 +18,18 @@ const Checkmark = () => {
   );
 };
 
+export interface OrientationChooserProps {
+    orientation: Orientation
+    setOrientation: React.Dispatch<React.SetStateAction<Orientation>>
+    alliance: Alliance
+    setAlliance: React.Dispatch<React.SetStateAction<Alliance>>
+}
 export const OrientationChooser = ({
-  selectedOrientation,
-  setSelectedOrientation,
-  selectedAlliance,
-  setSelectedAlliance,
-}: {
-  selectedOrientation: string;
-  setSelectedOrientation: (orientation: string) => void;
-  selectedAlliance: string;
-  setSelectedAlliance: (alliance: string) => void;
-}) => {
+  orientation,
+  setOrientation,
+  alliance,
+  setAlliance,
+}: OrientationChooserProps) => {
   const {colors} = useTheme();
   return (
     <View
@@ -55,7 +57,7 @@ export const OrientationChooser = ({
         <Pressable
           style={{
             backgroundColor:
-              selectedOrientation === 'leftBlue' ? 'blue' : 'red',
+            orientation === Orientation.leftBlue ? 'blue' : 'red',
             paddingVertical: '3%',
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
@@ -64,14 +66,14 @@ export const OrientationChooser = ({
             justifyContent: 'center',
           }}
           onPress={() => {
-            if (selectedOrientation === 'leftBlue') {
-              setSelectedAlliance('blue');
+            if (orientation === Orientation.leftBlue) {
+              setAlliance(Alliance.blue);
             } else {
-              setSelectedAlliance('red');
+              setAlliance(Alliance.red);
             }
           }}>
-          {selectedAlliance ===
-          (selectedOrientation === 'leftBlue' ? 'blue' : 'red') ? (
+          {alliance ===
+          (orientation === Orientation.leftBlue ? Alliance.blue : Alliance.red) ? (
             <Checkmark />
           ) : null}
         </Pressable>
@@ -85,10 +87,10 @@ export const OrientationChooser = ({
               alignItems: 'center',
             }}
             onPress={() => {
-              if (selectedOrientation === 'leftBlue') {
-                setSelectedOrientation('leftRed');
+              if (orientation === Orientation.leftBlue) {
+                setOrientation(Orientation.leftRed);
               } else {
-                setSelectedOrientation('leftBlue');
+                setOrientation(Orientation.leftBlue);
               }
             }}>
             <Svg width="24" height="22" viewBox="0 0 24 22" fill="none">
@@ -101,8 +103,7 @@ export const OrientationChooser = ({
         </View>
         <Pressable
           style={{
-            backgroundColor:
-              selectedOrientation === 'leftBlue' ? 'red' : 'blue',
+            backgroundColor: orientation === Orientation.leftRed ? 'red' : 'blue',
             paddingVertical: '3%',
             borderTopRightRadius: 10,
             borderBottomRightRadius: 10,
@@ -111,14 +112,14 @@ export const OrientationChooser = ({
             justifyContent: 'center',
           }}
           onPress={() => {
-            if (selectedOrientation === 'leftBlue') {
-              setSelectedAlliance('red');
+            if (orientation === Orientation.leftRed) {
+              setAlliance(Alliance.red);
             } else {
-              setSelectedAlliance('blue');
+              setAlliance(Alliance.blue);
             }
           }}>
-          {selectedAlliance ===
-          (selectedOrientation === 'leftBlue' ? 'red' : 'blue') ? (
+          {alliance ===
+          (orientation === Orientation.leftBlue ? Alliance.red : Alliance.blue) ? (
             <Checkmark />
           ) : null}
         </Pressable>

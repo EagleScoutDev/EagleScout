@@ -3,14 +3,14 @@ import ReportList from '../../components/ReportList';
 import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import CompetitionsDB from '../../database/Competitions';
-import ScoutReportsDB, {
-    type ScoutReportReturnData,
+import MatchReportsDB, {
+    type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
-import NotesDB, { type NoteStructureWithMatchNumber } from '../../database/ScoutNotes';
+import NotesDB, { type NoteWithMatch } from '../../database/ScoutNotes';
 import { Tabs } from '../../components/Tabs';
 import { NoteList } from '../../components/NoteList';
-import PitScoutReports, {
-    type PitScoutReportReturnData,
+import PitReportsDB, {
+    type PitReportReturnData,
 } from '../../database/ScoutPitReports';
 import { PitScoutReportList } from '../../components/PitScoutReportList';
 
@@ -20,11 +20,11 @@ function ReportsForTeam({ route }) {
     const { colors } = useTheme();
     const [tab, setTab] = useState<string>('Scout Reports');
     const [scoutReports, setScoutReports] = useState<
-        ScoutReportReturnData[] | null
+        MatchReportReturnData[] | null
     >(null);
-    const [notes, setNotes] = useState<NoteStructureWithMatchNumber[]>([]);
+    const [notes, setNotes] = useState<NoteWithMatch[]>([]);
     const [pitResponses, setPitResponses] = useState<
-        PitScoutReportReturnData[] | null
+        PitReportReturnData[] | null
     >(null);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function ReportsForTeam({ route }) {
             if (!competition) {
                 return;
             }
-            ScoutReportsDB.getReportsForTeamAtCompetition(
+            MatchReportsDB.getReportsForTeamAtCompetition(
                 team_number,
                 competition.id,
             ).then(reports => {
@@ -40,7 +40,7 @@ function ReportsForTeam({ route }) {
                 console.log('scout reports for team ' + team_number + ' : ' + reports);
                 console.log('no reports? ' + (reports.length === 0));
             });
-            PitScoutReports.getReportsForTeamAtCompetition(
+            PitReportsDB.getReportsForTeamAtCompetition(
                 team_number,
                 competition.id,
             ).then(reports => {

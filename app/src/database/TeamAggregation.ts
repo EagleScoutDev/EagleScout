@@ -3,7 +3,8 @@
  * It does not make database calls, but rather, processes data retrieved from other APIs.
  *
  * */
-import ScoutReportsDB from './ScoutMatchReports';
+import { Alliance } from '../lib/game';
+import MatchReportsDB from './ScoutMatchReports';
 
 interface TeamWithData {
     team_number: number;
@@ -11,13 +12,8 @@ interface TeamWithData {
     stdev: number;
 }
 
-export enum AllianceColor {
-    RED,
-    BLUE,
-}
-
 interface AlliancePrediction {
-    alliance: AllianceColor;
+    alliance: Alliance;
     probability: number;
     mean: number;
     stdev: number;
@@ -129,13 +125,13 @@ class TeamAggregation {
             // console.warn('determineWinner called with blueMean of 0');
             return [
                 {
-                    alliance: AllianceColor.BLUE,
+                    alliance: Alliance.blue,
                     probability: 0,
                     mean: 0,
                     stdev: blueStdev,
                 },
                 {
-                    alliance: AllianceColor.RED,
+                    alliance: Alliance.red,
                     probability: 1,
                     mean: redMean,
                     stdev: redStdev,
@@ -146,13 +142,13 @@ class TeamAggregation {
             // console.warn('determineWinner called with redMean of 0');
             return [
                 {
-                    alliance: AllianceColor.BLUE,
+                    alliance: Alliance.blue,
                     probability: 1,
                     mean: blueMean,
                     stdev: blueStdev,
                 },
                 {
-                    alliance: AllianceColor.RED,
+                    alliance: Alliance.red,
                     probability: 0,
                     mean: 0,
                     stdev: redStdev,
@@ -163,13 +159,13 @@ class TeamAggregation {
         if (blueMean === redMean && blueStdev === redStdev) {
             return [
                 {
-                    alliance: AllianceColor.BLUE,
+                    alliance: Alliance.blue,
                     probability: 0.5,
                     mean: blueMean,
                     stdev: blueStdev,
                 },
                 {
-                    alliance: AllianceColor.RED,
+                    alliance: Alliance.red,
                     probability: 0.5,
                     mean: redMean,
                     stdev: redStdev,
@@ -185,13 +181,13 @@ class TeamAggregation {
             // console.warn('determineWinner called with stdevVariance of 0');
             return [
                 {
-                    alliance: AllianceColor.BLUE,
+                    alliance: Alliance.blue,
                     probability: 0.0,
                     mean: blueMean,
                     stdev: blueStdev,
                 },
                 {
-                    alliance: AllianceColor.RED,
+                    alliance: Alliance.red,
                     probability: 0.0,
                     mean: redMean,
                     stdev: redStdev,
@@ -204,13 +200,13 @@ class TeamAggregation {
 
         return [
             {
-                alliance: AllianceColor.BLUE,
+                alliance: Alliance.blue,
                 probability: Math.round(probBlue * 100),
                 mean: blueMean,
                 stdev: blueStdev,
             },
             {
-                alliance: AllianceColor.RED,
+                alliance: Alliance.red,
                 probability: Math.round((1 - probBlue) * 100),
                 mean: redMean,
                 stdev: redStdev,
@@ -258,7 +254,7 @@ class TeamAggregation {
         let temp: TeamWithData[] = [];
         let tempNumReports: number[] = [];
         for (let i = 0; i < teamsWithoutData.length; i++) {
-            const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
                 teamsWithoutData[i],
                 compId,
             );
@@ -302,7 +298,7 @@ class TeamAggregation {
     static getNumReportsPerTeam = async (teams: number[], compId: number) => {
         let tempNumReports: number[] = [];
         for (let i = 0; i < teams.length; i++) {
-            const reports = await ScoutReportsDB.getReportsForTeamAtCompetition(
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
                 teams[i],
                 compId,
             );

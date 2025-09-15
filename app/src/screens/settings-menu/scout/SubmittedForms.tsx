@@ -17,18 +17,16 @@ import ReportList from '../../../components/ReportList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
 import SegmentedOption from '../../../components/pickers/SegmentedOption';
-import React from 'react-native';
 import StandardButton from '../../../components/StandardButton';
 import Toast from 'react-native-toast-message';
-import ScoutReportsDB from '../../../database/ScoutMatchReports';
+import MatchReportsDB, { type MatchReportReturnData } from '../../../database/ScoutMatchReports';
 import CompetitionsDB from '../../../database/Competitions';
-import type { PitScoutReportWithDate } from '../../../database/ScoutPitReports';
 
 const DEBUG = false;
 
 function SubmittedForms() {
-    const [reports, setReports] = useState([]);
-    const [offlineReports, setOfflineReports] = useState<PitScoutReportWithDate[]>([]);
+    const [reports, setReports] = useState<MatchReportReturnData[]>([]);
+    const [offlineReports, setOfflineReports] = useState<MatchReportReturnData[]>([]);
     const { colors } = useTheme();
     const [selectedTheme, setSelectedTheme] = useState('Offline');
     const [loading, setLoading] = useState(false);
@@ -44,7 +42,7 @@ function SubmittedForms() {
     }
     async function fetchReports() {
         setLoading(true)
-        setReports(await ScoutReportsDB.getReportsForSelf())
+        setReports(await MatchReportsDB.getReportsForSelf())
         setLoading(false)
     }
 
@@ -161,7 +159,7 @@ function SubmittedForms() {
                                     ).getUTCMilliseconds();
 
                                     try {
-                                        await ScoutReportsDB.createOfflineScoutReport({
+                                        await MatchReportsDB.createOfflineScoutReport({
                                             ...report,
                                             form: undefined,
                                             formId: undefined,
@@ -181,7 +179,7 @@ function SubmittedForms() {
                                 // clear the offline reports
                                 setOfflineReports([]);
                                 // refresh the reports
-                                ScoutReportsDB.getReportsForSelf().then(results => {
+                                MatchReportsDB.getReportsForSelf().then(results => {
                                     setReports(results);
                                     Toast.show({
                                         type: 'success',

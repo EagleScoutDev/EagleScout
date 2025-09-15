@@ -11,19 +11,19 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
-import { type ScoutReportReturnData } from '../../database/ScoutMatchReports';
+import { type MatchReportReturnData } from '../../database/ScoutMatchReports';
 
 import type { SimpleTeam } from '../../lib/TBAUtils';
 import { TBA } from '../../lib/TBAUtils';
-import ScoutReportsDB from '../../database/ScoutMatchReports';
+import MatchReportsDB from '../../database/ScoutMatchReports';
 import CompetitionChanger from './CompetitionChanger';
 import ScoutViewer from '../../components/modals/ScoutViewer';
 import Competitions from '../../database/Competitions';
 import NotesDB, {
-    type NoteStructureWithMatchNumber
+    type NoteWithMatch
 } from '../../database/ScoutNotes';
 import { NoteList } from '../../components/NoteList';
-import { getLighterColor } from '../../lib/color';
+import { getLighterColor, parseColor } from '../../lib/color';
 import { isTablet } from '../../lib/deviceType';
 
 interface Props {
@@ -38,14 +38,14 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
     const [competitionId, setCompetitionId] = useState<number>(-1); // default to 2023mttd
 
     const [reportsByMatch, setReportsByMatch] = useState<
-        Map<number, ScoutReportReturnData[]>
+        Map<number, MatchReportReturnData[]>
     >(new Map());
     const [notesByMatch, setNotesByMatch] = useState<
-        Map<number, NoteStructureWithMatchNumber[]>
+        Map<number, NoteWithMatch[]>
     >(new Map());
 
     const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
-    const [currentReport, setCurrentReport] = useState<ScoutReportReturnData>();
+    const [currentReport, setCurrentReport] = useState<MatchReportReturnData>();
     const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
     const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
 
@@ -68,7 +68,7 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
     const fetchData = useCallback(() => {
         if (competitionId !== -1) {
             setFetchingData(true);
-            ScoutReportsDB.getReportsForCompetition(competitionId).then(reports => {
+            MatchReportsDB.getReportsForCompetition(competitionId).then(reports => {
                 // console.log('num reports found for id 8 is ' + reports.length);
 
                 // sort reports by match number
@@ -77,7 +77,7 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
                 });
 
                 // create an object where key is match number and value is an array of reports
-                let temp: Map<number, ScoutReportReturnData[]> = new Map();
+                let temp: Map<number, MatchReportReturnData[]> = new Map();
                 reports.forEach(report => {
                     if (temp.has(report.matchNumber)) {
                         temp.get(report.matchNumber)?.push(report);
@@ -94,7 +94,7 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
                     return a.match_number - b.match_number;
                 });
 
-                let temp: Map<number, NoteStructureWithMatchNumber[]> = new Map();
+                let temp: Map<number, NoteWithMatch[]> = new Map();
                 for (const note of notes) {
                     if (temp.has(note.match_number)) {
                         temp.get(note.match_number)?.push(note);
@@ -134,7 +134,7 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
         });
     }, [fetchData, navigation]);
 
-    const navigateIntoReport = (report: ScoutReportReturnData) => {
+    const navigateIntoReport = (report: MatchReportReturnData) => {
         setScoutViewerVisible(true);
         setCurrentReport(report);
     };
@@ -297,7 +297,7 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
                                         width="16"
                                         height="16"
                                         viewBox="0 0 16 16"
-                                        fill={getLighterColor(parseRGB(colors.primary))}>
+                                        fill={getLighterColor(parseColor(colors.primary))}>
                                         <Path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z" />
                                     </Svg>
                                 </TouchableOpacity>

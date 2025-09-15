@@ -1,18 +1,62 @@
 import { supabase } from '../lib/supabase';
 
 interface Form {
-    formStructure: any[];
+    formStructure: FormStructure;
     pitScouting: boolean;
     name: string;
 }
 
-export enum FormQuestionTypes {
-    radio = 'radio',
-    checkbox = 'checkbox',
-    textbox = 'textbox',
-    number = 'number',
-    heading = 'heading',
+export namespace Form {
+    export type Structure = ItemStructure[]
+
+    interface BaseItemStructure {
+        type: ItemType
+        idx: number
+
+        question: string
+        required: boolean
+    }
+    export interface RadioStructure extends BaseItemStructure {
+        type: ItemType.radio
+        options: string[]
+    }
+    export interface CheckboxesStructure extends BaseItemStructure {
+        type: ItemType.checkbox
+        options: string[]
+    }
+    export interface TextboxStructure extends BaseItemStructure {
+        type: ItemType.textbox
+
+    }
+    export interface NumberStructure extends BaseItemStructure {
+        type: ItemType.number
+        slider: false
+    }
+    export interface SliderStructure extends BaseItemStructure {
+        type: ItemType.number
+        slider: true
+        low: number
+        high: number
+        step: number
+        lowLabel: string | null
+        highLabel: string | null
+    }
+    export interface HeadingStructure extends BaseItemStructure {
+        type: ItemType.heading
+    }
+    export type ItemStructure = RadioStructure | CheckboxesStructure | TextboxStructure | NumberStructure | SliderStructure | HeadingStructure
+    export enum ItemType {
+        radio = 'radio',
+        checkbox = 'checkbox',
+        textbox = 'textbox',
+        number = 'number',
+        heading = 'heading',
+    }
+
+    export type ArrayData<T> = (string | string[] | number | null)[]
 }
+export type FormStructure = Form.ItemStructure[]
+
 
 export interface FormReturnData extends Form {
     id: number;

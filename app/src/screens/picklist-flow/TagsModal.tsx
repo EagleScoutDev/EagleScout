@@ -9,7 +9,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {TagsDB, type TagStructure} from '../../database/Tags';

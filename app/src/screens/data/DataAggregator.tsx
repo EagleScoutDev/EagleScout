@@ -11,7 +11,7 @@ import { useTheme } from '@react-navigation/native';
 import CompetitionsDB, {
     type CompetitionReturnData,
 } from '../../database/Competitions';
-import ScoutReportsDB from '../../database/ScoutMatchReports';
+import MatchReportsDB from '../../database/ScoutMatchReports';
 
 interface Question {
     question: string;
@@ -88,7 +88,7 @@ function DataAggregation({ navigation }) {
         averaged_values = new Map<number, number>();
 
         console.log(chosenQuestion);
-        ScoutReportsDB.getReportsForCompetition(compID!).then(reports => {
+        MatchReportsDB.getReportsForCompetition(compID!).then(reports => {
             for (let i = 0; i < reports.length; i++) {
                 const relevant_field = reports[i].data[index];
                 const team_num = reports[i].teamNumber;

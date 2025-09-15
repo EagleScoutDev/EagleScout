@@ -12,14 +12,14 @@ import SegmentedOption from '../../../components/pickers/SegmentedOption';
 import StandardButton from '../../../components/StandardButton';
 import FormHelper from '../../../FormHelper';
 import NotesDB, {
-    type NoteStructureWithMatchNumber,
+    type NoteWithMatch,
     type OfflineNote,
 } from '../../../database/ScoutNotes';
 import { NoteList } from '../../../components/NoteList';
 import CompetitionsDB from '../../../database/Competitions';
 
 export const SubmittedNotes = () => {
-    const [notes, setNotes] = useState<NoteStructureWithMatchNumber[]>([]);
+    const [notes, setNotes] = useState<NoteWithMatch[]>([]);
     const [offlineNotes, setOfflineNotes] = useState<OfflineNote[]>([]);
     const { colors } = useTheme();
     const [selectedTheme, setSelectedTheme] = useState('Offline');

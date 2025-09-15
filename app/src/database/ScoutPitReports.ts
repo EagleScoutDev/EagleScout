@@ -2,20 +2,20 @@ import { supabase } from '../lib/supabase';
 import { decode } from 'base64-arraybuffer';
 import userAttributes from './UserAttributes';
 
-export interface PitScoutReport {
+export interface PitReport {
     reportId: number;
     teamNumber: number;
     data: any[];
     competitionId: number;
 }
 
-export type PitScoutReportWithoutId = Omit<PitScoutReport, 'reportId'>;
+export type PitReportWithoutId = Omit<PitReport, 'reportId'>;
 
-export interface PitScoutReportWithDate extends PitScoutReport {
+export interface PitReportWithDate extends PitReport {
     createdAt: Date;
 }
 
-export interface PitScoutReportReturnData extends PitScoutReportWithDate {
+export interface PitReportReturnData extends PitReportWithDate {
     formStructure: any[];
     competitionName: string;
     submittedId: string;
@@ -23,12 +23,12 @@ export interface PitScoutReportReturnData extends PitScoutReportWithDate {
     imageUrls?: string[];
 }
 
-export type PitScoutReportWithoutIdWithDate = Omit<
-    PitScoutReportWithDate,
+export type PitReportWithoutIdWithDate = Omit<
+    PitReportWithDate,
     'reportId'
 >;
 
-class PitScoutReports {
+class PitReportsDB {
     /**
      * Upload images for a pit scout report
      * @param teamId
@@ -72,7 +72,7 @@ class PitScoutReports {
      * @param images - an array of base64 encoded images
      */
     static async createOnlinePitScoutReport(
-        report: PitScoutReportWithoutId,
+        report: PitReportWithoutId,
         images: string[],
     ) {
         const { data: user } = await supabase.auth.getUser();
@@ -97,7 +97,7 @@ class PitScoutReports {
      * Creates a new pit scout report
      */
     static async createOfflinePitScoutReport(
-        report: PitScoutReportWithoutIdWithDate,
+        report: PitReportWithoutIdWithDate,
         images: string[],
     ) {
         const { data: user } = await supabase.auth.getUser();
@@ -127,7 +127,7 @@ class PitScoutReports {
     static async getReportsForTeamAtCompetition(
         teamId: number,
         competitionId: number,
-    ): Promise<PitScoutReportReturnData[]> {
+    ): Promise<PitReportReturnData[]> {
         console.log('teamId', teamId);
         console.log('competitionId', competitionId);
         const { data, error } = await supabase
@@ -216,7 +216,7 @@ class PitScoutReports {
 
     static async getReportsForCompetition(
         competitionId: number,
-    ): Promise<PitScoutReportReturnData[]> {
+    ): Promise<PitReportReturnData[]> {
         const { data, error } = await supabase
             .from('pit_scout_reports')
             .select(
@@ -252,4 +252,4 @@ class PitScoutReports {
     }
 }
 
-export default PitScoutReports;
+export default PitReportsDB;

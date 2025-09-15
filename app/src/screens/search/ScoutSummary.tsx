@@ -2,8 +2,8 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import QuestionSummary from './QuestionSummary';
-import ScoutReportsDB, {
-    type ScoutReportReturnData,
+import MatchReportsDB, {
+    type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
 import Svg, { Path } from 'react-native-svg';
 import CompetitionsDB from '../../database/Competitions';
@@ -20,7 +20,7 @@ function ScoutSummary({
     const [formStructure, setFormStructure] = useState<Array<Object> | null>(
         null,
     );
-    const [responses, setResponses] = useState<ScoutReportReturnData[] | null>(
+    const [responses, setResponses] = useState<MatchReportReturnData[] | null>(
         null,
     );
 
@@ -31,7 +31,7 @@ function ScoutSummary({
             if (!competition) {
                 return;
             }
-            ScoutReportsDB.getReportsForTeamAtCompetition(
+            MatchReportsDB.getReportsForTeamAtCompetition(
                 team_number,
                 competition.id,
             ).then(reports => {

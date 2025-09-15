@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PitScoutReports from '../database/ScoutPitReports';
+import PitReportsDB from '../database/ScoutPitReports';
 import BackgroundFetch from 'react-native-background-fetch';
 
 export class BackgroundFetchManager {
@@ -28,7 +28,7 @@ export class BackgroundFetchManager {
             formsFound.push({ data, images });
         }
         for (const form of formsFound) {
-            await PitScoutReports.createOfflinePitScoutReport(form.data, form.images);
+            await PitReportsDB.createOfflinePitScoutReport(form.data, form.images);
         }
         if (taskId) {
             await BackgroundFetch.stop(taskId);

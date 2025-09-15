@@ -1,11 +1,18 @@
-import {StyleSheet, TextInput, View} from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import RadioButtons from './RadioButtons';
-import React from 'react';
+import React, { type SetStateAction } from 'react';
 import Stepper from './Stepper';
-import Checkbox from './Checkbox';
+import { Checkboxes } from './Checkboxes';
 import SliderType from './SliderType';
 import Question from './Question';
-import {useTheme} from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
+import { Form } from '../../database/Forms';
+
+export interface FormComponentProps<T extends Form.ItemStructure> {
+    item: T
+    arrayData: Form.ArrayData<T>
+    setArrayData: React.Dispatch<SetStateAction<Form.ArrayData<T>>>
+}
 
 /**
  * A component that renders the appropriate data input type based on a string passed in.
@@ -15,121 +22,116 @@ import {useTheme} from '@react-navigation/native';
  * @returns {JSX.Element|null} the JSX component
  * @constructor
  */
-function FormComponent({item, arrayData, setArrayData}) {
-  const {colors} = useTheme();
-  const styles = StyleSheet.create({
-    textInput: {
-      height: 40,
-      borderColor: 'gray',
-      borderWidth: 1,
-      borderRadius: 10,
-      marginBottom: 15,
-      padding: 10,
-      color: colors.text,
-    },
-  });
+export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, setArrayData }: FormComponentProps<T>) {
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        textInput: {
+            height: 40,
+            borderColor: 'gray',
+            borderWidth: 1,
+            borderRadius: 10,
+            marginBottom: 15,
+            padding: 10,
+            color: colors.text,
+        },
+    });
 
-  if (!arrayData) {
-    return null;
-  }
+    if(!arrayData) return null;
 
-  if (item.type === 'radio') {
-    return (
-      <View>
-        <RadioButtons
-          disabled={false}
-          title={item.question}
-          required={item.required}
-          options={item.options}
-          value={item.options[arrayData[item.indice]]}
-          colors={colors}
-          onReset={() => {
-            let a = [...arrayData];
-            a[item.indice] = null;
-            setArrayData(a);
-          }}
-          onValueChange={value => {
-            let a = [...arrayData];
-            a[item.indice] = item.options.indexOf(value);
-            setArrayData(a);
-          }}
-        />
-      </View>
-    );
-  } else if (item.type === 'textbox') {
-    return (
-      <View>
-        <Question
-          title={item.question}
-          required={item.required}
-          onReset={() => {
-            let a = [...arrayData];
-            a[item.indice] = '';
-            setArrayData(a);
-          }}
-        />
-        <TextInput
-          placeholder={'Type here'}
-          placeholderTextColor={colors.primary}
-          style={styles.textInput}
-          value={arrayData[item.indice]}
-          onChangeText={text => {
-            let a = [...arrayData];
-            a[item.indice] = text;
-            setArrayData(a);
-          }}
-          multiline={true}
-        />
-      </View>
-    );
-  } else if (item.type === 'number') {
-    if (item.slider === true) {
-      return (
-        <SliderType
-          low={item.low}
-          high={item.high}
-          step={item.step}
-          question={item.question}
-          onValueChange={newValue => {
-            let a = [...arrayData];
-            a[item.indice] = newValue;
-            console.log(a);
-            setArrayData(a);
-          }}
-          value={arrayData[item.indice]}
-        />
-      );
-    } else {
-      return (
-        <Stepper
-          title={item.question + (item.required ? '*' : '')}
-          value={arrayData[item.indice]}
-          onValueChange={newValue => {
-            let a = [...arrayData];
-            a[item.indice] = newValue;
-            setArrayData(a);
-          }}
-        />
-      );
+    switch(item.type) {
+        case Form.ItemType.radio: return (
+            <View key={item.idx}>
+                <RadioButtons
+                    disabled={false}
+                    title={item.question}
+                    required={item.required}
+                    options={item.options}
+                    value={item.options[arrayData[item.idx] as number]}
+                    onReset={() => {
+                        let a = [...arrayData];
+                        a[item.idx] = null;
+                        setArrayData(a);
+                    }}
+                    onValueChange={value => {
+                        let a = [...arrayData];
+                        a[item.idx] = item.options.indexOf(value);
+                        setArrayData(a);
+                    }}
+                />
+            </View>
+        );
+        case Form.ItemType.textbox: return (
+            <View key={item.idx}>
+                <Question
+                    title={item.question}
+                    required={item.required}
+                    onReset={() => {
+                        let a = [...arrayData];
+                        a[item.idx] = '';
+                        setArrayData(a);
+                    }}
+                />
+                <TextInput
+                    placeholder={'Type here'}
+                    placeholderTextColor={colors.primary}
+                    style={styles.textInput}
+                    value={(arrayData[item.idx] ?? "") as string}
+                    onChangeText={text => {
+                        let a = [...arrayData];
+                        a[item.idx] = text;
+                        setArrayData(a);
+                    }}
+                    multiline={true}
+                />
+            </View>
+        );
+        case Form.ItemType.number:
+            return item.slider
+                ? <SliderType
+                    key={item.idx}
+
+                    min={item.low}
+                    max={item.high}
+                    step={item.step}
+                    question={item.question}
+                    minLabel={item.lowLabel}
+                    maxLabel={item.highLabel}
+                    disabled={false}
+
+                    onValueChange={newValue => {
+                        let a = [...arrayData];
+                        a[item.idx] = newValue;
+                        console.log(a);
+                        setArrayData(a);
+                    }}
+                    value={arrayData[item.idx] as number}
+                />
+                : <Stepper
+                    key={item.idx}
+
+                    title={item.question + (item.required ? '*' : '')}
+                    value={arrayData[item.idx] as number}
+                    onValueChange={newValue => {
+                        let a = [...arrayData];
+                        a[item.idx] = newValue;
+                        setArrayData(a);
+                    }}
+                />
+        case Form.ItemType.checkbox: return (
+            <Checkboxes
+                key={item.idx}
+                title={item.question}
+                options={item.options}
+                value={arrayData[item.idx] as string[]}
+                disabled={false}
+                onValueChange={value => {
+                    setArrayData(prev => {
+                        const newData = [...prev];
+                        newData[item.idx] = value;
+                        return newData;
+                    });
+                }}
+            />
+        );
     }
-  } else if (item.type === 'checkboxes') {
-    return (
-      <Checkbox
-        title={item.question}
-        options={item.options}
-        value={arrayData[item.indice]}
-        disabled={false}
-        onValueChange={value => {
-          setArrayData(prev => {
-            const newData = [...prev];
-            newData[item.indice] = value;
-            return newData;
-          });
-        }}
-        colors={colors}
-      />
-    );
-  }
 }
-
-export default FormComponent;
