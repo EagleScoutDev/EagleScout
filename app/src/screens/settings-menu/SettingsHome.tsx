@@ -24,7 +24,7 @@ import FormHelper from '../../FormHelper';
 import { type SettingsMenuScreenProps } from './SettingsMenu';
 import { Asterisk, Ban, BoxArrowRight, JournalBookmarkFill, PenFill, QuestionCircle, Sticky } from '../../components/icons/icons.generated';
 
-const VERSION = '7.7 (OTA 2)';
+const VERSION = '7.7.1';
 
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {
 
