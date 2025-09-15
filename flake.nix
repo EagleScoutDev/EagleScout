@@ -17,6 +17,9 @@
         config.allowUnfree = true;
         config.android_sdk.accept_license = true;
       });
+
+      xcodeDir = "/Applications/Xcode.app";
+      minXcodeVersion = "16F6"; # Release 16.4
     in {
       devShells.aarch64-darwin.default = pkgs.mkShellNoCC {
         packages = with pkgs; [
@@ -42,8 +45,21 @@
         ];
 
         shellHook = ''
-          export DEVELOPER_DIR="${pkgs.darwin.xcode_16_4}/Contents/Developer"
+          export DEVELOPER_DIR="${xcodeDir}/Contents/Developer"
           export PATH="$DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin:$DEVELOPER_DIR/usr/bin:$PATH"
+          
+          if [[ ! -d "$DEVELOPER_DIR" ]]; then
+            echo "Failed to find Xcode installation at $DEVELOPER_DIR" >&2
+            exit
+          fi
+
+          XCODE_VERSION=$("$DEVELOPER_DIR"/usr/bin/xcodebuild -version | grep -o "Build version .*" | sed 's/Build version //')
+          if [[ "$XCODE_VERSION" < "${minXcodeVersion}" ]]; then
+            echo "Xcode installation at $DEVELOPER_DIR is either corrupted or outdated" >&2
+            echo "Current version: $XCODE_VERSION" >&2
+            echo "Minimum version: ${minXcodeVersion}" >&2
+            exit
+          fi
         '';
       };
   };
