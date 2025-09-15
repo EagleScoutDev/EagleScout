@@ -26,7 +26,7 @@ export interface PicklistTeam {
     notes: string;
 }
 
-class PicklistsDB {
+export class PicklistsDB {
     static async getPicklists(competition_id: any): Promise<PicklistStructure[]> {
         const { data, error } = await supabase
             .from('picklist')
@@ -104,5 +104,3 @@ class PicklistsDB {
         }
     }
 }
-
-export default PicklistsDB;

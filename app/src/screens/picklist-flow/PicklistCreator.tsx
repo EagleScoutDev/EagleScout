@@ -15,24 +15,24 @@ import PicklistsDB, {
     type PicklistStructure,
     type PicklistTeam,
 } from '../../database/Picklists';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { BouncyCheckbox } from 'react-native-bouncy-checkbox';
 import DraggableFlatList, {
     type RenderItemParams,
     ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 import Svg, { Path } from 'react-native-svg';
-import ProfilesDB from '../../database/Profiles';
+import { ProfilesDB } from '../../database/Profiles';
 import { type SimpleTeam, TBA } from '../../lib/TBAUtils';
-import Competitions from '../../database/Competitions';
-import TeamAddingModal from './TeamAddingModal';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import TagsModal from './TagsModal';
+import { Competitions } from '../../database/Competitions';
+import { TeamAddingModal } from './TeamAddingModal';
+import { ReactNativeHapticFeedback } from 'react-native-haptic-feedback';
+import { TagsModal } from './TagsModal';
 import { TagsDB, type TagStructure } from '../../database/Tags';
-import TagColorChangeModal from './TagColorChangeModal';
-import DoNotPickModal from './DoNotPickModal';
+import { TagColorChangeModal } from './TagColorChangeModal';
+import { DoNotPickModal } from './DoNotPickModal';
 import { getIdealTextColor } from '../../lib/color';
 
-function PicklistCreator({
+export function PicklistCreator({
     route,
 }: {
     route: { params: { picklist_id: number; currentCompID: number } };
@@ -955,6 +955,4 @@ function PicklistCreator({
             )}
         </Pressable>
     );
-}
-
-export default PicklistCreator;
+};

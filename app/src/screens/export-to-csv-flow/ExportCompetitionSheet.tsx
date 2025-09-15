@@ -1,8 +1,8 @@
-import React from 'react';
+import { React } from 'react';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import StandardButton from '../../components/StandardButton';
+import { StandardButton } from '../../components/StandardButton';
 
 export const ExportCompetitionSheet = ({
     competitionName,

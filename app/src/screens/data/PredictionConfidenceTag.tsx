@@ -3,15 +3,16 @@ import { PredictionConfidence } from '../../lib/PredictionConfidence';
 import { useTheme } from '@react-navigation/native';
 import { type SetStateAction } from 'react';
 
-const PredictionConfidenceTag = ({
-    confidence,
-    setModal,
-    tagOnly = false,
-}: {
+interface PredictionConfidenceTagProps {
     confidence: PredictionConfidence;
     setModal: (boolean: SetStateAction<boolean>) => void;
     tagOnly?: boolean;
-}) => {
+}
+export function PredictionConfidenceTag({
+    confidence,
+    setModal,
+    tagOnly = false,
+}: PredictionConfidenceTagProps) {
     const { colors } = useTheme();
 
     const getConfidenceText = (c: PredictionConfidence) => {
@@ -83,5 +84,3 @@ const PredictionConfidenceTag = ({
         </View>
     );
 };
-
-export default PredictionConfidenceTag;

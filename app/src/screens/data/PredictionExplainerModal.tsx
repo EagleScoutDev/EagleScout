@@ -1,8 +1,8 @@
-import React from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import PredictionConfidenceTag from './PredictionConfidenceTag';
+import { PredictionConfidenceTag } from './PredictionConfidenceTag';
 import { PredictionConfidence } from '../../lib/PredictionConfidence';
+import type { Setter } from '../../lib/react-utils/types';
 
 const explanations: Map<PredictionConfidence, string> = new Map([
     [
@@ -23,13 +23,10 @@ const explanations: Map<PredictionConfidence, string> = new Map([
     ],
 ]);
 
-const PredictionExplainerModal = ({
-    visible,
-    setVisible,
-}: {
-    visible: boolean;
-    setVisible: (boolean: boolean) => void;
-}) => {
+export interface PredictionExplainerModalProps {
+    visible: boolean, setVisible: Setter<boolean>
+}
+export function PredictionExplainerModal({ visible, setVisible }: PredictionExplainerModalProps) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -82,5 +79,3 @@ const PredictionExplainerModal = ({
         </Modal>
     );
 };
-
-export default PredictionExplainerModal;

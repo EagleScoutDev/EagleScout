@@ -11,24 +11,26 @@ import {
 import { useTheme } from '@react-navigation/native';
 import type { PicklistTeam } from '../../database/Picklists';
 import Svg, { Path } from 'react-native-svg';
-import StandardButton from '../../components/StandardButton';
-import TeamAddingModal from './TeamAddingModal';
+import { StandardButton } from '../../components/StandardButton';
+import { TeamAddingModal } from './TeamAddingModal';
 import type { SimpleTeam } from '../../lib/TBAUtils';
-const DoNotPickModal = ({
-    visible,
-    setVisible,
-    teams,
-    teamsAtCompetition,
-    numbersToNames,
-    addToDNP,
-}: {
+
+export interface DoNotPickModalProps {
     visible: boolean;
     setVisible: (arg0: boolean) => void;
     teams: PicklistTeam[] | undefined;
     teamsAtCompetition: SimpleTeam[];
     numbersToNames: Map<number, string>;
     addToDNP: (team: SimpleTeam) => void;
-}) => {
+}
+export function DoNotPickModal({
+    visible,
+    setVisible,
+    teams,
+    teamsAtCompetition,
+    numbersToNames,
+    addToDNP,
+}: DoNotPickModalProps) {
     const { colors } = useTheme();
     const [searchTerm, setSearchTerm] = useState('');
     const [addingTeams, setAddingTeams] = useState<boolean>(false);
@@ -187,5 +189,3 @@ const DoNotPickModal = ({
         </Modal>
     );
 };
-
-export default DoNotPickModal;

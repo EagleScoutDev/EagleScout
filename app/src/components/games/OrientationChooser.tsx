@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import { Pressable, View, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Alliance, Orientation } from '../../games/common';

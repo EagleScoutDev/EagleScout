@@ -1,17 +1,28 @@
 import React, { useState } from 'react';
-import SearchMain from './SearchMain';
+import { SearchMain } from './SearchMain';
 
-import TeamViewer from './TeamViewer';
+import { TeamViewer, type TeamViewerParams } from './TeamViewer';
 import type { SimpleTeam } from '../../lib/TBAUtils';
 import { createStackNavigator } from '@react-navigation/stack';
-import ReportsForTeam from './ReportsForTeam';
+import { ReportsForTeam, type ReportsForTeamParams } from './ReportsForTeam';
 import { AutoPathsForTeam } from './AutoPathsForTeam';
 import { useTheme } from '@react-navigation/native';
-import SearchModal from './SearchModal';
-import CompareTeams from './CompareTeams';
+import { SearchModal, type SearchModalParams } from './SearchModal';
+import { CompareTeams } from './CompareTeams';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const Stack = createStackNavigator();
-function SearchScreen() {
+const Stack = createStackNavigator<SearchScreenParamList>();
+export type SearchScreenScreenProps<K extends keyof SearchScreenParamList> = NativeStackScreenProps<SearchScreenParamList, K>
+export type SearchScreenParamList = {
+    "Main Search": undefined
+    "Team Viewer": TeamViewerParams
+    "Reports for Team": ReportsForTeamParams
+    "Auto Paths": undefined
+    "Search Modal": SearchModalParams
+    "Compare Teams": undefined
+}
+
+export function SearchScreen() {
     const [team, setChosenTeam] = useState<SimpleTeam>();
     const { colors } = useTheme();
 
@@ -36,7 +47,7 @@ function SearchScreen() {
                 }}
             />
             <Stack.Screen
-                name="TeamViewer"
+                name="Team Viewer"
                 component={TeamViewer}
                 options={{
                     // show the back button, but not the header
@@ -61,7 +72,7 @@ function SearchScreen() {
                 }}
             />
             <Stack.Screen
-                name={'SearchModal'}
+                name={'Search Modal'}
                 component={SearchModal}
                 options={{
                     headerShown: false,
@@ -77,6 +88,4 @@ function SearchScreen() {
             />
         </Stack.Navigator>
     );
-}
-
-export default SearchScreen;
+};

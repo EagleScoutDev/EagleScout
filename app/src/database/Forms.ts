@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-interface Form {
+export interface Form {
     formStructure: FormStructure;
     pitScouting: boolean;
     name: string;
@@ -62,7 +62,7 @@ export interface FormReturnData extends Form {
     id: number;
 }
 
-class FormsDB {
+export class FormsDB {
     static async addForm(form: Form): Promise<void> {
         const { data, error } = await supabase.from('forms').insert({
             form_structure: form.formStructure,
@@ -113,5 +113,3 @@ class FormsDB {
         return res;
     }
 }
-
-export default FormsDB;

@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-const RadioOptionsSeparator = ({ onPress }) => {
+export function RadioOptionsSeparator({ onPress })  {
     const { colors } = useTheme();
 
     return (
@@ -35,4 +35,4 @@ const RadioOptionsSeparator = ({ onPress }) => {
     );
 };
 
-export default RadioOptionsSeparator;
+

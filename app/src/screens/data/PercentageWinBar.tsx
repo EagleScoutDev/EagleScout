@@ -1,12 +1,13 @@
 import React, { Text, View } from 'react-native';
 
-const PercentageWinBar = ({
+export interface PercentageWinBarProps {
+    bluePercentage: number
+    redPercentage: number
+}
+export function PercentageWinBar({
     bluePercentage,
     redPercentage,
-}: {
-    bluePercentage: number;
-    redPercentage: number;
-}) => {
+}: PercentageWinBarProps) {
     const bothZero = bluePercentage === 0 && redPercentage === 0;
 
     return (
@@ -74,5 +75,3 @@ const PercentageWinBar = ({
         </View>
     );
 };
-
-export default PercentageWinBar;

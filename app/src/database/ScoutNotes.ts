@@ -26,7 +26,7 @@ export interface OfflineNote {
     created_at: Date;
 };
 
-class NotesDB {
+export class NotesDB {
     /**
      * Checks if a match exists in the database. If it does, return the match id.
      * @param match_number the match number to check
@@ -268,5 +268,3 @@ class NotesDB {
         }
     }
 }
-
-export default NotesDB;

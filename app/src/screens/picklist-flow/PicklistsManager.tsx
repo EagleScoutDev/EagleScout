@@ -1,12 +1,12 @@
-import React from 'react';
+import { React } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import PicklistsManagerScreen from './PicklistsManagerScreen';
-import PicklistCreator from './PicklistCreator';
+import { PicklistsManagerScreen } from './PicklistsManagerScreen';
+import { PicklistCreator } from './PicklistCreator';
 import { useTheme } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
-function PicklistsManager() {
+export function PicklistsManager() {
     const { colors } = useTheme();
     return (
         <Stack.Navigator
@@ -38,6 +38,4 @@ function PicklistsManager() {
             />
         </Stack.Navigator>
     );
-}
-
-export default PicklistsManager;
+};

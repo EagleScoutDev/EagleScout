@@ -1,10 +1,14 @@
 import React, { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import Forms from '../../database/Forms';
-import FormOptionsModal from './components/FormOptionsModal';
+import { Forms } from '../../database/Forms';
+import { FormOptionsModal } from './components/FormOptionsModal';
+import type { FormCreationScreenProps } from './FormCreation';
 
-const FormList = ({ navigation }) => {
+export interface FormListProps extends FormCreationScreenProps<"List"> {
+
+}
+export function FormList({ navigation }: FormListProps) {
     const { colors } = useTheme();
     const [formList, setFormList] = useState([]);
     const [selectedForm, setSelectedForm] = useState(null);
@@ -86,7 +90,7 @@ const FormList = ({ navigation }) => {
 
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('Form Creation Main', {
+                            navigation.navigate("Edit", {
                                 form: null,
                             });
                         }}
@@ -125,5 +129,3 @@ const FormList = ({ navigation }) => {
         </>
     );
 };
-
-export default FormList;

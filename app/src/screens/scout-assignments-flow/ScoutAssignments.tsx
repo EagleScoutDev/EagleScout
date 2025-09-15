@@ -1,11 +1,11 @@
-import React from 'react';
-import ScoutAssignmentsSpreadsheet from './ScoutAssignmentsSpreadsheet';
+import { React } from 'react';
+import { ScoutAssignmentsSpreadsheet } from './ScoutAssignmentsSpreadsheet';
 import {createStackNavigator} from '@react-navigation/stack';
-import ScoutAssignmentsMain from './ScoutAssignmentsMain';
+import { ScoutAssignmentsMain } from './ScoutAssignmentsMain';
 
 const Stack = createStackNavigator();
 
-function ScoutAssignments() {
+export function ScoutAssignments() {
   return (
     <>
       <Stack.Navigator>
@@ -28,6 +28,4 @@ function ScoutAssignments() {
       </Stack.Navigator>
     </>
   );
-}
-
-export default ScoutAssignments;
+};

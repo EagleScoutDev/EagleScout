@@ -1,8 +1,13 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import ScoutingReportsList from './ScoutingReportsList';
+import { ScoutingReportsList } from './ScoutingReportsList';
+import type { CompetitionReturnData } from '../../database/Competitions';
 
-const CompetitionViewer = ({ resetCompID, competition }) => {
+export interface CompetitionViewer {
+    resetCompID: () => void
+    competition: CompetitionReturnData
+}
+export function CompetitionViewer({ resetCompID, competition }: CompetitionViewer) {
     const { colors } = useTheme();
 
     return (
@@ -55,5 +60,3 @@ const CompetitionViewer = ({ resetCompID, competition }) => {
         </View>
     );
 };
-
-export default CompetitionViewer;

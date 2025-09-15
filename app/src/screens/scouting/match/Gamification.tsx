@@ -5,13 +5,13 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import FormSection from '../../../components/form/FormSection';
+import { FormSection } from '../../../components/form/FormSection';
 import React, { useState } from 'react';
 import { FormComponent } from '../../../components/form/FormComponent';
-import StandardButton from '../../../components/StandardButton';
+import { StandardButton } from '../../../components/StandardButton';
 import { MatchInformation } from '../../../components/form/MatchInformation';
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
-import ReefscapeAutoModal from '../../../components/games/reefscape/ReefscapeAutoModal';
+import { ReefscapeAutoModal } from '../../../components/games/reefscape/ReefscapeAutoModal';
 import type { Setter } from '../../../lib/react-utils/types';
 import type { ScoutingHomeParamList, ScoutingHomeScreenProps } from '../ScoutFlow';
 import type { Alliance, Orientation } from '../../../games/common';
@@ -42,7 +42,7 @@ export interface GamificationProps {
     autoPath: unknown, setAutoPath: Setter<unknown>
     navigation: NativeStackNavigationProp<ScoutingHomeParamList, "Match">
 }
-function Gamification({
+export function Gamification({
     match, setMatch,
     team, setTeam,
     teamsForMatch,
@@ -243,6 +243,4 @@ function Gamification({
             />
         </>
     );
-}
-
-export default Gamification;
+};

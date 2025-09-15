@@ -2,21 +2,20 @@ import { useTheme } from '@react-navigation/native';
 import { FlatList, Modal, Pressable, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import CompetitionsDB from '../../database/Competitions';
+import { CompetitionsDB } from '../../database/Competitions';
+import type { Setter } from '../../lib/react-utils/types';
 
-const QuestionFormulaCreator = ({
-    visible,
-    setVisible,
-    chosenQuestionIndices,
-    setChosenQuestionIndices,
-    compId,
-}: {
-    visible: boolean;
-    setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-    chosenQuestionIndices: number[];
-    setChosenQuestionIndices: React.Dispatch<React.SetStateAction<number[]>>;
+interface QuestionFormulaCreatorProps {
+    visible: boolean, setVisible: Setter<boolean>
+    chosenQuestionIndices: number[], setChosenQuestionIndices: Setter<number[]>
     compId: number;
-}) => {
+}
+
+export function QuestionFormulaCreator({
+    visible, setVisible,
+    chosenQuestionIndices, setChosenQuestionIndices,
+    compId,
+}: QuestionFormulaCreatorProps) {
     const { colors } = useTheme();
     const [form, setForm] = useState<any[]>();
 
@@ -146,5 +145,3 @@ const QuestionFormulaCreator = ({
         </Modal>
     );
 };
-
-export default QuestionFormulaCreator;

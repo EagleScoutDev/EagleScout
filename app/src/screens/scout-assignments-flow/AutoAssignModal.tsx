@@ -7,13 +7,13 @@ import React, {
     TextInput,
     View,
 } from 'react-native';
-import StandardModal from '../../components/modals/StandardModal';
-import StandardButton from '../../components/StandardButton';
+import { StandardModal } from '../../components/modals/StandardModal';
+import { StandardButton } from '../../components/StandardButton';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { BouncyCheckbox } from 'react-native-bouncy-checkbox';
 
-function AutoAssignModal({ visible, setVisible, colors, compId }) {
+export function AutoAssignModal({ visible, setVisible, colors, compId }) {
     const styles = StyleSheet.create({
         button_row: { flexDirection: 'row', justifyContent: 'space-evenly' },
     });
@@ -224,6 +224,4 @@ function AutoAssignModal({ visible, setVisible, colors, compId }) {
             </StandardModal>
         </>
     );
-}
-
-export default AutoAssignModal;
+};

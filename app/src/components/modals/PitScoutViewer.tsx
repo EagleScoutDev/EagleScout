@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import PitReportsDB, {
     type PitReportReturnData,
 } from '../../database/ScoutPitReports';
-import RadioButtons from '../form/RadioButtons';
+import { RadioButtons } from '../form/RadioButtons';
 import { Checkboxes } from '../form/Checkboxes';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

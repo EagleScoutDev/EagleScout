@@ -1,4 +1,4 @@
-import React, {
+import {
     Alert,
     Platform,
     StyleSheet,
@@ -7,22 +7,27 @@ import React, {
     TouchableOpacity,
     View,
 } from 'react-native';
-import StandardButton from '../StandardButton';
+import { StandardButton } from '../StandardButton';
 import { supabase } from '../../lib/supabase';
 import { useTheme } from '@react-navigation/native';
 import { useState } from 'react';
-import StandardModal from './StandardModal';
+import { StandardModal } from './StandardModal';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { getIdealTextColor } from '../../lib/color';
+import type { Setter } from '../../lib/react-utils/types';
+import type { CompetitionReturnData } from '../../database/Competitions';
 
-const DEBUG = true;
-
-const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
+export interface EditCompetitionModalProps {
+    setVisible: Setter<boolean>
+    onRefresh: () => void
+    value: CompetitionReturnData
+}
+export function EditCompetitionModal({ setVisible, onRefresh, value }: EditCompetitionModalProps) {
     const { colors } = useTheme();
 
-    const [name, setName] = useState(tempComp.name);
-    const [startTime, setStartTime] = useState(new Date(tempComp.startTime));
-    const [endTime, setEndTime] = useState(new Date(tempComp.endTime));
+    const [name, setName] = useState(value.name);
+    const [startTime, setStartTime] = useState(new Date(value.startTime));
+    const [endTime, setEndTime] = useState(new Date(value.endTime));
 
     const [showStartDate, setShowStartDate] = useState(Platform.OS === 'ios');
     const [showStartTime, setShowStartTime] = useState(Platform.OS === 'ios');
@@ -30,16 +35,10 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
     const [showEndTime, setShowEndTime] = useState(Platform.OS === 'ios');
 
     const changesMade = () => {
-        if (name !== tempComp.name) {
-            return true;
-        }
-        if (startTime !== tempComp.startTime) {
-            return true;
-        }
-        if (endTime !== tempComp.endTime) {
-            return true;
-        }
-        return false;
+        if(name !== value.name) return true
+        if(startTime !== value.startTime) return true
+        if(endTime !== value.endTime) return true
+        return false
     };
 
     const styles = StyleSheet.create({
@@ -77,7 +76,7 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
                 start_time: startTime,
                 end_time: endTime,
             })
-            .eq('id', tempComp.id);
+            .eq('id', value.id);
 
         return error;
     };
@@ -86,7 +85,7 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
         const { data, error } = await supabase
             .from('competitions')
             .delete()
-            .eq('id', tempComp.id);
+            .eq('id', value.id);
         if (error) {
             console.error(error);
             Alert.alert(
@@ -105,9 +104,6 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
                 { cancelable: false },
             );
         } else {
-            if (DEBUG) {
-                console.log('deleted competition');
-            }
             setVisible(false);
             onRefresh();
         }
@@ -139,7 +135,7 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
                 </View>
             </View>
             <View style={styles.date_row}>
-                {Platform.OS !== 'ios' && (
+                {Platform.OS !== 'ios' && <>
                     <TouchableOpacity
                         style={styles.date_background}
                         onPress={() => setShowStartDate(true)}>
@@ -147,8 +143,6 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
                             {startTime.toLocaleDateString('en-US')}
                         </Text>
                     </TouchableOpacity>
-                )}
-                {Platform.OS !== 'ios' && (
                     <TouchableOpacity
                         style={styles.date_background}
                         onPress={() => setShowStartTime(true)}>
@@ -156,7 +150,7 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
                             {startTime.toLocaleTimeString('en-US')}
                         </Text>
                     </TouchableOpacity>
-                )}
+                </>}
                 {showStartDate && (
                     <RNDateTimePicker
                         value={startTime}
@@ -353,5 +347,3 @@ const EditCompetitionModal = ({ setVisible, onRefresh, tempComp }) => {
         </StandardModal>
     );
 };
-
-export default EditCompetitionModal;

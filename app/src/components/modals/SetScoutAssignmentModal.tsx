@@ -1,23 +1,32 @@
 import React, { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
-import StandardModal from './StandardModal';
-import SelectMenu from '../form/SelectMenu';
-import StandardButton from '../StandardButton';
+import { StandardModal } from './StandardModal';
+import { SelectMenu } from '../form/SelectMenu';
+import { StandardButton } from '../StandardButton';
 import { useTheme } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
+import type { CompetitionReturnData } from '../../database/Competitions';
+import type { Setter } from '../../lib/react-utils/types';
 
-function Spacer() {
+export function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-function SetScoutAssignmentModal({
+export interface SetScoutAssignmentModalProps {
+    visible: boolean, setVisible: Setter<boolean>
+    competition: CompetitionReturnData
+    matches: unknown[]
+    setNameCb: unknown
+    teamBased: unknown
+}
+export function SetScoutAssignmentModal({
     visible,
     setVisible,
     competition,
     matches,
     setNameCb,
     teamBased,
-}) {
+}: SetScoutAssignmentModalProps) {
     const [name, setName] = useState('');
     const [userId, setUserId] = useState(null);
     const [names, setNames] = useState([]);
@@ -288,6 +297,4 @@ function SetScoutAssignmentModal({
             )}
         </>
     );
-}
-
-export default SetScoutAssignmentModal;
+};

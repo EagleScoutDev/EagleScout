@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import { React } from 'react';
 import {useTheme} from '@react-navigation/native';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import { ReactNativeHapticFeedback } from 'react-native-haptic-feedback';
 import {ReefscapeActionType} from './ReefscapeActions';
 
 export const ReefscapeLevels = ({

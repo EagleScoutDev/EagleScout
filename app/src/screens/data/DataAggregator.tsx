@@ -11,7 +11,7 @@ import { useTheme } from '@react-navigation/native';
 import CompetitionsDB, {
     type CompetitionReturnData,
 } from '../../database/Competitions';
-import MatchReportsDB from '../../database/ScoutMatchReports';
+import { MatchReportsDB } from '../../database/ScoutMatchReports';
 
 interface Question {
     question: string;
@@ -25,7 +25,7 @@ enum AggregationStatus {
     DONE,
 }
 
-function DataAggregation({ navigation }) {
+export function DataAggregation({ navigation }) {
     const { colors } = useTheme();
 
     // competition form
@@ -361,6 +361,4 @@ function DataAggregation({ navigation }) {
             )}
         </View>
     );
-}
-
-export default DataAggregation;
+};

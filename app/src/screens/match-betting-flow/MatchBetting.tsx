@@ -8,9 +8,9 @@ import {
     View,
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import UserAttributesDB from '../../database/UserAttributes';
+import { UserAttributesDB } from '../../database/UserAttributes';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import CompetitionsDB from '../../database/Competitions';
+import { CompetitionsDB } from '../../database/Competitions';
 
 export const MatchBetting = () => {
     const { colors } = useTheme();

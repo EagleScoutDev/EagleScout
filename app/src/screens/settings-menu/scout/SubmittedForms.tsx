@@ -13,18 +13,18 @@ import {
     StyleSheet,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import ReportList from '../../../components/ReportList';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ReportList } from '../../../components/ReportList';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
-import SegmentedOption from '../../../components/pickers/SegmentedOption';
-import StandardButton from '../../../components/StandardButton';
-import Toast from 'react-native-toast-message';
+import { SegmentedOption } from '../../../components/pickers/SegmentedOption';
+import { StandardButton } from '../../../components/StandardButton';
+import { Toast } from 'react-native-toast-message';
 import MatchReportsDB, { type MatchReportReturnData } from '../../../database/ScoutMatchReports';
-import CompetitionsDB from '../../../database/Competitions';
+import { CompetitionsDB } from '../../../database/Competitions';
 
 const DEBUG = false;
 
-function SubmittedForms() {
+export function SubmittedForms() {
     const [reports, setReports] = useState<MatchReportReturnData[]>([]);
     const [offlineReports, setOfflineReports] = useState<MatchReportReturnData[]>([]);
     const { colors } = useTheme();
@@ -199,6 +199,4 @@ function SubmittedForms() {
             )}
         </SafeAreaView>
     );
-}
-
-export default SubmittedForms;
+};

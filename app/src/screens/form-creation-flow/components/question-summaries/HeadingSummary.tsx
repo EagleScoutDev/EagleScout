@@ -1,7 +1,7 @@
-import SummaryTemplate from './SummaryTemplate';
-import SummaryText from './SummaryText';
+import { SummaryTemplate } from './SummaryTemplate';
+import { SummaryText } from './SummaryText';
 
-const HeadingSummary = ({ question, onDelete }) => {
+export function HeadingSummary({ question, onDelete }) {
     return (
         <SummaryTemplate onDelete={onDelete}>
             <SummaryText>Question Type: Heading</SummaryText>
@@ -10,5 +10,3 @@ const HeadingSummary = ({ question, onDelete }) => {
         </SummaryTemplate>
     );
 };
-
-export default HeadingSummary;

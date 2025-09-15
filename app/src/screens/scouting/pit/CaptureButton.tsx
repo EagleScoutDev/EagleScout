@@ -1,7 +1,6 @@
-import React from 'react';
 import {ActivityIndicator, Pressable, StyleSheet} from 'react-native';
 
-export default function CaptureButton({
+export function CaptureButton({
   onPress,
   loading,
 }: {

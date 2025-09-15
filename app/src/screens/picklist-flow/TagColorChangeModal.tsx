@@ -4,15 +4,13 @@ import ColorPicker, { HueSlider } from 'reanimated-color-picker';
 import { useTheme } from '@react-navigation/native';
 import { TagsDB, type TagStructure } from '../../database/Tags';
 import { getIdealTextColor } from '../../lib/color';
-const TagColorChangeModal = ({
-    visible,
-    setVisible,
-    tag,
-}: {
-    visible: boolean;
-    setVisible: (arg0: boolean) => void;
-    tag: TagStructure | undefined;
-}) => {
+import type { Setter } from '../../lib/react-utils/types';
+
+export interface TagColorChangeModalProps {
+    visible: boolean, setVisible: Setter<boolean>
+    tag: TagStructure | undefined
+}
+export function TagColorChangeModal({ visible, setVisible, tag }: TagColorChangeModalProps) {
     const { colors } = useTheme();
     const [color, setColor] = useState(tag?.color ?? '#FF0000');
 
@@ -83,5 +81,3 @@ const TagColorChangeModal = ({
         </Modal>
     );
 };
-
-export default TagColorChangeModal;

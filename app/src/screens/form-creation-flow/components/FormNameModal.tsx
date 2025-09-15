@@ -1,14 +1,19 @@
-import StandardModal from '../../../components/modals/StandardModal';
+import { StandardModal } from '../../../components/modals/StandardModal';
 import React, { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
-import StandardButton from '../../../components/StandardButton';
+import { StandardButton } from '../../../components/StandardButton';
 import { useState } from 'react';
 import { useTheme } from '@react-navigation/native';
+import type { Setter } from '../../../lib/react-utils/types';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-const FormNameModal = ({ visible, setVisible, onSubmit }) => {
+export interface FormNameModalProps {
+    visible: boolean, setVisible: Setter<boolean>
+    onSubmit: () => void
+}
+export function FormNameModal({ visible, setVisible, onSubmit }: FormNameModalProps) {
     const { colors } = useTheme();
     const [name, setName] = useState('');
 
@@ -68,5 +73,3 @@ const FormNameModal = ({ visible, setVisible, onSubmit }) => {
         </StandardModal>
     );
 };
-
-export default FormNameModal;

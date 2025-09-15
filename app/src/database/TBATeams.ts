@@ -5,7 +5,7 @@ export interface TBATeam {
     name: string;
 }
 
-class TBATeams {
+export class TBATeams {
     static TEAM_CACHE: TBATeam[] = [];
 
     static async fetchAllTeams(): Promise<TBATeam[]> {
@@ -34,5 +34,3 @@ class TBATeams {
         );
     }
 }
-
-export default TBATeams;

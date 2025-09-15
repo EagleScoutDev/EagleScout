@@ -10,7 +10,7 @@ export interface TBAMatch {
     compLevel: string;
 }
 
-class TBAMatches {
+export class TBAMatches {
     static async getMatchesForCompetition(compId: string): Promise<TBAMatch[]> {
         const { data: compData, error: compError } = await supabase
             .from('competitions')
@@ -43,5 +43,3 @@ class TBAMatches {
         }
     }
 }
-
-export default TBAMatches;

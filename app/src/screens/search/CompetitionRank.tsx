@@ -6,7 +6,7 @@ import Svg, { Path } from 'react-native-svg';
 
 // TODO: Add a loading indicator
 // TODO: When it is clicked on, expand and show their rank history for the past few competitions they have attended
-function CompetitionRank({ team_number }: { team_number: number }) {
+export function CompetitionRank({ team_number }: { team_number: number }) {
     const [currentCompetition, setCurrentCompetition] =
         useState<SimpleEvent | null>(null);
     const [currentCompetitionRank, setCurrentCompetitionRank] = useState<
@@ -318,6 +318,4 @@ function CompetitionRank({ team_number }: { team_number: number }) {
             )}
         </View>
     );
-}
-
-export default CompetitionRank;
+};

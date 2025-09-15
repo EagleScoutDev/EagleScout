@@ -1,16 +1,16 @@
 import React, { Alert, StyleSheet, View } from 'react-native';
-import StandardButton from '../StandardButton';
+import { StandardButton } from '../StandardButton';
 import { useTheme } from '@react-navigation/native';
 import { useState } from 'react';
-import StandardModal from './StandardModal';
+import { StandardModal } from './StandardModal';
 import { supabase } from '../../lib/supabase';
-import RadioButtons from "../form/RadioButtons";
+import { RadioButtons } from "../form/RadioButtons";
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-function EnableScoutAssignmentsModal({
+export function EnableScoutAssignmentsModal({
     visible,
     setVisible,
     competition,
@@ -101,6 +101,4 @@ function EnableScoutAssignmentsModal({
             </View>
         </StandardModal>
     );
-}
-
-export default EnableScoutAssignmentsModal;
+};

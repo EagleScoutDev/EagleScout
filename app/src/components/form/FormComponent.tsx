@@ -1,10 +1,10 @@
 import { StyleSheet, TextInput, View } from 'react-native';
-import RadioButtons from './RadioButtons';
+import { RadioButtons } from './RadioButtons';
 import React, { type SetStateAction } from 'react';
-import Stepper from './Stepper';
+import { Stepper } from './Stepper';
 import { Checkboxes } from './Checkboxes';
-import SliderType from './SliderType';
-import Question from './Question';
+import { SliderType } from './SliderType';
+import { Question } from './Question';
 import { useTheme } from '@react-navigation/native';
 import { Form } from '../../database/Forms';
 

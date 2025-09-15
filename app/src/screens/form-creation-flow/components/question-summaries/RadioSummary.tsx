@@ -1,7 +1,7 @@
-import SummaryTemplate from './SummaryTemplate';
-import SummaryText from './SummaryText';
+import { SummaryTemplate } from './SummaryTemplate';
+import { SummaryText } from './SummaryText';
 
-const RadioSummary = ({ question, onDelete }) => {
+export function RadioSummary({ question, onDelete }) {
     return (
         <SummaryTemplate onDelete={onDelete}>
             <SummaryText>Question Type: Radio</SummaryText>
@@ -16,5 +16,3 @@ const RadioSummary = ({ question, onDelete }) => {
         </SummaryTemplate>
     );
 };
-
-export default RadioSummary;

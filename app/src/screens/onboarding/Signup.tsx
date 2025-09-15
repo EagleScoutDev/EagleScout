@@ -13,7 +13,7 @@ import { useTheme } from '@react-navigation/native';
 import { styles } from './styles';
 import { supabase } from '../../lib/supabase';
 import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
-import StandardButton from '../../components/StandardButton';
+import { StandardButton } from '../../components/StandardButton';
 import { type OnboardingScreenProps } from '.';
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {

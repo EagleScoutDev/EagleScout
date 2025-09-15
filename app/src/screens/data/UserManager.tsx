@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
+import { Toast } from 'react-native-toast-message';
 import { supabase } from '../../lib/supabase';
 import { getIdealTextColor, parseColor } from '../../lib/color';
 
@@ -41,7 +41,7 @@ function SortOption({ onPress, title, isActive }) {
 }
 
 const DEBUG = false;
-function UserManager({ navigation }) {
+export function UserManager({ navigation }) {
     const [users, setUsers] = useState([]);
     const { colors } = useTheme();
     const [sort, setSort] = useState('All');
@@ -417,6 +417,4 @@ function UserManager({ navigation }) {
             </ScrollView>
         </View>
     );
-}
-
-export default UserManager;
+};

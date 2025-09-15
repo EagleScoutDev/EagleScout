@@ -1,14 +1,14 @@
-import StandardModal from '../../../../components/modals/StandardModal';
+import { StandardModal } from '../../../../components/modals/StandardModal';
 import React, { Alert, Text, TextInput, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import StandardButton from '../../../../components/StandardButton';
+import { StandardButton } from '../../../../components/StandardButton';
 import { useTheme } from '@react-navigation/native';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-const Heading = ({ visible, setVisible, styles, onSubmit, value }) => {
+export function Heading({ visible, setVisible, styles, onSubmit, value })  {
     const { colors } = useTheme();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -80,4 +80,4 @@ const Heading = ({ visible, setVisible, styles, onSubmit, value }) => {
     );
 };
 
-export default Heading;
+

@@ -2,7 +2,7 @@ import {Modal, Pressable, Text, View} from 'react-native';
 import React, {useMemo, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import { ReactNativeHapticFeedback } from 'react-native-haptic-feedback';
 import {ReefscapeField} from './ReefscapeField';
 import type { ReefscapeAutoPath } from './ReefscapeAutoPath';
 import {
@@ -163,7 +163,7 @@ const ActionButton = ({
   );
 };
 
-const ReefscapeAutoModal = ({
+export function ReefscapeAutoModal({
   isActive,
   setIsActive,
   fieldOrientation,
@@ -185,7 +185,7 @@ const ReefscapeAutoModal = ({
   arrayData: any[];
   setArrayData: React.Dispatch<React.SetStateAction<any[]>>;
   form: any;
-}) => {
+}) {
   const {colors} = useTheme();
 
   const [history, setHistory] = useState<HistoryAction[]>([]);
@@ -432,5 +432,3 @@ const ReefscapeAutoModal = ({
     </Modal>
   );
 };
-
-export default ReefscapeAutoModal;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import FormHelper from "./FormHelper";
-import PlusMenu from "./PlusMenu";
+import { FormHelper } from "./FormHelper";
+import { PlusMenu } from "./PlusMenu";
 import { useDeepLinking } from "./lib/hooks/useDeepLinking";
 import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
@@ -28,7 +28,7 @@ export type RootStackParamList = {
     Onboarding: NavigatorScreenParams<OnboardingParamList>,
 };
 
-const RootNavigator = () => {
+export function RootNavigator()  {
     const deepLink = useDeepLinking();
 
     const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
@@ -91,4 +91,4 @@ const RootNavigator = () => {
     );
 };
 
-export default RootNavigator;
+

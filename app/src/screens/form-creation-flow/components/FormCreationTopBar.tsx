@@ -6,10 +6,15 @@ import React, {
     View,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import FormNameModal from './FormNameModal';
+import { FormNameModal } from './FormNameModal';
 import { useState } from 'react';
 
-const FormCreationTopBar = ({ onSubmit, onCancel, questions }) => {
+export interface FormCreationTopBarProps {
+    onSubmit: () => void
+    onCancel: () => void
+    questions: () => void
+}
+export function FormCreationTopBar({ onSubmit, onCancel, questions }: FormCreationTopBarProps) {
     const { colors } = useTheme();
     const [formNameModalVisible, setFormNameModalVisible] = useState(false);
 
@@ -91,5 +96,3 @@ const FormCreationTopBar = ({ onSubmit, onCancel, questions }) => {
         </>
     );
 };
-
-export default FormCreationTopBar;

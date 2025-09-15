@@ -1,12 +1,13 @@
 import { ActivityIndicator } from 'react-native';
-import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import MatchReportsDB from '../../database/ScoutMatchReports';
-import ReportList from '../../components/ReportList';
+import { MatchReportsDB } from '../../database/ScoutMatchReports';
+import { ReportList } from '../../components/ReportList';
+import type { CompetitionReturnData } from '../../database/Competitions';
 
-const ScoutingReportsList = ({ navigation, competition }) => {
-    const { colors } = useTheme();
-
+export interface ScoutingReportsListProps {
+    competition: CompetitionReturnData
+}
+export function ScoutingReportsList({ competition }: ScoutingReportsListProps) {
     /**
      * reports is an array of objects, each object is a report
      * {
@@ -33,5 +34,3 @@ const ScoutingReportsList = ({ navigation, competition }) => {
     }
     return <ReportList reports={reports} isOffline={false} expandable={false} displayHeaders={false} />;
 };
-
-export default ScoutingReportsList;

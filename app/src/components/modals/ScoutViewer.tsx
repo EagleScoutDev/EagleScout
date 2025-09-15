@@ -11,15 +11,14 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import RadioButtons from '../form/RadioButtons';
+import { RadioButtons } from '../form/RadioButtons';
 import { Checkboxes } from '../form/Checkboxes';
 import { supabase } from '../../lib/supabase';
-import FormHelper from '../../FormHelper';
-import UserAttributes, { type UserAttributeReturnData } from '../../database/UserAttributes';
-import MatchReportsDB, { type MatchReportHistory, type MatchReportReturnData } from '../../database/ScoutMatchReports';
-import SliderType from '../form/SliderType';
+import { FormHelper } from '../../FormHelper';
+import { type UserAttributeReturnData } from '../../database/UserAttributes';
+import { type MatchReportHistory, type MatchReportReturnData } from '../../database/ScoutMatchReports';
+import { SliderType } from '../form/SliderType';
 import { HistorySelectorModal } from './HistorySelectorModal';
-import Svg, { Path } from 'react-native-svg';
 import { isTablet } from '../../lib/deviceType';
 import { ClockHistory, PencilSquare, SendFill, X } from '../icons/icons.generated';
 
@@ -44,7 +43,7 @@ export interface ScoutViewerProps {
     isOfflineForm: boolean
     navigateToTeamViewer: () => void
 }
-function ScoutViewer({
+export function ScoutViewer({
     visible,
     setVisible,
     data,
@@ -598,6 +597,4 @@ function ScoutViewer({
             </View>
         </Modal>
     );
-}
-
-export default ScoutViewer;
+};

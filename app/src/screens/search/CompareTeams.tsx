@@ -11,16 +11,16 @@ import React, { useEffect, useState } from 'react';
 import MatchReportsDB, {
     type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
-import CompetitionsDB from '../../database/Competitions';
+import { CompetitionsDB } from '../../database/Competitions';
 import { isTablet } from '../../lib/deviceType';
-import QuestionSummary from './QuestionSummary';
-import StandardModal from '../../components/modals/StandardModal';
+import { QuestionSummary } from './QuestionSummary';
+import { StandardModal } from '../../components/modals/StandardModal';
 import { Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import CompetitionRank from './CompetitionRank';
+import { CompetitionRank } from './CompetitionRank';
 import { getLighterColor, parseColor } from '../../lib/color';
 
-const CompareTeams = ({ route }) => {
+export function CompareTeams({ route })  {
     const { team, compId } = route.params;
     const { colors, dark } = useTheme();
     const [secondTeam, setSecondTeam] = useState<number | null>(null);
@@ -361,4 +361,4 @@ const CompareTeams = ({ route }) => {
     );
 };
 
-export default CompareTeams;
+

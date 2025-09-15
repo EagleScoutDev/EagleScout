@@ -21,7 +21,7 @@ export interface CompetitionReturnData extends Competition {
     pitScoutFormStructure: any[]
 }
 
-class CompetitionsDB {
+export class CompetitionsDB {
     static async getCompetitions(): Promise<CompetitionReturnData[]> {
         const { data, error } = await supabase.rpc('list_all_competitions');
         if (error) {
@@ -156,5 +156,3 @@ class CompetitionsDB {
         }
     }
 }
-
-export default CompetitionsDB;

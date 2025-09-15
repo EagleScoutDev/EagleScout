@@ -8,15 +8,15 @@ import React, {
     View,
 } from 'react-native';
 import { useState, useEffect } from 'react';
-import TBAMatches from '../../database/TBAMatches';
-import SetScoutAssignmentModal from '../../components/modals/SetScoutAssignmentModal';
-import ScoutAssignments from '../../database/ScoutAssignments';
+import { TBAMatches } from '../../database/TBAMatches';
+import { SetScoutAssignmentModal } from '../../components/modals/SetScoutAssignmentModal';
+import { ScoutAssignments } from '../../database/ScoutAssignments';
 import { useTheme } from '@react-navigation/native';
 import { ScoutAssignmentsConfig } from '../../database/Competitions';
 import { Position } from '../../database/ScoutAssignments';
-import AutoAssignModal from './AutoAssignModal';
+import { AutoAssignModal } from './AutoAssignModal';
 
-function ScoutAssignmentsSpreadsheet({ route }) {
+export function ScoutAssignmentsSpreadsheet({ route }) {
     const { competition } = route.params;
     const [matchesGrouped, setMatchesGrouped] = useState([]);
     const [scoutAssignmentModalVisible, setScoutAssignmentModalVisible] =
@@ -484,6 +484,4 @@ function ScoutAssignmentsSpreadsheet({ route }) {
             />
         </>
     );
-}
-
-export default ScoutAssignmentsSpreadsheet;
+};

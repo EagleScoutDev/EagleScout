@@ -1,14 +1,11 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React from 'react';
 import { useTheme } from '@react-navigation/native';
+import type { Setter } from '../../lib/react-utils/types';
 
-const TeamInformation = ({
-    team,
-    setTeam,
-}: {
-    team: string;
-    setTeam: (team: string) => void;
-}) => {
+export interface TeamInformationProps {
+    team: string, setTeam: Setter<string>
+}
+export function TeamInformation({ team, setTeam }: TeamInformationProps) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -84,5 +81,3 @@ const TeamInformation = ({
         </View>
     );
 };
-
-export default TeamInformation;

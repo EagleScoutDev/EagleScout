@@ -1,9 +1,9 @@
-import React from 'react';
+import { React } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import DebugOffline from '../DebugOffline';
+import { DebugOffline } from '../DebugOffline';
 import { SettingsHome } from './SettingsHome';
 import { AccountEditProfile, type AccountEditProfileParams } from './account/AccountEditProfile';
-import SubmittedForms from './scout/SubmittedForms';
+import { SubmittedForms } from './scout/SubmittedForms';
 import { SubmittedNotes } from './scout/SubmittedNotes';
 import type { AppHomeScreenProps } from '../../AppHome';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';

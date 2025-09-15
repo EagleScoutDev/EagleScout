@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import HomeMain from './Dashboard';
-import NoteScreen from './note/NoteFlow';
+import { HomeMain } from './Dashboard';
+import { NoteScreen } from './note/NoteFlow';
 import { Stopwatch } from '../../components/icons/icons.generated';
 import { createNativeStackNavigator, type NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PitScoutingFlow } from './pit/PitScoutingFlow';
@@ -19,7 +19,7 @@ export type ScoutingHomeParamList = {
 }
 
 
-export default function ScoutingHome() {
+export function ScoutingHome() {
     return <ScoutTimerContext.Provider value={ScoutTimer()}>
         <HomeStack.Navigator
             initialRouteName='Dashboard'>

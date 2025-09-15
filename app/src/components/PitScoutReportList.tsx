@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import { type PitReportReturnData } from '../database/ScoutPitReports';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';

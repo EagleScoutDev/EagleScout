@@ -1,17 +1,17 @@
-import StandardModal from '../../../../components/modals/StandardModal';
+import { StandardModal } from '../../../../components/modals/StandardModal';
 import React, { Alert, Text, TextInput, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
-import StandardButton from '../../../../components/StandardButton';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { StandardButton } from '../../../../components/StandardButton';
+import { BouncyCheckbox } from 'react-native-bouncy-checkbox';
 import { useTheme } from '@react-navigation/native';
 import { ReefscapeActions } from '../../../../components/games/reefscape/ReefscapeActions';
-import SelectMenu from '../../../../components/form/SelectMenu';
+import { SelectMenu } from '../../../../components/form/SelectMenu';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-const Number = ({ visible, setVisible, styles, onSubmit, value }) => {
+export function Number({ visible, setVisible, styles, onSubmit, value })  {
     const [question, setQuestion] = useState('');
     const [slider, setSlider] = useState(false);
     const [low, setLow] = useState('');
@@ -196,4 +196,4 @@ const Number = ({ visible, setVisible, styles, onSubmit, value }) => {
     );
 };
 
-export default Number;
+

@@ -1,15 +1,15 @@
 import React, { Alert, Text, TextInput, View } from 'react-native';
-import StandardButton from '../../../../components/StandardButton';
-import StandardModal from '../../../../components/modals/StandardModal';
+import { StandardButton } from '../../../../components/StandardButton';
+import { StandardModal } from '../../../../components/modals/StandardModal';
 import { useEffect, useState } from 'react';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { BouncyCheckbox } from 'react-native-bouncy-checkbox';
 import { useTheme } from '@react-navigation/native';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-const TextBox = ({ visible, setVisible, styles, onSubmit, value }) => {
+export function TextBox({ visible, setVisible, styles, onSubmit, value })  {
     const { colors } = useTheme();
     const [question, setQuestion] = useState('');
     const [required, setRequired] = useState(false);
@@ -91,4 +91,4 @@ const TextBox = ({ visible, setVisible, styles, onSubmit, value }) => {
     );
 };
 
-export default TextBox;
+

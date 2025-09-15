@@ -15,23 +15,23 @@ import { type MatchReportReturnData } from '../../database/ScoutMatchReports';
 
 import type { SimpleTeam } from '../../lib/TBAUtils';
 import { TBA } from '../../lib/TBAUtils';
-import MatchReportsDB from '../../database/ScoutMatchReports';
-import CompetitionChanger from './CompetitionChanger';
-import ScoutViewer from '../../components/modals/ScoutViewer';
-import Competitions from '../../database/Competitions';
-import NotesDB, {
+import { MatchReportsDB } from '../../database/ScoutMatchReports';
+import { CompetitionChanger } from './CompetitionChanger';
+import { ScoutViewer } from '../../components/modals/ScoutViewer';
+import { CompetitionsDB } from '../../database/Competitions';
+import {
+    NotesDB,
     type NoteWithMatch
 } from '../../database/ScoutNotes';
 import { NoteList } from '../../components/NoteList';
 import { getLighterColor, parseColor } from '../../lib/color';
 import { isTablet } from '../../lib/deviceType';
+import type { SearchScreenScreenProps } from './SearchScreen';
 
-interface Props {
-    setChosenTeam: (team: SimpleTeam) => void;
-    navigation: any;
+export interface SearchMainProps extends SearchScreenScreenProps<"Main Search"> {
+
 }
-
-const SearchMain: React.FC<Props> = ({ navigation }) => {
+export function SearchMain({ navigation }: SearchMainProps) {
     const { colors } = useTheme();
     const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
 
@@ -105,7 +105,7 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
                 setNotesByMatch(temp);
             });
 
-            Competitions.getCompetitionTBAKey(competitionId).then(key => {
+            CompetitionsDB.getCompetitionTBAKey(competitionId).then(key => {
                 TBA.getTeamsAtCompetition(key).then(teams => {
                     // sort teams by team number
                     teams.sort((a, b) => {
@@ -389,5 +389,3 @@ const SearchMain: React.FC<Props> = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-
-export default SearchMain;

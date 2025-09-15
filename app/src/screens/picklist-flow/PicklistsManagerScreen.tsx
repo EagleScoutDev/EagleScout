@@ -3,12 +3,12 @@ import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 import PicklistsDB, { type PicklistStructure } from '../../database/Picklists';
-import ProfilesDB from '../../database/Profiles';
+import { ProfilesDB } from '../../database/Profiles';
 import Svg, { Path } from 'react-native-svg';
-import CompetitionsDB from '../../database/Competitions';
-import StandardButton from '../../components/StandardButton';
+import { CompetitionsDB } from '../../database/Competitions';
+import { StandardButton } from '../../components/StandardButton';
 
-function PicklistsManagerScreen({ navigation }) {
+export function PicklistsManagerScreen({ navigation }) {
     const { colors } = useTheme();
     const [picklists, setPicklists] = useState<Array<PicklistStructure>>([]);
     const [users, setUsers] = useState<Map<string, string>>(new Map());
@@ -201,6 +201,4 @@ function PicklistsManagerScreen({ navigation }) {
             )}
         </View>
     );
-}
-
-export default PicklistsManagerScreen;
+};

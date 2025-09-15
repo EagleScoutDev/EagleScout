@@ -7,19 +7,19 @@ import {
     ScrollView
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import AddCompetitionModal from '../../components/modals/AddCompetitionModal';
-import ListItem from '../../components/ListItem';
-import ListItemContainer from '../../components/ListItemContainer';
-import InternetStatus from '../../lib/InternetStatus';
+import { AddCompetitionModal } from '../../components/modals/AddCompetitionModal';
+import { ListItem } from '../../components/ListItem';
+import { ListItemContainer } from '../../components/ListItemContainer';
+import { InternetStatus } from '../../lib/InternetStatus';
 import { Account } from "../../lib/account";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, { Path } from 'react-native-svg';
 import { useColorScheme } from 'react-native';
-import Competitions from '../../database/Competitions';
+import { Competitions } from '../../database/Competitions';
 import { getLighterColor, parseColor } from '../../lib/color';
-import TabHeader from '../../components/TabHeader';
+import { TabHeader } from '../../components/TabHeader';
 
-const DataHome = ({ navigation }) => {
+export function DataHome({ navigation }) {
     const { colors } = useTheme();
     console.log("SKJDFSKDJFLKSDFJ", colors.primary)
     const [addCompetitionModalVisible, setAddCompetitionModalVisible] =
@@ -386,5 +386,3 @@ const DataHome = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-
-export default DataHome;

@@ -1,7 +1,6 @@
-import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native';
-import Question from './Question';
+import { Question } from './Question';
 import { useTheme } from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
@@ -10,7 +9,7 @@ export interface StepperProps {
     value: number
     onValueChange: (x: number) => void
 }
-function Stepper({ title, value, onValueChange }: StepperProps) {
+export function Stepper({ title, value, onValueChange }: StepperProps) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -87,6 +86,4 @@ function Stepper({ title, value, onValueChange }: StepperProps) {
             </View>
         </View>
     );
-}
-
-export default Stepper;
+};

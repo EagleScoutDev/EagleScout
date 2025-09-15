@@ -4,27 +4,27 @@ import {
     Text, ScrollView,
     StyleSheet
 } from 'react-native';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { type SimpleTeam } from '../../lib/TBAUtils';
-import Statbotics from '../../components/Statbotics';
-import CompetitionRank from './CompetitionRank';
-import ScoutSummary from './ScoutSummary';
-import ListItemContainer from '../../components/ListItemContainer';
-import ListItem from '../../components/ListItem';
+import { useTheme } from '@react-navigation/native';
+import { Statbotics } from '../../components/Statbotics';
+import { CompetitionRank } from './CompetitionRank';
+import { ScoutSummary } from './ScoutSummary';
+import { ListItemContainer } from '../../components/ListItemContainer';
+import { ListItem } from '../../components/ListItem';
 import Svg, { Path } from 'react-native-svg';
-import QuestionFormulaCreator from '../data/QuestionFormulaCreator';
-import CombinedGraph from './CombinedGraph'; // adjust the import path to match your file structur
+import { QuestionFormulaCreator } from '../data/QuestionFormulaCreator';
+import { CombinedGraph } from './CombinedGraph'; // adjust the import path to match your file structur
+import type { SearchScreenScreenProps } from './SearchScreen';
+import type { SimpleTeam } from '../../lib/TBAUtils';
 
-interface TeamViewerProps {
-    team: SimpleTeam;
-    goBack: () => void;
+export interface TeamViewerParams {
+    team: SimpleTeam
+    competitionId: number
 }
+export interface TeamViewerProps extends SearchScreenScreenProps<"Team Viewer"> {
 
-const TeamViewer: React.FC<TeamViewerProps> = ({ route }) => {
+}
+export function TeamViewer({ route: { params: { team, competitionId } }, navigation }: TeamViewerProps) {
     const { colors } = useTheme();
-    // team is a SimpleTeam
-    const { team, competitionId } = route.params;
-    const navigation = useNavigation();
 
     const [graphCreationModalVisible, setGraphCreationModalVisible] =
         useState(false);
@@ -194,5 +194,3 @@ const TeamViewer: React.FC<TeamViewerProps> = ({ route }) => {
         </View>
     );
 };
-
-export default TeamViewer;

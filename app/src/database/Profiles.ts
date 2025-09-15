@@ -9,7 +9,7 @@ export interface ProfilesReturnData {
     scoutcoins: number;
 }
 
-class ProfilesDB {
+export class ProfilesDB {
     static async getProfile(id: string): Promise<ProfilesReturnData> {
         const { data, error } = await supabase
             .from('profiles')
@@ -80,5 +80,3 @@ class ProfilesDB {
         }
     }
 }
-
-export default ProfilesDB;

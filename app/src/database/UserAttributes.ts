@@ -13,7 +13,7 @@ export interface UserAttributeWithProfile extends UserAttributeReturnData {
     name: string;
 }
 
-class UserAttributesDB {
+export class UserAttributesDB {
     static async getUserAttribute(id: string): Promise<UserAttributeReturnData> {
         const { data, error } = await supabase
             .from('user_attributes')
@@ -97,5 +97,3 @@ class UserAttributesDB {
         return res;
     }
 }
-
-export default UserAttributesDB;

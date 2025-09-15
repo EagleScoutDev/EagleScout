@@ -70,7 +70,7 @@ export interface SelectListProps {
     notFoundText?: string;
 }
 
-const SelectList: FC<SelectListProps> = ({
+export function SelectList({
     setSelected,
     placeholder,
     maxHeight,
@@ -80,7 +80,7 @@ const SelectList: FC<SelectListProps> = ({
     searchPlaceholder = 'Search',
     notFoundText = 'No forms found',
     onSelect = () => { },
-}) => {
+}: SelectListProps) {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const oldOption = useRef(null);
@@ -239,8 +239,6 @@ const SelectList: FC<SelectListProps> = ({
         </View>
     );
 };
-
-export default SelectList;
 
 const makeStyles = ({ colors }: Theme) =>
     StyleSheet.create({

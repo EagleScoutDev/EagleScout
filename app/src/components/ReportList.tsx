@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -10,11 +9,11 @@ import {
     View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import ScoutViewer from './modals/ScoutViewer';
+import { ScoutViewer } from './modals/ScoutViewer';
 import { useTheme } from '@react-navigation/native';
-import Competitions from '../database/Competitions';
+import { CompetitionsDB } from '../database/Competitions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FormHelper from '../FormHelper';
+import { FormHelper } from '../FormHelper';
 import { Badge } from './Badge';
 
 function CompetitionFlatList({
@@ -254,7 +253,7 @@ function CompetitionFlatList({
     );
 }
 
-function ReportList({
+export function ReportList({
     reports,
     isOffline,
     expandable = true,
@@ -277,7 +276,7 @@ function ReportList({
         const effect = async () => {
             let currComp;
             if (!isOffline) {
-                currComp = await Competitions.getCurrentCompetition();
+                currComp = await CompetitionsDB.getCurrentCompetition();
             } else {
                 const currCompObj = await AsyncStorage.getItem(
                     FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
@@ -416,5 +415,3 @@ function ReportList({
         </KeyboardAvoidingView>
     );
 }
-
-export default ReportList;

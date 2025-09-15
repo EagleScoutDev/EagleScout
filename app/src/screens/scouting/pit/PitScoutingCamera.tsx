@@ -11,7 +11,7 @@ import {
     useCameraDevice,
     useCameraPermission,
 } from 'react-native-vision-camera';
-import CaptureButton from './CaptureButton';
+import { CaptureButton } from './CaptureButton';
 import {
     PinchGestureHandler,
     type PinchGestureHandlerGestureEvent,
@@ -33,7 +33,7 @@ const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 const SCALE_FULL_ZOOM = 3;
 const MAX_ZOOM_FACTOR = 10;
 
-export default function PitScoutingCamera({
+export function PitScoutingCamera({
     onPhotoTaken,
     onCancel,
 }: {

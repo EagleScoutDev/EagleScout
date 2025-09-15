@@ -8,15 +8,15 @@ import React, {
 } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import SegmentedOption from '../../../components/pickers/SegmentedOption';
-import StandardButton from '../../../components/StandardButton';
-import FormHelper from '../../../FormHelper';
+import { SegmentedOption } from '../../../components/pickers/SegmentedOption';
+import { StandardButton } from '../../../components/StandardButton';
+import { FormHelper } from '../../../FormHelper';
 import NotesDB, {
     type NoteWithMatch,
     type OfflineNote,
 } from '../../../database/ScoutNotes';
 import { NoteList } from '../../../components/NoteList';
-import CompetitionsDB from '../../../database/Competitions';
+import { CompetitionsDB } from '../../../database/Competitions';
 
 export const SubmittedNotes = () => {
     const [notes, setNotes] = useState<NoteWithMatch[]>([]);

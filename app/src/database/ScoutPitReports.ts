@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { decode } from 'base64-arraybuffer';
-import userAttributes from './UserAttributes';
+import { userAttributes } from './UserAttributes';
 
 export interface PitReport {
     reportId: number;
@@ -28,7 +28,7 @@ export type PitReportWithoutIdWithDate = Omit<
     'reportId'
 >;
 
-class PitReportsDB {
+export class PitReportsDB {
     /**
      * Upload images for a pit scout report
      * @param teamId
@@ -251,5 +251,3 @@ class PitReportsDB {
         }));
     }
 }
-
-export default PitReportsDB;

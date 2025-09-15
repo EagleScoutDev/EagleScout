@@ -5,21 +5,20 @@ import {
 } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
-import CompetitionsDB from '../../database/Competitions';
+import { CompetitionsDB } from '../../database/Competitions';
 import { type CompetitionReturnData } from '../../database/Competitions';
 import { Dropdown } from 'react-native-element-dropdown';
+import type { Setter } from '../../lib/react-utils/types';
 
-interface CompetitionChangerProps {
-    currentCompId: number;
-    setCurrentCompId: (id: number) => void;
+export interface CompetitionChangerProps {
+    currentCompId: number, setCurrentCompId: Setter<number>
     loading: boolean;
 }
-
-const CompetitionChanger = ({
+export function CompetitionChanger({
     currentCompId,
     setCurrentCompId,
     loading,
-}: CompetitionChangerProps) => {
+}: CompetitionChangerProps) {
     const { colors } = useTheme();
     const [isActive, setIsActive] = useState(false);
 
@@ -168,5 +167,3 @@ const CompetitionChanger = ({
         </View>
     );
 };
-
-export default CompetitionChanger;

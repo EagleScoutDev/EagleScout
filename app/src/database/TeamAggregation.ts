@@ -4,7 +4,7 @@
  *
  * */
 import { Alliance } from '../games/common';
-import MatchReportsDB from './ScoutMatchReports';
+import { MatchReportsDB } from './ScoutMatchReports';
 
 interface TeamWithData {
     team_number: number;
@@ -22,7 +22,7 @@ interface AlliancePrediction {
 // alias
 export type MatchPredictionResults = AlliancePrediction[];
 
-class TeamAggregation {
+export class TeamAggregation {
     /**
      * This function calculates the average value of a given array.
      * @param array The array to calculate the average of.
@@ -307,5 +307,3 @@ class TeamAggregation {
         return tempNumReports;
     };
 }
-
-export default TeamAggregation;

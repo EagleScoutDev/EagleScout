@@ -1,13 +1,13 @@
-import React from 'react';
+import { React } from 'react';
 import {
     SafeAreaView, StyleSheet,
     Text
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import UpcomingRoundsView from '../UpcomingRoundsView';
-import TabHeader from '../../components/TabHeader';
+import { UpcomingRoundsView } from '../UpcomingRoundsView';
+import { TabHeader } from '../../components/TabHeader';
 
-const HomeMain = () => {
+export function HomeMain()  {
     const { colors } = useTheme();
     const navigation = useNavigation();
     const styles = StyleSheet.create({
@@ -67,4 +67,4 @@ const HomeMain = () => {
     );
 };
 
-export default HomeMain;
+

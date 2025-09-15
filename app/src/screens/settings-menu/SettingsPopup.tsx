@@ -1,8 +1,8 @@
-import React from 'react';
+import { React } from 'react';
 import { View, Text, Modal, Pressable } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
-import StandardButton from '../../components/StandardButton';
+import { StandardButton } from '../../components/StandardButton';
 import { type SettingsHomeProps } from './SettingsHome';
 
 interface SettingsPopupProps {
@@ -10,7 +10,7 @@ interface SettingsPopupProps {
     setVisible: (x: boolean) => void
     navigation: SettingsHomeProps["navigation"]
 }
-const SettingsPopup = ({ visible, setVisible, navigation }: SettingsPopupProps) => {
+export function SettingsPopup({ visible, setVisible, navigation }: SettingsPopupProps)  {
     const { colors } = useTheme()
 
     return (
@@ -51,4 +51,4 @@ const SettingsPopup = ({ visible, setVisible, navigation }: SettingsPopupProps) 
     );
 };
 
-export default SettingsPopup;
+

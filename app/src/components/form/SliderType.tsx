@@ -2,9 +2,9 @@ import { View, Text } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import Question from './Question';
+import { Question } from './Question';
 
-function SliderLabel({ text }: { text: string }) {
+export function SliderLabel({ text }: { text: string }) {
     const { colors } = useTheme();
     return (
         <Text
@@ -28,7 +28,7 @@ export interface SliderProps {
     minLabel: string | null
     maxLabel: string | null
 }
-function SliderType({
+export function SliderType({
     min,
     max,
     step,
@@ -96,5 +96,3 @@ function SliderType({
         </View>
     );
 }
-
-export default SliderType;

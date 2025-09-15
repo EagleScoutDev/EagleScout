@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import { useTheme, type Theme } from '@react-navigation/native';
 import { ShopModalBase } from './ShopModalBase';
 import { StyleSheet, Text } from 'react-native';
-import ThemePicker from '../../../components/pickers/ThemePicker';
+import { ThemePicker } from '../../../components/pickers/ThemePicker';
 import { ThemeContext } from '../../../lib/contexts/ThemeContext';
 
 export const AppThemeModal = ({ onClose }: { onClose: () => void }) => {

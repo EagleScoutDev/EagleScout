@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import Slider from '@react-native-community/slider';
+import { Slider } from '@react-native-community/slider';
 import Svg, { Path } from 'react-native-svg';
 import MatchReportsDB, {
     type MatchReportReturnData,
@@ -29,7 +29,7 @@ interface MapValue {
     count: number;
 }
 
-function WeightedRank() {
+export function WeightedRank() {
     const { colors } = useTheme();
     const [listOfWeights, setListOfWeights] = React.useState<number[]>([]);
     const [originalWeights, setOriginalWeights] = React.useState<number[]>([]);
@@ -428,6 +428,4 @@ function WeightedRank() {
             )}
         </View>
     );
-}
-
-export default WeightedRank;
+};

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import CompetitionViewer from './CompetitionViewer';
-import CompetitionsList from './CompetitionsList';
+import { CompetitionViewer } from './CompetitionViewer';
+import { CompetitionsList } from './CompetitionsList';
 
-function CompetitionsView() {
+export function CompetitionsView() {
     const [chosenComp, setChosenComp] = useState(null);
 
     if (chosenComp == null) {
@@ -15,6 +15,4 @@ function CompetitionsView() {
             />
         );
     }
-}
-
-export default CompetitionsView;
+};

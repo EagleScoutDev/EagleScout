@@ -1,16 +1,22 @@
-import StandardModal from '../../../components/modals/StandardModal';
-import StandardButton from '../../../components/StandardButton';
-import Forms from '../../../database/Forms';
-import React, { Alert } from 'react-native';
+import { StandardModal } from '../../../components/modals/StandardModal';
+import { StandardButton } from '../../../components/StandardButton';
+import { Forms } from '../../../database/Forms';
+import React, { Alert, type ModalBaseProps } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import type { Setter } from '../../../lib/react-utils/types';
 
-const FormOptionsModal = ({
+export interface FormOptionsModalProps {
+    visible: boolean, setVisible: Setter<boolean>
+    form: any
+    onSuccess: () => void
+}
+export function FormOptionsModal({
     form,
     visible,
     setVisible,
     onSuccess,
     navigation,
-}) => {
+}: FormOptionsModalProps) {
     const { colors } = useTheme();
     return (
         <StandardModal
@@ -69,5 +75,3 @@ const FormOptionsModal = ({
         </StandardModal>
     );
 };
-
-export default FormOptionsModal;

@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity } from 'react-native';
 
-function SegmentedOption({ colors, selected, title, onPress }) {
+export function SegmentedOption({ colors, selected, title, onPress }) {
     return (
         <TouchableOpacity
             style={{
@@ -22,6 +22,4 @@ function SegmentedOption({ colors, selected, title, onPress }) {
             </Text>
         </TouchableOpacity>
     );
-}
-
-export default SegmentedOption;
+};

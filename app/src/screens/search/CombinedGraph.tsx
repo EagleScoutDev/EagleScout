@@ -1,27 +1,29 @@
 import { Dimensions, Pressable, Text, View } from 'react-native';
-import StandardModal from '../../components/modals/StandardModal';
+import { StandardModal } from '../../components/modals/StandardModal';
 import { LineChart } from 'react-native-chart-kit';
 import React, { useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
-import MatchReportsDB, {
+import {
+    MatchReportsDB,
     type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
-import FormsDB, { type FormReturnData } from '../../database/Forms';
-import CompetitionsDB from '../../database/Competitions';
+import { FormsDB, type FormReturnData } from '../../database/Forms';
+import { CompetitionsDB } from '../../database/Competitions';
+import type { Setter } from '../../lib/react-utils/types';
 
-const CombinedGraph = ({
+export interface CombinedGraphProps {
+    modalActive: boolean, setModalActive: Setter<boolean>
+    team_number: number
+    competitionId: number
+    questionIndices: number[]
+}
+export function CombinedGraph({
     team_number,
     competitionId,
     modalActive,
     setModalActive,
     questionIndices,
-}: {
-    team_number: number;
-    competitionId: number;
-    modalActive: boolean;
-    setModalActive: (arg0: boolean) => void;
-    questionIndices: number[];
-}) => {
+}: CombinedGraphProps) {
     const { colors, dark } = useTheme();
     const chartConfig = {
         backgroundGradientFrom: colors.card,
@@ -161,5 +163,3 @@ const CombinedGraph = ({
         </StandardModal>
     );
 };
-
-export default CombinedGraph;

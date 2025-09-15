@@ -12,12 +12,12 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import Clipboard from '@react-native-clipboard/clipboard';
+import { Clipboard } from '@react-native-clipboard/clipboard';
 
-function DebugOffline({ navigation }) {
+export function DebugOffline({ navigation }) {
     const [keys, setKeys] = useState([]);
     const [selected, setSelected] = useState();
     const [value, setValue] = useState();
@@ -116,6 +116,4 @@ function DebugOffline({ navigation }) {
             </View>
         </SafeAreaView>
     );
-}
-
-export default DebugOffline;
+};

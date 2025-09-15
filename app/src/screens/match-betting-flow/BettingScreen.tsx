@@ -12,12 +12,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { Slider } from '@miblanchard/react-native-slider';
 import { supabase } from '../../lib/supabase';
-import UserAttributesDB from '../../database/UserAttributes';
+import { UserAttributesDB } from '../../database/UserAttributes';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import ProfilesDB, { ProfilesReturnData } from '../../database/Profiles';
 import { MatchBets } from '../../database/MatchBets';
 import { BettingInfoBottomSheet } from './components/BettingInfoBottomSheet';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 
 interface Player {
     id: string;

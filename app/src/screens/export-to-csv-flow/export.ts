@@ -1,8 +1,8 @@
 import { CompetitionReturnData } from '../../database/Competitions';
 import { Alert } from 'react-native';
 import ScoutReports, { MatchReportReturnData } from '../../database/ScoutMatchReports';
-import RNFS from 'react-native-fs';
-import Share from 'react-native-share';
+import { RNFS } from 'react-native-fs';
+import { Share } from 'react-native-share';
 import PitReportsDB, {
     PitReportReturnData,
 } from '../../database/ScoutPitReports';

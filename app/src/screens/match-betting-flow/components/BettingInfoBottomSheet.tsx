@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import BottomSheet from '@gorhom/bottom-sheet';
+import { BottomSheet } from '@gorhom/bottom-sheet';
 import { BottomSheetNavigator } from './BottomSheetNavigator';
 import { View } from 'react-native';
 import { useTheme } from '@react-navigation/native';

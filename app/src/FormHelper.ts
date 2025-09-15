@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import { BackgroundFetchManager } from "./lib/BackgroundFetchManager";
 import type { OfflineNote } from "./database/ScoutNotes";
 
-class FormHelper {
+export class FormHelper {
     static DEBUG = false;
     static LATEST_FORM = "current-form";
     static ASYNCSTORAGE_COMPETITION_KEY = "current-competition";
@@ -110,5 +110,3 @@ class FormHelper {
         );
     }
 }
-
-export default FormHelper;

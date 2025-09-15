@@ -16,7 +16,7 @@ export interface StandardButtonProps {
     isLoading?: boolean
     disabled?: boolean
 }
-function StandardButton({
+export function StandardButton({
     textColor = 'white',
     color = '',
     onPress,
@@ -60,6 +60,4 @@ function StandardButton({
             <Text style={styles.button_text}>{text}</Text>
         </TouchableOpacity>
     );
-}
-
-export default StandardButton;
+};

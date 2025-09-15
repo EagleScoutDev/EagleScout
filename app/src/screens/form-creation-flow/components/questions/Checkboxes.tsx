@@ -1,4 +1,4 @@
-import StandardModal from '../../../../components/modals/StandardModal';
+import { StandardModal } from '../../../../components/modals/StandardModal';
 import React, {
     Alert,
     ScrollView,
@@ -8,15 +8,15 @@ import React, {
     View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import StandardButton from '../../../../components/StandardButton';
+import { StandardButton } from '../../../../components/StandardButton';
 import { useTheme } from '@react-navigation/native';
-import NewQuestionSeparator from '../NewQuestionSeparator';
+import { NewQuestionSeparator } from '../NewQuestionSeparator';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-const Checkboxes = ({ visible, setVisible, styles, onSubmit, value }) => {
+export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
     const { colors } = useTheme();
     const [question, setQuestion] = useState('');
     const [options, setOptions] = useState([]);
@@ -167,4 +167,4 @@ const Checkboxes = ({ visible, setVisible, styles, onSubmit, value }) => {
     );
 };
 
-export default Checkboxes;
+

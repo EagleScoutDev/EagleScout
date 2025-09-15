@@ -10,16 +10,16 @@ import React, {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import PercentageWinBar from './PercentageWinBar';
+import { PercentageWinBar } from './PercentageWinBar';
 import { useCurrentCompetitionMatches } from '../../lib/useCurrentCompetitionMatches';
-import QuestionFormulaCreator from './QuestionFormulaCreator';
+import { QuestionFormulaCreator } from './QuestionFormulaCreator';
 import TeamAggregation, {
     AllianceColor,
     type MatchPredictionResults,
 } from '../../database/TeamAggregation';
 import { PredictionConfidence } from '../../lib/PredictionConfidence';
-import PredictionConfidenceTag from './PredictionConfidenceTag';
-import PredictionExplainerModal from './PredictionExplainerModal';
+import { PredictionConfidenceTag } from './PredictionConfidenceTag';
+import { PredictionExplainerModal } from './PredictionExplainerModal';
 import CompetitionsDB, {
     type CompetitionReturnData,
 } from '../../database/Competitions';
@@ -32,7 +32,7 @@ enum InputStyle {
     TEAMS,
 }
 
-const MatchPredictor = () => {
+export function MatchPredictor() {
     const { colors } = useTheme();
     const [matchNumber, setMatchNumber] = useState<number>(0);
     const [bluePercentage, setBluePercentage] = useState<number>(51);
@@ -634,5 +634,3 @@ const MatchPredictor = () => {
         </View>
     );
 };
-
-export default MatchPredictor;

@@ -3,12 +3,12 @@ import { View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { MinimalSectionHeader } from './MinimalSectionHeader';
 
-interface ListItemContainerProps {
+export interface ListItemContainerProps {
     children: ReactElement | ReactElement[];
     title: string;
 }
 
-const ListItemContainer = ({ children, title }: ListItemContainerProps) => {
+export const ListItemContainer = ({ children, title }: ListItemContainerProps) => {
     const { colors } = useTheme();
 
     return (
@@ -28,5 +28,3 @@ const ListItemContainer = ({ children, title }: ListItemContainerProps) => {
         </>
     );
 };
-
-export default ListItemContainer;

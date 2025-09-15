@@ -16,8 +16,17 @@ import type { PicklistTeam } from '../../database/Picklists';
 import Svg, {Path} from 'react-native-svg';
 
 import ColorPicker, {HueSlider} from 'reanimated-color-picker';
+import type { Setter } from '../../lib/react-utils/types';
 
-const TagsModal = ({
+export interface TagsModalProps {
+    visible: boolean, setVisible: Setter<boolean>
+    picklist_id: number
+    selected_team: PicklistTeam | null
+    addTag: (team: PicklistTeam, tag_id: number) => void
+    removeTag: (team: PicklistTeam, tag_id: number) => void
+    issueDeleteCommand: (tag_id: number) => void
+}
+export function TagsModal({
   visible,
   setVisible,
   picklist_id,
@@ -25,15 +34,7 @@ const TagsModal = ({
   addTag,
   removeTag,
   issueDeleteCommand,
-}: {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-  picklist_id: number;
-  selected_team: PicklistTeam | null;
-  addTag: (team: PicklistTeam, tag_id: number) => void;
-  removeTag: (team: PicklistTeam, tag_id: number) => void;
-  issueDeleteCommand: (tag_id: number) => void;
-}) => {
+}: TagsModalProps) {
   const {colors} = useTheme();
   const [listOfTags, setListOfTags] = useState<TagStructure[]>([]);
 
@@ -327,5 +328,3 @@ const TagsModal = ({
     </Modal>
   );
 };
-
-export default TagsModal;

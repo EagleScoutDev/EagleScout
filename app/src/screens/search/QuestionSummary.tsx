@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { OpenAI } from '../../lib/OpenAI';
 import { isTablet } from '../../lib/deviceType';
-import DataGraph from './DataGraph';
+import { DataGraph } from './DataGraph';
 import { getIdealTextColor, parseColor } from '../../lib/color';
 
 interface Props {
@@ -27,7 +27,7 @@ interface Statistics {
     min: number;
 }
 
-function QuestionSummary({
+export function QuestionSummary({
     item,
     index,
     data,
@@ -411,6 +411,4 @@ function QuestionSummary({
             />
         </View>
     );
-}
-
-export default QuestionSummary;
+};

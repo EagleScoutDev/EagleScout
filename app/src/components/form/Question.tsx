@@ -6,7 +6,7 @@ export interface QuestionProps {
     required?: boolean
     onReset: () => void
 }
-function Question({ title, required = false, onReset }: QuestionProps) {
+export function Question({ title, required = false, onReset }: QuestionProps) {
     const { colors } = useTheme();
 
     return title
@@ -34,5 +34,3 @@ function Question({ title, required = false, onReset }: QuestionProps) {
         </Pressable>
         : null
 }
-
-export default Question;

@@ -43,7 +43,7 @@ interface ScoutAssignmentPositionBasedCurrentUser {
     position: Position;
 }
 
-class ScoutAssignments {
+export class ScoutAssignments {
     static async getScoutAssignmentsForCompetitionTeamBased(
         compId: number,
     ): Promise<ScoutAssignmentTeamBased[]> {
@@ -261,5 +261,3 @@ class ScoutAssignments {
         return res;
     }
 }
-
-export default ScoutAssignments;

@@ -14,7 +14,7 @@ export interface FormSectionProps {
 
 // this function is a template for other functions to use
 // it contains space for the title of the section, and for the data input
-function FormSection({
+export function FormSection({
     children,
     title,
     modalAttached,
@@ -89,5 +89,3 @@ function FormSection({
         </View>
     );
 }
-
-export default FormSection;

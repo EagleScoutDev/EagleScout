@@ -1,5 +1,6 @@
 import { ActivityIndicator, Alert, Text, View } from 'react-native';
-import CompetitionsDB, {
+import {
+    CompetitionsDB,
     type CompetitionReturnData,
 } from '../../database/Competitions';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ import {
     writeToFile,
 } from './export';
 
-const ExportToCSV = () => {
+export function ExportToCSV() {
     const { colors } = useTheme();
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<
@@ -132,5 +133,3 @@ const ExportToCSV = () => {
         </>
     );
 };
-
-export default ExportToCSV;

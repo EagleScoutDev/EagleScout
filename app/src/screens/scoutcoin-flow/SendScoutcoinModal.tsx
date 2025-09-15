@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {supabase} from '../../lib/supabase';
-import StandardButton from '../../components/StandardButton';
+import { StandardButton } from '../../components/StandardButton';
 import {useProfile} from '../../lib/hooks/useProfile';
 import { Coin } from '../../components/icons/icons.generated';
 

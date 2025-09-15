@@ -8,26 +8,33 @@ import React, {
     View,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import NewQuestionSeparator from './components/NewQuestionSeparator';
+import { NewQuestionSeparator } from './components/NewQuestionSeparator';
 import { useEffect, useState } from 'react';
-import NewQuestionModal from './components/NewQuestionModal';
-import HeadingSummary from './components/question-summaries/HeadingSummary';
-import RadioSummary from './components/question-summaries/RadioSummary';
-import NumberSummary from './components/question-summaries/NumberSummary';
-import TextBoxSummary from './components/question-summaries/TextBoxSummary';
-import FormCreationTopBar from './components/FormCreationTopBar';
-import Forms from '../../database/Forms';
-import Heading from './components/questions/Heading';
-import Number from './components/questions/Number';
-import Radio from './components/questions/Radio';
-import TextBox from './components/questions/TextBox';
-import Checkboxes from './components/questions/Checkboxes';
-import CheckboxesSummary from './components/question-summaries/CheckboxesSummary';
+import { NewQuestionModal } from './components/NewQuestionModal';
+import { HeadingSummary } from './components/question-summaries/HeadingSummary';
+import { RadioSummary } from './components/question-summaries/RadioSummary';
+import { NumberSummary } from './components/question-summaries/NumberSummary';
+import { TextBoxSummary } from './components/question-summaries/TextBoxSummary';
+import { FormCreationTopBar } from './components/FormCreationTopBar';
+import { Form, Forms } from '../../database/Forms';
+import { Heading } from './components/questions/Heading';
+import { Number } from './components/questions/Number';
+import { Radio } from './components/questions/Radio';
+import { TextBox } from './components/questions/TextBox';
+import { Checkboxes } from './components/questions/Checkboxes';
+import { CheckboxesSummary } from './components/question-summaries/CheckboxesSummary';
+import type { FormCreationScreenProps } from './FormCreation';
 
-const FormCreationMain = ({ route, navigation }) => {
+export interface FormEditorParams {
+    form: Form
+}
+export interface FormEditorProps extends FormCreationScreenProps<"Edit"> {
+
+}
+export function FormEditor({ route: { params: { form } }, navigation }: FormEditorProps) {
     const { colors } = useTheme();
     const [newQuestionModalVisible, setNewQuestionModalVisible] = useState(false);
-    const [questions, setQuestions] = useState([]);
+    const [questions, setQuestions] = useState<Form.Structure>([]);
     const [index, setIndex] = useState(0);
     const [headingModalVisible, setHeadingModalVisible] = useState(false);
     const [numberModalVisible, setNumberModalVisible] = useState(false);
@@ -36,12 +43,8 @@ const FormCreationMain = ({ route, navigation }) => {
     const [textModalVisible, setTextModalVisible] = useState(false);
     const [pitScoutingForm, setPitScoutingForm] = useState(false);
 
-    const { form } = route.params;
-
     useEffect(() => {
-        if (form) {
-            setQuestions(form.formStructure);
-        }
+        if(form) setQuestions(form.formStructure)
     }, []);
 
     const newQuestionStyles = StyleSheet.create({
@@ -324,5 +327,3 @@ const FormCreationMain = ({ route, navigation }) => {
         </>
     );
 };
-
-export default FormCreationMain;

@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import {
     Pressable,
     StyleSheet,
@@ -14,7 +14,7 @@ import { CashCoin, JournalPlus, Sticky, Tag } from './components/icons/icons.gen
 interface PlusMenuProps extends RootStackScreenProps<"PlusMenu"> {
 
 }
-const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
+export const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -162,5 +162,3 @@ const PlusMenu = ({ route, navigation }: PlusMenuProps) => {
         </>
     );
 };
-
-export default PlusMenu;

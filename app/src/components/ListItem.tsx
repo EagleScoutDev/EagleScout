@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { type JSX } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { isTablet } from '../lib/deviceType';
-import { CaretRight, ChevronRight } from './icons/icons.generated';
+import { ChevronRight } from './icons/icons.generated';
 
 interface ListItemProps {
     text: string;
@@ -12,7 +12,7 @@ interface ListItemProps {
     icon: () => JSX.Element | null;
 }
 
-const ListItem = ({
+export const ListItem = ({
     text,
     onPress,
     caretVisible = true,
@@ -58,5 +58,3 @@ const ListItem = ({
         </TouchableOpacity>
     );
 };
-
-export default ListItem;

@@ -1,24 +1,24 @@
-import React from 'react';
+import { React } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import DataHome from './DataHome';
-import PicklistsManager from '../picklist-flow/PicklistsManager';
-import DataAggregator from './DataAggregator';
-import CompetitionsView from '../competitions-flow/CompetitionsView';
-import UserManager from './UserManager';
-import FormCreation from '../form-creation-flow/FormCreation';
-import ExportToCSV from '../export-to-csv-flow/ExportToCSV';
-import ScoutAssignments from '../scout-assignments-flow/ScoutAssignments';
-import WeightedRank from './WeightedRank';
+import { DataHome } from './DataHome';
+import { PicklistsManager } from '../picklist-flow/PicklistsManager';
+import { DataAggregator } from './DataAggregator';
+import { CompetitionsView } from '../competitions-flow/CompetitionsView';
+import { UserManager } from './UserManager';
+import { FormCreation } from '../form-creation-flow/FormCreation';
+import { ExportToCSV } from '../export-to-csv-flow/ExportToCSV';
+import { ScoutAssignments } from '../scout-assignments-flow/ScoutAssignments';
+import { WeightedRank } from './WeightedRank';
 import { ManageBets } from '../match-betting-flow/admin/ManageBets';
 import { ScoutcoinLedger } from '../scoutcoin-flow/ScoutcoinLedger';
 import { ScoutcoinLeaderboard } from '../scoutcoin-flow/ScoutcoinLeaderboard';
-import MatchPredictor from './MatchPredictor';
+import { MatchPredictor } from './MatchPredictor';
 import { ScoutcoinShop } from '../scoutcoin-flow/ScoutcoinShop';
 
 const DataStack = createStackNavigator();
 
-const DataMain = () => {
+export const DataMain = () => {
     const { colors } = useTheme();
 
     return (
@@ -135,5 +135,3 @@ const DataMain = () => {
         </DataStack.Navigator>
     );
 };
-
-export default DataMain;

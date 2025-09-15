@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import {Text, View} from 'react-native';
 import {Circle, Line, Path, Rect, Svg} from 'react-native-svg';
 import type { ReefscapeAutoPath } from './ReefscapeAutoPath';

@@ -6,15 +6,14 @@ import {
     RefreshControl,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import { Path, Svg } from 'react-native-svg';
-import CompetitionsDB, { ScoutAssignmentsConfig } from '../database/Competitions';
+import { CompetitionsDB, ScoutAssignmentsConfig } from '../database/Competitions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FormHelper from '../FormHelper';
-import ScoutAssignments from '../database/ScoutAssignments';
+import { FormHelper } from '../FormHelper';
+import { ScoutAssignments } from '../database/ScoutAssignments';
 
-const UpcomingRoundsView = ({ navigation }) => {
+export function UpcomingRoundsView({ navigation }) {
     const [upcomingRounds, setUpcomingRounds] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const { colors } = useTheme();
@@ -294,5 +293,3 @@ const UpcomingRoundsView = ({ navigation }) => {
         </>
     );
 };
-
-export default UpcomingRoundsView;

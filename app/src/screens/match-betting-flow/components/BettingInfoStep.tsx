@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { StyleSheet, Text } from 'react-native';
-import StandardButton from '../../../components/StandardButton';
+import { StandardButton } from '../../../components/StandardButton';
 import { Theme } from '@react-navigation/native/src/types';
 
 export const BettingInfoStep = ({

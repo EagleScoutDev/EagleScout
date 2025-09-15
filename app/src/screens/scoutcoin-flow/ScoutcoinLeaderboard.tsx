@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
-import ProfilesDB from '../../database/Profiles';
+import { ProfilesDB } from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
 import Svg, {Path, SvgProps, Text as SvgText} from 'react-native-svg';
 import {useProfile} from '../../lib/hooks/useProfile';

@@ -1,22 +1,28 @@
 import { View, Text } from 'react-native';
-import ReportList from '../../components/ReportList';
+import { ReportList } from '../../components/ReportList';
 import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import CompetitionsDB from '../../database/Competitions';
-import MatchReportsDB, {
+import { CompetitionsDB } from '../../database/Competitions';
+import {
     type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
-import NotesDB, { type NoteWithMatch } from '../../database/ScoutNotes';
+import { type NoteWithMatch } from '../../database/ScoutNotes';
 import { Tabs } from '../../components/Tabs';
 import { NoteList } from '../../components/NoteList';
-import PitReportsDB, {
+import {
     type PitReportReturnData,
 } from '../../database/ScoutPitReports';
 import { PitScoutReportList } from '../../components/PitScoutReportList';
+import type { SearchScreenScreenProps } from './SearchScreen';
 
-function ReportsForTeam({ route }) {
-    // const [team, setTeam] = useState('');
-    const { team_number, competitionId } = route.params;
+export interface ReportsForTeamParams {
+    team_number: number
+    competitionId: number
+}
+export interface ReportsForTeamProps extends SearchScreenScreenProps<"Reports for Team"> {
+
+}
+export function ReportsForTeam({ route: { params: { team_number, competitionId } } }: ReportsForTeamProps) {
     const { colors } = useTheme();
     const [tab, setTab] = useState<string>('Scout Reports');
     const [scoutReports, setScoutReports] = useState<
@@ -117,6 +123,4 @@ function ReportsForTeam({ route }) {
             )}
         </View>
     );
-}
-
-export default ReportsForTeam;
+};

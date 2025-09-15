@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import type { SimpleTeam } from '../../lib/TBAUtils';
 import type { MatchReportReturnData } from '../../database/ScoutMatchReports';
-import ProfilesDB, { type ProfilesReturnData } from '../../database/Profiles';
+import { ProfilesDB, type ProfilesReturnData } from '../../database/Profiles';
 import { Dropdown } from 'react-native-element-dropdown';
-import ScoutViewer from '../../components/modals/ScoutViewer';
+import { ScoutViewer } from '../../components/modals/ScoutViewer';
 import { isTablet } from '../../lib/deviceType';
+import type { SearchScreenScreenProps } from './SearchScreen';
 
 enum FilterState {
     TEAM,
@@ -15,19 +16,15 @@ enum FilterState {
     PERSON,
 }
 
-// write the parameters
-interface SearchModalProps {
-    route: {
-        params: {
-            teams: SimpleTeam[];
-            reportsByMatch: Map<number, MatchReportReturnData[]>;
-            competitionId: number;
-        };
-    };
-    navigation: any;
+export interface SearchModalParams {
+    teams: SimpleTeam[]
+    reportsByMatch: Map<number, MatchReportReturnData[]>
+    competitionId: number
 }
+export interface SearchModalProps extends SearchScreenScreenProps<"Search Modal">{
 
-const SearchModal = ({ route, navigation }: SearchModalProps) => {
+}
+export function SearchModal({ route, navigation }: SearchModalProps)  {
     const { teams, reportsByMatch, competitionId } = route.params;
     const { colors } = useTheme();
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -275,7 +272,7 @@ const SearchModal = ({ route, navigation }: SearchModalProps) => {
                             return (
                                 <Pressable
                                     onPress={() => {
-                                        navigation.navigate('TeamViewer', {
+                                        navigation.navigate("Team Viewer", {
                                             team: item,
                                             competitionId: competitionId,
                                         });
@@ -548,4 +545,4 @@ const SearchModal = ({ route, navigation }: SearchModalProps) => {
     );
 };
 
-export default SearchModal;
+

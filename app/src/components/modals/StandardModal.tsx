@@ -1,7 +1,7 @@
 import { Modal, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-function StandardModal({ visible, title, onDismiss, children }) {
+export function StandardModal({ visible, title, onDismiss, children }) {
     const { colors } = useTheme();
 
     return (
@@ -51,6 +51,4 @@ function StandardModal({ visible, title, onDismiss, children }) {
             </TouchableWithoutFeedback>
         </Modal>
     );
-}
-
-export default StandardModal;
+};

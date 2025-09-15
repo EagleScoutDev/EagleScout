@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-const NewQuestionSeparator = ({ onPress, noDividerLine = false }) => {
+export function NewQuestionSeparator({ onPress, noDividerLine = false })  {
     const { colors } = useTheme();
 
     return (
@@ -46,4 +46,4 @@ const NewQuestionSeparator = ({ onPress, noDividerLine = false }) => {
     );
 };
 
-export default NewQuestionSeparator;
+

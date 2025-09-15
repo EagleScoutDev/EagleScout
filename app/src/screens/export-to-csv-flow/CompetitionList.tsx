@@ -4,7 +4,7 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import { React } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { type CompetitionReturnData } from '../../database/Competitions';
 

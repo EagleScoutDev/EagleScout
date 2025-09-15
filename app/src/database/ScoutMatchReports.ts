@@ -39,7 +39,7 @@ export interface MatchReportHistory {
     name: string;
 }
 
-class MatchReportsDB {
+export class MatchReportsDB {
     static async getReportsForCompetition(
         id: number,
         fetchUserNames = false,
@@ -220,5 +220,3 @@ class MatchReportsDB {
         }))
     }
 }
-
-export default MatchReportsDB;

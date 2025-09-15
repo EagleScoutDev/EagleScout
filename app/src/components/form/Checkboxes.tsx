@@ -1,4 +1,4 @@
-import Question from './Question';
+import { Question } from './Question';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useTheme } from '@react-navigation/native';
 import { View } from 'react-native';

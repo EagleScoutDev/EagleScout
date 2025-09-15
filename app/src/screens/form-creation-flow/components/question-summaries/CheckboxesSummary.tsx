@@ -1,7 +1,7 @@
-import SummaryTemplate from './SummaryTemplate';
-import SummaryText from './SummaryText';
+import { SummaryTemplate } from './SummaryTemplate';
+import { SummaryText } from './SummaryText';
 
-const CheckboxesSummary = ({ question, onDelete }) => {
+export function CheckboxesSummary({ question, onDelete }) {
     return (
         <SummaryTemplate onDelete={onDelete}>
             <SummaryText>Question Type: Checkboxes</SummaryText>
@@ -15,5 +15,3 @@ const CheckboxesSummary = ({ question, onDelete }) => {
         </SummaryTemplate>
     );
 };
-
-export default CheckboxesSummary;

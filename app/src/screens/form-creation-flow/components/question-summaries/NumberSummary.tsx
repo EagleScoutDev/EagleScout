@@ -1,5 +1,5 @@
-import SummaryTemplate from './SummaryTemplate';
-import SummaryText from './SummaryText';
+import { SummaryTemplate } from './SummaryTemplate';
+import { SummaryText } from './SummaryText';
 import {
     getActionForLink as reefscapeGetActionForLink,
     ReefscapeActions,
@@ -9,7 +9,7 @@ import {
     getActionForLink as crescendoGetActionForLink,
 } from '../../../../components/games/crescendo/CrescendoActions';
 
-const NumberSummary = ({ question, onDelete }) => {
+export function NumberSummary({ question, onDelete }) {
     return (
         <SummaryTemplate onDelete={onDelete}>
             <SummaryText>Question Type: Number</SummaryText>
@@ -36,5 +36,3 @@ const NumberSummary = ({ question, onDelete }) => {
         </SummaryTemplate>
     );
 };
-
-export default NumberSummary;

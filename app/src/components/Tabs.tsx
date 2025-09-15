@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from 'react-native';
-import React from 'react';
+import { React } from 'react';
 import { useTheme } from '@react-navigation/native';
 
 export const Tabs = ({

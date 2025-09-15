@@ -1,17 +1,16 @@
-import React from 'react';
 import { Easing, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Account } from "../lib/account";
-import LinearGradient from 'react-native-linear-gradient'; // or 'expo-linear-gradient'
+import { LinearGradient } from 'react-native-linear-gradient'; // or 'expo-linear-gradient'
 import GradientShimmer from 'react-native-gradient-shimmer';
 import { useProfile } from '../lib/hooks/useProfile';
 import { Coin } from './icons/icons.generated';
 
-interface UserProfileBoxProps {
+export interface UserProfileBoxProps {
     user: Account | null;
 }
 
-function UserProfileBox({ user }: UserProfileBoxProps) {
+export function UserProfileBox({ user }: UserProfileBoxProps) {
     const { colors } = useTheme();
     const { profile } = useProfile();
 
@@ -91,5 +90,3 @@ function UserProfileBox({ user }: UserProfileBoxProps) {
         </View>
     );
 }
-
-export default UserProfileBox;

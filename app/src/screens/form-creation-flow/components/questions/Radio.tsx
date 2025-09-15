@@ -1,4 +1,4 @@
-import StandardModal from '../../../../components/modals/StandardModal';
+import { StandardModal } from '../../../../components/modals/StandardModal';
 import React, {
     Alert,
     ScrollView,
@@ -8,16 +8,16 @@ import React, {
     View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import StandardButton from '../../../../components/StandardButton';
-import RadioOptionsSeparator from './RadioOptionsSeparator';
+import { StandardButton } from '../../../../components/StandardButton';
+import { RadioOptionsSeparator } from './RadioOptionsSeparator';
 import { useTheme } from '@react-navigation/native';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { BouncyCheckbox } from 'react-native-bouncy-checkbox';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-const Radio = ({ visible, setVisible, styles, onSubmit, value }) => {
+export function Radio({ visible, setVisible, styles, onSubmit, value })  {
     const [question, setQuestion] = useState('');
     const [options, setOptions] = useState([]);
     const [addOptionModalVisible, setAddOptionModalVisible] = useState(false);
@@ -243,4 +243,4 @@ const Radio = ({ visible, setVisible, styles, onSubmit, value }) => {
     );
 };
 
-export default Radio;
+

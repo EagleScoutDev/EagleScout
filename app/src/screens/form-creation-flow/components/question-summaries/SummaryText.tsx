@@ -1,7 +1,7 @@
 import React, { StyleSheet, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-const SummaryText = ({ children, bold = false }) => {
+export function SummaryText({ children, bold = false }) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -14,5 +14,3 @@ const SummaryText = ({ children, bold = false }) => {
 
     return <Text style={styles.text}>{children}</Text>;
 };
-
-export default SummaryText;

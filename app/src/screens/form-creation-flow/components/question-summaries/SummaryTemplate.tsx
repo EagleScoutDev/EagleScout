@@ -2,7 +2,7 @@ import React, { TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 
-const SummaryTemplate = ({ children, onDelete }) => {
+export function SummaryTemplate({ children, onDelete }) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -39,5 +39,3 @@ const SummaryTemplate = ({ children, onDelete }) => {
         </View>
     );
 };
-
-export default SummaryTemplate;

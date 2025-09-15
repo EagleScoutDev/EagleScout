@@ -2,32 +2,21 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { NoInternet } from '../../components/NoInternet';
-import EditCompetitionModal from '../../components/modals/EditCompetitionModal';
-import CompetitionsDB from '../../database/Competitions';
+import { EditCompetitionModal } from '../../components/modals/EditCompetitionModal';
+import { CompetitionsDB, type CompetitionReturnData } from '../../database/Competitions';
 
-const DEBUG = true;
-
-const CompetitionsList = ({ setChosenComp }) => {
+export function CompetitionsList({ setChosenComp }) {
     const { colors } = useTheme();
     const [internetError, setInternetError] = useState(false);
-    const [competitionList, setCompetitionList] = useState([]);
-    useState(false);
-    const [editCompetitionModalVisible, setEditCompetitionModalVisible] =
-        useState(false);
-
-    const [competitionToEdit, setCompetitionToEdit] = useState(null);
+    const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
+    const [editCompetitionModalVisible, setEditCompetitionModalVisible] = useState(false);
+    const [competitionToEdit, setCompetitionToEdit] = useState<CompetitionReturnData | null>(null);
 
     const getCompetitions = async () => {
-        if (DEBUG) {
-            console.log('Starting to look for competitions');
-        }
-
         try {
             const data = await CompetitionsDB.getCompetitions();
             // sort the data by start time
-            data.sort((a, b) => {
-                return new Date(a.startTime) - new Date(b.startTime);
-            });
+            data.sort((a, b) => a.startTime - b.startTime);
             setCompetitionList(data);
             setInternetError(false);
         } catch (error) {
@@ -37,11 +26,11 @@ const CompetitionsList = ({ setChosenComp }) => {
     };
 
     useEffect(() => {
-        getCompetitions().then(r => { });
+        getCompetitions()
     }, []);
 
     if (internetError) {
-        return <NoInternet colors={colors} onRefresh={getCompetitions()} />;
+        return <NoInternet colors={colors} onRefresh={() => getCompetitions()} />;
     }
 
     return (
@@ -104,11 +93,9 @@ const CompetitionsList = ({ setChosenComp }) => {
                 <EditCompetitionModal
                     setVisible={setEditCompetitionModalVisible}
                     onRefresh={getCompetitions}
-                    tempComp={competitionToEdit}
+                    value={competitionToEdit}
                 />
             )}
         </View>
     );
 };
-
-export default CompetitionsList;

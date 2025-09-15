@@ -9,18 +9,18 @@ import {
     View,
 } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
-import InternetStatus from '../../lib/InternetStatus';
-import UserProfileBox from '../../components/UserProfileBox';
-import ListItemContainer from '../../components/ListItemContainer';
-import ListItem from '../../components/ListItem';
-import SettingsPopup from './SettingsPopup';
+import { InternetStatus } from '../../lib/InternetStatus';
+import { UserProfileBox } from '../../components/UserProfileBox';
+import { ListItemContainer } from '../../components/ListItemContainer';
+import { ListItem } from '../../components/ListItem';
+import { SettingsPopup } from './SettingsPopup';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { Account } from "../../lib/account";
-import Competitions from '../../database/Competitions';
+import { Competitions } from '../../database/Competitions';
 import { getLighterColor, parseColor } from '../../lib/color';
-import FormHelper from '../../FormHelper';
+import { FormHelper } from '../../FormHelper';
 import { type SettingsMenuScreenProps } from './SettingsMenu';
 import { Asterisk, Ban, BoxArrowRight, JournalBookmarkFill, PenFill, QuestionCircle, Sticky } from '../../components/icons/icons.generated';
 import { AccountContext } from '../../lib/contexts/AccountContext';

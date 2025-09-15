@@ -13,17 +13,17 @@ import {
     View,
 } from 'react-native';
 import { type Theme, useNavigation, useTheme } from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
-import PitScoutingCamera from './PitScoutingCamera';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'react-native-toast-message';
+import { PitScoutingCamera } from './PitScoutingCamera';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import TeamInformation from '../../../components/form/TeamInformation';
-import StandardButton from '../../../components/StandardButton';
-import CompetitionsDB from '../../../database/Competitions';
+import { TeamInformation } from '../../../components/form/TeamInformation';
+import { StandardButton } from '../../../components/StandardButton';
+import { CompetitionsDB } from '../../../database/Competitions';
 import PitReportsDB, { type PitReportWithoutId } from '../../../database/ScoutPitReports';
-import FormHelper from '../../../FormHelper';
-import FormSection from '../../../components/form/FormSection';
-import FormComponent from '../../../components/form/FormComponent';
+import { FormHelper } from '../../../FormHelper';
+import { FormSection } from '../../../components/form/FormSection';
+import { FormComponent } from '../../../components/form/FormComponent';
 
 const Tab = createMaterialTopTabNavigator();
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import CompetitionsDB from '../../database/Competitions';
-import MatchReportsDB from '../../database/ScoutMatchReports';
+import { CompetitionsDB } from '../../database/Competitions';
+import { MatchReportsDB } from '../../database/ScoutMatchReports';
 import { useTheme } from '@react-navigation/native';
 import { type CrescendoAutoPath } from '../../components/games/crescendo/CrescendoAutoPath';
 import { CrescendoAutoViewer } from '../../components/games/crescendo/CrescendoAutoViewer';

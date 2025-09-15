@@ -1,20 +1,21 @@
 import { Dimensions, Pressable, Text, View } from 'react-native';
-import StandardModal from '../../components/modals/StandardModal';
+import { StandardModal } from '../../components/modals/StandardModal';
 import { LineChart } from 'react-native-chart-kit';
 import React, { useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
+import type { Setter } from '../../lib/react-utils/types';
 
-const DataGraph = ({
+export interface DataGraphProps {
+    modalActive: boolean, setModalActive: Setter<boolean>
+    item: any
+    data: { match: number, data: number }[]
+}
+export function DataGraph({
     item,
     modalActive,
     setModalActive,
     data,
-}: {
-    item: any;
-    modalActive: boolean;
-    setModalActive: (arg0: boolean) => void;
-    data: { match: number; data: number }[];
-}) => {
+}: DataGraphProps) {
     const { colors, dark } = useTheme();
     const chartConfig = {
         backgroundGradientFrom: colors.card,
@@ -108,5 +109,3 @@ const DataGraph = ({
         </StandardModal>
     );
 };
-
-export default DataGraph;

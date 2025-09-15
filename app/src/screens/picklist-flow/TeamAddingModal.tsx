@@ -1,25 +1,24 @@
 import { Alert, FlatList, Modal, Pressable, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import type { SimpleTeam } from '../../lib/TBAUtils';
 import type { PicklistTeam } from '../../database/Picklists';
 
-interface TeamAddingModalProps {
+export interface TeamAddingModalProps {
     visible: boolean;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     teams_list: PicklistTeam[];
     teamsAtCompetition: SimpleTeam[];
     addOrRemoveTeam: (team: SimpleTeam) => void;
 }
-const TeamAddingModal = ({
+export function TeamAddingModal({
     visible,
     setVisible,
     teams_list,
     teamsAtCompetition,
     addOrRemoveTeam,
-}: TeamAddingModalProps) => {
+}: TeamAddingModalProps) {
     const { colors } = useTheme();
 
     return (
@@ -139,5 +138,3 @@ const TeamAddingModal = ({
         </Modal>
     );
 };
-
-export default TeamAddingModal;

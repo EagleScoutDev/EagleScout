@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
-import React from 'react';
-import StandardButton from './StandardButton';
+import { React } from 'react';
+import { StandardButton } from './StandardButton';
 import { WifiOff } from './icons/icons.generated';
 import { useTheme } from '@react-navigation/native';
 

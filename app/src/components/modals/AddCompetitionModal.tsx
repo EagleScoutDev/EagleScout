@@ -7,13 +7,13 @@ import React, {
     TouchableOpacity,
     View,
 } from 'react-native';
-import StandardButton from '../StandardButton';
+import { StandardButton } from '../StandardButton';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import StandardModal from './StandardModal';
+import { StandardModal } from './StandardModal';
 import { supabase } from '../../lib/supabase';
-import SelectMenu from '../form/SelectMenu';
+import { SelectMenu } from '../form/SelectMenu';
 import { getIdealTextColor } from '../../lib/color';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 
@@ -21,7 +21,7 @@ function Spacer() {
     return <View style={{ height: '2%' }} />;
 }
 
-function AddCompetitionModal({ visible, setVisible, onRefresh }) {
+export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
     const [name, setName] = useState('');
     const [startTime, setStartTime] = useState(new Date());
     const [endTime, setEndTime] = useState(new Date());
@@ -360,6 +360,4 @@ function AddCompetitionModal({ visible, setVisible, onRefresh }) {
             </View>
         </StandardModal>
     );
-}
-
-export default AddCompetitionModal;
+};

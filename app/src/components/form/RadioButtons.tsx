@@ -1,6 +1,5 @@
-import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import Question from './Question';
+import { Question } from './Question';
 import { useTheme } from '@react-navigation/native';
 
 export interface RadioButtonsProps {
@@ -12,7 +11,7 @@ export interface RadioButtonsProps {
     onValueChange: (x: string) => void
     onReset: () => void
 }
-function RadioButtons(props: RadioButtonsProps) {
+export function RadioButtons(props: RadioButtonsProps) {
     const { colors } = useTheme()
 
     const styles = StyleSheet.create({
@@ -105,6 +104,4 @@ function RadioButtons(props: RadioButtonsProps) {
             {props.disabled ? disabledList : list}
         </View>
     );
-}
-
-export default RadioButtons;
+};

@@ -1,15 +1,15 @@
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import QuestionSummary from './QuestionSummary';
+import { QuestionSummary } from './QuestionSummary';
 import MatchReportsDB, {
     type MatchReportReturnData,
 } from '../../database/ScoutMatchReports';
 import Svg, { Path } from 'react-native-svg';
-import CompetitionsDB from '../../database/Competitions';
+import { CompetitionsDB } from '../../database/Competitions';
 import { isTablet } from '../../lib/deviceType';
 
-function ScoutSummary({
+export function ScoutSummary({
     team_number,
     competitionId,
 }: {
@@ -131,6 +131,4 @@ function ScoutSummary({
             </Pressable>
         </View>
     );
-}
-
-export default ScoutSummary;
+};

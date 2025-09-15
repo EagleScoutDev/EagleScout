@@ -1,4 +1,4 @@
-import StandardModal from './StandardModal';
+import { StandardModal } from './StandardModal';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 

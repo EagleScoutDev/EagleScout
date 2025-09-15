@@ -1,7 +1,7 @@
 import React, { StyleSheet, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-const TabHeader = ({ title }: { title: string }) => {
+export const TabHeader = ({ title }: { title: string }) => {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
         title: {
@@ -15,5 +15,3 @@ const TabHeader = ({ title }: { title: string }) => {
 
     return <Text style={styles.title}>{title}</Text>;
 };
-
-export default TabHeader;
