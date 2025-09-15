@@ -6,6 +6,7 @@
   "compilerOptions": {
     "typeRoots": ["./src/types"],
     "exactOptionalPropertyTypes": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "incremental": true
   }
 }

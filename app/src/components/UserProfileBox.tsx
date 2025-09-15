@@ -4,8 +4,8 @@ import {useTheme} from '@react-navigation/native';
 import { Account } from "../lib/account";
 import LinearGradient from 'react-native-linear-gradient'; // or 'expo-linear-gradient'
 import GradientShimmer from 'react-native-gradient-shimmer';
-import {ScoutcoinIcon} from '../SVGIcons';
 import {useProfile} from '../lib/hooks/useProfile';
+import { Coin } from './icons/icons.generated';
 
 interface UserProfileBoxProps {
   user: Account | null;
@@ -81,7 +81,7 @@ function UserProfileBox({user}: UserProfileBoxProps) {
         </Text>
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <ScoutcoinIcon width="16" height="16" fill={colors.text} />
+        <Coin width="16" height="16" fill={colors.text} />
         <Text
           selectable={true}
           style={{color: colors.text, paddingLeft: 8, fontSize: 16}}>

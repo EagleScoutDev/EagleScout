@@ -2,11 +2,11 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import DebugOffline from '../DebugOffline';
 import { SettingsHome } from './SettingsHome';
-import { AccountEditProfile, AccountEditProfileParams } from './account/AccountEditProfile';
+import { AccountEditProfile, type AccountEditProfileParams } from './account/AccountEditProfile';
 import SubmittedForms from './scout/SubmittedForms';
 import { SubmittedNotes } from './scout/SubmittedNotes';
-import { AppHomeScreenProps } from '../../AppHome';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { AppHomeScreenProps } from '../../AppHome';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AccountDeletionModal } from './account/AccountDeletionModal';
 import { AccountChangePassword } from './account/AccountChangePassword';
 

@@ -1,11 +1,10 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {useTheme} from '@react-navigation/native';
+import {useTheme, type Theme} from '@react-navigation/native';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {
   ScoutcoinLedger as ScoutcoinLedgerDB,
-  ScoutcoinLedgerItem,
+  type ScoutcoinLedgerItem,
 } from '../../database/ScoutcoinLedger';
-import {Theme} from '@react-navigation/native/src/types';
 import {TextInput} from 'react-native-gesture-handler';
 
 const formatDate = (date: Date) => {

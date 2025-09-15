@@ -39,7 +39,7 @@ const TeamInformation = ({
     subtitle: {
       textAlign: 'left',
       padding: '2%',
-      color: colors.text, //getLighterColor(colors.primary),
+      color: colors.text, //getLighterColor(parseRGB(colors.primary)),
       opacity: 0.6,
       fontWeight: 'bold',
     },

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import {type NoteStructureWithMatchNumber, type OfflineNote} from '../database/Notes';
+import {type NoteStructureWithMatchNumber, type OfflineNote} from '../database/ScoutNotes';
 import Svg, {Path} from 'react-native-svg';
 import { ArrowDownUp, XLg } from './icons/icons.generated';
 

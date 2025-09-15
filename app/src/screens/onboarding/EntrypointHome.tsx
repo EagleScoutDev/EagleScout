@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import StandardButton from '../../components/StandardButton';
 import React from 'react';
-import { OnboardingScreenProps } from '.';
+import type { OnboardingScreenProps } from '.';
 
 export interface EntrypointProps extends OnboardingScreenProps<'Entrypoint'> {
 

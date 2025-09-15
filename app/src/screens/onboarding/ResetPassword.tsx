@@ -14,7 +14,7 @@ import {styles} from './styles';
 import StandardButton from '../../components/StandardButton';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import {supabase} from '../../lib/supabase';
-import { OnboardingScreenProps } from '.';
+import { type OnboardingScreenProps } from '.';
 
 export interface ResetPasswordProps extends OnboardingScreenProps<"ResetPassword"> {
 

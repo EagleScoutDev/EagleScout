@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
+import { createContext, type Dispatch, type SetStateAction, useEffect, useState } from "react";
 
 export function ScoutTimer(): ScoutTimer {
     const [ seconds, setSeconds ] = useState(0)

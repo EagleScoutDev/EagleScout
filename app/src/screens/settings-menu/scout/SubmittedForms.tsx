@@ -20,71 +20,59 @@ import SegmentedOption from '../../../components/pickers/SegmentedOption';
 import React from 'react-native';
 import StandardButton from '../../../components/StandardButton';
 import Toast from 'react-native-toast-message';
-import ScoutReportsDB from '../../../database/ScoutReports';
+import ScoutReportsDB from '../../../database/ScoutMatchReports';
 import CompetitionsDB from '../../../database/Competitions';
+import type { PitScoutReportWithDate } from '../../../database/ScoutPitReports';
 
 const DEBUG = false;
 
 function SubmittedForms() {
     const [reports, setReports] = useState([]);
-    const [offlineReports, setOfflineReports] = useState([]);
+    const [offlineReports, setOfflineReports] = useState<PitScoutReportWithDate[]>([]);
     const { colors } = useTheme();
     const [selectedTheme, setSelectedTheme] = useState('Offline');
     const [loading, setLoading] = useState(false);
 
     async function getOfflineReports() {
-        const allOffline = await AsyncStorage.getAllKeys();
-        if (DEBUG) {
-            console.log('all offline: ' + allOffline);
-        }
-        const offReports = allOffline.filter(key => key.startsWith('form-'));
-        if (DEBUG) {
-            console.log('offline reports: ' + offReports);
-        }
+        const formsFound = await Promise.all(
+            (await AsyncStorage.getAllKeys())
+                .filter(key => key.startsWith('form-'))
+                .map(key => AsyncStorage.getItem(key).then(x => JSON.parse(x!)))
+        )
 
-        const formsFound = [];
-        for (let i = 0; i < offReports.length; i++) {
-            const report = await AsyncStorage.getItem(offReports[i]);
-            if (DEBUG) {
-                console.log('report: ' + report);
-            }
-            formsFound.push(JSON.parse(report));
-            console.log(JSON.parse(report));
-        }
-        setOfflineReports(formsFound);
+        setOfflineReports(formsFound)
+    }
+    async function fetchReports() {
+        setLoading(true)
+        setReports(await ScoutReportsDB.getReportsForSelf())
+        setLoading(false)
     }
 
-    useEffect(() => {
-        setLoading(true);
-        ScoutReportsDB.getReportsForSelf().then(result => {
-            setReports(result);
-        });
-        getOfflineReports().then(() => setLoading(false));
-    }, []);
+    useEffect(() => { fetchReports() }, []);
 
     const styles = StyleSheet.create({
         segmented_picker_container: {
             flexDirection: 'row',
+            alignContent: 'center',
             margin: 20,
-            backgroundColor: colors.border,
             padding: 2,
             borderRadius: 10,
-            alignContent: 'center',
+            backgroundColor: colors.border,
         },
         loading_indicator: {
             flexDirection: 'row',
-            margin: 20,
+            alignContent: 'center',
             alignSelf: 'center',
+            margin: 20,
             padding: 2,
             borderRadius: 10,
-            alignContent: 'center',
         },
         offline_card: {
             margin: 20,
-            backgroundColor: colors.border,
             padding: 20,
             borderRadius: 10,
             alignContent: 'center',
+            backgroundColor: colors.border,
         },
         offline_text: {
             textAlign: 'center',
@@ -118,12 +106,7 @@ function SubmittedForms() {
                     selected={selectedTheme}
                     onPress={() => {
                         setSelectedTheme('In Database');
-                        setLoading(true);
-                        ScoutReportsDB.getReportsForSelf().then(results => {
-                            setReports(results);
-                            console.log('reports found: ' + results);
-                            setLoading(false);
-                        });
+                        fetchReports()
                     }}
                 />
             </View>

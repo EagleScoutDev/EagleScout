@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import MinimalSectionHeader from '../../../components/MinimalSectionHeader';
 import StandardButton from '../../../components/StandardButton';
 import { supabase } from '../../../lib/supabase';
-import { SettingsMenuScreenProps } from '../SettingsMenu';
+import { type SettingsMenuScreenProps } from '../SettingsMenu';
 
 
 export interface AccountChangePasswordProps extends SettingsMenuScreenProps<"Account/ChangePassword"> {

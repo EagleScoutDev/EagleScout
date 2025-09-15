@@ -5,7 +5,7 @@ import { useState } from 'react';
 import MinimalSectionHeader from '../../../components/MinimalSectionHeader';
 import StandardButton from '../../../components/StandardButton';
 import { supabase } from '../../../lib/supabase';
-import { SettingsMenuScreenProps } from '../SettingsMenu';
+import { type SettingsMenuScreenProps } from '../SettingsMenu';
 
 export interface AccountEditProfileParams {
     initialFirstName: string,

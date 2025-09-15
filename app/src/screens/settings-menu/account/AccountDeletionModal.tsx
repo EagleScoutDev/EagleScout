@@ -5,7 +5,7 @@ import RadioButtons from "../../../components/form/RadioButtons";
 import MinimalSectionHeader from "../../../components/MinimalSectionHeader";
 import StandardButton from "../../../components/StandardButton";
 import { supabase } from "../../../lib/supabase";
-import { SettingsMenuScreenProps } from "../SettingsMenu";
+import { type SettingsMenuScreenProps } from "../SettingsMenu";
 
 export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {
 

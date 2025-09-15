@@ -8,12 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {X} from '../../SVGIcons';
 import {useTheme} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import PitScoutReports, {
   type PitScoutReportReturnData,
-} from '../../database/PitScoutReports';
+} from '../../database/ScoutPitReports';
 import RadioButtons from '../form/RadioButtons';
 import Checkbox from '../form/Checkbox';
 import { SafeAreaView } from 'react-native-safe-area-context';

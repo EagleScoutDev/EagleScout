@@ -15,8 +15,8 @@ import {
   View,
 } from 'react-native';
 import React, {type FC, useEffect, useMemo, useRef, useState} from 'react';
-import {ChevronDown, MagnifyingGlass, X} from '../../SVGIcons';
 import {type Theme, useTheme} from '@react-navigation/native';
+import { ChevronDown, X, ZoomIn } from '../icons/icons.generated';
 
 interface Data {
   key: any;
@@ -153,7 +153,7 @@ const SelectList: FC<SelectListProps> = ({
           <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
             {searchEnabled ? (
               <>
-                <MagnifyingGlass width={20} height={20} marginRight={7} />
+                <ZoomIn size="20" style={{marginRight: 2}} />
                 <TextInput
                   placeholder={searchPlaceholder}
                   onChangeText={val => {
@@ -175,7 +175,7 @@ const SelectList: FC<SelectListProps> = ({
               </View>
             )}
             <TouchableOpacity onPress={() => closeDropdown()}>
-              <X width={20} height={20} fill={theme.colors.text} />
+              <X size="20" fill={theme.colors.text} />
             </TouchableOpacity>
           </View>
         </View>
@@ -193,7 +193,7 @@ const SelectList: FC<SelectListProps> = ({
           <Text style={styles.optionText}>
             {selectedVal ? selectedVal : placeholder ? placeholder : 'Select'}
           </Text>
-          <ChevronDown width={20} height={20} />
+          <ChevronDown size="20" />
         </TouchableOpacity>
       )}
       {dropdownOpen && (

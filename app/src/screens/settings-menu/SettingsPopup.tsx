@@ -3,7 +3,7 @@ import { View, Text, Modal, Pressable } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
-import { SettingsHomeProps } from './SettingsHome';
+import { type SettingsHomeProps } from './SettingsHome';
 
 interface SettingsPopupProps {
     visible: boolean

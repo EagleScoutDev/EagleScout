@@ -1,8 +1,8 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {CaretRight} from '../SVGIcons';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {isTablet} from '../lib/deviceType';
+import { CaretRight } from './icons/icons.generated';
 
 interface ListItemProps {
   text: string;
@@ -54,7 +54,7 @@ const ListItem = ({
         }>
         {text}
       </Text>
-      {caretVisible && CaretRight()}
+      {caretVisible && <CaretRight size="20"/>}
     </TouchableOpacity>
   );
 };

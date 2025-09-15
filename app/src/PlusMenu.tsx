@@ -8,9 +8,8 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { isTablet } from './lib/deviceType';
-import { RootStackScreenProps } from './App';
+import { type RootStackScreenProps } from './App';
 import { CashCoin, JournalPlus, Sticky, Tag } from './components/icons/icons.generated';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface PlusMenuProps extends RootStackScreenProps<"PlusMenu"> {
 

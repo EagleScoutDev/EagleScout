@@ -1,4 +1,4 @@
-import { createStackNavigator, StackScreenProps } from "@react-navigation/stack";
+import { createStackNavigator, type StackScreenProps } from "@react-navigation/stack";
 import { EntrypointHome } from "./EntrypointHome";
 import { LoginForm } from "./Login";
 import { ResetPassword } from "./ResetPassword";
@@ -10,7 +10,7 @@ import { SelectTeam } from "./steps/SelectTeam";
 import { useState, useContext, useEffect } from "react";
 import { AccountStatus, login, saveAccount } from "../../lib/account";
 import { AccountContext } from "../../lib/contexts/AccountContext";
-import { RootStackScreenProps } from "../../App";
+import type { RootStackScreenProps } from "../../App";
 
 const Stack = createStackNavigator<OnboardingParamList>();
 export type OnboardingScreenProps<K extends keyof OnboardingParamList> = StackScreenProps<OnboardingParamList, K>
@@ -33,18 +33,18 @@ export interface OnboardingProps extends RootStackScreenProps<"Onboarding"> {
 }
 export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
     const { account, setAccount } = useContext(AccountContext)
-    const [ error, setError ] = useState("")
+    const [error, setError] = useState("")
 
     async function doLogin(username: string, password: string) {
         try {
             const account = await login(username, password)
-            if(account === null) {
+            if (account === null) {
                 setError("Account does not exist.")
                 return
             }
             setAccount(account)
         }
-        catch(e) {
+        catch (e) {
             console.error(e)
             setError(e instanceof Error ? e.message : "An error occured");
         }
@@ -52,7 +52,7 @@ export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
 
     useEffect(() => {
         console.debug("check account status:", account?.status)
-        switch(account?.status) {
+        switch (account?.status) {
             case undefined:
                 navigation.navigate("Onboarding", { screen: "Entrypoint" })
                 break

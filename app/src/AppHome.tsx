@@ -1,17 +1,17 @@
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { createBottomTabNavigator, BottomTabBarProps, BottomTabBar, BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { NavigatorScreenParams, useTheme } from "@react-navigation/native";
+import { createBottomTabNavigator, type BottomTabBarProps, BottomTabBar, type BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 import { saveAccount } from "./lib/account";
 import { AccountContext } from "./lib/contexts/AccountContext";
 import DataMain from "./screens/data/DataMain";
-import Home, { HomeParamList } from "./screens/scouting/ScoutFlow";
+import Home, { type HomeParamList } from "./screens/scouting/ScoutFlow";
 import { MatchBettingNavigator } from "./screens/match-betting-flow/MatchBettingNavigator";
 import SearchScreen from "./screens/search/SearchScreen";
-import { RootStackScreenProps } from "./App";
+import type { RootStackScreenProps } from "./App";
 import { BarChartLine, BarChartLineFill, House, HouseFill, PersonCircle, PlusCircleFill, Search } from "./components/icons/icons.generated";
-import { SettingsMenu, SettingsMenuParamList } from "./screens/settings-menu/SettingsMenu";
+import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings-menu/SettingsMenu";
 
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>
@@ -32,7 +32,7 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
     const { account, setAccount } = useContext(AccountContext);
 
     useEffect(() => {
-        if(account === null) {
+        if (account === null) {
             saveAccount(null)
             navigation.reset({
                 index: 0,
@@ -58,7 +58,7 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
             options={{
                 tabBarIcon: ({ color, size, focused }) =>
                     focused ? <HouseFill color={color} size={size} />
-                    : <House color={color} size={size} />
+                        : <House color={color} size={size} />
             }}
         />
         <Tab.Screen
@@ -94,7 +94,7 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
             options={{
                 tabBarIcon: ({ color, size, focused }) =>
                     focused ? <BarChartLineFill size={size} color={color} />
-                    : <BarChartLine size={size} color={color} />
+                        : <BarChartLine size={size} color={color} />
             }}
         />
         <Tab.Screen

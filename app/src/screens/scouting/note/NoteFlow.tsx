@@ -9,7 +9,7 @@ import {
     Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import NotesDB from '../../../database/Notes';
+import NotesDB from '../../../database/ScoutNotes';
 import { NoteInputModal } from './NoteInputModal';
 import CompetitionsDB from '../../../database/Competitions';
 import FormHelper from '../../../FormHelper';

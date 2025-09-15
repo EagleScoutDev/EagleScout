@@ -12,9 +12,8 @@ import {TextInput} from 'react-native-gesture-handler';
 import ProfilesDB from '../../database/Profiles';
 import {SendScoutcoinModal} from './SendScoutcoinModal';
 import Svg, {Path, SvgProps, Text as SvgText} from 'react-native-svg';
-import {ScoutcoinIcon} from '../../SVGIcons';
 import {useProfile} from '../../lib/hooks/useProfile';
-import {Theme} from '@react-navigation/native/src/types';
+import { Coin } from '../../components/icons/icons.generated';
 
 interface LeaderboardUser {
   id: string;
@@ -116,7 +115,7 @@ const LeaderboardUserItem = ({
         <Text style={styles.name}>{user.name}</Text>
         <View style={styles.coinContainer}>
           <Text style={styles.coins}>{user.scoutcoins}</Text>
-          <ScoutcoinIcon width="12" height="12" fill={colors.text} />
+          <Coin size="12" fill={colors.text} />
         </View>
       </View>
     </TouchableOpacity>

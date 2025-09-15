@@ -14,7 +14,7 @@ import { styles } from './styles';
 import { supabase } from '../../lib/supabase';
 import MinimalSectionHeader from '../../components/MinimalSectionHeader';
 import StandardButton from '../../components/StandardButton';
-import { OnboardingScreenProps } from '.';
+import { type OnboardingScreenProps } from '.';
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {
 

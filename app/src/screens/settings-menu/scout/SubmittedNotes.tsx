@@ -12,9 +12,9 @@ import SegmentedOption from '../../../components/pickers/SegmentedOption';
 import StandardButton from '../../../components/StandardButton';
 import FormHelper from '../../../FormHelper';
 import NotesDB, {
-    NoteStructureWithMatchNumber,
-    OfflineNote,
-} from '../../../database/Notes';
+    type NoteStructureWithMatchNumber,
+    type OfflineNote,
+} from '../../../database/ScoutNotes';
 import { NoteList } from '../../../components/NoteList';
 import CompetitionsDB from '../../../database/Competitions';
 

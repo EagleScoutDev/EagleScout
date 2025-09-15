@@ -10,10 +10,10 @@ import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
 import { AccountContext } from "./lib/contexts/AccountContext";
 import { Account, recallAccount } from "./lib/account";
-import { AppHome, AppHomeParamList } from "./AppHome";
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
-import { OnboardingFlow, OnboardingParamList } from "./screens/onboarding";
-import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppHome, type AppHomeParamList } from "./AppHome";
+import { NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
+import { OnboardingFlow, type OnboardingParamList } from "./screens/onboarding";
+import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 
 declare global {
     namespace ReactNavigation {
@@ -66,23 +66,23 @@ const RootNavigator = () => {
                     account, setAccount
                 }}>
 
-                <NavigationContainer theme={ThemeOptionsMap.get(themePreference)}>
+                <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
                     <RootStack.Navigator
                         initialRouteName="Onboarding"
                         screenOptions={{
                             headerShown: false
                         }}>
-                            <RootStack.Group>
-                                <RootStack.Screen name="App" component={AppHome} options={{
-                                    animationTypeForReplace: "pop"
-                                }}/>
+                        <RootStack.Group>
+                            <RootStack.Screen name="App" component={AppHome} options={{
+                                animationTypeForReplace: "pop"
+                            }} />
 
-                                <RootStack.Screen name="PlusMenu" component={PlusMenu} options={{
-                                    presentation: "transparentModal"
-                                }} />
-                            </RootStack.Group>
+                            <RootStack.Screen name="PlusMenu" component={PlusMenu} options={{
+                                presentation: "transparentModal"
+                            }} />
+                        </RootStack.Group>
 
-                            <RootStack.Screen name="Onboarding" component={OnboardingFlow} />
+                        <RootStack.Screen name="Onboarding" component={OnboardingFlow} />
                     </RootStack.Navigator>
                     <Toast />
                 </NavigationContainer>

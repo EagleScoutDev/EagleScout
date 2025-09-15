@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { getIdealTextColor } from '../../../lib/ColorReadability';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { getIdealTextColor, parseColor } from '../../../lib/color';
 
 export const SegmentedTeamSelector = ({
     color,
@@ -49,7 +49,7 @@ export const SegmentedTeamSelector = ({
                     style={{
                         color:
                             selectedTeam === teams[0]
-                                ? getIdealTextColor(buttonActiveBackgroundColor)
+                                ? getIdealTextColor(parseColor(buttonActiveBackgroundColor))
                                 : colors.text,
                         opacity: selectedTeam === teams[0] ? 1 : 0.6,
                         fontWeight: 'bold',
@@ -62,7 +62,7 @@ export const SegmentedTeamSelector = ({
                         style={{
                             color:
                                 selectedTeam === teams[0]
-                                    ? getIdealTextColor(buttonActiveBackgroundColor)
+                                    ? getIdealTextColor(parseColor(buttonActiveBackgroundColor))
                                     : colors.text,
                             opacity: selectedTeam === teams[0] ? 1 : 0.6,
                             fontWeight: 'bold',
@@ -91,7 +91,7 @@ export const SegmentedTeamSelector = ({
                     style={{
                         color:
                             selectedTeam === teams[1]
-                                ? getIdealTextColor(buttonActiveBackgroundColor)
+                                ? getIdealTextColor(parseColor(buttonActiveBackgroundColor))
                                 : colors.text,
                         opacity: selectedTeam === teams[1] ? 1 : 0.6,
                         fontWeight: 'bold',
@@ -104,7 +104,7 @@ export const SegmentedTeamSelector = ({
                         style={{
                             color:
                                 selectedTeam === teams[1]
-                                    ? getIdealTextColor(buttonActiveBackgroundColor)
+                                    ? getIdealTextColor(parseColor(buttonActiveBackgroundColor))
                                     : colors.text,
                             opacity: selectedTeam === teams[1] ? 1 : 0.6,
                             fontWeight: 'bold',
@@ -133,7 +133,7 @@ export const SegmentedTeamSelector = ({
                     style={{
                         color:
                             selectedTeam === teams[2]
-                                ? getIdealTextColor(buttonActiveBackgroundColor)
+                                ? getIdealTextColor(parseColor(buttonActiveBackgroundColor))
                                 : colors.text,
                         opacity: selectedTeam === teams[2] ? 1 : 0.6,
                         fontWeight: 'bold',
@@ -146,7 +146,7 @@ export const SegmentedTeamSelector = ({
                         style={{
                             color:
                                 selectedTeam === teams[2]
-                                    ? getIdealTextColor(buttonActiveBackgroundColor)
+                                    ? getIdealTextColor(parseColor(buttonActiveBackgroundColor))
                                     : colors.text,
                             opacity: selectedTeam === teams[2] ? 1 : 0.6,
                             fontWeight: 'bold',

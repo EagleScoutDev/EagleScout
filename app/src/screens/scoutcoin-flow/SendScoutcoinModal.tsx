@@ -3,8 +3,8 @@ import {Alert, Modal, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {supabase} from '../../lib/supabase';
 import StandardButton from '../../components/StandardButton';
-import {ScoutcoinIcon} from '../../SVGIcons';
 import {useProfile} from '../../lib/hooks/useProfile';
+import { Coin } from '../../components/icons/icons.generated';
 
 interface LeaderboardUser {
   id: string;
@@ -128,7 +128,7 @@ export const SendScoutcoinModal = ({
             <Text style={styles.text}>
               Your Scoutcoin: {profile?.scoutcoins}
             </Text>
-            <ScoutcoinIcon width="12" height="12" fill={colors.text} />
+            <Coin size="12" fill={colors.text} />
           </View>
           <TextInput
             style={styles.input}

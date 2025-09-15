@@ -12,8 +12,8 @@ import {
 import React from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {TagsDB, TagStructure} from '../../database/Tags';
-import {PicklistTeam} from '../../database/Picklists';
+import {TagsDB, type TagStructure} from '../../database/Tags';
+import type { PicklistTeam } from '../../database/Picklists';
 import Svg, {Path} from 'react-native-svg';
 
 import ColorPicker, {HueSlider} from 'reanimated-color-picker';
