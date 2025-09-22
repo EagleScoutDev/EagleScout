@@ -1,22 +1,22 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import { MatchBetting } from './MatchBetting';
-import { BettingScreen } from './BettingScreen';
+import { MatchBetting } from "./MatchBetting";
+import { BettingScreen, type BettingScreenParams } from "./BettingScreen";
+import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const MatchBettingStack = createStackNavigator();
+const Stack = createNativeStackNavigator<MatchBettingParamList>();
+export type MatchBettingScreenProps<K extends keyof MatchBettingParamList> = NativeStackScreenProps<
+    MatchBettingParamList,
+    K
+>;
+export type MatchBettingParamList = {
+    MatchBetting: undefined;
+    BettingScreen: BettingScreenParams;
+};
 
 export const MatchBettingNavigator = () => {
     return (
-        <MatchBettingStack.Navigator>
-            <MatchBettingStack.Screen
-                name="MatchBettingMain"
-                component={MatchBetting}
-                options={{ headerShown: false }}
-            />
-            <MatchBettingStack.Screen
-                name="BettingScreen"
-                component={BettingScreen}
-                options={{ headerShown: false }}
-            />
-        </MatchBettingStack.Navigator>
+        <Stack.Navigator>
+            <Stack.Screen name="MatchBetting" component={MatchBetting} options={{ headerShown: false }} />
+            <Stack.Screen name="BettingScreen" component={BettingScreen} options={{ headerShown: false }} />
+        </Stack.Navigator>
     );
 };

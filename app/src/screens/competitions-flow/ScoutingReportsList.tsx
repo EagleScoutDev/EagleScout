@@ -1,11 +1,11 @@
-import { ActivityIndicator } from 'react-native';
-import { useEffect, useState } from 'react';
-import { MatchReportsDB } from '../../database/ScoutMatchReports';
-import { ReportList } from '../../components/ReportList';
-import type { CompetitionReturnData } from '../../database/Competitions';
+import { ActivityIndicator } from "react-native";
+import { useEffect, useState } from "react";
+import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
+import { ReportList } from "../../components/ReportList";
+import type { CompetitionReturnData } from "../../database/Competitions";
 
 export interface ScoutingReportsListProps {
-    competition: CompetitionReturnData
+    competition: CompetitionReturnData;
 }
 export function ScoutingReportsList({ competition }: ScoutingReportsListProps) {
     /**
@@ -16,15 +16,12 @@ export function ScoutingReportsList({ competition }: ScoutingReportsListProps) {
      *     match_number: number
      * }
      */
-    const [reports, setReports] = useState([]);
+    const [reports, setReports] = useState<MatchReportReturnData[]>([]);
     const [reportsLoading, setReportsLoading] = useState(true);
 
     useEffect(() => {
-        console.log('HERE');
-        MatchReportsDB.getReportsForCompetition(competition.id).then(reports => {
-            // console.log('reports found!');
-            // console.log(reports);
-            console.log('number of reports: ' + reports.length);
+        MatchReportsDB.getReportsForCompetition(competition.id).then((reports) => {
+            console.log("number of reports: " + reports.length);
             setReports(reports);
             setReportsLoading(false);
         });
@@ -33,4 +30,4 @@ export function ScoutingReportsList({ competition }: ScoutingReportsListProps) {
         return <ActivityIndicator />;
     }
     return <ReportList reports={reports} isOffline={false} expandable={false} displayHeaders={false} />;
-};
+}

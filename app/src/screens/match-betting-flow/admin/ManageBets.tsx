@@ -3,7 +3,7 @@ import { useTheme } from "@react-navigation/native";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { type MatchBet, MatchBets } from "../../../database/MatchBets";
 import { supabase } from "../../../lib/supabase";
-import { getIdealTextColor } from "../../../lib/color";
+import { getIdealTextColor, parseColor } from "../../../lib/color";
 
 const BetCard = ({
     matchNumber,
@@ -70,7 +70,7 @@ const BetCard = ({
                 >
                     <Text
                         style={{
-                            color: getIdealTextColor("blue"),
+                            color: getIdealTextColor(parseColor("#0000ff")),
                         }}
                     >
                         Blue win
@@ -115,7 +115,7 @@ const BetCard = ({
                 >
                     <Text
                         style={{
-                            color: getIdealTextColor("red"),
+                            color: getIdealTextColor(parseColor("#ff0000")),
                         }}
                     >
                         Red win

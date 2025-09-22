@@ -12,6 +12,7 @@ import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet";
 import { ProfilesDB } from "../../database/Profiles.ts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Profile } from "../../lib/user/profile.ts";
+import type { MatchBettingScreenProps } from "./MatchBettingNavigator.tsx";
 
 interface Player {
     id: string;
@@ -21,16 +22,11 @@ interface Player {
     betAlliance: string;
 }
 
-export const BettingScreen = ({
-    route,
-}: {
-    route: RouteProp<
-        {
-            BettingScreen: { matchNumber: number };
-        },
-        "BettingScreen"
-    >;
-}) => {
+export interface BettingScreenParams {
+    matchNumber: number;
+}
+export interface BettingScreenProps extends MatchBettingScreenProps<"BettingScreen"> {}
+export const BettingScreen = ({ route }: BettingScreenProps) => {
     const { matchNumber } = route.params;
     console.log("matchNumber", matchNumber);
     const insets = useSafeAreaInsets();

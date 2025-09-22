@@ -123,14 +123,14 @@ export function FormEditor({
             if (success) {
                 Alert.alert("Success", "Form added successfully!");
                 setQuestions([]);
-                navigation.navigate("Form List");
+                navigation.navigate("List");
             }
         })();
     };
 
     const onFormCancel = () => {
         setQuestions([]);
-        navigation.navigate("Form List");
+        navigation.navigate("List");
     };
 
     return (

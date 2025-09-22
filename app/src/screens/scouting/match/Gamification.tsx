@@ -11,6 +11,7 @@ import type { ScoutMenuParamList } from "../ScoutingFlow";
 import type { Alliance, Orientation } from "../../../games/common";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTheme } from "@react-navigation/native";
+import type { CompetitionReturnData } from "../../../database/Competitions";
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator<GamificationParamList>();
@@ -20,6 +21,7 @@ export type GamificationScreenProps<K extends keyof GamificationParamList> = Mat
 >;
 export type GamificationParamList = {
     Match: undefined;
+    [k: `Form/${string}`]: undefined;
 };
 
 export interface GamificationProps {
@@ -28,7 +30,7 @@ export interface GamificationProps {
     team: number | null;
     setTeam: Setter<number | null>;
     teamsForMatch: number[];
-    competition: unknown;
+    competition: CompetitionReturnData;
 
     orientation: Orientation;
     setOrientation: Setter<Orientation>;
@@ -152,7 +154,7 @@ export function Gamification({
                                         <StandardButton
                                             text={"Next"}
                                             onPress={() => {
-                                                navigation.navigate(Object.keys(data)[0]);
+                                                navigation.navigate(`Form/${Object.keys(data)[0]}`);
                                                 setActivePage(Object.keys(data)[0]);
                                                 setModalIsOpen(true);
                                             }}
@@ -169,7 +171,7 @@ export function Gamification({
                         return (
                             <Tab.Screen
                                 key={key}
-                                name={key}
+                                name={`Form/${key}`}
                                 options={{
                                     // change font color in header
                                     headerTintColor: colors.text,
@@ -207,9 +209,7 @@ export function Gamification({
                                                         >
                                                             <FormComponent
                                                                 key={item.question}
-                                                                colors={colors}
                                                                 item={item}
-                                                                styles={styles}
                                                                 arrayData={arrayData}
                                                                 setArrayData={setArrayData}
                                                             />

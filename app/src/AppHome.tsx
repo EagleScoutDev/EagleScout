@@ -7,15 +7,15 @@ import {
 } from "@react-navigation/bottom-tabs";
 import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import { View } from "react-native";
-import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow.tsx";
+import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow";
 import { MatchBettingNavigator } from "./screens/match-betting-flow/MatchBettingNavigator";
 import { SearchScreen, type SearchScreenParamList } from "./screens/search/SearchScreen";
 import type { RootStackScreenProps } from "./App";
 import * as Bs from "./components/icons/icons.generated";
-import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings/SettingsMenu.tsx";
+import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings/SettingsMenu";
 import { useEffect } from "react";
-import { useAccount } from "./lib/hooks/useAccount.ts";
-import { DataMain } from "./screens/data/DataMain.tsx";
+import { useAccount } from "./lib/hooks/useAccount";
+import { DataMain } from "./screens/data/DataMain";
 
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>;

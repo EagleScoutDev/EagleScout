@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormHelper } from "../../../FormHelper";
 import Toast from "react-native-toast-message";
-import { CompetitionsDB } from "../../../database/Competitions";
+import { CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import { MatchReportsDB } from "../../../database/ScoutMatchReports";
 import { Gamification } from "./Gamification";
 import Confetti from "react-native-confetti";
@@ -27,7 +27,7 @@ export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps)
     const { colors } = useTheme();
     const [match, setMatch] = useState<number | null>(null);
     const [team, setTeam] = useState<number | null>(null);
-    const [competition, setCompetition] = useState();
+    const [competition, setCompetition] = useState<CompetitionReturnData>();
     const [formStructure, setFormStructure] = useState();
     const [formId, setFormId] = useState();
 

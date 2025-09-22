@@ -5,7 +5,7 @@ import { NoInternet } from '../../components/NoInternet';
 import { EditCompetitionModal } from '../../components/modals/EditCompetitionModal';
 import { CompetitionsDB, type CompetitionReturnData } from '../../database/Competitions';
 
-export function CompetitionsList({ setChosenComp }) {
+export function CompetitionsList() {
     const { colors } = useTheme();
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);

@@ -57,7 +57,7 @@ export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraP
 
     const cameraAnimatedProps = useAnimatedProps(() => {
         return {
-            zoom: Math.max(Math.min(zoom.value, maxZoom), minZoom);
+            zoom: Math.max(Math.min(zoom.value, maxZoom), minZoom)
         }
     }, [maxZoom, minZoom, zoom]);
     const neutralZoom = device?.neutralZoom ?? 1;
