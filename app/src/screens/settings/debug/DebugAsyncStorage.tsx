@@ -12,10 +12,10 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import { Clipboard } from '@react-native-clipboard/clipboard';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 export function DebugOffline({ navigation }) {
     const [keys, setKeys] = useState([]);
