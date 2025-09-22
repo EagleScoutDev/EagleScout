@@ -1,87 +1,66 @@
-import {
-    Alert,
-    Linking,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import { Path, Svg } from 'react-native-svg';
-import { InternetStatus } from '../../lib/InternetStatus';
-import { UserProfileBox } from '../../components/UserProfileBox';
-import { ListItemContainer } from '../../components/ListItemContainer';
-import { ListItem } from '../../components/ListItem';
-import { SettingsPopup } from './SettingsPopup';
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
-import { Account } from "../../lib/account";
-import { Competitions } from '../../database/Competitions';
-import { getLighterColor, parseColor } from '../../lib/color';
-import { FormHelper } from '../../FormHelper';
-import { type SettingsMenuScreenProps } from './SettingsMenu';
-import { Asterisk, Ban, BoxArrowRight, JournalBookmarkFill, PenFill, QuestionCircle, Sticky } from '../../components/icons/icons.generated';
-import { AccountContext } from '../../lib/contexts/AccountContext';
+import { Alert, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Path, Svg } from "react-native-svg";
+import { InternetStatus } from "../../lib/InternetStatus";
+import { UserProfileBox } from "../../components/UserProfileBox";
+import { ListItemContainer } from "../../components/ListItemContainer";
+import { ListItem } from "../../components/ListItem";
+import { SettingsPopup } from "./SettingsPopup";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigation, useTheme } from "@react-navigation/native";
+import { getLighterColor, parseColor } from "../../lib/color";
+import { type SettingsMenuScreenProps } from "./SettingsMenu";
+import * as Bs from "../../components/icons/icons.generated";
+import { CompetitionsDB } from "../../database/Competitions.ts";
+import { useProfile } from "../../lib/hooks/useProfile.ts";
+import { ScoutcoinLedger } from "../../database/ScoutcoinLedger.ts";
+import { useAccount } from "../../lib/hooks/useAccount.ts";
 
-const VERSION = '7.7.1';
+const VERSION = "7.7.1";
 
-export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {
-
-}
+export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {
     const { colors } = useTheme();
     const [settingsPopupActive, setSettingsPopupActive] = useState(false);
-    const { account, setAccount } = useContext(AccountContext)
+    const { account, logout } = useAccount();
+    const { profile } = useProfile();
 
-    const [internetStatus, setInternetStatus] = useState(
-        InternetStatus.NOT_ATTEMPTED,
-    );
+    const user = useMemo(() => {
+        console.log(account, profile);
+        return account && profile ? { account, profile } : null;
+    }, [account, profile]);
 
-    const [user, setUser] = useState<Account | null>(null);
+    const [scoutcoins, setScoutcoins] = useState<number | null>(null);
+    useEffect(() => {
+        if (profile) ScoutcoinLedger.getBalance(profile.id).then(setScoutcoins);
+        else setScoutcoins(null);
+    }, [profile]);
 
-    const getUser = async () => {
-        let foundUser = await AsyncStorage.getItem('user');
-        if (foundUser != null) {
-            let foundUserObject: Account = JSON.parse(foundUser);
-            setUser(foundUserObject);
-        }
-    };
+    const [internetStatus, setInternetStatus] = useState(InternetStatus.NOT_ATTEMPTED);
 
     const attemptSignOut = () => {
         Alert.alert(
-            'Sign Out',
-            'Are you sure you want to sign out? You will require an internet connection to use the app again.',
+            "Sign Out",
+            "Are you sure you want to sign out? You will require an internet connection to use the app again.",
             [
                 {
-                    text: 'Cancel',
-                    style: 'cancel',
+                    text: "Cancel",
+                    style: "cancel",
                 },
-                { text: 'OK', onPress: () => signOutFunction() },
-            ],
+                { text: "OK", onPress: () => signOutFunction() },
+            ]
         );
     };
 
     const signOutFunction = () => {
-        setAccount(null)
-        AsyncStorage.getAllKeys().then(keys => {
-            AsyncStorage.multiRemove(
-                keys.filter(key => FormHelper.EXCLUDE_DELETE_KEYS.indexOf(key) === -1),
-            ).then(() => {
-                console.log('Sign out successful');
-            });
+        logout().then(() => {
+            console.log("Sign out successful");
         });
     };
-
-    useEffect(() => {
-        getUser();
-    }, []);
 
     const styles = StyleSheet.create({
         title: {
             fontSize: 34,
-            fontWeight: '600',
+            fontWeight: "600",
             color: colors.text,
         },
     });
@@ -89,7 +68,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
     const testConnection = () => {
         // attempt connection to picklist table
         setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-        Competitions.getCurrentCompetition()
+        CompetitionsDB.getCurrentCompetition()
             .then(() => {
                 setInternetStatus(InternetStatus.CONNECTED);
             })
@@ -105,16 +84,18 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
     return (
         <SafeAreaView
             style={{
-                paddingHorizontal: '2%',
+                paddingHorizontal: "2%",
                 flex: 1,
-            }}>
+            }}
+        >
             <View
                 style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                     padding: 20,
-                }}>
+                }}
+            >
                 <Text style={styles.title}>Profile</Text>
                 {/*<TabHeader title={'Profile'} />*/}
 
@@ -130,22 +111,23 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
             {internetStatus === InternetStatus.FAILED && (
                 <View
                     style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
-                        marginHorizontal: '4%',
-                        marginBottom: '4%',
-                    }}>
-                    <Text style={{ flex: 1, color: 'grey' }}>
-                        Some features may be disabled until you regain an internet
-                        connection.
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                        marginHorizontal: "4%",
+                        marginBottom: "4%",
+                    }}
+                >
+                    <Text style={{ flex: 1, color: "grey" }}>
+                        Some features may be disabled until you regain an internet connection.
                     </Text>
                     <Pressable onPress={testConnection}>
                         <Text
                             style={{
                                 flex: 1,
                                 color: colors.primary,
-                                fontWeight: 'bold',
-                            }}>
+                                fontWeight: "bold",
+                            }}
+                        >
                             Try again?
                         </Text>
                     </Pressable>
@@ -153,20 +135,20 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
             )}
 
             <ScrollView>
-                <UserProfileBox user={user} />
+                <UserProfileBox user={user} scoutcoins={scoutcoins} />
 
-                <ListItemContainer title={'Account'}>
+                <ListItemContainer title={"Account"}>
                     <ListItem
                         text="Edit Profile"
                         onPress={() => {
                             navigation.navigate("Account/EditProfile", {
-                                initialFirstName: user ? user.first_name : '',
-                                initialLastName: user ? user.last_name : '',
-                            })
+                                initialFirstName: profile ? profile.firstName : "",
+                                initialLastName: profile ? profile.lastName : "",
+                            });
                         }}
                         caretVisible={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
-                        icon={() => <PenFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.PenFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                     <ListItem
                         text="Change Password"
@@ -175,7 +157,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                         }}
                         caretVisible={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
-                        icon={() => <Asterisk size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.Asterisk size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                     <ListItem
                         text="Request Account Deletion"
@@ -184,29 +166,29 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                         }}
                         caretVisible={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
-                        icon={() => <Ban size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.Ban size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                     <ListItem
-                        text={'Contact Support'}
+                        text={"Contact Support"}
                         onPress={() => {
                             // open a link to google.com
-                            Linking.openURL('https://forms.gle/vbLEhyouNgUShhDp9').then(r => {
-                                console.log('Opened support link');
+                            Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9").then(() => {
+                                console.log("Opened support link");
                             });
                         }}
                         caretVisible={false}
                         disabled={false}
-                        icon={() => <QuestionCircle size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.QuestionCircle size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                     <ListItem
-                        text={'Sign Out'}
+                        text={"Sign Out"}
                         onPress={() => attemptSignOut()}
                         caretVisible={false}
                         disabled={false}
-                        icon={() => <BoxArrowRight size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.BoxArrowRight size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                 </ListItemContainer>
-                <ListItemContainer title={''}>
+                <ListItemContainer title={""}>
                     <ListItem
                         text="View Your Reports"
                         onPress={() => {
@@ -214,16 +196,16 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                         }}
                         caretVisible={true}
                         disabled={false}
-                        icon={() => <JournalBookmarkFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.JournalBookmarkFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                     <ListItem
                         text="View Your Notes"
                         onPress={() => {
-                            navigation.navigate("Scout/Notes")
+                            navigation.navigate("Scout/Notes");
                         }}
                         caretVisible={true}
                         disabled={false}
-                        icon={() => <Sticky size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                        icon={<Bs.Sticky size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
                 </ListItemContainer>
                 <SettingsPopup
@@ -235,11 +217,12 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                     selectable={true}
                     style={{
                         color: colors.text,
-                        textAlign: 'center',
-                    }}>
+                        textAlign: "center",
+                    }}
+                >
                     v{VERSION}
                 </Text>
             </ScrollView>
         </SafeAreaView>
     );
-};
+}

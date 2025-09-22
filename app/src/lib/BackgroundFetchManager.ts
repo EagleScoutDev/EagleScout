@@ -1,6 +1,6 @@
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PitReportsDB } from '../database/ScoutPitReports';
-import { BackgroundFetch } from 'react-native-background-fetch';
+import BackgroundFetch from 'react-native-background-fetch';
 
 export class BackgroundFetchManager {
     static syncActive = false;

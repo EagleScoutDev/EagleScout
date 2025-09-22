@@ -1,9 +1,9 @@
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { StandardModal } from '../../components/modals/StandardModal';
 import { LineChart } from 'react-native-chart-kit';
-import React, { useEffect } from 'react';
+import { useEffect, useState } from "react";
 import { useTheme } from '@react-navigation/native';
-import type { Setter } from '../../lib/react-utils/types';
+import type { Setter } from '../../lib/react/types';
 
 export interface DataGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>
@@ -30,7 +30,7 @@ export function DataGraph({
         useShadowColorFromDataset: false, // optional
         fillShadowGradient: colors.card,
     };
-    const [avg, setAvg] = React.useState<number>(0);
+    const [avg, setAvg] = useState<number>(0);
 
     useEffect(() => {
         let sum = 0;

@@ -7,6 +7,5 @@
     "typeRoots": ["./src/types"],
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
-    "incremental": true
   }
 }

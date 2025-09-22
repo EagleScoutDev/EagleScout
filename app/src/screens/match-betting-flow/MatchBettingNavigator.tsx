@@ -1,4 +1,3 @@
-import { React } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MatchBetting } from './MatchBetting';
 import { BettingScreen } from './BettingScreen';

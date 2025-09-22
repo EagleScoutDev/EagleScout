@@ -1,20 +1,11 @@
-import {
-    FlatList,
-    KeyboardAvoidingView,
-    LayoutAnimation,
-    Platform,
-    Text,
-    TouchableOpacity,
-    UIManager,
-    View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
-import { ScoutViewer } from './modals/ScoutViewer';
-import { useTheme } from '@react-navigation/native';
-import { CompetitionsDB } from '../database/Competitions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FormHelper } from '../FormHelper';
-import { Badge } from './Badge';
+import { FlatList, KeyboardAvoidingView, LayoutAnimation, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScoutViewer } from "./modals/ScoutViewer";
+import { useTheme } from "@react-navigation/native";
+import { CompetitionsDB } from "../database/Competitions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FormHelper } from "../FormHelper";
+import { Badge } from "./Badge";
 
 function CompetitionFlatList({
     compName,
@@ -29,7 +20,7 @@ function CompetitionFlatList({
     setIsInitialCollapse,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
-    const [sort, setSort] = useState('');
+    const [sort, setSort] = useState("");
     const [dataCopy, setDataCopy] = useState(data);
     const { colors } = useTheme();
 
@@ -50,7 +41,7 @@ function CompetitionFlatList({
 
     const handleSort = (sortName, sortFunc) => {
         if (sort === sortName) {
-            setSort('');
+            setSort("");
             setDataCopy(data);
         } else {
             setSort(sortName);
@@ -70,35 +61,38 @@ function CompetitionFlatList({
                         <TouchableOpacity onPress={onPress}>
                             <View
                                 style={{
-                                    width: '90%',
-                                    alignSelf: 'center',
-                                    flexDirection: 'row',
+                                    width: "90%",
+                                    alignSelf: "center",
+                                    flexDirection: "row",
                                     paddingTop: 10,
                                     paddingBottom: 20,
                                     paddingHorizontal: 20,
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                }}>
-                                <View style={{ flexDirection: 'column' }}>
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <View style={{ flexDirection: "column" }}>
                                     <View
                                         style={{
-                                            flexDirection: 'row',
+                                            flexDirection: "row",
                                             gap: 10,
-                                            alignItems: 'center',
-                                        }}>
+                                            alignItems: "center",
+                                        }}
+                                    >
                                         <Text
                                             style={{
                                                 color: colors.text,
                                                 fontSize: 24,
-                                                fontWeight: 'bold',
-                                            }}>
+                                                fontWeight: "bold",
+                                            }}
+                                        >
                                             {compName}
                                         </Text>
                                         {isCurrentlyRunning && (
                                             <Badge
                                                 color={colors.background}
                                                 backgroundColor={colors.primary}
-                                                text={'Active'}
+                                                text={"Active"}
                                             />
                                         )}
                                     </View>
@@ -106,8 +100,9 @@ function CompetitionFlatList({
                                         style={{
                                             color: colors.text,
                                             fontSize: 16,
-                                        }}>
-                                        {data.length} {data.length === 1 ? 'report' : 'reports'}
+                                        }}
+                                    >
+                                        {data.length} {data.length === 1 ? "report" : "reports"}
                                     </Text>
                                 </View>
                                 {isCollapsed ? (
@@ -120,29 +115,30 @@ function CompetitionFlatList({
                     )}
                     <View
                         style={{
-                            display: isCollapsed ? 'none' : 'flex',
-                            width: '90%',
-                            alignSelf: 'center',
+                            display: isCollapsed ? "none" : "flex",
+                            width: "90%",
+                            alignSelf: "center",
                             borderRadius: 15,
                             paddingHorizontal: 20,
                             paddingBottom: 10,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
                         <TouchableOpacity
                             style={{
                                 flex: 1.5,
                                 borderRadius: 15,
                             }}
-                            onPress={() =>
-                                handleSort('team', (a, b) => a.teamNumber - b.teamNumber)
-                            }>
+                            onPress={() => handleSort("team", (a, b) => a.teamNumber - b.teamNumber)}
+                        >
                             <Text
                                 style={{
-                                    color: sort === 'team' ? colors.primary : colors.text,
+                                    color: sort === "team" ? colors.primary : colors.text,
                                     fontSize: 16,
-                                    fontWeight: 'bold',
-                                }}>
+                                    fontWeight: "bold",
+                                }}
+                            >
                                 Team
                             </Text>
                         </TouchableOpacity>
@@ -150,16 +146,16 @@ function CompetitionFlatList({
                             style={{
                                 flex: 1,
                             }}
-                            onPress={() =>
-                                handleSort('match', (a, b) => a.matchNumber - b.matchNumber)
-                            }>
+                            onPress={() => handleSort("match", (a, b) => a.matchNumber - b.matchNumber)}
+                        >
                             <Text
                                 style={{
-                                    color: sort === 'match' ? colors.primary : colors.text,
+                                    color: sort === "match" ? colors.primary : colors.text,
                                     fontSize: 16,
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                }}>
+                                    fontWeight: "bold",
+                                    textAlign: "center",
+                                }}
+                            >
                                 Match
                             </Text>
                         </TouchableOpacity>
@@ -168,19 +164,16 @@ function CompetitionFlatList({
                                 flex: 2,
                                 borderRadius: 15,
                             }}
-                            onPress={() =>
-                                handleSort(
-                                    'date',
-                                    (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-                                )
-                            }>
+                            onPress={() => handleSort("date", (a, b) => new Date(a.createdAt) - new Date(b.createdAt))}
+                        >
                             <Text
                                 style={{
-                                    color: sort === 'date' ? colors.primary : colors.text,
+                                    color: sort === "date" ? colors.primary : colors.text,
                                     fontSize: 16,
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                }}>
+                                    fontWeight: "bold",
+                                    textAlign: "center",
+                                }}
+                            >
                                 Date
                             </Text>
                         </TouchableOpacity>
@@ -196,69 +189,69 @@ function CompetitionFlatList({
                         setModalVisible(true);
                     }}
                     style={{
-                        display: isCollapsed ? 'none' : 'flex',
-                    }}>
+                        display: isCollapsed ? "none" : "flex",
+                    }}
+                >
                     <View
                         style={{
-                            display: item.isCollapsed ? 'none' : 'flex',
+                            display: item.isCollapsed ? "none" : "flex",
                             backgroundColor: colors.card,
-                            width: '90%',
-                            alignSelf: 'center',
+                            width: "90%",
+                            alignSelf: "center",
                             borderRadius: 15,
                             padding: 20,
                             marginVertical: 5,
                             borderWidth: 1,
                             borderColor: colors.border,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
                         <Text
                             style={{
                                 color: colors.text,
                                 fontSize: 16,
-                                fontWeight: 'bold',
+                                fontWeight: "bold",
                                 flex: 1.5,
-                            }}>
+                            }}
+                        >
                             {item.teamNumber}
                         </Text>
                         <Text
                             style={{
                                 color: colors.text,
                                 fontSize: 16,
-                                fontWeight: 'bold',
+                                fontWeight: "bold",
                                 flex: 1,
-                                textAlign: 'center',
-                            }}>
+                                textAlign: "center",
+                            }}
+                        >
                             {item.matchNumber}
                         </Text>
                         <Text
                             style={{
                                 color: colors.text,
                                 fontSize: 16,
-                                fontWeight: 'bold',
+                                fontWeight: "bold",
                                 flex: 2,
-                                textAlign: 'right',
-                            }}>
-                            {new Date(item.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
+                                textAlign: "right",
+                            }}
+                        >
+                            {new Date(item.createdAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
                             })}
                         </Text>
                     </View>
                 </TouchableOpacity>
             )}
-        // keyExtractor={item => item.id}
+            // keyExtractor={item => item.id}
         />
     );
 }
 
-export function ReportList({
-    reports,
-    isOffline,
-    expandable = true,
-    displayHeaders = true,
-}) {
+export function ReportList({ reports, isOffline, expandable = true, displayHeaders = true }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [chosenScoutForm, setChosenScoutForm] = useState(null);
     const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
@@ -278,9 +271,7 @@ export function ReportList({
             if (!isOffline) {
                 currComp = await CompetitionsDB.getCurrentCompetition();
             } else {
-                const currCompObj = await AsyncStorage.getItem(
-                    FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-                );
+                const currCompObj = await AsyncStorage.getItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
                 if (currCompObj != null) {
                     currComp = JSON.parse(currCompObj);
                 }
@@ -294,13 +285,13 @@ export function ReportList({
             }
             setDataCopy(
                 Object.keys(comps)
-                    .map(comp => ({
+                    .map((comp) => ({
                         title: comp,
                         data: comps[comp],
                         // currently checks by name, but might want to change to ID in future if needed.
                         isCurrentlyRunning: currComp && comp === currComp.name,
                     }))
-                    .sort((a, b) => (a.isCurrentlyRunning ? -1 : 1)),
+                    .sort((a, b) => (a.isCurrentlyRunning ? -1 : 1))
             );
         };
         effect().catch(console.log);
@@ -310,9 +301,9 @@ export function ReportList({
      * Locally updates the dataCopy array with the new data, so we don't have to re-fetch the db after a report edit
      * @param newData - the new data to update the array with
      */
-    const updateFormData = newData => {
+    const updateFormData = (newData) => {
         const newForms = [...dataCopy];
-        console.log('datacopoy');
+        console.log("datacopoy");
         console.log(dataCopy);
         console.log(chosenScoutFormIndex);
         newForms[chosenCompetitionIndex].data[chosenScoutFormIndex].data = newData;
@@ -323,22 +314,24 @@ export function ReportList({
         return (
             <View
                 style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    justifyContent: "center",
+                    alignItems: "center",
                     backgroundColor: colors.card,
-                    width: '80%',
-                    alignSelf: 'center',
+                    width: "80%",
+                    alignSelf: "center",
                     borderRadius: 15,
                     padding: 20,
                     marginTop: 20,
-                }}>
+                }}
+            >
                 <Text
                     style={{
-                        paddingHorizontal: '10%',
-                        color: 'red',
+                        paddingHorizontal: "10%",
+                        color: "red",
                         fontSize: 16,
-                        fontWeight: 'bold',
-                    }}>
+                        fontWeight: "bold",
+                    }}
+                >
                     No reports found.
                 </Text>
             </View>
@@ -346,7 +339,7 @@ export function ReportList({
     }
 
     return (
-        <KeyboardAvoidingView behavior={'height'} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
             {expandable && (
                 <TouchableOpacity
                     onPress={() => {
@@ -354,18 +347,20 @@ export function ReportList({
                         setIsInitialCollapse(false);
                     }}
                     style={{
-                        alignSelf: 'flex-end',
+                        alignSelf: "flex-end",
                         // backgroundColor: colors.primary,
                         paddingHorizontal: 10,
                         // borderRadius: 10,
-                    }}>
+                    }}
+                >
                     <Text
                         style={{
                             color: colors.primary,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             fontSize: 17,
-                        }}>
-                        {isCollapsedAll ? 'Expand All' : 'Collapse All'}
+                        }}
+                    >
+                        {isCollapsedAll ? "Expand All" : "Collapse All"}
                     </Text>
                 </TouchableOpacity>
             )}
@@ -373,7 +368,8 @@ export function ReportList({
             <View
                 style={{
                     paddingBottom: 20,
-                }}>
+                }}
+            >
                 {dataCopy.map((item, index) => (
                     <CompetitionFlatList
                         key={item.index}
@@ -381,12 +377,10 @@ export function ReportList({
                         data={item.data}
                         isCurrentlyRunning={item.isCurrentlyRunning}
                         overrideCollapsed={
-                            expandable &&
-                            !(isInitialCollapse && item.isCurrentlyRunning) &&
-                            isCollapsedAll
+                            expandable && !(isInitialCollapse && item.isCurrentlyRunning) && isCollapsedAll
                         }
-                        setChosenScoutForm={chosenForm => {
-                            console.log('set scout form', chosenForm);
+                        setChosenScoutForm={(chosenForm) => {
+                            console.log("set scout form", chosenForm);
                             setChosenScoutForm(chosenForm);
                         }}
                         setChosenScoutFormIndex={setChosenScoutFormIndex}
@@ -395,9 +389,7 @@ export function ReportList({
                         }}
                         setModalVisible={setModalVisible}
                         displayHeader={displayHeaders}
-                        setIsInitialCollapse={
-                            item.isCurrentlyRunning ? setIsInitialCollapse : null
-                        }
+                        setIsInitialCollapse={item.isCurrentlyRunning ? setIsInitialCollapse : null}
                     />
                 ))}
             </View>

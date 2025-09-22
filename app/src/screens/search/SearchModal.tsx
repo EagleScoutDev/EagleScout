@@ -1,14 +1,15 @@
 import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import type { SimpleTeam } from '../../lib/TBAUtils';
 import type { MatchReportReturnData } from '../../database/ScoutMatchReports';
-import { ProfilesDB, type ProfilesReturnData } from '../../database/Profiles';
+import { ProfilesDB } from '../../database/Profiles';
 import { Dropdown } from 'react-native-element-dropdown';
 import { ScoutViewer } from '../../components/modals/ScoutViewer';
 import { isTablet } from '../../lib/deviceType';
 import type { SearchScreenScreenProps } from './SearchScreen';
+import type { Profile } from "../../lib/user/profile.ts";
 
 enum FilterState {
     TEAM,
@@ -33,9 +34,9 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
     // parsed from reports, then used to find names
     const [userIds, setUserIds] = useState<string[]>([]);
 
-    const [users, setUsers] = useState<ProfilesReturnData[]>([]);
+    const [users, setUsers] = useState<Profile[]>([]);
 
-    const [selectedUser, setSelectedUser] = useState<ProfilesReturnData | null>(
+    const [selectedUser, setSelectedUser] = useState<Profile | null>(
         null,
     );
 
@@ -70,7 +71,7 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
             return;
         }
 
-        let temp: ProfilesReturnData[] = [];
+        let temp: Profile[] = [];
 
         for (let i = 0; i < userIds.length; i++) {
             ProfilesDB.getProfile(userIds[i]).then(profile => {
@@ -394,7 +395,7 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                             labelField={'label'}
                             valueField={'value'}
                             onChange={item => {
-                                let newSelectedUser: ProfilesReturnData | null = null;
+                                let newSelectedUser: Profile | null = null;
                                 users.forEach(user => {
                                     if (user.id === item.value) {
                                         newSelectedUser = user;

@@ -1,51 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-    Pressable,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
-import {
-    Camera,
-    useCameraDevice,
-    useCameraPermission,
-} from 'react-native-vision-camera';
-import { CaptureButton } from './CaptureButton';
-import {
-    PinchGestureHandler,
-    type PinchGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Camera, useCameraDevice, useCameraPermission } from "react-native-vision-camera";
+import { CaptureButton } from "./CaptureButton";
+import { PinchGestureHandler, type PinchGestureHandlerGestureEvent } from "react-native-gesture-handler";
 import Reanimated, {
     Extrapolate,
     interpolate,
     useAnimatedGestureHandler,
     useAnimatedProps,
     useSharedValue,
-} from 'react-native-reanimated';
-import { type Theme, useTheme } from '@react-navigation/native';
+} from "react-native-reanimated";
+import { type Theme, useTheme } from "@react-navigation/native";
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
-// Reanimated.addWhitelistedNativeProps({
-//   zoom: true,
-// });
 
 const SCALE_FULL_ZOOM = 3;
 const MAX_ZOOM_FACTOR = 10;
 
-export function PitScoutingCamera({
-    onPhotoTaken,
-    onCancel,
-}: {
-    onPhotoTaken: (photoData: string) => void;
+export interface PitScoutingCameraProps {
+    onPhotoTaken: (photo: string) => void;
     onCancel: () => void;
-}) {
+}
+export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraProps) {
     const theme = useTheme();
     const colors = theme.colors;
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const [isCapturing, setIsCapturing] = useState(false);
     const { hasPermission, requestPermission } = useCameraPermission();
-    const device = useCameraDevice('back');
+    const device = useCameraDevice("back");
     const camera = useRef<Camera>(null);
     useEffect(() => {
         if (!hasPermission) {
@@ -57,29 +39,26 @@ export function PitScoutingCamera({
             return;
         }
         setIsCapturing(true);
-        const file = await camera.current.takePhoto().catch(e => {
-            console.log(e);
-        });
-        console.log('hi');
-        const result = await fetch(`file://${file.path}`);
-        const data = await result.blob();
-        const reader = new FileReader();
-        reader.onload = function () {
-            const dataUrl = reader.result;
-            setIsCapturing(false);
-            onPhotoTaken(dataUrl as string);
-        };
-        reader.readAsDataURL(data);
+        const file = await camera.current.takePhoto().catch(console.error); //< TODO: no
+        if (file) {
+            const data = await fetch(`file://${file.path}`).then(r => r.blob());
+            const reader = new FileReader();
+            reader.onload = () => {
+                const dataUrl = reader.result;
+                setIsCapturing(false);
+                onPhotoTaken(dataUrl as string);
+            };
+            reader.readAsDataURL(data);
+        }
     }, [camera, onPhotoTaken]);
     const zoom = useSharedValue(0);
     const minZoom = device?.minZoom ?? 1;
     const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
 
     const cameraAnimatedProps = useAnimatedProps(() => {
-        const z = Math.max(Math.min(zoom.value, maxZoom), minZoom);
         return {
-            zoom: z,
-        };
+            zoom: Math.max(Math.min(zoom.value, maxZoom), minZoom);
+        }
     }, [maxZoom, minZoom, zoom]);
     const neutralZoom = device?.neutralZoom ?? 1;
     useEffect(() => {
@@ -87,10 +66,7 @@ export function PitScoutingCamera({
         zoom.value = neutralZoom;
     }, [neutralZoom, zoom]);
 
-    const onPinchGesture = useAnimatedGestureHandler<
-        PinchGestureHandlerGestureEvent,
-        { startZoom?: number }
-    >({
+    const onPinchGesture = useAnimatedGestureHandler<PinchGestureHandlerGestureEvent, { startZoom?: number }>({
         onStart: (_, context) => {
             context.startZoom = zoom.value;
         },
@@ -101,14 +77,9 @@ export function PitScoutingCamera({
                 event.scale,
                 [1 - 1 / SCALE_FULL_ZOOM, 1, SCALE_FULL_ZOOM],
                 [-1, 0, 1],
-                Extrapolate.CLAMP,
+                Extrapolate.CLAMP
             );
-            zoom.value = interpolate(
-                scale,
-                [-1, 0, 1],
-                [minZoom, startZoom, maxZoom],
-                Extrapolate.CLAMP,
-            );
+            zoom.value = interpolate(scale, [-1, 0, 1], [minZoom, startZoom, maxZoom], Extrapolate.CLAMP);
         },
     });
 
@@ -117,10 +88,11 @@ export function PitScoutingCamera({
             <View
                 style={{
                     flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    justifyContent: "center",
+                    alignItems: "center",
                     gap: 10,
-                }}>
+                }}
+            >
                 <Text>No camera found</Text>
                 <TouchableOpacity
                     onPress={onCancel}
@@ -128,11 +100,13 @@ export function PitScoutingCamera({
                         backgroundColor: colors.background,
                         padding: 10,
                         borderRadius: 10,
-                    }}>
+                    }}
+                >
                     <Text
                         style={{
                             color: colors.text,
-                        }}>
+                        }}
+                    >
                         Cancel
                     </Text>
                 </TouchableOpacity>
@@ -148,9 +122,10 @@ export function PitScoutingCamera({
                         style={{
                             width: 20,
                             height: 20,
-                            color: 'black',
-                            textAlign: 'center',
-                        }}>
+                            color: "black",
+                            textAlign: "center",
+                        }}
+                    >
                         X
                     </Text>
                 </Pressable>
@@ -179,17 +154,17 @@ const makeStyles = ({ colors }: Theme) =>
             flex: 1,
         },
         cancelButtonContainer: {
-            position: 'absolute',
+            position: "absolute",
             top: 50,
             right: 30,
             zIndex: 1,
         },
         cancelButton: {
-            backgroundColor: 'white',
+            backgroundColor: "white",
             padding: 10,
             borderRadius: 999,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
         },
     });

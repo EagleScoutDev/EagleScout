@@ -1,14 +1,13 @@
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { EnableScoutAssignmentsModal } from '../../components/modals/EnableScoutAssignmentsModal';
-import React, { useEffect, useState } from 'react';
-import CompetitionsDB, { ScoutAssignmentsConfig } from "../../database/Competitions";
-import { NoInternet } from '../../components/NoInternet';
-import { useTheme } from '@react-navigation/native';
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { EnableScoutAssignmentsModal } from "../../components/modals/EnableScoutAssignmentsModal";
+import { useEffect, useState } from "react";
+import { CompetitionsDB, ScoutAssignmentsConfig } from "../../database/Competitions";
+import { NoInternet } from "../../components/NoInternet";
+import { useTheme } from "@react-navigation/native";
 
 export function ScoutAssignmentsMain({ navigation }) {
     const [chosenComp, setChosenComp] = useState(null);
-    const [enableScoutAssignmentsVisible, setEnableScoutAssignmentsVisible] =
-        useState(false);
+    const [enableScoutAssignmentsVisible, setEnableScoutAssignmentsVisible] = useState(false);
     const { colors } = useTheme();
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState([]);
@@ -17,9 +16,7 @@ export function ScoutAssignmentsMain({ navigation }) {
         try {
             const data = await CompetitionsDB.getCompetitions();
             // sort the data by start time
-            data.sort((a, b) => {
-                return new Date(a.startTime) - new Date(b.startTime);
-            });
+            data.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
             setCompetitionList(data);
             setInternetError(false);
         } catch (error) {
@@ -42,23 +39,25 @@ export function ScoutAssignmentsMain({ navigation }) {
                 {/*TODO: Make this bigger*/}
                 <View
                     style={{
-                        alignSelf: 'center',
+                        alignSelf: "center",
                         backgroundColor: colors.background,
-                        height: '100%',
+                        height: "100%",
                         borderRadius: 10,
-                        padding: '10%',
-                        width: '100%',
-                    }}>
+                        padding: "10%",
+                        width: "100%",
+                    }}
+                >
                     <Text
                         style={{
                             fontSize: 25,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             marginBottom: 20,
                             color: colors.text,
-                            textDecorationStyle: 'solid',
-                            textDecorationLine: 'underline',
+                            textDecorationStyle: "solid",
+                            textDecorationLine: "underline",
                             textDecorationColor: colors.border,
-                        }}>
+                        }}
+                    >
                         Choose a Competition
                     </Text>
                     <ScrollView>
@@ -68,13 +67,10 @@ export function ScoutAssignmentsMain({ navigation }) {
                                 onPress={() => {
                                     setChosenComp(comp);
                                     console.log(comp);
-                                    if (
-                                        comp.scoutAssignmentsConfig ===
-                                        ScoutAssignmentsConfig.DISABLED
-                                    ) {
+                                    if (comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.DISABLED) {
                                         setEnableScoutAssignmentsVisible(true);
                                     } else {
-                                        navigation.navigate('Scout Assignments Spreadsheet', {
+                                        navigation.navigate("Scout Assignments Spreadsheet", {
                                             competition: comp,
                                         });
                                     }
@@ -82,16 +78,17 @@ export function ScoutAssignmentsMain({ navigation }) {
                                 style={{
                                     padding: 20,
                                     borderRadius: 10,
-                                    backgroundColor:
-                                        index % 2 === 0 ? colors.border : colors.background,
-                                }}>
+                                    backgroundColor: index % 2 === 0 ? colors.border : colors.background,
+                                }}
+                            >
                                 <Text
                                     style={{
                                         color: colors.text,
-                                        fontWeight: 'bold',
-                                        textAlign: 'center',
+                                        fontWeight: "bold",
+                                        textAlign: "center",
                                         fontSize: 16,
-                                    }}>
+                                    }}
+                                >
                                     {comp.name} ({new Date(comp.startTime).getFullYear()})
                                 </Text>
                             </TouchableOpacity>
@@ -108,4 +105,4 @@ export function ScoutAssignmentsMain({ navigation }) {
             />
         </>
     );
-};
+}

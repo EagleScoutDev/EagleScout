@@ -1,4 +1,3 @@
-import { React } from 'react';
 import {View, Text} from 'react-native';
 import {Svg, Line, Path, Circle} from 'react-native-svg';
 import type { CrescendoAutoPath } from './CrescendoAutoPath';

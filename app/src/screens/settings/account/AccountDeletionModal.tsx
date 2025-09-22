@@ -1,4 +1,4 @@
-import React, { Text, Alert, StyleSheet, TextInput, View } from "react-native";
+import { Text, Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { RadioButtons } from "../../../components/form/RadioButtons";

@@ -1,38 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import {
-    View, LayoutAnimation,
-    ActivityIndicator
-} from 'react-native';
+import { useEffect, useState } from "react";
+import { View, LayoutAnimation, ActivityIndicator } from "react-native";
 
-import { useTheme } from '@react-navigation/native';
-import { CompetitionsDB } from '../../database/Competitions';
-import { type CompetitionReturnData } from '../../database/Competitions';
-import { Dropdown } from 'react-native-element-dropdown';
-import type { Setter } from '../../lib/react-utils/types';
+import { useTheme } from "@react-navigation/native";
+import { CompetitionsDB } from "../../database/Competitions";
+import { type CompetitionReturnData } from "../../database/Competitions";
+import { Dropdown } from "react-native-element-dropdown";
+import type { Setter } from "../../lib/react/types";
 
 export interface CompetitionChangerProps {
-    currentCompId: number, setCurrentCompId: Setter<number>
+    currentCompId: number;
+    setCurrentCompId: Setter<number>;
     loading: boolean;
 }
-export function CompetitionChanger({
-    currentCompId,
-    setCurrentCompId,
-    loading,
-}: CompetitionChangerProps) {
+export function CompetitionChanger({ currentCompId, setCurrentCompId, loading }: CompetitionChangerProps) {
     const { colors } = useTheme();
     const [isActive, setIsActive] = useState(false);
 
-    const [competitionName, setCompetitionName] = useState('Loading...');
+    const [competitionName, setCompetitionName] = useState("Loading...");
 
-    const [competitionsList, setCompetitionsList] = useState<
-        CompetitionReturnData[]
-    >([]);
-
-    const compnameToIcon = (compname: string): string => {
-        let split = compname.split(' ');
-        let firstLetters = split.map(word => word[0].toUpperCase());
-        return firstLetters.join('');
-    };
+    const [competitionsList, setCompetitionsList] = useState<CompetitionReturnData[]>([]);
 
     useEffect(() => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -40,7 +26,7 @@ export function CompetitionChanger({
 
     useEffect(() => {
         if (currentCompId === -1) {
-            CompetitionsDB.getCurrentCompetition().then(competition => {
+            CompetitionsDB.getCurrentCompetition().then((competition) => {
                 if (competition != null) {
                     setCurrentCompId(competition.id);
                 } else {
@@ -49,51 +35,50 @@ export function CompetitionChanger({
                 }
             });
         }
-        CompetitionsDB.getCompetitions().then(competitions => {
+        CompetitionsDB.getCompetitions().then((competitions) => {
             // sort competitions by date, in descending order
             let temp_comp = competitions;
             temp_comp.sort((a, b) => {
-                return (
-                    new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
-                );
+                return new Date(b.startTime).getTime() - new Date(a.startTime).getTime();
             });
             setCompetitionsList(temp_comp);
 
             // set the current competition name
-            competitions.forEach(competition => {
+            competitions.forEach((competition) => {
                 if (competition.id === currentCompId) {
                     setCompetitionName(competition.name);
                 }
             });
         });
-    }, []);
+    }, [currentCompId, setCurrentCompId]);
 
     return (
         <View
             style={{
                 flex: 1,
-            }}>
+            }}
+        >
             <Dropdown
-                data={competitionsList.map(competition => {
+                data={competitionsList.map((competition) => {
                     return {
                         label: competition.name,
                         value: competition.id,
                     };
                 })}
-                labelField={'label'}
-                valueField={'value'}
+                labelField={"label"}
+                valueField={"value"}
                 disable={competitionsList.length === 0}
                 placeholderStyle={{
                     color: colors.text,
                 }}
                 placeholder={
                     loading
-                        ? 'Loading...'
+                        ? "Loading..."
                         : competitionsList.length > 0
-                            ? 'Select Competition'
-                            : 'No competitions found'
+                        ? "Select Competition"
+                        : "No competitions found"
                 }
-                onChange={item => {
+                onChange={(item) => {
                     setCurrentCompId(item.value);
                     setCompetitionName(item.label);
                     setIsActive(false);
@@ -101,14 +86,14 @@ export function CompetitionChanger({
                 activeColor={colors.card}
                 style={{
                     borderRadius: 10,
-                    padding: '2%',
-                    marginVertical: '2%',
+                    padding: "2%",
+                    marginVertical: "2%",
                     backgroundColor: colors.background,
-                    paddingLeft: '6%',
+                    paddingLeft: "6%",
                 }}
                 selectedTextStyle={{
                     color: colors.text,
-                    fontWeight: 'bold',
+                    fontWeight: "bold",
                     backgroundColor: colors.background,
                 }}
                 containerStyle={{
@@ -130,40 +115,10 @@ export function CompetitionChanger({
                 }}
                 renderLeftIcon={() => {
                     if (loading) {
-                        return (
-                            <ActivityIndicator
-                                style={{ marginRight: '4%' }}
-                                size={'small'}
-                                color={colors.text}
-                            />
-                        );
+                        return <ActivityIndicator style={{ marginRight: "4%" }} size={"small"} color={colors.text} />;
                     }
-                    // return (
-                    //   <View
-                    //     style={{
-                    //       backgroundColor: colors.card,
-                    //       borderRadius: 200,
-                    //
-                    //       width: 40 + (compnameToIcon(competitionName).length - 1) * 20,
-                    //       height: 40,
-                    //       justifyContent: 'center',
-                    //       marginRight: '4%',
-                    //     }}>
-                    //     <Text
-                    //       style={{
-                    //         color: colors.text,
-                    //         fontSize: 20,
-                    //         textAlign: 'center',
-                    //         fontWeight: '700',
-                    //       }}>
-                    //       {competitionName === 'Loading...'
-                    //         ? ''
-                    //         : compnameToIcon(competitionName)}
-                    //     </Text>
-                    //   </View>
-                    // );
                 }}
             />
         </View>
     );
-};
+}

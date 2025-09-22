@@ -1,15 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { type JSX } from 'react';
+import { type JSX } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { isTablet } from '../lib/deviceType';
-import { ChevronRight } from './icons/icons.generated';
+import * as Bs from './icons/icons.generated';
 
 interface ListItemProps {
     text: string;
     onPress: () => void;
     caretVisible: boolean;
     disabled: boolean;
-    icon: () => JSX.Element | null;
+    icon: JSX.Element | null;
 }
 
 export const ListItem = ({
@@ -17,7 +17,7 @@ export const ListItem = ({
     onPress,
     caretVisible = true,
     disabled = false,
-    icon = () => null,
+    icon = null
 }: ListItemProps) => {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
@@ -47,14 +47,14 @@ export const ListItem = ({
             disabled={disabled}
             onPress={onPress}
             style={styles.list_item}>
-            {icon && <View style={styles.icon_styling}>{icon()}</View>}
+            {icon && <View style={styles.icon_styling}>{icon}</View>}
             <Text
                 style={
                     disabled ? styles.disabled_list_item_text : styles.list_item_text
                 }>
                 {text}
             </Text>
-            {caretVisible && <ChevronRight size="20" />}
+            {caretVisible && <Bs.ChevronRight size="20" />}
         </TouchableOpacity>
     );
 };

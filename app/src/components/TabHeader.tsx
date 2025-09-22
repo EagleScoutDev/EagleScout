@@ -1,4 +1,4 @@
-import React, { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 export const TabHeader = ({ title }: { title: string }) => {

@@ -1,4 +1,4 @@
-import React, {
+import {
     ActivityIndicator,
     Alert,
     ScrollView,
@@ -11,7 +11,7 @@ import { StandardModal } from '../../components/modals/StandardModal';
 import { StandardButton } from '../../components/StandardButton';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { BouncyCheckbox } from 'react-native-bouncy-checkbox';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 export function AutoAssignModal({ visible, setVisible, colors, compId }) {
     const styles = StyleSheet.create({

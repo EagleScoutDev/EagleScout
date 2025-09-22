@@ -1,27 +1,24 @@
-import { Alert, StyleSheet, Text, View } from 'react-native';
-import { useRoute, useTheme } from '@react-navigation/native';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FormHelper } from '../../../FormHelper';
-import { Toast } from 'react-native-toast-message';
-import { CompetitionsDB } from '../../../database/Competitions';
-import { MatchReportsDB } from '../../../database/ScoutMatchReports';
-import { Gamification } from './Gamification';
-import { Confetti } from 'react-native-confetti';
-import { useCurrentCompetitionMatches } from '../../../lib/useCurrentCompetitionMatches';
-import { Alliance, Orientation } from '../../../games/common';
-import type { ScoutingHomeScreenProps } from '../ScoutFlow';
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FormHelper } from "../../../FormHelper";
+import Toast from "react-native-toast-message";
+import { CompetitionsDB } from "../../../database/Competitions";
+import { MatchReportsDB } from "../../../database/ScoutMatchReports";
+import { Gamification } from "./Gamification";
+import Confetti from "react-native-confetti";
+import { useCurrentCompetitionMatches } from "../../../lib/useCurrentCompetitionMatches";
+import { Alliance, Orientation } from "../../../games/common";
+import type { ScoutMenuScreenProps } from "../ScoutingFlow";
 
-export interface MatchScoutingFlowProps extends ScoutingHomeScreenProps<"Match"> {
-
-}
-export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
-    const route = useRoute();
+export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
+export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps) {
     const defaultValues = useMemo(() => {
         return {
-            radio: '',
+            radio: "",
             checkboxes: [],
-            textbox: '',
+            textbox: "",
             number: 0,
             slider: 0,
         };
@@ -48,8 +45,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [confettiView, setConfettiView] = useState(null);
 
-    const { competitionId, matches, getTeamsForMatch } =
-        useCurrentCompetitionMatches();
+    const { competitionId, matches, getTeamsForMatch } = useCurrentCompetitionMatches();
     const [teamsForMatch, setTeamsForMatch] = useState([]);
     useEffect(() => {
         if (!match || match > 400) {
@@ -89,12 +85,12 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         for (let i = 0; i < formStructure.length; i++) {
             if (
                 formStructure[i].required &&
-                (tempArray[i] === '' || tempArray[i] == null) &&
-                formStructure[i].type !== 'number'
+                (tempArray[i] === "" || tempArray[i] == null) &&
+                formStructure[i].type !== "number"
             ) {
                 Alert.alert(
-                    'Required Question: ' + formStructure[i].question + ' not filled out',
-                    'Please fill out all questions denoted with an asterisk',
+                    "Required Question: " + formStructure[i].question + " not filled out",
+                    "Please fill out all questions denoted with an asterisk"
                 );
                 return false;
             }
@@ -107,14 +103,14 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
      * @param dbForm
      */
     const initForm = useCallback(
-        form => {
+        (form) => {
             let tempArray = new Array(form.length);
             for (let i = 0; i < form.length; i++) {
-                if (form[i].type === 'heading') {
+                if (form[i].type === "heading") {
                     tempArray[i] = null;
-                } else if (form[i].type === 'radio') {
+                } else if (form[i].type === "radio") {
                     tempArray[i] = form[i].defaultIndex;
-                } else if (form[i].type === 'checkbox') {
+                } else if (form[i].type === "checkbox") {
                     tempArray[i] = form[i].checkedByDefault;
                 } else {
                     tempArray[i] = defaultValues[form[i].type];
@@ -122,7 +118,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             }
             setArrayData(tempArray);
         },
-        [defaultValues],
+        [defaultValues]
     );
 
     /**
@@ -143,21 +139,16 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (dbRequestWorked) {
             if (dbCompetition != null) {
                 comp = dbCompetition;
-                await AsyncStorage.setItem(
-                    FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-                    JSON.stringify(dbCompetition),
-                );
+                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(dbCompetition));
             }
         } else {
-            const storedComp = await FormHelper.readAsyncStorage(
-                FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-            );
+            const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
             if (storedComp != null) {
                 comp = JSON.parse(storedComp);
             }
         }
         setIsOffline(!dbRequestWorked);
-        console.log('LOADINGCOMPS');
+        console.log("LOADINGCOMPS");
 
         if (comp != null) {
             setIsCompetitionHappening(true);
@@ -171,21 +162,21 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     }, []);
 
     const startConfetti = () => {
-        console.log('starting confetti');
+        console.log("starting confetti");
         confettiView.startConfetti();
     };
 
     const submitForm = async () => {
         let dataToSubmit = {};
         if (match > 400 || !match) {
-            Alert.alert('Invalid Match Number', 'Please enter a valid match number');
-            navigation.navigate('Match');
+            Alert.alert("Invalid Match Number", "Please enter a valid match number");
+            navigation.navigate("Match");
             return;
         }
 
         if (!team) {
-            Alert.alert('Invalid Team Number', 'Please enter a valid team number');
-            navigation.navigate('Match');
+            Alert.alert("Invalid Team Number", "Please enter a valid team number");
+            navigation.navigate("Match");
             return;
         }
         setIsSubmitting(true);
@@ -211,25 +202,22 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 formId: formId,
             }).then(() => {
                 Toast.show({
-                    type: 'success',
-                    text1: 'Saved offline successfully!',
+                    type: "success",
+                    text1: "Saved offline successfully!",
                     visibilityTime: 3000,
                 });
                 const matchCopy = match;
                 const teamCopy = team;
                 (async () => {
-                    const data = await AsyncStorage.getItem('scout-assignments');
+                    const data = await AsyncStorage.getItem("scout-assignments");
                     if (data != null) {
                         const assignments = JSON.parse(data);
-                        const newAssignments = assignments.filter(assignment => {
+                        const newAssignments = assignments.filter((assignment) => {
                             console.log(assignment.matchNumber);
                             console.log(assignment.team.substring(3));
                             console.log(matchCopy);
                             console.log(teamCopy);
-                            if (
-                                assignment.matchNumber === parseInt(matchCopy, 10) &&
-                                assignment.team == null
-                            ) {
+                            if (assignment.matchNumber === parseInt(matchCopy, 10) && assignment.team == null) {
                                 return false;
                             } else if (
                                 assignment.matchNumber === parseInt(matchCopy, 10) &&
@@ -240,18 +228,15 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                                 return true;
                             }
                         });
-                        await AsyncStorage.setItem(
-                            'scout-assignments',
-                            JSON.stringify(newAssignments),
-                        );
+                        await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
                     }
                 })();
-                setMatch('');
-                setTeam('');
+                setMatch("");
+                setTeam("");
                 setAutoPath([]);
                 initForm(formStructure);
                 startConfetti();
-                navigation.navigate('Match');
+                navigation.navigate("Match");
             });
         } else {
             console.log(dataToSubmit);
@@ -259,35 +244,32 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             try {
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
-                    type: 'success',
-                    text1: 'Scouting report submitted!',
+                    type: "success",
+                    text1: "Scouting report submitted!",
                     visibilityTime: 3000,
                 });
-                setMatch('');
-                setTeam('');
+                setMatch("");
+                setTeam("");
                 resetTimer();
                 setAutoPath([]);
                 initForm(formStructure);
                 startConfetti();
-                navigation.navigate('Match');
+                navigation.navigate("Match");
             } catch (error) {
                 console.error(error);
-                Alert.alert(
-                    'Error',
-                    'There was an error submitting your scouting report.',
-                );
+                Alert.alert("Error", "There was an error submitting your scouting report.");
             }
         }
         setIsSubmitting(false);
     };
 
     useEffect(() => {
-        return navigation.addListener('focus', () => {
+        return navigation.addListener("focus", () => {
             if (route.params != null) {
                 const { team: paramsTeam, match: paramsMatch } = route.params;
-                console.log('team: ', paramsTeam);
-                paramsTeam != null ? setTeam(paramsTeam.toString()) : setTeam('');
-                paramsMatch != null ? setMatch(paramsMatch.toString()) : setMatch('');
+                console.log("team: ", paramsTeam);
+                paramsTeam != null ? setTeam(paramsTeam.toString()) : setTeam("");
+                paramsMatch != null ? setMatch(paramsMatch.toString()) : setMatch("");
                 //navigation.setParams({team: undefined, params: undefined});
                 navigation.setParams({ team: undefined, match: undefined });
             }
@@ -314,7 +296,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         while (a.length > 0) {
             let b = a.shift();
             // console.log('b: ' + b);
-            if (b.type === 'heading') {
+            if (b.type === "heading") {
                 currentHeading = b.title;
                 dict[currentHeading] = [];
             } else {
@@ -342,18 +324,18 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         },
         badInput: {
             height: 40,
-            borderColor: 'red',
+            borderColor: "red",
             borderWidth: 1,
             borderRadius: 10,
             padding: 10,
             marginBottom: 15,
-            color: 'red',
+            color: "red",
         },
         subtitle: {
-            textAlign: 'left',
+            textAlign: "left",
             paddingBottom: 15,
             color: colors.primary,
-            fontWeight: 'bold',
+            fontWeight: "bold",
         },
     });
 
@@ -365,15 +347,16 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         style={{
                             zIndex: 100,
                             // allow touch through
-                            pointerEvents: 'none',
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%',
+                            pointerEvents: "none",
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
                             top: 0,
                             left: 0,
                             right: 0,
                             bottom: 0,
-                        }}>
+                        }}
+                    >
                         <Confetti ref={setConfettiView} timeout={10} duration={3000} />
                     </View>
                     <Gamification
@@ -403,16 +386,10 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                     />
                 </>
             ) : (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ color: colors.text }}>
-                        There is no competition happening currently.
-                    </Text>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text style={{ color: colors.text }}>There is no competition happening currently.</Text>
 
-                    {isOffline && (
-                        <Text>
-                            To check for competitions, please connect to the internet.
-                        </Text>
-                    )}
+                    {isOffline && <Text>To check for competitions, please connect to the internet.</Text>}
                 </View>
             )}
         </>

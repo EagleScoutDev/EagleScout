@@ -8,13 +8,13 @@ import {
     KeyboardAvoidingView,
     Alert,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NotesDB } from '../../../database/ScoutNotes';
 import { NoteInputModal } from './NoteInputModal';
 import { CompetitionsDB } from '../../../database/Competitions';
 import { FormHelper } from '../../../FormHelper';
-import { Toast } from 'react-native-toast-message';
-import { Confetti } from 'react-native-confetti';
+import Toast from 'react-native-toast-message';
+import Confetti from 'react-native-confetti';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useCurrentCompetitionMatches } from '../../../lib/useCurrentCompetitionMatches';
 import { StandardButton } from '../../../components/StandardButton';

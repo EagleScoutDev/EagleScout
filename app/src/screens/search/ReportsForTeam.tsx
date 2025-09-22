@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { ReportList } from '../../components/ReportList';
 import { useTheme } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CompetitionsDB } from '../../database/Competitions';
 import {
     type MatchReportReturnData,

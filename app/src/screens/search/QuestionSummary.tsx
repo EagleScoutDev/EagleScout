@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { OpenAI } from '../../lib/OpenAI';
 import { isTablet } from '../../lib/deviceType';
 import { DataGraph } from './DataGraph';
-import { getIdealTextColor, parseColor } from '../../lib/color';
+import { getIdealTextColor, getLighterColor, parseColor } from "../../lib/color";
 
 interface Props {
     item: any;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -8,13 +8,13 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { UserAttributes } from '../../../database/UserAttributes';
 import { styles } from '../styles';
 import { MinimalSectionHeader } from '../../../components/MinimalSectionHeader';
 import { StandardButton } from '../../../components/StandardButton';
 import { supabase } from '../../../lib/supabase';
 import { useTheme } from '@react-navigation/native';
 import { type OnboardingScreenProps } from '..';
+import { UserAttributesDB } from "../../../database/UserAttributes.ts";
 
 interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {
 
@@ -25,7 +25,7 @@ export const EnterTeamEmail = ({ navigation }: EnterTeamEmailProps) => {
     const [email, setEmail] = useState<string>('');
 
     useEffect(() => {
-        UserAttributes.getCurrentUserAttribute().then(r => {
+        UserAttributesDB.getCurrentUserAttribute().then(r => {
             if (r) {
                 setOrgId(r.organization_id);
             }
@@ -71,7 +71,7 @@ export const EnterTeamEmail = ({ navigation }: EnterTeamEmailProps) => {
                                     scouter: true,
                                     admin: true,
                                 })
-                                .eq('id', (await UserAttributes.getCurrentUserAttribute()).id);
+                                .eq('id', (await UserAttributesDB.getCurrentUserAttribute()).id);
                             if (userAdminError) {
                                 console.error(userAdminError);
                                 Alert.alert(

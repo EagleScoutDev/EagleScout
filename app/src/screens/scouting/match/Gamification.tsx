@@ -1,67 +1,81 @@
-import {
-    Keyboard,
-    ScrollView,
-    Text,
-    TouchableWithoutFeedback,
-    View,
-} from 'react-native';
-import { FormSection } from '../../../components/form/FormSection';
-import React, { useState } from 'react';
-import { FormComponent } from '../../../components/form/FormComponent';
-import { StandardButton } from '../../../components/StandardButton';
-import { MatchInformation } from '../../../components/form/MatchInformation';
-import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
-import { ReefscapeAutoModal } from '../../../components/games/reefscape/ReefscapeAutoModal';
-import type { Setter } from '../../../lib/react-utils/types';
-import type { ScoutingHomeParamList, ScoutingHomeScreenProps } from '../ScoutFlow';
-import type { Alliance, Orientation } from '../../../games/common';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Keyboard, ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
+import { FormSection } from "../../../components/form/FormSection";
+import { useState } from "react";
+import { FormComponent } from "../../../components/form/FormComponent";
+import { StandardButton } from "../../../components/StandardButton";
+import { MatchInformation } from "../../../components/form/MatchInformation";
+import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
+import { ReefscapeAutoModal } from "../../../components/games/reefscape/ReefscapeAutoModal";
+import type { Setter } from "../../../lib/react/types";
+import type { ScoutMenuParamList } from "../ScoutingFlow";
+import type { Alliance, Orientation } from "../../../games/common";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTheme } from "@react-navigation/native";
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator<GamificationParamList>();
-export type GamificationScreenProps<K extends keyof GamificationParamList> = MaterialTopTabScreenProps<GamificationParamList, K>
+export type GamificationScreenProps<K extends keyof GamificationParamList> = MaterialTopTabScreenProps<
+    GamificationParamList,
+    K
+>;
 export type GamificationParamList = {
-    Match: undefined,
-
-}
+    Match: undefined;
+};
 
 export interface GamificationProps {
-    match: number | null, setMatch: Setter<number | null>
-    team: number | null, setTeam: Setter<number | null>
-    teamsForMatch: number[]
-    competition: unknown
+    match: number | null;
+    setMatch: Setter<number | null>;
+    team: number | null;
+    setTeam: Setter<number | null>;
+    teamsForMatch: number[];
+    competition: unknown;
 
-    orientation: Orientation, setOrientation: Setter<Orientation>
-    alliance: Alliance, setAlliance: Setter<Alliance>
+    orientation: Orientation;
+    setOrientation: Setter<Orientation>;
+    alliance: Alliance;
+    setAlliance: Setter<Alliance>;
 
-    startRelativeTime: number, setStartRelativeTime: Setter<number>
-    timeline: unknown, setTimeline: Setter<unknown>
+    startRelativeTime: number;
+    setStartRelativeTime: Setter<number>;
+    timeline: unknown;
+    setTimeline: Setter<unknown>;
 
-    arrayData: unknown, setArrayData: Setter<unknown>
+    arrayData: any[];
+    setArrayData: Setter<any[]>;
 
-    autoPath: unknown, setAutoPath: Setter<unknown>
-    navigation: NativeStackNavigationProp<ScoutingHomeParamList, "Match">
+    autoPath: unknown;
+    setAutoPath: Setter<unknown>;
+    navigation: NativeStackNavigationProp<ScoutMenuParamList, "Match">;
 }
 export function Gamification({
-    match, setMatch,
-    team, setTeam,
+    match,
+    setMatch,
+    team,
+    setTeam,
     teamsForMatch,
     competition,
-    orientation, setOrientation,
-    alliance, setAlliance,
-    startRelativeTime, setStartRelativeTime,
-    timeline, setTimeline,
-    arrayData, setArrayData,
-    autoPath, setAutoPath,
+    orientation,
+    setOrientation,
+    alliance,
+    setAlliance,
+    startRelativeTime,
+    setStartRelativeTime,
+    timeline,
+    setTimeline,
+    arrayData,
+    setArrayData,
+    autoPath,
+    setAutoPath,
 
-    colors,
     styles,
     data,
     submitForm,
-    isSubmitting
+    isSubmitting,
 }: GamificationProps) {
-    const [activePage, setActivePage] = useState('Match');
+    const [activePage, setActivePage] = useState("Match");
     const [modalIsOpen, setModalIsOpen] = useState(true);
+
+    const { colors } = useTheme();
 
     return (
         <>
@@ -79,14 +93,15 @@ export function Gamification({
                     tabBarLabelStyle: {
                         fontSize: 10,
                     },
-                }}>
+                }}
+            >
                 <Tab.Screen
-                    name={'Match'}
+                    name={"Match"}
                     options={{
                         headerTintColor: colors.text,
                         tabBarLabelStyle: {
                             fontSize: 12,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                         },
 
                         tabBarStyle: {
@@ -94,54 +109,59 @@ export function Gamification({
                         },
                     }}
                     children={({ navigation }: GamificationScreenProps<"Match">) => {
-                        return <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                }}>
+                        return (
+                            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                 <View
                                     style={{
-                                        width: '100%',
-                                    }}>
-                                    {competition != null && (
-                                        <Text
-                                            style={{
-                                                color: colors.text,
-                                                fontWeight: 'bold',
-                                                fontSize: 20,
-                                                textAlign: 'center',
-                                                margin: '5%',
-                                            }}>
-                                            {competition.name}
-                                        </Text>
-                                    )}
-                                    <MatchInformation
-                                        match={match}
-                                        setMatch={setMatch}
-                                        team={team}
-                                        setTeam={setTeam}
-                                        teamsForMatch={teamsForMatch}
-                                        orientation={orientation}
-                                        setOrientation={setOrientation}
-                                        alliance={alliance}
-                                        setAlliance={setAlliance}
-                                    />
-                                </View>
-                                <View style={{ width: '100%', marginBottom: '5%' }}>
-                                    <StandardButton
-                                        text={'Next'}
-                                        onPress={() => {
-                                            navigation.navigate(Object.keys(data)[0]);
-                                            setActivePage(Object.keys(data)[0]);
-                                            setModalIsOpen(true);
+                                        flex: 1,
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            width: "100%",
                                         }}
-                                        color={colors.primary}
-                                    />
+                                    >
+                                        {competition != null && (
+                                            <Text
+                                                style={{
+                                                    color: colors.text,
+                                                    fontWeight: "bold",
+                                                    fontSize: 20,
+                                                    textAlign: "center",
+                                                    margin: "5%",
+                                                }}
+                                            >
+                                                {competition.name}
+                                            </Text>
+                                        )}
+                                        <MatchInformation
+                                            match={match}
+                                            setMatch={setMatch}
+                                            team={team}
+                                            setTeam={setTeam}
+                                            teamsForMatch={teamsForMatch}
+                                            orientation={orientation}
+                                            setOrientation={setOrientation}
+                                            alliance={alliance}
+                                            setAlliance={setAlliance}
+                                        />
+                                    </View>
+                                    <View style={{ width: "100%", marginBottom: "5%" }}>
+                                        <StandardButton
+                                            text={"Next"}
+                                            onPress={() => {
+                                                navigation.navigate(Object.keys(data)[0]);
+                                                setActivePage(Object.keys(data)[0]);
+                                                setModalIsOpen(true);
+                                            }}
+                                            color={colors.primary}
+                                        />
+                                    </View>
                                 </View>
-                            </View>
-                        </TouchableWithoutFeedback>
+                            </TouchableWithoutFeedback>
+                        );
                     }}
                 />
                 {data &&
@@ -155,7 +175,7 @@ export function Gamification({
                                     headerTintColor: colors.text,
                                     tabBarLabelStyle: {
                                         fontSize: 12,
-                                        fontWeight: 'bold',
+                                        fontWeight: "bold",
                                     },
 
                                     tabBarStyle: {
@@ -163,7 +183,7 @@ export function Gamification({
                                     },
                                 }}
                                 listeners={{
-                                    tabPress: e => {
+                                    tabPress: (e) => {
                                         setActivePage(key);
                                         setModalIsOpen(true);
                                     },
@@ -173,16 +193,18 @@ export function Gamification({
                                     <ScrollView keyboardShouldPersistTaps="handled">
                                         <View
                                             style={{
-                                                marginHorizontal: '5%',
-                                            }}>
-                                            <FormSection colors={colors} title={''} key={key.length}>
-                                                {value.map(item => {
+                                                marginHorizontal: "5%",
+                                            }}
+                                        >
+                                            <FormSection title={""} key={key.length}>
+                                                {value.map((item) => {
                                                     return (
                                                         <View
                                                             key={item.question}
                                                             style={{
-                                                                marginVertical: '5%',
-                                                            }}>
+                                                                marginVertical: "5%",
+                                                            }}
+                                                        >
                                                             <FormComponent
                                                                 key={item.question}
                                                                 colors={colors}
@@ -199,22 +221,21 @@ export function Gamification({
 
                                         {/*if the index is not the last one, add a button that navigates users to the next tab*/}
                                         {index !== Object.keys(data).length - 1 && (
-                                            <View style={{ width: '100%', marginBottom: '5%' }}>
+                                            <View style={{ width: "100%", marginBottom: "5%" }}>
                                                 <StandardButton
-                                                    text={'Next'}
-                                                    width={'85%'}
-                                                    onPress={() => {
-                                                    }}
+                                                    text={"Next"}
+                                                    width={"85%"}
+                                                    onPress={() => {}}
                                                     color={colors.primary}
                                                 />
                                             </View>
                                         )}
                                         {/*  if the index is the last one, show a touchable opacity*/}
                                         {index === Object.keys(data).length - 1 && (
-                                            <View style={{ width: '100%', marginBottom: '50%' }}>
+                                            <View style={{ width: "100%", marginBottom: "50%" }}>
                                                 <StandardButton
-                                                    text={'Submit'}
-                                                    width={'85%'}
+                                                    text={"Submit"}
+                                                    width={"85%"}
                                                     color={colors.primary}
                                                     isLoading={isSubmitting}
                                                     onPress={submitForm}
@@ -229,7 +250,7 @@ export function Gamification({
                     })}
             </Tab.Navigator>
             <ReefscapeAutoModal
-                isActive={activePage === 'Auto' && modalIsOpen}
+                isActive={activePage === "Auto" && modalIsOpen}
                 setIsActive={setModalIsOpen}
                 fieldOrientation={orientation}
                 setFieldOrientation={setOrientation}
@@ -243,4 +264,4 @@ export function Gamification({
             />
         </>
     );
-};
+}

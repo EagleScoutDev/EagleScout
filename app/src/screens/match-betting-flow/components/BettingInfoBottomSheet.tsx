@@ -1,8 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { BottomSheet } from '@gorhom/bottom-sheet';
-import { BottomSheetNavigator } from './BottomSheetNavigator';
-import { View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useCallback, useRef, useState } from "react";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { BottomSheetNavigator } from "./BottomSheetNavigator";
+import { View } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 export const BettingInfoBottomSheet = () => {
     const { colors } = useTheme();
@@ -19,12 +19,12 @@ export const BettingInfoBottomSheet = () => {
             {bottomSheetOpen && (
                 <View
                     style={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        backgroundColor: "rgba(0,0,0,0.5)",
                     }}
                 />
             )}
@@ -32,7 +32,7 @@ export const BettingInfoBottomSheet = () => {
                 ref={bottomSheetRef}
                 index={0}
                 enableDynamicSizing={false}
-                snapPoints={['55%']}
+                snapPoints={["55%"]}
                 enablePanDownToClose={true}
                 animateOnMount={true}
                 onClose={handleBottomSheetClose}
@@ -41,7 +41,8 @@ export const BettingInfoBottomSheet = () => {
                 }}
                 backgroundStyle={{
                     backgroundColor: colors.card,
-                }}>
+                }}
+            >
                 <BottomSheetNavigator handleBottomSheetClose={handleBottomSheetClose} />
             </BottomSheet>
         </>

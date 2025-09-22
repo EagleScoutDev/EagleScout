@@ -1,44 +1,32 @@
-import { supabase } from '../lib/supabase';
-
-export interface ProfilesReturnData {
-    id: string;
-    firstName: string;
-    lastName: string;
-    name: string;
-    emoji: string;
-    scoutcoins: number;
-}
+import { supabase } from "../lib/supabase";
+import type { Profile } from "../lib/user/profile.ts";
 
 export class ProfilesDB {
-    static async getProfile(id: string): Promise<ProfilesReturnData> {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', id);
+    static async getProfile(id: string): Promise<Profile> {
+        const { data, error } = await supabase.from("profiles").select("*").eq("id", id);
         if (error) {
             throw error;
         } else {
             if (data.length === 0) {
-                throw new Error('Profile not found');
+                throw new Error("Profile not found");
             } else {
                 return {
                     id: data[0].id,
+                    name: data[0].name,
                     firstName: data[0].first_name,
                     lastName: data[0].last_name,
-                    name: data[0].name,
                     emoji: data[0].emoji,
-                    scoutcoins: data[0].scoutcoins,
                 };
             }
         }
     }
 
-    static async getAllProfiles(): Promise<ProfilesReturnData[]> {
-        const { data, error } = await supabase.from('profiles').select('*');
+    static async getAllProfiles(): Promise<Profile[]> {
+        const { data, error } = await supabase.from("profiles").select("*");
         if (error) {
             throw error;
         } else {
-            return data.map(profile => {
+            return data.map((profile) => {
                 return {
                     id: profile.id,
                     firstName: profile.first_name,
@@ -51,12 +39,12 @@ export class ProfilesDB {
         }
     }
 
-    static async getCurrentUserProfile(): Promise<ProfilesReturnData> {
+    static async getCurrentUserProfile(): Promise<Profile> {
         const {
             data: { user },
         } = await supabase.auth.getUser();
         if (user == null) {
-            throw new Error('User not logged in');
+            throw new Error("User not logged in");
         }
         return this.getProfile(user.id);
     }
@@ -66,15 +54,15 @@ export class ProfilesDB {
             data: { user },
         } = await supabase.auth.getUser();
         if (user == null) {
-            throw new Error('User not logged in');
+            throw new Error("User not logged in");
         }
         const { data, error } = await supabase
-            .from('profiles')
+            .from("profiles")
             .update({
                 first_name: firstName,
                 last_name: lastName,
             })
-            .eq('id', user.id);
+            .eq("id", user.id);
         if (error) {
             throw error;
         }

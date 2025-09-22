@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -12,7 +12,7 @@ import {
     View,
 } from 'react-native';
 import { styles as sharedStyles } from '../styles';
-import TBATeams, { type TBATeam } from '../../../database/TBATeams';
+import { type TBATeam, TBATeams } from "../../../database/TBATeams";
 import { supabase } from '../../../lib/supabase';
 import type { OnboardingScreenProps } from '..';
 

@@ -16,7 +16,7 @@ export function CompetitionsList({ setChosenComp }) {
         try {
             const data = await CompetitionsDB.getCompetitions();
             // sort the data by start time
-            data.sort((a, b) => a.startTime - b.startTime);
+            data.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
             setCompetitionList(data);
             setInternetError(false);
         } catch (error) {
@@ -30,7 +30,7 @@ export function CompetitionsList({ setChosenComp }) {
     }, []);
 
     if (internetError) {
-        return <NoInternet colors={colors} onRefresh={() => getCompetitions()} />;
+        return <NoInternet onRefresh={() => getCompetitions()} />;
     }
 
     return (

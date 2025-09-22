@@ -1,5 +1,5 @@
-import React, { StyleSheet, TextInput, View, Alert } from 'react-native';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { StyleSheet, TextInput, View, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
 import { useState } from 'react';
 import { MinimalSectionHeader } from '../../../components/MinimalSectionHeader';

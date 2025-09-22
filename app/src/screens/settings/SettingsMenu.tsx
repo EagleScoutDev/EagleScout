@@ -1,38 +1,39 @@
-import { React } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { DebugOffline } from '../DebugOffline';
-import { SettingsHome } from './SettingsHome';
-import { AccountEditProfile, type AccountEditProfileParams } from './account/AccountEditProfile';
-import { SubmittedForms } from './scout/SubmittedForms';
-import { SubmittedNotes } from './scout/SubmittedNotes';
-import type { AppHomeScreenProps } from '../../AppHome';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccountDeletionModal } from './account/AccountDeletionModal';
-import { AccountChangePassword } from './account/AccountChangePassword';
+import { createStackNavigator } from "@react-navigation/stack";
+import { DebugOffline } from "./debug/DebugAsyncStorage.tsx";
+import { SettingsHome } from "./SettingsHome";
+import { AccountEditProfile, type AccountEditProfileParams } from "./account/AccountEditProfile";
+import { SubmittedForms } from "./submissions/SubmittedForms";
+import { SubmittedNotes } from "./submissions/SubmittedNotes";
+import type { AppHomeScreenProps } from "../../AppHome";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AccountDeletionModal } from "./account/AccountDeletionModal";
+import { AccountChangePassword } from "./account/AccountChangePassword";
 
 const Stack = createStackNavigator<SettingsMenuParamList>();
-export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<SettingsMenuParamList, K>
+export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<
+    SettingsMenuParamList,
+    K
+>;
 export type SettingsMenuParamList = {
-    "Home": undefined
+    Home: undefined;
 
-    "Account/EditProfile": AccountEditProfileParams
-    "Account/ChangePassword": undefined
-    "Account/Delete": undefined
-    "Debug/Offline": undefined
-    "Scout/Reports": undefined
-    "Scout/Notes": undefined
-}
+    "Account/EditProfile": AccountEditProfileParams;
+    "Account/ChangePassword": undefined;
+    "Account/Delete": undefined;
+    "Debug/Offline": undefined;
+    "Scout/Reports": undefined;
+    "Scout/Notes": undefined;
+};
 
-export interface SettingsMenuProps extends AppHomeScreenProps<"Settings"> {
-}
-export function SettingsMenu({ }: SettingsMenuProps) {
+export interface SettingsMenuProps extends AppHomeScreenProps<"Settings"> {}
+export function SettingsMenu({}: SettingsMenuProps) {
     return (
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
                 name="Home"
                 component={SettingsHome}
                 options={{
-                    headerShown: false
+                    headerShown: false,
                 }}
             />
             <Stack.Screen
@@ -40,30 +41,38 @@ export function SettingsMenu({ }: SettingsMenuProps) {
                 component={AccountEditProfile}
                 options={{
                     title: "Edit Profile",
-                    headerBackTitle: 'Back',
+                    headerBackTitle: "Back",
                 }}
             />
 
             <Stack.Screen
                 name="Account/ChangePassword"
                 component={AccountChangePassword}
+                options={{
+                    title: "Change Password",
+                }}
             />
             <Stack.Screen
                 name={"Account/Delete"}
                 component={AccountDeletionModal}
+                options={{
+                    title: "Request Account Deletion",
+                }}
             />
 
             <Stack.Screen
                 name="Scout/Reports"
                 component={SubmittedForms}
                 options={{
-                    headerBackTitle: 'Back',
+                    title: "Submitted Reports",
+                    headerBackTitle: "Back",
                 }}
             />
             <Stack.Screen
-                name={'Scout/Notes'}
+                name={"Scout/Notes"}
                 options={{
-                    headerBackTitle: 'Back',
+                    title: "Submitted Notes",
+                    headerBackTitle: "Back",
                 }}
                 component={SubmittedNotes}
             />
@@ -72,7 +81,8 @@ export function SettingsMenu({ }: SettingsMenuProps) {
                 name="Debug/Offline"
                 component={DebugOffline}
                 options={{
-                    headerBackTitle: 'Back',
+                    title: "Offline Storage",
+                    headerBackTitle: "Back",
                 }}
             />
         </Stack.Navigator>

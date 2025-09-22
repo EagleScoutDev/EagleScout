@@ -8,7 +8,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { styles } from './styles';
 import { supabase } from '../../lib/supabase';

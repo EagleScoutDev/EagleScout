@@ -8,7 +8,7 @@ import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
 import { AccountContext } from "./lib/contexts/AccountContext";
-import { Account, recallAccount } from "./lib/account";
+import { type Account, recallAccount, saveAccount } from "./lib/user/account.ts";
 import { AppHome, type AppHomeParamList } from "./AppHome";
 import { NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
 import { OnboardingFlow, type OnboardingParamList } from "./screens/onboarding";
@@ -16,26 +16,33 @@ import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-
 
 declare global {
     namespace ReactNavigation {
-        interface RootParamList extends RootStackParamList { }
+        interface RootParamList extends RootStackParamList {}
     }
 }
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, K>;
 export type RootStackParamList = {
-    App: NavigatorScreenParams<AppHomeParamList>,
-    PlusMenu: undefined,
-    Onboarding: NavigatorScreenParams<OnboardingParamList>,
+    App: NavigatorScreenParams<AppHomeParamList>;
+    PlusMenu: undefined;
+    Onboarding: NavigatorScreenParams<OnboardingParamList>;
 };
 
-export function RootNavigator()  {
+export default function App() {
     const deepLink = useDeepLinking();
 
-    const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
     const [account, setAccount] = useState<Account | null>(null);
+    const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
 
     useEffect(() => {
-        FormHelper.readAsyncStorage(FormHelper.THEME).then(r => {
+        recallAccount().then(setAccount);
+    }, []);
+    useEffect(() => {
+        saveAccount(account);
+    }, [account]);
+
+    useEffect(() => {
+        FormHelper.readAsyncStorage(FormHelper.THEME).then((r) => {
             if (r != null) {
                 console.log("theme found: " + r);
                 setThemePreference(parseInt(r, 10));
@@ -45,50 +52,51 @@ export function RootNavigator()  {
 
     useEffect(() => {
         handleDeepLink(deepLink);
-    }, [deepLink])
-
-
-    useEffect(() => {
-        recallAccount().then(r => {
-            console.log("local account:", r)
-            setAccount(r)
-        })
-    }, [])
+    }, [deepLink]);
 
     return (
         <ThemeContext.Provider
             value={{
-                themePreference, setThemePreference,
-            }}>
+                themePreference,
+                setThemePreference,
+            }}
+        >
             <AccountContext.Provider
                 value={{
-                    account, setAccount
-                }}>
-
+                    account,
+                    setAccount,
+                }}
+            >
                 <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
                     <RootStack.Navigator
                         initialRouteName="Onboarding"
                         screenOptions={{
-                            headerShown: false
-                        }}>
+                            headerShown: false,
+                        }}
+                    >
                         <RootStack.Group>
-                            <RootStack.Screen name="App" component={AppHome} options={{
-                                animationTypeForReplace: "pop"
-                            }} />
+                            <RootStack.Screen
+                                name="App"
+                                component={AppHome}
+                                options={{
+                                    animationTypeForReplace: "pop",
+                                }}
+                            />
 
-                            <RootStack.Screen name="PlusMenu" component={PlusMenu} options={{
-                                presentation: "transparentModal"
-                            }} />
+                            <RootStack.Screen
+                                name="PlusMenu"
+                                component={PlusMenu}
+                                options={{
+                                    presentation: "transparentModal",
+                                }}
+                            />
                         </RootStack.Group>
 
                         <RootStack.Screen name="Onboarding" component={OnboardingFlow} />
                     </RootStack.Navigator>
                     <Toast />
                 </NavigationContainer>
-
             </AccountContext.Provider>
         </ThemeContext.Provider>
     );
-};
-
-
+}

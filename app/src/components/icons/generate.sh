@@ -22,7 +22,7 @@ for f in $icons_loc/*; do
         | perl -pe 's/\b(\w)/\u\1/g' \
         | sed -e 's/0/Zero/g' -e 's/1/One/g' -e 's/2/Two/g' -e 's/3/Three/g' -e 's/4/Four/g' -e 's/5/Five/g' -e 's/6/Six/g' -e 's/7/Seven/g' -e 's/8/Eight/g' -e 's/9/Nine/g'\
         | tr -d ' ')
-    
+
     echo "export const $name = (props: IconProps) => "$(
         tr -d '\n' <$f \
         | perl -pe 's/(<\/?)/\1_/g' \

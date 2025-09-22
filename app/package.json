@@ -58,6 +58,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
+    "@eslint/js": "^9.36.0",
     "@react-native-community/cli": "20.0.0",
     "@react-native-community/cli-platform-android": "20.0.0",
     "@react-native-community/cli-platform-ios": "20.0.0",
@@ -67,9 +68,12 @@
     "@react-native/typescript-config": "0.81.1",
     "@types/react": "^19.1.0",
     "@types/react-native-confetti": "^0.1.4",
-    "eslint": "^8.19.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
     "prettier": "2.8.8",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.44.0"
   },
   "engines": {
     "node": ">=20"

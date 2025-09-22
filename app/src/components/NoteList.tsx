@@ -1,16 +1,8 @@
-import {
-    FlatList,
-    Modal,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
-import { type NoteWithMatch, type OfflineNote } from '../database/ScoutNotes';
-import { ArrowDownUp, XLg } from './icons/icons.generated';
+import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
+import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes";
+import * as Bs from "./icons/icons.generated";
 
 export enum FilterType {
     // todo: allow note list to accept and display team #
@@ -20,26 +12,19 @@ export enum FilterType {
     TEXT,
 }
 
-export const NoteList = ({
-    notes,
-    onClose,
-}: {
-    notes: (NoteWithMatch | OfflineNote)[];
-    onClose?: () => void;
-}) => {
+export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNote)[]; onClose?: () => void }) => {
     const { colors } = useTheme();
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [filteredNotes, setFilteredNotes] =
-        useState<(NoteWithMatch | OfflineNote)[]>(notes);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [filteredNotes, setFilteredNotes] = useState<(NoteWithMatch | OfflineNote)[]>(notes);
     const [filterBy, setFilterBy] = useState<FilterType>(FilterType.TEXT);
     const [filterModalVisible, setFilterModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
-        if (searchTerm === '') {
+        if (searchTerm === "") {
             setFilteredNotes(notes);
             return;
         }
-        const filtered = notes.filter(note => {
+        const filtered = notes.filter((note) => {
             if (filterBy === FilterType.MATCH_NUMBER) {
                 return (
                     note.match_number?.toString().includes(searchTerm) ||
@@ -53,22 +38,22 @@ export const NoteList = ({
 
     const styles = StyleSheet.create({
         container: {
-            position: 'absolute',
+            position: "absolute",
             bottom: 0,
             right: 0,
             left: 0,
             backgroundColor: colors.background,
-            paddingBottom: '10%',
-            paddingHorizontal: '5%',
-            paddingVertical: '5%',
-            height: '50%',
+            paddingBottom: "10%",
+            paddingHorizontal: "5%",
+            paddingVertical: "5%",
+            height: "50%",
         },
         filterOption: {
             backgroundColor: colors.card,
-            padding: '3%',
-            paddingHorizontal: '5%',
+            padding: "3%",
+            paddingHorizontal: "5%",
             borderRadius: 10,
-            margin: '1%',
+            margin: "1%",
             borderWidth: 2,
             borderColor: colors.border,
         },
@@ -78,25 +63,26 @@ export const NoteList = ({
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <View
                 style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '2%',
-                }}>
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "2%",
+                }}
+            >
                 <TextInput
-                    placeholder={'Search'}
+                    placeholder={"Search"}
                     placeholderTextColor={colors.text}
-                    onChangeText={text => setSearchTerm(text)}
+                    onChangeText={(text) => setSearchTerm(text)}
                     style={{
                         color: colors.text,
                         backgroundColor: colors.card,
-                        paddingHorizontal: '5%',
-                        paddingVertical: '2%',
+                        paddingHorizontal: "5%",
+                        paddingVertical: "2%",
                         borderWidth: 1,
                         borderColor: colors.border,
                         borderRadius: 10,
-                        marginLeft: '5%',
-                        marginRight: '2%',
+                        marginLeft: "5%",
+                        marginRight: "2%",
                         flex: 1,
                     }}
                 />
@@ -105,20 +91,21 @@ export const NoteList = ({
                         setFilterModalVisible(true);
                     }}
                     style={{
-                        padding: '2%',
-                        marginRight: '2%',
-                    }}>
-
-                    <ArrowDownUp size="20" fill="gray" />
+                        padding: "2%",
+                        marginRight: "2%",
+                    }}
+                >
+                    <Bs.ArrowDownUp size="20" fill="gray" />
                 </Pressable>
                 {onClose && (
                     <Pressable
                         onPress={onClose}
                         style={{
-                            padding: '2%',
-                            marginRight: '2%',
-                        }}>
-                        <XLg size="20" fill="gray" />
+                            padding: "2%",
+                            marginRight: "2%",
+                        }}
+                    >
+                        <Bs.XLg size="20" fill="gray" />
                     </Pressable>
                 )}
             </View>
@@ -129,17 +116,18 @@ export const NoteList = ({
                         <Pressable
                             style={{
                                 backgroundColor: colors.card,
-                                padding: '5%',
+                                padding: "5%",
                                 borderWidth: 1,
                                 borderColor: colors.border,
                                 borderRadius: 10,
-                                margin: '5%',
-                            }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: colors.text, fontWeight: 'bold' }}>
+                                margin: "5%",
+                            }}
+                        >
+                            <View style={{ flexDirection: "row" }}>
+                                <Text style={{ color: colors.text, fontWeight: "bold" }}>
                                     Match {item.match_number} - Team {item.team_number}
-                                    {item.competition_name ? ` - ${item.competition_name}` : ''}
-                                    {item.scouter_name ? ` - By: ${item.scouter_name}` : ''}
+                                    {item.competition_name ? ` - ${item.competition_name}` : ""}
+                                    {item.scouter_name ? ` - By: ${item.scouter_name}` : ""}
                                 </Text>
                             </View>
                             <Text style={{ color: colors.text }}>{item.content}</Text>
@@ -151,25 +139,21 @@ export const NoteList = ({
                 <View
                     style={{
                         backgroundColor: colors.card,
-                        padding: '5%',
+                        padding: "5%",
                         borderRadius: 10,
-                        margin: '5%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}>
-                    <Text style={{ color: colors.text }}>
-                        No notes found for this match.
-                    </Text>
+                        margin: "5%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Text style={{ color: colors.text }}>No notes found for this match.</Text>
                 </View>
             )}
             {filterModalVisible && (
-                <Modal
-                    presentationStyle={'overFullScreen'}
-                    animationType={'fade'}
-                    transparent={true}>
+                <Modal presentationStyle={"overFullScreen"} animationType={"fade"} transparent={true}>
                     <View
                         style={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
                             flex: 1,
                         }}
                         onTouchEnd={() => setFilterModalVisible(false)}
@@ -178,10 +162,11 @@ export const NoteList = ({
                         <Text
                             style={{
                                 color: colors.text,
-                                fontWeight: 'bold',
+                                fontWeight: "bold",
                                 fontSize: 24,
-                                marginBottom: '5%',
-                            }}>
+                                marginBottom: "5%",
+                            }}
+                        >
                             Filter By
                         </Text>
                         <Pressable
@@ -191,16 +176,15 @@ export const NoteList = ({
                             }}
                             style={{
                                 ...styles.filterOption,
-                                borderColor:
-                                    filterBy === FilterType.MATCH_NUMBER
-                                        ? colors.primary
-                                        : colors.background,
-                            }}>
+                                borderColor: filterBy === FilterType.MATCH_NUMBER ? colors.primary : colors.background,
+                            }}
+                        >
                             <Text
                                 style={{
                                     color: colors.text,
                                     fontSize: 18,
-                                }}>
+                                }}
+                            >
                                 Match/Team
                             </Text>
                         </Pressable>
@@ -211,16 +195,15 @@ export const NoteList = ({
                             }}
                             style={{
                                 ...styles.filterOption,
-                                borderColor:
-                                    filterBy === FilterType.TEXT
-                                        ? colors.primary
-                                        : colors.background,
-                            }}>
+                                borderColor: filterBy === FilterType.TEXT ? colors.primary : colors.background,
+                            }}
+                        >
                             <Text
                                 style={{
                                     color: colors.text,
                                     fontSize: 18,
-                                }}>
+                                }}
+                            >
                                 Text
                             </Text>
                         </Pressable>

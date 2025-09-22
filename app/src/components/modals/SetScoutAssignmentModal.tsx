@@ -1,23 +1,24 @@
-import React, { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
-import { StandardModal } from './StandardModal';
-import { SelectMenu } from '../form/SelectMenu';
-import { StandardButton } from '../StandardButton';
-import { useTheme } from '@react-navigation/native';
-import { supabase } from '../../lib/supabase';
-import { useEffect, useState } from 'react';
-import type { CompetitionReturnData } from '../../database/Competitions';
-import type { Setter } from '../../lib/react-utils/types';
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { StandardModal } from "./StandardModal";
+import { SelectMenu } from "../form/SelectMenu";
+import { StandardButton } from "../StandardButton";
+import { useTheme } from "@react-navigation/native";
+import { supabase } from "../../lib/supabase";
+import { useEffect, useState } from "react";
+import type { CompetitionReturnData } from "../../database/Competitions";
+import type { Setter } from "../../lib/react/types";
 
 export function Spacer() {
-    return <View style={{ height: '2%' }} />;
+    return <View style={{ height: "2%" }} />;
 }
 
 export interface SetScoutAssignmentModalProps {
-    visible: boolean, setVisible: Setter<boolean>
-    competition: CompetitionReturnData
-    matches: unknown[]
-    setNameCb: unknown
-    teamBased: unknown
+    visible: boolean;
+    setVisible: Setter<boolean>;
+    competition: CompetitionReturnData;
+    matches: unknown[];
+    setNameCb: unknown;
+    teamBased: unknown;
 }
 export function SetScoutAssignmentModal({
     visible,
@@ -27,7 +28,7 @@ export function SetScoutAssignmentModal({
     setNameCb,
     teamBased,
 }: SetScoutAssignmentModalProps) {
-    const [name, setName] = useState('');
+    const [name, setName] = useState("");
     const [userId, setUserId] = useState(null);
     const [names, setNames] = useState([]);
     const { colors } = useTheme();
@@ -35,30 +36,27 @@ export function SetScoutAssignmentModal({
     const styles = StyleSheet.create({
         user_name_input: {
             // height: 50,
-            borderColor: 'gray',
+            borderColor: "gray",
             borderWidth: 1,
-            width: '100%',
+            width: "100%",
             borderRadius: 10,
             padding: 10,
             marginBottom: 10,
             color: colors.text,
             fontSize: 18,
         },
-        button_row: { flexDirection: 'row', justifyContent: 'space-evenly' },
+        button_row: { flexDirection: "row", justifyContent: "space-evenly" },
     });
 
-    const searchForUser = async nameArg => {
-        if (nameArg === '' || nameArg == null) {
+    const searchForUser = async (nameArg) => {
+        if (nameArg === "" || nameArg == null) {
             setNames([]);
             return;
         }
-        let namesArray = nameArg.split(' ');
-        namesArray = namesArray.filter(element => element !== '');
+        let namesArray = nameArg.split(" ");
+        namesArray = namesArray.filter((element) => element !== "");
         const result = "'" + namesArray.join("' & '") + "'";
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('id, name')
-            .textSearch('name', result);
+        const { data, error } = await supabase.from("profiles").select("id, name").textSearch("name", result);
         if (error) {
             console.error(error);
         } else {
@@ -71,7 +69,7 @@ export function SetScoutAssignmentModal({
             if (matches.length === 1) {
                 setName(matches[0].name);
             } else {
-                setName('');
+                setName("");
             }
             setNames([]);
             setUserId(null);
@@ -96,36 +94,36 @@ export function SetScoutAssignmentModal({
 
     const getTableName = () => {
         if (teamBased) {
-            return 'scout_assignments_team_based';
+            return "scout_assignments_team_based";
         } else {
-            return 'scout_assignments_position_based';
+            return "scout_assignments_position_based";
         }
     };
 
-    const getPosition = match => {
+    const getPosition = (match) => {
         console.log(match);
         if (match.position === 0) {
-            return 'rf';
+            return "rf";
         } else if (match.position === 1) {
-            return 'rm';
+            return "rm";
         } else if (match.position === 2) {
-            return 'rc';
+            return "rc";
         } else if (match.position === 3) {
-            return 'bf';
+            return "bf";
         } else if (match.position === 4) {
-            return 'bm';
+            return "bm";
         } else if (match.position === 5) {
-            return 'bc';
+            return "bc";
         }
     };
 
     const onSubmit = async () => {
         if (userId == null) {
-            Alert.alert('Error', 'Please select a user.');
+            Alert.alert("Error", "Please select a user.");
             return;
         }
         console.log(matches[0]);
-        const upsertPromises = matches.map(match => {
+        const upsertPromises = matches.map((match) => {
             let vals;
             if (teamBased) {
                 vals = {
@@ -134,7 +132,7 @@ export function SetScoutAssignmentModal({
                     user_id: userId,
                 };
             } else {
-                console.log('pos: ' + getPosition(match.position));
+                console.log("pos: " + getPosition(match.position));
                 vals = {
                     competition_id: competition.id,
                     match_number: match.match,
@@ -143,16 +141,14 @@ export function SetScoutAssignmentModal({
                 };
             }
             return supabase.from(getTableName()).upsert(vals, {
-                onConflict: teamBased
-                    ? 'competition_id, match_id'
-                    : 'competition_id, match_number, robot_position',
+                onConflict: teamBased ? "competition_id, match_id" : "competition_id, match_number, robot_position",
             });
         });
         const upsertResults = await Promise.all(upsertPromises);
         for (const result of upsertResults) {
             if (result.error) {
                 console.error(result);
-                Alert.alert('Error', 'Failed to set scout assignment(s).');
+                Alert.alert("Error", "Failed to set scout assignment(s).");
                 return;
             }
         }
@@ -161,17 +157,14 @@ export function SetScoutAssignmentModal({
     };
 
     const deleteScoutAssignment = async () => {
-        const deletePromises = matches.map(match => {
-            return supabase
-                .from(getTableName())
-                .delete()
-                .match({ competition_id: competition.id, match_id: match.id });
+        const deletePromises = matches.map((match) => {
+            return supabase.from(getTableName()).delete().match({ competition_id: competition.id, match_id: match.id });
         });
         const deleteResults = await Promise.all(deletePromises);
         for (const result of deleteResults) {
             if (result.error) {
                 console.error(result.error);
-                Alert.alert('Error', 'Failed to delete scout assignment(s).');
+                Alert.alert("Error", "Failed to delete scout assignment(s).");
                 return;
             }
         }
@@ -180,45 +173,43 @@ export function SetScoutAssignmentModal({
     };
 
     const onDelete = () => {
-        Alert.alert(
-            'Confirm',
-            'Are you sure you want to delete this scout assignment?',
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: () => deleteScoutAssignment(),
-                },
-            ],
-        );
+        Alert.alert("Confirm", "Are you sure you want to delete this scout assignment?", [
+            {
+                text: "Cancel",
+                style: "cancel",
+            },
+            {
+                text: "Delete",
+                style: "destructive",
+                onPress: () => deleteScoutAssignment(),
+            },
+        ]);
     };
 
     return (
         <>
             {matches && (
-                <StandardModal title={'Set scout assignment'} visible={visible}>
+                <StandardModal title={"Set scout assignment"} visible={visible}>
                     {matches.length === 1 && (
                         <>
                             <Text
                                 style={{
                                     color: colors.text,
                                     fontSize: 18,
-                                    fontWeight: '600',
-                                    textAlign: 'center',
-                                }}>
+                                    fontWeight: "600",
+                                    textAlign: "center",
+                                }}
+                            >
                                 Match: {matches[0].match}
                             </Text>
                             <Text
                                 style={{
                                     color: colors.text,
                                     fontSize: 18,
-                                    fontWeight: '600',
-                                    textAlign: 'center',
-                                }}>
+                                    fontWeight: "600",
+                                    textAlign: "center",
+                                }}
+                            >
                                 Team: {matches[0].teamFormatted}
                             </Text>
                         </>
@@ -226,38 +217,40 @@ export function SetScoutAssignmentModal({
                     <Text
                         style={{
                             color: colors.text,
-                        }}>
+                        }}
+                    >
                         Search for a user
                     </Text>
                     <Spacer />
                     <TextInput
                         style={styles.user_name_input}
                         placeholder="User's name"
-                        onChangeText={text => setName(text)}
+                        onChangeText={(text) => setName(text)}
                         value={name}
                     />
                     <Spacer />
 
                     <View
                         style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
                             zIndex: 100,
                             // align with competition name input
                             marginTop: 10,
-                        }}>
+                        }}
+                    >
                         <SelectMenu
                             setSelected={setUserId}
-                            data={names.map(f => ({
+                            data={names.map((f) => ({
                                 value: f.name,
                                 key: f.id,
                             }))}
                             searchEnabled={false}
-                            searchPlaceholder={'Search for a user...'}
-                            placeholder={'Select a user...'}
-                            notFoundText={'No users found'}
+                            searchPlaceholder={"Search for a user..."}
+                            placeholder={"Select a user..."}
+                            notFoundText={"No users found"}
                             maxHeight={100}
                         />
                     </View>
@@ -267,29 +260,29 @@ export function SetScoutAssignmentModal({
                         <StandardButton
                             color={colors.primary}
                             onPress={() => setVisible(false)}
-                            text={'Cancel'}
-                            width={'40%'}
+                            text={"Cancel"}
+                            width={"40%"}
                         />
                         <StandardButton
-                            color={'#29a329'}
+                            color={"#29a329"}
                             onPress={() => {
-                                console.log('submitting scout assignment');
+                                console.log("submitting scout assignment");
                                 onSubmit().catch(console.error);
                             }}
-                            text={'Submit'}
-                            width={'40%'}
+                            text={"Submit"}
+                            width={"40%"}
                         />
                     </View>
                     {(matches.length > 1 || matches[0].assignmentExists) && (
                         <View style={styles.button_row}>
                             <StandardButton
-                                color={'#e60000'}
+                                color={"#e60000"}
                                 onPress={() => {
-                                    console.log('deleting scout assignment');
+                                    console.log("deleting scout assignment");
                                     onDelete();
                                 }}
-                                text={'Delete'}
-                                width={'40%'}
+                                text={"Delete"}
+                                width={"40%"}
                             />
                         </View>
                     )}
@@ -297,4 +290,4 @@ export function SetScoutAssignmentModal({
             )}
         </>
     );
-};
+}

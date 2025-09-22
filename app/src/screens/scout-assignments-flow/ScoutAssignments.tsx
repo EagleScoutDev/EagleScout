@@ -1,4 +1,3 @@
-import { React } from 'react';
 import { ScoutAssignmentsSpreadsheet } from './ScoutAssignmentsSpreadsheet';
 import {createStackNavigator} from '@react-navigation/stack';
 import { ScoutAssignmentsMain } from './ScoutAssignmentsMain';

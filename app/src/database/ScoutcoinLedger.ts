@@ -27,6 +27,15 @@ export interface ScoutcoinLedgerItem {
 }
 
 export class ScoutcoinLedger {
+    static async getBalance(id: string): Promise<number> {
+        const { data, error } = await supabase.from("profiles").select("scoutcoins").eq("id", id);
+        if (error) {
+            throw error;
+        } else {
+            return data[0].scoutcoins;
+        }
+    }
+
     static async getLogs(): Promise<ScoutcoinLedgerItem[]> {
         const { data, error } = await supabase
             .from('scoutcoin_ledger')

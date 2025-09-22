@@ -1,15 +1,14 @@
-import { Text, View } from 'react-native';
-import { React } from 'react';
-import { StandardButton } from './StandardButton';
-import { WifiOff } from './icons/icons.generated';
-import { useTheme } from '@react-navigation/native';
+import { Text, View } from "react-native";
+import { StandardButton } from "./StandardButton";
+import * as Bs from "./icons/icons.generated";
+import { useTheme } from "@react-navigation/native";
 
 export interface NoInternetProps {
-    onRefresh: () => void
+    onRefresh: () => void;
 }
 
 export function NoInternet({ onRefresh }: NoInternetProps) {
-    const { colors } = useTheme()
+    const { colors } = useTheme();
 
     return (
         <View
@@ -19,31 +18,28 @@ export function NoInternet({ onRefresh }: NoInternetProps) {
                 paddingTop: 20,
                 margin: 10,
                 borderWidth: 2,
-                borderColor: 'red',
-            }}>
-            <WifiOff width="100%" height="40%" fill={colors.text} />
+                borderColor: "red",
+            }}
+        >
+            <Bs.WifiOff width="100%" height="40%" fill={colors.text} />
 
             <View
                 style={{
-                    padding: '4%',
-                }}>
+                    padding: "4%",
+                }}
+            >
                 <Text
                     style={{
                         color: colors.text,
-                        fontWeight: 'bold',
+                        fontWeight: "bold",
                         fontSize: 25,
-                        textAlign: 'center',
-                    }}>
+                        textAlign: "center",
+                    }}
+                >
                     No Internet Connection
                 </Text>
-                <Text style={{ color: colors.text, textAlign: 'center' }}>
-                    Press the button below to try again.
-                </Text>
-                <StandardButton
-                    text={'Refresh'}
-                    color={'red'}
-                    onPress={() => onRefresh()}
-                />
+                <Text style={{ color: colors.text, textAlign: "center" }}>Press the button below to try again.</Text>
+                <StandardButton text={"Refresh"} color={"red"} onPress={() => onRefresh()} />
             </View>
         </View>
     );

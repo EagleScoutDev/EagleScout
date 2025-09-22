@@ -1,28 +1,18 @@
-import React, {
-    ActivityIndicator,
-    Alert,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
-import { SegmentedOption } from '../../../components/pickers/SegmentedOption';
-import { StandardButton } from '../../../components/StandardButton';
-import { FormHelper } from '../../../FormHelper';
-import NotesDB, {
-    type NoteWithMatch,
-    type OfflineNote,
-} from '../../../database/ScoutNotes';
-import { NoteList } from '../../../components/NoteList';
-import { CompetitionsDB } from '../../../database/Competitions';
+import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
+import { SegmentedOption } from "../../../components/pickers/SegmentedOption";
+import { StandardButton } from "../../../components/StandardButton";
+import { FormHelper } from "../../../FormHelper";
+import { NotesDB, type NoteWithMatch, type OfflineNote } from "../../../database/ScoutNotes";
+import { NoteList } from "../../../components/NoteList";
+import { CompetitionsDB } from "../../../database/Competitions";
 
 export const SubmittedNotes = () => {
     const [notes, setNotes] = useState<NoteWithMatch[]>([]);
     const [offlineNotes, setOfflineNotes] = useState<OfflineNote[]>([]);
     const { colors } = useTheme();
-    const [selectedTheme, setSelectedTheme] = useState('Offline');
+    const [selectedTheme, setSelectedTheme] = useState("Offline");
     const [loading, setLoading] = useState(false);
 
     async function getOfflineNotes() {
@@ -46,38 +36,38 @@ export const SubmittedNotes = () => {
 
     const styles = StyleSheet.create({
         segmented_picker_container: {
-            flexDirection: 'row',
+            flexDirection: "row",
             margin: 20,
             backgroundColor: colors.border,
             padding: 2,
             borderRadius: 10,
-            alignContent: 'center',
+            alignContent: "center",
         },
         loading_indicator: {
-            flexDirection: 'row',
+            flexDirection: "row",
             margin: 20,
-            alignSelf: 'center',
+            alignSelf: "center",
             padding: 2,
             borderRadius: 10,
-            alignContent: 'center',
+            alignContent: "center",
         },
         offline_card: {
             margin: 20,
             backgroundColor: colors.border,
             padding: 20,
             borderRadius: 10,
-            alignContent: 'center',
+            alignContent: "center",
         },
         offline_text: {
-            textAlign: 'center',
+            textAlign: "center",
             fontSize: 20,
-            color: 'green',
-            fontWeight: 'bold',
+            color: "green",
+            fontWeight: "bold",
         },
         offline_subtext: {
-            textAlign: 'center',
+            textAlign: "center",
             fontSize: 15,
-            color: 'gray',
+            color: "gray",
         },
     });
 
@@ -89,7 +79,7 @@ export const SubmittedNotes = () => {
                     title="Offline"
                     selected={selectedTheme}
                     onPress={() => {
-                        setSelectedTheme('Offline');
+                        setSelectedTheme("Offline");
                         setLoading(true);
                         getOfflineNotes().then(() => setLoading(false));
                     }}
@@ -99,7 +89,7 @@ export const SubmittedNotes = () => {
                     title="In Database"
                     selected={selectedTheme}
                     onPress={() => {
-                        setSelectedTheme('In Database');
+                        setSelectedTheme("In Database");
                         setLoading(true);
                         getOnlineNotes().then(() => setLoading(false));
                     }}
@@ -108,73 +98,58 @@ export const SubmittedNotes = () => {
 
             {loading && (
                 <View style={styles.loading_indicator}>
-                    <ActivityIndicator animating={loading} size="large" color={'red'} />
+                    <ActivityIndicator animating={loading} size="large" color={"red"} />
                 </View>
             )}
 
-            {selectedTheme === 'Offline' &&
-                offlineNotes &&
-                offlineNotes.length === 0 && (
-                    <View style={styles.offline_card}>
-                        <Text style={styles.offline_text}>No offline reports!</Text>
-                        <Text style={styles.offline_subtext}>
-                            Great job keeping your data up-to-date.
-                        </Text>
-                    </View>
-                )}
+            {selectedTheme === "Offline" && offlineNotes && offlineNotes.length === 0 && (
+                <View style={styles.offline_card}>
+                    <Text style={styles.offline_text}>No offline reports!</Text>
+                    <Text style={styles.offline_subtext}>Great job keeping your data up-to-date.</Text>
+                </View>
+            )}
 
-            {selectedTheme === 'Offline' &&
-                offlineNotes &&
-                offlineNotes.length !== 0 && (
-                    <View style={{ flex: 1 }}>
-                        <StandardButton
-                            color={'red'}
-                            text={'Push offline to database'}
-                            onPress={async () => {
-                                const internetResponse =
-                                    await CompetitionsDB.getCurrentCompetition()
-                                        .then(() => true)
-                                        .catch(() => false);
+            {selectedTheme === "Offline" && offlineNotes && offlineNotes.length !== 0 && (
+                <View style={{ flex: 1 }}>
+                    <StandardButton
+                        color={"red"}
+                        text={"Push offline to database"}
+                        onPress={async () => {
+                            const internetResponse = await CompetitionsDB.getCurrentCompetition()
+                                .then(() => true)
+                                .catch(() => false);
 
-                                if (!internetResponse) {
-                                    Alert.alert(
-                                        'No internet connection',
-                                        'Please connect to the internet to push offline reports',
-                                    );
-                                    return;
-                                }
+                            if (!internetResponse) {
+                                Alert.alert(
+                                    "No internet connection",
+                                    "Please connect to the internet to push offline reports"
+                                );
+                                return;
+                            }
 
-                                setLoading(true);
-                                const promises = [];
-                                for (const note of offlineNotes) {
-                                    promises.push(
-                                        NotesDB.createOfflineNote(note)
-                                            .then(() =>
-                                                FormHelper.deleteOfflineNote(
-                                                    note.created_at,
-                                                    note.team_number,
-                                                ),
-                                            )
-                                            .catch(err => {
-                                                console.log(err);
-                                                Alert.alert(
-                                                    'Error',
-                                                    'An error occurred while pushing offline reports',
-                                                );
-                                            }),
-                                    );
-                                }
-                                await Promise.all(promises);
-                                await getOnlineNotes();
-                                await getOfflineNotes();
-                                setLoading(false);
-                            }}
-                        />
-                        <NoteList notes={offlineNotes} />
-                    </View>
-                )}
+                            setLoading(true);
+                            const promises = [];
+                            for (const note of offlineNotes) {
+                                promises.push(
+                                    NotesDB.createOfflineNote(note)
+                                        .then(() => FormHelper.deleteOfflineNote(note.created_at, note.team_number))
+                                        .catch((err) => {
+                                            console.log(err);
+                                            Alert.alert("Error", "An error occurred while pushing offline reports");
+                                        })
+                                );
+                            }
+                            await Promise.all(promises);
+                            await getOnlineNotes();
+                            await getOfflineNotes();
+                            setLoading(false);
+                        }}
+                    />
+                    <NoteList notes={offlineNotes} />
+                </View>
+            )}
 
-            {selectedTheme === 'In Database' && (
+            {selectedTheme === "In Database" && (
                 <View style={{ flex: 1 }}>
                     <NoteList notes={notes} />
                 </View>

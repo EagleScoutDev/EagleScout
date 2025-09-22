@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CompetitionViewer } from './CompetitionViewer';
 import { CompetitionsList } from './CompetitionsList';
 

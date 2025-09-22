@@ -1,6 +1,6 @@
-import React, { useState, type JSX, type PropsWithChildren } from 'react';
+import { useState, type PropsWithChildren } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Controller } from '../icons/icons.generated';
+import * as Bs from '../icons/icons.generated';
 import { useTheme } from '@react-navigation/native';
 
 export interface FormSectionProps {
@@ -80,7 +80,7 @@ export function FormSection({
                     )}
                     {modalAttached && (
                         <Pressable onPress={onModalPress}>
-                            <Controller size="24" fill="gray" />
+                            <Bs.Controller size="24" fill="gray" />
                         </Pressable>
                     )}
                 </View>

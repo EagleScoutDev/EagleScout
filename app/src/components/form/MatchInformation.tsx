@@ -2,17 +2,18 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { OrientationChooser } from '../games/OrientationChooser';
 import type { Alliance, Orientation } from '../../games/common';
+import type { Setter } from '../../lib/react/types';
 
 export interface MatchInformation {
     match: number | null,
-    setMatch: React.Dispatch<React.SetStateAction<number | null>>
+    setMatch: Setter<number | null>
     team: number | null
-    setTeam: React.Dispatch<React.SetStateAction<number | null>>
+    setTeam: Setter<number | null>
     teamsForMatch: number[]
     orientation: Orientation
-    setOrientation: React.Dispatch<React.SetStateAction<Orientation>>
+    setOrientation: Setter<Orientation>
     alliance: Alliance
-    setAlliance: React.Dispatch<React.SetStateAction<Alliance>>
+    setAlliance: Setter<Alliance>
 }
 export function MatchInformation({
     match,

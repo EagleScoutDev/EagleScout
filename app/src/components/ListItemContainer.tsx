@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { MinimalSectionHeader } from './MinimalSectionHeader';

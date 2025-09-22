@@ -1,18 +1,15 @@
-import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BackgroundFetchManager } from "./lib/BackgroundFetchManager";
 import type { OfflineNote } from "./database/ScoutNotes";
 
 export class FormHelper {
-    static DEBUG = false;
     static LATEST_FORM = "current-form";
     static ASYNCSTORAGE_COMPETITION_KEY = "current-competition";
     static ASYNCSTORAGE_MATCHES_KEY = "current-matches";
-    static SCOUTING_STYLE = "scoutingStyle";
     static THEME = "themePreference";
 
-    static EXCLUDE_DELETE_KEYS = [
+    static PERSIST_KEYS = [
         FormHelper.LATEST_FORM,
-        FormHelper.SCOUTING_STYLE,
         FormHelper.THEME,
     ];
 
@@ -22,19 +19,8 @@ export class FormHelper {
      */
     static async readAsyncStorage(itemKey: string) {
         try {
-            const value = await AsyncStorage.getItem(itemKey);
-            if (value != null) {
-                // value previously stored
-                if (FormHelper.DEBUG) {
-                    console.log("[readStoredForm] data: " + value);
-                }
-                return value;
-            }
+            return await AsyncStorage.getItem(itemKey);
         } catch (e) {
-            // error reading value
-            if (FormHelper.DEBUG) {
-                console.log("[readStoredForm] error: " + e);
-            }
             return null;
         }
     }
@@ -47,7 +33,7 @@ export class FormHelper {
 
         await AsyncStorage.setItem(
             "form-" + dataToSubmit.createdAt.getUTCMilliseconds(),
-            JSON.stringify(dataToSubmit),
+            JSON.stringify(dataToSubmit)
         );
     }
 
@@ -62,12 +48,12 @@ export class FormHelper {
 
         await AsyncStorage.setItem(
             "pit-form-" + dataToSubmit.createdAt.getUTCMilliseconds(),
-            JSON.stringify(dataToSubmit),
+            JSON.stringify(dataToSubmit)
         );
         for (let i = 0; i < images.length; i++) {
             await AsyncStorage.setItem(
                 `pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`,
-                images[i],
+                images[i]
             );
         }
     }
@@ -77,21 +63,26 @@ export class FormHelper {
      */
     static async editFormOffline(data: any, createdAt: Date) {
         const millis = createdAt.getUTCMilliseconds();
-        const originalReport = JSON.parse((await AsyncStorage.getItem("form-" + millis))!)
+        const originalReport = JSON.parse(
+            (await AsyncStorage.getItem("form-" + millis))!
+        );
         await AsyncStorage.setItem(
             "form-" + millis,
             JSON.stringify({
                 ...originalReport,
-                data
-            }),
+                data,
+            })
         );
     }
 
     static async saveNoteOffline(note: OfflineNote) {
         note.created_at = new Date();
         await AsyncStorage.setItem(
-            "note-" + note.created_at.getUTCMilliseconds() + "-" + note.team_number,
-            JSON.stringify(note),
+            "note-" +
+                note.created_at.getUTCMilliseconds() +
+                "-" +
+                note.team_number,
+            JSON.stringify(note)
         );
     }
 
@@ -99,14 +90,13 @@ export class FormHelper {
         const keys = await AsyncStorage.getAllKeys();
         const notes = await AsyncStorage.multiGet(keys);
         return notes
-            .filter(note => note[0].includes("note-"))
-            .map(note => JSON.parse(note[1]));
+            .filter(([k]) => k.includes("note-"))
+            .map(([_, v]) => JSON.parse(v!));
     }
 
-    static async deleteOfflineNote(createdAt, teamNumber) {
-        createdAt = new Date(createdAt);
+    static async deleteOfflineNote(createdAt: Date, teamNumber: number) {
         await AsyncStorage.removeItem(
-            `note-${createdAt.getUTCMilliseconds()}-${teamNumber}`,
+            `note-${createdAt.getUTCMilliseconds()}-${teamNumber}`
         );
     }
 }

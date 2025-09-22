@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 export interface Form {
     formStructure: FormStructure;
@@ -7,56 +7,60 @@ export interface Form {
 }
 
 export namespace Form {
-    export type Structure = ItemStructure[]
+    export type Structure = ItemStructure[];
 
     interface BaseItemStructure {
-        type: ItemType
-        idx: number
+        type: ItemType;
+        idx: number;
 
-        question: string
-        required: boolean
+        question: string;
+        required: boolean;
     }
     export interface RadioStructure extends BaseItemStructure {
-        type: ItemType.radio
-        options: string[]
+        type: ItemType.radio;
+        options: string[];
     }
     export interface CheckboxesStructure extends BaseItemStructure {
-        type: ItemType.checkbox
-        options: string[]
+        type: ItemType.checkbox;
+        options: string[];
     }
     export interface TextboxStructure extends BaseItemStructure {
-        type: ItemType.textbox
-
+        type: ItemType.textbox;
     }
     export interface NumberStructure extends BaseItemStructure {
-        type: ItemType.number
-        slider: false
+        type: ItemType.number;
+        slider: false;
     }
     export interface SliderStructure extends BaseItemStructure {
-        type: ItemType.number
-        slider: true
-        low: number
-        high: number
-        step: number
-        lowLabel: string | null
-        highLabel: string | null
+        type: ItemType.number;
+        slider: true;
+        low: number;
+        high: number;
+        step: number;
+        lowLabel: string | null;
+        highLabel: string | null;
     }
     export interface HeadingStructure extends BaseItemStructure {
-        type: ItemType.heading
+        type: ItemType.heading;
     }
-    export type ItemStructure = RadioStructure | CheckboxesStructure | TextboxStructure | NumberStructure | SliderStructure | HeadingStructure
+    export type ItemStructure =
+        | RadioStructure
+        | CheckboxesStructure
+        | TextboxStructure
+        | NumberStructure
+        | SliderStructure
+        | HeadingStructure;
     export enum ItemType {
-        radio = 'radio',
-        checkbox = 'checkbox',
-        textbox = 'textbox',
-        number = 'number',
-        heading = 'heading',
+        radio = "radio",
+        checkbox = "checkbox",
+        textbox = "textbox",
+        number = "number",
+        heading = "heading",
     }
 
-    export type ArrayData<T> = (string | string[] | number | null)[]
+    export type ArrayData<T> = (string | string[] | number | null)[];
 }
-export type FormStructure = Form.ItemStructure[]
-
+export type FormStructure = Form.ItemStructure[];
 
 export interface FormReturnData extends Form {
     id: number;
@@ -64,26 +68,26 @@ export interface FormReturnData extends Form {
 
 export class FormsDB {
     static async addForm(form: Form): Promise<void> {
-        const { data, error } = await supabase.from('forms').insert({
+        const { data, error } = await supabase.from("forms").insert({
             form_structure: form.formStructure,
             pit_scouting: form.pitScouting,
             name: form.name,
         });
-        if(error) throw error
+        if (error) throw error;
     }
 
     static async deleteForm(form: FormReturnData): Promise<void> {
-        const { error } = await supabase.from('forms').delete().eq('id', form.id);
-        if(error) throw error
+        const { error } = await supabase.from("forms").delete().eq("id", form.id);
+        if (error) throw error;
     }
 
     static async getForm(id: number): Promise<FormReturnData> {
-        const { data, error } = await supabase.from('forms').select('*').eq('id', id);
+        const { data, error } = await supabase.from("forms").select("*").eq("id", id);
         if (error) {
             throw error;
         } else {
             if (data.length === 0) {
-                throw new Error('Form not found');
+                throw new Error("Form not found");
             } else {
                 return {
                     id: data[0].id,
@@ -97,7 +101,7 @@ export class FormsDB {
 
     static async getAllForms(): Promise<FormReturnData[]> {
         const res: FormReturnData[] = [];
-        const { data, error } = await supabase.from('forms').select('*');
+        const { data, error } = await supabase.from("forms").select("*");
         if (error) {
             throw error;
         } else {

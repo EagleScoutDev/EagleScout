@@ -1,5 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTheme } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 import {
@@ -7,7 +7,7 @@ import {
     CrescendoActions,
     CrescendoActionIcon,
 } from './CrescendoActions';
-import type { Setter } from '../../../lib/react-utils/types';
+import type { Setter } from '../../../lib/react/types';
 
 export interface CrescendoTeleopModalProps {
     startRelativeTime: number, setStartRelativeTime: Setter<number>

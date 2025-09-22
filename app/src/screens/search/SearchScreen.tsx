@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { SearchMain } from './SearchMain';
 
 import { TeamViewer, type TeamViewerParams } from './TeamViewer';

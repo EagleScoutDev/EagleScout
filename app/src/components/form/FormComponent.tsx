@@ -1,17 +1,17 @@
-import { StyleSheet, TextInput, View } from 'react-native';
-import { RadioButtons } from './RadioButtons';
-import React, { type SetStateAction } from 'react';
-import { Stepper } from './Stepper';
-import { Checkboxes } from './Checkboxes';
-import { SliderType } from './SliderType';
-import { Question } from './Question';
-import { useTheme } from '@react-navigation/native';
-import { Form } from '../../database/Forms';
+import { StyleSheet, TextInput, View } from "react-native";
+import { RadioButtons } from "./RadioButtons";
+import { Stepper } from "./Stepper";
+import { Checkboxes } from "./Checkboxes";
+import { SliderType } from "./SliderType";
+import { Question } from "./Question";
+import { useTheme } from "@react-navigation/native";
+import { Form } from "../../database/Forms";
+import type { Setter } from "../../lib/react/types";
 
 export interface FormComponentProps<T extends Form.ItemStructure> {
-    item: T
-    arrayData: Form.ArrayData<T>
-    setArrayData: React.Dispatch<SetStateAction<Form.ArrayData<T>>>
+    item: T;
+    arrayData: Form.ArrayData<T>;
+    setArrayData: Setter<Form.ArrayData<T>>;
 }
 
 /**
@@ -27,7 +27,7 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
     const styles = StyleSheet.create({
         textInput: {
             height: 40,
-            borderColor: 'gray',
+            borderColor: "gray",
             borderWidth: 1,
             borderRadius: 10,
             marginBottom: 15,
@@ -36,60 +36,61 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
         },
     });
 
-    if(!arrayData) return null;
+    if (!arrayData) return null;
 
-    switch(item.type) {
-        case Form.ItemType.radio: return (
-            <View key={item.idx}>
-                <RadioButtons
-                    disabled={false}
-                    title={item.question}
-                    required={item.required}
-                    options={item.options}
-                    value={item.options[arrayData[item.idx] as number]}
-                    onReset={() => {
-                        let a = [...arrayData];
-                        a[item.idx] = null;
-                        setArrayData(a);
-                    }}
-                    onValueChange={value => {
-                        let a = [...arrayData];
-                        a[item.idx] = item.options.indexOf(value);
-                        setArrayData(a);
-                    }}
-                />
-            </View>
-        );
-        case Form.ItemType.textbox: return (
-            <View key={item.idx}>
-                <Question
-                    title={item.question}
-                    required={item.required}
-                    onReset={() => {
-                        let a = [...arrayData];
-                        a[item.idx] = '';
-                        setArrayData(a);
-                    }}
-                />
-                <TextInput
-                    placeholder={'Type here'}
-                    placeholderTextColor={colors.primary}
-                    style={styles.textInput}
-                    value={(arrayData[item.idx] ?? "") as string}
-                    onChangeText={text => {
-                        let a = [...arrayData];
-                        a[item.idx] = text;
-                        setArrayData(a);
-                    }}
-                    multiline={true}
-                />
-            </View>
-        );
+    switch (item.type) {
+        case Form.ItemType.radio:
+            return (
+                <View key={item.idx}>
+                    <RadioButtons
+                        disabled={false}
+                        title={item.question}
+                        required={item.required}
+                        options={item.options}
+                        value={item.options[arrayData[item.idx] as number]}
+                        onReset={() => {
+                            let a = [...arrayData];
+                            a[item.idx] = null;
+                            setArrayData(a);
+                        }}
+                        onValueChange={(value) => {
+                            let a = [...arrayData];
+                            a[item.idx] = item.options.indexOf(value);
+                            setArrayData(a);
+                        }}
+                    />
+                </View>
+            );
+        case Form.ItemType.textbox:
+            return (
+                <View key={item.idx}>
+                    <Question
+                        title={item.question}
+                        required={item.required}
+                        onReset={() => {
+                            let a = [...arrayData];
+                            a[item.idx] = "";
+                            setArrayData(a);
+                        }}
+                    />
+                    <TextInput
+                        placeholder={"Type here"}
+                        placeholderTextColor={colors.primary}
+                        style={styles.textInput}
+                        value={(arrayData[item.idx] ?? "") as string}
+                        onChangeText={(text) => {
+                            let a = [...arrayData];
+                            a[item.idx] = text;
+                            setArrayData(a);
+                        }}
+                        multiline={true}
+                    />
+                </View>
+            );
         case Form.ItemType.number:
-            return item.slider
-                ? <SliderType
+            return item.slider ? (
+                <SliderType
                     key={item.idx}
-
                     min={item.low}
                     max={item.high}
                     step={item.step}
@@ -97,8 +98,7 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
                     minLabel={item.lowLabel}
                     maxLabel={item.highLabel}
                     disabled={false}
-
-                    onValueChange={newValue => {
+                    onValueChange={(newValue) => {
                         let a = [...arrayData];
                         a[item.idx] = newValue;
                         console.log(a);
@@ -106,32 +106,34 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
                     }}
                     value={arrayData[item.idx] as number}
                 />
-                : <Stepper
+            ) : (
+                <Stepper
                     key={item.idx}
-
-                    title={item.question + (item.required ? '*' : '')}
+                    title={item.question + (item.required ? "*" : "")}
                     value={arrayData[item.idx] as number}
-                    onValueChange={newValue => {
+                    onValueChange={(newValue) => {
                         let a = [...arrayData];
                         a[item.idx] = newValue;
                         setArrayData(a);
                     }}
                 />
-        case Form.ItemType.checkbox: return (
-            <Checkboxes
-                key={item.idx}
-                title={item.question}
-                options={item.options}
-                value={arrayData[item.idx] as string[]}
-                disabled={false}
-                onValueChange={value => {
-                    setArrayData(prev => {
-                        const newData = [...prev];
-                        newData[item.idx] = value;
-                        return newData;
-                    });
-                }}
-            />
-        );
+            );
+        case Form.ItemType.checkbox:
+            return (
+                <Checkboxes
+                    key={item.idx}
+                    title={item.question}
+                    options={item.options}
+                    value={arrayData[item.idx] as string[]}
+                    disabled={false}
+                    onValueChange={(value) => {
+                        setArrayData((prev) => {
+                            const newData = [...prev];
+                            newData[item.idx] = value;
+                            return newData;
+                        });
+                    }}
+                />
+            );
     }
 }

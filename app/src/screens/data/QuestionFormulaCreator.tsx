@@ -1,9 +1,9 @@
 import { useTheme } from '@react-navigation/native';
 import { FlatList, Modal, Pressable, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { CompetitionsDB } from '../../database/Competitions';
-import type { Setter } from '../../lib/react-utils/types';
+import type { Setter } from '../../lib/react/types';
 
 interface QuestionFormulaCreatorProps {
     visible: boolean, setVisible: Setter<boolean>

@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
-import { StyleSheet, Text } from 'react-native';
-import { StandardButton } from '../../../components/StandardButton';
-import { Theme } from '@react-navigation/native/src/types';
+import { useCallback, useMemo } from "react";
+import { type Theme, useNavigation, useTheme } from "@react-navigation/native";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
+import { StyleSheet, Text } from "react-native";
+import { StandardButton } from "../../../components/StandardButton";
 
 export const BettingInfoStep = ({
     index,
@@ -36,10 +35,10 @@ export const BettingInfoStep = ({
             <BottomSheetView style={styles.infoBox}>{children}</BottomSheetView>
             <BottomSheetView style={styles.buttonBox}>
                 <StandardButton
-                    width={'100%'}
+                    width={"100%"}
                     color={theme.colors.primary}
                     onPress={isFinalScreen ? handleBottomSheetClose : handleNavigatePress}
-                    text={isFinalScreen ? 'Close' : 'Next'}
+                    text={isFinalScreen ? "Close" : "Next"}
                 />
             </BottomSheetView>
         </BottomSheetView>
@@ -51,12 +50,12 @@ const makeStyles = ({ colors }: Theme) =>
         container: {
             flex: 1,
             padding: 20,
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            justifyContent: "space-between",
+            alignItems: "center",
         },
         heading: {
             fontSize: 30,
-            fontWeight: 'bold',
+            fontWeight: "bold",
             color: colors.text,
             paddingBottom: 20,
         },
@@ -70,10 +69,10 @@ const makeStyles = ({ colors }: Theme) =>
             borderColor: colors.text,
             borderRadius: 12,
             padding: 10,
-            width: '100%',
+            width: "100%",
         },
         buttonBox: {
-            width: '100%',
-            alignSelf: 'flex-end',
+            width: "100%",
+            alignSelf: "flex-end",
         },
     });

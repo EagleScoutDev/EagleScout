@@ -14,9 +14,9 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import React, { type FC, useEffect, useMemo, useRef, useState } from 'react';
+import { type FC, useEffect, useMemo, useRef, useState } from 'react';
 import { type Theme, useTheme } from '@react-navigation/native';
-import { ChevronDown, X, ZoomIn } from '../icons/icons.generated';
+import * as Bs from '../icons/icons.generated';
 
 interface Data {
     key: any;
@@ -70,7 +70,7 @@ export interface SelectListProps {
     notFoundText?: string;
 }
 
-export function SelectList({
+export function SelectMenu({
     setSelected,
     placeholder,
     maxHeight,
@@ -153,7 +153,7 @@ export function SelectList({
                     <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                         {searchEnabled ? (
                             <>
-                                <ZoomIn size="20" style={{ marginRight: 2 }} />
+                                <Bs.ZoomIn size="20" style={{ marginRight: 2 }} />
                                 <TextInput
                                     placeholder={searchPlaceholder}
                                     onChangeText={val => {
@@ -175,7 +175,7 @@ export function SelectList({
                             </View>
                         )}
                         <TouchableOpacity onPress={() => closeDropdown()}>
-                            <X size="20" fill={theme.colors.text} />
+                            <Bs.X size="20" fill={theme.colors.text} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -193,7 +193,7 @@ export function SelectList({
                     <Text style={styles.optionText}>
                         {selectedVal ? selectedVal : placeholder ? placeholder : 'Select'}
                     </Text>
-                    <ChevronDown size="20" />
+                    <Bs.ChevronDown size="20" />
                 </TouchableOpacity>
             )}
             {dropdownOpen && (

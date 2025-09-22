@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type SimpleEvent, TBA } from '../../lib/TBAUtils';
 import { useTheme } from '@react-navigation/native';
 import { Pressable, ScrollView, Text, View } from 'react-native';

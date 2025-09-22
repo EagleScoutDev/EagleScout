@@ -1,12 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { supabase } from "./supabase.ts";
-import { useContext } from "react";
-import { AccountContext } from "./contexts/AccountContext.ts";
-import { FormHelper } from "../FormHelper.ts";
+import { supabase } from "../supabase.ts";
+import { FormHelper } from "../../FormHelper.ts";
 
 export enum AccountType {
-    User = "user",
+    Scouter = "scouter",
     Admin = "admin",
+    Rejected = "rejected",
 }
 export enum AccountStatus {
     Onboarding = "onboarding",
@@ -18,31 +17,12 @@ export interface Account {
     org_id: number;
     status: AccountStatus;
     type: AccountType;
-    scouter: boolean;
-}
-
-export interface AccountHook {
-    account: Account | null;
-
-    recallAccount: () => Promise<void>;
-    login: (username: string, password: string) => Promise<void>;
-    logout: () => Promise<void>;
-}
-export function useAccount(): AccountHook {
-    const { account, setAccount } = useContext(AccountContext);
-
-    return {
-        account,
-
-        recallAccount: () => recallAccount().then(setAccount),
-        login: (email: string, password: string) => login(email, password).then(setAccount),
-        logout: () => logout().then(() => setAccount(null)),
-    };
 }
 
 export async function saveAccount(account: Account | null) {
     await AsyncStorage.setItem("account", JSON.stringify(account));
     if (account === null) {
+        // TODO: refactor this out
         const keys = await AsyncStorage.getAllKeys();
         AsyncStorage.multiRemove(keys.filter((k) => !FormHelper.PERSIST_KEYS.includes(k)));
     }
@@ -68,7 +48,7 @@ export async function login(email: string, password: string): Promise<Account> {
         .single();
     if (uattrError) throw uattrError;
 
-    const type = uattrData.admin ? AccountType.Admin : AccountType.User;
+    const type = uattrData.admin ? AccountType.Admin : uattrData.scouter ? AccountType.Scouter : AccountType.Rejected;
     const status = user.user_metadata.requested_deletion
         ? AccountStatus.Deleted
         : !uattrData.org_id

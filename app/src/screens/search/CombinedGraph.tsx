@@ -1,7 +1,7 @@
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { StandardModal } from '../../components/modals/StandardModal';
 import { LineChart } from 'react-native-chart-kit';
-import React, { useEffect } from 'react';
+import { useEffect, useState } from "react";
 import { useTheme } from '@react-navigation/native';
 import {
     MatchReportsDB,
@@ -9,7 +9,7 @@ import {
 } from '../../database/ScoutMatchReports';
 import { FormsDB, type FormReturnData } from '../../database/Forms';
 import { CompetitionsDB } from '../../database/Competitions';
-import type { Setter } from '../../lib/react-utils/types';
+import type { Setter } from '../../lib/react/types';
 
 export interface CombinedGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>
@@ -38,11 +38,11 @@ export function CombinedGraph({
         useShadowColorFromDataset: false, // optional
         fillShadowGradient: colors.card,
     };
-    const [relevantReports, setRelevantReports] = React.useState<
+    const [relevantReports, setRelevantReports] = useState<
         MatchReportReturnData[]
     >([]);
-    const [form, setForm] = React.useState<FormReturnData>();
-    const [questionToColor, setQuestionToColor] = React.useState<
+    const [form, setForm] = useState<FormReturnData>();
+    const [questionToColor, setQuestionToColor] = useState<
         Map<string, string>
     >(new Map());
 

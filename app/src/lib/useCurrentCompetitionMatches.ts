@@ -1,5 +1,5 @@
-import TBAMatches, { type TBAMatch } from '../database/TBAMatches';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { type TBAMatch, TBAMatches } from "../database/TBAMatches";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FormHelper } from '../FormHelper';
 import { CompetitionsDB } from '../database/Competitions';
 import { useCallback, useEffect, useState } from 'react';

@@ -1,9 +1,8 @@
-import { React } from 'react';
 import { Pressable, View, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Alliance, Orientation } from '../../games/common';
-import { ArrowLeftRight, CheckLg } from '../icons/icons.generated';
-import type { Setter } from '../../lib/react-utils/types';
+import * as Bs from '../icons/icons.generated';
+import type { Setter } from '../../lib/react/types';
 
 export interface OrientationChooserProps {
     orientation: Orientation, setOrientation: Setter<Orientation>
@@ -51,7 +50,7 @@ export const OrientationChooser = ({
                     }}
                     onPress={() => setAlliance(Alliance.fromOrientation(orientation))}>
                     {alliance === Alliance.fromOrientation(orientation) ? (
-                        <CheckLg size="24" fill="white" />
+                        <Bs.CheckLg size="24" fill="white" />
                     ) : null}
                 </Pressable>
                 <View>
@@ -64,7 +63,7 @@ export const OrientationChooser = ({
                             alignItems: 'center',
                         }}
                         onPress={() => setOrientation(Orientation.toggle(orientation))}>
-                        <ArrowLeftRight size="24" fill="black" />
+                        <Bs.ArrowLeftRight size="24" fill="black" />
                     </Pressable>
                 </View>
                 <Pressable
@@ -79,7 +78,7 @@ export const OrientationChooser = ({
                     }}
                     onPress={() => setAlliance(Alliance.toggle(Alliance.fromOrientation(orientation)))}>
                     {alliance !== Alliance.fromOrientation(orientation) ? (
-                        <CheckLg size="24" fill="white" />
+                        <Bs.CheckLg size="24" fill="white" />
                     ) : null}
                 </Pressable>
             </View>

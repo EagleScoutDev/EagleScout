@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import ProfilesDB, { type ProfilesReturnData } from '../../database/Profiles';
+import { ProfilesDB } from "../../database/Profiles";
+import type { Profile } from "../user/profile.ts";
 
 export const useProfile = () => {
-    const [profile, setProfile] = useState<ProfilesReturnData | null>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
 
     useEffect(() => {
         ProfilesDB.getCurrentUserProfile().then(p => setProfile(p));
