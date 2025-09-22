@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 interface Competition {
     name: string;
@@ -15,23 +15,23 @@ export enum ScoutAssignmentsConfig {
 }
 
 export interface CompetitionReturnData extends Competition {
-    id: number
-    form: any[]
-    scoutAssignmentsConfig: ScoutAssignmentsConfig
-    pitScoutFormStructure: any[]
+    id: number;
+    form: any[];
+    scoutAssignmentsConfig: ScoutAssignmentsConfig;
+    pitScoutFormStructure: any[];
 }
 
 export class CompetitionsDB {
     static async getCompetitions(): Promise<CompetitionReturnData[]> {
-        const { data, error } = await supabase.rpc('list_all_competitions');
+        const { data, error } = await supabase.rpc("list_all_competitions");
         if (error) {
             throw error;
         } else {
-            return data.map(competition => {
+            return data.map((competition) => {
                 let scoutAssignmentsConfig: ScoutAssignmentsConfig;
-                if (competition.scout_assignments_config === 'team_based') {
+                if (competition.scout_assignments_config === "team_based") {
                     scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
-                } else if (competition.scout_assignments_config === 'position_based') {
+                } else if (competition.scout_assignments_config === "position_based") {
                     scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
                 } else {
                     scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
@@ -52,7 +52,7 @@ export class CompetitionsDB {
     }
 
     static async getCurrentCompetition(): Promise<CompetitionReturnData | null> {
-        const { data, error } = await supabase.rpc('get_current_competition');
+        const { data, error } = await supabase.rpc("get_current_competition");
         if (error) {
             throw error;
         } else {
@@ -60,9 +60,9 @@ export class CompetitionsDB {
                 return null;
             } else {
                 let scoutAssignmentsConfig: ScoutAssignmentsConfig;
-                if (data[0].scout_assignments_config === 'team_based') {
+                if (data[0].scout_assignments_config === "team_based") {
                     scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
-                } else if (data[0].scout_assignments_config === 'position_based') {
+                } else if (data[0].scout_assignments_config === "position_based") {
                     scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
                 } else {
                     scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
@@ -83,7 +83,7 @@ export class CompetitionsDB {
     }
 
     static async createCompetition(competition: Competition): Promise<void> {
-        const { data, error } = await supabase.from('competitions').insert({
+        const { data, error } = await supabase.from("competitions").insert({
             name: competition.name,
             start_time: competition.startTime,
             end_time: competition.endTime,
@@ -96,9 +96,9 @@ export class CompetitionsDB {
 
     static async getCompetitionTeams(competitionId: number): Promise<number[]> {
         const { data, error } = await supabase
-            .from('competitions')
-            .select('tba_events ( teams )')
-            .eq('id', competitionId)
+            .from("competitions")
+            .select("tba_events ( teams )")
+            .eq("id", competitionId)
             .single();
         if (error) {
             throw error;
@@ -110,9 +110,9 @@ export class CompetitionsDB {
 
     static async getCompetitionTBAKey(competitionId: number): Promise<string> {
         const { data, error } = await supabase
-            .from('competitions')
-            .select('tba_events ( event_key )')
-            .eq('id', competitionId)
+            .from("competitions")
+            .select("tba_events ( event_key )")
+            .eq("id", competitionId)
             .single();
         if (error) {
             throw error;
@@ -121,10 +121,8 @@ export class CompetitionsDB {
         }
     }
 
-    static async getCompetitionById(
-        competitionId: number,
-    ): Promise<CompetitionReturnData> {
-        const { data, error } = await supabase.rpc('get_competition_by_id', {
+    static async getCompetitionById(competitionId: number): Promise<CompetitionReturnData> {
+        const { data, error } = await supabase.rpc("get_competition_by_id", {
             id_arg: competitionId,
         });
         // .from('competitions')
@@ -135,9 +133,9 @@ export class CompetitionsDB {
             throw error;
         } else {
             let scoutAssignmentsConfig: ScoutAssignmentsConfig;
-            if (data.scout_assignments_config === 'team_based') {
+            if (data.scout_assignments_config === "team_based") {
                 scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
-            } else if (data.scout_assignments_config === 'position_based') {
+            } else if (data.scout_assignments_config === "position_based") {
                 scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
             } else {
                 scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;

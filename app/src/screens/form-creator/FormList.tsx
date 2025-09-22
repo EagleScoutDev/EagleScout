@@ -3,7 +3,7 @@ import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { FormOptionsModal } from './components/FormOptionsModal';
 import type { FormCreationScreenProps } from './FormCreation';
-import { FormsDB } from "../../database/Forms.ts";
+import { FormsDB } from "../../database/Forms";
 
 export interface FormListProps extends FormCreationScreenProps<"List"> {
 

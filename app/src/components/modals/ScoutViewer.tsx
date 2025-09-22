@@ -1,17 +1,17 @@
 import { Alert, Modal, ScrollView, Text, TextInput, TouchableOpacity, View, StyleSheet, Pressable } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { RadioButtons } from "../form/RadioButtons";
-import { Checkboxes } from "../form/Checkboxes";
-import { supabase } from "../../lib/supabase";
-import { FormHelper } from "../../FormHelper";
-import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes";
-import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
-import { SliderType } from "../form/SliderType";
-import { HistorySelectorModal } from "./HistorySelectorModal";
-import { isTablet } from "../../lib/deviceType";
-import * as Bs from "../icons/icons.generated";
-import type { Setter } from "../../lib/react/types";
+import { Radio } from "../../ui/form/components/Radio.tsx";
+import { Checkboxes } from "../../ui/form/components/Checkboxes.tsx";
+import { supabase } from "../../lib/supabase.ts";
+import { FormHelper } from "../../FormHelper.ts";
+import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes.ts";
+import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports.ts";
+import { Slider } from "../../ui/form/components/Slider.tsx";
+import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
+import { isTablet } from "../../lib/deviceType.ts";
+import * as Bs from "../../ui/icons";
+import type { Setter } from "../../lib/react";
 
 /**
  * This component displays the scout data in a modal.
@@ -409,17 +409,16 @@ export function ScoutViewer({
                                         borderRadius: 10,
                                     }}
                                 >
-                                    {/*SliderType renders its own custom question text, so we shouldn't render a question here
+                                    {/*Slider renders its own custom question text, so we shouldn't render a question here
                   if the field is a slider*/}
-                                    {/*SliderType is only used when editing is active*/}
+                                    {/*Slider is only used when editing is active*/}
                                     {(!editingActive || !field.slider) && field.type !== "checkboxes" && (
                                         <Text style={styles.question}>{field.question}</Text>
                                     )}
                                     {field.type === "radio" && (
                                         <View>
-                                            <RadioButtons
+                                            <Radio
                                                 title={""}
-                                                colors={colors}
                                                 options={field.options}
                                                 onValueChange={(value) => {
                                                     console.log("radio button value changed to: " + value);
@@ -476,7 +475,7 @@ export function ScoutViewer({
                                     {editingActive && field.type === "number" && field.slider && (
                                         // it is a number slider
                                         <View>
-                                            <SliderType
+                                            <Slider
                                                 min={field.low ? Number.parseInt(field.low, 10) : 0}
                                                 max={field.high ? Number.parseInt(field.high, 10) : 10}
                                                 step={field.step ? Number.parseInt(field.step, 10) : 1}

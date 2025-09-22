@@ -1,4 +1,4 @@
-import {ReefscapeActionType} from './ReefscapeActions';
+import {ReefscapeActionType} from './ReefscapeActions.tsx';
 
 export interface AutoNode {
   type: ReefscapeActionType;

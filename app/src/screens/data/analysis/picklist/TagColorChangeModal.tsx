@@ -4,7 +4,7 @@ import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import { useTheme } from "@react-navigation/native";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import { getIdealTextColor, parseColor } from "../../../../lib/color";
-import type { Setter } from "../../../../lib/react/types";
+import type { Setter } from "../../../../lib/react";
 
 export interface TagColorChangeModalProps {
     visible: boolean;

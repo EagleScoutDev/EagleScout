@@ -3,7 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import { useTheme, type NavigatorScreenParams } from "@react-navigation/native";
 import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
-import * as Bs from "../../components/icons/icons.generated";
+import * as Bs from "../../ui/icons";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { PitFlow, type PitFlowParamList } from "./pit/PitFlow";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";

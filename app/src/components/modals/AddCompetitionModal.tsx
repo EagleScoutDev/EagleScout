@@ -1,19 +1,25 @@
 import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { StandardButton } from "../StandardButton";
+import { StandardButton } from "../../ui/StandardButton.tsx";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { StandardModal } from "./StandardModal";
-import { supabase } from "../../lib/supabase";
-import { SelectMenu } from "../form/SelectMenu";
-import { getIdealTextColor, parseColor } from "../../lib/color";
+import { StandardModal } from "./StandardModal.tsx";
+import { supabase } from "../../lib/supabase.ts";
+import { Selector } from "../../ui/form/components/Selector.tsx";
+import { getIdealTextColor, parseColor } from "../../lib/color.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
+import type { Setter } from "../../lib/react";
 
 function Spacer() {
     return <View style={{ height: "2%" }} />;
 }
 
-export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
+export interface AddCompetitionModalProps {
+    visible: boolean;
+    setVisible: Setter<boolean>;
+    onRefresh: () => void;
+}
+export function AddCompetitionModal({ visible, setVisible, onRefresh }: AddCompetitionModalProps) {
     const [name, setName] = useState("");
     const [startTime, setStartTime] = useState<Date>(new Date());
     const [endTime, setEndTime] = useState<Date>(new Date());
@@ -182,7 +188,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                                 setShowStartDate(false);
                             }
                             if (event.type === "set") {
-                                setStartTime(date);
+                                setStartTime(date ?? new Date());
                             }
                         }}
                     />
@@ -196,7 +202,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                                 setShowStartTime(false);
                             }
                             if (event.type === "set") {
-                                setStartTime(date);
+                                setStartTime(date ?? new Date());
                             }
                         }}
                     />
@@ -227,7 +233,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                                 setShowEndDate(false);
                             }
                             if (event.type === "set") {
-                                setEndTime(date);
+                                setEndTime(date ?? new Date());
                             }
                         }}
                     />
@@ -241,7 +247,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                                 setShowEndTime(false);
                             }
                             if (event.type === "set") {
-                                setEndTime(date);
+                                setEndTime(date ?? new Date());
                             }
                         }}
                     />
@@ -259,7 +265,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                     marginTop: 10,
                 }}
             >
-                <SelectMenu
+                <Selector
                     setSelected={setSelectedFormID}
                     data={formList
                         .filter((f) => !f.pitScouting)
@@ -269,10 +275,10 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                         }))}
                     searchEnabled={false}
                     searchPlaceholder={"Search for a match scouting form..."}
-                    placeholder={"Select a form..."}
+                    placeholder={"Selector a form..."}
                     maxHeight={100}
                 />
-                <SelectMenu
+                <Selector
                     setSelected={setSelectedPitScoutingFormID}
                     data={formList
                         .filter((f) => f.pitScouting)
@@ -282,7 +288,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }) {
                         }))}
                     searchEnabled={false}
                     searchPlaceholder={"Search for a pit scouting form..."}
-                    placeholder={"Select a pit scouting form..."}
+                    placeholder={"Selector a pit scouting form..."}
                     maxHeight={100}
                 />
             </View>

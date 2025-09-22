@@ -1,7 +1,7 @@
 import { View, Text, Modal, Pressable } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { MinimalSectionHeader } from "../../components/MinimalSectionHeader";
-import { StandardButton } from "../../components/StandardButton";
+import { MinimalSectionHeader } from "../../ui/MinimalSectionHeader";
+import { StandardButton } from "../../ui/StandardButton";
 import { type SettingsHomeProps } from "./SettingsHome";
 
 interface SettingsPopupProps {

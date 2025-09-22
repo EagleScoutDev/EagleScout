@@ -1,5 +1,5 @@
 import { Alert, Text, TextInput, View } from 'react-native';
-import { StandardButton } from '../../../../components/StandardButton';
+import { StandardButton } from '../../../../ui/StandardButton';
 import { StandardModal } from '../../../../components/modals/StandardModal';
 import { useEffect, useState } from 'react';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';

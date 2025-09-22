@@ -1,11 +1,12 @@
 import { StandardModal } from '../../../../components/modals/StandardModal';
 import { Alert, Text, TextInput, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
-import { StandardButton } from '../../../../components/StandardButton';
+import { StandardButton } from '../../../../ui/StandardButton';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useTheme } from '@react-navigation/native';
 import { ReefscapeActions } from '../../../../components/games/reefscape/ReefscapeActions';
-import { SelectMenu } from '../../../../components/form/SelectMenu';
+import { Selector } from '../../../../ui/form/components/Selector.tsx';
+import { NumberInput } from "../../../../ui/input/Number.tsx";
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;
@@ -14,9 +15,9 @@ function Spacer() {
 export function Number({ visible, setVisible, styles, onSubmit, value })  {
     const [question, setQuestion] = useState('');
     const [slider, setSlider] = useState(false);
-    const [low, setLow] = useState('');
-    const [high, setHigh] = useState('');
-    const [step, setStep] = useState('1');
+    const [low, setLow] = useState<number | null>(null);
+    const [high, setHigh] = useState<number | null>(null);
+    const [step, setStep] = useState<number>(1);
     const [linkTo, setLinkTo] = useState('');
     const { colors } = useTheme();
 
@@ -53,32 +54,7 @@ export function Number({ visible, setVisible, styles, onSubmit, value })  {
                 return false;
             }
         }
-        if (slider && !/^\d+$/.test(low)) {
-            Alert.alert('Low must be a positive integer');
-            return false;
-        } else if (!slider && !/^\d+$/.test(low) && low !== '') {
-            Alert.alert('Low must be a positive integer or blank');
-            return false;
-        }
-        if (slider && !/^\d+$/.test(high)) {
-            Alert.alert('High must be a positive integer');
-            return false;
-        } else if (!slider && !/^\d+$/.test(high) && high !== '') {
-            Alert.alert('High must be a positive integer or blank');
-            return false;
-        }
-        if (step === '') {
-            Alert.alert('Please enter a step');
-            return false;
-        }
-        if (!/^\d+$/.test(step)) {
-            Alert.alert('Step must be a positive integer');
-            return false;
-        }
-        const lowParsed = low === '' ? null : parseInt(low, 10);
-        const highParsed = high === '' ? null : parseInt(high, 10);
-        const stepParsed = parseInt(step, 10);
-        if (lowParsed != null && highParsed != null && lowParsed > highParsed) {
+        if (low != null && high != null && low > high) {
             Alert.alert('Low must be less than high');
             return false;
         }
@@ -86,9 +62,9 @@ export function Number({ visible, setVisible, styles, onSubmit, value })  {
             type: 'number',
             question: question,
             slider: slider,
-            low: lowParsed,
-            high: highParsed,
-            step: stepParsed,
+            low,
+            high,
+            step,
             link_to: linkTo,
         });
         return true;
@@ -114,7 +90,7 @@ export function Number({ visible, setVisible, styles, onSubmit, value })  {
             <View style={styles.rowContainer}>
                 <Text style={styles.label}>Slider</Text>
                 <BouncyCheckbox
-                    onClick={() => {
+                    onPress={() => {
                         setSlider(!slider);
                     }}
                     isChecked={slider}
@@ -138,43 +114,43 @@ export function Number({ visible, setVisible, styles, onSubmit, value })  {
                 <Text style={styles.rowLabel}>
                     Low:{slider && <Text style={styles.requiredStarText}>*</Text>}
                 </Text>
-                <TextInput
+                <NumberInput
                     style={styles.textInput}
-                    onChangeText={setLow}
+                    onInput={setLow}
                     value={low}
-                    keyboardType="numeric"
+                    min={0}
                 />
             </View>
             <View style={styles.rowContainer}>
                 <Text style={styles.rowLabel}>
                     High:{slider && <Text style={styles.requiredStarText}>*</Text>}
                 </Text>
-                <TextInput
+                <NumberInput
                     style={styles.textInput}
-                    onChangeText={setHigh}
+                    onInput={setHigh}
                     value={high}
-                    keyboardType="numeric"
+                    min={0}
                 />
             </View>
             <View style={styles.rowContainer}>
                 <Text style={styles.rowLabel}>
                     Step:<Text style={styles.requiredStarText}>*</Text>
                 </Text>
-                <TextInput
+                <NumberInput
                     style={styles.textInput}
-                    onChangeText={setStep}
+                    onInput={setStep}
                     value={step}
-                    keyboardType="numeric"
+                    min={1}
                 />
             </View>
             <View style={styles.rowContainer}>
                 <Text style={styles.rowLabel}>Link to</Text>
-                <SelectMenu
+                <Selector
                     setSelected={setLinkTo}
                     data={linkOptions}
                     searchEnabled={false}
                     searchPlaceholder={'Search for a link to...'}
-                    placeholder={'Select a link to...'}
+                    placeholder={'Selector a link to...'}
                     maxHeight={100}
                 />
             </View>

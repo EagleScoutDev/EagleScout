@@ -1,11 +1,11 @@
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { Path, Svg } from "react-native-svg";
 import { CompetitionsDB, ScoutAssignmentsConfig } from "../../database/Competitions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../../FormHelper";
 import { ScoutAssignments } from "../../database/ScoutAssignments";
+import * as Bs from "../../ui/icons";
 
 export function UpcomingRoundsView({ navigation }) {
     const [upcomingRounds, setUpcomingRounds] = useState([]);
@@ -116,16 +116,7 @@ export function UpcomingRoundsView({ navigation }) {
                                 justifyContent: "space-around",
                             }}
                         >
-                            <Svg width={"100%"} height="50%" viewBox="0 0 16 16" style={{ marginVertical: "10%" }}>
-                                <Path
-                                    fill={colors.primary}
-                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-                                />
-                                <Path
-                                    fill={colors.primary}
-                                    d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"
-                                />
-                            </Svg>
+                            <Bs.CheckCircle width="100%" height="50%" fill={colors.primary} style={{ marginVertical: "10%" }} />
                             <Text
                                 style={{
                                     color: colors.text,
@@ -205,25 +196,7 @@ export function UpcomingRoundsView({ navigation }) {
                                     )}
                                 </View>
                                 <View>
-                                    <Svg
-                                        width={20}
-                                        height={20}
-                                        viewBox="0 0 24 24"
-                                        stroke="gray"
-                                        strokeWidth={2}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        style={{
-                                            position: "absolute",
-                                            right: 20,
-                                            top: 20,
-                                        }}
-                                    >
-                                        <Path
-                                            fill-rule="evenodd"
-                                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                                        />
-                                    </Svg>
+                                    <Bs.ChevronRight size="20" color={"gray"} style={{ position: "absolute", right: 20, top: 20 }} />
                                 </View>
                             </TouchableOpacity>
                         ))}

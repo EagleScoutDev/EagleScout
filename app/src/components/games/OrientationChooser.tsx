@@ -1,8 +1,8 @@
 import { Pressable, View, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Alliance, Orientation } from '../../games/common';
-import * as Bs from '../icons/icons.generated';
-import type { Setter } from '../../lib/react/types';
+import * as Bs from '../../ui/icons';
+import type { Setter } from '../../lib/react';
 
 export interface OrientationChooserProps {
     orientation: Orientation, setOrientation: Setter<Orientation>

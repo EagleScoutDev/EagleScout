@@ -1,13 +1,13 @@
 import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { StandardButton } from "../StandardButton";
-import { supabase } from "../../lib/supabase";
+import { StandardButton } from "../../ui/StandardButton.tsx";
+import { supabase } from "../../lib/supabase.ts";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
-import { StandardModal } from "./StandardModal";
+import { StandardModal } from "./StandardModal.tsx";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { getIdealTextColor } from "../../lib/color";
-import type { Setter } from "../../lib/react/types";
-import type { CompetitionReturnData } from "../../database/Competitions";
+import { getIdealTextColor } from "../../lib/color.ts";
+import type { Setter } from "../../lib/react";
+import type { CompetitionReturnData } from "../../database/Competitions.ts";
 
 export interface EditCompetitionModalProps {
     setVisible: Setter<boolean>;

@@ -1,15 +1,14 @@
-import { createStackNavigator } from "@react-navigation/stack";
-import { DebugOffline } from "./debug/DebugAsyncStorage.tsx";
+import { DebugOffline } from "./debug/DebugAsyncStorage";
 import { SettingsHome } from "./SettingsHome";
 import { AccountEditProfile, type AccountEditProfileParams } from "./account/AccountEditProfile";
 import { SubmittedForms } from "./submissions/SubmittedForms";
 import { SubmittedNotes } from "./submissions/SubmittedNotes";
 import type { AppHomeScreenProps } from "../../AppHome";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountDeletionModal } from "./account/AccountDeletionModal";
 import { AccountChangePassword } from "./account/AccountChangePassword";
 
-const Stack = createStackNavigator<SettingsMenuParamList>();
+const Stack = createNativeStackNavigator<SettingsMenuParamList>();
 export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<
     SettingsMenuParamList,
     K

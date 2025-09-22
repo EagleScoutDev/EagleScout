@@ -1,9 +1,9 @@
 import { ScrollView, StyleSheet, Text } from 'react-native';
-import { HeadingSummary } from './question-summaries/HeadingSummary';
-import { RadioSummary } from './question-summaries/RadioSummary';
-import { NumberSummary } from './question-summaries/NumberSummary';
-import { TextBoxSummary } from './question-summaries/TextBoxSummary';
-import { CheckboxesSummary } from './question-summaries/CheckboxesSummary';
+import { HeadingBuilder } from '../../../ui/form/components/HeadingBuilder.tsx';
+import { RadioBuilder } from '../../../ui/form/components/RadioBuilder.tsx';
+import { SliderBuilder } from '../../../ui/form/components/SliderBuilder.tsx';
+import { TextboxBuilder } from '../../../ui/form/components/TextboxBuilder.tsx';
+import { CheckboxesBuilder } from '../../../ui/form/components/CheckboxesBuilder.tsx';
 
 export function FormViewer({ route }) {
     const { questions } = route.params;
@@ -24,19 +24,19 @@ export function FormViewer({ route }) {
                 return (
                     <>
                         {question.type === 'heading' && (
-                            <HeadingSummary question={question} />
+                            <HeadingBuilder question={question} />
                         )}
                         {question.type === 'radio' && (
-                            <RadioSummary question={question} />
+                            <RadioBuilder question={question} />
                         )}
                         {question.type === 'number' && (
-                            <NumberSummary question={question} />
+                            <SliderBuilder question={question} />
                         )}
                         {question.type === 'textbox' && (
-                            <TextBoxSummary question={question} />
+                            <TextboxBuilder question={question} />
                         )}
                         {question.type === 'checkboxes' && (
-                            <CheckboxesSummary question={question} />
+                            <CheckboxesBuilder question={question} />
                         )}
                     </>
                 );

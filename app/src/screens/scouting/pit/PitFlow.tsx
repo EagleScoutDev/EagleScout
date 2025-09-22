@@ -17,15 +17,16 @@ import Toast from "react-native-toast-message";
 import { PitScoutingCamera } from "./PitScoutingCamera";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
-import { TeamInformation } from "../../../components/form/TeamInformation";
-import { StandardButton } from "../../../components/StandardButton";
+import { TeamInformation } from "../../../ui/form/TeamInformation";
+import { StandardButton } from "../../../ui/StandardButton";
 import { CompetitionsDB } from "../../../database/Competitions";
 import { PitReportsDB, type PitReportWithoutId } from "../../../database/ScoutPitReports";
 import { FormHelper } from "../../../FormHelper";
-import { FormSection } from "../../../components/form/FormSection";
-import { FormComponent } from "../../../components/form/FormComponent";
-import * as Bs from "../../../components/icons/icons.generated";
+import { FormSection } from "../../../ui/form/FormSection";
+import { FormComponent } from "../../../ui/form/FormComponent";
+import * as Bs from "../../../ui/icons";
 import type { ScoutMenuScreenProps } from "../ScoutingFlow";
+import { launchCamera } from "react-native-image-picker";
 
 const Tab = createMaterialTopTabNavigator();
 export type PitFlowScreenProps<K extends keyof PitFlowParamList> = MaterialTopTabScreenProps<PitFlowParamList, K>;
@@ -309,6 +310,7 @@ export function PitFlow({ navigation }: PitFlowProps) {
                             key={key}
                             name={`Form/${key}`}
                             options={{
+                                title: key,
                                 // change font color in header
                                 tabBarLabelStyle: {
                                     fontSize: 12,
@@ -327,7 +329,6 @@ export function PitFlow({ navigation }: PitFlowProps) {
                                             }}
                                         >
                                             <FormSection
-                                                colors={colors}
                                                 title={""}
                                                 key={key.length}
                                                 onModalPress={undefined}
@@ -398,7 +399,15 @@ export function PitFlow({ navigation }: PitFlowProps) {
                                         renderItem={({ item }) => {
                                             if (item === "plus") {
                                                 return (
-                                                    <Pressable onPress={() => setCameraOpen(true)}>
+                                                    <Pressable onPress={() => {
+                                                        launchCamera({
+                                                            mediaType: "photo",
+                                                            quality: 1,
+                                                            saveToPhotos: false
+                                                        }, console.log).then((x) => {
+                                                            console.log(x)
+                                                        })
+                                                    }}>
                                                         <View style={styles.plusButton}>
                                                             <Text style={styles.plusText}>+</Text>
                                                         </View>
@@ -439,18 +448,6 @@ export function PitFlow({ navigation }: PitFlowProps) {
                     )}
                 />
             </Tab.Navigator>
-
-            {cameraOpen && (
-                <Modal animationType="slide" visible={cameraOpen}>
-                    <PitScoutingCamera
-                        onPhotoTaken={(photoData) => {
-                            setImages(["plus", photoData, ...images.slice(1)]);
-                            setCameraOpen(false);
-                        }}
-                        onCancel={() => setCameraOpen(false)}
-                    />
-                </Modal>
-            )}
         </>
     );
 }

@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { CompetitionsDB } from "../../database/Competitions";
 import { type CompetitionReturnData } from "../../database/Competitions";
 import { Dropdown } from "react-native-element-dropdown";
-import type { Setter } from "../../lib/react/types";
+import type { Setter } from "../../lib/react";
 
 export interface CompetitionChangerProps {
     currentCompId: number;
@@ -75,7 +75,7 @@ export function CompetitionChanger({ currentCompId, setCurrentCompId, loading }:
                     loading
                         ? "Loading..."
                         : competitionsList.length > 0
-                        ? "Select Competition"
+                        ? "Selector Competition"
                         : "No competitions found"
                 }
                 onChange={(item) => {

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import "react-native-gesture-handler";
+import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { FormHelper } from "./FormHelper";
 import { PlusMenu } from "./PlusMenu";
@@ -8,11 +8,12 @@ import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
 import { AccountContext } from "./lib/contexts/AccountContext";
-import { type Account, recallAccount, saveAccount } from "./lib/user/account.ts";
+import { type Account, recallAccount, saveAccount } from "./lib/user/account";
 import { AppHome, type AppHomeParamList } from "./AppHome";
 import { NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
 import { OnboardingFlow, type OnboardingParamList } from "./screens/onboarding";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 declare global {
     namespace ReactNavigation {
@@ -38,7 +39,7 @@ export default function App() {
         recallAccount().then(setAccount);
     }, []);
     useEffect(() => {
-        saveAccount(account);
+        // saveAccount(account);
     }, [account]);
 
     useEffect(() => {
@@ -67,35 +68,37 @@ export default function App() {
                     setAccount,
                 }}
             >
-                <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
-                    <RootStack.Navigator
-                        initialRouteName="Onboarding"
-                        screenOptions={{
-                            headerShown: false,
-                        }}
-                    >
-                        <RootStack.Group>
-                            <RootStack.Screen
-                                name="App"
-                                component={AppHome}
-                                options={{
-                                    animationTypeForReplace: "pop",
-                                }}
-                            />
+                <GestureHandlerRootView>
+                    <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
+                        <RootStack.Navigator
+                            initialRouteName="Onboarding"
+                            screenOptions={{
+                                headerShown: false,
+                            }}
+                        >
+                            <RootStack.Group>
+                                <RootStack.Screen
+                                    name="App"
+                                    component={AppHome}
+                                    options={{
+                                        animationTypeForReplace: "pop",
+                                    }}
+                                />
 
-                            <RootStack.Screen
-                                name="PlusMenu"
-                                component={PlusMenu}
-                                options={{
-                                    presentation: "transparentModal",
-                                }}
-                            />
-                        </RootStack.Group>
+                                <RootStack.Screen
+                                    name="PlusMenu"
+                                    component={PlusMenu}
+                                    options={{
+                                        presentation: "transparentModal",
+                                    }}
+                                />
+                            </RootStack.Group>
 
-                        <RootStack.Screen name="Onboarding" component={OnboardingFlow} />
-                    </RootStack.Navigator>
-                    <Toast />
-                </NavigationContainer>
+                            <RootStack.Screen name="Onboarding" component={OnboardingFlow} />
+                        </RootStack.Navigator>
+                        <Toast />
+                    </NavigationContainer>
+                </GestureHandlerRootView>
             </AccountContext.Provider>
         </ThemeContext.Provider>
     );

@@ -3,11 +3,11 @@ import { useMemo, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { ReefscapeField } from "./ReefscapeField";
-import type { ReefscapeAutoPath } from "./ReefscapeAutoPath";
-import { ReefscapeActionIcon, ReefscapeActions, ReefscapeActionType } from "./ReefscapeActions";
-import { ReefscapeLevels } from "./ReefscapeLevels";
-import type { Setter } from "../../../lib/react/types";
+import { ReefscapeField } from "./ReefscapeField.tsx";
+import type { ReefscapeAutoPath } from "./ReefscapeAutoPath.ts";
+import { ReefscapeActionIcon, ReefscapeActions, ReefscapeActionType } from "./ReefscapeActions.tsx";
+import { ReefscapeLevels } from "./ReefscapeLevels.tsx";
+import type { Setter } from "../../../lib/react";
 import type { Alliance, Orientation } from "../../../games/common";
 
 interface HistoryAction {

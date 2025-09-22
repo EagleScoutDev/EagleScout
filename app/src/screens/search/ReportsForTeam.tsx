@@ -1,25 +1,21 @@
 import { View, Text } from 'react-native';
-import { ReportList } from '../../components/ReportList';
+import { ReportList } from '../../components/ReportList.tsx';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { CompetitionsDB } from '../../database/Competitions';
-import {
-    type MatchReportReturnData,
-} from '../../database/ScoutMatchReports';
-import { type NoteWithMatch } from '../../database/ScoutNotes';
-import { Tabs } from '../../components/Tabs';
-import { NoteList } from '../../components/NoteList';
-import {
-    type PitReportReturnData,
-} from '../../database/ScoutPitReports';
-import { PitScoutReportList } from '../../components/PitScoutReportList';
-import type { SearchScreenScreenProps } from './SearchScreen';
+import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
+import { NotesDB, type NoteWithMatch } from "../../database/ScoutNotes";
+import { Tabs } from '../../ui/Tabs';
+import { NoteList } from '../../components/NoteList.tsx';
+import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
+import { PitScoutReportList } from '../../components/PitScoutReportList.tsx';
+import type { SearchMenuScreenProps } from './SearchMenu.tsx';
 
 export interface ReportsForTeamParams {
     team_number: number
     competitionId: number
 }
-export interface ReportsForTeamProps extends SearchScreenScreenProps<"Reports for Team"> {
+export interface ReportsForTeamProps extends SearchMenuScreenProps<"TeamReports"> {
 
 }
 export function ReportsForTeam({ route: { params: { team_number, competitionId } } }: ReportsForTeamProps) {

@@ -1,11 +1,11 @@
 import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import Svg, { Path } from "react-native-svg";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import type { PicklistTeam } from "../../../../database/Picklists";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
-import type { Setter } from "../../../../lib/react/types";
+import type { Setter } from "../../../../lib/react";
+import * as Bs from "../../../../ui/icons";
 
 export interface TagsModalProps {
     visible: boolean;
@@ -168,16 +168,7 @@ export function TagsModal({
                                     {selected_team !== null && (
                                         <View style={{ flex: 0.1 }}>
                                             {selectedTags.includes(Number.parseInt(item.id ?? "", 10)) && (
-                                                <Svg
-                                                    width="16"
-                                                    height="16"
-                                                    fill="currentColor"
-                                                    strokeWidth={1}
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 16 16"
-                                                >
-                                                    <Path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                                                </Svg>
+                                                <Bs.CheckLg size="16" fill="currentColor" />
                                             )}
                                         </View>
                                     )}

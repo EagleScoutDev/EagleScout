@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { AddCompetitionModal } from "../../components/modals/AddCompetitionModal";
-import { ListItem } from "../../components/ListItem";
-import { ListItemContainer } from "../../components/ListItemContainer";
+import { ListItem } from "../../ui/ListItem";
+import { ListSection } from "../../ui/ListSection.tsx";
 import { InternetStatus } from "../../lib/InternetStatus";
 import { getLighterColor, parseColor } from "../../lib/color";
-import { TabHeader } from "../../components/TabHeader";
-import { CompetitionsDB } from "../../database/Competitions.ts";
-import { useAccount } from "../../lib/hooks/useAccount.ts";
-import { AccountType } from "../../lib/user/account.ts";
-import * as Bs from "../../components/icons/icons.generated.tsx";
-import type { DataMenuScreenProps } from "./DataMain.tsx";
+import { TabHeader } from "../../ui/TabHeader";
+import { CompetitionsDB } from "../../database/Competitions";
+import { useAccount } from "../../lib/hooks/useAccount";
+import { AccountType } from "../../lib/user/account";
+import * as Bs from "../../ui/icons";
+import type { DataMenuScreenProps } from "./DataMain";
+import { List } from "../../ui/icons";
 
 export interface DataHomeProps extends DataMenuScreenProps<"Home"> {}
 export function DataHome({ navigation }: DataHomeProps) {
@@ -82,13 +83,13 @@ export function DataHome({ navigation }: DataHomeProps) {
                 </View>
             )}
             <ScrollView>
-                <ListItemContainer title={"Data Analysis"}>
+                <ListSection title={"Data Analysis"}>
                     <ListItem
                         text={"Picklist"}
                         onPress={() => {
                             navigation.navigate("Picklist", { screen: "Manager" });
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.List size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
@@ -97,7 +98,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                         onPress={() => {
                             navigation.navigate("TeamRank");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.ArrowDownUp size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
@@ -106,7 +107,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                         onPress={() => {
                             navigation.navigate("WeightedTeamRank");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.Sliders size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
@@ -115,7 +116,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                         onPress={() => {
                             navigation.navigate("MatchPredictor");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.Hourglass size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
@@ -124,19 +125,28 @@ export function DataHome({ navigation }: DataHomeProps) {
                         onPress={() => {
                             navigation.navigate("ExportCSV");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.Upload size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
-                </ListItemContainer>
+                </ListSection>
                 <View style={{ height: 20 }} />
-                <ListItemContainer title={"Scoutcoin"}>
+                <ListSection title={"Scoutcoin"}>
+                    <ListItem
+                        text={"Match Betting"}
+                        onPress={() => {
+                            navigation.navigate("MatchBetting")
+                        }}
+                        caret={true}
+                        disabled={internetStatus !== InternetStatus.CONNECTED}
+                        icon={<Bs.CashCoin size="16" fill={getLighterColor(parseColor(colors.primary))} />}
+                    />
                     <ListItem
                         text={"Leaderboard"}
                         onPress={() => {
                             navigation.navigate("ScoutcoinLeaderboard");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.Award size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
@@ -145,7 +155,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                         onPress={() => {
                             navigation.navigate("ScoutcoinLedger");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.Newspaper size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
@@ -154,21 +164,21 @@ export function DataHome({ navigation }: DataHomeProps) {
                         onPress={() => {
                             navigation.navigate("ScoutcoinShop");
                         }}
-                        caretVisible={true}
+                        caret={true}
                         disabled={internetStatus !== InternetStatus.CONNECTED}
                         icon={<Bs.Cart size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                     />
-                </ListItemContainer>
+                </ListSection>
                 <View style={{ height: 20 }} />
                 {user?.type === AccountType.Admin && (
                     <>
-                        <ListItemContainer title={"Administrative"}>
+                        <ListSection title={"Administrative"}>
                             <ListItem
                                 text={"Manage Competitions"}
                                 onPress={() => {
                                     navigation.navigate("ManageCompetitions");
                                 }}
-                                caretVisible={true}
+                                caret={true}
                                 disabled={internetStatus !== InternetStatus.CONNECTED}
                                 icon={<Bs.TrophyFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                             />
@@ -177,7 +187,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                                 onPress={() => {
                                     setAddCompetitionModalVisible(true);
                                 }}
-                                caretVisible={false}
+                                caret={false}
                                 disabled={internetStatus !== InternetStatus.CONNECTED}
                                 icon={<Bs.PlusLg size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                             />
@@ -186,7 +196,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                                 onPress={() => {
                                     navigation.navigate("ManageUsers");
                                 }}
-                                caretVisible={true}
+                                caret={true}
                                 disabled={internetStatus !== InternetStatus.CONNECTED}
                                 icon={<Bs.PeopleFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                             />
@@ -195,7 +205,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                                 onPress={() => {
                                     navigation.navigate("ManageForms");
                                 }}
-                                caretVisible={true}
+                                caret={true}
                                 disabled={internetStatus !== InternetStatus.CONNECTED}
                                 icon={<Bs.ClipboardData size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                             />
@@ -204,7 +214,7 @@ export function DataHome({ navigation }: DataHomeProps) {
                                 onPress={() => {
                                     navigation.navigate("ManageScoutAssignments");
                                 }}
-                                caretVisible={true}
+                                caret={true}
                                 disabled={internetStatus !== InternetStatus.CONNECTED}
                                 icon={<Bs.CalendarThree size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                             />
@@ -213,11 +223,11 @@ export function DataHome({ navigation }: DataHomeProps) {
                                 onPress={() => {
                                     navigation.navigate("ManageMatchBets");
                                 }}
-                                caretVisible={true}
+                                caret={true}
                                 disabled={internetStatus !== InternetStatus.CONNECTED}
                                 icon={<Bs.CashCoin size="16" fill={getLighterColor(parseColor(colors.primary))} />}
                             />
-                        </ListItemContainer>
+                        </ListSection>
                         <AddCompetitionModal
                             visible={addCompetitionModalVisible}
                             setVisible={setAddCompetitionModalVisible}

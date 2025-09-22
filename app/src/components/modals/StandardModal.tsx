@@ -1,7 +1,13 @@
 import { Modal, Text, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
-export function StandardModal({ visible, title, onDismiss, children }) {
+export interface StandardModalProps {
+    visible: boolean;
+    title: string;
+    onDismiss?: () => void;
+    children: React.ReactNode;
+}
+export function StandardModal({ visible, title, onDismiss, children }: StandardModalProps) {
     const { colors } = useTheme();
 
     return (

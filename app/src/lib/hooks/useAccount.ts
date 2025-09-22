@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AccountContext } from "../contexts/AccountContext.ts";
-import { type Account, login, logout, recallAccount } from "../user/account.ts";
+import { AccountContext } from "../contexts/AccountContext";
+import { type Account, login, logout, recallAccount } from "../user/account";
 
 export interface AccountHook {
     account: Account | null;

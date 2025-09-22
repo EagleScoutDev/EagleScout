@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabase";
-import type { Profile } from "../lib/user/profile.ts";
+import type { Profile } from "../lib/user/profile";
 
 export class ProfilesDB {
     static async getProfile(id: string): Promise<Profile> {

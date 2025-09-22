@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Alert, FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import Svg, { Path } from "react-native-svg";
-import { StandardButton } from "../../../../components/StandardButton";
+import { StandardButton } from "../../../../ui/StandardButton";
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
 import { TeamAddingModal } from "./TeamAddingModal";
+import * as Bs from "../../../../ui/icons";
 
 export interface DoNotPickModalProps {
     visible: boolean;
@@ -79,12 +79,7 @@ export function DoNotPickModal({
                             marginTop: "4%",
                         }}
                     >
-                        <Svg width={"20"} height="20" viewBox="0 0 16 16">
-                            <Path
-                                fill={"gray"}
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                            />
-                        </Svg>
+                        <Bs.Search size="20" fill="gray" />
                         <TextInput
                             style={{
                                 marginHorizontal: "4%",

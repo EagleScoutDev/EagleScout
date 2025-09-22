@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import Svg, { Path } from "react-native-svg";
-import { StandardButton } from "../../../../components/StandardButton";
+import { StandardButton } from "../../../../ui/StandardButton";
 import { CompetitionsDB } from "../../../../database/Competitions";
 import { PicklistsDB, type PicklistStructure } from "../../../../database/Picklists";
 import { ProfilesDB } from "../../../../database/Profiles";
 import type { PicklistScreenProps } from "./PicklistMenu";
+import * as Bs from "../../../../ui/icons";
 
 export interface PicklistManagerProps extends PicklistScreenProps<"Manager"> {}
 export function PicklistManager({ navigation }: PicklistManagerProps) {
@@ -90,11 +90,10 @@ export function PicklistManager({ navigation }: PicklistManagerProps) {
                         onRefresh={() => onRefresh()}
                         refreshing={refreshing}
                         keyExtractor={(item) => item.name}
-                        // keyExtractor={item => item.teams.length} // Use a unique property of the picklist as key
                         renderItem={({ item }) => {
                             return (
                                 <Pressable
-                                    key={item.id ?? Math.random()}
+                                    key={item.id}
                                     onPressIn={() => {
                                         setHoveredPicklistID(item.name);
                                     }}
@@ -162,25 +161,7 @@ export function PicklistManager({ navigation }: PicklistManagerProps) {
                                             {new Date(item.created_at).toLocaleString()}
                                         </Text>
                                     </View>
-                                    <Svg
-                                        width={20}
-                                        height={20}
-                                        viewBox="0 0 24 24"
-                                        stroke="gray"
-                                        strokeWidth={2}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        style={{
-                                            position: "absolute",
-                                            right: "5%",
-                                            top: "80%",
-                                        }}
-                                    >
-                                        <Path
-                                            fill-rule="evenodd"
-                                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                                        />
-                                    </Svg>
+                                    <Bs.ChevronRight size="20" fill="gray" style={{ position: "absolute", right: "5%", top: "80%" }} />
                                 </Pressable>
                             );
                         }}

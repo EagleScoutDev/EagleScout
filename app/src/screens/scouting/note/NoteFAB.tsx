@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import * as Bs from "../../../components/icons/icons.generated";
+import * as Bs from "../../../ui/icons";
 
 export const NoteFAB = ({
     onSubmitPress,

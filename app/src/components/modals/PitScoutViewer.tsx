@@ -1,11 +1,11 @@
 import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { RadioButtons } from "../form/RadioButtons";
-import { Checkboxes } from "../form/Checkboxes";
+import { Radio } from "../../ui/form/components/Radio.tsx";
+import { Checkboxes } from "../../ui/form/components/Checkboxes.tsx";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
-import * as Bs from "../icons/icons.generated";
+import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports.ts";
+import * as Bs from "../../ui/icons";
 
 const ListSeparator = () => <View style={{ width: 10 }} />;
 
@@ -184,7 +184,7 @@ export const PitScoutViewer = ({
                                         <Text style={styles.question}>{field.question}</Text>
                                         {field.type === "radio" && (
                                             <View>
-                                                <RadioButtons
+                                                <Radio
                                                     title={""}
                                                     colors={colors}
                                                     options={field.options}

@@ -1,12 +1,12 @@
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
-import { StandardModal } from "./StandardModal";
-import { SelectMenu } from "../form/SelectMenu";
-import { StandardButton } from "../StandardButton";
+import { StandardModal } from "./StandardModal.tsx";
+import { Selector } from "../../ui/form/components/Selector.tsx";
+import { StandardButton } from "../../ui/StandardButton.tsx";
 import { useTheme } from "@react-navigation/native";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "../../lib/supabase.ts";
 import { useEffect, useState } from "react";
-import type { CompetitionReturnData } from "../../database/Competitions";
-import type { Setter } from "../../lib/react/types";
+import type { CompetitionReturnData } from "../../database/Competitions.ts";
+import type { Setter } from "../../lib/react";
 
 export function Spacer() {
     return <View style={{ height: "2%" }} />;
@@ -241,7 +241,7 @@ export function SetScoutAssignmentModal({
                             marginTop: 10,
                         }}
                     >
-                        <SelectMenu
+                        <Selector
                             setSelected={setUserId}
                             data={names.map((f) => ({
                                 value: f.name,
@@ -249,7 +249,7 @@ export function SetScoutAssignmentModal({
                             }))}
                             searchEnabled={false}
                             searchPlaceholder={"Search for a user..."}
-                            placeholder={"Select a user..."}
+                            placeholder={"Selector a user..."}
                             notFoundText={"No users found"}
                             maxHeight={100}
                         />

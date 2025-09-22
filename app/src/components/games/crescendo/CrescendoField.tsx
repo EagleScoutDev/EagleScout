@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import type { CrescendoAutoPath } from "./CrescendoAutoPath";
+import type { CrescendoAutoPath } from "./CrescendoAutoPath.ts";
 
 export const CrescendoField = ({
     fieldOrientation,

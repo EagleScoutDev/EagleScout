@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ProfilesDB } from "../../database/Profiles";
-import type { Profile } from "../user/profile.ts";
+import type { Profile } from "../user/profile";
 
 export const useProfile = () => {
     const [profile, setProfile] = useState<Profile | null>(null);

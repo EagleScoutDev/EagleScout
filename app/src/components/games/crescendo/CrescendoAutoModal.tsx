@@ -3,10 +3,10 @@ import { useMemo, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { CrescendoField } from "./CrescendoField";
-import type { CrescendoAutoPath } from "./CrescendoAutoPath";
-import { CrescendoActionIcon, CrescendoActions, CrescendoActionType } from "./CrescendoActions";
-import type { Setter } from "../../../lib/react/types";
+import { CrescendoField } from "./CrescendoField.tsx";
+import type { CrescendoAutoPath } from "./CrescendoAutoPath.ts";
+import { CrescendoActionIcon, CrescendoActions, CrescendoActionType } from "./CrescendoActions.tsx";
+import type { Setter } from "../../../lib/react";
 import type { Alliance, Orientation } from "../../../games/common";
 
 interface HistoryAction {

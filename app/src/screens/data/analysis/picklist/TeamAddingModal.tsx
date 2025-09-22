@@ -1,8 +1,9 @@
 import { Alert, FlatList, Modal, Pressable, Text, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useTheme } from "@react-navigation/native";
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
+import type { Setter } from "../../../../lib/react";
+import * as Bs from "../../../../ui/icons";
 
 export interface TeamAddingModalProps {
     visible: boolean;
@@ -65,16 +66,7 @@ export function TeamAddingModal({
                             ]);
                         }}
                     >
-                        <Svg
-                            width="24"
-                            height="24"
-                            stroke={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary}
-                            strokeWidth={1}
-                            viewBox="0 0 16 16"
-                        >
-                            <Path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
-                            <Path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
-                        </Svg>
+                        <Bs.CheckTwoCircle size="24" fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary} />
                     </Pressable>
                     <Text
                         style={{
@@ -91,9 +83,7 @@ export function TeamAddingModal({
                             setVisible(false);
                         }}
                     >
-                        <Svg width="16" height="16" fill="gray" viewBox="0 0 16 16" stroke={"gray"} strokeWidth={3}>
-                            <Path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-                        </Svg>
+                        <Bs.XLg width="16" height="16" fill="gray" />
                     </Pressable>
                 </View>
                 <FlatList

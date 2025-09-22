@@ -1,7 +1,7 @@
 import { Easing, StyleSheet, Text, View } from "react-native";
 import GradientShimmer from "react-native-gradient-shimmer";
 import LinearGradient from "react-native-linear-gradient"
-import * as Bs from "./icons/icons.generated";
+import * as Bs from "../ui/icons";
 import type { User } from "../lib/user";
 import { AccountType } from "../lib/user/account.ts";
 import { useTheme } from "@react-navigation/native";

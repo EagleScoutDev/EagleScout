@@ -1,11 +1,12 @@
 import { FlatList, KeyboardAvoidingView, LayoutAnimation, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
-import { ScoutViewer } from "./modals/ScoutViewer";
+import { ScoutViewer } from "./modals/ScoutViewer.tsx";
 import { useTheme } from "@react-navigation/native";
-import { CompetitionsDB } from "../database/Competitions";
+import { CompetitionsDB } from "../database/Competitions.ts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../FormHelper";
-import { Badge } from "./Badge";
+import { FormHelper } from "../FormHelper.ts";
+import { Badge } from "../ui/Badge.tsx";
+import * as Bs from "../ui/icons";
 
 function CompetitionFlatList({
     compName,
@@ -106,9 +107,9 @@ function CompetitionFlatList({
                                     </Text>
                                 </View>
                                 {isCollapsed ? (
-                                    <ChevronUp width={30} height={30} />
+                                    <Bs.ChevronUp width={30} height={30} />
                                 ) : (
-                                    <ChevronDown width={30} height={30} />
+                                    <Bs.ChevronDown width={30} height={30} />
                                 )}
                             </View>
                         </TouchableOpacity>
@@ -164,7 +165,7 @@ function CompetitionFlatList({
                                 flex: 2,
                                 borderRadius: 15,
                             }}
-                            onPress={() => handleSort("date", (a, b) => new Date(a.createdAt) - new Date(b.createdAt))}
+                            onPress={() => handleSort("date", (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())}
                         >
                             <Text
                                 style={{
@@ -237,7 +238,7 @@ function CompetitionFlatList({
                                 textAlign: "right",
                             }}
                         >
-                            {new Date(item.createdAt).toLocaleDateString("en-US", {
+                            {item.createdAt.toLocaleDateString("en-US", {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",

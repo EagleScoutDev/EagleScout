@@ -1,13 +1,13 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useMemo } from 'react';
-import { useTheme } from '@react-navigation/native';
+import { type Theme, useTheme } from "@react-navigation/native";
 import Svg, { Path } from 'react-native-svg';
 import {
     CrescendoActionType,
     CrescendoActions,
     CrescendoActionIcon,
-} from './CrescendoActions';
-import type { Setter } from '../../../lib/react/types';
+} from './CrescendoActions.tsx';
+import { type Setter, exMemo } from "../../../lib/react";
 
 export interface CrescendoTeleopModalProps {
     startRelativeTime: number, setStartRelativeTime: Setter<number>
@@ -24,6 +24,7 @@ export function CrescendoTeleopModal({
     form,
 }: CrescendoTeleopModalProps) {
     const { colors } = useTheme();
+    const s = styles(colors);
 
     // for each linked item, map the link name to the item within the arrayData and the index
     const linkItemMap = useMemo(
@@ -42,33 +43,6 @@ export function CrescendoTeleopModal({
         [form, arrayData],
     );
 
-    const styles = StyleSheet.create({
-        button: {
-            backgroundColor: colors.primary,
-            padding: '5%',
-            borderRadius: 10,
-            margin: '5%',
-            width: '90%',
-            justifyContent: 'center',
-            flex: 1,
-            alignItems: 'center',
-        },
-        button_label: {
-            color: 'white',
-            fontSize: 20,
-            textAlign: 'center',
-            fontWeight: 'bold',
-        },
-        button_count: {
-            color: 'white',
-            paddingTop: '5%',
-        },
-        category_label: {
-            color: 'gray',
-            fontWeight: '700',
-        },
-    });
-
     const InputButton = ({
         action,
         color = colors.primary,
@@ -79,7 +53,7 @@ export function CrescendoTeleopModal({
         return (
             <Pressable
                 style={[
-                    styles.button,
+                    s.button,
                     {
                         backgroundColor: color,
                     },
@@ -108,7 +82,7 @@ export function CrescendoTeleopModal({
                     });
                 }}>
                 <CrescendoActionIcon action={action} />
-                <Text style={styles.button_count}>
+                <Text style={s.button_count}>
                     {linkItemMap[CrescendoActions[action].link_name]?.value}
                 </Text>
             </Pressable>
@@ -208,7 +182,7 @@ export function CrescendoTeleopModal({
                             // backgroundColor: 'green',
                             height: '100%',
                         }}>
-                        <Text style={styles.category_label}>INPUT</Text>
+                        <Text style={s.category_label}>INPUT</Text>
                         <InputButton action={CrescendoActionType.PickupSource} />
                         <InputButton action={CrescendoActionType.PickupGround} />
                     </View>
@@ -220,7 +194,7 @@ export function CrescendoTeleopModal({
                             height: '100%',
                             // backgroundColor: 'green',
                         }}>
-                        <Text style={styles.category_label}>SCORING</Text>
+                        <Text style={s.category_label}>SCORING</Text>
                         <InputButton action={CrescendoActionType.ScoreSpeaker} />
                         <InputButton action={CrescendoActionType.ScoreAmp} />
                         <InputButton
@@ -234,3 +208,30 @@ export function CrescendoTeleopModal({
         </Modal>
     );
 };
+
+const styles = exMemo((colors: Theme["colors"]) => ({
+    button: {
+        backgroundColor: colors.primary,
+        padding: '5%',
+        borderRadius: 10,
+        margin: '5%',
+        width: '90%',
+        justifyContent: 'center',
+        flex: 1,
+        alignItems: 'center',
+    },
+    button_label: {
+        color: 'white',
+        fontSize: 20,
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    button_count: {
+        color: 'white',
+        paddingTop: '5%',
+    },
+    category_label: {
+        color: 'gray',
+        fontWeight: '700',
+    },
+} as const));

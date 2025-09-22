@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {styles} from './styles';
-import { StandardButton } from '../../components/StandardButton';
-import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
+import { StandardButton } from '../../ui/StandardButton';
+import { MinimalSectionHeader } from '../../ui/MinimalSectionHeader';
 import type { OnboardingScreenProps } from '.';
 
 export interface LoginProps extends OnboardingScreenProps<"Login"> {

@@ -1,9 +1,9 @@
 import { StandardModal } from "../../../components/modals/StandardModal";
-import { StandardButton } from "../../../components/StandardButton";
+import { StandardButton } from "../../../ui/StandardButton";
 import { FormsDB } from "../../../database/Forms";
 import { Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import type { Setter } from "../../../lib/react/types";
+import type { Setter } from "../../../lib/react";
 
 export interface FormOptionsModalProps {
     visible: boolean;

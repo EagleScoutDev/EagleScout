@@ -3,18 +3,19 @@ import { useTheme } from "@react-navigation/native";
 import { NewQuestionSeparator } from "./components/NewQuestionSeparator";
 import { useEffect, useState } from "react";
 import { NewQuestionModal } from "./components/NewQuestionModal";
-import { HeadingSummary } from "./components/question-summaries/HeadingSummary";
-import { RadioSummary } from "./components/question-summaries/RadioSummary";
-import { NumberSummary } from "./components/question-summaries/NumberSummary";
+import { HeadingBuilder } from "../../ui/form/components/HeadingBuilder.tsx";
+import { RadioBuilder } from "../../ui/form/components/RadioBuilder.tsx";
+import { SliderBuilder } from "../../ui/form/components/SliderBuilder.tsx";
 import { FormCreationTopBar } from "./components/FormCreationTopBar";
 import { Heading } from "./components/questions/Heading";
 import { Number } from "./components/questions/Number";
 import { Radio } from "./components/questions/Radio";
 import { TextBox } from "./components/questions/TextBox";
 import { Checkboxes } from "./components/questions/Checkboxes";
-import { CheckboxesSummary } from "./components/question-summaries/CheckboxesSummary";
+import { CheckboxesBuilder } from "../../ui/form/components/CheckboxesBuilder.tsx";
 import type { FormCreationScreenProps } from "./FormCreation";
-import { Form, FormsDB } from "../../database/Forms.ts";
+import { Form, FormsDB } from "../../database/Forms";
+import { TextboxBuilder } from "../../ui/form/components/TextboxBuilder.tsx";
 
 export interface FormEditorParams {
     form: Form;
@@ -200,7 +201,7 @@ export function FormEditor({
                                                 setHeadingModalVisible(true);
                                             }}
                                         >
-                                            <HeadingSummary
+                                            <HeadingBuilder
                                                 question={question}
                                                 onDelete={() => {
                                                     setIndex(index);
@@ -216,7 +217,7 @@ export function FormEditor({
                                                 setRadioModalVisible(true);
                                             }}
                                         >
-                                            <RadioSummary
+                                            <RadioBuilder
                                                 question={question}
                                                 onDelete={() => {
                                                     setIndex(index);
@@ -232,7 +233,7 @@ export function FormEditor({
                                                 setCheckBoxModalVisible(true);
                                             }}
                                         >
-                                            <CheckboxesSummary
+                                            <CheckboxesBuilder
                                                 question={question}
                                                 onDelete={() => {
                                                     setIndex(index);
@@ -248,7 +249,7 @@ export function FormEditor({
                                                 setNumberModalVisible(true);
                                             }}
                                         >
-                                            <NumberSummary
+                                            <SliderBuilder
                                                 question={question}
                                                 onDelete={() => {
                                                     setIndex(index);
@@ -264,7 +265,7 @@ export function FormEditor({
                                                 setTextModalVisible(true);
                                             }}
                                         >
-                                            <TextBoxSummary
+                                            <TextboxBuilder
                                                 question={question}
                                                 onDelete={() => {
                                                     setIndex(index);

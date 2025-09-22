@@ -1,11 +1,12 @@
 import { Text, Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { RadioButtons } from "../../../components/form/RadioButtons";
-import { MinimalSectionHeader } from "../../../components/MinimalSectionHeader";
-import { StandardButton } from "../../../components/StandardButton";
+import { Radio } from "../../../ui/form/components/Radio.tsx";
+import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
+import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
+import { useAccount } from "../../../lib/hooks/useAccount";
 
 export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {
 
@@ -15,7 +16,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
     const [reason, setReason] = useState("");
     const { colors } = useTheme();
 
-    const rootNavigation = useNavigation()
+    const { logout } = useAccount();
 
     const styles = StyleSheet.create({
         text_input: {
@@ -48,7 +49,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                     <Text style={{ color: colors.text }}>
                         Please let us know why you are leaving:
                     </Text>
-                    <RadioButtons
+                    <Radio
                         title={""}
                         onValueChange={setReason}
                         value={reason}
@@ -118,8 +119,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                                             "Error",
                                             "Invalid password. Your account has not been deleted. Log in again to request deletion.",
                                         );
-                                        signOut();
-                                        await supabase.auth.signOut();
+                                        await logout()
                                         return;
                                     }
                                     Alert.alert("Error checking password", authError.name);
@@ -138,8 +138,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                                             processed: false,
                                         }),
                                     )
-                                    .then(() => signOut())
-                                    .then(() => supabase.auth.signOut())
+                                    .then(() => logout())
                                     .finally(() =>
                                         Alert.alert("Success", "Account delete requested."),
                                     );

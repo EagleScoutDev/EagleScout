@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { supabase } from "../supabase.ts";
-import { FormHelper } from "../../FormHelper.ts";
+import { supabase } from "../supabase";
+import { FormHelper } from "../../FormHelper";
 
 export enum AccountType {
     Scouter = "scouter",

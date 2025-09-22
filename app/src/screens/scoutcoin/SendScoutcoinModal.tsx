@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../lib/supabase";
-import { StandardButton } from "../../components/StandardButton";
+import { StandardButton } from "../../ui/StandardButton";
 import { useProfile } from "../../lib/hooks/useProfile";
-import * as Bs from "../../components/icons/icons.generated";
+import * as Bs from "../../ui/icons";
 
 interface LeaderboardUser {
     id: string;

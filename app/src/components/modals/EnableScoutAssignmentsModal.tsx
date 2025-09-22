@@ -1,10 +1,10 @@
 import { Alert, StyleSheet, View } from "react-native";
-import { StandardButton } from "../StandardButton";
+import { StandardButton } from "../../ui/StandardButton.tsx";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
-import { StandardModal } from "./StandardModal";
-import { supabase } from "../../lib/supabase";
-import { RadioButtons } from "../form/RadioButtons";
+import { StandardModal } from "./StandardModal.tsx";
+import { supabase } from "../../lib/supabase.ts";
+import { Radio } from "../../ui/form/components/Radio.tsx";
 
 function Spacer() {
     return <View style={{ height: "2%" }} />;
@@ -63,7 +63,7 @@ export function EnableScoutAssignmentsModal({ visible, setVisible, competition, 
 
     return (
         <StandardModal title={"Enable Scout Assignments?"} visible={visible}>
-            <RadioButtons
+            <Radio
                 options={["Team based", "Position based"]}
                 value={checked}
                 onValueChange={setChecked}

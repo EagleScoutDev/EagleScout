@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { StatboticsAPI } from "../lib/Statbotics";
+import { StatboticsAPI } from "../lib/Statbotics.ts";
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
 

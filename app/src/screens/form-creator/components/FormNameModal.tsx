@@ -1,9 +1,9 @@
 import { StandardModal } from '../../../components/modals/StandardModal';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
-import { StandardButton } from '../../../components/StandardButton';
+import { StandardButton } from '../../../ui/StandardButton';
 import { useState } from 'react';
 import { useTheme } from '@react-navigation/native';
-import type { Setter } from '../../../lib/react/types';
+import type { Setter } from '../../../lib/react';
 
 function Spacer() {
     return <View style={{ height: '2%' }} />;

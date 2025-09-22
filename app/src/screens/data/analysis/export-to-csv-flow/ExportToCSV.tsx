@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { CompetitionList } from "./CompetitionList";
 import { ExportCompetitionSheet } from "./ExportCompetitionSheet";
-import { NoInternet } from "../../../../components/NoInternet";
+import { NoInternet } from "../../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { exportScoutReportsToCsv, writeToFile, exportPitReportsToCsv } from "../../export/export";
 

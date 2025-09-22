@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { CompetitionList } from "./CompetitionList";
 import { ExportCompetitionSheet } from "./ExportCompetitionSheet";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export";
-import { NoInternet } from "../../../components/NoInternet";
+import { NoInternet } from "../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 
 export function ExportToCSV() {

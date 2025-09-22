@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { styles } from '../styles';
-import { MinimalSectionHeader } from '../../../components/MinimalSectionHeader';
-import { StandardButton } from '../../../components/StandardButton';
+import { MinimalSectionHeader } from '../../../ui/MinimalSectionHeader';
+import { StandardButton } from '../../../ui/StandardButton';
 import { supabase } from '../../../lib/supabase';
 import type { OnboardingScreenProps } from '..';
 

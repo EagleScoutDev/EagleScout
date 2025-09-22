@@ -6,11 +6,11 @@
  */
 import { Alert, SafeAreaView, View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-import { ReportList } from "../../../components/ReportList";
+import { ReportList } from "../../../components/ReportList.tsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@react-navigation/native";
-import { SegmentedOption } from "../../../components/pickers/SegmentedOption";
-import { StandardButton } from "../../../components/StandardButton";
+import { SegmentedOption } from "../../../ui/input/pickers/SegmentedOption";
+import { StandardButton } from "../../../ui/StandardButton";
 import Toast from "react-native-toast-message";
 import { type MatchReportReturnData, MatchReportsDB } from "../../../database/ScoutMatchReports";
 import { CompetitionsDB } from "../../../database/Competitions";

@@ -1,4 +1,3 @@
-import { createStackNavigator, type StackScreenProps } from "@react-navigation/stack";
 import { EntrypointHome } from "./EntrypointHome";
 import { LoginForm } from "./Login";
 import { ResetPassword } from "./ResetPassword";
@@ -9,11 +8,12 @@ import { EnterUserInfo } from "./steps/EnterUserInfo";
 import { SelectTeam } from "./steps/SelectTeam";
 import { useState, useEffect } from "react";
 import type { RootStackScreenProps } from "../../App";
-import { AccountStatus } from "../../lib/user/account.ts";
-import { useAccount } from "../../lib/hooks/useAccount.ts";
+import { AccountStatus } from "../../lib/user/account";
+import { useAccount } from "../../lib/hooks/useAccount";
+import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const Stack = createStackNavigator<OnboardingParamList>();
-export type OnboardingScreenProps<K extends keyof OnboardingParamList> = StackScreenProps<
+const Stack = createNativeStackNavigator<OnboardingParamList>();
+export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<
     OnboardingParamList,
     K
 >;
@@ -60,7 +60,7 @@ export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
                 break;
             case AccountStatus.Approval:
                 setError(
-                    "Your account has not been approved yet.\nPlease contact a captain for approval."
+                    "Your account has not been approved yet.\nPlease contact a admin for approval."
                 );
                 navigation.replace("Onboarding", { screen: "Entrypoint" });
                 break;

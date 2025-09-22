@@ -1,7 +1,7 @@
 import { StandardModal } from '../../../../components/modals/StandardModal';
 import { Alert, Text, TextInput, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { StandardButton } from '../../../../components/StandardButton';
+import { StandardButton } from '../../../../ui/StandardButton';
 import { useTheme } from '@react-navigation/native';
 
 function Spacer() {

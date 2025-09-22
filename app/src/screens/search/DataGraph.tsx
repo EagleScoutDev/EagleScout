@@ -3,7 +3,7 @@ import { StandardModal } from '../../components/modals/StandardModal';
 import { LineChart } from 'react-native-chart-kit';
 import { useEffect, useState } from "react";
 import { useTheme } from '@react-navigation/native';
-import type { Setter } from '../../lib/react/types';
+import type { Setter } from '../../lib/react';
 
 export interface DataGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>

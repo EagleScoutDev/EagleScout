@@ -1,7 +1,7 @@
 import {Text, View} from 'react-native';
 import {Circle, Line, Path, Rect, Svg} from 'react-native-svg';
-import type { ReefscapeAutoPath } from './ReefscapeAutoPath';
-import {ReefscapeActionType} from './ReefscapeActions';
+import type { ReefscapeAutoPath } from './ReefscapeAutoPath.ts';
+import {ReefscapeActionType} from './ReefscapeActions.tsx';
 
 const nodePositions = [
   //gamepices

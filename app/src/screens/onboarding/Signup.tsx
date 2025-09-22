@@ -12,8 +12,8 @@ import { useMemo, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { styles } from './styles';
 import { supabase } from '../../lib/supabase';
-import { MinimalSectionHeader } from '../../components/MinimalSectionHeader';
-import { StandardButton } from '../../components/StandardButton';
+import { MinimalSectionHeader } from '../../ui/MinimalSectionHeader';
+import { StandardButton } from '../../ui/StandardButton';
 import { type OnboardingScreenProps } from '.';
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {

@@ -9,7 +9,7 @@ import {
 } from '../../database/ScoutMatchReports';
 import { FormsDB, type FormReturnData } from '../../database/Forms';
 import { CompetitionsDB } from '../../database/Competitions';
-import type { Setter } from '../../lib/react/types';
+import type { Setter } from '../../lib/react';
 
 export interface CombinedGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>

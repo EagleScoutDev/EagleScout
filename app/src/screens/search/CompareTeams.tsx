@@ -9,13 +9,19 @@ import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { CompetitionRank } from "./CompetitionRank";
 import { getLighterColor, parseColor } from "../../lib/color";
-import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports.ts";
+import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
+import type { SearchMenuScreenProps } from "./SearchMenu";
+import type { SimpleTeam } from "../../lib/tba";
 
-export function CompareTeams({ route }) {
+export interface CompareTeamsParams {
+    team: SimpleTeam;
+    compId: number;
+}
+export interface CompareTeamsProps extends SearchMenuScreenProps<"CompareTeams"> {}
+export function CompareTeams({ route }: CompareTeamsProps) {
     const { team, compId } = route.params;
     const { colors, dark } = useTheme();
     const [secondTeam, setSecondTeam] = useState<number | null>(null);
-    // const [reports, setReports] = useState<ScoutReportReturnData[]>([]);
 
     const [uniqueTeams, setUniqueTeams] = useState<number[]>([]);
 

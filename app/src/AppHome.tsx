@@ -8,24 +8,23 @@ import {
 import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import { View } from "react-native";
 import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow";
-import { MatchBettingNavigator } from "./screens/match-betting-flow/MatchBettingNavigator";
-import { SearchScreen, type SearchScreenParamList } from "./screens/search/SearchScreen";
+import { MatchBettingNavigator } from "./screens/scoutcoin/betting/MatchBettingNavigator";
+import { SearchMenu, type SearchMenuParamList } from "./screens/search/SearchMenu";
 import type { RootStackScreenProps } from "./App";
-import * as Bs from "./components/icons/icons.generated";
+import * as Bs from "./ui/icons";
 import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings/SettingsMenu";
 import { useEffect } from "react";
 import { useAccount } from "./lib/hooks/useAccount";
-import { DataMain } from "./screens/data/DataMain";
+import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
 
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>;
 export type AppHomeParamList = {
     Home: NavigatorScreenParams<ScoutMenuParamList>;
-    Search: NavigatorScreenParams<SearchScreenParamList>;
+    Search: NavigatorScreenParams<SearchMenuParamList>;
     PlusMenuLauncher: undefined;
-    Data: undefined;
+    Data: NavigatorScreenParams<DataMenuParamList>;
     Settings: NavigatorScreenParams<SettingsMenuParamList>;
-    MatchBetting: undefined;
 };
 
 export interface AppHomeProps extends RootStackScreenProps<"App"> {}
@@ -44,7 +43,6 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
 
     return (
         <Tab.Navigator
-            tabBar={FilteringBottomTabBar(["Home", "Search", "PlusMenuLauncher", "Data", "Settings"])}
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: true,
@@ -63,7 +61,7 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
             />
             <Tab.Screen
                 name="Search"
-                component={SearchScreen}
+                component={SearchMenu}
                 options={{
                     tabBarIcon: ({ color, size }) => <Bs.Search size={size} color={color} />,
                 }}
@@ -106,25 +104,6 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
                     tabBarIcon: ({ size, color }) => <Bs.PersonCircle size={size} color={color} />,
                 }}
             />
-            <Tab.Screen
-                name="MatchBetting"
-                options={{
-                    tabBarButton: () => null,
-                }}
-                component={MatchBettingNavigator}
-            />
         </Tab.Navigator>
     );
 };
-
-function FilteringBottomTabBar(routes: string[]): (props: BottomTabBarProps) => React.ReactNode {
-    return (props) => (
-        <BottomTabBar
-            {...props}
-            state={{
-                ...props.state,
-                routes: props.state.routes.filter((x) => routes.includes(x.name)),
-            }}
-        />
-    );
-}

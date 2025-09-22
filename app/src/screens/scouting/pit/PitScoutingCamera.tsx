@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Camera, useCameraDevice, useCameraPermission } from "react-native-vision-camera";
 import { CaptureButton } from "./CaptureButton";
@@ -11,6 +11,7 @@ import Reanimated, {
     useSharedValue,
 } from "react-native-reanimated";
 import { type Theme, useTheme } from "@react-navigation/native";
+import { exMemo } from "../../../lib/react";
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 
@@ -22,18 +23,20 @@ export interface PitScoutingCameraProps {
     onCancel: () => void;
 }
 export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraProps) {
-    const theme = useTheme();
-    const colors = theme.colors;
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+    const { colors } = useTheme();
+    const s = styles(colors);
     const [isCapturing, setIsCapturing] = useState(false);
     const { hasPermission, requestPermission } = useCameraPermission();
+
     const device = useCameraDevice("back");
     const camera = useRef<Camera>(null);
+
     useEffect(() => {
         if (!hasPermission) {
             requestPermission();
         }
     }, [hasPermission, requestPermission]);
+
     const onCapturePress = useCallback(async () => {
         if (camera.current == null) {
             return;
@@ -41,7 +44,7 @@ export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraP
         setIsCapturing(true);
         const file = await camera.current.takePhoto().catch(console.error); //< TODO: no
         if (file) {
-            const data = await fetch(`file://${file.path}`).then(r => r.blob());
+            const data = await fetch(`file://${file.path}`).then((r) => r.blob());
             const reader = new FileReader();
             reader.onload = () => {
                 const dataUrl = reader.result;
@@ -57,8 +60,8 @@ export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraP
 
     const cameraAnimatedProps = useAnimatedProps(() => {
         return {
-            zoom: Math.max(Math.min(zoom.value, maxZoom), minZoom)
-        }
+            zoom: Math.max(Math.min(zoom.value, maxZoom), minZoom),
+        };
     }, [maxZoom, minZoom, zoom]);
     const neutralZoom = device?.neutralZoom ?? 1;
     useEffect(() => {
@@ -85,55 +88,26 @@ export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraP
 
     if (device == null || !hasPermission) {
         return (
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 10,
-                }}
-            >
+            <View style={s.na_container}>
                 <Text>No camera found</Text>
-                <TouchableOpacity
-                    onPress={onCancel}
-                    style={{
-                        backgroundColor: colors.background,
-                        padding: 10,
-                        borderRadius: 10,
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: colors.text,
-                        }}
-                    >
-                        Cancel
-                    </Text>
+                <TouchableOpacity onPress={onCancel} style={s.na_opacity}>
+                    <Text style={s.na_text}>Cancel</Text>
                 </TouchableOpacity>
             </View>
         );
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.cancelButtonContainer}>
-                <Pressable style={styles.cancelButton} onPress={onCancel}>
-                    <Text
-                        style={{
-                            width: 20,
-                            height: 20,
-                            color: "black",
-                            textAlign: "center",
-                        }}
-                    >
-                        X
-                    </Text>
+        <View style={s.container}>
+            <View style={s.cancelButtonContainer}>
+                <Pressable style={s.cancelButton} onPress={onCancel}>
+                    <Text style={s.cancelButtonText}>X</Text>
                 </Pressable>
             </View>
             <CaptureButton onPress={onCapturePress} loading={isCapturing} />
             <PinchGestureHandler onGestureEvent={onPinchGesture} enabled={true}>
                 <ReanimatedCamera
-                    style={styles.camera}
+                    style={s.camera}
                     device={device}
                     isActive={true}
                     photo={true}
@@ -145,8 +119,23 @@ export function PitScoutingCamera({ onPhotoTaken, onCancel }: PitScoutingCameraP
     );
 }
 
-const makeStyles = ({ colors }: Theme) =>
+const styles = exMemo((colors: Theme["colors"]) =>
     StyleSheet.create({
+        na_container: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 10,
+        },
+        na_opacity: {
+            backgroundColor: colors.background,
+            padding: 10,
+            borderRadius: 10,
+        },
+        na_text: {
+            color: colors.text,
+        },
+
         container: {
             flex: 1,
         },
@@ -167,4 +156,11 @@ const makeStyles = ({ colors }: Theme) =>
             justifyContent: "center",
             alignItems: "center",
         },
-    });
+        cancelButtonText: {
+            width: 20,
+            height: 20,
+            color: "black",
+            textAlign: "center",
+        },
+    })
+);

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { ReefscapeActionType } from "./ReefscapeActions";
+import { ReefscapeActionType } from "./ReefscapeActions.tsx";
 
 export const ReefscapeLevels = ({ onSubmit }: { onSubmit: (level: ReefscapeActionType) => void }) => {
     const { colors } = useTheme();

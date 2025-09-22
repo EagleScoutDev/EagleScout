@@ -1,44 +1,46 @@
-import { StandardModal } from '../../../../components/modals/StandardModal';
-import {
-    Alert,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
-import { StandardButton } from '../../../../components/StandardButton';
-import { useTheme } from '@react-navigation/native';
-import { NewQuestionSeparator } from '../NewQuestionSeparator';
+import { StandardModal } from "../../../../components/modals/StandardModal";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, type default as React, useState } from "react";
+import { StandardButton } from "../../../../ui/StandardButton";
+import { useTheme } from "@react-navigation/native";
+import { NewQuestionSeparator } from "../NewQuestionSeparator";
+import type { Setter } from "../../../../lib/react";
+import { Form } from "../../../../database/Forms";
 
 function Spacer() {
-    return <View style={{ height: '2%' }} />;
+    return <View style={{ height: "2%" }} />;
 }
 
-export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
+export interface CheckboxesProps {
+    visible: boolean;
+    setVisible: Setter<boolean>;
+    onSubmit: (value: Form.CheckboxesStructure) => void;
+    value: Form.CheckboxesStructure;
+    styles: StyleSheet.NamedStyles<any>;
+}
+export function Checkboxes({ visible, setVisible, styles, onSubmit, value }: CheckboxesProps) {
     const { colors } = useTheme();
-    const [question, setQuestion] = useState('');
-    const [options, setOptions] = useState([]);
+    const [question, setQuestion] = useState("");
+    const [options, setOptions] = useState<string[]>([]);
 
     const [addOptionModalVisible, setAddOptionModalVisible] = useState(false);
     const [setIndex, setSetIndex] = useState(0);
-    const [optionText, setOptionText] = useState('');
+    const [optionText, setOptionText] = useState("");
 
     useEffect(() => {
-        if (value && value.type === 'checkbox') {
+        if (value && value.type === "checkbox") {
             setQuestion(value.question);
             setOptions(value.options);
         }
     }, [value]);
 
     const submit = () => {
-        if (question === '') {
-            Alert.alert('Please enter a question');
+        if (question === "") {
+            Alert.alert("Please enter a question");
             return false;
         }
         onSubmit({
-            type: 'checkboxes',
+            type: Form.ItemType.checkbox,
             question,
             options,
         });
@@ -51,27 +53,28 @@ export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
             visible={visible}
             onDismiss={() => {
                 setVisible(false);
-            }}>
+            }}
+        >
             <Text style={styles.label}>Question</Text>
             <Spacer />
             <TextInput
                 style={styles.textInput}
                 placeholder="Question"
-                onChangeText={text => setQuestion(text)}
+                onChangeText={(text) => setQuestion(text)}
                 value={question}
             />
             <Text style={{ color: colors.text }}>
-                Click '+' to add a new checkbox option. To delete an option, long press
-                on it.
+                Click '+' to add a new checkbox option. To delete an option, long press on it.
             </Text>
             <Spacer />
             <Text style={styles.label}>Options:</Text>
             <ScrollView
                 style={{
-                    maxHeight: '70%',
-                    width: '100%',
+                    maxHeight: "70%",
+                    width: "100%",
                 }}
-                onStartShouldSetResponder={() => true}>
+                onStartShouldSetResponder={() => true}
+            >
                 {options.map((option, index) => {
                     return (
                         <View key={index}>
@@ -87,13 +90,15 @@ export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
                             <TouchableOpacity
                                 onLongPress={() => {
                                     setOptions(options.filter((_, i) => i !== index));
-                                }}>
+                                }}
+                            >
                                 <Text
                                     style={{
                                         fontSize: 20,
-                                        textAlign: 'center',
+                                        textAlign: "center",
                                         color: colors.text,
-                                    }}>
+                                    }}
+                                >
                                     {option}
                                 </Text>
                             </TouchableOpacity>
@@ -111,38 +116,35 @@ export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
                 </TouchableOpacity>
             </ScrollView>
             <StandardModal
-                title={'New Option'}
+                title={"New Option"}
                 visible={addOptionModalVisible}
                 onDismiss={() => {
                     setVisible(false);
-                }}>
+                }}
+            >
                 <Spacer />
                 <Text style={styles.label}>Option</Text>
                 <Spacer />
                 <TextInput
                     style={styles.textInput}
                     placeholder="Option"
-                    onChangeText={text => setOptionText(text)}
+                    onChangeText={(text) => setOptionText(text)}
                     value={optionText}
                 />
                 <Spacer />
                 <StandardButton
-                    text={'Submit'}
+                    text={"Submit"}
                     onPress={() => {
-                        setOptions([
-                            ...options.slice(0, setIndex),
-                            optionText,
-                            ...options.slice(setIndex),
-                        ]);
-                        setOptionText('');
+                        setOptions([...options.slice(0, setIndex), optionText, ...options.slice(setIndex)]);
+                        setOptionText("");
                         setAddOptionModalVisible(false);
                     }}
                     color={colors.primary}
                 />
                 <StandardButton
-                    text={'Cancel'}
+                    text={"Cancel"}
                     onPress={() => {
-                        setOptionText('');
+                        setOptionText("");
                         setAddOptionModalVisible(false);
                     }}
                     color={colors.notification}
@@ -150,14 +152,14 @@ export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
             </StandardModal>
             <Spacer />
             <StandardButton
-                text={'Submit'}
+                text={"Submit"}
                 onPress={() => {
                     setVisible(!submit());
                 }}
                 color={colors.primary}
             />
             <StandardButton
-                text={'Cancel'}
+                text={"Cancel"}
                 onPress={() => {
                     setVisible(false);
                 }}
@@ -165,6 +167,4 @@ export function Checkboxes({ visible, setVisible, styles, onSubmit, value })  {
             />
         </StandardModal>
     );
-};
-
-
+}

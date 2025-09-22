@@ -1,22 +1,20 @@
-import { View, Text, FlatList, Pressable, SafeAreaView, TouchableOpacity, Modal, Alert } from "react-native";
+import { Alert, FlatList, Modal, Pressable, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import Svg, { Path } from "react-native-svg";
-import { type MatchReportReturnData } from "../../database/ScoutMatchReports";
-
-import type { SimpleTeam } from "../../lib/TBAUtils";
-import { TBA } from "../../lib/TBAUtils";
-import { MatchReportsDB } from "../../database/ScoutMatchReports";
+import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
+import * as Bs from "../../ui/icons";
+import type { SimpleTeam } from "../../lib/tba";
+import { TBA } from "../../lib/tba";
 import { CompetitionChanger } from "./CompetitionChanger";
 import { ScoutViewer } from "../../components/modals/ScoutViewer";
 import { CompetitionsDB } from "../../database/Competitions";
 import { NotesDB, type NoteWithMatch } from "../../database/ScoutNotes";
-import { NoteList } from "../../components/NoteList";
+import { NoteList } from "../../components/NoteList.tsx";
 import { getLighterColor, parseColor } from "../../lib/color";
 import { isTablet } from "../../lib/deviceType";
-import type { SearchScreenScreenProps } from "./SearchScreen";
+import type { SearchMenuScreenProps } from "./SearchMenu";
 
-export interface SearchMainProps extends SearchScreenScreenProps<"Main Search"> {}
+export interface SearchMainProps extends SearchMenuScreenProps<"Main"> {}
 export function SearchMain({ navigation }: SearchMainProps) {
     const { colors } = useTheme();
     const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
@@ -102,7 +100,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
     }, [competitionId]);
 
     const navigateToTeamViewer = (team: SimpleTeam) => {
-        navigation.navigate("Team Viewer", {
+        navigation.navigate("TeamViewer", {
             team: team,
             competitionId: competitionId,
         });
@@ -145,20 +143,14 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                 // backgroundColor: colors.card,
                             }}
                             onPress={() => {
-                                navigation.navigate("Search Modal", {
+                                navigation.navigate("SearchModal", {
                                     teams: listOfTeams,
                                     reportsByMatch: reportsByMatch,
                                     competitionId: competitionId,
                                 });
                             }}
                         >
-                            <Svg width={"20"} height="20" viewBox="0 0 16 16">
-                                <Path
-                                    fill={colors.text}
-                                    opacity={0.7}
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                                />
-                            </Svg>
+                            <Bs.Search size="20" fill={colors.text} />
                         </Pressable>
                     )}
                 </View>
@@ -244,14 +236,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                         setCurrentMatchNumber(item);
                                     }}
                                 >
-                                    <Svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
-                                        fill={getLighterColor(parseColor(colors.primary))}
-                                    >
-                                        <Path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293z" />
-                                    </Svg>
+                                    <Bs.StickyFill size="16" fill={getLighterColor(parseColor(colors.primary))} />
                                 </TouchableOpacity>
                             </View>
                             <View

@@ -1,11 +1,11 @@
 import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { SegmentedOption } from "../../../components/pickers/SegmentedOption";
-import { StandardButton } from "../../../components/StandardButton";
+import { SegmentedOption } from "../../../ui/input/pickers/SegmentedOption";
+import { StandardButton } from "../../../ui/StandardButton";
 import { FormHelper } from "../../../FormHelper";
 import { NotesDB, type NoteWithMatch, type OfflineNote } from "../../../database/ScoutNotes";
-import { NoteList } from "../../../components/NoteList";
+import { NoteList } from "../../../components/NoteList.tsx";
 import { CompetitionsDB } from "../../../database/Competitions";
 
 export const SubmittedNotes = () => {

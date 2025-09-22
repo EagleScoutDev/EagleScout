@@ -1,17 +1,14 @@
-import { useEffect, useState } from 'react';
-import { type SimpleEvent, TBA } from '../../lib/TBAUtils';
-import { useTheme } from '@react-navigation/native';
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import { useEffect, useState } from "react";
+import { type SimpleEvent, TBA } from "../../lib/tba";
+import { useTheme } from "@react-navigation/native";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import * as Bs from "../../ui/icons";
 
 // TODO: Add a loading indicator
 // TODO: When it is clicked on, expand and show their rank history for the past few competitions they have attended
 export function CompetitionRank({ team_number }: { team_number: number }) {
-    const [currentCompetition, setCurrentCompetition] =
-        useState<SimpleEvent | null>(null);
-    const [currentCompetitionRank, setCurrentCompetitionRank] = useState<
-        number | null
-    >(null);
+    const [currentCompetition, setCurrentCompetition] = useState<SimpleEvent | null>(null);
+    const [currentCompetitionRank, setCurrentCompetitionRank] = useState<number | null>(null);
     const [allCompetitions, setAllCompetitions] = useState<SimpleEvent[]>([]);
     const [historyVisible, setHistoryVisible] = useState<boolean>(false);
     const { colors } = useTheme();
@@ -24,9 +21,9 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
         const fetchTeamRankings = async () => {
             try {
                 const events = await TBA.getAllCompetitionsForTeam(team_number);
-                const rankPromises = events.map(async event => {
+                const rankPromises = events.map(async (event) => {
                     const rank = await TBA.getTeamRank(event.key, team_number);
-                    console.log(event.name + ' ' + rank);
+                    console.log(event.name + " " + rank);
                     return { ...event, rank }; // return a new object with the rank property added
                 });
 
@@ -34,7 +31,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                 all_competitions = updatedEvents;
                 setAllCompetitions(updatedEvents);
             } catch (error) {
-                console.error('An error occurred while fetching team rankings:', error);
+                console.error("An error occurred while fetching team rankings:", error);
             }
         };
 
@@ -49,7 +46,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     return true;
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
             }
             return false;
         };
@@ -61,25 +58,16 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     return 0;
                 }
                 // else return the difference between the date and the start date or the end date, whichever is closer
-                return Math.abs(date.getTime() - startDate.getTime()) <
-                    Math.abs(date.getTime() - endDate.getTime())
+                return Math.abs(date.getTime() - startDate.getTime()) < Math.abs(date.getTime() - endDate.getTime())
                     ? Math.abs(date.getTime() - startDate.getTime())
                     : Math.abs(date.getTime() - endDate.getTime());
             };
 
             let closest = events[0];
             let date = new Date();
-            let diff = dateDiff(
-                date,
-                new Date(events[0].start_date),
-                new Date(events[0].end_date),
-            );
-            events.forEach(event => {
-                const newDiff = dateDiff(
-                    date,
-                    new Date(event.start_date),
-                    new Date(event.end_date),
-                );
+            let diff = dateDiff(date, new Date(events[0].start_date), new Date(events[0].end_date));
+            events.forEach((event) => {
+                const newDiff = dateDiff(date, new Date(event.start_date), new Date(event.end_date));
                 if (newDiff < diff) {
                     closest = event;
                     diff = newDiff;
@@ -88,7 +76,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
             return closest;
         };
 
-        fetchData().then(success => {
+        fetchData().then((success) => {
             fetchTeamRankings()
                 .then(() => {
                     const sorted = [...all_competitions].sort((a, b) => {
@@ -100,9 +88,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     setAllCompetitions(sorted);
 
                     if (sorted.length > 0) {
-                        const filteredArray = sorted.filter(
-                            event => event.rank != null && event.rank >= 0,
-                        );
+                        const filteredArray = sorted.filter((event) => event.rank != null && event.rank >= 0);
 
                         let last_event;
                         if (filteredArray.length > 0) {
@@ -110,12 +96,12 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                         } else {
                             last_event = findClosestDate(sorted);
                         }
-                        console.log('last event: ' + Object.entries(last_event));
-                        console.log('success: ' + success);
+                        console.log("last event: " + Object.entries(last_event));
+                        console.log("success: " + success);
 
                         if (success) {
                             setCurrentCompetition(last_event);
-                            console.log('detected last rank: ' + last_event.rank);
+                            console.log("detected last rank: " + last_event.rank);
                             setCurrentCompetitionRank(last_event.rank);
                             // the following line is used to trigger a rerender
                             // there is probably a better way to accomplish this
@@ -127,7 +113,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     }
                     setLoading(false);
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.log(error);
                 });
         });
@@ -135,15 +121,15 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
 
     const rankToColor = (rank: number) => {
         if (rank < 0) {
-            return 'gray';
+            return "gray";
         } else if (rank < 8) {
-            return 'green';
+            return "green";
         } else if (rank < 16) {
-            return 'deepskyblue';
+            return "deepskyblue";
         } else if (rank < 24) {
-            return 'orangered';
+            return "orangered";
         }
-        return 'red';
+        return "red";
     };
 
     return (
@@ -153,105 +139,63 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     setHistoryVisible(!historyVisible);
                 }}
                 style={{
-                    minWidth: '95%',
-                    maxWidth: '95%',
-                    padding: '5%',
-                    marginTop: '5%',
+                    minWidth: "95%",
+                    maxWidth: "95%",
+                    padding: "5%",
+                    marginTop: "5%",
                     marginBottom: historyVisible ? 6 : 20,
-                    borderColor: loading ? 'gray' : rankToColor(currentCompetitionRank!),
+                    borderColor: loading ? "gray" : rankToColor(currentCompetitionRank!),
                     borderWidth: 4,
                     backgroundColor: colors.background,
                     borderRadius: 10,
-                    alignSelf: 'center',
+                    alignSelf: "center",
 
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                    flexDirection: 'row',
-                }}>
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    flexDirection: "row",
+                }}
+            >
                 <View style={{ flex: 1 }}>
                     <Text
                         style={{
                             color: colors.text,
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontSize: 20,
                             // marginTop: '2%',
-                            fontWeight: '800',
+                            fontWeight: "800",
                             // flex: 1,
-                        }}>
+                        }}
+                    >
                         {loading ? (
-                            'Loading...'
+                            "Loading..."
                         ) : (
                             <>
                                 {currentCompetitionRank === -1
-                                    ? 'Has not competed yet'
+                                    ? "Has not competed yet"
                                     : currentCompetitionRank === -2
-                                        ? 'Unranked'
-                                        : currentCompetitionRank === -3
-                                            ? 'No competitions found for this team'
-                                            : 'Ranked #' + currentCompetitionRank}
+                                    ? "Unranked"
+                                    : currentCompetitionRank === -3
+                                    ? "No competitions found for this team"
+                                    : "Ranked #" + currentCompetitionRank}
                             </>
                         )}
                     </Text>
                     <Text
                         style={{
                             color: colors.text,
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontSize: 20,
                             // marginTop: '2%',
-                        }}>
-                        {loading ? (
-                            ' '
-                        ) : (
-                            <>
-                                {currentCompetition != null
-                                    ? 'at ' + currentCompetition.name
-                                    : ' '}
-                            </>
-                        )}
+                        }}
+                    >
+                        {loading ? " " : <>{currentCompetition != null ? "at " + currentCompetition.name : " "}</>}
                     </Text>
                 </View>
                 <View style={{ flex: 0 }}>
                     {historyVisible ? (
-                        <Svg
-                            width={20}
-                            height={20}
-                            viewBox="0 0 24 24"
-                            stroke={colors.text}
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{
-                                // position: 'absolute',
-                                // right: '8%',
-                                // top: '60%',
-                                transform: [{ rotate: '90deg' }],
-                            }}>
-                            <Path
-                                fill-rule="evenodd"
-                                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                            />
-                        </Svg>
+                        <Bs.ChevronDown size="20" fill={colors.text} />
                     ) : (
-                        <Svg
-                            width={20}
-                            height={20}
-                            viewBox="0 0 24 24"
-                            stroke={colors.text}
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={
-                                {
-                                    // position: 'absolute',
-                                    // right: '5%',
-                                    // top: '60%',
-                                }
-                            }>
-                            <Path
-                                fill-rule="evenodd"
-                                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                            />
-                        </Svg>
+                        <Bs.ChevronRight size="20" fill={colors.text} />
                     )}
                 </View>
             </Pressable>
@@ -263,9 +207,9 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                         // borderWidth: 2,
                         // borderColor: colors.border,
                         // marginHorizontal: '5%',
-                        minWidth: '95%',
-                        maxWidth: '95%',
-                        alignSelf: 'center',
+                        minWidth: "95%",
+                        maxWidth: "95%",
+                        alignSelf: "center",
                         // padding: '5%',
                         // borderRadius: 0,
                         // borderBottomLeftRadius: 10,
@@ -274,42 +218,45 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                         borderColor: rankToColor(currentCompetitionRank!),
                         borderWidth: 1,
                         borderRadius: 10,
-                    }}>
+                    }}
+                >
                     {allCompetitions.map((item, index) => {
                         return (
                             <View
                                 key={item.key}
                                 style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
 
                                     padding: 20,
-                                    paddingHorizontal: '3%',
-                                    backgroundColor:
-                                        index % 2 == 0 ? colors.card : colors.background,
-                                }}>
+                                    paddingHorizontal: "3%",
+                                    backgroundColor: index % 2 == 0 ? colors.card : colors.background,
+                                }}
+                            >
                                 <Text
                                     style={{
                                         color: colors.text,
-                                        fontWeight: 'bold',
-                                        textAlign: 'left',
+                                        fontWeight: "bold",
+                                        textAlign: "left",
                                         flex: 2,
-                                    }}>
+                                    }}
+                                >
                                     {index + 1}. {item.name}
                                 </Text>
                                 <Text
                                     style={{
                                         color: colors.text,
-                                        fontWeight: 'bold',
-                                        textAlign: 'center',
+                                        fontWeight: "bold",
+                                        textAlign: "center",
                                         flex: 1,
-                                    }}>
+                                    }}
+                                >
                                     {item.rank === -1
-                                        ? 'Future Competition'
+                                        ? "Future Competition"
                                         : item.rank === -2
-                                            ? 'Unranked'
-                                            : 'Rank #' + item.rank}
+                                        ? "Unranked"
+                                        : "Rank #" + item.rank}
                                 </Text>
                             </View>
                         );
@@ -318,4 +265,4 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
             )}
         </View>
     );
-};
+}

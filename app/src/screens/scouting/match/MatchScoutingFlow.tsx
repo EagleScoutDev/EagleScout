@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormHelper } from "../../../FormHelper";
 import Toast from "react-native-toast-message";
-import { CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import { MatchReportsDB } from "../../../database/ScoutMatchReports";
 import { Gamification } from "./Gamification";
 import Confetti from "react-native-confetti";
@@ -27,12 +27,12 @@ export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps)
     const { colors } = useTheme();
     const [match, setMatch] = useState<number | null>(null);
     const [team, setTeam] = useState<number | null>(null);
-    const [competition, setCompetition] = useState<CompetitionReturnData>();
+    const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
     const [formStructure, setFormStructure] = useState();
     const [formId, setFormId] = useState();
 
     const [data, setData] = useState(null);
-    const [arrayData, setArrayData] = useState();
+    const [arrayData, setArrayData] = useState<any[]>([]);
     const [autoPath, setAutoPath] = useState([]);
 
     const [startRelativeTime, setStartRelativeTime] = useState(-1);
@@ -150,7 +150,7 @@ export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps)
         setIsOffline(!dbRequestWorked);
         console.log("LOADINGCOMPS");
 
-        if (comp != null) {
+        if (comp !== null) {
             setIsCompetitionHappening(true);
             setFormId(comp.formId);
             setFormStructure(comp.form);

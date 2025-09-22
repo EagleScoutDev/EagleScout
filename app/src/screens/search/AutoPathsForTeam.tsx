@@ -7,8 +7,14 @@ import { type CrescendoAutoPath } from "../../components/games/crescendo/Crescen
 import { CrescendoAutoViewer } from "../../components/games/crescendo/CrescendoAutoViewer";
 import { type ReefscapeAutoPath } from "../../components/games/reefscape/ReefscapeAutoPath";
 import { ReefscapeViewer } from "../../components/games/reefscape/ReefscapeViewer";
+import type { SearchMenuScreenProps } from "./SearchMenu";
 
-export const AutoPathsForTeam = ({ route }) => {
+export interface AutoPathsForTeamParams {
+    team_number: number;
+    competitionId: number;
+}
+export interface AutoPathsForTeamProps extends SearchMenuScreenProps<"AutoPaths"> {}
+export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
     const { team_number, competitionId } = route.params;
     const { colors } = useTheme();
     const [autoPaths, setAutoPaths] = useState<CrescendoAutoPath[] | ReefscapeAutoPath[] | undefined>();
@@ -115,4 +121,4 @@ export const AutoPathsForTeam = ({ route }) => {
             </View>
         </View>
     );
-};
+}

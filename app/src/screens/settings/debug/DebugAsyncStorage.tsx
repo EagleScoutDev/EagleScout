@@ -4,20 +4,13 @@
  *    give option for "select all" and submit, or user can select manually
  * 2) the forms they have uploaded to the database in the past
  */
-import {
-    Button,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
+import { Button, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Clipboard from "@react-native-clipboard/clipboard";
 
-export function DebugOffline({ navigation }) {
+export function DebugOffline() {
     const [keys, setKeys] = useState([]);
     const [selected, setSelected] = useState();
     const [value, setValue] = useState();
@@ -29,11 +22,11 @@ export function DebugOffline({ navigation }) {
         } catch (e) {
             // read key error
         }
-        console.log('keys: ' + keys);
+        console.log("keys: " + keys);
     };
 
     useEffect(() => {
-        getAllKeys().then(r => console.log(r));
+        getAllKeys().then((r) => console.log(r));
     }, []);
 
     async function handleClick(key) {
@@ -43,8 +36,8 @@ export function DebugOffline({ navigation }) {
 
     return (
         <SafeAreaView>
-            <View style={{ flexDirection: 'column' }}>
-                <Button title={'Force Refresh'} onPress={() => getAllKeys()} />
+            <View style={{ flexDirection: "column" }}>
+                <Button title={"Force Refresh"} onPress={() => getAllKeys()} />
                 <ScrollView>
                     {keys != null &&
                         keys.map((key, index) => {
@@ -53,16 +46,18 @@ export function DebugOffline({ navigation }) {
                                     onPress={() => handleClick(key)}
                                     key={index}
                                     style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                    }}>
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
                                     <Text
                                         style={{
-                                            textAlign: 'left',
+                                            textAlign: "left",
                                             padding: 15,
                                             color: colors.primary,
                                             fontSize: 17,
-                                        }}>
+                                        }}
+                                    >
                                         {key}
                                     </Text>
                                     <Text
@@ -74,16 +69,15 @@ export function DebugOffline({ navigation }) {
                                         onPress={async () => {
                                             await AsyncStorage.removeItem(key);
                                             getAllKeys();
-                                        }}>
+                                        }}
+                                    >
                                         {key}
                                     </Text>
                                 </TouchableOpacity>
                             );
                         })}
                 </ScrollView>
-                {selected !== '' && (
-                    <Text style={{ color: colors.text }}>Selected: {selected}</Text>
-                )}
+                {selected !== "" && <Text style={{ color: colors.text }}>Selected: {selected}</Text>}
                 <View
                     style={{
                         borderBottomColor: colors.border,
@@ -94,21 +88,19 @@ export function DebugOffline({ navigation }) {
                 />
                 <View
                     style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                         padding: 10,
                         borderRadius: 10,
                         // margin: 10,
                         // marginHorizontal: 30,
                         borderBottomColor: colors.border,
                         borderBottomWidth: 4,
-                    }}>
+                    }}
+                >
                     <Text style={{ color: colors.text }}>DATA</Text>
-                    <Button
-                        title={'Copy to Clipboard'}
-                        onPress={() => Clipboard.setString(value)}
-                    />
+                    <Button title={"Copy to Clipboard"} onPress={() => Clipboard.setString(value)} />
                 </View>
                 <ScrollView style={{ paddingBottom: 30 }}>
                     <Text style={{ color: colors.text }}>{value}</Text>
@@ -116,4 +108,4 @@ export function DebugOffline({ navigation }) {
             </View>
         </SafeAreaView>
     );
-};
+}

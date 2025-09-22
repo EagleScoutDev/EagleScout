@@ -1,8 +1,8 @@
 import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { MinimalSectionHeader } from "../../../components/MinimalSectionHeader";
-import { StandardButton } from "../../../components/StandardButton";
+import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
+import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
 

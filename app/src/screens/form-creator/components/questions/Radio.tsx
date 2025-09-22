@@ -8,7 +8,7 @@ import {
     View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import { StandardButton } from '../../../../components/StandardButton';
+import { StandardButton } from '../../../../ui/StandardButton';
 import { RadioOptionsSeparator } from './RadioOptionsSeparator';
 import { useTheme } from '@react-navigation/native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';

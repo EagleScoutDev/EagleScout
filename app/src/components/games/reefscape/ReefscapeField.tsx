@@ -1,9 +1,10 @@
 import {useMemo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import type { ReefscapeAutoPath } from './ReefscapeAutoPath';
+import type { ReefscapeAutoPath } from './ReefscapeAutoPath.ts';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Animated from 'react-native-reanimated';
+import type { Setter } from "../../../lib/react";
 
 // import {AnimatedView} from 'react-native-reanimated/lib/typescript/component/View';
 

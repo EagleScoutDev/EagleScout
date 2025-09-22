@@ -11,7 +11,7 @@ export interface SimpleTeam {
 }
 
 export interface PicklistStructure {
-    id?: string;
+    id: number;
     teams: PicklistTeam[];
     created_at: Date;
     name: string;

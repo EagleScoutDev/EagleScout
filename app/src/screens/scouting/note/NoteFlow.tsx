@@ -17,7 +17,7 @@ import Toast from 'react-native-toast-message';
 import Confetti from 'react-native-confetti';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useCurrentCompetitionMatches } from '../../../lib/useCurrentCompetitionMatches';
-import { StandardButton } from '../../../components/StandardButton';
+import { StandardButton } from '../../../ui/StandardButton';
 
 export function NoteScreen()  {
     const { colors } = useTheme();

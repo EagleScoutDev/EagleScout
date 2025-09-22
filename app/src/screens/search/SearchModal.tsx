@@ -1,15 +1,15 @@
-import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
-import { useEffect, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
-import type { SimpleTeam } from '../../lib/TBAUtils';
-import type { MatchReportReturnData } from '../../database/ScoutMatchReports';
-import { ProfilesDB } from '../../database/Profiles';
-import { Dropdown } from 'react-native-element-dropdown';
-import { ScoutViewer } from '../../components/modals/ScoutViewer';
-import { isTablet } from '../../lib/deviceType';
-import type { SearchScreenScreenProps } from './SearchScreen';
-import type { Profile } from "../../lib/user/profile.ts";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
+import type { SimpleTeam } from "../../lib/tba";
+import type { MatchReportReturnData } from "../../database/ScoutMatchReports";
+import { ProfilesDB } from "../../database/Profiles";
+import { Dropdown } from "react-native-element-dropdown";
+import { ScoutViewer } from "../../components/modals/ScoutViewer";
+import { isTablet } from "../../lib/deviceType";
+import type { SearchMenuScreenProps } from "./SearchMenu";
+import type { Profile } from "../../lib/user/profile";
+import * as Bs from "../../ui/icons";
 
 enum FilterState {
     TEAM,
@@ -18,17 +18,15 @@ enum FilterState {
 }
 
 export interface SearchModalParams {
-    teams: SimpleTeam[]
-    reportsByMatch: Map<number, MatchReportReturnData[]>
-    competitionId: number
+    teams: SimpleTeam[];
+    reportsByMatch: Map<number, MatchReportReturnData[]>;
+    competitionId: number;
 }
-export interface SearchModalProps extends SearchScreenScreenProps<"Search Modal">{
-
-}
-export function SearchModal({ route, navigation }: SearchModalProps)  {
+export interface SearchModalProps extends SearchMenuScreenProps<"SearchModal"> {}
+export function SearchModal({ route, navigation }: SearchModalProps) {
     const { teams, reportsByMatch, competitionId } = route.params;
     const { colors } = useTheme();
-    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [searchTerm, setSearchTerm] = useState<string>("");
     const [filterState, setFilterState] = useState<FilterState>(FilterState.TEAM);
 
     // parsed from reports, then used to find names
@@ -36,9 +34,7 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
 
     const [users, setUsers] = useState<Profile[]>([]);
 
-    const [selectedUser, setSelectedUser] = useState<Profile | null>(
-        null,
-    );
+    const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
 
     const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
     const [currentReport, setCurrentReport] = useState<MatchReportReturnData>();
@@ -57,7 +53,7 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
     useEffect(() => {
         let temp: Set<string> = new Set<string>();
         reportsByMatch.forEach((reports, match) => {
-            reports.forEach(report => {
+            reports.forEach((report) => {
                 if (!temp.has(report.userId)) {
                     temp.add(report.userId);
                 }
@@ -74,7 +70,7 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
         let temp: Profile[] = [];
 
         for (let i = 0; i < userIds.length; i++) {
-            ProfilesDB.getProfile(userIds[i]).then(profile => {
+            ProfilesDB.getProfile(userIds[i]).then((profile) => {
                 temp.push(profile);
             });
         }
@@ -93,107 +89,100 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                 style={{
                     flex: 1,
                     backgroundColor: colors.background,
-                    paddingTop: isTablet() ? '0%' : '10%',
-                }}>
+                    paddingTop: isTablet() ? "0%" : "10%",
+                }}
+            >
                 <View
                     style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '2%',
-                        marginTop: '3%',
-                    }}>
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "2%",
+                        marginTop: "3%",
+                    }}
+                >
                     <View
                         style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            borderColor: 'gray',
+                            flexDirection: "row",
+                            alignItems: "center",
+                            borderColor: "gray",
                             borderWidth: 1,
                             borderRadius: 10,
                             flex: 1,
-                            paddingHorizontal: '2%',
-                        }}>
-                        <Svg width={'20'} height="20" viewBox="0 0 16 16">
-                            <Path
-                                fill={'gray'}
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                            />
-                        </Svg>
+                            paddingHorizontal: "2%",
+                        }}
+                    >
+                        <Bs.Search size="20" fill="gray" />
                         <TextInput
                             style={{
-                                marginHorizontal: '4%',
+                                marginHorizontal: "4%",
                                 height: 40,
                                 color: colors.text,
                                 flex: 1,
                             }}
-                            onChangeText={text => setSearchTerm(text)}
+                            onChangeText={(text) => setSearchTerm(text)}
                             value={searchTerm}
-                            keyboardType={
-                                filterState === FilterState.MATCH ? 'numeric' : 'default'
-                            }
-                            placeholderTextColor={'lightgray'}
+                            keyboardType={filterState === FilterState.MATCH ? "numeric" : "default"}
+                            placeholderTextColor={"lightgray"}
                             placeholder={getSearchPrompt()}
                             onEndEditing={() => {
-                                console.log('onEndEditing');
+                                console.log("onEndEditing");
                             }}
                         />
                         {searchTerm.length > 0 && (
                             <Pressable
                                 onPress={() => {
-                                    setSearchTerm('');
-                                }}>
-                                <Svg width="16" height="16" fill="grey" viewBox="0 0 16 16">
-                                    <Path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
-                                </Svg>
+                                    setSearchTerm("");
+                                }}
+                            >
+                                <Bs.XCircleFill size="16" fill="gray" />
                             </Pressable>
                         )}
                     </View>
                     <Pressable
                         style={{
-                            marginLeft: '5%',
-                            marginRight: '5%',
+                            marginLeft: "5%",
+                            marginRight: "5%",
                         }}
-                        onPress={() => navigation.popTo("Main Search")}>
+                        onPress={() => navigation.popTo("Main")}
+                    >
                         <Text
                             style={{
                                 color: colors.text,
-                            }}>
+                            }}
+                        >
                             Cancel
                         </Text>
                     </Pressable>
                 </View>
                 <View
                     style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-evenly',
-                        padding: '2%',
-                    }}>
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-evenly",
+                        padding: "2%",
+                    }}
+                >
                     <Pressable
                         onPress={() => {
                             setFilterState(FilterState.TEAM);
                         }}
                         style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            padding: '2%',
-                            backgroundColor:
-                                filterState === FilterState.TEAM
-                                    ? colors.text
-                                    : colors.background,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: "2%",
+                            backgroundColor: filterState === FilterState.TEAM ? colors.text : colors.background,
                             borderRadius: 10,
                             flex: 1,
-                            justifyContent: 'center',
-                        }}>
+                            justifyContent: "center",
+                        }}
+                    >
                         <Text
                             style={{
-                                color:
-                                    filterState === FilterState.TEAM
-                                        ? colors.background
-                                        : colors.text,
-                                fontWeight:
-                                    filterState === FilterState.TEAM ? 'bold' : 'normal',
-                            }}>
+                                color: filterState === FilterState.TEAM ? colors.background : colors.text,
+                                fontWeight: filterState === FilterState.TEAM ? "bold" : "normal",
+                            }}
+                        >
                             Team
                         </Text>
                     </Pressable>
@@ -202,26 +191,21 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                             setFilterState(FilterState.MATCH);
                         }}
                         style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            padding: '2%',
-                            backgroundColor:
-                                filterState === FilterState.MATCH
-                                    ? colors.text
-                                    : colors.background,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: "2%",
+                            backgroundColor: filterState === FilterState.MATCH ? colors.text : colors.background,
                             borderRadius: 10,
                             flex: 1,
-                            justifyContent: 'center',
-                        }}>
+                            justifyContent: "center",
+                        }}
+                    >
                         <Text
                             style={{
-                                color:
-                                    filterState === FilterState.MATCH
-                                        ? colors.background
-                                        : colors.text,
-                                fontWeight:
-                                    filterState === FilterState.MATCH ? 'bold' : 'normal',
-                            }}>
+                                color: filterState === FilterState.MATCH ? colors.background : colors.text,
+                                fontWeight: filterState === FilterState.MATCH ? "bold" : "normal",
+                            }}
+                        >
                             Match
                         </Text>
                     </Pressable>
@@ -230,26 +214,21 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                             setFilterState(FilterState.PERSON);
                         }}
                         style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            padding: '2%',
-                            backgroundColor:
-                                filterState === FilterState.PERSON
-                                    ? colors.text
-                                    : colors.background,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: "2%",
+                            backgroundColor: filterState === FilterState.PERSON ? colors.text : colors.background,
                             borderRadius: 10,
                             flex: 1,
-                            justifyContent: 'center',
-                        }}>
+                            justifyContent: "center",
+                        }}
+                    >
                         <Text
                             style={{
-                                color:
-                                    filterState === FilterState.PERSON
-                                        ? colors.background
-                                        : colors.text,
-                                fontWeight:
-                                    filterState === FilterState.PERSON ? 'bold' : 'normal',
-                            }}>
+                                color: filterState === FilterState.PERSON ? colors.background : colors.text,
+                                fontWeight: filterState === FilterState.PERSON ? "bold" : "normal",
+                            }}
+                        >
                             Person
                         </Text>
                     </Pressable>
@@ -257,13 +236,13 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                 <View
                     style={{
                         height: 1,
-                        width: '100%',
+                        width: "100%",
                         backgroundColor: colors.border,
                     }}
                 />
                 {filterState === FilterState.TEAM && (
                     <FlatList
-                        data={teams.filter(team => {
+                        data={teams.filter((team) => {
                             return (
                                 team.team_number.toString().includes(searchTerm) ||
                                 team.nickname.toLowerCase().includes(searchTerm.toLowerCase())
@@ -273,37 +252,24 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                             return (
                                 <Pressable
                                     onPress={() => {
-                                        navigation.navigate("Team Viewer", {
+                                        navigation.navigate("TeamViewer", {
                                             team: item,
                                             competitionId: competitionId,
                                         });
                                     }}
                                     style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        padding: '4%',
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        padding: "4%",
                                         borderBottomWidth: 1,
                                         borderBottomColor: colors.border,
-                                    }}>
+                                    }}
+                                >
                                     <Text style={{ color: colors.text, flex: 1, fontSize: 16 }}>
                                         {item.team_number}
                                     </Text>
-                                    <Text style={{ color: colors.text, flex: 5, fontSize: 16 }}>
-                                        {item.nickname}
-                                    </Text>
-                                    <Svg
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        viewBox="0 0 16 16"
-                                        style={{
-                                            flex: 1,
-                                        }}>
-                                        <Path
-                                            fill="gray"
-                                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                                        />
-                                    </Svg>
+                                    <Text style={{ color: colors.text, flex: 5, fontSize: 16 }}>{item.nickname}</Text>
+                                    <Bs.ChevronRight size="16" fill="gray" style={{ flex: 1 }} />
                                 </Pressable>
                             );
                         }}
@@ -311,7 +277,7 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                 )}
                 {filterState === FilterState.MATCH && (
                     <FlatList
-                        data={Array.from(reportsByMatch.keys()).filter(match => {
+                        data={Array.from(reportsByMatch.keys()).filter((match) => {
                             return match.toString().includes(searchTerm);
                         })}
                         renderItem={({ item }) => {
@@ -319,25 +285,27 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                                 <View>
                                     <View
                                         style={{
-                                            minWidth: '100%',
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            marginVertical: '3%',
-                                        }}>
+                                            minWidth: "100%",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            marginVertical: "3%",
+                                        }}
+                                    >
                                         <Text
                                             style={{
                                                 color: colors.text,
                                                 opacity: 0.6,
-                                                marginHorizontal: '4%',
-                                                fontWeight: 'bold',
+                                                marginHorizontal: "4%",
+                                                fontWeight: "bold",
                                                 fontSize: 18,
-                                            }}>
+                                            }}
+                                        >
                                             {item}
                                         </Text>
                                         <View
                                             style={{
                                                 height: 2,
-                                                width: '100%',
+                                                width: "100%",
                                                 backgroundColor: colors.border,
                                             }}
                                         />
@@ -345,9 +313,10 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                                     <View
                                         style={{
                                             // make it like a 3x2 grid
-                                            flexDirection: 'row',
-                                            flexWrap: 'wrap',
-                                        }}>
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                        }}
+                                    >
                                         {reportsByMatch.get(item)?.map((report, index) => {
                                             return (
                                                 <Pressable
@@ -356,22 +325,23 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                                                         setScoutViewerVisible(true);
                                                     }}
                                                     style={{
-                                                        flexDirection: 'row',
-                                                        alignItems: 'center',
-                                                        backgroundColor:
-                                                            index < 3 ? 'crimson' : 'dodgerblue',
-                                                        margin: '2%',
-                                                        padding: '6%',
+                                                        flexDirection: "row",
+                                                        alignItems: "center",
+                                                        backgroundColor: index < 3 ? "crimson" : "dodgerblue",
+                                                        margin: "2%",
+                                                        padding: "6%",
                                                         borderRadius: 10,
-                                                        minWidth: '25%',
-                                                    }}>
+                                                        minWidth: "25%",
+                                                    }}
+                                                >
                                                     <Text
                                                         style={{
                                                             color: colors.text,
-                                                            fontWeight: 'bold',
-                                                            textAlign: 'center',
+                                                            fontWeight: "bold",
+                                                            textAlign: "center",
                                                             flex: 1,
-                                                        }}>
+                                                        }}
+                                                    >
                                                         {report.teamNumber}
                                                     </Text>
                                                 </Pressable>
@@ -384,19 +354,19 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                     />
                 )}
                 {filterState === FilterState.PERSON && users.length > 0 && (
-                    <View style={{ flex: 1, marginBottom: '10%' }}>
+                    <View style={{ flex: 1, marginBottom: "10%" }}>
                         <Dropdown
-                            data={users.map(user => {
+                            data={users.map((user) => {
                                 return {
                                     label: user.name,
                                     value: user.id,
                                 };
                             })}
-                            labelField={'label'}
-                            valueField={'value'}
-                            onChange={item => {
+                            labelField={"label"}
+                            valueField={"value"}
+                            onChange={(item) => {
                                 let newSelectedUser: Profile | null = null;
-                                users.forEach(user => {
+                                users.forEach((user) => {
                                     if (user.id === item.value) {
                                         newSelectedUser = user;
                                     }
@@ -406,13 +376,13 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                             activeColor={colors.card}
                             style={{
                                 borderRadius: 10,
-                                padding: '2%',
-                                margin: '2%',
+                                padding: "2%",
+                                margin: "2%",
                                 backgroundColor: colors.background,
                             }}
                             selectedTextStyle={{
                                 color: colors.text,
-                                fontWeight: 'bold',
+                                fontWeight: "bold",
                                 backgroundColor: colors.background,
                             }}
                             containerStyle={{
@@ -428,60 +398,52 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                             itemTextStyle={{
                                 color: colors.text,
                             }}
-                            placeholder={'Select a user'}
+                            placeholder={"Selector a user"}
                             placeholderStyle={{
                                 color: colors.primary,
                             }}
                             value={{
-                                label: selectedUser?.name ?? 'Select a user',
-                                value: selectedUser?.id ?? '',
+                                label: selectedUser?.name ?? "Selector a user",
+                                value: selectedUser?.id ?? "",
                             }}
                             renderLeftIcon={() => {
                                 return (
-                                    <Svg
-                                        style={{
-                                            marginRight: '4%',
-                                        }}
-                                        width="20"
-                                        height="20"
-                                        fill={colors.primary}
-                                        viewBox="0 0 16 16">
-                                        <Path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                        <Path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                    </Svg>
+                                    <Bs.PersonCircle size="20" fill={colors.primary} style={{ marginRight: "4%" }} />
                                 );
                             }}
                         />
                         {selectedUser && (
                             <FlatList
-                                data={Array.from(reportsByMatch.keys()).filter(match => {
+                                data={Array.from(reportsByMatch.keys()).filter((match) => {
                                     return reportsByMatch
                                         .get(match)
-                                        ?.some(report => report.userId === selectedUser?.id);
+                                        ?.some((report) => report.userId === selectedUser?.id);
                                 })}
                                 renderItem={({ item }) => {
                                     return (
                                         <View>
                                             <View
                                                 style={{
-                                                    minWidth: '100%',
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center',
-                                                    marginVertical: '3%',
-                                                }}>
+                                                    minWidth: "100%",
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                    marginVertical: "3%",
+                                                }}
+                                            >
                                                 <Text
                                                     style={{
-                                                        color: 'grey',
-                                                        marginHorizontal: '4%',
-                                                        fontWeight: 'bold',
+                                                        color: "grey",
+                                                        marginHorizontal: "4%",
+                                                        fontWeight: "bold",
                                                         fontSize: 18,
-                                                    }}>
+                                                    }}
+                                                >
                                                     {item}
                                                 </Text>
                                                 <View
                                                     style={{
                                                         height: 2,
-                                                        width: '100%',
+                                                        width: "100%",
                                                         backgroundColor: colors.border,
                                                     }}
                                                 />
@@ -489,9 +451,10 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                                             <View
                                                 style={{
                                                     // make it like a 3x2 grid
-                                                    flexDirection: 'row',
-                                                    flexWrap: 'wrap',
-                                                }}>
+                                                    flexDirection: "row",
+                                                    flexWrap: "wrap",
+                                                }}
+                                            >
                                                 {reportsByMatch.get(item)?.map((report, index) => {
                                                     if (report.userId === selectedUser?.id) {
                                                         return (
@@ -501,22 +464,24 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                                                                     setScoutViewerVisible(true);
                                                                 }}
                                                                 style={{
-                                                                    flexDirection: 'row',
-                                                                    alignItems: 'center',
+                                                                    flexDirection: "row",
+                                                                    alignItems: "center",
                                                                     backgroundColor:
-                                                                        index < 3 ? 'crimson' : 'dodgerblue',
-                                                                    margin: '2%',
-                                                                    padding: '6%',
+                                                                        index < 3 ? "crimson" : "dodgerblue",
+                                                                    margin: "2%",
+                                                                    padding: "6%",
                                                                     borderRadius: 10,
-                                                                    minWidth: '25%',
-                                                                }}>
+                                                                    minWidth: "25%",
+                                                                }}
+                                                            >
                                                                 <Text
                                                                     style={{
                                                                         color: colors.text,
-                                                                        fontWeight: 'bold',
-                                                                        textAlign: 'center',
+                                                                        fontWeight: "bold",
+                                                                        textAlign: "center",
                                                                         flex: 1,
-                                                                    }}>
+                                                                    }}
+                                                                >
                                                                     {report.teamNumber}
                                                                 </Text>
                                                             </Pressable>
@@ -537,13 +502,11 @@ export function SearchModal({ route, navigation }: SearchModalProps)  {
                     visible={scoutViewerVisible}
                     setVisible={setScoutViewerVisible}
                     data={currentReport ?? []}
-                    chosenComp={currentReport?.competitionName ?? ''}
-                    updateFormData={() => { }}
+                    chosenComp={currentReport?.competitionName ?? ""}
+                    updateFormData={() => {}}
                     isOfflineForm={false}
                 />
             )}
         </>
     );
-};
-
-
+}

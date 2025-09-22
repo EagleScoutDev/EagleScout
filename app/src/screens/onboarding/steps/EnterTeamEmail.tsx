@@ -9,12 +9,12 @@ import {
     View,
 } from 'react-native';
 import { styles } from '../styles';
-import { MinimalSectionHeader } from '../../../components/MinimalSectionHeader';
-import { StandardButton } from '../../../components/StandardButton';
+import { MinimalSectionHeader } from '../../../ui/MinimalSectionHeader';
+import { StandardButton } from '../../../ui/StandardButton';
 import { supabase } from '../../../lib/supabase';
 import { useTheme } from '@react-navigation/native';
 import { type OnboardingScreenProps } from '..';
-import { UserAttributesDB } from "../../../database/UserAttributes.ts";
+import { UserAttributesDB } from "../../../database/UserAttributes";
 
 interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {
 

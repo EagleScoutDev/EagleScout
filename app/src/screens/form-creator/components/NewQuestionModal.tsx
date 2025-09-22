@@ -1,5 +1,5 @@
 import { StandardModal } from '../../../components/modals/StandardModal';
-import { StandardButton } from '../../../components/StandardButton';
+import { StandardButton } from '../../../ui/StandardButton';
 import { ScrollView, Text, type StyleSheetProperties } from 'react-native';
 import { Heading } from './questions/Heading';
 import { useState } from 'react';
@@ -8,7 +8,7 @@ import { Radio } from './questions/Radio';
 import { Number } from './questions/Number';
 import { TextBox } from './questions/TextBox';
 import { Checkboxes } from './questions/Checkboxes';
-import type { Setter } from '../../../lib/react/types';
+import type { Setter } from '../../../lib/react';
 
 export interface NewQuestionModalProps {
     visible: boolean, setVisible: Setter<boolean>
