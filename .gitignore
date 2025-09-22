@@ -2,3 +2,5 @@
 .env
 .env.*
 *.log
+.vscode
+.idea
