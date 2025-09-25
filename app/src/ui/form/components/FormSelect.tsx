@@ -14,64 +14,29 @@ interface Data {
     value: any;
 }
 
-export interface SelectListProps {
-    /**
-     * Function to set the selected value of the select list
-     */
-    setSelected: Function;
+export interface SelectListProps<T> {
+    setSelected: (x: T) => void;
 
-    /**
-     * Placeholder text that will be displayed in the select box
-     */
     placeholder?: string;
 
-    /**
-     * Maximum height of the dropdown wrapper to occupy
-     */
     maxHeight?: number;
 
-    /**
-     * Data which will be iterated as options of select list
-     */
-    data: Data[];
-
-    /**
-     * The default option of the select list
-     */
+    options: Data[];
     defaultOption?: Data;
 
-    /**
-     * Enable search functionality
-     */
-    searchEnabled?: boolean;
-
-    /**
-     * Placeholder text for search input
-     */
-    searchPlaceholder?: string;
-
-    /**
-     * Trigger an action when option is selected
-     */
     onSelect?: () => void;
-
-    /**
-     * Text to display when no data is found
-     */
     notFoundText?: string;
 }
 
-export function Selector({
+export function FormSelect<T>({
     setSelected,
     placeholder,
     maxHeight,
-    data,
+    options,
     defaultOption,
-    searchEnabled = false,
-    searchPlaceholder = "Search",
     notFoundText = "No forms found",
     onSelect = () => {},
-}: SelectListProps) {
+}: SelectListProps<T>) {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const oldOption = useRef(null);
@@ -80,7 +45,7 @@ export function Selector({
     const [selectedVal, setSelectedVal] = useState<any>("");
     const [height, setHeight] = useState<number>(200);
     const animatedHeight = useRef(new Animated.Value(0)).current;
-    const [filteredData, setFilteredData] = useState(data);
+    const [filteredData, setFilteredData] = useState(options);
 
     const openDropdown = () => {
         setDropdownOpen(true);
@@ -105,8 +70,8 @@ export function Selector({
     }, [maxHeight]);
 
     useEffect(() => {
-        setFilteredData(data);
-    }, [data]);
+        setFilteredData(options);
+    }, [options]);
 
     useEffect(() => {
         if (_firstRender) {
@@ -139,27 +104,9 @@ export function Selector({
             {dropdownOpen ? (
                 <View style={styles.wrapper}>
                     <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                        {searchEnabled ? (
-                            <>
-                                <Bs.ZoomIn size="20" style={{ marginRight: 2 }} />
-                                <TextInput
-                                    placeholder={searchPlaceholder}
-                                    onChangeText={(val) => {
-                                        let result = data.filter((item: Data) => {
-                                            val.toLowerCase();
-                                            let row = item.value.toLowerCase();
-                                            return row.search(val.toLowerCase()) > -1;
-                                        });
-                                        setFilteredData(result);
-                                    }}
-                                    style={{ padding: 0, height: 20, flex: 1 }}
-                                />
-                            </>
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Text style={styles.optionText}>{placeholder ? placeholder : "Selector"}</Text>
-                            </View>
-                        )}
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.optionText}>{placeholder ? placeholder : "FormSelect"}</Text>
+                        </View>
                         <TouchableOpacity onPress={() => closeDropdown()}>
                             <Bs.X size="20" fill={theme.colors.text} />
                         </TouchableOpacity>
@@ -178,7 +125,7 @@ export function Selector({
                     }}
                 >
                     <Text style={styles.optionText}>
-                        {selectedVal ? selectedVal : placeholder ? placeholder : "Selector"}
+                        {selectedVal ? selectedVal : placeholder ? placeholder : "FormSelect"}
                     </Text>
                     <Bs.ChevronDown size="20" />
                 </TouchableOpacity>
@@ -202,7 +149,7 @@ export function Selector({
                                             setSelectedVal(value);
                                             closeDropdown();
                                             setTimeout(() => {
-                                                setFilteredData(data);
+                                                setFilteredData(options);
                                             }, 800);
                                         }}
                                     >
@@ -214,10 +161,10 @@ export function Selector({
                             <TouchableOpacity
                                 style={styles.option}
                                 onPress={() => {
-                                    setSelected(undefined);
+                                    setSelected(null);
                                     setSelectedVal("");
                                     closeDropdown();
-                                    setTimeout(() => setFilteredData(data), 800);
+                                    setTimeout(() => setFilteredData(options), 800);
                                 }}
                             >
                                 <Text style={styles.optionText}>{notFoundText}</Text>

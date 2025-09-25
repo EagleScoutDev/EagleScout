@@ -1,17 +1,16 @@
 import { Alert, Modal, ScrollView, Text, TextInput, TouchableOpacity, View, StyleSheet, Pressable } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { type Theme, useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { Radio } from "../../ui/form/components/Radio.tsx";
-import { Checkboxes } from "../../ui/form/components/Checkboxes.tsx";
+import { FormRadio } from "../../ui/form/components/FormRadio.tsx";
+import { FormCheckboxes } from "../../ui/form/components/FormCheckboxes.tsx";
 import { supabase } from "../../lib/supabase.ts";
 import { FormHelper } from "../../FormHelper.ts";
 import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes.ts";
 import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports.ts";
-import { Slider } from "../../ui/form/components/Slider.tsx";
 import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
 import { isTablet } from "../../lib/deviceType.ts";
 import * as Bs from "../../ui/icons";
-import type { Setter } from "../../lib/react";
+import  { exMemo, type Setter } from "../../lib/react";
 
 /**
  * This component displays the scout data in a modal.
@@ -94,68 +93,6 @@ export function ScoutViewer({
         })();
     }, []);
 
-    const styles = StyleSheet.create({
-        modal_container: {
-            alignSelf: "center",
-            backgroundColor: colors.background,
-            padding: "5%",
-            // marginTop: '8%',
-            height: "100%",
-            width: "100%",
-        },
-        breadcrumbs: {
-            color: colors.text,
-            opacity: 0.8,
-            fontSize: 12,
-            fontStyle: "italic",
-            textAlign: "center",
-            marginTop: isTablet() ? "0%" : "10%",
-        },
-        close: {
-            color: colors.notification,
-            fontWeight: "bold",
-            fontSize: 17,
-            padding: "2%",
-        },
-        team_title: {
-            fontSize: 30,
-            fontWeight: "bold",
-            color: colors.text,
-            textAlign: "center",
-            marginTop: 10,
-            marginBottom: 5,
-        },
-        report_info: {
-            textAlign: "center",
-            color: colors.text,
-        },
-        section_title: {
-            // set the color to be the opposite of the background
-            color: colors.text,
-            fontSize: 18,
-            textAlign: "center",
-            fontWeight: "bold",
-            margin: "6%",
-            textDecorationLine: "underline",
-        },
-        no_info: {
-            color: colors.notification,
-            fontWeight: "bold",
-            flexWrap: "wrap",
-            fontSize: 15,
-            flex: 1,
-        },
-        question: {
-            color: editingActive ? colors.primary : colors.text,
-            fontSize: 15,
-            fontWeight: "600",
-            // wrap text if it's too long
-            flex: 1,
-            flexWrap: "wrap",
-            paddingBottom: 5,
-        },
-    });
-
     useEffect(() => {
         if (data != null) {
             setTempData(data.data);
@@ -186,6 +123,8 @@ export function ScoutViewer({
         }
     }, [data]);
 
+    const s = getStyles(colors)
+
     return (
         <Modal animationType="slide" visible={visible} transparent={true} presentationStyle={"overFullScreen"}>
             <HistorySelectorModal
@@ -209,9 +148,9 @@ export function ScoutViewer({
                     }
                 }}
             />
-            <View style={styles.modal_container}>
+            <View style={s.modal_container}>
                 <TouchableOpacity onPress={() => setVisible(false)}>
-                    <Text style={styles.breadcrumbs}>
+                    <Text style={s.breadcrumbs}>
                         {chosenComp} / Round {data ? data.matchNumber : ""}{" "}
                     </Text>
                 </TouchableOpacity>
@@ -372,7 +311,7 @@ export function ScoutViewer({
                         }}
                     >
                         <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                            <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
+                            <Text style={s.team_title}>Team #{data.teamNumber}</Text>
                             <Pressable
                                 onPress={() => {
                                     navigateToTeamViewer();
@@ -381,15 +320,15 @@ export function ScoutViewer({
                                 <Bs.SendFill size="16" fill="gray" />
                             </Pressable>
                         </View>
-                        <Text style={styles.report_info}>Round {data ? data.matchNumber : ""}</Text>
-                        <Text style={styles.report_info}>By: {userName}</Text>
-                        <Text style={styles.report_info}>{new Date(data.createdAt).toLocaleString()}</Text>
+                        <Text style={s.report_info}>Round {data ? data.matchNumber : ""}</Text>
+                        <Text style={s.report_info}>By: {userName}</Text>
+                        <Text style={s.report_info}>{new Date(data.createdAt).toLocaleString()}</Text>
                     </View>
 
                     {data.form.map((field, index) => (
                         <View key={index}>
                             {/*If the entry has a text property, this indicates that it is a header, or section divider*/}
-                            {field.title && <Text style={styles.section_title}>{field.title}</Text>}
+                            {field.title && <Text style={s.section_title}>{field.title}</Text>}
                             {/*If the entry has a question property, this indicates that it is a question*/}
                             {field.question && formData[index] != null && (
                                 <View
@@ -413,14 +352,14 @@ export function ScoutViewer({
                   if the field is a slider*/}
                                     {/*Slider is only used when editing is active*/}
                                     {(!editingActive || !field.slider) && field.type !== "checkboxes" && (
-                                        <Text style={styles.question}>{field.question}</Text>
+                                        <Text style={s.question}>{field.question}</Text>
                                     )}
                                     {field.type === "radio" && (
                                         <View>
-                                            <Radio
+                                            <FormRadio
                                                 title={""}
                                                 options={field.options}
-                                                onValueChange={(value) => {
+                                                onInput={(value) => {
                                                     console.log("radio button value changed to: " + value);
                                                     let a = [...tempData];
                                                     console.log("index of value: " + field.options.indexOf(value));
@@ -494,14 +433,14 @@ export function ScoutViewer({
                                     )}
                                     {field.type === "checkboxes" && (
                                         <View>
-                                            <Checkboxes
+                                            <FormCheckboxes
                                                 title={field.question}
                                                 options={field.options}
                                                 value={tempData[index]}
                                                 disabled={!editingActive}
                                                 colors={colors}
                                                 editingActive={editingActive}
-                                                onValueChange={(value) => {
+                                                onInput={(value) => {
                                                     let a = [...tempData];
                                                     a[index] = value;
                                                     setTempData(a);
@@ -527,7 +466,7 @@ export function ScoutViewer({
                                         </Text>
                                     )}
                                     {!editingActive && (tempData[index] == null || tempData[index] === "") && (
-                                        <Text style={styles.no_info}>N/A</Text>
+                                        <Text style={s.no_info}>N/A</Text>
                                     )}
                                 </View>
                             )}
@@ -538,3 +477,65 @@ export function ScoutViewer({
         </Modal>
     );
 }
+
+const getStyles = exMemo((colors: Theme["colors"]) => StyleSheet.create({
+    modal_container: {
+        alignSelf: "center",
+        backgroundColor: colors.background,
+        padding: "5%",
+        // marginTop: '8%',
+        height: "100%",
+        width: "100%",
+    },
+    breadcrumbs: {
+        color: colors.text,
+        opacity: 0.8,
+        fontSize: 12,
+        fontStyle: "italic",
+        textAlign: "center",
+        marginTop: isTablet() ? "0%" : "10%",
+    },
+    close: {
+        color: colors.notification,
+        fontWeight: "bold",
+        fontSize: 17,
+        padding: "2%",
+    },
+    team_title: {
+        fontSize: 30,
+        fontWeight: "bold",
+        color: colors.text,
+        textAlign: "center",
+        marginTop: 10,
+        marginBottom: 5,
+    },
+    report_info: {
+        textAlign: "center",
+        color: colors.text,
+    },
+    section_title: {
+        // set the color to be the opposite of the background
+        color: colors.text,
+        fontSize: 18,
+        textAlign: "center",
+        fontWeight: "bold",
+        margin: "6%",
+        textDecorationLine: "underline",
+    },
+    no_info: {
+        color: colors.notification,
+        fontWeight: "bold",
+        flexWrap: "wrap",
+        fontSize: 15,
+        flex: 1,
+    },
+    question: {
+        color: editingActive ? colors.primary : colors.text,
+        fontSize: 15,
+        fontWeight: "600",
+        // wrap text if it's too long
+        flex: 1,
+        flexWrap: "wrap",
+        paddingBottom: 5,
+    },
+}))

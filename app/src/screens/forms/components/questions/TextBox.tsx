@@ -1,6 +1,6 @@
 import { Alert, Text, TextInput, View } from 'react-native';
-import { StandardButton } from '../../../../ui/StandardButton';
-import { StandardModal } from '../../../../components/modals/StandardModal';
+import { StandardButton } from '../../../../ui/StandardButton.tsx';
+import { StandardModal } from '../../../../components/modals/StandardModal.tsx';
 import { useEffect, useState } from 'react';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useTheme } from '@react-navigation/native';

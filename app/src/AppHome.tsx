@@ -45,7 +45,7 @@ export const AppHome = ({ route, navigation }: AppHomeProps) => {
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
-                tabBarShowLabel: true,
+                tabBarShowLabel: false,
                 tabBarStyle: {
                     backgroundColor: colors.background,
                 },

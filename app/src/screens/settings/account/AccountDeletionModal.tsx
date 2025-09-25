@@ -1,7 +1,7 @@
 import { Text, Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { Radio } from "../../../ui/form/components/Radio.tsx";
+import { FormRadio } from "../../../ui/form/components/FormRadio.tsx";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
@@ -49,9 +49,9 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                     <Text style={{ color: colors.text }}>
                         Please let us know why you are leaving:
                     </Text>
-                    <Radio
+                    <FormRadio
                         title={""}
-                        onValueChange={setReason}
+                        onInput={setReason}
                         value={reason}
                         options={[
                             "Graduating from team",

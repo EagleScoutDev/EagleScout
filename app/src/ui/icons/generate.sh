@@ -6,10 +6,10 @@ icons_loc=$(realpath ../../../node_modules/bootstrap-icons/icons)
 
 cat > ./icons.generated.tsx <<EOF
 import _svg, { Path as _path, Rect as _rect, Circle as _circle, type SvgProps } from "react-native-svg";
-import type React from "react";
-export type Icon = React.FC<IconProps>
+import type { JSX } from "react";
+export type Icon = (props: IconProps) => JSX.Element;
 export interface IconProps extends SvgProps {
-    size?: string | number | undefined
+    size?: string | number | undefined;
 }
 
 EOF

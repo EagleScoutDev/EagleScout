@@ -1,11 +1,11 @@
-import { StandardModal } from '../../../../components/modals/StandardModal';
+import { StandardModal } from '../../../../components/modals/StandardModal.tsx';
 import { Alert, Text, TextInput, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
-import { StandardButton } from '../../../../ui/StandardButton';
+import { StandardButton } from '../../../../ui/StandardButton.tsx';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useTheme } from '@react-navigation/native';
-import { ReefscapeActions } from '../../../../components/games/reefscape/ReefscapeActions';
-import { Selector } from '../../../../ui/form/components/Selector.tsx';
+import { ReefscapeActions } from '../../../../components/games/reefscape/ReefscapeActions.tsx';
+import { FormSelect } from '../../../../ui/form/components/FormSelect.tsx';
 import { NumberInput } from "../../../../ui/input/Number.tsx";
 
 function Spacer() {
@@ -145,12 +145,12 @@ export function Number({ visible, setVisible, styles, onSubmit, value })  {
             </View>
             <View style={styles.rowContainer}>
                 <Text style={styles.rowLabel}>Link to</Text>
-                <Selector
+                <FormSelect
                     setSelected={setLinkTo}
-                    data={linkOptions}
+                    options={linkOptions}
                     searchEnabled={false}
                     searchPlaceholder={'Search for a link to...'}
-                    placeholder={'Selector a link to...'}
+                    placeholder={'FormSelect a link to...'}
                     maxHeight={100}
                 />
             </View>

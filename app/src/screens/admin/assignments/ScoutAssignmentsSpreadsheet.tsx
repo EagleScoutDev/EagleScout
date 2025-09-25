@@ -177,7 +177,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
     const setScoutAssignment = (item) => {
         if (selectMode) {
             if (selectedItems.length === 0) {
-                Alert.alert("Selector an item", "Please select at least one item.");
+                Alert.alert("FormSelect an item", "Please select at least one item.");
                 return;
             } else {
                 setMatches(selectedItems);
@@ -329,7 +329,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                             fontSize: 17,
                         }}
                     >
-                        {selectMode ? "Exit" : "Selector Mode"}
+                        {selectMode ? "Exit" : "FormSelect Mode"}
                     </Text>
                 </TouchableOpacity>
                 {selectMode && (

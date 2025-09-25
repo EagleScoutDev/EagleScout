@@ -1,24 +1,24 @@
-import { StandardModal } from "../../../../components/modals/StandardModal";
+import { StandardModal } from "../../../../components/modals/StandardModal.tsx";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useEffect, type default as React, useState } from "react";
-import { StandardButton } from "../../../../ui/StandardButton";
+import { StandardButton } from "../../../../ui/StandardButton.tsx";
 import { useTheme } from "@react-navigation/native";
-import { NewQuestionSeparator } from "../NewQuestionSeparator";
+import { NewQuestionSeparator } from "../NewQuestionSeparator.tsx";
 import type { Setter } from "../../../../lib/react";
-import { Form } from "../../../../database/Forms";
+import { Form } from "../../../../lib/forms";
 
 function Spacer() {
     return <View style={{ height: "2%" }} />;
 }
 
-export interface CheckboxesProps {
+export interface FormCheckboxesProps {
     visible: boolean;
     setVisible: Setter<boolean>;
-    onSubmit: (value: Form.CheckboxesStructure) => void;
-    value: Form.CheckboxesStructure;
+    onSubmit: (value: Form.Checkboxes) => void;
+    value: Form.Checkboxes;
     styles: StyleSheet.NamedStyles<any>;
 }
-export function Checkboxes({ visible, setVisible, styles, onSubmit, value }: CheckboxesProps) {
+export function FormCheckboxes({ visible, setVisible, styles, onSubmit, value }: CheckboxesProps) {
     const { colors } = useTheme();
     const [question, setQuestion] = useState("");
     const [options, setOptions] = useState<string[]>([]);
@@ -49,7 +49,7 @@ export function Checkboxes({ visible, setVisible, styles, onSubmit, value }: Che
 
     return (
         <StandardModal
-            title="New Checkboxes Question"
+            title="New FormCheckboxes Question"
             visible={visible}
             onDismiss={() => {
                 setVisible(false);

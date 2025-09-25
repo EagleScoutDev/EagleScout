@@ -79,6 +79,7 @@ export function Gamification({
     const [modalIsOpen, setModalIsOpen] = useState(true);
 
     const { colors } = useTheme();
+    console.log(data)
 
     return (
         <>

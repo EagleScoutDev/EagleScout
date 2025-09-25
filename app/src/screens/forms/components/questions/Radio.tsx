@@ -1,4 +1,4 @@
-import { StandardModal } from '../../../../components/modals/StandardModal';
+import { StandardModal } from '../../../../components/modals/StandardModal.tsx';
 import {
     Alert,
     ScrollView,
@@ -8,8 +8,8 @@ import {
     View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import { StandardButton } from '../../../../ui/StandardButton';
-import { RadioOptionsSeparator } from './RadioOptionsSeparator';
+import { StandardButton } from '../../../../ui/StandardButton.tsx';
+import { RadioOptionsSeparator } from './RadioOptionsSeparator.tsx';
 import { useTheme } from '@react-navigation/native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 

@@ -398,12 +398,12 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             itemTextStyle={{
                                 color: colors.text,
                             }}
-                            placeholder={"Selector a user"}
+                            placeholder={"FormSelect a user"}
                             placeholderStyle={{
                                 color: colors.primary,
                             }}
                             value={{
-                                label: selectedUser?.name ?? "Selector a user",
+                                label: selectedUser?.name ?? "FormSelect a user",
                                 value: selectedUser?.id ?? "",
                             }}
                             renderLeftIcon={() => {

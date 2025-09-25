@@ -1,13 +1,12 @@
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import { FormOptionsModal } from './components/FormOptionsModal';
-import type { FormCreationScreenProps } from './FormCreation';
-import { FormsDB } from "../../database/Forms";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { FormOptionsModal } from "./FormOptionsModal.tsx";
+import type { FormsMenuScreenProps } from "../ManageForms.tsx";
+import { FormsDB } from "../../../database/Forms.ts";
+import * as Bs from "../../../ui/icons";
 
-export interface FormListProps extends FormCreationScreenProps<"List"> {
-
-}
+export interface FormListProps extends FormsMenuScreenProps<"List"> {}
 export function FormList({ navigation }: FormListProps) {
     const { colors } = useTheme();
     const [formList, setFormList] = useState([]);
@@ -16,10 +15,7 @@ export function FormList({ navigation }: FormListProps) {
     const [formOptionsModalVisible, setFormOptionsModalVisible] = useState(false);
 
     const removeCurrentForm = () => {
-        setFormList([
-            ...formList.slice(0, selectedFormIndex),
-            ...formList.slice(selectedFormIndex + 1),
-        ]);
+        setFormList([...formList.slice(0, selectedFormIndex), ...formList.slice(selectedFormIndex + 1)]);
     };
 
     const fetchForms = () => {
@@ -30,7 +26,7 @@ export function FormList({ navigation }: FormListProps) {
     };
 
     useEffect(() => {
-        return navigation.addListener('focus', () => {
+        return navigation.addListener("focus", () => {
             fetchForms();
         });
     }, [navigation]);
@@ -41,23 +37,25 @@ export function FormList({ navigation }: FormListProps) {
                 {/*TODO: Make this bigger*/}
                 <View
                     style={{
-                        alignSelf: 'center',
+                        alignSelf: "center",
                         backgroundColor: colors.background,
-                        height: '100%',
+                        height: "100%",
                         borderRadius: 10,
-                        padding: '10%',
-                        width: '100%',
-                    }}>
+                        padding: "10%",
+                        width: "100%",
+                    }}
+                >
                     <Text
                         style={{
                             fontSize: 25,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             marginBottom: 20,
                             color: colors.text,
-                            textDecorationStyle: 'solid',
-                            textDecorationLine: 'underline',
+                            textDecorationStyle: "solid",
+                            textDecorationLine: "underline",
                             textDecorationColor: colors.border,
-                        }}>
+                        }}
+                    >
                         Choose a Form
                     </Text>
                     <ScrollView>
@@ -72,16 +70,17 @@ export function FormList({ navigation }: FormListProps) {
                                 style={{
                                     padding: 20,
                                     borderRadius: 10,
-                                    backgroundColor:
-                                        index % 2 === 0 ? colors.border : colors.background,
-                                }}>
+                                    backgroundColor: index % 2 === 0 ? colors.border : colors.background,
+                                }}
+                            >
                                 <Text
                                     style={{
                                         color: colors.text,
-                                        fontWeight: 'bold',
-                                        textAlign: 'center',
+                                        fontWeight: "bold",
+                                        textAlign: "center",
                                         fontSize: 16,
-                                    }}>
+                                    }}
+                                >
                                     {form.name}
                                 </Text>
                             </TouchableOpacity>
@@ -95,27 +94,13 @@ export function FormList({ navigation }: FormListProps) {
                             });
                         }}
                         style={{
-                            padding: '2%',
-                            alignContent: 'center',
-                            justifyContent: 'center',
-                            paddingHorizontal: '6%',
-                            margin: 10,
-                            borderRadius: 100,
-                            borderStyle: 'solid',
-                            backgroundColor: colors.primary,
-                            position: 'absolute',
+                            margin: 20,
+                            position: "absolute",
                             bottom: 0,
                             right: 0,
-                        }}>
-                        <Text
-                            style={{
-                                color: 'white',
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                                fontSize: 40,
-                            }}>
-                            +
-                        </Text>
+                        }}
+                    >
+                        <Bs.PlusCircleFill size="60" fill={colors.primary} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -128,4 +113,4 @@ export function FormList({ navigation }: FormListProps) {
             />
         </>
     );
-};
+}

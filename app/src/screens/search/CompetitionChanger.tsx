@@ -75,7 +75,7 @@ export function CompetitionChanger({ currentCompId, setCurrentCompId, loading }:
                     loading
                         ? "Loading..."
                         : competitionsList.length > 0
-                        ? "Selector Competition"
+                        ? "FormSelect Competition"
                         : "No competitions found"
                 }
                 onChange={(item) => {

@@ -1,19 +1,18 @@
 import { StyleSheet, TextInput, View } from "react-native";
-import { Radio } from "./components/Radio.tsx";
-import { Stepper } from "./components/Stepper";
-import { Checkboxes } from "./components/Checkboxes";
-import { Slider } from "./components/Slider.tsx";
+import { FormRadio } from "./components/FormRadio.tsx";
+import { FormStepper } from "./components/FormStepper.tsx";
+import { FormCheckboxes } from "./components/FormCheckboxes.tsx";
 import { Question } from "./Question.tsx";
 import { useTheme } from "@react-navigation/native";
-import { Form } from "../../database/Forms";
+import { Form } from "../../lib/forms";
 import type { Setter } from "../../lib/react";
 
-export interface FormComponentProps<T extends Form.ItemStructure> {
+export interface FormComponentProps<T extends Form.Item> {
     item: T;
-    arrayData: Form.ArrayData<T>;
-    setArrayData: Setter<Form.ArrayData<T>>;
+    value: any;
+    onInput: Setter<any>;
 }
-export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, setArrayData }: FormComponentProps<T>) {
+export function FormComponent<T extends Form.Item>({ item, value, onInput }: FormComponentProps<T>) {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
         textInput: {
@@ -27,25 +26,17 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
         },
     });
 
-    if (!arrayData) return null;
-
     switch (item.type) {
         case Form.ItemType.radio:
             return (
-                <Radio
-                    key={item.idx}
+                <FormRadio
                     disabled={false}
                     title={item.question}
                     required={item.required}
                     options={item.options}
-                    value={item.options[arrayData[item.idx] as number]}
-                    onReset={() => {
-                        let a = [...arrayData];
-                        a[item.idx] = null;
-                        setArrayData(a);
-                    }}
-                    onValueChange={(value) => {
-                        let a = [...arrayData];
+                    value={value}
+                    onReset={() => onInput(null)}
+                    onInput={(value) => {
                         a[item.idx] = item.options.indexOf(value);
                         setArrayData(a);
                     }}
@@ -53,13 +44,13 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
             );
         case Form.ItemType.textbox:
             return (
-                <View key={item.idx}>
+                <View key={idx}>
                     <Question
                         title={item.question}
                         required={item.required}
                         onReset={() => {
                             let a = [...arrayData];
-                            a[item.idx] = "";
+                            a[idx] = "";
                             setArrayData(a);
                         }}
                     />
@@ -96,7 +87,7 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
                     value={arrayData[item.idx] as number}
                 />
             ) : (
-                <Stepper
+                <FormStepper
                     key={item.idx}
                     title={item.question + (item.required ? "*" : "")}
                     value={arrayData[item.idx] as number}
@@ -109,13 +100,13 @@ export function FormComponent<T extends Form.ItemStructure>({ item, arrayData, s
             );
         case Form.ItemType.checkbox:
             return (
-                <Checkboxes
+                <FormCheckboxes
                     key={item.idx}
                     title={item.question}
                     options={item.options}
                     value={arrayData[item.idx] as string[]}
                     disabled={false}
-                    onValueChange={(value) => {
+                    onInput={(value) => {
                         setArrayData((prev) => {
                             const newData = [...prev];
                             newData[item.idx] = value;

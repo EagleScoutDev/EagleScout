@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { StandardModal } from "./StandardModal.tsx";
 import { supabase } from "../../lib/supabase.ts";
-import { Radio } from "../../ui/form/components/Radio.tsx";
+import { FormRadio } from "../../ui/form/components/FormRadio.tsx";
 
 function Spacer() {
     return <View style={{ height: "2%" }} />;
@@ -13,7 +13,7 @@ function Spacer() {
 export function EnableScoutAssignmentsModal({ visible, setVisible, competition, onRefresh }) {
     const { colors } = useTheme();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [checked, setChecked] = useState(null);
+    const [checked, setChecked] = useState<"Team based" | "Position based">("Team based");
 
     const submit = async () => {
         let scoutAssignmentsConfig;
@@ -63,11 +63,10 @@ export function EnableScoutAssignmentsModal({ visible, setVisible, competition, 
 
     return (
         <StandardModal title={"Enable Scout Assignments?"} visible={visible}>
-            <Radio
+            <FormRadio<"Team based" | "Position based">
                 options={["Team based", "Position based"]}
                 value={checked}
-                onValueChange={setChecked}
-                colors={colors}
+                onInput={setChecked}
             />
             <Spacer />
             <View style={styles.button_row}>

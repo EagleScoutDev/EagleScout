@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { StandardModal } from "./StandardModal.tsx";
-import { Selector } from "../../ui/form/components/Selector.tsx";
+import { FormSelect } from "../../ui/form/components/FormSelect.tsx";
 import { StandardButton } from "../../ui/StandardButton.tsx";
 import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../lib/supabase.ts";
@@ -241,15 +241,15 @@ export function SetScoutAssignmentModal({
                             marginTop: 10,
                         }}
                     >
-                        <Selector
+                        <FormSelect
                             setSelected={setUserId}
-                            data={names.map((f) => ({
+                            options={names.map((f) => ({
                                 value: f.name,
                                 key: f.id,
                             }))}
                             searchEnabled={false}
                             searchPlaceholder={"Search for a user..."}
-                            placeholder={"Selector a user..."}
+                            placeholder={"FormSelect a user..."}
                             notFoundText={"No users found"}
                             maxHeight={100}
                         />

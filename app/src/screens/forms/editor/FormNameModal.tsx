@@ -1,6 +1,6 @@
-import { StandardModal } from '../../../components/modals/StandardModal';
+import { StandardModal } from '../../../components/modals/StandardModal.tsx';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
-import { StandardButton } from '../../../ui/StandardButton';
+import { StandardButton } from '../../../ui/StandardButton.tsx';
 import { useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import type { Setter } from '../../../lib/react';

@@ -12,12 +12,12 @@ import { PicklistsMenu, type PicklistParamList } from "./analysis/picklist/Pickl
 import { DataAggregation } from "./analysis/rank/DataAggregation";
 import { WeightedRank } from "./analysis/rank/WeightedRank";
 import { MatchPredictor } from "./analysis/predictor/MatchPredictor";
-import { FormCreation } from "../form-creator/FormCreation";
+import { ManageForms } from "../forms/ManageForms.tsx";
 import { ExportToCSV } from "./export/ExportToCSV";
 import { MatchBetting } from "../scoutcoin/betting/MatchBetting";
 import { MatchBettingNavigator } from "../scoutcoin/betting/MatchBettingNavigator";
 
-const DataStack = createNativeStackNavigator<DataMenuParamList>();
+const Stack = createNativeStackNavigator<DataMenuParamList>();
 export type DataMenuScreenProps<K extends keyof DataMenuParamList> = NativeStackScreenProps<DataMenuParamList, K>;
 export type DataMenuParamList = {
     Home: undefined;
@@ -44,131 +44,127 @@ export const DataMain = () => {
     const { colors } = useTheme();
 
     return (
-        <DataStack.Navigator
+        <Stack.Navigator
             screenOptions={{
+                headerBackTitle: "Back",
                 headerStyle: {
                     backgroundColor: colors.background,
                 },
             }}
         >
-            <DataStack.Screen
+            <Stack.Screen
                 name="Home"
                 component={DataHome}
                 options={{
                     headerShown: false,
                 }}
             />
-            <DataStack.Screen
+
+            {/* Analysis */}
+            <Stack.Screen
                 name="Picklist"
                 component={PicklistsMenu}
                 options={{
                     headerShown: false,
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="TeamRank"
                 component={DataAggregation}
                 options={{
                     title: "Team Rank",
-                    headerBackTitle: "Back",
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="WeightedTeamRank"
                 component={WeightedRank}
                 options={{
                     title: "Weighted Team Rank",
-                    headerBackTitle: "Back",
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="MatchPredictor"
                 component={MatchPredictor}
                 options={{
                     title: "Match Predictor",
-                    headerBackTitle: "Back",
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="ExportCSV"
                 component={ExportToCSV}
                 options={{
                     title: "Export to CSV",
-                    headerBackTitle: "Back",
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="MatchBetting"
                 component={MatchBettingNavigator}
                 options={{
                     title: "Match Betting",
-                    headerBackTitle: "Back",
                 }}
             />
-            <DataStack.Screen
+
+            {/* Scoutcoin */}
+            <Stack.Screen
                 name="ScoutcoinLeaderboard"
                 component={ScoutcoinLeaderboard}
                 options={{
-                    title: "Scoutcoin Leaderboard",
-                    headerBackTitle: "Back",
+                    title: "Scoutcoin",
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="ScoutcoinLedger"
                 component={ScoutcoinLedger}
                 options={{
-                    title: "Scoutcoin Ledger",
-                    headerBackTitle: "Back",
+                    title: "Scoutcoin",
                 }}
             />
-            <DataStack.Screen
+            <Stack.Screen
                 name="ScoutcoinShop"
                 component={ScoutcoinShop}
                 options={{
-                    title: "Scoutcoin Shop",
-                    headerBackTitle: "Back",
+                    title: "Shop",
                 }}
             />
-            <DataStack.Screen
-                name="ManageCompetitions"
-                component={ManageCompetitions}
-                options={{
-                    title: "Manage Competitions",
-                    headerBackTitle: "Back",
-                }}
-            />
-            <DataStack.Screen
-                name="ManageUsers"
-                component={ManageUsers}
-                options={{
-                    title: "Manage Users",
-                    headerBackTitle: "Back",
-                }}
-            />
-            <DataStack.Screen
-                name="ManageForms"
-                component={FormCreation}
-                options={{
-                    title: "Manage Forms",
-                    headerBackTitle: "Back",
-                }}
-            />
-            <DataStack.Screen
-                name="ManageScoutAssignments"
-                component={ScoutAssignments}
-                options={{
-                    title: "Manage Scout Assignments",
-                    headerBackTitle: "Back",
-                }}
-            />
-            <DataStack.Screen
-                name="ManageMatchBets"
-                component={ManageBets}
-                options={{
-                    title: "Manage Match Bets",
-                    headerBackTitle: "Back",
-                }}
-            />
-        </DataStack.Navigator>
+
+            {/* Administrative */}
+            <Stack.Group>
+                <Stack.Screen
+                    name="ManageCompetitions"
+                    component={ManageCompetitions}
+                    options={{
+                        title: "Competitions",
+                    }}
+                />
+                <Stack.Screen
+                    name="ManageUsers"
+                    component={ManageUsers}
+                    options={{
+                        title: "Users",
+                    }}
+                />
+                <Stack.Screen
+                    name="ManageForms"
+                    component={ManageForms}
+                    options={{
+                        title: "Forms",
+                    }}
+                />
+                <Stack.Screen
+                    name="ManageScoutAssignments"
+                    component={ScoutAssignments}
+                    options={{
+                        title: "Scout Assignments",
+                    }}
+                />
+                <Stack.Screen
+                    name="ManageMatchBets"
+                    component={ManageBets}
+                    options={{
+                        title: "Match Bets",
+                    }}
+                />
+            </Stack.Group>
+        </Stack.Navigator>
     );
 };

@@ -79,7 +79,7 @@ const SelectAllianceStep = ({ handleBottomSheetClose }: { handleBottomSheetClose
     return (
         <BettingInfoStep
             index={1}
-            title="Selector an alliance"
+            title="FormSelect an alliance"
             nextScreen="SelectAmount"
             isFinalScreen={true}
             handleBottomSheetClose={handleBottomSheetClose}

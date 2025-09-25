@@ -9,7 +9,7 @@ export interface StepperProps {
     value: number
     onValueChange: (x: number) => void
 }
-export function Stepper({ title, value, onValueChange }: StepperProps) {
+export function FormStepper({ title, value, onValueChange }: StepperProps) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({

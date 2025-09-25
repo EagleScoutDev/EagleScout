@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { StandardModal } from "./StandardModal.tsx";
 import { supabase } from "../../lib/supabase.ts";
-import { Selector } from "../../ui/form/components/Selector.tsx";
+import { FormSelect } from "../../ui/form/components/FormSelect.tsx";
 import { getIdealTextColor, parseColor } from "../../lib/color.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import type { Setter } from "../../lib/react";
@@ -265,9 +265,9 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }: AddCompe
                     marginTop: 10,
                 }}
             >
-                <Selector
+                <FormSelect
                     setSelected={setSelectedFormID}
-                    data={formList
+                    options={formList
                         .filter((f) => !f.pitScouting)
                         .map((f) => ({
                             value: f.name,
@@ -275,12 +275,12 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }: AddCompe
                         }))}
                     searchEnabled={false}
                     searchPlaceholder={"Search for a match scouting form..."}
-                    placeholder={"Selector a form..."}
+                    placeholder={"FormSelect a form..."}
                     maxHeight={100}
                 />
-                <Selector
+                <FormSelect
                     setSelected={setSelectedPitScoutingFormID}
-                    data={formList
+                    options={formList
                         .filter((f) => f.pitScouting)
                         .map((f) => ({
                             value: f.name,
@@ -288,7 +288,7 @@ export function AddCompetitionModal({ visible, setVisible, onRefresh }: AddCompe
                         }))}
                     searchEnabled={false}
                     searchPlaceholder={"Search for a pit scouting form..."}
-                    placeholder={"Selector a pit scouting form..."}
+                    placeholder={"FormSelect a pit scouting form..."}
                     maxHeight={100}
                 />
             </View>

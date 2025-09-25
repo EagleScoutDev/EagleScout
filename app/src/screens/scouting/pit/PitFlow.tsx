@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import { PitScoutingCamera } from "./PitScoutingCamera";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
 import { TeamInformation } from "../../../ui/form/TeamInformation";
