@@ -13,7 +13,7 @@ export function FormItemOptions({ value, onChange }: FormItemBuilderProps) {
     const { colors } = useTheme();
 
     return (
-        <UIForm style={{ flex: 1 }}>
+        <UIForm>
             {value.type === ItemType.heading
                 ? [
                       UIForm.Section({

@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { type FC, useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ProfileEmojiModal } from "./items/ProfileEmojiModal";
 import { useTheme, type Theme } from "@react-navigation/native";
 import { ConfirmPurchaseModal } from "./ConfirmPurchaseModal";
 import { AppThemeModal } from "./items/AppThemeModal";
 import * as Bs from "../../../ui/icons";
+import { PressableOpacity } from "../../../ui/components/PressableOpacity.tsx";
 
 type ModalProps = {
     onClose: () => void;
@@ -16,7 +17,7 @@ export interface ShopItem {
     description: string;
     cost: number;
     icon: Bs.Icon;
-    modal: React.FC<ModalProps>;
+    modal: FC<ModalProps>;
 }
 
 const shopItems = {
@@ -25,7 +26,7 @@ const shopItems = {
         name: "Profile Emoji",
         description: "Change your profile emoji!",
         cost: 5,
-        list_item_icon: Bs.PersonBadge,
+        icon: Bs.PersonBadge,
         modal: ({ onClose }: ModalProps) => <ProfileEmojiModal onClose={onClose} />,
     },
     "theme-change": {
@@ -33,14 +34,15 @@ const shopItems = {
         name: "App Theme",
         description: "Change the app theme! Who doesn't like a nice forest color?",
         cost: 8,
-        list_item_icon: Bs.PaintBucket,
+        icon: Bs.PaintBucket,
         modal: ({ onClose }: ModalProps) => <AppThemeModal onClose={onClose} />,
     },
 } as Record<string, ShopItem>;
 
-export const ScoutcoinShop = () => {
-    const theme = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+export function ScoutcoinShop() {
+    "use memo";
+    const { colors } = useTheme();
+    const styles = useMemo(() => makeStyles(colors), [colors]);
     const [activeItem, setActiveItem] = useState<ShopItem | null>(null);
     const [confirmPurchaseModalVisible, setConfirmPurchaseModalVisible] = useState(false);
     const [itemSpecificModalVisible, setItemSpecificModalVisible] = useState(false);
@@ -50,7 +52,7 @@ export const ScoutcoinShop = () => {
             <Text style={styles.heading}>Items</Text>
             <View style={styles.itemsContainer}>
                 {Object.entries(shopItems).map(([key, value]) => (
-                    <TouchableOpacity
+                    <PressableOpacity
                         key={key}
                         style={styles.itemContainer}
                         onPress={() => {
@@ -58,15 +60,16 @@ export const ScoutcoinShop = () => {
                             setConfirmPurchaseModalVisible(true);
                         }}
                     >
-                        <value.icon size="50" fill={theme.colors.text} />
+                        <value.icon size="50" fill={colors.text} />
                         <Text style={styles.itemNameText}>{value.name}</Text>
                         <View style={styles.coinContainer}>
                             <Text style={styles.costText}>{value.cost}</Text>
-                            <Bs.Coin size="12" fill={theme.colors.text} />
+                            <Bs.Coin size="12" fill={colors.text} />
                         </View>
-                    </TouchableOpacity>
+                    </PressableOpacity>
                 ))}
             </View>
+
             {confirmPurchaseModalVisible && activeItem && (
                 <ConfirmPurchaseModal
                     item={activeItem}
@@ -84,18 +87,19 @@ export const ScoutcoinShop = () => {
                 <activeItem.modal
                     onClose={() => {
                         setItemSpecificModalVisible(false);
+                        setActiveItem(null);
                     }}
                 />
             )}
         </View>
     );
-};
+}
 
-const makeStyles = ({ colors }: Theme) =>
+const makeStyles = (colors: Theme["colors"]) =>
     StyleSheet.create({
         container: {
             flex: 1,
-            padding: 20,
+            padding: 16,
         },
         heading: {
             fontSize: 30,
@@ -107,18 +111,21 @@ const makeStyles = ({ colors }: Theme) =>
         itemsContainer: {
             flexDirection: "row",
             flexWrap: "wrap",
-            justifyContent: "space-evenly",
+            gap: 16,
         },
         itemContainer: {
-            width: "30%",
-            marginBottom: 10,
+            flex: 1,
+            minWidth: 100,
+            maxWidth: 400,
+            width: "25%",
             padding: 10,
             borderRadius: 10,
+            borderWidth: 1,
+            borderColor: colors.border,
             backgroundColor: colors.card,
             display: "flex",
             alignItems: "center",
             gap: 5,
-            paddingVertical: 20,
         },
         itemNameText: {
             fontSize: 14,

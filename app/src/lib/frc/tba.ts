@@ -56,7 +56,7 @@ export class TBA {
 
     static async getEventsForYear(year: number): Promise<SimpleEvent[]> {
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            body: { endpoint: `/events/${year}/simple` },
+            itemBody: { endpoint: `/events/${year}/simple` },
         });
         if (error) {
             throw error;
@@ -66,7 +66,7 @@ export class TBA {
 
     static async getTeamsAtCompetition(comp_id: string): Promise<SimpleTeam[]> {
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            body: { endpoint: `/event/${comp_id}/teams/simple` },
+            itemBody: { endpoint: `/event/${comp_id}/teams/simple` },
         });
         if (error) {
             throw error;
@@ -83,7 +83,7 @@ export class TBA {
     static async getTeamRank(comp_id: string, team_number: number): Promise<number> {
         console.log(`getting rank for ${team_number} at ${comp_id}`);
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            body: {
+            itemBody: {
                 endpoint: `/team/frc${team_number}/event/${comp_id}/status`,
             },
         });
@@ -107,7 +107,7 @@ export class TBA {
     static async getCurrentCompetitionForTeam(team_number: number): Promise<SimpleEvent> {
         const current_year = new Date().getFullYear();
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            body: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
+            itemBody: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
         });
         if (error) {
             throw error;
@@ -127,7 +127,7 @@ export class TBA {
     static async getAllCompetitionsForTeam(team_number: number): Promise<SimpleEvent[]> {
         const current_year = new Date().getFullYear();
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            body: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
+            itemBody: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
         });
         if (error) {
             throw error;

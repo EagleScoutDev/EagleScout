@@ -2,26 +2,29 @@ import { useContext, useMemo } from "react";
 import { useTheme, type Theme } from "@react-navigation/native";
 import { ShopModalBase } from "./ShopModalBase";
 import { StyleSheet, Text } from "react-native";
-import { ThemePicker } from "../../../../ui/input/pickers/ThemePicker";
+import { ThemePicker } from "./ThemePicker.tsx";
 import { ThemeContext } from "../../../../lib/contexts/ThemeContext";
+import { UIModal } from "../../../../ui/UIModal.tsx";
 
-export const AppThemeModal = ({ onClose }: { onClose: () => void }) => {
+export interface AppThemeModalProps {
+    onClose: () => void;
+}
+export function AppThemeModal({ onClose }: AppThemeModalProps) {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const { setThemePreference } = useContext(ThemeContext);
 
     return (
-        <ShopModalBase onClose={onClose}>
-            <Text style={styles.title}>Select Theme</Text>
+        <UIModal visible onClose={onClose} backdropPressBehavior={"none"} title={"Select Theme"}>
             <ThemePicker
                 setTheme={(t) => {
                     setThemePreference(t);
                     onClose();
                 }}
             />
-        </ShopModalBase>
+        </UIModal>
     );
-};
+}
 
 const makeStyles = ({ colors }: Theme) =>
     StyleSheet.create({

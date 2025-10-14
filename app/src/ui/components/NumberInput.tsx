@@ -20,6 +20,7 @@ export function NumberInput({
     onInput,
     ...passthrough
 }: NumberInputProps) {
+    "use memo";
     let [value, setValue] = useState<number | null>(initialValue);
     let [draft, setDraft] = useState<string>(initialValue?.toString() ?? "");
 

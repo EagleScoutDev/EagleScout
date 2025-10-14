@@ -1,47 +1,41 @@
-import type { Icon } from "./icons";
-import {
-    ActivityIndicator,
-    type DimensionValue,
-    type StyleProp,
-    StyleSheet,
-    Text,
-    type TextStyle,
-    type ViewStyle,
-} from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { type PropsWithChildren } from "react";
-import { Color, parseColor, RGB } from "../lib/color.ts";
+import { useState, type PropsWithChildren } from "react";
+import { ActivityIndicator, Text, type StyleProp, type TextStyle, type ViewStyle, View } from "react-native";
+import { Color } from "../lib/color.ts";
 import { PressableOpacity } from "./components/PressableOpacity.tsx";
+import type { Icon } from "./icons";
+import { styles } from "../screens/onboarding/styles.ts";
 
-export const enum UIButtonFrame {
+export const enum UIButtonStyle {
     fill,
     tint,
     text,
 }
 export const enum UIButtonSize {
-    sm,
+    // sm,
     md,
-    lg,
+    // lg,
     xl,
 }
 export interface UIButtonProps {
-    frame?: UIButtonFrame;
+    style?: UIButtonStyle;
     size?: UIButtonSize;
     color?: Color;
-    style?: StyleProp<ViewStyle>;
+
+    buttonStyle?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
 
     icon?: Icon;
     text?: string;
     loading?: boolean;
 
-    onPress?: (() => void) | null | undefined;
+    onPress?: (() => void | Promise<void>) | null | undefined;
 }
 export function UIButton({
-    frame = UIButtonFrame.text,
+    style = UIButtonStyle.text,
     size,
     color,
-    style,
+    buttonStyle,
     textStyle,
     icon,
     text,
@@ -49,99 +43,103 @@ export function UIButton({
     onPress = null,
     children,
 }: PropsWithChildren<UIButtonProps>) {
+    "use memo";
     const { colors } = useTheme();
-    color = color ?? RGB(...parseColor(colors.primary));
 
-    const { styles, iconProps } = getStyles(color, size, frame);
+    color = color ?? Color.parse(colors.primary);
+
+    const {
+        fg: { hex: fg },
+        bg: { hex: bg },
+        spinner: { hex: spinnerColor },
+    } = getColors(style, color);
+    const sizeStyles = getSizeStyles(size ?? UIButtonSize.md);
+
+    const [processing, setProcessing] = useState(false);
+    const doPress =
+        onPress &&
+        (async () => {
+            if (loading || processing) return;
+
+            const res = onPress();
+            if (res instanceof Promise) {
+                setProcessing(true);
+                res.then(() => setProcessing(false));
+            }
+        });
 
     return (
-        <PressableOpacity onPress={onPress} style={[styles.button, style]}>
-            {loading ? (
-                <ActivityIndicator color="#ffffff" />
-            ) : (
-                children ?? (
-                    <>
-                        {icon ? icon(iconProps) : null}
-                        <Text style={[styles.text, textStyle]}>{text}</Text>
-                    </>
-                )
-            )}
+        <PressableOpacity onPress={doPress}>
+            <View style={[sizeStyles.button, { backgroundColor: bg }, buttonStyle]}>
+                {loading || processing ? (
+                    <ActivityIndicator
+                        style={{ position: "absolute", width: "100%", height: "100%" }}
+                        color={spinnerColor}
+                    />
+                ) : (
+                    children ?? (
+                        <View style={{ opacity: loading || processing ? 0 : 1 }}>
+                            {icon ? icon({ ...sizeStyles.icon, fill: fg }) : null}
+                            <Text style={[sizeStyles.text, { color: fg }, textStyle]}>{text}</Text>
+                        </View>
+                    )
+                )}
+            </View>
         </PressableOpacity>
     );
 }
 
-const getStyles = (color: Color, size: UIButtonSize | undefined, frame: UIButtonFrame) => {
-    let maxWidth: DimensionValue | undefined = undefined;
-    let height: DimensionValue | undefined = undefined;
-    let paddingHorizontal: DimensionValue | undefined = undefined;
-    let paddingVertical: DimensionValue | undefined = undefined;
-    let borderRadius: DimensionValue | undefined = undefined;
-    let fontSize: DimensionValue | undefined = undefined;
-    let fontWeight: TextStyle["fontWeight"] | undefined = undefined;
-    let iconSize: DimensionValue | undefined = undefined;
-    switch (size) {
-        case undefined:
-            break;
-        case UIButtonSize.xl:
-            maxWidth = 400;
-            height = 45;
-            paddingHorizontal = 20;
-            paddingVertical = 8;
-            borderRadius = 10;
-            fontSize = 22;
-            fontWeight = "normal";
-            iconSize = 24;
-            break;
-        case UIButtonSize.lg:
-            throw new Error("not implemented");
-        case UIButtonSize.md:
-            borderRadius = 12;
-            paddingVertical = 8;
-            paddingHorizontal = 10;
-            fontSize = 18;
-            break
-        case UIButtonSize.sm:
-            throw new Error("not implemented");
-    }
+const getSizeStyles = (size: UIButtonSize) => sizeStyles[size];
+const sizeStyles = {
+    [UIButtonSize.xl]: {
+        button: {
+            maxWidth: 400,
+            height: 48,
+            paddingHorizontal: 20,
+            paddingVertical: 8,
+            position: "relative",
 
-    let fg: Color;
-    let bg: Color;
-    switch (frame) {
-        case UIButtonFrame.text:
-            fg = color!;
-            bg = Color.transparent;
-            break;
-        case UIButtonFrame.tint:
-            fg = color!;
-            bg = color!.set(null, null, null, 70);
-            break;
-        case UIButtonFrame.fill:
-            fg = color!.fg;
-            bg = color!;
-            break;
-    }
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
 
-    return {
-        styles: StyleSheet.create({
-            button: {
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: bg.rgba,
-                maxWidth,
-                height,
-                paddingHorizontal,
-                paddingVertical,
-                borderRadius,
-            },
-            text: {
-                color: fg.rgba,
-                fontSize,
-                fontWeight,
-            },
-        }),
-        iconProps: {
-            size: iconSize,
-            fill: fg.rgba,
+            borderRadius: 10,
         },
-    };
+        text: {
+            fontSize: 20,
+        },
+        icon: {
+            size: 24,
+        },
+    },
+    [UIButtonSize.md]: {
+        button: {
+            paddingVertical: 8,
+            paddingHorizontal: 10,
+            position: "relative",
+
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+
+            borderRadius: 12,
+        },
+        text: {
+            fontSize: 18,
+        },
+        icon: {
+            iconSize: 20,
+        },
+    },
+} as const;
+
+const getColors = (style: UIButtonStyle, color: Color) => {
+    switch (style) {
+        case UIButtonStyle.text:
+            return { fg: color, spinner: Color.parse("#999999"), bg: Color.transparent };
+        case UIButtonStyle.tint:
+            return { fg: color, spinner: color, bg: color.set(null, null, null, 70) };
+        case UIButtonStyle.fill:
+            return { fg: color.fg, spinner: color.fg, bg: color };
+    }
 };

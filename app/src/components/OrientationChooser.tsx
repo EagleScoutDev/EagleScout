@@ -19,39 +19,22 @@ export const OrientationChooser = ({ orientation, setOrientation, alliance, setA
     const rightAlliance = Alliance.toggle(leftAlliance);
 
     return (
-        <View
-            style={{
-                padding: 10,
-                alignItems: "center",
-            }}
-        >
-            <Text
-                style={{
-                    color: colors.text,
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    marginBottom: 16,
-                }}
+        <View style={styles.container}>
+            <Pressable
+                style={[styles.side, { backgroundColor: Alliance.getColor(leftAlliance).hex }]}
+                onPress={() => setAlliance(leftAlliance)}
             >
-                Field Orientation
-            </Text>
-            <View style={styles.container}>
-                <Pressable
-                    style={[styles.side, { backgroundColor: Alliance.getColor(leftAlliance).hex }]}
-                    onPress={() => setAlliance(leftAlliance)}
-                >
-                    {alliance === leftAlliance ? <Bs.CheckLg size="24" fill="white" /> : null}
-                </Pressable>
-                <Pressable style={styles.center} onPress={() => setOrientation(Orientation.toggle(orientation))}>
-                    <Bs.ArrowLeftRight size="24" fill="black" />
-                </Pressable>
-                <Pressable
-                    style={[styles.side, { backgroundColor: Alliance.getColor(rightAlliance).hex }]}
-                    onPress={() => setAlliance(Alliance.toggle(leftAlliance))}
-                >
-                    {alliance === rightAlliance ? <Bs.CheckLg size="24" fill="white" /> : null}
-                </Pressable>
-            </View>
+                {alliance === leftAlliance ? <Bs.CheckLg size="24" fill="white" /> : null}
+            </Pressable>
+            <Pressable style={styles.center} onPress={() => setOrientation(Orientation.toggle(orientation))}>
+                <Bs.ArrowLeftRight size="24" fill="black" />
+            </Pressable>
+            <Pressable
+                style={[styles.side, { backgroundColor: Alliance.getColor(rightAlliance).hex }]}
+                onPress={() => setAlliance(Alliance.toggle(leftAlliance))}
+            >
+                {alliance === rightAlliance ? <Bs.CheckLg size="24" fill="white" /> : null}
+            </Pressable>
         </View>
     );
 };

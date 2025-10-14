@@ -7,6 +7,7 @@ export interface SegmentedOptionProps {
     onPress: () => void
 }
 export function SegmentedOption({ selected, title, onPress }: SegmentedOptionProps) {
+    "use memo";
     const { colors } = useTheme();
     return (
         <TouchableOpacity

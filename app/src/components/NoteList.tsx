@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes.ts";
 import * as Bs from "../ui/icons";
+import { Arrays } from "../lib/util/Arrays.ts";
 
 export enum FilterType {
     // todo: allow note list to accept and display team #
@@ -66,7 +67,7 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    padding: "2%",
+                    padding: 16,
                 }}
             >
                 <TextInput
@@ -111,27 +112,30 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
             </View>
             {filteredNotes.length > 0 && (
                 <FlatList
+                    contentContainerStyle={{
+                        padding: 16,
+                    }}
                     data={filteredNotes}
                     renderItem={({ item }) => (
-                        <Pressable
+                        <View
                             style={{
                                 backgroundColor: colors.card,
-                                padding: "5%",
                                 borderWidth: 1,
                                 borderColor: colors.border,
                                 borderRadius: 10,
-                                margin: "5%",
+                                padding: 16,
                             }}
                         >
                             <View style={{ flexDirection: "row" }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold" }}>
-                                    Match {item.match_number} - Team {item.team_number}
-                                    {item.competition_name ? ` - ${item.competition_name}` : ""}
-                                    {item.scouter_name ? ` - By: ${item.scouter_name}` : ""}
-                                </Text>
+                                <View style={{ flexDirection: "row", gap: 8 }}>
+                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>Match {item.match_number}</Text>
+                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>Team {item.team_number}</Text>
+                                    <Text>{item.competition_name ? ` - ${item.competition_name}` : ""}</Text>
+                                    <Text>{item.scouter_name ? ` - By: ${item.scouter_name}` : ""}</Text>
+                                </View>
                             </View>
                             <Text style={{ color: colors.text }}>{item.content}</Text>
-                        </Pressable>
+                        </View>
                     )}
                 />
             )}

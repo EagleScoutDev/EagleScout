@@ -1,6 +1,17 @@
-import { useState, useEffect, useLayoutEffect } from "react";
-import { View, Text, StyleSheet, TextInput, FlatList, Pressable, Alert, ActivityIndicator } from "react-native";
-import { LayoutAnimation, Platform, UIManager } from "react-native";
+import { useEffect, useLayoutEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    LayoutAnimation,
+    Platform,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    UIManager,
+    View,
+} from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import DraggableFlatList, { type RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 import { TeamAddingModal } from "./TeamAddingModal";
@@ -11,24 +22,24 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { CompetitionsDB } from "../../../../database/Competitions";
 import {
-    type SimpleTeam,
-    type PicklistTeam,
-    type PicklistStructure,
     PicklistsDB,
+    type PicklistStructure,
+    type PicklistTeam,
+    type SimpleTeam,
 } from "../../../../database/Picklists";
 import { ProfilesDB } from "../../../../database/Profiles";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import { getIdealTextColor, parseColor } from "../../../../lib/color";
 import { TBA } from "../../../../lib/frc/tba.ts";
-import type { PicklistScreenProps } from "./PicklistMenu";
 import * as Bs from "../../../../ui/icons";
 import type { Setter } from "../../../../lib/react/util/types";
+import type { DataMenuScreenProps } from "../../DataMain.tsx";
 
 export interface PicklistCreatorParams {
     picklist_id: number;
     currentCompID: number;
 }
-export interface PicklistCreatorProps extends PicklistScreenProps<"Creator"> {}
+export interface PicklistCreatorProps extends DataMenuScreenProps<"Picklists/Create"> {}
 export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     const { colors } = useTheme();
     const rootNavigation = useNavigation();

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { type Theme, useNavigation, useTheme } from "@react-navigation/native";
-import { BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { StyleSheet, Text } from "react-native";
 import { StandardButton } from "../../../../ui/StandardButton";
 
@@ -9,23 +9,21 @@ export const BettingInfoStep = ({
     title,
     nextScreen,
     isFinalScreen,
-    handleBottomSheetClose,
     children,
 }: {
     index: number;
     title: string;
     nextScreen: string;
     isFinalScreen: boolean;
-    handleBottomSheetClose: () => void;
     children: React.ReactNode;
 }) => {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const { navigate } = useNavigation();
+    const { dismiss } = useBottomSheetModal();
 
     const handleNavigatePress = useCallback(() => {
         requestAnimationFrame(() => navigate(nextScreen as never));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -37,7 +35,7 @@ export const BettingInfoStep = ({
                 <StandardButton
                     width={"100%"}
                     color={theme.colors.primary}
-                    onPress={isFinalScreen ? handleBottomSheetClose : handleNavigatePress}
+                    onPress={isFinalScreen ? dismiss : handleNavigatePress}
                     text={isFinalScreen ? "Close" : "Next"}
                 />
             </BottomSheetView>

@@ -12,7 +12,8 @@ interface LeaderboardUser {
     scoutcoins: number;
 }
 
-export const SendScoutcoinModal = ({ targetUser, onClose }: { targetUser: LeaderboardUser; onClose: () => void }) => {
+export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: LeaderboardUser; onClose: () => void }) {
+    "use memo";
     const [amount, setAmount] = useState("");
     const [description, setDescription] = useState("");
     const [sending, setSending] = useState(false);
@@ -45,7 +46,7 @@ export const SendScoutcoinModal = ({ targetUser, onClose }: { targetUser: Leader
             return;
         }
         await supabase.functions.invoke("send-scoutcoin", {
-            body: JSON.stringify({
+            itemBody: JSON.stringify({
                 targetUserId: targetUser.id,
                 amount: parseInt(amount, 10),
                 description,
@@ -155,4 +156,4 @@ export const SendScoutcoinModal = ({ targetUser, onClose }: { targetUser: Leader
             </View>
         </Modal>
     );
-};
+}

@@ -1,98 +1,77 @@
-import { Alert, StyleSheet, View } from "react-native";
-import { StandardButton } from "../../ui/StandardButton.tsx";
+import { Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
-import { UIModal } from "../../ui/UIModal.tsx";
 import { supabase } from "../../lib/supabase.ts";
-import { UIRadio } from "../../ui/input/UIRadio.tsx";
+import { UISheet } from "../../ui/UISheet.tsx";
+import { Color } from "../../lib/color.ts";
+import type { CompetitionReturnData } from "../../database/Competitions.ts";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import type { UISheetModal } from "../../ui/UISheetModal.tsx";
+import { UIForm } from "../../ui/UIForm.tsx";
 
-function Spacer() {
-    return <View style={{ height: "2%" }} />;
+export interface EnableScoutAssignmentsModalProps {
+    data?: CompetitionReturnData;
 }
-
-export function EnableScoutAssignmentsModal({ visible, setVisible, competition, onRefresh }) {
+export interface EnableScoutAssignmentsModal extends UISheetModal<CompetitionReturnData> {}
+export function EnableScoutAssignmentsModal({ data: competition }: EnableScoutAssignmentsModalProps) {
     const { colors } = useTheme();
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [checked, setChecked] = useState<"Team based" | "Position based">("Team based");
+    const [config, setConfig] = useState<"team_based" | "position_based">("team_based");
 
-    const submit = async () => {
-        let scoutAssignmentsConfig;
-        if (checked === "Team based") {
-            scoutAssignmentsConfig = "team_based";
-        } else if (checked === "Position based") {
-            scoutAssignmentsConfig = "position_based";
-        } else {
-            Alert.alert("Error", "Please select a scout assignments configuration.");
-            return false;
-        }
+    const modal = useBottomSheetModal();
+
+    async function submit() {
+        if (!competition) return;
+
         const { error } = await supabase
             .from("competitions")
-            .update({
-                scout_assignments_config: scoutAssignmentsConfig,
-            })
+            .update({ scout_assignments_config: config })
             .eq("id", competition.id);
         if (error) {
-            Alert.alert(
+            console.error(error);
+            return Alert.alert(
                 "Error",
                 "There was an error enabling scout assignments. Please check if the TBA key is correct."
             );
         }
-        return !error;
-    };
 
-    const styles = StyleSheet.create({
-        tbakey_input: {
-            // height: 50,
-            borderColor: "gray",
-            borderWidth: 1,
-            width: "100%",
-            borderRadius: 10,
-            padding: 10,
-            marginBottom: 10,
-            color: colors.text,
-            fontSize: 18,
-        },
-        label: {
-            color: colors.text,
-            fontSize: 18,
-            fontWeight: "600",
-            textAlign: "center",
-        },
-        button_row: { flexDirection: "row", justifyContent: "space-evenly" },
-    });
+        modal.dismiss();
+    }
+
+    if (!competition) return null;
 
     return (
-        <UIModal title={"Enable Scout Assignments?"} visible={visible}>
-            <UIRadio<"Team based" | "Position based">
-                options={["Team based", "Position based"]}
-                value={checked}
-                onInput={setChecked}
+        <>
+            <UISheet.Header
+                title="Scout Assignments"
+                left={{
+                    text: "Cancel",
+                    color: Color.parse(colors.notification),
+                    onPress: () => void modal.dismiss(),
+                }}
+                right={{
+                    text: "Done",
+                    color: Color.parse(colors.primary),
+                    onPress: submit,
+                }}
             />
-            <Spacer />
-            <View style={styles.button_row}>
-                <StandardButton
-                    color={colors.notification}
-                    onPress={() => setVisible(false)}
-                    text={"Cancel"}
-                    width={"40%"}
-                />
-                <StandardButton
-                    color={colors.primary}
-                    isLoading={isSubmitting}
-                    onPress={() => {
-                        setIsSubmitting(true);
-                        submit().then((success) => {
-                            setIsSubmitting(false);
-                            if (success) {
-                                onRefresh();
-                                setVisible(false);
-                            }
-                        });
-                    }}
-                    text={"Yes"}
-                    width={"40%"}
-                />
-            </View>
-        </UIModal>
+            <UIForm>
+                {[
+                    UIForm.Section({
+                        items: [
+                            UIForm.Select({
+                                label: "Scheme",
+                                multi: false,
+                                options: [
+                                    { key: "team_based", name: "Team Based" },
+                                    { key: "position_based", name: "Position Based" },
+                                ],
+                                value: config,
+                                onChange: setConfig,
+                            }),
+                        ],
+                    }),
+                ]}
+            </UIForm>
+        </>
     );
 }

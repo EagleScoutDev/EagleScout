@@ -11,7 +11,7 @@ import { FormHelper } from "../../../FormHelper";
 import * as Bs from "../../../ui/icons";
 import type { ScoutMenuScreenProps } from "../ScoutingFlow";
 import { launchCamera } from "react-native-image-picker";
-import { UIButton, UIButtonFrame, UIButtonSize } from "../../../ui/UIButton.tsx";
+import { UIButton, UIButtonStyle, UIButtonSize } from "../../../ui/UIButton.tsx";
 import { Color } from "../../../lib/color.ts";
 import { ReportFlowTab } from "../components/ReportFlowTab.tsx";
 import { ReportFlowFormSection } from "../components/ReportFlowFormSection.tsx";
@@ -220,9 +220,9 @@ export function PitFlow({ navigation }: PitFlowProps) {
                         >
                             <TeamInformation team={team} setTeam={setTeam} />
                             <UIButton
-                                style={{ width: "100%", marginTop: "auto" }}
+                                buttonStyle={{ width: "100%", marginTop: "auto" }}
                                 color={Color.parse(colors.primary)}
-                                frame={UIButtonFrame.fill}
+                                style={UIButtonStyle.fill}
                                 size={UIButtonSize.xl}
                                 text={"Next"}
                                 onPress={() => navigation.navigate("Pit", { screen: `Form/${formSections[0].title}` })}
@@ -248,9 +248,9 @@ export function PitFlow({ navigation }: PitFlowProps) {
                                 }
                                 nextButton={
                                     <UIButton
-                                        style={{ width: "100%" }}
+                                        buttonStyle={{ width: "100%" }}
                                         color={Color.parse(colors.primary)}
-                                        frame={UIButtonFrame.fill}
+                                        style={UIButtonStyle.fill}
                                         size={UIButtonSize.xl}
                                         text={"Next"}
                                         onPress={() => {
@@ -329,9 +329,9 @@ export function PitFlow({ navigation }: PitFlowProps) {
                                 }}
                             />
                             <UIButton
-                                style={{ width: "100%", marginTop: "auto" }}
+                                buttonStyle={{ width: "100%", marginTop: "auto" }}
                                 color={Color.parse(colors.primary)}
-                                frame={UIButtonFrame.fill}
+                                style={UIButtonStyle.fill}
                                 size={UIButtonSize.xl}
                                 loading={isSubmitting}
                                 onPress={submitForm}

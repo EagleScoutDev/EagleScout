@@ -1,13 +1,17 @@
 import { useMemo, useState } from "react";
-import { ShopModalBase } from "./ShopModalBase";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
 import { useProfile } from "../../../../lib/react/hooks/useProfile";
-import { useTheme, type Theme } from "@react-navigation/native";
+import { type Theme, useTheme } from "@react-navigation/native";
 import { supabase } from "../../../../lib/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UIModal } from "../../../../ui/UIModal.tsx";
 
-export const ProfileEmojiModal = ({ onClose }: { onClose: () => void }) => {
+export interface ProfileEmojiModalProps {
+    onClose: () => void;
+}
+export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
+    "use memo";
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const { profile } = useProfile();
@@ -18,8 +22,7 @@ export const ProfileEmojiModal = ({ onClose }: { onClose: () => void }) => {
     }
 
     return (
-        <ShopModalBase onClose={onClose}>
-            <Text style={styles.title}>Select New Emoji</Text>
+        <UIModal visible onClose={onClose} backdropPressBehavior={"none"} title={"Select New Emoji"}>
             <TouchableOpacity style={styles.emojiContainer} onPress={() => setEmojiModalVisible(true)}>
                 <Text style={styles.emoji}>{profile?.emoji}</Text>
             </TouchableOpacity>
@@ -44,9 +47,9 @@ export const ProfileEmojiModal = ({ onClose }: { onClose: () => void }) => {
                 open={emojiModalVisible}
                 onClose={() => setEmojiModalVisible(false)}
             />
-        </ShopModalBase>
+        </UIModal>
     );
-};
+}
 
 const makeStyles = ({ colors }: Theme) =>
     StyleSheet.create({

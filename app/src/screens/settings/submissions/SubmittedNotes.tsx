@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { SegmentedOption } from "../../../ui/input/pickers/SegmentedOption";
@@ -7,11 +7,13 @@ import { FormHelper } from "../../../FormHelper";
 import { NotesDB, type NoteWithMatch, type OfflineNote } from "../../../database/ScoutNotes";
 import { NoteList } from "../../../components/NoteList.tsx";
 import { CompetitionsDB } from "../../../database/Competitions";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const SubmittedNotes = () => {
-    const [notes, setNotes] = useState<NoteWithMatch[]>([]);
-    const [offlineNotes, setOfflineNotes] = useState<OfflineNote[]>([]);
     const { colors } = useTheme();
+
+    const [onlineNotes, setOnlineNotes] = useState<NoteWithMatch[]>([]);
+    const [offlineNotes, setOfflineNotes] = useState<OfflineNote[]>([]);
     const [selectedTheme, setSelectedTheme] = useState("Offline");
     const [loading, setLoading] = useState(false);
 
@@ -22,7 +24,7 @@ export const SubmittedNotes = () => {
 
     async function getOnlineNotes() {
         const reports = await NotesDB.getNotesForSelf();
-        setNotes(reports);
+        setOnlineNotes(reports);
     }
 
     useEffect(() => {
@@ -75,7 +77,6 @@ export const SubmittedNotes = () => {
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.segmented_picker_container}>
                 <SegmentedOption
-                    colors={colors}
                     title="Offline"
                     selected={selectedTheme}
                     onPress={() => {
@@ -85,7 +86,6 @@ export const SubmittedNotes = () => {
                     }}
                 />
                 <SegmentedOption
-                    colors={colors}
                     title="In Database"
                     selected={selectedTheme}
                     onPress={() => {
@@ -151,7 +151,7 @@ export const SubmittedNotes = () => {
 
             {selectedTheme === "In Database" && (
                 <View style={{ flex: 1 }}>
-                    <NoteList notes={notes} />
+                    <NoteList notes={onlineNotes} />
                 </View>
             )}
         </SafeAreaView>

@@ -9,6 +9,7 @@ export interface StepperProps {
     onInput?: undefined | ((value: number) => void);
 }
 export function UIStepper({ value, onInput }: StepperProps) {
+    "use memo";
     const { colors } = useTheme();
     const styles = getStyles(colors);
 

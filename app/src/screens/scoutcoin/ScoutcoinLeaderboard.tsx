@@ -23,6 +23,7 @@ const LeaderboardUserItem = ({
     user: LeaderboardUser;
     setSendingScoutcoinUser: (user: LeaderboardUser) => void;
 }) => {
+    "use memo";
     const { colors } = useTheme();
     const { profile } = useProfile();
     const styles = StyleSheet.create({

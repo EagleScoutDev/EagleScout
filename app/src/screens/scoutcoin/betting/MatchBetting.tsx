@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UserAttributesDB } from "../../../database/UserAttributes";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { CompetitionsDB } from "../../../database/Competitions";
-import type { MatchBettingScreenProps } from "./MatchBettingNavigator";
+import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
+import { UINumberInput } from "../../../ui/input/UINumberInput.tsx";
+import { UICardForm } from "../../../ui/UICardForm.tsx";
 
-export interface MatchBettingProps extends MatchBettingScreenProps<"MatchBetting"> {}
+export interface MatchBettingProps extends DataMenuScreenProps<"MatchBetting"> {}
 export function MatchBetting({ navigation }: MatchBettingProps) {
     const { colors } = useTheme();
-    const [matchNumber, setMatchNumber] = useState<number>();
-    const [orgId, setOrgId] = useState<number>(-1);
+    const [matchNumber, setMatchNumber] = useState<number | null>(null);
+    const [orgId, setOrgId] = useState<number | null>(null);
     const [competitionActive, setCompetitionActive] = useState<boolean>(false);
 
     useEffect(() => {
@@ -26,90 +28,14 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
         });
     }, []);
 
-    const styles = StyleSheet.create({
-        textInput: {
-            borderColor: "gray",
-            borderBottomWidth: 2,
-            padding: 10,
-            color: colors.text,
-            fontFamily: "monospace",
-            minWidth: "40%",
-            maxWidth: "60%",
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: "bold",
-            alignSelf: "center",
-        },
-        button: {
-            backgroundColor: colors.primary,
-            padding: 10,
-            borderRadius: 10,
-            marginTop: 15,
-            width: "80%",
-            alignSelf: "center",
-        },
-        buttonText: {
-            color: "white",
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 20,
-        },
-    });
-
-    if (orgId === -1) {
-        return null;
-    }
+    if (orgId === null) return null;
 
     if (orgId !== 1) {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text
-                    style={{
-                        color: colors.text,
-                        fontSize: 30,
-                        fontWeight: "bold",
-                        marginBottom: 30,
-                    }}
-                >
-                    Bet on a match!
-                </Text>
-                <Text style={{ color: colors.text, fontSize: 15, fontWeight: "bold" }}>Betting is coming soon...</Text>
-            </View>
-        );
-    }
-
-    if (!competitionActive) {
-        return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text
-                    style={{
-                        color: colors.text,
-                        fontSize: 30,
-                        fontWeight: "bold",
-                        marginBottom: 30,
-                    }}
-                >
-                    Bet on a match!
-                </Text>
-                <Text style={{ color: colors.text, fontSize: 15, fontWeight: "bold" }}>No active competition</Text>
-            </View>
-        );
-    }
-
-    return (
-        <View
-            style={{
-                flex: 1,
-                width: "100%",
-            }}
-        >
-            <TouchableWithoutFeedback
-                onPress={Keyboard.dismiss}
+            <View
                 style={{
-                    height: "80%",
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
+                    flex: 1,
+                    padding: 16,
                     alignItems: "center",
                 }}
             >
@@ -118,45 +44,64 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                         color: colors.text,
                         fontSize: 30,
                         fontWeight: "bold",
-                        marginBottom: 30,
+                        marginTop: 48,
+                        marginBottom: 16,
                     }}
                 >
-                    Bet on a match!
+                    {/* TODO: Make it come */}
+                    Coming soon...
                 </Text>
-                <View
-                    style={{
-                        flexDirection: "column",
-                        gap: 20,
-                        height: "50%",
-                        width: "80%",
-                        backgroundColor: colors.card,
-                        borderRadius: 10,
-                        padding: 30,
-                        marginBottom: 30,
-                    }}
-                >
-                    <Text style={{ color: colors.text, fontSize: 15, fontWeight: "bold" }}>Match number:</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="###"
-                        placeholderTextColor={colors.text}
-                        keyboardType="number-pad"
-                        maxLength={3}
-                        onChangeText={(text) => setMatchNumber(Number(text))}
-                    />
-                </View>
-            </TouchableWithoutFeedback>
-            <Pressable
-                style={styles.button}
-                onPress={() => {
-                    if (!matchNumber) {
-                        return;
-                    }
-                    navigation.navigate("BettingScreen", { matchNumber });
+            </View>
+        );
+    }
+
+    return (
+        <View
+            style={{
+                flex: 1,
+                padding: 16,
+                alignItems: "center",
+            }}
+        >
+            <Text
+                style={{
+                    color: colors.text,
+                    fontSize: 30,
+                    fontWeight: "bold",
+                    marginTop: 48,
+                    marginBottom: 16,
                 }}
             >
-                <Text style={styles.buttonText}>Next</Text>
-            </Pressable>
+                Bet on a match!
+            </Text>
+
+            <UICardForm title={"Match Information"}>
+                <UICardForm.NumberInput
+                    label={"Match Number"}
+                    placeholder={"000"}
+                    max={999}
+                    maxLength={3}
+                    value={matchNumber}
+                    onInput={setMatchNumber}
+                />
+                <UICardForm.NumberInput
+                    label={"Team Number"}
+                    placeholder={"000"}
+                    max={999}
+                    maxLength={3}
+                    value={matchNumber}
+                    onInput={setMatchNumber}
+                />
+            </UICardForm>
+            <UIButton
+                size={UIButtonSize.xl}
+                style={UIButtonStyle.fill}
+                text={"Next"}
+                onPress={() => {
+                    if (matchNumber === null) return;
+                    navigation.navigate("MatchBetting/BettingScreen", { matchNumber });
+                }}
+            />
         </View>
     );
 }

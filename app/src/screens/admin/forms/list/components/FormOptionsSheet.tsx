@@ -40,7 +40,7 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                 {[
                     UIForm.Section({
                         items: [
-                            UIList.Item({
+                            UIList.Line({
                                 label: form.name,
                             }),
                         ],

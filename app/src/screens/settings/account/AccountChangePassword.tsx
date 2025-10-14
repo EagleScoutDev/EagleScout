@@ -1,119 +1,70 @@
-import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { Alert } from "react-native";
 import { useState } from "react";
-import { useTheme } from "@react-navigation/native";
-import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
-import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
+import { UIForm } from "../../../ui/UIForm.tsx";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export interface AccountChangePasswordProps extends SettingsMenuScreenProps<"Account/ChangePassword"> {}
 export function AccountChangePassword({ navigation }: AccountChangePasswordProps) {
+    "use memo";
     const [newPassword, setNewPassword] = useState("");
-    const [confirmNewPassword, setConfirmNewPassword] = useState("");
-    const { colors } = useTheme();
-
-    const styles = StyleSheet.create({
-        text_input: {
-            height: 40,
-            borderColor: "gray",
-            borderWidth: 1,
-            width: "100%",
-            borderRadius: 10,
-            padding: 10,
-            marginBottom: 10,
-            color: colors.text,
-        },
-        button_row: { flexDirection: "row", justifyContent: "space-evenly" },
-    });
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     return (
-        <View>
-            <View style={{ width: "80%", alignSelf: "center", marginTop: "5%" }}>
-                <MinimalSectionHeader title={"New Password"} />
-                <TextInput
-                    style={styles.text_input}
-                    // placeholder="New Password"
-                    onChangeText={(text) => setNewPassword(text)}
-                    value={newPassword}
-                    secureTextEntry={true}
-                />
-                <MinimalSectionHeader title={"Confirm New Password"} />
-                <TextInput
-                    style={styles.text_input}
-                    // placeholder="Confirm New Password"
-                    onChangeText={(text) => setConfirmNewPassword(text)}
-                    value={confirmNewPassword}
-                    secureTextEntry={true}
-                />
-            </View>
-            <StandardButton
-                isLoading={false}
-                color={newPassword !== confirmNewPassword || newPassword === "" ? "grey" : colors.primary}
-                onPress={async () => {
-                    if (newPassword === "" || confirmNewPassword === "") {
-                        console.log("New password cannot be blank.");
-                        Alert.alert(
-                            "New password cannot be blank.",
-                            "Please try again",
-                            [
-                                {
-                                    text: "OK",
-                                    onPress: () => console.log("OK Pressed"),
-                                },
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+                <UIForm>
+                    {[
+                        UIForm.Section({
+                            items: [
+                                UIForm.TextInput({
+                                    label: "New Password",
+                                    secure: true,
+                                    value: newPassword,
+                                    onChange: (x) => setNewPassword(x.trim()),
+                                }),
+                                UIForm.TextInput({
+                                    label: "Confirm New Password",
+                                    secure: true,
+                                    value: confirmPassword,
+                                    onChange: setConfirmPassword,
+                                }),
                             ],
-                            { cancelable: false }
-                        );
-                        return;
-                    }
-                    if (newPassword === confirmNewPassword) {
-                        supabase.auth.updateUser({ password: newPassword }).then(({ error }) => {
-                            if (error) {
-                                Alert.alert(
-                                    "Error",
-                                    error.message,
-                                    [
-                                        {
-                                            text: "OK",
-                                            onPress: () => console.log("OK Pressed"),
-                                        },
-                                    ],
-                                    { cancelable: false }
-                                );
-                            } else {
+                        }),
+                        <UIButton
+                            text={"Save"}
+                            style={UIButtonStyle.fill}
+                            size={UIButtonSize.xl}
+                            onPress={async () => {
+                                if (newPassword === "" || confirmPassword === "") {
+                                    return Alert.alert("Error", "New password cannot be blank.");
+                                }
+                                if (newPassword !== confirmPassword) {
+                                    return Alert.alert("Error", "Passwords do not match");
+                                }
+
+                                const { error } = await supabase.auth.updateUser({ password: newPassword });
+                                if (error) {
+                                    console.log(error);
+                                    if (error.code === "same_password") {
+                                        Alert.alert("Error", "Your entered password was the same as the current one.");
+                                    } else {
+                                        Alert.alert("Error", "An error occurred, please try again.");
+                                    }
+                                    return;
+                                }
+
                                 setNewPassword("");
-                                setConfirmNewPassword("");
-                                Alert.alert(
-                                    "Password Updated",
-                                    "Your password has been updated!",
-                                    [
-                                        {
-                                            text: "OK",
-                                            onPress: () => console.log("OK Pressed"),
-                                        },
-                                    ],
-                                    { cancelable: false }
-                                );
+                                setConfirmPassword("");
+                                Alert.alert("Success", "Your password has been updated!");
                                 navigation.goBack();
-                            }
-                        });
-                    } else {
-                        console.log("Passwords do not match");
-                        Alert.alert(
-                            "Passwords do not match",
-                            "Please try again",
-                            [
-                                {
-                                    text: "OK",
-                                    onPress: () => console.log("OK Pressed"),
-                                },
-                            ],
-                            { cancelable: false }
-                        );
-                    }
-                }}
-                text={"Save"}
-                width={"60%"}
-            />
-        </View>
+                            }}
+                        />,
+                    ]}
+                </UIForm>
+            </SafeAreaView>
+        </SafeAreaProvider>
     );
 }

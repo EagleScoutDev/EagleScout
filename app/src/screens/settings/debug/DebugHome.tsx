@@ -13,7 +13,7 @@ export function DebugHome({ navigation }: DebugHomeProps) {
                 {[
                     UIList.Section({
                         items: [
-                            UIList.Item({
+                            UIList.Line({
                                 icon: Bs.Database,
                                 label: "AsyncStorage",
                                 caret: true,

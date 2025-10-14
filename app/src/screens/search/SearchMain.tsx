@@ -1,4 +1,4 @@
-import { Alert, FlatList, Modal, Pressable, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
@@ -13,6 +13,7 @@ import { NoteList } from "../../components/NoteList.tsx";
 import { getLighterColor, parseColor } from "../../lib/color";
 import { isTablet } from "../../lib/deviceType";
 import type { SearchMenuScreenProps } from "./SearchMenu";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export interface SearchMainProps extends SearchMenuScreenProps<"Main"> {}
 export function SearchMain({ navigation }: SearchMainProps) {

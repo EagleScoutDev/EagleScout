@@ -4,6 +4,7 @@ import { type Theme, useTheme } from "@react-navigation/native";
 
 export interface UITextInputProps extends TextInputProps {}
 export function UITextInput({ style, ...passthrough }: UITextInputProps) {
+    "use memo";
     const { colors } = useTheme();
     const styles = getStyles(colors);
     return <TextInput placeholderTextColor={"gray"} {...passthrough} style={[styles.main, style]} />;

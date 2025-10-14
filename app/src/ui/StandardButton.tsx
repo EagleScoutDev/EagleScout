@@ -18,6 +18,7 @@ export function StandardButton({
     isLoading = false,
     disabled = false,
 }: StandardButtonProps) {
+    "use memo";
     const baseButtonStyle = {
         backgroundColor: color,
         padding: 10,

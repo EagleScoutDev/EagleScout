@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { exMemo } from "../lib/react/util/memo.ts";
 
 export const UITabs = ({
     tabs,
@@ -11,25 +10,26 @@ export const UITabs = ({
     selectedTab: string;
     setSelectedTab: (tab: string) => void;
 }) => {
+    "use memo";
     const { colors } = useTheme();
-    const s = styles(colors);
+    const styles = getStyles(colors);
 
     return (
-        <View style={s.container}>
+        <View style={styles.container}>
             {tabs.map((tab) => (
                 <Pressable
                     key={tab}
                     onPress={() => setSelectedTab(tab)}
-                    style={[s.baseTab, selectedTab === tab ? s.selected_tab : s.tab]}
+                    style={[styles.baseTab, selectedTab === tab ? styles.selected_tab : styles.tab]}
                 >
-                    <Text style={selectedTab === tab ? s.selected_tab_text : s.tab_text}>{tab}</Text>
+                    <Text style={selectedTab === tab ? styles.selected_tab_text : styles.tab_text}>{tab}</Text>
                 </Pressable>
             ))}
         </View>
     );
 };
 
-const styles = exMemo((colors: Theme["colors"]) =>
+const getStyles = (colors: Theme["colors"]) =>
     StyleSheet.create({
         container: {
             flexDirection: "row",
@@ -60,5 +60,4 @@ const styles = exMemo((colors: Theme["colors"]) =>
             color: colors.background,
             fontWeight: "bold",
         },
-    })
-);
+    });

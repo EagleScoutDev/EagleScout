@@ -7,6 +7,19 @@ export enum AccountType {
     Admin = "admin",
     Rejected = "rejected",
 }
+export namespace AccountType {
+    export function toRoleName(type: AccountType): string {
+        switch (type) {
+            case AccountType.Admin:
+                return "Admin";
+            case AccountType.Scouter:
+                return "Scouter";
+            case AccountType.Rejected:
+                return "Rejected";
+        }
+    }
+}
+
 export enum AccountStatus {
     Onboarding = "onboarding",
     Approval = "await_approval",

@@ -1,9 +1,12 @@
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UpcomingRoundsView } from "./UpcomingRoundsView";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
 import type { ScoutMenuScreenProps } from "./ScoutingFlow";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../ui/UIButton.tsx";
+import { UIMenu } from "../../ui/UIMenu.tsx";
+import { useRef } from "react";
 
 export interface ScoutFlowHomeProps extends ScoutMenuScreenProps<"Dashboard"> {}
 export function ScoutFlowHome({ navigation }: ScoutFlowHomeProps) {

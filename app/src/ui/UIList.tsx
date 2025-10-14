@@ -1,71 +1,207 @@
 import {
     ActivityIndicator,
-    FlatList,
     RefreshControl,
+    SectionList,
     type StyleProp,
-    StyleSheet,
     Text,
     View,
     type ViewStyle,
 } from "react-native";
-import React, {
-    Children,
-    type Key,
-    type PropsWithChildren,
-    type ReactElement,
-    type ReactNode,
-    type Ref,
-    useEffect,
-    useImperativeHandle,
-    useState,
-} from "react";
-import { useTheme } from "@react-navigation/native";
-import { Gesture, GestureDetector, ScrollView } from "react-native-gesture-handler";
+import React, { isValidElement, type ReactElement, type ReactNode, useState } from "react";
+import { type Theme, useTheme } from "@react-navigation/native";
 import * as Bs from "./icons";
 import { type Icon } from "./icons";
-import { elementInstanceof } from "../lib/react/util/instanceof.ts";
-import Animated, { runOnJS, useSharedValue, withTiming } from "react-native-reanimated";
-import { BottomSheetFlatList, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetSectionList } from "@gorhom/bottom-sheet";
 import type { Color } from "../lib/color.ts";
-import { useMountReactions } from "react-native-gesture-handler/lib/typescript/handlers/gestures/GestureDetector/useMountReactions";
+import { PressableOpacity } from "./components/PressableOpacity.tsx";
 
 export interface UIListProps {
-    ref?: Ref<UIList>;
-    style?: StyleProp<ViewStyle>;
     contentContainerStyle?: StyleProp<ViewStyle>;
 
-    refreshing?: boolean;
+    loading?: boolean;
     onRefresh?: (() => Promise<void>) | undefined | null;
-    refreshOnMount?: boolean;
+    minRefreshMs?: number;
 
-    children?: readonly (UIList.Section | false | null | undefined)[];
+    children?: readonly (UIList.Section | ReactElement | false | null | undefined)[];
     bottomSheet?: boolean; //< TODO: find an alternative to this
 }
-export interface UIList {
-    refresh(): Promise<void>;
-}
 export function UIList({
-    ref,
-    style,
     contentContainerStyle,
-    refreshing: externRefreshing,
+    loading = false,
     onRefresh,
-    refreshOnMount = false,
+    minRefreshMs = 500,
     children,
     bottomSheet = false,
 }: UIListProps) {
+    const { colors } = useTheme();
+    const styles = getListStyles(colors);
+    const renderSectionHeader = ({ section: { header } }: { section: UIList.Section }) => (
+        <View style={styles.sectionHeader}>
+            {typeof header === "string" && <Text style={styles.sectionHeaderText}>{header}</Text>}
+        </View>
+    );
+    const renderSectionFooter = ({ section }: { section: UIList.Section }) => (
+        <View style={[styles.sectionFooter, section === lastSection && styles.lastSectionFooter]}>
+            {typeof section.footer === "string" && <Text style={styles.sectionFooterText}>{section.footer}</Text>}
+        </View>
+    );
+
+    const [refreshing, setRefreshing] = useState(false);
+    async function doRefresh() {
+        if (!onRefresh) return;
+
+        setRefreshing(true);
+        if (minRefreshMs <= 0) await onRefresh();
+        else await Promise.all([onRefresh(), new Promise((resolve) => setTimeout(resolve, minRefreshMs))]);
+        setRefreshing(false);
+    }
+
+    const sections = (children ?? [])
+        .filter((x) => !!x)
+        .map((x) =>
+            isValidElement(x) ? { data: [x], renderSectionHeader: () => null, renderSectionFooter: () => null } : x
+        );
+    const lastSection = sections[sections.length - 1];
+
+    const SectionListImpl = bottomSheet ? BottomSheetSectionList : SectionList;
+    return (
+        <SectionListImpl
+            style={styles.list}
+            scrollToOverflowEnabled={true}
+            extraData={[styles]}
+            contentContainerStyle={[styles.listContents, contentContainerStyle]}
+            refreshControl={
+                onRefresh && !loading ? <RefreshControl refreshing={refreshing} onRefresh={doRefresh} /> : undefined
+            }
+            sections={sections}
+            keyExtractor={(x, i) => x.key ?? i.toString()}
+            ListHeaderComponent={loading && !refreshing ? ActivityIndicator : null}
+            ListHeaderComponentStyle={{ marginBottom: 10 }}
+            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+            renderSectionHeader={renderSectionHeader}
+            stickySectionHeadersEnabled={false}
+            renderSectionFooter={renderSectionFooter}
+            renderItem={({ section, item, index: i }) => {
+                if (isValidElement(item)) return item;
+
+                const { disabled, onPress, onLongPress, render } = item;
+                const first = i === 0;
+                const last = i === section.data.length - 1;
+
+                const content = (
+                    <View
+                        style={[styles.item, first && styles.firstItem, last && styles.lastItem]}
+                        children={render()}
+                    />
+                );
+
+                return onPress || onLongPress ? (
+                    <PressableOpacity
+                        disabled={disabled}
+                        onPress={onPress}
+                        onLongPress={onLongPress}
+                        children={content}
+                    />
+                ) : (
+                    <View children={content} />
+                );
+            }}
+        />
+    );
+}
+
+export namespace UIList {
+    export interface SectionProps {
+        key?: string | undefined;
+        header?: string | null | undefined;
+        footer?: string | null | undefined;
+        items?: readonly (UIList.Line | false | null | undefined)[];
+    }
+    export interface Section {
+        key?: string | undefined;
+        header?: string | null | undefined;
+        footer?: string | null | undefined;
+        data: readonly (UIList.Line | ReactElement)[];
+    }
+    export function Section({ key, header, footer, items }: SectionProps): Section {
+        return { key, header, footer, data: (items ?? []).filter((x) => !!x) };
+    }
+
+    export interface ItemInfo {
+        key?: string | undefined;
+
+        render: () => ReactNode;
+
+        disabled?: boolean;
+        onPress?: (() => void) | undefined | null;
+        onLongPress?: (() => void) | undefined | null;
+    }
+
+    export interface LineProps {
+        key?: string | undefined;
+        icon?: Icon | true;
+        label?: string;
+        labelColor?: Color;
+        body?: () => ReactNode;
+        caret?: boolean;
+        disabled?: boolean;
+
+        onPress?: (() => void) | undefined | null;
+        onLongPress?: (() => void) | undefined | null;
+    }
+
+    /**
+     * List item with an icon, label, body, and caret.
+     */
+    export interface Line extends ItemInfo {}
+    export function Line({ key, ...props }: LineProps): ItemInfo {
+        return {
+            key,
+            ...props,
+            render: () => <RenderLine {...props} />,
+        };
+    }
+}
+
+function RenderLine({ icon, label, labelColor, body, caret, disabled }: UIList.LineProps) {
     "use memo";
     const { colors } = useTheme();
-    const styles = StyleSheet.create({
-        container: {
+
+    const styles = getLineStyles(colors, labelColor);
+    return (
+        <>
+            {(icon || label) && (
+                <View style={styles.label}>
+                    {icon && (
+                        <View style={styles.labelIcon}>
+                            {icon === true ? null : icon({ size: 18, fill: colors.primary })}
+                        </View>
+                    )}
+                    {label !== undefined && (
+                        <Text style={[styles.labelText]} numberOfLines={1}>
+                            {label}
+                        </Text>
+                    )}
+                </View>
+            )}
+            <View style={styles.body}>
+                {body?.()}
+                {caret && <Bs.ChevronRight size="16" style={styles.caret} />}
+            </View>
+        </>
+    );
+}
+
+const getListStyles = (colors: Theme["colors"]) =>
+    ({
+        list: {
             flex: 1,
-            minHeight: 200,
         },
-        contents: {
+        listContents: {
             flexGrow: 1,
-            paddingVertical: 8,
-            paddingHorizontal: 16,
+            padding: 16,
         },
+
         sectionHeader: {
             marginBottom: 5,
         },
@@ -78,191 +214,66 @@ export function UIList({
         },
         sectionFooter: {
             marginTop: 3,
+            marginBottom: 24,
+        },
+        lastSectionFooter: {
+            marginBottom: 0,
         },
         sectionFooterText: {
             color: colors.text,
             opacity: 0.6,
             fontSize: 12,
         },
-        sectionGap: {
-            height: 24,
+
+        itemSeparator: {
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
         },
-    });
 
-    const [refreshing, setRefreshing] = useState(false);
-    async function doRefresh() {
-        if (!onRefresh) return;
-
-        setRefreshing(true);
-        const ux = new Promise((resolve) => setTimeout(resolve, 500)); // Delay at least 500ms to give the impression of work
-        await Promise.all([onRefresh(), ux]);
-        setRefreshing(false);
-    }
-
-    useImperativeHandle(
-        ref,
-        () => ({
-            refresh: doRefresh,
-        }),
-        [onRefresh, doRefresh, setRefreshing]
-    );
-
-    // FIXME: "OnMount" is a lie because changing refreshOnMount will also lead to a refresh
-    useEffect(() => void (refreshOnMount && doRefresh()), [refreshOnMount]);
-
-    type DataItem =
-        | { key: string; type: "item"; item: UIList.Item; first: boolean; last: boolean }
-        | { key: string; type: "header"; content: string | null | undefined }
-        | { key: string; type: "footer"; content: string | null | undefined }
-        | { key: string; type: "gap" };
-    const data: DataItem[] = [];
-
-    const sections = children?.filter((x) => !!x) ?? [];
-    for (let si = 0; si < sections.length; si++) {
-        const { key = si, header, footer, items } = sections[si];
-
-        if (header ?? false) {
-            data.push({ key: key + ".header", type: "header", content: header });
-        }
-        if (items) {
-            data.push(
-                ...items
-                    .filter((x) => !!x)
-                    .map(
-                        (item, i, items) =>
-                            ({
-                                key: key + ".$" + (item.key ?? i.toString()),
-                                type: "item",
-                                item,
-                                first: i === 0,
-                                last: i === items.length - 1,
-                            } as const)
-                    )
-            );
-        }
-        if (footer ?? false) {
-            data.push({ key: key + ".footer", type: "footer", content: footer });
-        }
-        if (si !== sections.length - 1) {
-            data.push({ key: key + ".gap", type: "gap" });
-        }
-    }
-
-    const ListImpl = bottomSheet ? BottomSheetFlatList : FlatList;
-    return (
-        <ListImpl
-            scrollToOverflowEnabled={true}
-            style={[styles.container, style]}
-            contentContainerStyle={[styles.contents, contentContainerStyle]}
-            refreshControl={
-                onRefresh || !!externRefreshing ? (
-                    <RefreshControl refreshing={refreshing || !!externRefreshing} onRefresh={doRefresh} />
-                ) : undefined
-            }
-            data={data}
-            keyExtractor={({ key }, i) => key}
-            renderItem={({ item }) => {
-                switch (item.type) {
-                    case "header":
-                        return (
-                            <View style={styles.sectionHeader}>
-                                {typeof item.content === "string" && (
-                                    <Text style={styles.sectionHeaderText}>{item.content}</Text>
-                                )}
-                            </View>
-                        );
-                    case "footer":
-                        return (
-                            <View style={styles.sectionFooter}>
-                                {typeof item.content === "string" && (
-                                    <Text style={styles.sectionFooterText}>{item.content}</Text>
-                                )}
-                            </View>
-                        );
-                    case "gap":
-                        return <View style={styles.sectionGap} aria-hidden />;
-                    case "item":
-                        return <RenderItem item={item.item} first={item.first} last={item.last} />;
-                }
-            }}
-        />
-    );
-}
-export namespace UIList {
-    export interface SectionProps {
-        key?: string | undefined;
-        header?: string | null | undefined;
-        footer?: string | null | undefined;
-        items?: readonly (UIList.Item | false | null | undefined)[];
-    }
-    export interface Section extends SectionProps {}
-    export function Section(props: SectionProps) {
-        return props;
-    }
-
-    export interface ItemProps {
-        key?: string | undefined;
-        icon?: Icon;
-        label?: string;
-        labelColor?: Color;
-        render?: () => ReactNode;
-        caret?: boolean;
-        disabled?: boolean;
-
-        onPress?: (() => void) | undefined | null;
-        onLongPress?: (() => void) | undefined | null;
-    }
-    export interface Item extends ItemProps {}
-    export function Item(props: ItemProps): Item {
-        return props;
-    }
-}
-
-function RenderItem({
-    item: { icon, label, labelColor, caret, disabled, onPress, onLongPress, render },
-    first,
-    last,
-}: {
-    item: UIList.ItemProps;
-    first: boolean;
-    last: boolean;
-}) {
-    "use memo";
-    const { colors } = useTheme();
-    const opacity = useSharedValue(1);
-    const styles = StyleSheet.create({
-        container: {
+        item: {
             minHeight: 48,
             backgroundColor: colors.card,
             borderLeftWidth: 1,
             borderRightWidth: 1,
-            borderTopWidth: first ? 1 : 0,
-            borderBottomWidth: 1,
-            borderTopLeftRadius: first ? 8 : 0,
-            borderTopRightRadius: first ? 8 : 0,
-            borderBottomLeftRadius: last ? 8 : 0,
-            borderBottomRightRadius: last ? 8 : 0,
             borderColor: colors.border,
 
             width: "100%",
             flexDirection: "row",
             alignItems: "center",
+            gap: 16,
+
+            paddingHorizontal: 12,
+            paddingVertical: 8,
         },
+        firstItem: {
+            borderTopWidth: 1,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+        },
+        lastItem: {
+            borderBottomWidth: 1,
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+        },
+    } as const);
+
+const getLineStyles = (colors: Theme["colors"], labelColor: Color | undefined) =>
+    ({
         label: {
             flexDirection: "row",
+            gap: 8,
             alignItems: "center",
-            paddingVertical: 8,
-            paddingLeft: 12,
         },
         labelIcon: {
-            marginRight: 16,
+            marginLeft: 4,
+            width: 24,
+            overflow: "hidden",
         },
         labelText: {
+            flexShrink: 1,
             fontSize: 16,
             fontWeight: "normal",
             color: labelColor?.hex ?? colors.text,
-            opacity: disabled ? 0.6 : 1,
-            marginRight: 16,
         },
 
         body: {
@@ -270,35 +281,6 @@ function RenderItem({
             alignItems: "center",
             justifyContent: "flex-end",
             flex: 1,
-            paddingRight: 12,
         },
-        caret: {
-            marginLeft: 16,
-        },
-    });
-
-    const tapGesture =
-        onPress &&
-        Gesture.Tap()
-            .onTouchesDown(() => opacity.set(withTiming(0.5, { duration: 100 })))
-            .onTouchesCancelled(() => opacity.set(withTiming(1, { duration: 75 })))
-            .onEnd(() => opacity.set(withTiming(1, { duration: 75 })))
-            .onStart(() => runOnJS(onPress)());
-    const longPressGesture = onLongPress && Gesture.LongPress().onStart(() => runOnJS(onLongPress)());
-    const gesture = Gesture.Race(...[tapGesture, longPressGesture].filter((x) => !!x));
-
-    return (
-        <GestureDetector gesture={gesture}>
-            <Animated.View style={[styles.container, { opacity }]}>
-                <View style={styles.label}>
-                    {icon && <View style={styles.labelIcon}>{icon({ size: 16, fill: colors.primary })}</View>}
-                    {label !== undefined && <Text style={styles.labelText}>{label}</Text>}
-                </View>
-                <View style={styles.body}>
-                    {render?.()}
-                    {caret && <Bs.ChevronRight size="16" style={styles.caret} />}
-                </View>
-            </Animated.View>
-        </GestureDetector>
-    );
-}
+        caret: {},
+    } as const);

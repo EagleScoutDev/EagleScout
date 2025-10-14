@@ -1,33 +1,39 @@
-import { useCallback } from "react";
-import { Pressable, type PressableProps, type PressableStateCallbackType } from "react-native-gesture-handler";
+import { Pressable, type ViewStyle } from "react-native";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import type { ComponentProps, ReactNode } from "react";
 
-export interface PressableOpacityProps extends PressableProps {
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+export interface PressableOpacityProps extends ComponentProps<typeof Pressable> {
     disabled?: boolean;
     activeOpacity?: number;
-    defaultOpacity?: number;
     disabledOpacity?: number;
+    style?: ViewStyle;
+    children?: ReactNode;
 }
+
 export function PressableOpacity({
     disabled = false,
     activeOpacity = 0.5,
-    defaultOpacity = 1,
     disabledOpacity = 0.2,
     style,
-    children,
     ...passthrough
 }: PressableOpacityProps) {
-    "use memo";
+    const opacity = useSharedValue(1);
 
-    const styleFn = useCallback(
-        (state: PressableStateCallbackType) => {
-            const s = typeof style === "function" ? style(state) : style;
-            return [s, { opacity: (disabled ? disabledOpacity : state.pressed ? activeOpacity : 1) * defaultOpacity }];
-        },
-        [disabled, activeOpacity, defaultOpacity, disabledOpacity, style]
-    );
+    const animatedStyle = useAnimatedStyle(() => ({
+        opacity: disabled ? disabledOpacity : opacity.value,
+    }));
+
     return (
-        <Pressable {...passthrough} disabled={disabled} style={styleFn}>
-            {children}
-        </Pressable>
+        <AnimatedPressable
+            {...passthrough}
+            disabled={disabled}
+            style={[style, animatedStyle]}
+
+            // TODO: these should run on the UI thread
+            onPressIn={() => opacity.set(withTiming(activeOpacity, { duration: 100 }))}
+            onPressOut={() => opacity.set(withTiming(1, { duration: 75 }))}
+        />
     );
 }

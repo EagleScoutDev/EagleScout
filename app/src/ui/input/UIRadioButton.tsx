@@ -8,6 +8,7 @@ export interface RadioButtonProps {
     onPress: (value: boolean) => void;
 }
 export function UIRadioButton({ text, value, disabled = false, onPress }: RadioButtonProps) {
+    "use memo";
     const { colors } = useTheme();
 
     return (

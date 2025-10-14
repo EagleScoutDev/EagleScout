@@ -4,7 +4,7 @@
  *    give option for "select all" and submit, or user can select manually
  * 2) the forms they have uploaded to the database in the past
  */
-import { Alert, SafeAreaView, View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { Alert, View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { ReportList } from "../../../components/ReportList.tsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,6 +14,7 @@ import { StandardButton } from "../../../ui/StandardButton";
 import Toast from "react-native-toast-message";
 import { type MatchReportReturnData, MatchReportsDB } from "../../../database/ScoutMatchReports";
 import { CompetitionsDB } from "../../../database/Competitions";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function SubmittedForms() {
     const [reports, setReports] = useState<MatchReportReturnData[]>([]);

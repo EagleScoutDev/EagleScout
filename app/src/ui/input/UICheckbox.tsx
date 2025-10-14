@@ -10,6 +10,7 @@ export interface CheckboxProps {
     style?: StyleProp<ViewStyle>;
 }
 export function UICheckbox({ text, value, disabled = false, onInput, style }: CheckboxProps) {
+    "use memo";
     const { colors } = useTheme();
 
     return (

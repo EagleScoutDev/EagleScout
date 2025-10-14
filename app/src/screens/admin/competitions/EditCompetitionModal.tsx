@@ -15,12 +15,11 @@ export interface CompetitionPatch {
 
 export interface EditCompetitionModalProps {
     ref?: React.Ref<EditCompetitionModal>;
-    onCancel: () => void;
     onSubmit: (comp: CompetitionPatch) => void;
     onDelete: (comp: CompetitionPatch) => void;
 }
 export interface EditCompetitionModal extends UISheetModal<CompetitionPatch> {}
-export function EditCompetitionModal({ ref, onCancel, onSubmit, onDelete }: EditCompetitionModalProps) {
+export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitionModalProps) {
     "use memo";
     const { colors } = useTheme();
 
@@ -78,9 +77,9 @@ export function EditCompetitionModal({ ref, onCancel, onSubmit, onDelete }: Edit
                 left={{
                     color: Color.parse(colors.notification),
                     text: "Cancel",
-                    onPress: onCancel,
+                    onPress: () => sheetRef.current?.dismiss(),
                 }}
-                right={{ color: Color.parse(colors.primary), text: "Done", onPress: () => void trySubmit() }}
+                right={{ color: Color.parse(colors.primary), text: "Done", onPress: trySubmit }}
                 title={"Edit Competition"}
             />
             <UIForm bottomSheet={true}>

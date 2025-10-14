@@ -1,18 +1,17 @@
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TBAMatches } from "../../../database/TBAMatches.ts";
 import { SetScoutAssignmentModal } from "../../../components/modals/SetScoutAssignmentModal.tsx";
-import { ScoutAssignments } from "../../../database/ScoutAssignments.ts";
+import { Position, ScoutAssignments } from "../../../database/ScoutAssignments.ts";
 import { useTheme } from "@react-navigation/native";
 import { ScoutAssignmentsConfig } from "../../../database/Competitions.ts";
-import { Position } from "../../../database/ScoutAssignments.ts";
 import { AutoAssignModal } from "./AutoAssignModal.tsx";
-import type { ScoutAssignmentsScreenProps } from "./ScoutAssignments";
+import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
 
 export interface ScoutAssignmentsSpreadsheetParams {
     competition: number;
 }
-export interface ScoutAssignmentsSpreadsheetProps extends ScoutAssignmentsScreenProps<"Spreadsheet"> {}
+export interface ScoutAssignmentsSpreadsheetProps extends DataMenuScreenProps<"ScoutAssignments/Table"> {}
 export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadsheetProps) {
     const { competition } = route.params;
     const [matchesGrouped, setMatchesGrouped] = useState([]);

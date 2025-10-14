@@ -1,4 +1,4 @@
-import { usePreventRemove, useTheme } from "@react-navigation/native";
+import { type Theme, usePreventRemove, useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { FormsDB } from "../../../../database/Forms.ts";
 import { Form } from "../../../../lib/forms";
@@ -8,10 +8,9 @@ import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatli
 import { key } from "../../../../lib/react/util/key.ts";
 import type { DataMenuScreenProps } from "../../../data/DataMain.tsx";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Alert, Keyboard, View } from "react-native";
+import { Alert, Keyboard, StyleSheet, View } from "react-native";
 import { AsyncAlert } from "../../../../lib/react/util/AsyncAlert.ts";
 import { FormInfoCard } from "./components/FormInfoCard.tsx";
-import { UICard } from "../../../../ui/UICard.tsx";
 import { arr } from "../../../../lib/util/im.ts";
 import { FormItemPalette } from "./components/FormItemPalette.tsx";
 import { UISheet } from "../../../../ui/UISheet.tsx";
@@ -20,6 +19,7 @@ import { UISheetModal } from "../../../../ui/UISheetModal.tsx";
 import { Color } from "../../../../lib/color.ts";
 import { FormItemOptions } from "./components/FormItemOptions.tsx";
 import { FormItemInfo } from "./components/FormItemInfo.tsx";
+import { Pressable } from "react-native-gesture-handler";
 import ItemType = Form.ItemType;
 
 export interface FormCreatorParams {
@@ -29,20 +29,21 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
     const { form } = route.params;
 
     const { colors } = useTheme();
+    const styles = getStyles(colors);
 
     const [title, setTitle] = useState(form?.name ?? "");
     // const [description, setDescription] = useState(form??.description ?? "");
     const [isPit, setIsPit] = useState(false);
     const [items, setItems] = useState<Form.Structure>(form?.formStructure ?? []);
+    const [dirty, setDirty] = useState(false); //< If there are unsaved changes
 
     const [editDraft, setEditDraft] = useState<Form.Item | null>(null);
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const editSheetRef = useRef<BottomSheetModal>(null);
 
-    const hasUnsavedChanges = items.length > 0;
     const sheetPosition = useSharedValue(0);
 
-    usePreventRemove(hasUnsavedChanges, ({ data }) => {
+    usePreventRemove(dirty, ({ data }) => {
         Alert.alert("Unsaved changes", "Are you sure you want to leave? Your work will be lost!", [
             { text: "Stay", style: "cancel", isPreferred: true, onPress: () => {} },
             { text: "Leave", style: "destructive", onPress: () => navigation.dispatch(data.action) },
@@ -58,13 +59,14 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                 formStructure: items,
                 pitScouting: isPit,
             });
+            setDirty(false);
+
+            await AsyncAlert.alert("Success", "Form added successfully!");
+            navigation.goBack();
         } catch (e) {
             console.error(e);
-            return Alert.alert("Error", "An error occurred, try again later.");
+            Alert.alert("Error", "An error occurred, try again later.");
         }
-
-        await AsyncAlert.alert("Success", "Form added successfully!");
-        navigation.goBack();
     }
 
     useEffect(() => {
@@ -81,17 +83,12 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
         <View style={{ flex: 1, backgroundColor: colors.card }}>
             <Animated.View style={{ height: sheetPosition }}>
                 <DraggableFlatList
-                    contentContainerStyle={{
-                        flexDirection: "column",
-                        paddingHorizontal: 15,
-                        paddingTop: 5,
-                        paddingBottom: "100%",
-                    }}
+                    contentContainerStyle={styles.canvasContent}
                     onDragEnd={({ data }) => setItems(data)}
                     ListHeaderComponent={
-                        <UICard>
+                        <Pressable style={styles.item}>
                             <FormInfoCard title={title} setTitle={setTitle} isPit={isPit} setIsPit={setIsPit} />
-                        </UICard>
+                        </Pressable>
                     }
                     data={items}
                     // TODO: this is very bad but fixing it would require database changes
@@ -99,20 +96,19 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                     renderItem={({ item, drag, isActive, getIndex }) => {
                         return (
                             <ScaleDecorator>
-                                <Animated.View>
-                                    <UICard
-                                        onPress={() => {
-                                            setEditDraft(item);
-                                            setEditIndex(getIndex()!);
-                                            editSheetRef.current?.present();
-                                        }}
-                                        delayLongPress={100}
-                                        onLongPress={drag}
-                                        disabled={isActive}
-                                    >
-                                        <FormItemInfo item={item} />
-                                    </UICard>
-                                </Animated.View>
+                                <Pressable
+                                    style={styles.item}
+                                    onPress={() => {
+                                        setEditDraft(item);
+                                        setEditIndex(getIndex()!);
+                                        editSheetRef.current?.present();
+                                    }}
+                                    delayLongPress={100}
+                                    onLongPress={drag}
+                                    disabled={isActive}
+                                >
+                                    <FormItemInfo item={item} />
+                                </Pressable>
                             </ScaleDecorator>
                         );
                     }}
@@ -151,6 +147,7 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                                 Alert.alert("Error", item);
                             } else {
                                 setItems(arr.set(items, editIndex!, item));
+                                setDirty(true);
                                 editSheetRef.current?.dismiss();
                             }
                         },
@@ -161,6 +158,31 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
         </View>
     );
 }
+const getStyles = (colors: Theme["colors"]) =>
+    StyleSheet.create({
+        canvasContent: {
+            flexDirection: "column",
+            paddingHorizontal: 15,
+            paddingTop: 5,
+            paddingBottom: "100%",
+        },
+        item: {
+            marginVertical: 2.5,
+            width: "100%",
+            borderRadius: 16,
+            backgroundColor: colors.background,
+            boxShadow: [
+                {
+                    offsetX: 1,
+                    offsetY: 1,
+                    color: "rgba(0,0,0,0.075)",
+                    blurRadius: 1,
+                    spreadDistance: 0.25,
+                },
+            ],
+            padding: 20,
+        },
+    });
 
 export const ITEMS = [
     {

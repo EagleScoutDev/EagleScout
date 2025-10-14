@@ -1,9 +1,7 @@
-import { Alert, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Linking, Pressable, Text, View } from "react-native";
 import { InternetStatus } from "../../lib/InternetStatus";
-import { UserProfileBox } from "../../components/UserProfileBox.tsx";
-import { SettingsPopup } from "./SettingsPopup";
-import { useEffect, useMemo, useState } from "react";
-import { useNavigation, useTheme } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
 import { type SettingsMenuScreenProps } from "./SettingsMenu";
 import * as Bs from "../../ui/icons";
 import { CompetitionsDB } from "../../database/Competitions";
@@ -11,22 +9,15 @@ import { useProfile } from "../../lib/react/hooks/useProfile";
 import { ScoutcoinLedger } from "../../database/ScoutcoinLedger";
 import { useAccount } from "../../lib/react/hooks/useAccount";
 import { UIList } from "../../ui/UIList.tsx";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
-
-const VERSION = "7.7.1";
+import { AccountType } from "../../lib/user/account.ts";
 
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {
     const { colors } = useTheme();
-    const [settingsPopupActive, setSettingsPopupActive] = useState(false);
     const { account, logout } = useAccount();
     const { profile } = useProfile();
-
-    const user = useMemo(() => {
-        console.log(account, profile);
-        return account && profile ? { account, profile } : null;
-    }, [account, profile]);
 
     const [scoutcoins, setScoutcoins] = useState<number | null>(null);
     useEffect(() => {
@@ -73,142 +64,187 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
     }, []);
 
     return (
-        <SafeAreaView edges={{ bottom: "off", top: "additive" }} style={{ width: "100%", height: "100%" }}>
-            <TabHeader title={"Settings"} />
-            {internetStatus === InternetStatus.FAILED && (
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-evenly",
-                        marginHorizontal: "4%",
-                        marginBottom: "4%",
-                    }}
-                >
-                    <Text style={{ flex: 1, color: "grey" }}>
-                        Some features may be disabled until you regain an internet connection.
-                    </Text>
-                    <Pressable onPress={testConnection}>
-                        <Text
-                            style={{
-                                flex: 1,
-                                color: colors.primary,
-                                fontWeight: "bold",
-                            }}
-                        >
-                            Try again?
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+                <TabHeader title={"Settings"} />
+                {internetStatus === InternetStatus.FAILED && (
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                            marginHorizontal: "4%",
+                            marginBottom: "4%",
+                        }}
+                    >
+                        <Text style={{ flex: 1, color: "grey" }}>
+                            Some features may be disabled until you regain an internet connection.
                         </Text>
-                    </Pressable>
-                </View>
-            )}
+                        <Pressable onPress={testConnection}>
+                            <Text
+                                style={{
+                                    flex: 1,
+                                    color: colors.primary,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Try again?
+                            </Text>
+                        </Pressable>
+                    </View>
+                )}
 
-            <UserProfileBox user={user} scoutcoins={scoutcoins} />
-            <UIList contentContainerStyle={{ paddingBottom: 24 }}>
-                {[
-                    UIList.Section({
-                        header: "Account",
-                        items: [
-                            UIList.Item({
-                                icon: Bs.PenFill,
-                                label: "Edit Profile",
-                                caret: true,
-                                disabled: internetStatus !== InternetStatus.CONNECTED,
-                                onPress: () => {
-                                    navigation.navigate("Account/EditProfile", {
-                                        initialFirstName: profile ? profile.firstName : "",
-                                        initialLastName: profile ? profile.lastName : "",
-                                    });
+                <UIList>
+                    {[
+                        UIList.Section({
+                            items: [
+                                {
+                                    render: () => (
+                                        <View
+                                            style={{
+                                                height: 72,
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                            }}
+                                        >
+                                            {profile && account ? (
+                                                <>
+                                                    <View
+                                                        style={{
+                                                            width: 64,
+                                                            height: 64,
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                        }}
+                                                    >
+                                                        <Text style={{ fontSize: 48 }}>{profile.emoji}</Text>
+                                                    </View>
+                                                    <View style={{ flex: 1, marginRight: "auto" }}>
+                                                        <Text
+                                                            style={{ flexShrink: 1, fontSize: 20, marginBottom: 4 }}
+                                                            numberOfLines={1}
+                                                        >
+                                                            {profile.name}
+                                                        </Text>
+                                                        <Text>{AccountType.toRoleName(account.type)}</Text>
+                                                    </View>
+                                                    <View
+                                                        style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+                                                    >
+                                                        <Bs.Coin size={24} fill={colors.text} />
+                                                        <Text style={{ fontSize: 18 }}>{scoutcoins}</Text>
+                                                    </View>
+                                                </>
+                                            ) : (
+                                                <ActivityIndicator />
+                                            )}
+                                        </View>
+                                    ),
                                 },
-                            }),
-                            UIList.Item({
-                                icon: Bs.Asterisk,
-                                label: "Change Password",
-                                caret: true,
-                                disabled: internetStatus !== InternetStatus.CONNECTED,
-                                onPress: () => {
-                                    navigation.navigate("Account/ChangePassword");
-                                },
-                            }),
-                            UIList.Item({
-                                icon: Bs.Ban,
-                                label: "Request Account Deletion",
-                                caret: true,
-                                disabled: internetStatus !== InternetStatus.CONNECTED,
-                                onPress: () => {
-                                    navigation.navigate("Account/Delete");
-                                },
-                            }),
-                            UIList.Item({
-                                icon: Bs.QuestionCircle,
-                                label: "Contact Support",
-                                caret: false,
-                                disabled: false,
-                                onPress: () => {
-                                    Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9");
-                                },
-                            }),
-                            UIList.Item({
-                                icon: Bs.BoxArrowRight,
-                                label: "Sign Out",
-                                caret: false,
-                                disabled: false,
-                                onPress: () => attemptSignOut(),
-                            }),
-                        ],
-                    }),
-                    UIList.Section({
-                        header: "Submissions",
-                        items: [
-                            UIList.Item({
-                                icon: Bs.JournalBookmarkFill,
-                                label: "View Your Reports",
-                                caret: true,
-                                disabled: false,
-                                onPress: () => {
-                                    navigation.navigate("Scout/Reports");
-                                },
-                            }),
-                            UIList.Item({
-                                icon: Bs.Sticky,
-                                label: "View Your Notes",
-                                caret: true,
-                                disabled: false,
-                                onPress: () => {
-                                    navigation.navigate("Scout/Notes");
-                                },
-                            }),
-                        ],
-                    }),
-                    UIList.Section({
-                        header: "Other",
-                        items: [
-                            UIList.Item({
-                                icon: Bs.Bug,
-                                label: "Debug",
-                                caret: true,
-                                disabled: false,
-                                onPress: () => {
-                                    navigation.navigate("Debug/Home");
-                                },
-                            }),
-                        ],
-                    }),
-                ]}
-            </UIList>
-            <Text
-                selectable={true}
-                style={{
-                    color: colors.text,
-                    textAlign: "center",
-                }}
-            >
-                v{VERSION}
-            </Text>
+                            ],
+                        }),
 
-            <SettingsPopup
-                visible={settingsPopupActive}
-                setVisible={setSettingsPopupActive}
-                navigation={useNavigation()}
-            />
-        </SafeAreaView>
+                        UIList.Section({
+                            header: "Account",
+                            items: [
+                                UIList.Line({
+                                    icon: Bs.PenFill,
+                                    label: "Edit Profile",
+                                    caret: true,
+                                    disabled: internetStatus !== InternetStatus.CONNECTED,
+                                    onPress: () => {
+                                        navigation.navigate("Account/EditProfile", {
+                                            initialFirstName: profile ? profile.firstName : "",
+                                            initialLastName: profile ? profile.lastName : "",
+                                        });
+                                    },
+                                }),
+                                UIList.Line({
+                                    icon: Bs.Asterisk,
+                                    label: "Change Password",
+                                    caret: true,
+                                    disabled: internetStatus !== InternetStatus.CONNECTED,
+                                    onPress: () => {
+                                        navigation.navigate("Account/ChangePassword");
+                                    },
+                                }),
+                                UIList.Line({
+                                    icon: Bs.Ban,
+                                    label: "Request Account Deletion",
+                                    caret: true,
+                                    disabled: internetStatus !== InternetStatus.CONNECTED,
+                                    onPress: () => {
+                                        navigation.navigate("Account/Delete");
+                                    },
+                                }),
+                                UIList.Line({
+                                    icon: Bs.QuestionCircle,
+                                    label: "Contact Support",
+                                    caret: false,
+                                    disabled: false,
+                                    onPress: () => {
+                                        Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9");
+                                    },
+                                }),
+                                UIList.Line({
+                                    icon: Bs.BoxArrowRight,
+                                    label: "Sign Out",
+                                    caret: false,
+                                    disabled: false,
+                                    onPress: () => attemptSignOut(),
+                                }),
+                            ],
+                        }),
+                        UIList.Section({
+                            header: "Submissions",
+                            items: [
+                                UIList.Line({
+                                    icon: Bs.JournalBookmarkFill,
+                                    label: "View Your Reports",
+                                    caret: true,
+                                    disabled: false,
+                                    onPress: () => {
+                                        navigation.navigate("Scout/Reports");
+                                    },
+                                }),
+                                UIList.Line({
+                                    icon: Bs.Sticky,
+                                    label: "View Your Notes",
+                                    caret: true,
+                                    disabled: false,
+                                    onPress: () => {
+                                        navigation.navigate("Scout/Notes");
+                                    },
+                                }),
+                            ],
+                        }),
+                        UIList.Section({
+                            header: "Other",
+                            items: [
+                                UIList.Line({
+                                    icon: Bs.Bug,
+                                    label: "Debug",
+                                    caret: true,
+                                    disabled: false,
+                                    onPress: () => {
+                                        navigation.navigate("Debug/Home");
+                                    },
+                                }),
+                                UIList.Line({
+                                    icon: Bs.QuestionCircle,
+                                    label: "About",
+                                    caret: true,
+                                    disabled: false,
+                                    onPress: () => {
+                                        navigation.navigate("About");
+                                    },
+                                }),
+                            ],
+                        }),
+                    ]}
+                </UIList>
+            </SafeAreaView>
+        </SafeAreaProvider>
     );
 }

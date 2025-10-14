@@ -1,5 +1,10 @@
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { createBottomTabNavigator, type BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import {
+    createBottomTabNavigator,
+    type BottomTabScreenProps,
+    BottomTabBar,
+    useBottomTabBarHeight,
+} from "@react-navigation/bottom-tabs";
 import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import { View } from "react-native";
 import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow";
@@ -24,7 +29,7 @@ export type AppHomeParamList = {
 };
 
 export interface AppHomeProps extends RootStackScreenProps<"App"> {}
-export const AppHome = ({ route, navigation }: AppHomeProps) => {
+export const AppHome = ({ navigation }: AppHomeProps) => {
     const { colors } = useTheme();
     const { account } = useAccount();
 

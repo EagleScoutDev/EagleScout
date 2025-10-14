@@ -5,11 +5,11 @@ import { StandardButton } from "../../../../ui/StandardButton";
 import { CompetitionsDB } from "../../../../database/Competitions";
 import { PicklistsDB, type PicklistStructure } from "../../../../database/Picklists";
 import { ProfilesDB } from "../../../../database/Profiles";
-import type { PicklistScreenProps } from "./PicklistMenu";
 import * as Bs from "../../../../ui/icons";
+import type { DataMenuScreenProps } from "../../DataMain.tsx";
 
-export interface PicklistManagerProps extends PicklistScreenProps<"Manager"> {}
-export function PicklistManager({ navigation }: PicklistManagerProps) {
+export interface PicklistsProps extends DataMenuScreenProps<"Picklists"> {}
+export function Picklists({ navigation }: PicklistsProps) {
     const { colors } = useTheme();
     const [picklists, setPicklists] = useState<PicklistStructure[]>([]);
     const [users, setUsers] = useState<Map<string, string>>(new Map());
@@ -161,7 +161,11 @@ export function PicklistManager({ navigation }: PicklistManagerProps) {
                                             {new Date(item.created_at).toLocaleString()}
                                         </Text>
                                     </View>
-                                    <Bs.ChevronRight size="20" fill="gray" style={{ position: "absolute", right: "5%", top: "80%" }} />
+                                    <Bs.ChevronRight
+                                        size="20"
+                                        fill="gray"
+                                        style={{ position: "absolute", right: "5%", top: "80%" }}
+                                    />
                                 </Pressable>
                             );
                         }}

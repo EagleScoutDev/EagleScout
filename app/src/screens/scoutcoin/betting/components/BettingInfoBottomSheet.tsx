@@ -1,33 +1,21 @@
-import { useCallback, useRef, useState } from "react";
+import { useRef } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { BottomSheetNavigator } from "./BottomSheetNavigator";
-import { View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { NavigationIndependentTree, useTheme } from "@react-navigation/native";
+import { ThemedNavigationContainer } from "../../../../ui/ThemedNavigationContainer.tsx";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { WaitForPlayersStep } from "./WaitForPlayersStep.tsx";
+import { SelectAllianceStep } from "./SelectAllianceStep.tsx";
+
+const Stack = createNativeStackNavigator();
 
 export const BettingInfoBottomSheet = () => {
+    "use memo";
     const { colors } = useTheme();
-    const bottomSheetRef = useRef<BottomSheet>(null);
-    const [bottomSheetOpen, setBottomSheetOpen] = useState(true);
 
-    const handleBottomSheetClose = useCallback(() => {
-        bottomSheetRef.current?.close();
-        setBottomSheetOpen(false);
-    }, []);
+    const bottomSheetRef = useRef<BottomSheet>(null);
 
     return (
         <>
-            {bottomSheetOpen && (
-                <View
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                    }}
-                />
-            )}
             <BottomSheet
                 ref={bottomSheetRef}
                 index={0}
@@ -35,7 +23,6 @@ export const BettingInfoBottomSheet = () => {
                 snapPoints={["55%"]}
                 enablePanDownToClose={true}
                 animateOnMount={true}
-                onClose={handleBottomSheetClose}
                 handleIndicatorStyle={{
                     backgroundColor: colors.text,
                 }}
@@ -43,7 +30,14 @@ export const BettingInfoBottomSheet = () => {
                     backgroundColor: colors.card,
                 }}
             >
-                <BottomSheetNavigator handleBottomSheetClose={handleBottomSheetClose} />
+                <NavigationIndependentTree>
+                    <ThemedNavigationContainer>
+                        <Stack.Navigator screenOptions={{ headerShown: false }}>
+                            <Stack.Screen name="WaitForPlayers" component={WaitForPlayersStep} />
+                            <Stack.Screen name="SelectAlliance" component={SelectAllianceStep} />
+                        </Stack.Navigator>
+                    </ThemedNavigationContainer>
+                </NavigationIndependentTree>
             </BottomSheet>
         </>
     );

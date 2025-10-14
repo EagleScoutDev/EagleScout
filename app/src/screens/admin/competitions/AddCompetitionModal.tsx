@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../../lib/supabase.ts";
 import { Color } from "../../../lib/color.ts";
 import { UISheet } from "../../../ui/UISheet.tsx";
@@ -21,9 +21,7 @@ export interface AddCompetitionModalProps {
     onCancel: () => void;
     onSubmit: (competitionData: CompetitionData) => void;
 }
-export interface AddCompetitionModal extends UISheetModal {
-
-}
+export interface AddCompetitionModal extends UISheetModal {}
 export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionModalProps) {
     "use memo";
     const { colors } = useTheme();
@@ -36,6 +34,20 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
     const [pitForm, setPitForm] = useState<number | null>(null);
 
     const [formList, setFormList] = useState<{ id: number; name: string; pitScouting: boolean }[]>([]);
+    const matchForms = new Map<number, { id: number; name: string; pitScouting: false }>();
+    const pitForms = new Map<number, { id: number; name: string; pitScouting: true }>();
+    const matchFormIds: number[] = []
+    const pitFormIds: number[] = []
+    for (const form of formList) {
+        if (form.pitScouting) {
+            pitForms.set(form.id, form as typeof form & { pitScouting: true });
+            pitFormIds.push(form.id);
+        }
+        else {
+            matchForms.set(form.id, form as typeof form & { pitScouting: false });
+            matchFormIds.push(form.id);
+        }
+    }
 
     async function refreshForms() {
         let { data, error } = await supabase.from("forms").select("id, name, pitScouting:pit_scouting");
@@ -56,7 +68,7 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
         if (pitForm == null) return Alert.alert("Error", "Please select a form for pit scouting.");
 
         const { error: fetchTbaEventError } = await supabase.functions.invoke("fetch-tba-event", {
-            body: { tbakey: tbaKey },
+            itemBody: { tbakey: tbaKey },
         });
         if (fetchTbaEventError) return Alert.alert("Error", "Failed to fetch TBA information.");
 
@@ -131,31 +143,19 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
                     }),
                     UIForm.Section({
                         items: [
-                            UIForm.Select({
+                            UIForm.ListPicker({
                                 label: "Match Scouting Form",
-                                multi: false,
-                                options: () =>
-                                    formList
-                                        .filter((f) => !f.pitScouting)
-                                        .map((f) => ({
-                                            key: f.id.toString(),
-                                            name: f.name,
-                                        })),
-                                value: matchForm?.toString() ?? null,
-                                onChange: (value) => setMatchForm(parseInt(value)),
+                                options: matchFormIds,
+                                render: (id) => matchForms.get(id)!,
+                                value: matchForm,
+                                onChange: (value) => setMatchForm(value),
                             }),
-                            UIForm.Select({
+                            UIForm.ListPicker({
                                 label: "Pit Scouting Form",
-                                multi: false,
-                                options: () =>
-                                    formList
-                                        .filter((f) => f.pitScouting)
-                                        .map((f) => ({
-                                            key: f.id.toString(),
-                                            name: f.name,
-                                        })),
-                                value: pitForm?.toString() ?? null,
-                                onChange: (value) => setPitForm(parseInt(value)),
+                                options: pitFormIds,
+                                render: (id) => pitForms.get(id)!,
+                                value: pitForm,
+                                onChange: (value) => setPitForm(value),
                             }),
                         ],
                     }),

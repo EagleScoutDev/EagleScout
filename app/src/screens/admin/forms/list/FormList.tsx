@@ -34,7 +34,7 @@ export function FormList({ navigation }: FormListProps) {
                 {[
                     UIList.Section({
                         items: formList.map((form) =>
-                            UIList.Item({
+                            UIList.Line({
                                 key: form.id.toString(),
                                 label: form.name,
                                 onPress: () => {

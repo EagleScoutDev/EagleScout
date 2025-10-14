@@ -65,7 +65,7 @@ export function TeamInformation({ team, setTeam }: TeamInformationProps) {
                     style={styles.textInput}
                     placeholder={"000"}
                     placeholderTextColor={"gray"}
-                    maxLength={7}
+                    maxLength={3}
                     value={team}
                     onChangeText={(text) => setTeam(text)}
                     keyboardType={"numeric"}

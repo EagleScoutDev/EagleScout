@@ -8,7 +8,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTheme } from "@react-navigation/native";
 import type { CompetitionReturnData } from "../../../database/Competitions";
 import { MatchInformation } from "../components/MatchInformation.tsx";
-import { UIButton, UIButtonFrame, UIButtonSize } from "../../../ui/UIButton.tsx";
+import { UIButton, UIButtonStyle, UIButtonSize } from "../../../ui/UIButton.tsx";
 import { Color } from "../../../lib/color.ts";
 import { ReportFlowTab } from "../components/ReportFlowTab.tsx";
 import { Form } from "../../../lib/forms";
@@ -111,9 +111,9 @@ export function Gamification({
                                 setAlliance={setAlliance}
                             />
                             <UIButton
-                                style={{ marginTop: "auto", maxWidth: "100%" }}
+                                buttonStyle={{ marginTop: "auto", maxWidth: "100%" }}
                                 color={Color.parse(colors.primary)}
-                                frame={UIButtonFrame.fill}
+                                style={UIButtonStyle.fill}
                                 size={UIButtonSize.xl}
                                 text={"Next"}
                                 onPress={() => {
@@ -150,9 +150,9 @@ export function Gamification({
                                     }
                                     nextButton={
                                         <UIButton
-                                            style={{ marginTop: "auto", maxWidth: "100%" }}
+                                            buttonStyle={{ marginTop: "auto", maxWidth: "100%" }}
                                             color={Color.parse(colors.primary)}
-                                            frame={UIButtonFrame.fill}
+                                            style={UIButtonStyle.fill}
                                             size={UIButtonSize.xl}
                                             text={"Next"}
                                             isLoading={isLast ? isSubmitting : false}

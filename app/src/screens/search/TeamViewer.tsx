@@ -77,7 +77,7 @@ export function TeamViewer({
                 <CompetitionRank team_number={team.team_number} />
 
                 <UIList.Section header={"Team Stats"}>
-                    <UIList.Item
+                    <UIList.Line
                         label={"See all scouting reports and notes"}
                         onPress={() => {
                             navigation.navigate("TeamReports", {
@@ -89,7 +89,7 @@ export function TeamViewer({
                         disabled={false}
                         icon={Bs.ClipboardData}
                     />
-                    <UIList.Item
+                    <UIList.Line
                         label={"See auto paths"}
                         onPress={() => {
                             navigation.navigate("AutoPaths", {
@@ -101,14 +101,14 @@ export function TeamViewer({
                         disabled={false}
                         icon={Bs.SignMergeRight}
                     />
-                    <UIList.Item
+                    <UIList.Line
                         label={"Create Performance Graph"}
                         onPress={() => setGraphCreationModalVisible(true)}
                         caret={false}
                         disabled={false}
                         icon={Bs.GraphUp}
                     />
-                    <UIList.Item
+                    <UIList.Line
                         label={"Compare to another team"}
                         onPress={() =>
                             navigation.navigate("CompareTeams", {

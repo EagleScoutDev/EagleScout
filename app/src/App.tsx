@@ -2,7 +2,6 @@ import "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { FormHelper } from "./FormHelper";
-import { PlusMenu } from "./PlusMenu";
 import { useDeepLinking } from "./lib/react/hooks/useDeepLinking";
 import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
@@ -16,7 +15,7 @@ import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HeaderButtonsProvider } from "react-navigation-header-buttons/HeaderButtonsProvider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 declare global {
     namespace ReactNavigation {

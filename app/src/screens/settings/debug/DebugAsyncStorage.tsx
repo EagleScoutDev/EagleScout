@@ -1,4 +1,4 @@
-import { Button, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +8,11 @@ import { UIList } from "../../../ui/UIList.tsx";
 import BottomSheet from "@gorhom/bottom-sheet";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { UIButton } from "../../../ui/UIButton.tsx";
+import * as Bs from "../../../ui/icons";
+import { Color } from "../../../lib/color.ts";
+import { PressableOpacity } from "../../../ui/components/PressableOpacity.tsx";
+import { de } from "rn-emoji-keyboard";
 
 export function DebugAsyncStorage() {
     const [keys, setKeys] = useState<readonly string[]>([]);
@@ -33,9 +38,14 @@ export function DebugAsyncStorage() {
         console.log(keys);
     }, [keys]);
 
-    async function handleClick(key: string) {
+    async function selectKey(key: string) {
         setCurrentKey(key);
         setCurrentValue(await AsyncStorage.getItem(key));
+    }
+    async function deleteKey(key: string) {
+        await AsyncStorage.removeItem(key);
+        setCurrentKey(null);
+        setCurrentValue(null);
     }
 
     return (
@@ -45,18 +55,14 @@ export function DebugAsyncStorage() {
                     {[
                         UIList.Section({
                             items: keys?.map((key, i) =>
-                                UIList.Item({
+                                UIList.Line({
                                     key,
-                                    onPress: () => handleClick(key),
-                                    render: () => (
-                                        <Text
-                                            style={{
-                                                textAlign: "left",
-                                                fontSize: 16,
-                                            }}
-                                        >
-                                            {key}
-                                        </Text>
+                                    onPress: () => selectKey(key),
+                                    label: key,
+                                    body: () => (
+                                        <PressableOpacity onPress={() => deleteKey(key)}>
+                                            <Bs.Trash size={20} color={colors.notification} />
+                                        </PressableOpacity>
                                     ),
                                 })
                             ),

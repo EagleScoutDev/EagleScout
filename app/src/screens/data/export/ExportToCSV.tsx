@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NoInternet } from "../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import { UISheetModal } from "../../../ui/UISheetModal.tsx";
@@ -11,10 +11,12 @@ export function ExportToCSV() {
     "use memo";
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const modalRef = useRef<UISheetModal<{ competition: CompetitionReturnData }>>(null);
 
-    async function fetchCompetitions() {
+    async function refreshCompetitions() {
+        setLoading(true);
         try {
             const data = await CompetitionsDB.getCompetitions();
             data.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
@@ -24,10 +26,12 @@ export function ExportToCSV() {
             console.error(error);
             setInternetError(true);
         }
+        setLoading(false);
     }
+    useEffect(() => void refreshCompetitions(), []);
 
     if (internetError) {
-        return <NoInternet onRefresh={() => fetchCompetitions()} />;
+        return <NoInternet onRefresh={() => refreshCompetitions()} />;
     }
 
     return (
@@ -37,14 +41,11 @@ export function ExportToCSV() {
                     title={"Export CSV"}
                     description={"Choose a competition to export the scout reports to a CSV file"}
                 />
-                <UIList onRefresh={fetchCompetitions} refreshOnMount>
-                    {/*{competitionList.length === 0 && !competitionsLoading && (*/}
-                    {/*    <Text style={{ color: colors.text, textAlign: "center" }}>No competitions found</Text>*/}
-                    {/*)}*/}
+                <UIList loading={loading} onRefresh={refreshCompetitions}>
                     {[
                         UIList.Section({
                             items: competitionList.map((comp, index) =>
-                                UIList.Item({
+                                UIList.Line({
                                     key: comp.id.toString(),
                                     label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
                                     onPress: () => {

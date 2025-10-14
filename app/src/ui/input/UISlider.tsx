@@ -15,6 +15,7 @@ export interface UISliderProps {
     disabled?: boolean | undefined;
 }
 export function UISlider({ min, max, step = 1, value, onInput, disabled = false, minLabel, maxLabel }: UISliderProps) {
+    "use memo";
     const { colors } = useTheme();
     const styles = getStyles(colors);
 

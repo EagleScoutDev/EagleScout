@@ -7,6 +7,7 @@ import { Color } from "../../../lib/color.ts";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export.ts";
 import { Alert } from "react-native";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { AsyncAlert } from "../../../lib/react/util/AsyncAlert.ts";
 
 export interface ExportCompetitionSheetProps {
     data?: { competition: CompetitionReturnData };
@@ -21,41 +22,37 @@ export const ExportCompetitionSheet = ({ data }: ExportCompetitionSheetProps) =>
     const { competition } = data;
     return (
         <>
-            <UISheet.Header title={`Export "${competition.name}"`} />
+            <UISheet.Header title={competition.name} />
             <UIList>
                 {[
                     UIList.Section({
                         items: [
-                            UIList.Item({
+                            UIList.Line({
                                 label: "Export Scout Reports",
                                 labelColor: Color.parse(colors.primary),
                                 onPress: async () => {
-                                    // TODO: setProcessing(true);
                                     const data = await exportScoutReportsToCsv(competition);
                                     if (!data) return;
 
                                     await writeToFile(`${competition.name}.csv`, data);
-                                    // TODO: setProcessing(false);
                                     modal.dismiss();
                                 },
                             }),
-                            UIList.Item({
+                            UIList.Line({
                                 label: "Export Pit Scout Reports",
                                 labelColor: Color.parse(colors.primary),
                                 onPress: async () => {
                                     if (!competition.pitScoutFormId) {
-                                        Alert.alert(
+                                        await AsyncAlert.alert(
                                             "No Pit Scout Form",
                                             "This competition does not have a pit scout form"
                                         );
-                                        return;
                                     }
-                                    // TODO: setProcessing(true);
+
                                     const data = await exportPitReportsToCsv(competition);
                                     if (!data) return;
 
                                     await writeToFile(`${competition.name}.csv`, data);
-                                    // TODO: setProcessing(false);
                                     modal.dismiss();
                                 },
                             }),

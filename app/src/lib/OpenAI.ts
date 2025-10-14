@@ -13,7 +13,7 @@ export class OpenAI {
         const { data, error } = await supabase.functions.invoke(
             'generate-scout-summary',
             {
-                body: { header: header, comments: comments },
+                itemBody: { header: header, comments: comments },
             },
         );
         if (error) {

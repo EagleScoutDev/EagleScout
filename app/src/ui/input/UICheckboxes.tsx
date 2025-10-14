@@ -7,6 +7,7 @@ export interface UICheckboxesProps<T extends string> {
     onInput?: undefined | ((x: T[]) => void);
 }
 export function UICheckboxes<T extends string>({ options, value, onInput }: UICheckboxesProps<T>) {
+    "use memo";
     return (
         <View>
             {options.map((item, index) => (

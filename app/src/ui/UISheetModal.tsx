@@ -4,13 +4,12 @@ import {
     type BottomSheetModalProps,
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { SafeAreaProvider, SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
-import type React from "react";
-import { View } from "react-native";
+import type { ReactNode, Ref } from "react";
 
 export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
-    ref?: React.Ref<BottomSheetModal<T>>;
+    ref?: Ref<BottomSheetModal<T>>;
     gap?: `${number}%` | number;
     backdropPressBehavior?: BackdropPressBehavior;
 }
@@ -25,6 +24,16 @@ export function UISheetModal<T = any>({
     const safeAreaFrame = useSafeAreaFrame();
     const sheetInsets = useSafeAreaInsets();
     const maxHeight = safeAreaFrame.height - sheetInsets.top;
+
+    function wrap(children: ReactNode) {
+        return (
+            <BottomSheetView style={{ flex: 1 }}>
+                <SafeAreaView edges={{ bottom: "additive" }} style={{ flex: 1 }}>
+                    {children}
+                </SafeAreaView>
+            </BottomSheetView>
+        );
+    }
 
     return (
         <BottomSheetModal
@@ -55,25 +64,18 @@ export function UISheetModal<T = any>({
                         },
                     ],
                     borderRadius: 24,
+                    flex: 1,
                 },
                 props.style,
             ]}
             backgroundStyle={[{ borderRadius: 24 }, props.backgroundStyle]}
         >
-            {typeof children === "function" ? (
-                (props) => {
-                    const res = children(props);
-                    return res instanceof Promise ? (
-                        res.then((res) => <BottomSheetView style={{ flex: 1 }}>{res}</BottomSheetView>)
-                    ) : (
-                        <BottomSheetView style={{ flex: 1 }}>{res}</BottomSheetView>
-                    );
-                }
-            ) : (
-                <BottomSheetView>
-                    <SafeAreaView edges={{ bottom: "additive" }}>{children}</SafeAreaView>
-                </BottomSheetView>
-            )}
+            {typeof children === "function"
+                ? (props) => {
+                      const res = children(props);
+                      return res instanceof Promise ? res.then(wrap) : wrap(res);
+                  }
+                : wrap(children)}
         </BottomSheetModal>
     );
 }

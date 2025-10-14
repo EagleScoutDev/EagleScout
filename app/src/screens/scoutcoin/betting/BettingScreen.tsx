@@ -1,7 +1,7 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Pressable, SafeAreaView, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Image, ImageBackground, Pressable, Text, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
 import { supabase } from "../../../lib/supabase";
 import { UserAttributesDB } from "../../../database/UserAttributes";
@@ -11,8 +11,8 @@ import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet";
 import { ProfilesDB } from "../../../database/Profiles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Profile } from "../../../lib/user/profile";
-import type { MatchBettingScreenProps } from "./MatchBettingNavigator";
 import * as Bs from "../../../ui/icons";
+import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
 
 interface Player {
     id: string;
@@ -25,7 +25,7 @@ interface Player {
 export interface BettingScreenParams {
     matchNumber: number;
 }
-export interface BettingScreenProps extends MatchBettingScreenProps<"BettingScreen"> {}
+export interface BettingScreenProps extends DataMenuScreenProps<"MatchBetting/BettingScreen"> {}
 export const BettingScreen = ({ route }: BettingScreenProps) => {
     const { matchNumber } = route.params;
     const insets = useSafeAreaInsets();
@@ -228,275 +228,277 @@ export const BettingScreen = ({ route }: BettingScreenProps) => {
         return null;
     }
 
-    console.log("players", players);
-
     return (
-        <SafeAreaView>
-            <Pressable
-                style={{
-                    position: "absolute",
-                    top: insets.top,
-                    left: 20,
-                }}
-                onPress={() => {
-                    navigation.goBack();
-                }}
-            >
-                <Bs.Back size="24" fill={colors.text} />
-            </Pressable>
-            <View
-                style={{
-                    height: "95%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 20,
-                    marginTop: "5%",
-                }}
-            >
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    {players.length >= 2 &&
-                        players
-                            .filter((p: Player) => p.id !== userProfile.id)
-                            .map((player: Player) => (
-                                <View style={{ flexDirection: "column", alignItems: "center" }} key={player.id}>
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 60,
-                                            fontWeight: "bold",
-                                        }}
-                                    >
-                                        {player.emoji}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 14,
-                                        }}
-                                    >
-                                        {player.name}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: player.betAlliance ? player.betAlliance : colors.text,
-                                            fontSize: 18,
-                                            fontWeight: "bold",
-                                        }}
-                                    >
-                                        {player.betAmount}
-                                    </Text>
-                                </View>
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Pressable
+                    style={{
+                        position: "absolute",
+                        top: insets.top,
+                        left: 20,
+                    }}
+                    onPress={() => {
+                        navigation.goBack();
+                    }}
+                >
+                    <Bs.Back size="24" fill={colors.text} />
+                </Pressable>
+                <View
+                    style={{
+                        height: "95%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 20,
+                        marginTop: "5%",
+                    }}
+                >
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        {players.length >= 2 &&
+                            players
+                                .filter((p: Player) => p.id !== userProfile.id)
+                                .map((player: Player) => (
+                                    <View style={{ flexDirection: "column", alignItems: "center" }} key={player.id}>
+                                        <Text
+                                            style={{
+                                                color: colors.text,
+                                                fontSize: 60,
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {player.emoji}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: colors.text,
+                                                fontSize: 14,
+                                            }}
+                                        >
+                                            {player.name}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: player.betAlliance ? player.betAlliance : colors.text,
+                                                fontSize: 18,
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {player.betAmount}
+                                        </Text>
+                                    </View>
+                                ))}
+                        {!players ||
+                            (players.length < 2 && (
+                                <Text style={{ color: colors.text, fontSize: 18 }}>Waiting for players...</Text>
                             ))}
-                    {!players ||
-                        (players.length < 2 && (
-                            <Text style={{ color: colors.text, fontSize: 18 }}>Waiting for players...</Text>
-                        ))}
-                </View>
+                    </View>
 
-                <Text style={{ color: colors.text, fontSize: 30, fontWeight: "bold" }}>Match {matchNumber}</Text>
-                <Text style={{ color: colors.text, fontSize: 18 }}>Select Alliance</Text>
-                <View style={{ flexDirection: "row", gap: 20, width: "80%" }}>
-                    {!selectedAlliance ? (
-                        <>
+                    <Text style={{ color: colors.text, fontSize: 30, fontWeight: "bold" }}>Match {matchNumber}</Text>
+                    <Text style={{ color: colors.text, fontSize: 18 }}>Select Alliance</Text>
+                    <View style={{ flexDirection: "row", gap: 20, width: "80%" }}>
+                        {!selectedAlliance ? (
+                            <>
+                                <Pressable
+                                    style={{
+                                        backgroundColor: colors.card,
+                                        opacity: selectedAlliance === "blue" ? 1 : 0.5,
+                                        padding: 20,
+                                        borderRadius: 10,
+                                        flex: 1,
+                                    }}
+                                    onPress={() => {
+                                        setSelectedAlliance("blue");
+                                    }}
+                                >
+                                    <Image
+                                        source={require("../../../assets/dozerblue.png")}
+                                        style={{
+                                            width: "100%",
+                                            height: null,
+                                            aspectRatio: 1,
+                                        }}
+                                    />
+                                </Pressable>
+                                <Pressable
+                                    style={{
+                                        backgroundColor: colors.card,
+                                        opacity: selectedAlliance === "red" ? 1 : 0.5,
+                                        padding: 20,
+                                        borderRadius: 10,
+                                        flex: 1,
+                                    }}
+                                    onPress={() => {
+                                        setSelectedAlliance("red");
+                                    }}
+                                >
+                                    <Image
+                                        source={require("../../../assets/dozerred.png")}
+                                        style={{
+                                            width: "100%",
+                                            height: null,
+                                            aspectRatio: 1,
+                                        }}
+                                    />
+                                </Pressable>
+                            </>
+                        ) : (
+                            <Text style={{ color: colors.text, fontSize: 18 }}>
+                                Your selected alliance: {selectedAlliance}
+                            </Text>
+                        )}
+                    </View>
+                    <View style={{ flex: 1 }} />
+                    {betActive && (
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                width: "90%",
+                                gap: 20,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontSize: 18,
+                                    alignSelf: "center",
+                                }}
+                            >
+                                {currentBet}
+                            </Text>
+                            <Slider
+                                containerStyle={{
+                                    flex: 1,
+                                    alignSelf: "center",
+                                }}
+                                value={currentBet}
+                                onValueChange={(value: Array<number>) => setCurrentBet(value[0])}
+                                minimumValue={1}
+                                maximumValue={1000}
+                                step={1}
+                            />
                             <Pressable
                                 style={{
                                     backgroundColor: colors.card,
-                                    opacity: selectedAlliance === "blue" ? 1 : 0.5,
+                                    borderRadius: 99,
                                     padding: 20,
-                                    borderRadius: 10,
-                                    flex: 1,
                                 }}
-                                onPress={() => {
-                                    setSelectedAlliance("blue");
+                                onPress={async () => {
+                                    setBetActive(false);
+                                    setCurrentBet(0);
+                                    setBetAmount((prev: number) => prev + Number(currentBet));
+                                    console.log("BET AMOUNT", betAmount, currentBet);
+                                    if (betAmount === 0) {
+                                        await MatchBets.createMatchBet(
+                                            userProfile.id,
+                                            matchNumber,
+                                            selectedAlliance!,
+                                            Number(currentBet)
+                                        );
+                                    } else {
+                                        await MatchBets.updateMatchBet(
+                                            userProfile.id,
+                                            matchNumber,
+                                            Number(currentBet) + betAmount
+                                        );
+                                    }
                                 }}
                             >
-                                <Image
-                                    source={require("../../../assets/dozerblue.png")}
-                                    style={{
-                                        width: "100%",
-                                        height: null,
-                                        aspectRatio: 1,
-                                    }}
-                                />
+                                <Bs.ArrowUp size="24" fill={colors.text} />
                             </Pressable>
-                            <Pressable
-                                style={{
-                                    backgroundColor: colors.card,
-                                    opacity: selectedAlliance === "red" ? 1 : 0.5,
-                                    padding: 20,
-                                    borderRadius: 10,
-                                    flex: 1,
-                                }}
-                                onPress={() => {
-                                    setSelectedAlliance("red");
-                                }}
-                            >
-                                <Image
-                                    source={require("../../../assets/dozerred.png")}
-                                    style={{
-                                        width: "100%",
-                                        height: null,
-                                        aspectRatio: 1,
-                                    }}
-                                />
-                            </Pressable>
-                        </>
-                    ) : (
-                        <Text style={{ color: colors.text, fontSize: 18 }}>
-                            Your selected alliance: {selectedAlliance}
-                        </Text>
+                        </View>
                     )}
-                </View>
-                <View style={{ flex: 1 }} />
-                {betActive && (
                     <View
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
-                            width: "90%",
+                            width: "80%",
                             gap: 20,
                         }}
                     >
-                        <Text
+                        <View
                             style={{
-                                color: colors.text,
-                                fontSize: 18,
-                                alignSelf: "center",
-                            }}
-                        >
-                            {currentBet}
-                        </Text>
-                        <Slider
-                            containerStyle={{
                                 flex: 1,
-                                alignSelf: "center",
-                            }}
-                            value={currentBet}
-                            onValueChange={(value: Array<number>) => setCurrentBet(value[0])}
-                            minimumValue={1}
-                            maximumValue={1000}
-                            step={1}
-                        />
-                        <Pressable
-                            style={{
-                                backgroundColor: colors.card,
-                                borderRadius: 99,
-                                padding: 20,
-                            }}
-                            onPress={async () => {
-                                setBetActive(false);
-                                setCurrentBet(0);
-                                setBetAmount((prev: number) => prev + Number(currentBet));
-                                console.log("BET AMOUNT", betAmount, currentBet);
-                                if (betAmount === 0) {
-                                    await MatchBets.createMatchBet(
-                                        userProfile.id,
-                                        matchNumber,
-                                        selectedAlliance!,
-                                        Number(currentBet)
-                                    );
-                                } else {
-                                    await MatchBets.updateMatchBet(
-                                        userProfile.id,
-                                        matchNumber,
-                                        Number(currentBet) + betAmount
-                                    );
-                                }
-                            }}
-                        >
-                            <Bs.ArrowUp size="24" fill={colors.text} />
-                        </Pressable>
-                    </View>
-                )}
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        width: "80%",
-                        gap: 20,
-                    }}
-                >
-                    <View
-                        style={{
-                            flex: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            width: "100%",
-                        }}
-                    >
-                        <ImageBackground
-                            source={require("../../../assets/betGradient.png")}
-                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
                                 width: "100%",
-                                borderRadius: 10,
-                                overflow: "hidden",
-                                alignSelf: "flex-start",
                             }}
-                            resizeMode="cover"
                         >
-                            <Pressable
+                            <ImageBackground
+                                source={require("../../../assets/betGradient.png")}
                                 style={{
-                                    backgroundColor: colors.card,
-                                    padding: 20,
-                                    borderRadius: 10,
-                                    alignSelf: "flex-start",
                                     width: "100%",
-                                    opacity:
-                                        selectedAlliance && userProfile.scoutcoins > 0 && players.length >= 2 ? 0.5 : 1,
+                                    borderRadius: 10,
+                                    overflow: "hidden",
+                                    alignSelf: "flex-start",
                                 }}
-                                onPress={() => {
-                                    if (userProfile.scoutcoins < 0 || !selectedAlliance || players.length < 2) {
-                                        return;
-                                    }
-                                    setBetActive(true);
-                                }}
+                                resizeMode="cover"
                             >
-                                <Text
+                                <Pressable
                                     style={{
-                                        color: colors.text,
-                                        fontSize: 18,
-                                        textAlign: "center",
+                                        backgroundColor: colors.card,
+                                        padding: 20,
+                                        borderRadius: 10,
+                                        alignSelf: "flex-start",
+                                        width: "100%",
+                                        opacity:
+                                            selectedAlliance && userProfile.scoutcoins > 0 && players.length >= 2
+                                                ? 0.5
+                                                : 1,
+                                    }}
+                                    onPress={() => {
+                                        if (userProfile.scoutcoins < 0 || !selectedAlliance || players.length < 2) {
+                                            return;
+                                        }
+                                        setBetActive(true);
                                     }}
                                 >
-                                    Bet
-                                </Text>
-                            </Pressable>
-                        </ImageBackground>
-                        <Text>Your balance: {userProfile.scoutcoins}</Text>
-                    </View>
-                    <View
-                        style={{
-                            flex: 1,
-                            backgroundColor: colors.card,
-                            padding: 20,
-                            borderRadius: 10,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Text
+                                    <Text
+                                        style={{
+                                            color: colors.text,
+                                            fontSize: 18,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        Bet
+                                    </Text>
+                                </Pressable>
+                            </ImageBackground>
+                            <Text>Your balance: {userProfile.scoutcoins}</Text>
+                        </View>
+                        <View
                             style={{
-                                color: colors.text,
-                                fontSize: 60,
-                                fontWeight: "bold",
+                                flex: 1,
+                                backgroundColor: colors.card,
+                                padding: 20,
+                                borderRadius: 10,
+                                alignItems: "center",
+                                justifyContent: "center",
                             }}
                         >
-                            {userProfile.emoji}
-                        </Text>
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontSize: 18,
-                                fontWeight: "bold",
-                            }}
-                        >
-                            {betAmount}
-                        </Text>
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontSize: 60,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                {userProfile.emoji}
+                            </Text>
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontSize: 18,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                {betAmount}
+                            </Text>
+                        </View>
                     </View>
                 </View>
-            </View>
-            {showBottomSheet && <BettingInfoBottomSheet />}
-        </SafeAreaView>
+                {showBottomSheet && <BettingInfoBottomSheet />}
+            </SafeAreaView>
+        </SafeAreaProvider>
     );
 };

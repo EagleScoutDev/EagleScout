@@ -31,11 +31,5 @@ target 'EagleScout' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
-
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['OTHER_LDFLAGS'] = config.build_settings['OTHER_LDFLAGS'].to_s.gsub("-Xlinker -objc_abi_version -Xlinker 2", "-objc_abi_version 2")
-      end
-    end
   end
 end

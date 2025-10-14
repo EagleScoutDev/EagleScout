@@ -1,11 +1,15 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../../../FormHelper";
+import { FormHelper } from "../../../../FormHelper.ts";
 import { useTheme } from "@react-navigation/native";
-import { ThemeOptions, ThemeOptionsMap } from "../../../themes";
+import { ThemeOptions, ThemeOptionsMap } from "../../../../themes";
 
-export function ThemePicker({ setTheme }: { setTheme: (arg0: ThemeOptions) => void }) {
+export interface ThemePickerProps {
+    setTheme: (theme: ThemeOptions) => void;
+}
+export function ThemePicker({ setTheme }: ThemePickerProps) {
+    "use memo";
     const { colors } = useTheme();
     const [selectedTheme, setSelectedTheme] = useState(ThemeOptions.SYSTEM);
 

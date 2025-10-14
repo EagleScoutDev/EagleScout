@@ -1,5 +1,5 @@
 import { Alert, TouchableOpacity, View } from "react-native";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { NoInternet } from "../../../ui/NoInternet.tsx";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions.ts";
@@ -31,6 +31,7 @@ export function ManageCompetitions() {
             setInternetError(true);
         }
     }
+    useEffect(() => void refreshCompetitions(), []);
 
     if (internetError) {
         return <NoInternet onRefresh={() => refreshCompetitions()} />;
@@ -40,11 +41,11 @@ export function ManageCompetitions() {
         <View style={{ width: "100%", height: "100%" }}>
             <TabHeader title={"Competitions"} />
 
-            <UIList onRefresh={refreshCompetitions} refreshOnMount>
+            <UIList onRefresh={refreshCompetitions}>
                 {[
                     UIList.Section({
                         items: competitionList.map((comp) =>
-                            UIList.Item({
+                            UIList.Line({
                                 key: comp.id.toString(),
                                 label: comp.name,
                                 onPress: () => {

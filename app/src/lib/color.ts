@@ -4,7 +4,7 @@ export type RGB = [r: number, g: number, b: number];
 
 const colorMemo = new Map<string, Color>()
 export class Color {
-    public static white: Color = new Color(255, 255, 255, 1);
+    public static white: Color = new Color(255, 255, 255, 255);
     public static black: Color = new Color(0, 0, 0, 1);
     public static transparent: Color = new Color(0, 0, 0, 0);
 

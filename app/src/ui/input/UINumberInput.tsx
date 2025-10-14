@@ -5,6 +5,7 @@ import { NumberInput, type NumberInputProps } from "../components/NumberInput.ts
 
 export interface UINumberInputProps extends NumberInputProps {}
 export function UINumberInput({ style, ...passthrough }: UINumberInputProps) {
+    "use memo";
     const { colors } = useTheme();
     const styles = getStyles(colors);
     return <NumberInput placeholderTextColor={"gray"} {...passthrough} style={[styles.main, style]} />;

@@ -8,6 +8,7 @@ import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-
 import { AccountDeletionModal } from "./account/AccountDeletionModal";
 import { AccountChangePassword } from "./account/AccountChangePassword";
 import { DebugHome } from "./debug/DebugHome.tsx";
+import { About } from "./About.tsx";
 
 const Stack = createNativeStackNavigator<SettingsMenuParamList>();
 export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<
@@ -20,16 +21,17 @@ export type SettingsMenuParamList = {
     "Account/EditProfile": AccountEditProfileParams;
     "Account/ChangePassword": undefined;
     "Account/Delete": undefined;
-    "Debug/Home": undefined;
-    "Debug/AsyncStorage": undefined;
     "Scout/Reports": undefined;
     "Scout/Notes": undefined;
+    "Debug/Home": undefined;
+    "Debug/AsyncStorage": undefined;
+    About: undefined;
 };
 
 export interface SettingsMenuProps extends AppHomeScreenProps<"Settings"> {}
 export function SettingsMenu({}: SettingsMenuProps) {
     return (
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Home" screenOptions={{ headerBackTitle: "Back" }}>
             <Stack.Screen
                 name="Home"
                 component={SettingsHome}
@@ -42,7 +44,6 @@ export function SettingsMenu({}: SettingsMenuProps) {
                 component={AccountEditProfile}
                 options={{
                     title: "Edit Profile",
-                    headerBackTitle: "Back",
                 }}
             />
 
@@ -66,14 +67,12 @@ export function SettingsMenu({}: SettingsMenuProps) {
                 component={SubmittedForms}
                 options={{
                     title: "Submitted Reports",
-                    headerBackTitle: "Back",
                 }}
             />
             <Stack.Screen
                 name={"Scout/Notes"}
                 options={{
                     title: "Submitted Notes",
-                    headerBackTitle: "Back",
                 }}
                 component={SubmittedNotes}
             />
@@ -83,7 +82,6 @@ export function SettingsMenu({}: SettingsMenuProps) {
                 component={DebugHome}
                 options={{
                     title: "Debug",
-                    headerBackTitle: "Back",
                 }}
             />
             <Stack.Screen
@@ -91,7 +89,14 @@ export function SettingsMenu({}: SettingsMenuProps) {
                 component={DebugAsyncStorage}
                 options={{
                     title: "AsyncStorage",
-                    headerBackTitle: "Back",
+                }}
+            />
+
+            <Stack.Screen
+                name="About"
+                component={About}
+                options={{
+                    title: "About",
                 }}
             />
         </Stack.Navigator>

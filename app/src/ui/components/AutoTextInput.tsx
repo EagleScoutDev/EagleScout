@@ -4,6 +4,7 @@ import { TextInput as RNGHTextInput } from "react-native-gesture-handler";
 import React from "react";
 
 export function AutoTextInput(props: Omit<RNTextInputProps, "ref">) {
+    "use memo";
     const bottomSheet = useBottomSheetInternal(true) !== null;
 
     return React.createElement(
