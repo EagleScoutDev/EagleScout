@@ -13,43 +13,52 @@
   ) tablespace pg_default;
 */
 
-import {supabase} from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 export interface ScoutcoinLedgerItem {
-  id: number;
-  description: string;
-  src_user: string | null;
-  src_user_name: string | null;
-  dest_user: string | null;
-  dest_user_name: string | null;
-  amount_change: number;
-  created_at: Date;
+    id: number;
+    description: string;
+    src_user: string | null;
+    src_user_name: string | null;
+    dest_user: string | null;
+    dest_user_name: string | null;
+    amount_change: number;
+    created_at: Date;
 }
 
 export class ScoutcoinLedger {
-  static async getLogs(): Promise<ScoutcoinLedgerItem[]> {
-    const {data, error} = await supabase
-      .from('scoutcoin_ledger')
-      .select(
-        '*, src_user_name:profiles!scoutcoin_ledger_src_user_fkey(name), dest_user_name:profiles!scoutcoin_ledger_dest_user_fkey(name)',
-      )
-      .order('created_at', {ascending: false});
-    if (error) {
-      throw error;
-    } else {
-      console.log(data);
-      return data.map(item => {
-        return {
-          id: item.id,
-          description: item.description,
-          src_user: item.src_user,
-          dest_user: item.dest_user,
-          src_user_name: item.src_user_name?.name,
-          dest_user_name: item.dest_user_name?.name,
-          amount_change: item.amount_change,
-          created_at: new Date(item.created_at),
-        };
-      });
+    static async getBalance(id: string): Promise<number> {
+        const { data, error } = await supabase.from("profiles").select("scoutcoins").eq("id", id);
+        if (error) {
+            throw error;
+        } else {
+            return data[0].scoutcoins;
+        }
     }
-  }
+
+    static async getLogs(): Promise<ScoutcoinLedgerItem[]> {
+        const { data, error } = await supabase
+            .from('scoutcoin_ledger')
+            .select(
+                '*, src_user_name:profiles!scoutcoin_ledger_src_user_fkey(name), dest_user_name:profiles!scoutcoin_ledger_dest_user_fkey(name)',
+            )
+            .order('created_at', { ascending: false });
+        if (error) {
+            throw error;
+        } else {
+            console.log(data);
+            return data.map(item => {
+                return {
+                    id: item.id,
+                    description: item.description,
+                    src_user: item.src_user,
+                    dest_user: item.dest_user,
+                    src_user_name: item.src_user_name?.name,
+                    dest_user_name: item.dest_user_name?.name,
+                    amount_change: item.amount_change,
+                    created_at: new Date(item.created_at),
+                };
+            });
+        }
+    }
 }

@@ -1,0 +1,4 @@
+*.generated.ts
+*.generated.tsx
+*.generated.js
+*.generated.jsx

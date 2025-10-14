@@ -2,7 +2,7 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server";
 
 serve(async (req) => {
   const { endpoint } = await req.json();
@@ -10,7 +10,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         message: 'Invalid endpoint'
-      }), { 
+      }), {
         headers: { 'Content-Type': 'application/json' },
         status: 400
       }
@@ -31,7 +31,7 @@ serve(async (req) => {
       JSON.stringify({
         message: 'TBA API error',
         tbaCode: response.status,
-      }), { 
+      }), {
         headers: { 'Content-Type': 'application/json' },
         status: 400
       }
