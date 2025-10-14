@@ -4,9 +4,12 @@
   "exclude": ["node_modules", "**/Pods"],
 
   "compilerOptions": {
+    "lib": ["ES2023"],
     "typeRoots": ["./src/types"],
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
   }
 }

@@ -1,16 +1,15 @@
 import { Text, Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { FormRadio } from "../../../ui/form/components/FormRadio.tsx";
+import { UIRadio } from "../../../ui/input/UIRadio.tsx";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
-import { useAccount } from "../../../lib/hooks/useAccount";
+import { useAccount } from "../../../lib/react/hooks/useAccount";
+import { tr } from "rn-emoji-keyboard";
 
-export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {
-
-}
+export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {}
 export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) {
     const [password, setPassword] = useState("");
     const [reason, setReason] = useState("");
@@ -41,34 +40,24 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                     marginTop: "5%",
                     display: "flex",
                     gap: 10,
-                }}>
-                <Text style={{ fontSize: 25, color: colors.text }}>
-                    We are sorry to see you go!
-                </Text>
+                }}
+            >
+                <Text style={{ fontSize: 25, color: colors.text }}>We are sorry to see you go!</Text>
                 <View style={{ width: "100%", paddingBottom: 10 }}>
-                    <Text style={{ color: colors.text }}>
-                        Please let us know why you are leaving:
-                    </Text>
-                    <FormRadio
-                        title={""}
+                    <Text style={{ color: colors.text }}>Please let us know why you are leaving:</Text>
+                    <UIRadio
+                        required={true}
                         onInput={setReason}
                         value={reason}
-                        options={[
-                            "Graduating from team",
-                            "Leaving team",
-                            "Concerns over data usage",
-                            "Other",
-                        ]}
+                        options={["Graduating from team", "Leaving team", "Concerns over data usage", "Other"]}
                     />
                 </View>
-                <Text style={{ color: colors.text }}>
-                    Please enter your account password to confirm deletion.
-                </Text>
+                <Text style={{ color: colors.text }}>Please enter your account password to confirm deletion.</Text>
                 <View style={{ width: "100%" }}>
                     <MinimalSectionHeader title={"Password"} />
                     <TextInput
                         style={styles.text_input}
-                        onChangeText={text => setPassword(text)}
+                        onChangeText={(text) => setPassword(text)}
                         value={password}
                         secureTextEntry={true}
                     />
@@ -80,9 +69,10 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                             textAlign: "center",
                             marginTop: -5,
                             marginBottom: 10,
-                        }}>
-                        Notice: If your password is inputted incorrectly, your account will
-                        not be deleted and you will be signed out!
+                        }}
+                    >
+                        Notice: If your password is inputted incorrectly, your account will not be deleted and you will
+                        be signed out!
                     </Text>
                 </View>
             </View>
@@ -102,24 +92,22 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         {
                             text: "Delete",
                             onPress: async () => {
-                                const { data: userData, error: getUserError } =
-                                    await supabase.auth.getUser();
+                                const { data: userData, error: getUserError } = await supabase.auth.getUser();
                                 if (getUserError) {
                                     Alert.alert("Error getting user", getUserError.message);
                                     return;
                                 }
-                                const { data, error: authError } =
-                                    await supabase.auth.signInWithPassword({
-                                        email: userData.user?.email || "",
-                                        password: password,
-                                    });
+                                const { data, error: authError } = await supabase.auth.signInWithPassword({
+                                    email: userData.user?.email || "",
+                                    password: password,
+                                });
                                 if (authError) {
                                     if (authError.status === 400) {
                                         Alert.alert(
                                             "Error",
-                                            "Invalid password. Your account has not been deleted. Log in again to request deletion.",
+                                            "Invalid password. Your account has not been deleted. Log in again to request deletion."
                                         );
-                                        await logout()
+                                        await logout();
                                         return;
                                     }
                                     Alert.alert("Error checking password", authError.name);
@@ -136,12 +124,10 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                                             user_id: userData.user?.id,
                                             reason: reason || "No reason given",
                                             processed: false,
-                                        }),
+                                        })
                                     )
                                     .then(() => logout())
-                                    .finally(() =>
-                                        Alert.alert("Success", "Account delete requested."),
-                                    );
+                                    .finally(() => Alert.alert("Success", "Account delete requested."));
                             },
                         },
                     ]);
@@ -156,7 +142,8 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                     alignSelf: "center",
                     textAlign: "center",
                     marginTop: 10,
-                }}>
+                }}
+            >
                 Account deletion requests may take up to 30 days to process.
             </Text>
         </View>

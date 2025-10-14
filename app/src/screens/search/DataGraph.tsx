@@ -1,9 +1,9 @@
 import { Dimensions, Pressable, Text, View } from 'react-native';
-import { StandardModal } from '../../components/modals/StandardModal';
+import { UIModal } from '../../ui/UIModal.tsx';
 import { LineChart } from 'react-native-chart-kit';
 import { useEffect, useState } from "react";
 import { useTheme } from '@react-navigation/native';
-import type { Setter } from '../../lib/react';
+import type { Setter } from '../../lib/react/util/types';
 
 export interface DataGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>
@@ -41,7 +41,7 @@ export function DataGraph({
     }, []);
 
     return (
-        <StandardModal
+        <UIModal
             title={item.question}
             visible={modalActive}
             onDismiss={() => {
@@ -106,6 +106,6 @@ export function DataGraph({
                 onPress={() => setModalActive(false)}>
                 <Text style={{ color: colors.primary, fontSize: 16 }}>Close</Text>
             </Pressable>
-        </StandardModal>
+        </UIModal>
     );
 };

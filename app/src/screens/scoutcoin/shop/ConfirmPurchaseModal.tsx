@@ -4,7 +4,7 @@ import { useTheme, type Theme } from "@react-navigation/native";
 import { supabase } from "../../../lib/supabase";
 import { type ShopItem } from "./ScoutcoinShop";
 import { getIdealTextColor, parseColor } from "../../../lib/color";
-import { useProfile } from "../../../lib/hooks/useProfile";
+import { useProfile } from "../../../lib/react/hooks/useProfile";
 import * as Bs from "../../../ui/icons";
 
 export interface ConfirmPurchaseModalProps {

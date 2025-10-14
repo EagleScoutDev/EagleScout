@@ -1,4 +1,4 @@
-import { StandardModal } from "./StandardModal.tsx";
+import { UIModal } from "../../ui/UIModal.tsx";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
@@ -20,7 +20,7 @@ export const HistorySelectorModal = ({ formHistory, selectedHistoryId, visible, 
         },
     });
     return (
-        <StandardModal
+        <UIModal
             title="Form History"
             visible={visible}
             onDismiss={() => {
@@ -71,6 +71,6 @@ export const HistorySelectorModal = ({ formHistory, selectedHistoryId, visible, 
                         </TouchableOpacity>
                     ))}
             </View>
-        </StandardModal>
+        </UIModal>
     );
 };

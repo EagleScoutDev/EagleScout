@@ -1,18 +1,18 @@
-import { Alert, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { InternetStatus } from "../../lib/InternetStatus";
 import { UserProfileBox } from "../../components/UserProfileBox.tsx";
-import { ListSection } from "../../ui/ListSection.tsx";
-import { ListItem } from "../../ui/ListItem";
 import { SettingsPopup } from "./SettingsPopup";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { getLighterColor, parseColor } from "../../lib/color";
 import { type SettingsMenuScreenProps } from "./SettingsMenu";
 import * as Bs from "../../ui/icons";
 import { CompetitionsDB } from "../../database/Competitions";
-import { useProfile } from "../../lib/hooks/useProfile";
+import { useProfile } from "../../lib/react/hooks/useProfile";
 import { ScoutcoinLedger } from "../../database/ScoutcoinLedger";
-import { useAccount } from "../../lib/hooks/useAccount";
+import { useAccount } from "../../lib/react/hooks/useAccount";
+import { UIList } from "../../ui/UIList.tsx";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
 
 const VERSION = "7.7.1";
 
@@ -56,14 +56,6 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
         });
     };
 
-    const styles = StyleSheet.create({
-        title: {
-            fontSize: 34,
-            fontWeight: "600",
-            color: colors.text,
-        },
-    });
-
     const testConnection = () => {
         // attempt connection to picklist table
         setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
@@ -81,27 +73,8 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
     }, []);
 
     return (
-        <SafeAreaView
-            style={{
-                paddingHorizontal: "2%",
-                flex: 1,
-            }}
-        >
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: 20,
-                }}
-            >
-                <Text style={styles.title}>Profile</Text>
-                {/*<TabHeader title={'Profile'} />*/}
-
-                <Pressable onPress={() => setSettingsPopupActive(true)}>
-                    <Bs.GearWideConnected size="32" fill={getLighterColor(parseColor(colors.primary))} />
-                </Pressable>
-            </View>
+        <SafeAreaView edges={{ bottom: "off", top: "additive" }} style={{ width: "100%", height: "100%" }}>
+            <TabHeader title={"Settings"} />
             {internetStatus === InternetStatus.FAILED && (
                 <View
                     style={{
@@ -128,95 +101,114 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                 </View>
             )}
 
-            <ScrollView>
-                <UserProfileBox user={user} scoutcoins={scoutcoins} />
+            <UserProfileBox user={user} scoutcoins={scoutcoins} />
+            <UIList contentContainerStyle={{ paddingBottom: 24 }}>
+                {[
+                    UIList.Section({
+                        header: "Account",
+                        items: [
+                            UIList.Item({
+                                icon: Bs.PenFill,
+                                label: "Edit Profile",
+                                caret: true,
+                                disabled: internetStatus !== InternetStatus.CONNECTED,
+                                onPress: () => {
+                                    navigation.navigate("Account/EditProfile", {
+                                        initialFirstName: profile ? profile.firstName : "",
+                                        initialLastName: profile ? profile.lastName : "",
+                                    });
+                                },
+                            }),
+                            UIList.Item({
+                                icon: Bs.Asterisk,
+                                label: "Change Password",
+                                caret: true,
+                                disabled: internetStatus !== InternetStatus.CONNECTED,
+                                onPress: () => {
+                                    navigation.navigate("Account/ChangePassword");
+                                },
+                            }),
+                            UIList.Item({
+                                icon: Bs.Ban,
+                                label: "Request Account Deletion",
+                                caret: true,
+                                disabled: internetStatus !== InternetStatus.CONNECTED,
+                                onPress: () => {
+                                    navigation.navigate("Account/Delete");
+                                },
+                            }),
+                            UIList.Item({
+                                icon: Bs.QuestionCircle,
+                                label: "Contact Support",
+                                caret: false,
+                                disabled: false,
+                                onPress: () => {
+                                    Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9");
+                                },
+                            }),
+                            UIList.Item({
+                                icon: Bs.BoxArrowRight,
+                                label: "Sign Out",
+                                caret: false,
+                                disabled: false,
+                                onPress: () => attemptSignOut(),
+                            }),
+                        ],
+                    }),
+                    UIList.Section({
+                        header: "Submissions",
+                        items: [
+                            UIList.Item({
+                                icon: Bs.JournalBookmarkFill,
+                                label: "View Your Reports",
+                                caret: true,
+                                disabled: false,
+                                onPress: () => {
+                                    navigation.navigate("Scout/Reports");
+                                },
+                            }),
+                            UIList.Item({
+                                icon: Bs.Sticky,
+                                label: "View Your Notes",
+                                caret: true,
+                                disabled: false,
+                                onPress: () => {
+                                    navigation.navigate("Scout/Notes");
+                                },
+                            }),
+                        ],
+                    }),
+                    UIList.Section({
+                        header: "Other",
+                        items: [
+                            UIList.Item({
+                                icon: Bs.Bug,
+                                label: "Debug",
+                                caret: true,
+                                disabled: false,
+                                onPress: () => {
+                                    navigation.navigate("Debug/Home");
+                                },
+                            }),
+                        ],
+                    }),
+                ]}
+            </UIList>
+            <Text
+                selectable={true}
+                style={{
+                    color: colors.text,
+                    textAlign: "center",
+                }}
+            >
+                v{VERSION}
+            </Text>
 
-                <ListSection title={"Account"}>
-                    <ListItem
-                        text="Edit Profile"
-                        onPress={() => {
-                            navigation.navigate("Account/EditProfile", {
-                                initialFirstName: profile ? profile.firstName : "",
-                                initialLastName: profile ? profile.lastName : "",
-                            });
-                        }}
-                        caret={true}
-                        disabled={internetStatus !== InternetStatus.CONNECTED}
-                        icon={<Bs.PenFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                    <ListItem
-                        text="Change Password"
-                        onPress={() => {
-                            navigation.navigate("Account/ChangePassword");
-                        }}
-                        caret={true}
-                        disabled={internetStatus !== InternetStatus.CONNECTED}
-                        icon={<Bs.Asterisk size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                    <ListItem
-                        text="Request Account Deletion"
-                        onPress={() => {
-                            navigation.navigate("Account/Delete");
-                        }}
-                        caret={true}
-                        disabled={internetStatus !== InternetStatus.CONNECTED}
-                        icon={<Bs.Ban size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                    <ListItem
-                        text={"Contact Support"}
-                        onPress={() => {
-                            // open a link to google.com
-                            Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9").then(() => {
-                                console.log("Opened support link");
-                            });
-                        }}
-                        caret={false}
-                        disabled={false}
-                        icon={<Bs.QuestionCircle size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                    <ListItem
-                        text={"Sign Out"}
-                        onPress={() => attemptSignOut()}
-                        caret={false}
-                        disabled={false}
-                        icon={<Bs.BoxArrowRight size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                </ListSection>
-                <ListSection title={"Submissions"}>
-                    <ListItem
-                        text="View Your Reports"
-                        onPress={() => {
-                            navigation.navigate("Scout/Reports");
-                        }}
-                        caret={true}
-                        disabled={false}
-                        icon={<Bs.JournalBookmarkFill size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                    <ListItem
-                        text="View Your Notes"
-                        onPress={() => {
-                            navigation.navigate("Scout/Notes");
-                        }}
-                        caret={true}
-                        disabled={false}
-                        icon={<Bs.Sticky size="16" fill={getLighterColor(parseColor(colors.primary))} />}
-                    />
-                </ListSection>
-                <SettingsPopup
-                    visible={settingsPopupActive}
-                    setVisible={setSettingsPopupActive}
-                    navigation={useNavigation()}
-                />
-                <Text
-                    selectable={true}
-                    style={{
-                        color: colors.text,
-                        textAlign: "center",
-                    }}
-                >
-                    v{VERSION}
-                </Text>
-            </ScrollView>
+            <SettingsPopup
+                visible={settingsPopupActive}
+                setVisible={setSettingsPopupActive}
+                navigation={useNavigation()}
+            />
         </SafeAreaView>
     );
 }

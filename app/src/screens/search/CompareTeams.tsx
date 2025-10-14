@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
 import { isTablet } from "../../lib/deviceType";
 import { QuestionSummary } from "./QuestionSummary";
-import { StandardModal } from "../../components/modals/StandardModal";
+import { UIModal } from "../../ui/UIModal.tsx";
 import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { CompetitionRank } from "./CompetitionRank";
 import { getLighterColor, parseColor } from "../../lib/color";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import type { SearchMenuScreenProps } from "./SearchMenu";
-import type { SimpleTeam } from "../../lib/tba";
+import type { SimpleTeam } from "../../lib/frc/tba.ts";
 
 export interface CompareTeamsParams {
     team: SimpleTeam;
@@ -268,7 +268,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
             </ScrollView>
 
             {/*graph that can display data from both teams*/}
-            <StandardModal
+            <UIModal
                 title={formStructure ? formStructure[chosenQuestionIndex].question : ""}
                 visible={graphActive}
                 onDismiss={() => setGraphActive(false)}
@@ -320,7 +320,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                             })}
                         </>
                     )}
-            </StandardModal>
+            </UIModal>
         </View>
     );
 }

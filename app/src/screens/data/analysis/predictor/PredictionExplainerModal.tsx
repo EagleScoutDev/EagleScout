@@ -2,7 +2,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { PredictionConfidenceTag } from './PredictionConfidenceTag';
 import { PredictionConfidence } from '../../../../lib/PredictionConfidence';
-import type { Setter } from '../../../../lib/react';
+import type { Setter } from '../../../../lib/react/util/types';
 
 const explanations: Map<PredictionConfidence, string> = new Map([
     [

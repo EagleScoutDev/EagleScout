@@ -23,12 +23,12 @@ for f in $icons_loc/*; do
         | sed -e 's/0/Zero/g' -e 's/1/One/g' -e 's/2/Two/g' -e 's/3/Three/g' -e 's/4/Four/g' -e 's/5/Five/g' -e 's/6/Six/g' -e 's/7/Seven/g' -e 's/8/Eight/g' -e 's/9/Nine/g'\
         | tr -d ' ')
 
-    echo "export const $name = (props: IconProps) => "$(
+    echo "export function $name(props: IconProps) { \"use memo\"; return "$(
         tr -d '\n' <$f \
         | perl -pe 's/(<\/?)/\1_/g' \
         | perl -pe 's/ (xmlns|class)=".*?"//g;' \
         | perl -pe 's/ (width|height)=".*?"/ \1={props.size ?? "16"}/g;' \
         | perl -pe 's/viewBox="0 0 16 16"/viewBox="0 0 16 16" {...props}/' \
         | perl -pe 's/>\s*</></g'
-    )
+    )"; };"
 done >> ./icons.generated.tsx

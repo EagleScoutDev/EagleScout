@@ -1,17 +1,18 @@
-import { ScrollView, View } from "react-native";
-import { FormSection } from "../../../ui/form/FormSection";
 import { useState } from "react";
-import { FormComponent } from "../../../ui/form/FormComponent";
-import { StandardButton } from "../../../ui/StandardButton";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
 import { ReefscapeAutoModal } from "../../../components/games/reefscape/ReefscapeAutoModal";
-import type { Setter } from "../../../lib/react";
+import type { Setter } from "../../../lib/react/util/types";
 import type { ScoutMenuParamList } from "../ScoutingFlow";
 import type { Alliance, Orientation } from "../../../games/common";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTheme } from "@react-navigation/native";
 import type { CompetitionReturnData } from "../../../database/Competitions";
-import { SetupTab } from "./SetupTab.tsx";
+import { MatchInformation } from "../components/MatchInformation.tsx";
+import { UIButton, UIButtonFrame, UIButtonSize } from "../../../ui/UIButton.tsx";
+import { Color } from "../../../lib/color.ts";
+import { ReportFlowTab } from "../components/ReportFlowTab.tsx";
+import { Form } from "../../../lib/forms";
+import { ReportFlowFormSection } from "../components/ReportFlowFormSection.tsx";
 
 // TODO: add three lines to open drawer
 const Tab = createMaterialTopTabNavigator<GamificationParamList>();
@@ -42,14 +43,13 @@ export interface GamificationProps {
     timeline: unknown;
     setTimeline: Setter<unknown>;
 
-    arrayData: any[];
-    setArrayData: Setter<any[]>;
+    formSections: Form.Section[];
+    formData: any[];
+    setFormData: Setter<Form.Data>;
 
     autoPath: unknown;
     setAutoPath: Setter<unknown>;
     navigation: NativeStackNavigationProp<ScoutMenuParamList, "Match">;
-
-    data: unknown;
 }
 export function Gamification({
     match,
@@ -66,25 +66,22 @@ export function Gamification({
     setStartRelativeTime,
     timeline,
     setTimeline,
-    arrayData,
-    setArrayData,
+    formSections,
+    formData,
+    setFormData,
     autoPath,
     setAutoPath,
 
-    data,
     submitForm,
     isSubmitting,
 }: GamificationProps) {
-    const [activePage, setActivePage] = useState("Match");
     const [modalIsOpen, setModalIsOpen] = useState(true);
 
     const { colors } = useTheme();
-    console.log(data)
 
     return (
         <>
             <Tab.Navigator
-                // change the position to be on the bottom
                 screenOptions={{
                     tabBarStyle: {
                         backgroundColor: colors.background,
@@ -92,83 +89,93 @@ export function Gamification({
                     },
                     tabBarActiveTintColor: colors.primary,
                     tabBarInactiveTintColor: colors.text,
-                    // make the distance between each tab smaller
-                    tabBarGap: 0,
                     tabBarLabelStyle: {
-                        fontSize: 10,
+                        fontSize: 12,
+                        fontWeight: "bold",
                     },
                 }}
             >
                 <Tab.Screen
                     name={"Match"}
-                    options={{
-                        tabBarLabelStyle: {
-                            fontSize: 12,
-                            fontWeight: "bold",
-                        },
-
-                        tabBarStyle: {
-                            backgroundColor: colors.background,
-                        },
-                    }}
                     children={({ navigation }) => (
-                        <SetupTab
-                            match={match}
-                            setMatch={setMatch}
-                            team={team}
-                            setTeam={setTeam}
-                            teamsForMatch={teamsForMatch}
-                            competition={competition}
-                            orientation={orientation}
-                            setOrientation={setOrientation}
-                            alliance={alliance}
-                            setAlliance={setAlliance}
-                            next={() => {
-                                navigation.navigate(`Form/${Object.keys(data)[0]}`);
-                                setActivePage(Object.keys(data)[0]);
-                                setModalIsOpen(true);
-                            }}
-                        />
+                        <ReportFlowTab title={competition ? `${competition.name} - Match Report` : "Match Report"}>
+                            <MatchInformation
+                                match={match}
+                                setMatch={setMatch}
+                                team={team}
+                                setTeam={setTeam}
+                                teamsForMatch={teamsForMatch}
+                                orientation={orientation}
+                                setOrientation={setOrientation}
+                                alliance={alliance}
+                                setAlliance={setAlliance}
+                            />
+                            <UIButton
+                                style={{ marginTop: "auto", maxWidth: "100%" }}
+                                color={Color.parse(colors.primary)}
+                                frame={UIButtonFrame.fill}
+                                size={UIButtonSize.xl}
+                                text={"Next"}
+                                onPress={() => {
+                                    navigation.navigate(`Form/${formSections[0].title}`);
+                                    setModalIsOpen(true);
+                                }}
+                            />
+                        </ReportFlowTab>
                     )}
                 />
-                {data &&
-                    Object.entries(data).map(([key, value], index) => (
+                {formSections?.map((section, i) => {
+                    const isLast = i === formSections.length - 1;
+                    return (
                         <Tab.Screen
-                            key={key}
-                            name={`Form/${key}`}
+                            key={section.title}
+                            name={`Form/${section.title}`}
                             options={{
-                                title: key,
-                                tabBarLabelStyle: {
-                                    fontSize: 12,
-                                    fontWeight: "bold",
-                                },
-                                tabBarStyle: {
-                                    backgroundColor: colors.background,
-                                },
+                                title: section.title,
                             }}
                             listeners={{
-                                tabPress: (e) => {
-                                    setActivePage(key);
+                                tabPress: () => {
+                                    setActivePage(section.title);
                                     setModalIsOpen(true);
                                 },
                             }}
-                            children={() => (
-                                <FormTab
-                                    key={key}
-                                    value={value}
-                                    arrayData={arrayData}
-                                    setArrayData={setArrayData()}
-                                    index={index}
-                                    data={data}
-                                    isSubmitting={isSubmitting}
-                                    submitForm={submitForm}
+                            children={({ navigation }) => (
+                                <ReportFlowFormSection
+                                    section={section}
+                                    data={formData.slice(section.start + 1, section.end)}
+                                    setData={(data) =>
+                                        setFormData(
+                                            formData.splice(section.start + 1, section.end - section.start + 1, data)
+                                        )
+                                    }
+                                    nextButton={
+                                        <UIButton
+                                            style={{ marginTop: "auto", maxWidth: "100%" }}
+                                            color={Color.parse(colors.primary)}
+                                            frame={UIButtonFrame.fill}
+                                            size={UIButtonSize.xl}
+                                            text={"Next"}
+                                            isLoading={isLast ? isSubmitting : false}
+                                            onPress={
+                                                isLast
+                                                    ? submitForm
+                                                    : () => {
+                                                          navigation.navigate("Pit", {
+                                                              screen: `Form/${formSections[i + 1].title}`,
+                                                          });
+                                                      }
+                                            }
+                                        />
+                                    }
                                 />
                             )}
                         />
-                    ))}
+                    );
+                })}
             </Tab.Navigator>
+
             <ReefscapeAutoModal
-                isActive={activePage === "Auto" && modalIsOpen}
+                isActive={modalIsOpen}
                 setIsActive={setModalIsOpen}
                 fieldOrientation={orientation}
                 setFieldOrientation={setOrientation}
@@ -176,62 +183,10 @@ export function Gamification({
                 setSelectedAlliance={setAlliance}
                 autoPath={autoPath}
                 setAutoPath={setAutoPath}
-                arrayData={arrayData}
-                setArrayData={setArrayData}
-                form={data && data.Auto}
+                arrayData={formData}
+                setArrayData={setFormData}
+                form={(formSections && formSections.find(s => s.title === "Auto")) ?? []}
             />
         </>
     );
 }
-const FormTab = ({ key, value, arrayData, setArrayData, index, data, isSubmitting, submitForm }) => {
-    const { colors } = useTheme();
-    return (
-        <ScrollView keyboardShouldPersistTaps="handled">
-            <View
-                style={{
-                    marginHorizontal: "5%",
-                }}
-            >
-                <FormSection title={""} key={key}>
-                    {value.map((item) => {
-                        return (
-                            <View
-                                key={item.question}
-                                style={{
-                                    marginVertical: "5%",
-                                }}
-                            >
-                                <FormComponent
-                                    key={item.question}
-                                    item={item}
-                                    arrayData={arrayData}
-                                    setArrayData={setArrayData}
-                                />
-                            </View>
-                        );
-                    })}
-                </FormSection>
-            </View>
-
-            {/*if the index is not the last one, add a button that navigates users to the next tab*/}
-            {index !== Object.keys(data).length - 1 && (
-                <View style={{ width: "100%", marginBottom: "5%" }}>
-                    <StandardButton text={"Next"} width={"85%"} onPress={() => {}} color={colors.primary} />
-                </View>
-            )}
-            {/*  if the index is the last one, show a touchable opacity*/}
-            {index === Object.keys(data).length - 1 && (
-                <View style={{ width: "100%", marginBottom: "50%" }}>
-                    <StandardButton
-                        text={"Submit"}
-                        width={"85%"}
-                        color={colors.primary}
-                        isLoading={isSubmitting}
-                        onPress={submitForm}
-                    />
-                </View>
-            )}
-        </ScrollView>
-    );
-    // </KeyboardAvoidingView>
-};

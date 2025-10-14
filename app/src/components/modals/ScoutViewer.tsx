@@ -1,8 +1,8 @@
 import { Alert, Modal, ScrollView, Text, TextInput, TouchableOpacity, View, StyleSheet, Pressable } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { FormRadio } from "../../ui/form/components/FormRadio.tsx";
-import { FormCheckboxes } from "../../ui/form/components/FormCheckboxes.tsx";
+import { UIRadio } from "../../ui/input/UIRadio.tsx";
+import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
 import { supabase } from "../../lib/supabase.ts";
 import { FormHelper } from "../../FormHelper.ts";
 import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes.ts";
@@ -10,7 +10,8 @@ import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } f
 import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
 import { isTablet } from "../../lib/deviceType.ts";
 import * as Bs from "../../ui/icons";
-import  { exMemo, type Setter } from "../../lib/react";
+import { type Setter } from "../../lib/react/util/types";
+import { exMemo } from "../../lib/react/util/memo.ts";
 
 /**
  * This component displays the scout data in a modal.
@@ -352,11 +353,11 @@ export function ScoutViewer({
                   if the field is a slider*/}
                                     {/*Slider is only used when editing is active*/}
                                     {(!editingActive || !field.slider) && field.type !== "checkboxes" && (
-                                        <Text style={s.question}>{field.question}</Text>
+                                        <Text style={[s.question, editingActive ? s.editingQuestion : null]}>{field.question}</Text>
                                     )}
                                     {field.type === "radio" && (
                                         <View>
-                                            <FormRadio
+                                            <UIRadio
                                                 title={""}
                                                 options={field.options}
                                                 onInput={(value) => {
@@ -433,7 +434,7 @@ export function ScoutViewer({
                                     )}
                                     {field.type === "checkboxes" && (
                                         <View>
-                                            <FormCheckboxes
+                                            <UICheckboxes
                                                 title={field.question}
                                                 options={field.options}
                                                 value={tempData[index]}
@@ -530,7 +531,7 @@ const getStyles = exMemo((colors: Theme["colors"]) => StyleSheet.create({
         flex: 1,
     },
     question: {
-        color: editingActive ? colors.primary : colors.text,
+        color: colors.text,
         fontSize: 15,
         fontWeight: "600",
         // wrap text if it's too long
@@ -538,4 +539,7 @@ const getStyles = exMemo((colors: Theme["colors"]) => StyleSheet.create({
         flexWrap: "wrap",
         paddingBottom: 5,
     },
+    editingQuestion: {
+        color: colors.primary
+    }
 }))

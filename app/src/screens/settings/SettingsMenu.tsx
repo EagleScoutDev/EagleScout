@@ -1,4 +1,4 @@
-import { DebugOffline } from "./debug/DebugAsyncStorage";
+import { DebugAsyncStorage } from "./debug/DebugAsyncStorage";
 import { SettingsHome } from "./SettingsHome";
 import { AccountEditProfile, type AccountEditProfileParams } from "./account/AccountEditProfile";
 import { SubmittedForms } from "./submissions/SubmittedForms";
@@ -7,6 +7,7 @@ import type { AppHomeScreenProps } from "../../AppHome";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountDeletionModal } from "./account/AccountDeletionModal";
 import { AccountChangePassword } from "./account/AccountChangePassword";
+import { DebugHome } from "./debug/DebugHome.tsx";
 
 const Stack = createNativeStackNavigator<SettingsMenuParamList>();
 export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<
@@ -19,7 +20,8 @@ export type SettingsMenuParamList = {
     "Account/EditProfile": AccountEditProfileParams;
     "Account/ChangePassword": undefined;
     "Account/Delete": undefined;
-    "Debug/Offline": undefined;
+    "Debug/Home": undefined;
+    "Debug/AsyncStorage": undefined;
     "Scout/Reports": undefined;
     "Scout/Notes": undefined;
 };
@@ -77,10 +79,18 @@ export function SettingsMenu({}: SettingsMenuProps) {
             />
 
             <Stack.Screen
-                name="Debug/Offline"
-                component={DebugOffline}
+                name="Debug/Home"
+                component={DebugHome}
                 options={{
-                    title: "Offline Storage",
+                    title: "Debug",
+                    headerBackTitle: "Back",
+                }}
+            />
+            <Stack.Screen
+                name="Debug/AsyncStorage"
+                component={DebugAsyncStorage}
+                options={{
+                    title: "AsyncStorage",
                     headerBackTitle: "Back",
                 }}
             />

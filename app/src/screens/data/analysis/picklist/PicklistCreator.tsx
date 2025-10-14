@@ -19,9 +19,10 @@ import {
 import { ProfilesDB } from "../../../../database/Profiles";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import { getIdealTextColor, parseColor } from "../../../../lib/color";
-import { TBA } from "../../../../lib/tba";
+import { TBA } from "../../../../lib/frc/tba.ts";
 import type { PicklistScreenProps } from "./PicklistMenu";
 import * as Bs from "../../../../ui/icons";
+import type { Setter } from "../../../../lib/react/util/types";
 
 export interface PicklistCreatorParams {
     picklist_id: number;
@@ -115,7 +116,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         }
     }, []);
 
-    const setSelectedTeamWithAnimation = (team: React.SetStateAction<PicklistTeam | null>) => {
+    const setSelectedTeamWithAnimation = (team: Setter<PicklistTeam | null>) => {
         if (team) {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         }
@@ -147,33 +148,23 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                 <View
                     style={{
                         flexDirection: "row",
-                        justifyContent: "space-between",
-                        marginRight: "5%",
                         alignItems: "center",
+                        paddingHorizontal: 10,
+                        gap: 10,
                     }}
                 >
+                    {presetPicklist && syncing && <ActivityIndicator size="small" color={colors.primary} />}
+                    {presetPicklist && !syncing && (
+                        <Pressable onPress={() => fetchPicklist()}>
+                            <Bs.ArrowClockwise size="30" fill="gray" style={{ marginRight: "5%" }} />
+                        </Pressable>
+                    )}
                     {!presetPicklist && (
                         <Pressable onPress={() => prepareUpload()}>
                             <Bs.CloudArrowUp size="32" fill="gray" />
                         </Pressable>
                     )}
-                    {syncing && presetPicklist && <ActivityIndicator size="small" color={colors.primary} />}
-                    {!syncing && presetPicklist && (
-                        <Pressable
-                            onPress={() => {
-                                fetchPicklist();
-                            }}
-                        >
-                            <Bs.ArrowClockwise size="30" fill="gray" style={{ marginRight: "5%" }} />
-                        </Pressable>
-                    )}
-                    <Pressable
-                        style={{ marginLeft: "10%" }}
-                        onPress={() => {
-                            setDraggingActive((prev) => !prev);
-                            // setLiveMode(false);
-                        }}
-                    >
+                    <Pressable onPress={() => setDraggingActive((prev) => !prev)}>
                         <Bs.PencilSquare size="24" fill={dragging_active ? colors.primary : "dimgray"} />
                     </Pressable>
                 </View>
@@ -187,28 +178,27 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     }, [teams_list]);
 
     // gets latest picklist from db
-    const fetchPicklist = () => {
-        PicklistsDB.getPicklist(String(picklist_id))
-            .then((picklist) => {
-                setPresetPicklist(picklist);
-                setName(picklist.name);
-                setTeamsList(picklist.teams);
-                ProfilesDB.getProfile(picklist.created_by).then((profile) => {
-                    setCreatorName(profile.name);
-                });
-
-                let temp = new Set<number>();
-                picklist.teams.forEach((t) => {
-                    t.tags.forEach((tag) => {
-                        temp.add(tag);
-                    });
-                });
-                setUniqueTags(temp);
-            })
-            .catch((error) => {
-                console.error("Error getting picklist:", error);
+    async function fetchPicklist() {
+        try {
+            const picklist = await PicklistsDB.getPicklist(String(picklist_id));
+            setPresetPicklist(picklist);
+            setName(picklist.name);
+            setTeamsList(picklist.teams);
+            ProfilesDB.getProfile(picklist.created_by).then((profile) => {
+                setCreatorName(profile.name);
             });
-    };
+
+            let temp = new Set<number>();
+            picklist.teams.forEach((t) => {
+                t.tags.forEach((tag) => {
+                    temp.add(tag);
+                });
+            });
+            setUniqueTags(temp);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const saveIfExists = () => {
         if (presetPicklist) {
@@ -789,7 +779,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                 rootNavigation.navigate("App", {
                                                     screen: "Search",
                                                     params: {
-                                                        screen: "Team Viewer",
+                                                        screen: "TeamViewer",
                                                         params: {
                                                             team: tbaSimpleTeams.find(
                                                                 (team) => team.team_number === item.team_number

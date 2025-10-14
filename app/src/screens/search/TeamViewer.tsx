@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Statbotics } from "../../components/Statbotics.tsx";
 import { CompetitionRank } from "./CompetitionRank";
 import { ScoutSummary } from "./ScoutSummary";
-import { ListSection } from "../../ui/ListSection.tsx";
-import { ListItem } from "../../ui/ListItem";
 import { QuestionFormulaCreator } from "../data/QuestionFormulaCreator";
 import { CombinedGraph } from "./CombinedGraph"; // adjust the import path to match your file structur
 import type { SearchMenuScreenProps } from "./SearchMenu";
-import type { SimpleTeam } from "../../lib/tba";
+import type { SimpleTeam } from "../../lib/frc/tba.ts";
 import * as Bs from "../../ui/icons";
+import { UIList } from "../../ui/UIList.tsx";
 
 export interface TeamViewerParams {
     team: SimpleTeam;
@@ -71,15 +70,15 @@ export function TeamViewer({
 
     return (
         <View>
-            <ScrollView>
+            <UIList>
                 <Text style={styles.team_header}>Team #{team.team_number}</Text>
                 <Text style={styles.team_subheader}>{team.nickname}</Text>
 
                 <CompetitionRank team_number={team.team_number} />
 
-                <ListSection title={"Team Stats"}>
-                    <ListItem
-                        text={"See all scouting reports and notes"}
+                <UIList.Section header={"Team Stats"}>
+                    <UIList.Item
+                        label={"See all scouting reports and notes"}
                         onPress={() => {
                             navigation.navigate("TeamReports", {
                                 team_number: team.team_number,
@@ -88,10 +87,10 @@ export function TeamViewer({
                         }}
                         caret={true}
                         disabled={false}
-                        icon={<Bs.ClipboardData size="16" fill={colors.primary} />}
+                        icon={Bs.ClipboardData}
                     />
-                    <ListItem
-                        text={"See auto paths"}
+                    <UIList.Item
+                        label={"See auto paths"}
                         onPress={() => {
                             navigation.navigate("AutoPaths", {
                                 team_number: team.team_number,
@@ -100,17 +99,17 @@ export function TeamViewer({
                         }}
                         caret={true}
                         disabled={false}
-                        icon={<Bs.SignMergeRight size="16" fill={colors.primary} />}
+                        icon={Bs.SignMergeRight}
                     />
-                    <ListItem
-                        text={"Create Performance Graph"}
+                    <UIList.Item
+                        label={"Create Performance Graph"}
                         onPress={() => setGraphCreationModalVisible(true)}
                         caret={false}
                         disabled={false}
-                        icon={<Bs.GraphUp size="16" fill={colors.primary} />}
+                        icon={Bs.GraphUp}
                     />
-                    <ListItem
-                        text={"Compare to another team"}
+                    <UIList.Item
+                        label={"Compare to another team"}
                         onPress={() =>
                             navigation.navigate("CompareTeams", {
                                 team: team,
@@ -119,9 +118,9 @@ export function TeamViewer({
                         }
                         caret={true}
                         disabled={false}
-                        icon={<Bs.PlusSlashMinus size="16" fill={colors.primary} />}
+                        icon={Bs.PlusSlashMinus}
                     />
-                </ListSection>
+                </UIList.Section>
 
                 <QuestionFormulaCreator
                     visible={graphCreationModalVisible}
@@ -141,7 +140,7 @@ export function TeamViewer({
 
                 <Statbotics team={team.team_number} />
                 <ScoutSummary team_number={team.team_number} competitionId={competitionId} />
-            </ScrollView>
+            </UIList>
         </View>
     );
 }

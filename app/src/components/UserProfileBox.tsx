@@ -16,9 +16,9 @@ export function UserProfileBox({ user, scoutcoins }: UserProfileBoxProps) {
 
     const styles = StyleSheet.create({
         container: {
+            width: "100%",
             flexDirection: "row",
             padding: "5%",
-            margin: "3%",
             alignItems: "center",
             backgroundColor: colors.card,
             borderRadius: 10,

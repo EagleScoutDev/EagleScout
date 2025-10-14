@@ -1,8 +1,8 @@
 import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { FormRadio } from "../../ui/form/components/FormRadio.tsx";
-import { FormCheckboxes } from "../../ui/form/components/FormCheckboxes.tsx";
+import { UIRadio } from "../../ui/input/UIRadio.tsx";
+import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports.ts";
 import * as Bs from "../../ui/icons";
@@ -184,7 +184,7 @@ export const PitScoutViewer = ({
                                         <Text style={styles.question}>{field.question}</Text>
                                         {field.type === "radio" && (
                                             <View>
-                                                <FormRadio
+                                                <UIRadio
                                                     title={""}
                                                     colors={colors}
                                                     options={field.options}
@@ -195,7 +195,7 @@ export const PitScoutViewer = ({
                                         )}
                                         {field.type === "checkboxes" && (
                                             <>
-                                                <FormCheckboxes
+                                                <UICheckboxes
                                                     title={""}
                                                     disabled={true}
                                                     colors={colors}

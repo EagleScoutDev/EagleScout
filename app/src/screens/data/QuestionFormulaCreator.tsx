@@ -1,19 +1,23 @@
-import { useTheme } from '@react-navigation/native';
-import { FlatList, Modal, Pressable, Text, View } from 'react-native';
-import { useEffect, useState } from 'react';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { CompetitionsDB } from '../../database/Competitions';
-import type { Setter } from '../../lib/react';
+import { useTheme } from "@react-navigation/native";
+import { FlatList, Modal, Pressable, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { CompetitionsDB } from "../../database/Competitions";
+import type { Setter } from "../../lib/react/util/types";
 
 interface QuestionFormulaCreatorProps {
-    visible: boolean, setVisible: Setter<boolean>
-    chosenQuestionIndices: number[], setChosenQuestionIndices: Setter<number[]>
+    visible: boolean;
+    setVisible: Setter<boolean>;
+    chosenQuestionIndices: number[];
+    setChosenQuestionIndices: Setter<number[]>;
     compId: number;
 }
 
 export function QuestionFormulaCreator({
-    visible, setVisible,
-    chosenQuestionIndices, setChosenQuestionIndices,
+    visible,
+    setVisible,
+    chosenQuestionIndices,
+    setChosenQuestionIndices,
     compId,
 }: QuestionFormulaCreatorProps) {
     const { colors } = useTheme();
@@ -24,45 +28,49 @@ export function QuestionFormulaCreator({
     }, []);
 
     useEffect(() => {
-        CompetitionsDB.getCompetitionById(compId).then(comp => {
+        CompetitionsDB.getCompetitionById(compId).then((comp) => {
             setForm(comp.form);
         });
     }, [compId]);
 
     return (
         <Modal
-            presentationStyle={'pageSheet'}
+            presentationStyle={"pageSheet"}
             visible={visible}
-            animationType={'slide'}
+            animationType={"slide"}
             onRequestClose={() => {
                 if (chosenQuestionIndices.length === 0) {
                     setVisible(false);
                 }
-            }}>
+            }}
+        >
             <View style={{ backgroundColor: colors.card, flex: 1 }}>
                 <Text
                     style={{
                         color: colors.text,
-                        textAlign: 'center',
+                        textAlign: "center",
                         fontSize: 20,
-                        marginTop: '4%',
-                    }}>
+                        marginTop: "4%",
+                    }}
+                >
                     Choose Questions
                 </Text>
                 {chosenQuestionIndices.length > 0 && (
                     <Pressable
-                        style={{ position: 'absolute', right: '4%', top: '2%' }}
+                        style={{ position: "absolute", right: "4%", top: "2%" }}
                         onPress={() => {
-                            console.log('saving');
+                            console.log("saving");
                             setVisible(false);
-                        }}>
+                        }}
+                    >
                         <Text
                             style={{
                                 color: colors.primary,
-                                fontWeight: 'bold',
-                                textAlign: 'center',
+                                fontWeight: "bold",
+                                textAlign: "center",
                                 fontSize: 16,
-                            }}>
+                            }}
+                        >
                             Save
                         </Text>
                     </Pressable>
@@ -70,16 +78,17 @@ export function QuestionFormulaCreator({
                 {chosenQuestionIndices.length === 0 ? (
                     <Text
                         style={{
-                            color: 'gray',
-                            textAlign: 'center',
+                            color: "gray",
+                            textAlign: "center",
                             fontSize: 16,
-                            marginTop: '1%',
-                            marginBottom: '2%',
-                        }}>
+                            marginTop: "1%",
+                            marginBottom: "2%",
+                        }}
+                    >
                         Pick at least one to get started.
                     </Text>
                 ) : (
-                    <View style={{ marginVertical: '4%' }} />
+                    <View style={{ marginVertical: "4%" }} />
                 )}
                 {/*{form !== undefined && (*/}
                 {/*<Text*/}
@@ -89,47 +98,46 @@ export function QuestionFormulaCreator({
                 <FlatList
                     data={form}
                     renderItem={({ item, index }) => {
-                        if (item.type === 'heading') {
+                        if (item.type === "heading") {
                             return (
                                 <Text
                                     style={{
                                         color: colors.text,
                                         fontSize: 20,
-                                        fontWeight: 'bold',
-                                        marginVertical: '4%',
-                                        marginLeft: '4%',
+                                        fontWeight: "bold",
+                                        marginVertical: "4%",
+                                        marginLeft: "4%",
                                     }}
-                                    key={index}>
+                                    key={index}
+                                >
                                     {item.title}
                                 </Text>
                             );
                         }
-                        if (item.type === 'number') {
+                        if (item.type === "number") {
                             return (
                                 <View
                                     style={{
-                                        flexDirection: 'row',
-                                        marginVertical: '1%',
-                                        alignItems: 'center',
-                                        marginHorizontal: '4%',
-                                    }}>
+                                        flexDirection: "row",
+                                        marginVertical: "1%",
+                                        alignItems: "center",
+                                        marginHorizontal: "4%",
+                                    }}
+                                >
                                     <BouncyCheckbox
                                         fillColor={colors.primary}
                                         text={item.question}
                                         isChecked={chosenQuestionIndices.includes(index)}
                                         textStyle={{
                                             color: colors.text,
-                                            textDecorationLine: 'none',
+                                            textDecorationLine: "none",
                                         }}
-                                        onPress={isChecked => {
+                                        onPress={(isChecked) => {
                                             if (isChecked) {
-                                                setChosenQuestionIndices([
-                                                    ...chosenQuestionIndices,
-                                                    index,
-                                                ]);
+                                                setChosenQuestionIndices([...chosenQuestionIndices, index]);
                                             } else {
                                                 setChosenQuestionIndices(
-                                                    chosenQuestionIndices.filter(i => i !== index),
+                                                    chosenQuestionIndices.filter((i) => i !== index)
                                                 );
                                             }
                                         }}
@@ -144,4 +152,4 @@ export function QuestionFormulaCreator({
             </View>
         </Modal>
     );
-};
+}

@@ -4,7 +4,7 @@ import Svg, {Path} from 'react-native-svg';
 import type { ReefscapeAutoPath } from './ReefscapeAutoPath.ts';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Animated from 'react-native-reanimated';
-import type { Setter } from "../../../lib/react";
+import type { Setter } from "../../../lib/react/util/types";
 
 // import {AnimatedView} from 'react-native-reanimated/lib/typescript/component/View';
 

@@ -7,7 +7,7 @@ import { TeamAggregation, type MatchPredictionResults } from "../../../../databa
 import { Alliance } from "../../../../games/common";
 import { getIdealTextColor, parseColor } from "../../../../lib/color";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
-import { useCurrentCompetitionMatches } from "../../../../lib/useCurrentCompetitionMatches";
+import { useCurrentCompetitionMatches } from "../../../../lib/react/hooks/useCurrentCompetitionMatches.ts";
 import { PredictionExplainerModal } from "./PredictionExplainerModal";
 import { QuestionFormulaCreator } from "../../QuestionFormulaCreator";
 import { PercentageWinBar } from "./PercentageWinBar";

@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { decode } from 'base64-arraybuffer';
-import { userAttributes } from './UserAttributes';
+import { UserAttributesDB } from './UserAttributes';
 
 export interface PitReport {
     reportId: number;
@@ -40,7 +40,7 @@ export class PitReportsDB {
         reportId: number,
         images: string[],
     ) {
-        const orgId = (await userAttributes.getCurrentUserAttribute())
+        const orgId = (await UserAttributesDB.getCurrentUserAttribute())
             .organization_id;
         const bucket = supabase.storage.from('organizations');
         for (let i = 0; i < images.length; i++) {
@@ -159,7 +159,7 @@ export class PitReportsDB {
      * @param reportId
      */
     static async getImagesForReport(teamId: number, reportId: number) {
-        const orgId = (await userAttributes.getCurrentUserAttribute())
+        const orgId = (await UserAttributesDB.getCurrentUserAttribute())
             .organization_id;
         const bucket = supabase.storage.from('organizations');
         const { data: images, error } = await bucket.list(
@@ -230,7 +230,7 @@ export class PitReportsDB {
             data.map(async report =>
                 this.getImageUrlsForReport(
                     (
-                        await userAttributes.getCurrentUserAttribute()
+                        await UserAttributesDB.getCurrentUserAttribute()
                     ).organization_id,
                     report.team_id,
                     report.id,

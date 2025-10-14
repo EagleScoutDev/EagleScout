@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ShopModalBase } from "./ShopModalBase";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
-import { useProfile } from "../../../../lib/hooks/useProfile";
+import { useProfile } from "../../../../lib/react/hooks/useProfile";
 import { useTheme, type Theme } from "@react-navigation/native";
 import { supabase } from "../../../../lib/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";

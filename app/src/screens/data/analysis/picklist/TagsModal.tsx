@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import type { PicklistTeam } from "../../../../database/Picklists";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
-import type { Setter } from "../../../../lib/react";
+import type { Setter } from "../../../../lib/react/util/types";
 import * as Bs from "../../../../ui/icons";
 
 export interface TagsModalProps {

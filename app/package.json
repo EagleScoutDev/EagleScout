@@ -1,11 +1,10 @@
 {
-  "name": "EagleScout",
+  "name": "eaglescout",
   "version": "7.7",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
     "start": "echo \"Please use 'npm run start:dev' or 'npm run start:prod' instead.\" && exit 1",
     "start:dev": "NODE_ENV=development react-native start",
     "start:prod": "NODE_ENV=production react-native start",
@@ -18,17 +17,16 @@
     "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/datetimepicker": "^8.4.4",
     "@react-native-community/slider": "^5.0.1",
-    "@react-native/new-app-screen": "0.81.1",
     "@react-navigation/bottom-tabs": "^7.4.7",
     "@react-navigation/drawer": "^7.5.8",
     "@react-navigation/material-top-tabs": "^7.3.7",
-    "@react-navigation/native": "^7.1.17",
+    "@react-navigation/native": "^7.1.18",
     "@react-navigation/native-stack": "^7.3.26",
     "@supabase/supabase-js": "^2.57.2",
     "base64-arraybuffer": "^1.0.2",
     "bootstrap-icons": "^1.13.1",
     "react": "19.1.0",
-    "react-native": "^0.81.1",
+    "react-native": "0.81.1",
     "react-native-background-fetch": "^4.2.8",
     "react-native-bouncy-checkbox": "^4.1.2",
     "react-native-chart-kit": "^6.12.0",
@@ -45,35 +43,42 @@
     "react-native-pager-view": "^6.9.1",
     "react-native-reanimated": "^3.19.1",
     "react-native-safe-area-context": "^5.6.1",
-    "react-native-screens": "^4.16.0",
+    "react-native-screens": "^4.17.0-nightly-20251003-291c17f0b",
     "react-native-share": "^12.2.0",
     "react-native-svg": "^15.12.1",
     "react-native-toast-message": "^2.3.3",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vision-camera": "^4.7.2",
+    "react-navigation-header-buttons": "^13.0.0",
     "reanimated-color-picker": "^4.1.0",
     "rn-emoji-keyboard": "^1.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
-    "@babel/runtime": "^7.25.0",
-    "@eslint/js": "^9.36.0",
+    "@babel/runtime": "^7.28.4",
     "@react-native-community/cli": "20.0.0",
     "@react-native-community/cli-platform-android": "20.0.0",
     "@react-native-community/cli-platform-ios": "20.0.0",
     "@react-native/babel-preset": "0.81.1",
-    "@react-native/eslint-config": "0.81.1",
     "@react-native/metro-config": "0.81.1",
     "@react-native/typescript-config": "0.81.1",
-    "@types/react": "^19.1.0",
+    "@types/react": "19.1.0",
     "@types/react-native-confetti": "^0.1.4",
-    "eslint": "^8.57.1",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.4.0",
+    "babel-plugin-react-compiler": "^19.1.0-rc.3",
     "prettier": "2.8.8",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.44.0"
+    "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "@react-navigation/native-stack": {
+      "react-native-screens": "$react-native-screens"
+    },
+    "@react-navigation/drawer": {
+      "react-native-screens": "$react-native-screens"
+    },
+    "@react-navigation/bottom-tabs": {
+      "react-native-screens": "$react-native-screens"
+    }
   },
   "engines": {
     "node": ">=20"

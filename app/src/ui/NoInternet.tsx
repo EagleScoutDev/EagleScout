@@ -8,6 +8,7 @@ export interface NoInternetProps {
 }
 
 export function NoInternet({ onRefresh }: NoInternetProps) {
+    "use memo";
     const { colors } = useTheme();
 
     return (

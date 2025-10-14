@@ -155,7 +155,8 @@ export class MatchReportsDB {
         }))
     }
 
-    static async createOnlineScoutReport(report: MatchReport): Promise<void> {
+    // TODO: don't use Omit<> here
+    static async createOnlineScoutReport(report: Omit<MatchReport, "reportId">): Promise<void> {
         const { data, error } = await supabase.rpc('add_online_scout_report', {
             competition_id_arg: report.competitionId,
             match_number_arg: report.matchNumber,

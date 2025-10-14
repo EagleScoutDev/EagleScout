@@ -1,81 +1,68 @@
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { StandardButton } from "../../../ui/StandardButton";
+import React from "react";
+import type { CompetitionReturnData } from "../../../database/Competitions.ts";
+import { UISheet } from "../../../ui/UISheet.tsx";
+import { UIList } from "../../../ui/UIList.tsx";
+import { Color } from "../../../lib/color.ts";
+import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export.ts";
+import { Alert } from "react-native";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 
-export const ExportCompetitionSheet = ({
-    competitionName,
-    onExportScoutReports,
-    onExportPitScoutReports,
-    onClose,
-}: {
-    competitionName: string;
-    onExportScoutReports: () => void;
-    onExportPitScoutReports: () => void;
-    onClose: () => void;
-}) => {
+export interface ExportCompetitionSheetProps {
+    data?: { competition: CompetitionReturnData };
+}
+export const ExportCompetitionSheet = ({ data }: ExportCompetitionSheetProps) => {
+    "use memo";
     const { colors } = useTheme();
+
+    const modal = useBottomSheetModal();
+
+    if (data === undefined) return <></>;
+    const { competition } = data;
     return (
-        <BottomSheet
-            index={0}
-            enableDynamicSizing={false}
-            snapPoints={["55%"]}
-            enablePanDownToClose={true}
-            onClose={onClose}
-            animateOnMount={true}
-            handleIndicatorStyle={{
-                backgroundColor: colors.text,
-            }}
-            backgroundStyle={{
-                backgroundColor: colors.card,
-            }}
-            containerStyle={{
-                backgroundColor: "rgba(0,0,0,0.5)",
-            }}
-        >
-            <BottomSheetView
-                style={{
-                    backgroundColor: colors.card,
-                    borderRadius: 10,
-                    padding: 20,
-                    height: 200,
-                }}
-            >
-                <Text
-                    style={{
-                        fontSize: 25,
-                        fontWeight: "bold",
-                        marginBottom: 5,
-                        color: colors.text,
-                        textDecorationStyle: "solid",
-                        textDecorationColor: colors.border,
-                    }}
-                >
-                    Export Data for {competitionName}
-                </Text>
-                <Text
-                    style={{
-                        color: colors.text,
-                        marginBottom: 15,
-                    }}
-                >
-                    Select the type of data you would like to export
-                </Text>
-                <StandardButton
-                    text="Export Scout Reports"
-                    color={colors.primary}
-                    onPress={() => {
-                        onExportScoutReports();
-                    }}
-                />
-                <StandardButton
-                    text="Export Pit Scout Reports"
-                    color={colors.primary}
-                    onPress={() => {
-                        onExportPitScoutReports();
-                    }}
-                />
-            </BottomSheetView>
-        </BottomSheet>
+        <>
+            <UISheet.Header title={`Export "${competition.name}"`} />
+            <UIList>
+                {[
+                    UIList.Section({
+                        items: [
+                            UIList.Item({
+                                label: "Export Scout Reports",
+                                labelColor: Color.parse(colors.primary),
+                                onPress: async () => {
+                                    // TODO: setProcessing(true);
+                                    const data = await exportScoutReportsToCsv(competition);
+                                    if (!data) return;
+
+                                    await writeToFile(`${competition.name}.csv`, data);
+                                    // TODO: setProcessing(false);
+                                    modal.dismiss();
+                                },
+                            }),
+                            UIList.Item({
+                                label: "Export Pit Scout Reports",
+                                labelColor: Color.parse(colors.primary),
+                                onPress: async () => {
+                                    if (!competition.pitScoutFormId) {
+                                        Alert.alert(
+                                            "No Pit Scout Form",
+                                            "This competition does not have a pit scout form"
+                                        );
+                                        return;
+                                    }
+                                    // TODO: setProcessing(true);
+                                    const data = await exportPitReportsToCsv(competition);
+                                    if (!data) return;
+
+                                    await writeToFile(`${competition.name}.csv`, data);
+                                    // TODO: setProcessing(false);
+                                    modal.dismiss();
+                                },
+                            }),
+                        ],
+                    }),
+                ]}
+            </UIList>
+        </>
     );
 };

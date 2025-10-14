@@ -4,7 +4,7 @@ import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react
 import { TextInput } from "react-native-gesture-handler";
 import { ProfilesDB } from "../../database/Profiles";
 import { SendScoutcoinModal } from "./SendScoutcoinModal";
-import { useProfile } from "../../lib/hooks/useProfile";
+import { useProfile } from "../../lib/react/hooks/useProfile";
 import * as Bs from "../../ui/icons";
 
 interface LeaderboardUser {

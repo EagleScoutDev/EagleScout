@@ -1,6 +1,6 @@
 import { useTheme, type NavigatorScreenParams } from "@react-navigation/native";
 import { DataHome } from "./DataHome";
-import { ManageCompetitions } from "../admin/ManageCompetitions";
+import { ManageCompetitions } from "../admin/competitions/ManageCompetitions.tsx";
 import { ManageUsers } from "../admin/ManageUsers";
 import { ScoutAssignments } from "../admin/assignments/ScoutAssignments";
 import { ManageBets } from "../scoutcoin/betting/admin/ManageBets";
@@ -12,17 +12,17 @@ import { PicklistsMenu, type PicklistParamList } from "./analysis/picklist/Pickl
 import { DataAggregation } from "./analysis/rank/DataAggregation";
 import { WeightedRank } from "./analysis/rank/WeightedRank";
 import { MatchPredictor } from "./analysis/predictor/MatchPredictor";
-import { ManageForms } from "../forms/ManageForms.tsx";
 import { ExportToCSV } from "./export/ExportToCSV";
-import { MatchBetting } from "../scoutcoin/betting/MatchBetting";
 import { MatchBettingNavigator } from "../scoutcoin/betting/MatchBettingNavigator";
+import { FormCreator, type FormCreatorParams } from "../admin/forms/creator/FormCreator.tsx";
+import { FormList } from "../admin/forms/list/FormList.tsx";
 
 const Stack = createNativeStackNavigator<DataMenuParamList>();
 export type DataMenuScreenProps<K extends keyof DataMenuParamList> = NativeStackScreenProps<DataMenuParamList, K>;
 export type DataMenuParamList = {
     Home: undefined;
 
-    Picklist: NavigatorScreenParams<PicklistParamList>;
+    Picklist: NavigatorScreenParams<PicklistParamList> | undefined;
     TeamRank: undefined;
     WeightedTeamRank: undefined;
     MatchPredictor: undefined;
@@ -35,7 +35,8 @@ export type DataMenuParamList = {
 
     ManageCompetitions: undefined;
     ManageUsers: undefined;
-    ManageForms: undefined;
+    Forms: undefined;
+    "Forms/Edit": FormCreatorParams;
     ManageScoutAssignments: undefined;
     ManageMatchBets: undefined;
 };
@@ -143,13 +144,11 @@ export const DataMain = () => {
                         title: "Users",
                     }}
                 />
-                <Stack.Screen
-                    name="ManageForms"
-                    component={ManageForms}
-                    options={{
-                        title: "Forms",
-                    }}
-                />
+                <Stack.Group screenOptions={{ title: "Forms" }}>
+                    <Stack.Screen name="Forms" component={FormList} />
+                    {/*<Stack.Screen name="Forms/View" component={FormViewer} />*/}
+                    <Stack.Screen name="Forms/Edit" component={FormCreator} />
+                </Stack.Group>
                 <Stack.Screen
                     name="ManageScoutAssignments"
                     component={ScoutAssignments}

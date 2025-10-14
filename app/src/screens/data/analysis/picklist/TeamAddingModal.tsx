@@ -2,7 +2,7 @@ import { Alert, FlatList, Modal, Pressable, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useTheme } from "@react-navigation/native";
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
-import type { Setter } from "../../../../lib/react";
+import type { Setter } from "../../../../lib/react/util/types";
 import * as Bs from "../../../../ui/icons";
 
 export interface TeamAddingModalProps {

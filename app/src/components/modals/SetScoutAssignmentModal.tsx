@@ -1,12 +1,12 @@
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
-import { StandardModal } from "./StandardModal.tsx";
-import { FormSelect } from "../../ui/form/components/FormSelect.tsx";
+import { UIModal } from "../../ui/UIModal.tsx";
+import { UISelect } from "../../ui/input/UISelect.tsx";
 import { StandardButton } from "../../ui/StandardButton.tsx";
 import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../lib/supabase.ts";
 import { useEffect, useState } from "react";
 import type { CompetitionReturnData } from "../../database/Competitions.ts";
-import type { Setter } from "../../lib/react";
+import type { Setter } from "../../lib/react/util/types";
 
 export function Spacer() {
     return <View style={{ height: "2%" }} />;
@@ -189,7 +189,7 @@ export function SetScoutAssignmentModal({
     return (
         <>
             {matches && (
-                <StandardModal title={"Set scout assignment"} visible={visible}>
+                <UIModal title={"Set scout assignment"} visible={visible}>
                     {matches.length === 1 && (
                         <>
                             <Text
@@ -241,11 +241,11 @@ export function SetScoutAssignmentModal({
                             marginTop: 10,
                         }}
                     >
-                        <FormSelect
+                        <UISelect
                             setSelected={setUserId}
                             options={names.map((f) => ({
-                                value: f.name,
                                 key: f.id,
+                                name: f.name,
                             }))}
                             searchEnabled={false}
                             searchPlaceholder={"Search for a user..."}
@@ -286,7 +286,7 @@ export function SetScoutAssignmentModal({
                             />
                         </View>
                     )}
-                </StandardModal>
+                </UIModal>
             )}
         </>
     );

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { CompetitionsDB } from '../../database/Competitions';
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import { NotesDB, type NoteWithMatch } from "../../database/ScoutNotes";
-import { Tabs } from '../../ui/Tabs';
+import { UITabs } from '../../ui/UITabs.tsx';
 import { NoteList } from '../../components/NoteList.tsx';
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
 import { PitScoutReportList } from '../../components/PitScoutReportList.tsx';
@@ -62,7 +62,7 @@ export function ReportsForTeam({ route: { params: { team_number, competitionId }
 
     return (
         <View style={{ flex: 1 }}>
-            <Tabs
+            <UITabs
                 tabs={['Scout Reports', 'Notes', 'Pit Reports']}
                 selectedTab={tab}
                 setSelectedTab={setTab}

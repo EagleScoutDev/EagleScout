@@ -1,12 +1,13 @@
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
-import { StandardModal } from "../../../components/modals/StandardModal";
+import { UIModal } from "../../../ui/UIModal.tsx";
 import { StandardButton } from "../../../ui/StandardButton";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { exMemo, type Setter } from "../../../lib/react";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { NumberInput } from "../../../ui/input/Number.tsx";
+import { NumberInput } from "../../../ui/components/NumberInput.tsx";
+import { UICheckbox } from "../../../ui/input/UICheckbox.tsx";
+import type { Setter } from "../../../lib/react/util/types";
+import { exMemo } from "../../../lib/react/util/memo.ts";
 
 export interface AutoAssignModalProps {
     visible: boolean;
@@ -70,7 +71,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
 
     return (
         <>
-            <StandardModal title={"Auto-Assign rounds"} visible={visible}>
+            <UIModal title={"Auto-Assign rounds"} visible={visible}>
                 {processing && (
                     <View style={s.spinner}>
                         <ActivityIndicator size="large" />
@@ -80,32 +81,16 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
                 <ScrollView style={s.userlist}>
                     {users.map((user, idx) => (
                         <View key={user.id} style={s.user}>
-                            <View style={{ flex: 1 }}>
-                                <BouncyCheckbox
-                                    key={usersKey}
-                                    onClick={() => {
-                                        let newUsersChecked = usersChecked;
-                                        newUsersChecked[idx] = !newUsersChecked[idx];
-                                        setUsersChecked(newUsersChecked);
-                                        console.log(usersChecked);
-                                        setUsersKey(usersKey + 1);
-                                    }}
-                                    isChecked={usersChecked[idx]}
-                                    bounceEffectIn={1}
-                                    bounceEffectOut={1}
-                                    style={{
-                                        marginRight: "6%",
-                                    }}
-                                    textStyle={{
-                                        textDecorationLine: "none",
-                                    }}
-                                    iconStyle={{
-                                        borderRadius: 3,
-                                    }}
-                                    fillColor={colors.text}
-                                    innerIconStyle={{ borderRadius: 3 }}
-                                />
-                            </View>
+                            <UICheckbox
+                                key={usersKey}
+                                value={usersChecked[idx]}
+                                onInput={(value) => {
+                                    let newUsersChecked = usersChecked;
+                                    newUsersChecked[idx] = !newUsersChecked[idx];
+                                    setUsersChecked(newUsersChecked);
+                                    setUsersKey(usersKey + 1);
+                                }}
+                            />
                             <Text style={s.user_name}>{user.name}</Text>
                         </View>
                     ))}
@@ -138,7 +123,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
                     />
                     <StandardButton color={"#29a329"} onPress={() => onSubmit()} text={"Submit"} width={"40%"} />
                 </View>
-            </StandardModal>
+            </UIModal>
         </>
     );
 }
@@ -177,8 +162,8 @@ const styles = exMemo((colors: Theme["colors"]) =>
             alignItems: "center",
         },
         user_name: {
-            flex: 8,
             color: colors.text,
+            marginLeft: "auto",
         },
         button_row: { flexDirection: "row", justifyContent: "space-evenly" },
     })

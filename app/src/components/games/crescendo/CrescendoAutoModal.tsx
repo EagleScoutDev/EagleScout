@@ -6,7 +6,7 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { CrescendoField } from "./CrescendoField.tsx";
 import type { CrescendoAutoPath } from "./CrescendoAutoPath.ts";
 import { CrescendoActionIcon, CrescendoActions, CrescendoActionType } from "./CrescendoActions.tsx";
-import type { Setter } from "../../../lib/react";
+import type { Setter } from "../../../lib/react/util/types";
 import type { Alliance, Orientation } from "../../../games/common";
 
 interface HistoryAction {

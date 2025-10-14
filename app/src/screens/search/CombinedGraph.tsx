@@ -1,5 +1,5 @@
 import { Dimensions, Pressable, Text, View } from 'react-native';
-import { StandardModal } from '../../components/modals/StandardModal';
+import { UIModal } from '../../ui/UIModal.tsx';
 import { LineChart } from 'react-native-chart-kit';
 import { useEffect, useState } from "react";
 import { useTheme } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import {
 } from '../../database/ScoutMatchReports';
 import { FormsDB, type FormReturnData } from '../../database/Forms';
 import { CompetitionsDB } from '../../database/Competitions';
-import type { Setter } from '../../lib/react';
+import type { Setter } from '../../lib/react/util/types';
 
 export interface CombinedGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>
@@ -77,7 +77,7 @@ export function CombinedGraph({
     }, [questionIndices, form]);
 
     return (
-        <StandardModal
+        <UIModal
             title={'Team ' + team_number.toString(10) + ' Performance'}
             visible={modalActive}
             onDismiss={() => {
@@ -160,6 +160,6 @@ export function CombinedGraph({
                 onPress={() => setModalActive(false)}>
                 <Text style={{ color: colors.primary, fontSize: 16 }}>Close</Text>
             </Pressable>
-        </StandardModal>
+        </UIModal>
     );
 };

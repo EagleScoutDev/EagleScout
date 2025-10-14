@@ -16,7 +16,7 @@ import { FormHelper } from '../../../FormHelper';
 import Toast from 'react-native-toast-message';
 import Confetti from 'react-native-confetti';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { useCurrentCompetitionMatches } from '../../../lib/useCurrentCompetitionMatches';
+import { useCurrentCompetitionMatches } from '../../../lib/react/hooks/useCurrentCompetitionMatches.ts';
 import { StandardButton } from '../../../ui/StandardButton';
 
 export function NoteScreen()  {
@@ -87,7 +87,7 @@ export function NoteScreen()  {
             } else {
                 promises.push(
                     FormHelper.saveNoteOffline({
-                        content: noteContents[team],
+                        contents: noteContents[team],
                         team_number: Number(team),
                         match_number: Number(matchNumber),
                         comp_id: competitionId,

@@ -9,7 +9,7 @@ import { SelectTeam } from "./steps/SelectTeam";
 import { useState, useEffect } from "react";
 import type { RootStackScreenProps } from "../../App";
 import { AccountStatus } from "../../lib/user/account";
-import { useAccount } from "../../lib/hooks/useAccount";
+import { useAccount } from "../../lib/react/hooks/useAccount";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator<OnboardingParamList>();

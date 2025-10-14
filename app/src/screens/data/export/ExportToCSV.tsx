@@ -1,21 +1,20 @@
-import { ActivityIndicator, Alert, Text, View } from "react-native";
-import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
-import { CompetitionList } from "./CompetitionList";
-import { ExportCompetitionSheet } from "./ExportCompetitionSheet";
-import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export";
+import { View } from "react-native";
+import React, { useRef, useState } from "react";
 import { NoInternet } from "../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
+import { UISheetModal } from "../../../ui/UISheetModal.tsx";
+import { TabHeader } from "../../../ui/navigation/TabHeader.tsx";
+import { ExportCompetitionSheet } from "./ExportCompetitionSheet.tsx";
+import { UIList } from "../../../ui/UIList.tsx";
 
 export function ExportToCSV() {
-    const { colors } = useTheme();
+    "use memo";
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
-    const [competitionsLoading, setCompetitionsLoading] = useState(true);
-    const [processing, setProcessing] = useState(false);
-    const [currentCompetition, setCurrentCompetition] = useState<CompetitionReturnData | null>();
 
-    const getCompetitions = async () => {
+    const modalRef = useRef<UISheetModal<{ competition: CompetitionReturnData }>>(null);
+
+    async function fetchCompetitions() {
         try {
             const data = await CompetitionsDB.getCompetitions();
             data.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
@@ -25,102 +24,47 @@ export function ExportToCSV() {
             console.error(error);
             setInternetError(true);
         }
-        setCompetitionsLoading(false);
-    };
-
-    useEffect(() => {
-        getCompetitions();
-    }, []);
+    }
 
     if (internetError) {
-        return <NoInternet onRefresh={() => getCompetitions()} />;
+        return <NoInternet onRefresh={() => fetchCompetitions()} />;
     }
 
     return (
         <>
-            {processing && (
-                <View
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 10,
-                    }}
-                >
-                    <ActivityIndicator size="large" />
-                </View>
-            )}
             <View style={{ flex: 1 }}>
-                <View
-                    style={{
-                        alignSelf: "center",
-                        backgroundColor: colors.background,
-                        height: "100%",
-                        borderRadius: 10,
-                        padding: "10%",
-                        width: "100%",
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 25,
-                            fontWeight: "bold",
-                            marginBottom: 5,
-                            color: colors.text,
-                            textDecorationStyle: "solid",
-                            textDecorationColor: colors.border,
-                        }}
-                    >
-                        Choose a Competition
-                    </Text>
-                    <Text
-                        style={{
-                            color: colors.text,
-                            marginBottom: 15,
-                        }}
-                    >
-                        Choose a competition to export the scout reports to a CSV file
-                    </Text>
-                    <CompetitionList
-                        competitionList={competitionList}
-                        competitionsLoading={competitionsLoading}
-                        processing={processing}
-                        onCompetitionPress={(comp) => setCurrentCompetition(comp)}
-                    />
-                </View>
-            </View>
-            {currentCompetition && (
-                <ExportCompetitionSheet
-                    competitionName={currentCompetition.name}
-                    onExportScoutReports={async () => {
-                        setProcessing(true);
-                        const data = await exportScoutReportsToCsv(currentCompetition);
-                        if (!data) {
-                            return;
-                        }
-                        await writeToFile(`${currentCompetition.name}.csv`, data);
-                        setProcessing(false);
-                    }}
-                    onExportPitScoutReports={async () => {
-                        if (!currentCompetition?.pitScoutFormId) {
-                            Alert.alert("No Pit Scout Form", "This competition does not have a pit scout form");
-                            return;
-                        }
-                        setProcessing(true);
-                        const data = await exportPitReportsToCsv(currentCompetition);
-                        if (!data) {
-                            return;
-                        }
-                        await writeToFile(`${currentCompetition.name}.csv`, data);
-                        setProcessing(false);
-                    }}
-                    onClose={() => setCurrentCompetition(null)}
+                <TabHeader
+                    title={"Export CSV"}
+                    description={"Choose a competition to export the scout reports to a CSV file"}
                 />
-            )}
+                <UIList onRefresh={fetchCompetitions} refreshOnMount>
+                    {/*{competitionList.length === 0 && !competitionsLoading && (*/}
+                    {/*    <Text style={{ color: colors.text, textAlign: "center" }}>No competitions found</Text>*/}
+                    {/*)}*/}
+                    {[
+                        UIList.Section({
+                            items: competitionList.map((comp, index) =>
+                                UIList.Item({
+                                    key: comp.id.toString(),
+                                    label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
+                                    onPress: () => {
+                                        modalRef.current?.present({ competition: comp });
+                                    },
+                                })
+                            ),
+                        }),
+                    ]}
+                </UIList>
+            </View>
+
+            <UISheetModal
+                ref={modalRef}
+                gap={"40%"}
+                enablePanDownToClose
+                backdropPressBehavior={"close"}
+                handleComponent={null}
+                children={ExportCompetitionSheet}
+            />
         </>
     );
 }

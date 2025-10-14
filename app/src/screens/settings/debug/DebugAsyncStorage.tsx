@@ -1,111 +1,123 @@
-/**
- * This file will separate the forms the user has submitted into two:
- * 1) the forms they have submitted offline, but have not been pushed
- *    give option for "select all" and submit, or user can select manually
- * 2) the forms they have uploaded to the database in the past
- */
-import { Button, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { UIList } from "../../../ui/UIList.tsx";
+import BottomSheet from "@gorhom/bottom-sheet";
+import Animated, { useSharedValue } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
 
-export function DebugOffline() {
-    const [keys, setKeys] = useState([]);
-    const [selected, setSelected] = useState();
-    const [value, setValue] = useState();
+export function DebugAsyncStorage() {
+    const [keys, setKeys] = useState<readonly string[]>([]);
+
+    const [currentKey, setCurrentKey] = useState<string | null>(null);
+    const [currentValue, setCurrentValue] = useState<string | null>(null);
     const { colors } = useTheme();
 
-    const getAllKeys = async () => {
+    const sheetPosition = useSharedValue(0);
+
+    async function getAllKeys() {
         try {
             setKeys(await AsyncStorage.getAllKeys());
         } catch (e) {
-            // read key error
+            console.error(e);
         }
-        console.log("keys: " + keys);
-    };
+    }
 
     useEffect(() => {
-        getAllKeys().then((r) => console.log(r));
+        getAllKeys();
     }, []);
+    useEffect(() => {
+        console.log(keys);
+    }, [keys]);
 
-    async function handleClick(key) {
-        setSelected(key);
-        setValue(await AsyncStorage.getItem(key));
+    async function handleClick(key: string) {
+        setCurrentKey(key);
+        setCurrentValue(await AsyncStorage.getItem(key));
     }
 
     return (
-        <SafeAreaView>
-            <View style={{ flexDirection: "column" }}>
-                <Button title={"Force Refresh"} onPress={() => getAllKeys()} />
-                <ScrollView>
-                    {keys != null &&
-                        keys.map((key, index) => {
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => handleClick(key)}
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            textAlign: "left",
-                                            padding: 15,
-                                            color: colors.primary,
-                                            fontSize: 17,
-                                        }}
-                                    >
-                                        {key}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            padding: 15,
-                                            color: colors.notification,
-                                            fontSize: 17,
-                                        }}
-                                        onPress={async () => {
-                                            await AsyncStorage.removeItem(key);
-                                            getAllKeys();
-                                        }}
-                                    >
-                                        {key}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                </ScrollView>
-                {selected !== "" && <Text style={{ color: colors.text }}>Selected: {selected}</Text>}
-                <View
-                    style={{
-                        borderBottomColor: colors.border,
-                        borderBottomWidth: 1,
-                        marginTop: 10,
-                        marginBottom: 10,
-                    }}
-                />
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 10,
-                        borderRadius: 10,
-                        // margin: 10,
-                        // marginHorizontal: 30,
-                        borderBottomColor: colors.border,
-                        borderBottomWidth: 4,
-                    }}
-                >
-                    <Text style={{ color: colors.text }}>DATA</Text>
-                    <Button title={"Copy to Clipboard"} onPress={() => Clipboard.setString(value)} />
+        <SafeAreaView edges={{ bottom: "off", top: "off" }} style={{ width: "100%", height: "100%" }}>
+            <Animated.View style={{ height: sheetPosition }}>
+                <UIList onRefresh={getAllKeys}>
+                    {[
+                        UIList.Section({
+                            items: keys?.map((key, i) =>
+                                UIList.Item({
+                                    key,
+                                    onPress: () => handleClick(key),
+                                    render: () => (
+                                        <Text
+                                            style={{
+                                                textAlign: "left",
+                                                fontSize: 16,
+                                            }}
+                                        >
+                                            {key}
+                                        </Text>
+                                    ),
+                                })
+                            ),
+                        }),
+                    ]}
+                </UIList>
+            </Animated.View>
+
+            <BottomSheet
+                animatedPosition={sheetPosition}
+                backgroundStyle={{
+                    backgroundColor: colors.background,
+                    borderRadius: 24,
+                }}
+                style={{
+                    boxShadow: [
+                        {
+                            offsetX: 0,
+                            offsetY: 0,
+                            color: "rgba(0,0,0,0.125)",
+                            blurRadius: 8,
+                            spreadDistance: 1,
+                        },
+                    ],
+                    borderRadius: 24,
+                }}
+                snapPoints={["25%", "50%", "75%", "95%"]}
+                index={1}
+                enableDynamicSizing={false}
+            >
+                <View style={{ flex: 1, padding: 8 }}>
+                    <View style={{ padding: 8, borderBottomWidth: 1, borderColor: colors.border }}>
+                        <Text
+                            style={{ fontFamily: "monospace", fontSize: 16 }}
+                            onPress={() => {
+                                if (currentKey === null) return;
+                                Clipboard.setString(currentKey);
+                                Toast.show({
+                                    text1: "Copied to clipboard!",
+                                });
+                            }}
+                        >
+                            {currentKey}
+                        </Text>
+                    </View>
+                    <ScrollView style={{ padding: 8 }}>
+                        <Text
+                            style={{ fontFamily: "monospace", color: colors.text }}
+                            onPress={() => {
+                                if (currentValue === null) return;
+                                Clipboard.setString(currentValue);
+                                Toast.show({
+                                    text1: "Copied to clipboard!",
+                                });
+                            }}
+                        >
+                            {currentValue}
+                        </Text>
+                    </ScrollView>
                 </View>
-                <ScrollView style={{ paddingBottom: 30 }}>
-                    <Text style={{ color: colors.text }}>{value}</Text>
-                </ScrollView>
-            </View>
+            </BottomSheet>
         </SafeAreaView>
     );
 }

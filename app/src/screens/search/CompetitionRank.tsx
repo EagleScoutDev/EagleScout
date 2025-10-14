@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { type SimpleEvent, TBA } from "../../lib/tba";
+import { type SimpleEvent, TBA } from "../../lib/frc/tba.ts";
 import { useTheme } from "@react-navigation/native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import * as Bs from "../../ui/icons";

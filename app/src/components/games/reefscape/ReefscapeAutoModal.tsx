@@ -7,8 +7,9 @@ import { ReefscapeField } from "./ReefscapeField.tsx";
 import type { ReefscapeAutoPath } from "./ReefscapeAutoPath.ts";
 import { ReefscapeActionIcon, ReefscapeActions, ReefscapeActionType } from "./ReefscapeActions.tsx";
 import { ReefscapeLevels } from "./ReefscapeLevels.tsx";
-import type { Setter } from "../../../lib/react";
+import type { Setter } from "../../../lib/react/util/types";
 import type { Alliance, Orientation } from "../../../games/common";
+import { Form } from "../../../lib/forms";
 
 interface HistoryAction {
     action: string;
@@ -167,7 +168,7 @@ const ActionButton = ({
     );
 };
 
-interface ReefscapeAutoModal {
+interface ReefscapeAutoModalProps {
     isActive: boolean;
     setIsActive: Setter<boolean>;
     fieldOrientation: string;
@@ -178,7 +179,7 @@ interface ReefscapeAutoModal {
     setAutoPath: Setter<ReefscapeAutoPath>;
     arrayData: any[];
     setArrayData: Setter<any[]>;
-    form: any;
+    form: Form.Structure;
 }
 
 export function ReefscapeAutoModal({
@@ -191,7 +192,7 @@ export function ReefscapeAutoModal({
     arrayData,
     setArrayData,
     form,
-}: ReefscapeAutoModal) {
+}: ReefscapeAutoModalProps) {
     const { colors } = useTheme();
 
     const [history, setHistory] = useState<HistoryAction[]>([]);
@@ -201,8 +202,6 @@ export function ReefscapeAutoModal({
     // for each linked item, map the link name to the item within the arrayData and the index
     const linkItemMap = useMemo<LinkItemMap>(
         () =>
-            form &&
-            arrayData &&
             form.reduce((acc: any, item: any) => {
                 if (item.link_to) {
                     acc[item.link_to] = {
@@ -214,6 +213,7 @@ export function ReefscapeAutoModal({
             }, {}),
         [form, arrayData]
     );
+
     return (
         <Modal
             visible={isActive}

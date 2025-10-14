@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { CompetitionsDB } from "../database/Competitions.ts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../FormHelper.ts";
-import { Badge } from "../ui/Badge.tsx";
+import { UIBadge } from "../ui/UIBadge.tsx";
 import * as Bs from "../ui/icons";
 
 function CompetitionFlatList({
@@ -90,7 +90,7 @@ function CompetitionFlatList({
                                             {compName}
                                         </Text>
                                         {isCurrentlyRunning && (
-                                            <Badge
+                                            <UIBadge
                                                 color={colors.background}
                                                 backgroundColor={colors.primary}
                                                 text={"Active"}

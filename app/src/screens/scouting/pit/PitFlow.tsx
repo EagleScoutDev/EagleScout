@@ -1,31 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-    Alert,
-    FlatList,
-    Image,
-    Keyboard,
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableWithoutFeedback,
-    View,
-} from "react-native";
+import { Alert, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
-import { TeamInformation } from "../../../ui/form/TeamInformation";
-import { StandardButton } from "../../../ui/StandardButton";
+import { TeamInformation } from "../components/TeamInformation.tsx";
 import { CompetitionsDB } from "../../../database/Competitions";
 import { PitReportsDB, type PitReportWithoutId } from "../../../database/ScoutPitReports";
 import { FormHelper } from "../../../FormHelper";
-import { FormSection } from "../../../ui/form/FormSection";
-import { FormComponent } from "../../../ui/form/FormComponent";
 import * as Bs from "../../../ui/icons";
 import type { ScoutMenuScreenProps } from "../ScoutingFlow";
 import { launchCamera } from "react-native-image-picker";
+import { UIButton, UIButtonFrame, UIButtonSize } from "../../../ui/UIButton.tsx";
+import { Color } from "../../../lib/color.ts";
+import { ReportFlowTab } from "../components/ReportFlowTab.tsx";
+import { ReportFlowFormSection } from "../components/ReportFlowFormSection.tsx";
+import { Form } from "../../../lib/forms";
+import splitSections = Form.splitSections;
 
 const Tab = createMaterialTopTabNavigator();
 export type PitFlowScreenProps<K extends keyof PitFlowParamList> = MaterialTopTabScreenProps<PitFlowParamList, K>;
@@ -35,18 +26,16 @@ export type PitFlowParamList = {
     [k: `Form/${string}`]: undefined;
 };
 
-
 export interface PitFlowProps extends ScoutMenuScreenProps<"Pit"> {}
 export function PitFlow({ navigation }: PitFlowProps) {
     const theme = useTheme();
     const colors = theme.colors;
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const [images, setImages] = useState<string[]>(["plus"]);
-    const [cameraOpen, setCameraOpen] = useState(false);
     const [team, setTeam] = useState("");
     const [formData, setFormData] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formStructure, setFormStructure] = useState<any[]>([]);
+    const [formSections, setFormSections] = useState<any[]>([]);
     const [currentCompetition, setCurrentCompetition] = useState<any>();
 
     const [isOffline, setIsOffline] = useState(false);
@@ -83,37 +72,10 @@ export function PitFlow({ navigation }: PitFlowProps) {
         [defaultValues]
     );
 
-    const transformStructure = (structure: any[]) => {
-        const newStructure: any[] = [];
-        let currentSection: {
-            title: string;
-            questions: any[];
-        } | null = null;
-        let currentIndice = 0;
-        for (const item of structure) {
-            if (item.type === "heading") {
-                if (currentSection) {
-                    newStructure.push(currentSection);
-                }
-                currentSection = {
-                    title: item.title,
-                    questions: [],
-                };
-            } else {
-                if (currentSection) {
-                    item.indice = currentIndice;
-                    currentSection.questions.push(item);
-                    currentIndice++;
-                }
-            }
-        }
-        newStructure.push(currentSection);
-        return newStructure;
-    };
     const initializeStructureFromCompetition = useCallback(
         (competition: any) => {
-            const transformedStructure = transformStructure(competition.pitScoutFormStructure);
-            setFormStructure(transformedStructure);
+            const transformedStructure = splitSections(competition.pitScoutFormStructure);
+            setFormSections(transformedStructure);
             initializeValues(transformedStructure);
             setCurrentCompetition(competition);
         },
@@ -121,30 +83,30 @@ export function PitFlow({ navigation }: PitFlowProps) {
     );
     useEffect(() => {
         CompetitionsDB.getCurrentCompetition()
-        .then(async (competition) => {
-            if (!competition) {
-                setNoActiveCompetition(true);
-                return;
-            }
-            setNoActiveCompetition(false);
-            await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(competition));
-            initializeStructureFromCompetition(competition);
-        })
-        .catch(async (e) => {
-            if (e.message && e.message.includes("Network request failed")) {
-                setIsOffline(true);
-            }
-            const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
-            if (storedComp != null) {
-                const competition = JSON.parse(storedComp);
+            .then(async (competition) => {
+                if (!competition) {
+                    setNoActiveCompetition(true);
+                    return;
+                }
+                setNoActiveCompetition(false);
+                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(competition));
                 initializeStructureFromCompetition(competition);
-            } else {
-                setNoActiveCompetition(true);
-            }
-        });
+            })
+            .catch(async (e) => {
+                if (e.message && e.message.includes("Network request failed")) {
+                    setIsOffline(true);
+                }
+                const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+                if (storedComp != null) {
+                    const competition = JSON.parse(storedComp);
+                    initializeStructureFromCompetition(competition);
+                } else {
+                    setNoActiveCompetition(true);
+                }
+            });
     }, [initializeStructureFromCompetition]);
     const checkRequiredFields = () => {
-        for (const section of formStructure) {
+        for (const section of formSections) {
             for (const question of section.questions) {
                 if (
                     question.required &&
@@ -199,26 +161,26 @@ export function PitFlow({ navigation }: PitFlowProps) {
                 data,
                 images.filter((item) => item !== "plus")
             )
-            .then(() => {
-                setIsSubmitting(false);
-                setTeam("");
-                initializeValues(formStructure);
-                setImages(["plus"]);
-                Toast.show({
-                    type: "success",
-                    text1: "Submitted successfully!",
-                    visibilityTime: 3000,
+                .then(() => {
+                    setIsSubmitting(false);
+                    setTeam("");
+                    initializeValues(formSections);
+                    setImages(["plus"]);
+                    Toast.show({
+                        type: "success",
+                        text1: "Submitted successfully!",
+                        visibilityTime: 3000,
+                    });
+                })
+                .catch((err) => {
+                    setIsSubmitting(false);
+                    console.log(err);
+                    Toast.show({
+                        type: "error",
+                        text1: "Error submitting form",
+                        visibilityTime: 3000,
+                    });
                 });
-            })
-            .catch((err) => {
-                setIsSubmitting(false);
-                console.log(err);
-                Toast.show({
-                    type: "error",
-                    text1: "Error submitting form",
-                    visibilityTime: 3000,
-                });
-            });
         }
     };
     if (noActiveCompetition) {
@@ -233,7 +195,6 @@ export function PitFlow({ navigation }: PitFlowProps) {
     return (
         <>
             <Tab.Navigator
-                // change the position to be on the bottom
                 screenOptions={{
                     tabBarStyle: {
                         backgroundColor: colors.background,
@@ -241,136 +202,71 @@ export function PitFlow({ navigation }: PitFlowProps) {
                     },
                     tabBarActiveTintColor: colors.primary,
                     tabBarInactiveTintColor: colors.text,
-                    // make the distance between each tab smaller
-                    tabBarGap: 0,
+
                     tabBarLabelStyle: {
-                        fontSize: 10,
+                        fontSize: 12,
+                        fontWeight: "bold",
                     },
                 }}
             >
                 <Tab.Screen
                     name={"Match"}
                     options={{
-                        tabBarLabelStyle: {
-                            fontSize: 12,
-                            fontWeight: "bold",
-                        },
-
-                        tabBarStyle: {
-                            backgroundColor: colors.background,
-                        },
+                        title: "Match",
                     }}
                     children={() => (
-                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        width: "100%",
-                                    }}
-                                >
-                                    {currentCompetition != null && (
-                                        <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontWeight: "bold",
-                                            fontSize: 20,
-                                            textAlign: "center",
-                                            margin: "5%",
-                                        }}
-                                        >
-                                            {currentCompetition.name} - Pit Scouting
-                                        </Text>
-                                    )}
-                                    <TeamInformation team={team} setTeam={setTeam} />
-                                </View>
-                                <View style={{ width: "100%", marginBottom: "5%" }}>
-                                    <StandardButton
-                                        text={"Next"}
-                                        onPress={() => {
-                                            navigation.navigate(formStructure[0].title);
-                                        }}
-                                        color={colors.primary}
-                                    />
-                                </View>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        <ReportFlowTab
+                            title={currentCompetition ? `${currentCompetition.name} - Pit Scouting` : "Pit Scouting"}
+                        >
+                            <TeamInformation team={team} setTeam={setTeam} />
+                            <UIButton
+                                style={{ width: "100%", marginTop: "auto" }}
+                                color={Color.parse(colors.primary)}
+                                frame={UIButtonFrame.fill}
+                                size={UIButtonSize.xl}
+                                text={"Next"}
+                                onPress={() => navigation.navigate("Pit", { screen: `Form/${formSections[0].title}` })}
+                            />
+                        </ReportFlowTab>
                     )}
                 />
-                {formStructure &&
-                    formStructure.map(({ title: key, questions: value }, index) => {
-                        return (
-                            <Tab.Screen
-                            key={key}
-                            name={`Form/${key}`}
-                            options={{
-                                title: key,
-                                // change font color in header
-                                tabBarLabelStyle: {
-                                    fontSize: 12,
-                                    fontWeight: "bold",
-                                },
-
-                                tabBarStyle: {
-                                    backgroundColor: colors.background,
-                                },
-                            }}
-                            children={() => (
-                                <ScrollView keyboardShouldPersistTaps="handled">
-                                        <View
-                                            style={{
-                                                marginHorizontal: "5%",
-                                            }}
-                                        >
-                                            <FormSection
-                                                title={""}
-                                                key={key.length}
-                                                onModalPress={undefined}
-                                            >
-                                                {value.map((item) => {
-                                                    return (
-                                                        <View
-                                                        key={item.question}
-                                                        style={{
-                                                            marginVertical: "5%",
-                                                        }}
-                                                        >
-                                                            <FormComponent
-                                                                key={item.question}
-                                                                item={item}
-                                                                styles={styles}
-                                                                arrayData={formData}
-                                                                setArrayData={setFormData}
-                                                            />
-                                                        </View>
-                                                    );
-                                                })}
-                                            </FormSection>
-                                        </View>
-                                        <View style={{ width: "100%", marginBottom: "5%" }}>
-                                            <StandardButton
-                                                text={"Next"}
-                                                width={"85%"}
-                                                onPress={() => {
-                                                    if (index === formStructure.length - 1) {
-                                                        navigation.navigate("Pit", { screen: "Images" });
-                                                        return;
-                                                    }
-                                                    navigation.navigate("Pit", { screen: `Form/${formStructure[index + 1].title}` });
-                                                }}
-                                                color={colors.primary}
-                                            />
-                                        </View>
-                                    </ScrollView>
-                                )}
-                                />
-                            );
-                        })}
+                {formSections?.map((section, i) => (
+                    <Tab.Screen
+                        key={section.title}
+                        name={`Form/${section.title}`}
+                        options={{
+                            title: section.title,
+                        }}
+                        children={() => (
+                            <ReportFlowFormSection
+                                section={section}
+                                data={formData.slice(section.start + 1, section.end)}
+                                setData={(data) =>
+                                    setFormData(
+                                        formData.splice(section.start + 1, section.end - section.start + 1, data)
+                                    )
+                                }
+                                nextButton={
+                                    <UIButton
+                                        style={{ width: "100%" }}
+                                        color={Color.parse(colors.primary)}
+                                        frame={UIButtonFrame.fill}
+                                        size={UIButtonSize.xl}
+                                        text={"Next"}
+                                        onPress={() => {
+                                            navigation.navigate("Pit", {
+                                                screen:
+                                                    i === formSections.length - 1
+                                                        ? "Images"
+                                                        : `Form/${formSections[i + 1].title}`,
+                                            });
+                                        }}
+                                    />
+                                }
+                            />
+                        )}
+                    />
+                ))}
                 <Tab.Screen
                     name={"Images"}
                     options={{
@@ -384,66 +280,63 @@ export function PitFlow({ navigation }: PitFlowProps) {
                         },
                     }}
                     children={() => (
-                        <ScrollView keyboardShouldPersistTaps="handled">
-                            <View
-                                style={{
-                                    marginHorizontal: "5%",
-                                }}
-                            >
-                                <FormSection title={"Attach Images"}>
-                                    <FlatList
-                                        style={styles.imageList}
-                                        ItemSeparatorComponent={ListSeparator}
-                                        data={images}
-                                        renderItem={({ item }) => {
-                                            if (item === "plus") {
-                                                return (
-                                                    <Pressable onPress={() => {
-                                                        launchCamera({
+                        <ReportFlowTab title={"Images"}>
+                            <FlatList
+                                keyboardShouldPersistTaps="handled"
+                                style={styles.imageList}
+                                ItemSeparatorComponent={ListSeparator}
+                                data={images}
+                                horizontal={true}
+                                keyExtractor={(item) => item}
+                                renderItem={({ item }) => {
+                                    if (item === "plus") {
+                                        return (
+                                            <Pressable
+                                                onPress={() => {
+                                                    launchCamera(
+                                                        {
                                                             mediaType: "photo",
                                                             quality: 1,
-                                                            saveToPhotos: false
-                                                        }, console.log).then((x) => {
-                                                            console.log(x)
-                                                        })
-                                                    }}>
-                                                        <View style={styles.plusButton}>
-                                                            <Text style={styles.plusText}>+</Text>
-                                                        </View>
-                                                    </Pressable>
-                                                );
-                                            }
-                                            return (
-                                                <View>
-                                                    <Pressable
-                                                        style={styles.deleteContainer}
-                                                        onPress={() => {
-                                                            setImages(images.filter((i) => i !== item));
-                                                        }}
-                                                    >
-                                                        <View style={styles.deleteButton}>
-                                                            <Bs.Trash size="20" fill={colors.text} />
-                                                        </View>
-                                                    </Pressable>
-                                                    <Image source={{ uri: item }} style={styles.image} />
+                                                            saveToPhotos: false,
+                                                        },
+                                                        console.log
+                                                    ).then((x) => {
+                                                        console.log(x);
+                                                    });
+                                                }}
+                                            >
+                                                <View style={styles.plusButton}>
+                                                    <Text style={styles.plusText}>+</Text>
                                                 </View>
-                                            );
-                                        }}
-                                        keyExtractor={(item) => item}
-                                        horizontal={true}
-                                    />
-                                </FormSection>
-                                <View style={{ width: "100%" }}>
-                                    <StandardButton
-                                        text={"Submit"}
-                                        width={"85%"}
-                                        color={colors.primary}
-                                        isLoading={isSubmitting}
-                                        onPress={submitForm}
-                                    />
-                                </View>
-                            </View>
-                        </ScrollView>
+                                            </Pressable>
+                                        );
+                                    }
+                                    return (
+                                        <View>
+                                            <Pressable
+                                                style={styles.deleteContainer}
+                                                onPress={() => {
+                                                    setImages(images.filter((i) => i !== item));
+                                                }}
+                                            >
+                                                <View style={styles.deleteButton}>
+                                                    <Bs.Trash size="20" fill={colors.text} />
+                                                </View>
+                                            </Pressable>
+                                            <Image source={{ uri: item }} style={styles.image} />
+                                        </View>
+                                    );
+                                }}
+                            />
+                            <UIButton
+                                style={{ width: "100%", marginTop: "auto" }}
+                                color={Color.parse(colors.primary)}
+                                frame={UIButtonFrame.fill}
+                                size={UIButtonSize.xl}
+                                loading={isSubmitting}
+                                onPress={submitForm}
+                            />
+                        </ReportFlowTab>
                     )}
                 />
             </Tab.Navigator>
