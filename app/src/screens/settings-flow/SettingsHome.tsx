@@ -23,7 +23,7 @@ import {getLighterColor} from '../../lib/ColorReadability';
 import {ThemeContext} from '../../lib/contexts/ThemeContext';
 import FormHelper from '../../FormHelper';
 
-const VERSION = '7.7.1';
+const VERSION = '7.7.2';
 
 interface SettingsHomeProps {
   onSignOut: () => void;

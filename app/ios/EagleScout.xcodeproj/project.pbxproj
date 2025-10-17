@@ -40,7 +40,7 @@
 		23A9E50C23D6A6B300F1B472 /* libPods-EagleScout.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EagleScout.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		386F2CBB4D77587C515C0D15 /* Pods-EagleScout.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout.release.xcconfig"; path = "Target Support Files/Pods-EagleScout/Pods-EagleScout.release.xcconfig"; sourceTree = "<group>"; };
 		4D05AEE004E50585260C80CF /* libPods-EagleScout-EagleScoutTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EagleScout-EagleScoutTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		80FEEBFBC609D5F4CB4DA3B8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = EagleScout/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		80FEEBFBC609D5F4CB4DA3B8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = EagleScout/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EagleScout/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8D553373413C19FDA75683D8 /* Pods-EagleScout-EagleScoutTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout-EagleScoutTests.release.xcconfig"; path = "Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests.release.xcconfig"; sourceTree = "<group>"; };
 		A63E29EEEFA3EA4653BB2D7A /* Pods-EagleScout-EagleScoutTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EagleScout-EagleScoutTests.debug.xcconfig"; path = "Target Support Files/Pods-EagleScout-EagleScoutTests/Pods-EagleScout-EagleScoutTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -498,7 +498,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.7;
+				MARKETING_VERSION = 7.7.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -530,7 +530,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.7;
+				MARKETING_VERSION = 7.7.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -616,10 +616,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
@@ -689,10 +686,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

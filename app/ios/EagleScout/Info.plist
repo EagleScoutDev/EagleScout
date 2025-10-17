@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>7.7</string>
+	<string>7.7.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -58,6 +58,10 @@
 	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>StallionAppToken</key>
+	<string>spb_Zrev_bDGLJl4yy4Qchq_Wy7c29d2ldgsPkMT5LM-HB</string>
+	<key>StallionProjectId</key>
+	<string>68f19de013790184d72cb475</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
