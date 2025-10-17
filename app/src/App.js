@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
+import {withStallion} from 'react-native-stallion';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
