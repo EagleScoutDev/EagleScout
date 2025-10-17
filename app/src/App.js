@@ -13,7 +13,6 @@ import {SafeAreaView, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
-import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/home-flow/Home';
 import DataMain from './screens/data-flow/DataMain';
@@ -462,4 +461,4 @@ const RootNavigator = () => {
   );
 };
 
-export default codePush(RootNavigator);
+export default RootNavigator;
