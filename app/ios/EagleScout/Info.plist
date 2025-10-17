@@ -39,8 +39,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>CodePushDeploymentKey</key>
-	<string>IDALmXJdE-qbh_Hi5C4BpegK5iYN8yyv55bay</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -79,5 +77,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>StallionProjectId</key>
+    <string>68f19de013790184d72cb475</string>
+    <key>StallionAppToken</key>
+    <string>spb_Zrev_bDGLJl4yy4Qchq_Wy7c29d2ldgsPkMT5LM-HB</string>
 </dict>
 </plist>

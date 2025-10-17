@@ -3,8 +3,8 @@ import {useContext, useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
+import {withStallion} from 'react-native-stallion';
 import {useNavigation, useTheme} from '@react-navigation/native';
-
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -13,7 +13,6 @@ import {SafeAreaView, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormHelper from './FormHelper';
 import {supabase} from './lib/supabase';
-import codePush from 'react-native-code-push';
 import Svg, {Path} from 'react-native-svg';
 import Home from './screens/home-flow/Home';
 import DataMain from './screens/data-flow/DataMain';
@@ -462,4 +461,4 @@ const RootNavigator = () => {
   );
 };
 
-export default codePush(RootNavigator);
+export default withStallion(RootNavigator);
