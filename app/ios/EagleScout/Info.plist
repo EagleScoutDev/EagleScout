@@ -77,5 +77,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>StallionProjectId</key>
+    <string>68f19de013790184d72cb475</string>
+    <key>StallionAppToken</key>
+    <string>spb_Zrev_bDGLJl4yy4Qchq_Wy7c29d2ldgsPkMT5LM-HB</string>
 </dict>
 </plist>

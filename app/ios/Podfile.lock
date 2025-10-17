@@ -383,6 +383,9 @@ PODS:
     - React-Core
   - react-native-slider (4.4.3):
     - React-Core
+  - react-native-stallion (2.2.0):
+    - React-Core
+    - ZIPFoundation
   - React-NativeModulesApple (0.72.17):
     - hermes-engine
     - React-callinvoker
@@ -539,6 +542,7 @@ PODS:
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
+  - ZIPFoundation (0.9.20)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -590,6 +594,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
+  - react-native-stallion (from `../node_modules/react-native-stallion`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -638,6 +643,7 @@ SPEC REPOS:
     - OpenSSL-Universal
     - SocketRocket
     - YogaKit
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   boost:
@@ -690,6 +696,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
+  react-native-stallion:
+    :path: "../node_modules/react-native-stallion"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -791,6 +799,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: 56aab0804cd2801623e67ae288ed8b71a482f97e
   react-native-safe-area-context: 9fdf214647353ab717139d164c9e1f163045eb1c
   react-native-slider: e472a35a07451af85d2aad887d550dd3213c6190
+  react-native-stallion: e3659f7c89149b5851c657ec2e7667da4bbc3d8d
   React-NativeModulesApple: a3b3019ffee56cf78bbf09c48e056072f3bb4ea4
   React-perflogger: 785b0063af5178298a61b54bb46aae9a19c7bbb5
   React-RCTActionSheet: 84f37b34bd77249263ace75471d6664393c29972
@@ -824,6 +833,7 @@ SPEC CHECKSUMS:
   VisionCamera: 275381c1f8c5be83c81f7fe16b3483270d0eff5a
   Yoga: ef534101bb891fb09bae657417f34d399c1efe38
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
+  ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
 PODFILE CHECKSUM: 5cbf7577c4133fbeb0fc325857b7ce1663a0757b
 

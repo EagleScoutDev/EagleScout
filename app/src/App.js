@@ -4,7 +4,6 @@ import 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 import {useNavigation, useTheme} from '@react-navigation/native';
-
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -461,4 +460,4 @@ const RootNavigator = () => {
   );
 };
 
-export default RootNavigator;
+export default withStallion(RootNavigator);
