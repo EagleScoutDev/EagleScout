@@ -20,7 +20,10 @@ export interface EditCompetitionModalProps {
 }
 export interface EditCompetitionModal extends UISheetModal<CompetitionPatch> {}
 export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitionModalProps) {
-    "use memo";
+    "use no memo";
+    // FIXME: Enable memoization when react compiler stops
+    //        complaining about passing refs to UIList.Line
+
     const { colors } = useTheme();
 
     const [id, setId] = useState<number>(0);

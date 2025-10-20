@@ -8,7 +8,10 @@ import { ExportCompetitionSheet } from "./ExportCompetitionSheet.tsx";
 import { UIList } from "../../../ui/UIList.tsx";
 
 export function ExportToCSV() {
-    "use memo";
+    "use no memo";
+    // FIXME: Enable memoization when react compiler stops
+    //        complaining about passing refs to UIList.Line
+
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
     const [loading, setLoading] = useState(false);
@@ -44,13 +47,11 @@ export function ExportToCSV() {
                 <UIList loading={loading} onRefresh={refreshCompetitions}>
                     {[
                         UIList.Section({
-                            items: competitionList.map((comp, index) =>
+                            items: competitionList.map((comp) =>
                                 UIList.Line({
                                     key: comp.id.toString(),
                                     label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
-                                    onPress: () => {
-                                        modalRef.current?.present({ competition: comp });
-                                    },
+                                    onPress: () => modalRef.current?.present({ competition: comp }),
                                 })
                             ),
                         }),

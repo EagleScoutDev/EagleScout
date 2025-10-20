@@ -11,7 +11,10 @@ import { supabase } from "../../../lib/supabase.ts";
 import { AddCompetitionModal } from "./AddCompetitionModal.tsx";
 
 export function ManageCompetitions() {
-    "use memo";
+    "use no memo";
+    // FIXME: Enable memoization when react compiler stops
+    //        complaining about passing refs to UIList.Line
+
     const { colors } = useTheme();
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);

@@ -163,7 +163,7 @@ export namespace UIList {
     }
 }
 
-function RenderLine({ icon, label, labelColor, body, caret, disabled }: UIList.LineProps) {
+function RenderLine({ icon, label, labelColor, body, caret }: UIList.LineProps) {
     "use memo";
     const { colors } = useTheme();
 

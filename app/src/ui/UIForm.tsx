@@ -81,8 +81,13 @@ export namespace UIForm {
         value?: Date | undefined;
         onChange?: ((value: Date) => void) | undefined;
     }
-    export function DateTime({ key, label, date = true, time = true, value = new Date(), onChange }: DateTimeProps) {
+    export function DateTime({ key, label, date = true, time = true, value, onChange }: DateTimeProps) {
         "use memo";
+
+        // FIXME: fold into value prop once React Compiler implements
+        //        "Support destructuring of context variables"
+        let v = value ?? new Date();
+
         if (Platform.OS === "ios") {
             return Item({
                 key,
@@ -90,8 +95,8 @@ export namespace UIForm {
                 body: () => (
                     <RNDateTimePicker
                         mode={date && time ? "datetime" : date ? "date" : time ? "time" : "datetime"}
-                        value={value}
-                        onChange={(_, value) => onChange && onChange(value ?? new Date())}
+                        value={v}
+                        onChange={(_, value) => onChange && onChange(v)}
                     />
                 ),
             });
@@ -131,7 +136,9 @@ export namespace UIForm {
         value,
         onChange,
     }: ListPickerProps<K>) {
-        "use memo";
+        "use no memo";
+        // FIXME: Try reenabling memoization
+
         return Item({
             key,
             label,
