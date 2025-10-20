@@ -16,6 +16,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HeaderButtonsProvider } from "react-navigation-header-buttons/HeaderButtonsProvider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { withStallion } from "react-native-stallion";
 
 declare global {
     namespace ReactNavigation {
@@ -31,7 +32,7 @@ export type RootStackParamList = {
     Onboarding: NavigatorScreenParams<OnboardingParamList>;
 };
 
-export default function App() {
+function App() {
     const deepLink = useDeepLinking();
 
     const [account, setAccount] = useState<Account | null>(null);
@@ -101,3 +102,5 @@ export default function App() {
         </ThemeContext.Provider>
     );
 }
+
+export default withStallion(App)

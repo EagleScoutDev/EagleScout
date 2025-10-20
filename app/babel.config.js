@@ -1,4 +1,4 @@
-const prod = process.env.NODE_ENV !== "development";
+const prod = process.env.APP_ENV !== "development";
 
 module.exports = {
     presets: ["module:@react-native/babel-preset"],
