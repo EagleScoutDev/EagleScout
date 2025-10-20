@@ -1,4 +1,15 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
-  "typeRoots": ["./src/types"]
+  "extends": "@react-native/typescript-config",
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "**/Pods"],
+
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "typeRoots": ["./src/types"],
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  }
 }

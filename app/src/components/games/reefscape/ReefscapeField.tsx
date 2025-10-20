@@ -1,9 +1,10 @@
-import React, {useMemo} from 'react';
+import {useMemo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import {ReefscapeAutoPath} from './ReefscapeAutoPath';
+import type { ReefscapeAutoPath } from './ReefscapeAutoPath.ts';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Animated from 'react-native-reanimated';
+import type { Setter } from "../../../lib/react/util/types";
 
 // import {AnimatedView} from 'react-native-reanimated/lib/typescript/component/View';
 
@@ -19,8 +20,8 @@ export const ReefscapeField = ({
 }: {
   fieldOrientation: string;
   selectedAlliance: string;
-  setLevelChooserActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setChosenReefPosition: React.Dispatch<React.SetStateAction<number>>;
+  setLevelChooserActive: Setter<boolean>;
+  setChosenReefPosition: Setter<number>;
   onPieceIntake: (piece: number) => void;
   onPieceMissed: (piece: number) => void;
   onPieceReset: (piece: number) => void;
