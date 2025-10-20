@@ -1,0 +1,33 @@
+name: Build iOS Debug
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          cd ios
+          pod install
+        working-directory: app
+
+      - name: Build iOS app
+        run: npx react-native build-ios --mode=Debug
+        working-directory: app
