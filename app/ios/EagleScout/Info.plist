@@ -58,6 +58,10 @@
 	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs access to your photos.</string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>StallionAppToken</key>
 	<string>spb_Zrev_bDGLJl4yy4Qchq_Wy7c29d2ldgsPkMT5LM-HB</string>
 	<key>StallionProjectId</key>
@@ -66,10 +70,6 @@
 	<array>
 		<string>fetch</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to your photos.</string>
-	<key>RCTNewArchEnabled</key>
-	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
