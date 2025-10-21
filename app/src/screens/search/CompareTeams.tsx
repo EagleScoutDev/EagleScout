@@ -1,14 +1,13 @@
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
 import { isTablet } from "../../lib/deviceType";
 import { QuestionSummary } from "./QuestionSummary";
 import { UIModal } from "../../ui/UIModal.tsx";
-import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { CompetitionRank } from "./CompetitionRank";
-import { getLighterColor, parseColor } from "../../lib/color";
+import { Color } from "../../lib/color.ts";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import type { SimpleTeam } from "../../lib/frc/tba.ts";
@@ -105,7 +104,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
             fontSize: 30,
         },
         section_description: {
-            color: getLighterColor(parseColor(colors.primary)),
+            color: Color.parse(colors.primary).fg.hex,
             fontWeight: "bold",
         },
         question: {

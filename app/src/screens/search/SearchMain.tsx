@@ -10,7 +10,7 @@ import { ScoutViewer } from "../../components/modals/ScoutViewer";
 import { CompetitionsDB } from "../../database/Competitions";
 import { NotesDB, type NoteWithMatch } from "../../database/ScoutNotes";
 import { NoteList } from "../../components/NoteList.tsx";
-import { getLighterColor, parseColor } from "../../lib/color";
+import { Color } from "../../lib/color.ts";
 import { isTablet } from "../../lib/deviceType";
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -237,7 +237,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                         setCurrentMatchNumber(item);
                                     }}
                                 >
-                                    <Bs.StickyFill size="16" fill={getLighterColor(parseColor(colors.primary))} />
+                                    <Bs.StickyFill size="16" fill={Color.parse(colors.primary).fg.hex} />
                                 </TouchableOpacity>
                             </View>
                             <View

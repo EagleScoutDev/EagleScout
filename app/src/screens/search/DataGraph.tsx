@@ -3,7 +3,7 @@ import { UIModal } from '../../ui/UIModal.tsx';
 import { LineChart } from 'react-native-chart-kit';
 import { useEffect, useState } from "react";
 import { useTheme } from '@react-navigation/native';
-import type { Setter } from '../../lib/react/util/types';
+import type { Setter } from '../../lib/util/react/types';
 
 export interface DataGraphProps {
     modalActive: boolean, setModalActive: Setter<boolean>

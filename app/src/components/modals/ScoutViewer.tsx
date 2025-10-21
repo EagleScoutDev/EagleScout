@@ -10,8 +10,8 @@ import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } f
 import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
 import { isTablet } from "../../lib/deviceType.ts";
 import * as Bs from "../../ui/icons";
-import { type Setter } from "../../lib/react/util/types";
-import { exMemo } from "../../lib/react/util/memo.ts";
+import { type Setter } from "../../lib/util/react/types";
+import { exMemo } from "../../lib/util/react/memo.ts";
 
 /**
  * This component displays the scout data in a modal.

@@ -3,7 +3,7 @@ import { FlatList, Modal, Pressable, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { CompetitionsDB } from "../../database/Competitions";
-import type { Setter } from "../../lib/react/util/types";
+import type { Setter } from "../../lib/util/react/types";
 
 interface QuestionFormulaCreatorProps {
     visible: boolean;

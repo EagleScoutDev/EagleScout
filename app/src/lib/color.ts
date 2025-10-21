@@ -1,23 +1,21 @@
 import { padLeft } from "./util/padLeft.ts";
 
-export type RGB = [r: number, g: number, b: number];
-
-const colorMemo = new Map<string, Color>()
+const cache = new Map<string, Color>();
 export class Color {
-    public static white: Color = new Color(255, 255, 255, 255);
-    public static black: Color = new Color(0, 0, 0, 1);
-    public static transparent: Color = new Color(0, 0, 0, 0);
+    public static white: Color = Color.rgba(255, 255, 255, 255);
+    public static black: Color = Color.rgba(0, 0, 0, 1);
+    public static transparent: Color = Color.rgba(0, 0, 0, 0);
 
-    public luminance!: number;
-    public fg!: Color;
+    public readonly luminance!: number;
+    public readonly fg!: Color;
 
-    public hex!: string;
-    public rgba: string;
+    public readonly hex!: string;
+    public readonly rgba: string;
 
-    public constructor(public r: number, public g: number, public b: number, public a: number) {
-        this.rgba = `rgba(${r},${g},${b},${a})`
-        if(colorMemo.has(this.rgba)) return colorMemo.get(this.rgba)!
-        else colorMemo.set(this.rgba, this)
+    private constructor(public r: number, public g: number, public b: number, public a: number) {
+        this.rgba = `rgba(${r},${g},${b},${a})`;
+        if (cache.has(this.rgba)) return cache.get(this.rgba)!;
+        else cache.set(this.rgba, this);
 
         this.hex =
             "#" +
@@ -30,46 +28,35 @@ export class Color {
 
         this.fg = 255 - this.luminance < 110 ? Color.black : Color.white;
     }
+    public static rgb(r: number, g: number, b: number) {
+        return new Color(r, g, b, 255);
+    }
+    public static rgba(r: number, g: number, b: number, a: number) {
+        return new Color(r, g, b, a);
+    }
     public static parse(str: string) {
-        return RGB(...parseColor(str))
+        if (str.startsWith("rgb(")) {
+            return Color.rgb(...(<[number, number, number]>str.match(/\d+/g)!.slice(0, 3).map(Number)));
+        } else if (str.startsWith("#")) {
+            return Color.rgb(
+                ...(<[number, number, number]>str
+                    .match(/[a-z0-9]{2}/gi)!
+                    .slice(0, 3)
+                    .map((x) => parseInt(x, 16)))
+            );
+        } else throw new Error("unrecognized rgb color format");
     }
     public map(f: (x: number) => number): Color {
-        return new Color(f(this.r), f(this.g), f(this.b), f(this.a))
+        return new Color(f(this.r), f(this.g), f(this.b), f(this.a));
     }
     public set(r?: number | null, g?: number | null, b?: number | null, a?: number | null) {
-        return new Color(r ?? this.r, g ?? this.g, b ?? this.b, a ?? this.a)
+        return new Color(r ?? this.r, g ?? this.g, b ?? this.b, a ?? this.a);
     }
 
-    public [Symbol.toPrimitive]() { return this.rgba }
-    public toString(): string { return this.rgba }
+    public [Symbol.toPrimitive]() {
+        return this.rgba;
+    }
+    public toString(): string {
+        return this.rgba;
+    }
 }
-export const RGB = (r: number, g: number, b: number) => new Color(r, g, b, 255)
-
-export function parseColor(raw: string): RGB {
-    if (raw.startsWith("rgb(")) {
-        return raw.match(/\d+/g)!.slice(0, 3).map(Number) as RGB;
-    } else if (raw.startsWith("#")) {
-        return raw
-            .match(/[a-z0-9]{2}/gi)!
-            .slice(0, 3)
-            .map((x) => parseInt(x, 16)) as RGB;
-    } else throw new Error("unrecognized rgb color format");
-}
-export function stringifyRGB(color: RGB): string {
-    return `rgb(${color
-        .slice(0, 3)
-        .map((x) => x.toString())
-        .join(", ")})`;
-}
-
-export function getLuminance([r, g, b]: RGB) {
-    return r * 0.299 + g * 0.587 + b * 0.114;
-}
-
-export const getIdealTextColor = (bg: RGB, thresh = 110) => {
-    return 255 - getLuminance(bg) < thresh ? "#000000" : "#ffffff";
-};
-
-export const getLighterColor = (color: RGB) => {
-    return stringifyRGB(color.map((x) => x + 50) as RGB);
-};

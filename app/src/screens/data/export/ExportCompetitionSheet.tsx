@@ -7,7 +7,7 @@ import { Color } from "../../../lib/color.ts";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export.ts";
 import { Alert } from "react-native";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { AsyncAlert } from "../../../lib/react/util/AsyncAlert.ts";
+import { AsyncAlert } from "../../../lib/util/react/AsyncAlert.ts";
 
 export interface ExportCompetitionSheetProps {
     data?: { competition: CompetitionReturnData };

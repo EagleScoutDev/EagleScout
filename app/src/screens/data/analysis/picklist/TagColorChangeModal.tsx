@@ -3,8 +3,8 @@ import { Modal, Pressable, Text, View } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import { useTheme } from "@react-navigation/native";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
-import { getIdealTextColor, parseColor } from "../../../../lib/color";
-import type { Setter } from "../../../../lib/react/util/types";
+import { Color } from "../../../../lib/color.ts";
+import type { Setter } from "../../../../lib/util/react/types";
 
 export interface TagColorChangeModalProps {
     visible: boolean;
@@ -65,7 +65,7 @@ export function TagColorChangeModal({ visible, setVisible, tag }: TagColorChange
                     >
                         <Text
                             style={{
-                                color: getIdealTextColor(parseColor(color ?? "")),
+                                color: Color.parse(color ?? "").fg.hex,
                                 fontWeight: "bold",
                                 fontSize: 20,
                             }}

@@ -29,10 +29,10 @@ import {
 } from "../../../../database/Picklists";
 import { ProfilesDB } from "../../../../database/Profiles";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
-import { getIdealTextColor, parseColor } from "../../../../lib/color";
+import { Color } from "../../../../lib/color.ts";
 import { TBA } from "../../../../lib/frc/tba.ts";
 import * as Bs from "../../../../ui/icons";
-import type { Setter } from "../../../../lib/react/util/types";
+import type { Setter } from "../../../../lib/util/react/types";
 import type { DataMenuScreenProps } from "../../DataMain.tsx";
 
 export interface PicklistCreatorParams {
@@ -581,7 +581,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                             <Text
                                 style={{
                                     color: filteredTags.has(tag)
-                                        ? getIdealTextColor(parseColor(getTagFromTagId(tag)?.color ?? ""))
+                                        ? Color.parse(getTagFromTagId(tag)?.color ?? "").fg.hex
                                         : colors.text,
                                     fontWeight: filteredTags.has(tag) ? "bold" : "normal",
                                 }}

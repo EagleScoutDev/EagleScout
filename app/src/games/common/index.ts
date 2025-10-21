@@ -11,7 +11,7 @@ export namespace Alliance {
 
     // TODO: put this with the rest of the theme stuff
     export function getColor(x: Alliance): Color {
-        return x === Alliance.red ? RGB(255, 0, 0) : RGB(0, 0, 255)
+        return x === Alliance.red ? Color.rgb(255, 0, 0) : Color.rgb(0, 0, 255)
     }
 }
 

@@ -1,5 +1,5 @@
 import { useTheme } from "@react-navigation/native";
-import { type Setter } from "../../../lib/react/util/types";
+import { type Setter } from "../../../lib/util/react/types";
 import type { Alliance, Orientation } from "../../../games/common";
 import { UICardForm } from "../../../ui/UICardForm.tsx";
 import { OrientationChooser } from "../../../components/OrientationChooser.tsx";

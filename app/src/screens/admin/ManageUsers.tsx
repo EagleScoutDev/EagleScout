@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { supabase } from "../../lib/supabase";
-import { getIdealTextColor, parseColor } from "../../lib/color";
+import { Color } from "../../lib/color.ts";
 import { AccountRole } from "../../lib/user/account";
 import type { User } from "../../lib/user";
 
@@ -26,7 +26,7 @@ function SortOption({ onPress, title, isActive }: { onPress: () => void; title: 
         >
             <Text
                 style={{
-                    color: isActive ? getIdealTextColor(parseColor(colors.primary)) : colors.text,
+                    color: isActive ? Color.parse(colors.primary).fg.hex : colors.text,
                 }}
             >
                 {title}
@@ -232,7 +232,7 @@ export function ManageUsers() {
         },
         chosen: {
             backgroundColor: colors.primary,
-            color: getIdealTextColor(parseColor(colors.primary)),
+            color: Color.parse(colors.primary).fg.hex,
             padding: 10,
             borderWidth: 2,
             borderRadius: 10,

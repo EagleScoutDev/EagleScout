@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
 import { ReefscapeAutoModal } from "../../../components/games/reefscape/ReefscapeAutoModal";
-import type { Setter } from "../../../lib/react/util/types";
+import type { Setter } from "../../../lib/util/react/types";
 import type { ScoutMenuParamList } from "../ScoutingFlow";
 import type { Alliance, Orientation } from "../../../games/common";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";

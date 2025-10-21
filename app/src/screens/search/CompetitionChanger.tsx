@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { CompetitionsDB } from "../../database/Competitions";
 import { type CompetitionReturnData } from "../../database/Competitions";
 import { Dropdown } from "react-native-element-dropdown";
-import type { Setter } from "../../lib/react/util/types";
+import type { Setter } from "../../lib/util/react/types";
 
 export interface CompetitionChangerProps {
     currentCompId: number;

@@ -5,13 +5,12 @@ import { Form } from "../../../../lib/forms";
 import * as Bs from "../../../../ui/icons";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
-import { key } from "../../../../lib/react/util/key.ts";
+import { key } from "../../../../lib/util/react/key.ts";
 import type { DataMenuScreenProps } from "../../../data/DataMain.tsx";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Alert, Keyboard, StyleSheet, View } from "react-native";
-import { AsyncAlert } from "../../../../lib/react/util/AsyncAlert.ts";
+import { AsyncAlert } from "../../../../lib/util/react/AsyncAlert.ts";
 import { FormInfoCard } from "./components/FormInfoCard.tsx";
-import { arr } from "../../../../lib/util/im.ts";
 import { FormItemPalette } from "./components/FormItemPalette.tsx";
 import { UISheet } from "../../../../ui/UISheet.tsx";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
@@ -21,6 +20,7 @@ import { FormItemOptions } from "./components/FormItemOptions.tsx";
 import { FormItemInfo } from "./components/FormItemInfo.tsx";
 import { Pressable } from "react-native-gesture-handler";
 import ItemType = Form.ItemType;
+import { Arrays } from "../../../../lib/util/Arrays.ts";
 
 export interface FormCreatorParams {
     form: Form | null;
@@ -146,7 +146,7 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                             if (typeof item === "string") {
                                 Alert.alert("Error", item);
                             } else {
-                                setItems(arr.set(items, editIndex!, item));
+                                setItems(Arrays.set(items, editIndex!, item));
                                 setDirty(true);
                                 editSheetRef.current?.dismiss();
                             }

@@ -7,7 +7,7 @@ import { ReefscapeField } from "./ReefscapeField.tsx";
 import type { ReefscapeAutoPath } from "./ReefscapeAutoPath.ts";
 import { ReefscapeActionIcon, ReefscapeActions, ReefscapeActionType } from "./ReefscapeActions.tsx";
 import { ReefscapeLevels } from "./ReefscapeLevels.tsx";
-import type { Setter } from "../../../lib/react/util/types";
+import type { Setter } from "../../../lib/util/react/types";
 import type { Alliance, Orientation } from "../../../games/common";
 import { Form } from "../../../lib/forms";
 

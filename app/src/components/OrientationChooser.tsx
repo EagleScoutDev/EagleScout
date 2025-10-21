@@ -2,8 +2,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { Alliance, Orientation } from "../games/common";
 import * as Bs from "../ui/icons";
-import type { Setter } from "../lib/react/util/types";
-import { exMemo } from "../lib/react/util/memo.ts";
+import type { Setter } from "../lib/util/react/types";
+import { exMemo } from "../lib/util/react/memo.ts";
 
 export interface OrientationChooserProps {
     orientation: Orientation;

@@ -2,7 +2,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native";
 import { useTheme, type Theme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { exMemo } from "../../lib/react/util/memo.ts";
+import { exMemo } from "../../lib/util/react/memo.ts";
 
 export interface StepperProps {
     value: number;

@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../lib/supabase.ts";
 import { useEffect, useState } from "react";
 import type { CompetitionReturnData } from "../../database/Competitions.ts";
-import type { Setter } from "../../lib/react/util/types";
+import type { Setter } from "../../lib/util/react/types";
 import { UIMenu } from "../../ui/UIMenu.tsx";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../ui/UIButton.tsx";
 

@@ -11,7 +11,7 @@ import Reanimated, {
     useSharedValue,
 } from "react-native-reanimated";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { exMemo } from "../../../lib/react/util/memo.ts";
+import { exMemo } from "../../../lib/util/react/memo.ts";
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 

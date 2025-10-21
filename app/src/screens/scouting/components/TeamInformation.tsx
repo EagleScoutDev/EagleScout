@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import type { Setter } from "../../../lib/react/util/types";
+import type { Setter } from "../../../lib/util/react/types";
 
 export interface TeamInformationProps {
     team: string;

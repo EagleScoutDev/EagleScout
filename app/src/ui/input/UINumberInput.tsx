@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { exMemo } from "../../lib/react/util/memo.ts";
+import { exMemo } from "../../lib/util/react/memo.ts";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { NumberInput, type NumberInputProps } from "../components/NumberInput.tsx";
 

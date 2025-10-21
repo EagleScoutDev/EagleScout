@@ -9,7 +9,7 @@ import { AccountRole } from "../../lib/user/account";
 import type { Icon } from "../../ui/icons";
 import * as Bs from "../../ui/icons";
 import type { DataMenuParamList, DataMenuScreenProps } from "./DataMain";
-import { exMemo } from "../../lib/react/util/memo.ts";
+import { exMemo } from "../../lib/util/react/memo.ts";
 import { UIList } from "../../ui/UIList.tsx";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 

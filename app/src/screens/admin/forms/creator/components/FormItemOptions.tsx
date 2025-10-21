@@ -2,8 +2,8 @@ import { UIForm } from "../../../../../ui/UIForm.tsx";
 import { Color } from "../../../../../lib/color.ts";
 import { Form } from "../../../../../lib/forms";
 import { useTheme } from "@react-navigation/native";
-import { arr } from "../../../../../lib/util/im.ts";
 import ItemType = Form.ItemType;
+import { Arrays } from "../../../../../lib/util/Arrays.ts";
 
 export interface FormItemBuilderProps {
     value: Form.Item;
@@ -57,7 +57,7 @@ export function FormItemOptions({ value, onChange }: FormItemBuilderProps) {
                                                 value: option,
                                                 onChange: (option) => {
                                                     console.log(option);
-                                                    onChange({ ...value, options: arr.set(value.options, i, option) });
+                                                    onChange({ ...value, options: Arrays.set(value.options, i, option) });
                                                 },
                                             })
                                         ),

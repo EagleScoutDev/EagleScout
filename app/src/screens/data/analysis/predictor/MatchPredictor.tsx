@@ -1,11 +1,11 @@
 import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { CompetitionsDB, type CompetitionReturnData } from "../../../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { type TBAMatch, TBAMatches } from "../../../../database/TBAMatches";
-import { TeamAggregation, type MatchPredictionResults } from "../../../../database/TeamAggregation";
+import { type MatchPredictionResults, TeamAggregation } from "../../../../database/TeamAggregation";
 import { Alliance } from "../../../../games/common";
-import { getIdealTextColor, parseColor } from "../../../../lib/color";
+import { Color } from "../../../../lib/color.ts";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
 import { useCurrentCompetitionMatches } from "../../../../lib/react/hooks/useCurrentCompetitionMatches.ts";
 import { PredictionExplainerModal } from "./PredictionExplainerModal";
@@ -510,7 +510,7 @@ export function MatchPredictor() {
                         {(findingReports || determiningWinner) && <ActivityIndicator size={"small"} color={"black"} />}
                         <Text
                             style={{
-                                color: getIdealTextColor(parseColor(colors.primary)),
+                                color: Color.parse(colors.primary).fg.hex,
                                 textAlign: "center",
                                 fontSize: 20,
                                 fontWeight: "700",

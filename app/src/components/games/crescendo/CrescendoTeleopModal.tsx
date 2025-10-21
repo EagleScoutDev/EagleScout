@@ -3,8 +3,8 @@ import { useMemo } from "react";
 import { type Theme, useTheme } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import { CrescendoActionType, CrescendoActions, CrescendoActionIcon } from "./CrescendoActions.tsx";
-import { type Setter } from "../../../lib/react/util/types";
-import { exMemo } from "../../../lib/react/util/memo.ts";
+import { type Setter } from "../../../lib/util/react/types";
+import { exMemo } from "../../../lib/util/react/memo.ts";
 
 export interface CrescendoTeleopModalProps {
     startRelativeTime: number;

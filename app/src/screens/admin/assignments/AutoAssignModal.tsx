@@ -6,8 +6,8 @@ import { supabase } from "../../../lib/supabase";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { NumberInput } from "../../../ui/components/NumberInput.tsx";
 import { UICheckbox } from "../../../ui/input/UICheckbox.tsx";
-import type { Setter } from "../../../lib/react/util/types";
-import { exMemo } from "../../../lib/react/util/memo.ts";
+import type { Setter } from "../../../lib/util/react/types";
+import { exMemo } from "../../../lib/util/react/memo.ts";
 
 export interface AutoAssignModalProps {
     visible: boolean;

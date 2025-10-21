@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import RNSlider from "@react-native-community/slider";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { useState } from "react";
-import { exMemo } from "../../lib/react/util/memo.ts";
+import { exMemo } from "../../lib/util/react/memo.ts";
 
 export interface UISliderProps {
     min: number;

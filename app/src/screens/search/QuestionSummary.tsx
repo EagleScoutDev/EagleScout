@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { OpenAI } from "../../lib/OpenAI";
 import { isTablet } from "../../lib/deviceType";
 import { DataGraph } from "./DataGraph";
-import { getIdealTextColor, getLighterColor, parseColor } from "../../lib/color";
+import { Color } from "../../lib/color.ts";
 
 interface Props {
     item: any;
@@ -93,7 +93,7 @@ export function QuestionSummary({
             justifyContent: "space-around",
         },
         statistic_label: {
-            color: getLighterColor(parseColor(colors.primary)),
+            color: Color.parse(colors.primary).fg.hex,
             fontWeight: "bold",
         },
         statistic: {
@@ -115,7 +115,7 @@ export function QuestionSummary({
             fontSize: 30,
         },
         section_description: {
-            color: getLighterColor(parseColor(colors.primary)),
+            color: Color.parse(colors.primary).fg.hex,
             fontWeight: "bold",
         },
         multiple_option_container: {
@@ -137,7 +137,7 @@ export function QuestionSummary({
             marginVertical: "3%",
         },
         multiple_option_response_count: {
-            color: getLighterColor(parseColor(colors.primary)),
+            color: Color.parse(colors.primary).fg.hex,
             textAlign: "center",
         },
         multiple_option_percentage_container: {
@@ -273,7 +273,7 @@ export function QuestionSummary({
                                                 ...styles.multiple_option_percentage_text,
                                                 color:
                                                     index_of_item === indexOfGreatestValue
-                                                        ? getIdealTextColor(parseColor(colors.primary))
+                                                        ? Color.parse(colors.primary).fg.hex
                                                         : colors.text,
                                             }}
                                         >
@@ -313,7 +313,7 @@ export function QuestionSummary({
                                                 ...styles.multiple_option_percentage_text,
                                                 color:
                                                     index === valueOfMostOccurrences
-                                                        ? getIdealTextColor(parseColor(colors.primary))
+                                                        ? Color.parse(colors.primary).fg.hex
                                                         : colors.text,
                                             }}
                                         >
