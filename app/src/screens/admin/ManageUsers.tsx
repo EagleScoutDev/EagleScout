@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { supabase } from "../../lib/supabase";
 import { getIdealTextColor, parseColor } from "../../lib/color";
-import { AccountType } from "../../lib/user/account";
+import { AccountRole } from "../../lib/user/account";
 import type { User } from "../../lib/user";
 
 function SortOption({ onPress, title, isActive }: { onPress: () => void; title: string; isActive: boolean }) {
@@ -51,11 +51,11 @@ export function ManageUsers() {
             setSortedUsers(users);
             fetchUsers();
         } else if (sortType === "Rejected") {
-            setSortedUsers(users.filter((user) => user.account.type === AccountType.Rejected));
+            setSortedUsers(users.filter((user) => user.account.role === AccountRole.Rejected));
         } else if (sortType === "Captain") {
-            setSortedUsers(users.filter((user) => user.account.type === AccountType.Admin));
+            setSortedUsers(users.filter((user) => user.account.role === AccountRole.Admin));
         } else if (sortType === "Scouter") {
-            setSortedUsers(users.filter((user) => user.account.type === AccountType.Scouter));
+            setSortedUsers(users.filter((user) => user.account.role === AccountRole.Scouter));
         }
     };
 
@@ -82,7 +82,7 @@ export function ManageUsers() {
     };
 
     async function updateApproveStatus(user, b) {
-        const { data, error } = await supabase.from("user_attributes").update({ scouter: b }).eq("id", user.id);
+        const { error } = await supabase.from("user_attributes").update({ scouter: b }).eq("id", user.id);
         if (error) {
             console.error(error);
             Alert.alert("Error updating user status", JSON.stringify(error));
@@ -92,7 +92,7 @@ export function ManageUsers() {
     }
 
     async function updateAdminStatus(user, b) {
-        const { data, error } = await supabase.from("user_attributes").update({ admin: b }).eq("id", user.id);
+        const { error } = await supabase.from("user_attributes").update({ admin: b }).eq("id", user.id);
         if (error) {
             console.error(error);
             Alert.alert("Error updating user status", JSON.stringify(error));

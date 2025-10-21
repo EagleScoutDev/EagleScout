@@ -11,7 +11,7 @@ import { useAccount } from "../../lib/react/hooks/useAccount";
 import { UIList } from "../../ui/UIList.tsx";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
-import { AccountType } from "../../lib/user/account.ts";
+import { AccountRole } from "../../lib/user/account.ts";
 
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {
@@ -127,7 +127,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                                         >
                                                             {profile.name}
                                                         </Text>
-                                                        <Text>{AccountType.toRoleName(account.type)}</Text>
+                                                        <Text>{AccountRole.getName(account.role)}</Text>
                                                     </View>
                                                     <View
                                                         style={{ flexDirection: "row", alignItems: "center", gap: 6 }}

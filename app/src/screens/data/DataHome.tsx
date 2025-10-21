@@ -5,21 +5,20 @@ import { InternetStatus } from "../../lib/InternetStatus";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
 import { CompetitionsDB } from "../../database/Competitions";
 import { useAccount } from "../../lib/react/hooks/useAccount";
-import { AccountType } from "../../lib/user/account";
+import { AccountRole } from "../../lib/user/account";
 import type { Icon } from "../../ui/icons";
 import * as Bs from "../../ui/icons";
 import type { DataMenuParamList, DataMenuScreenProps } from "./DataMain";
 import { exMemo } from "../../lib/react/util/memo.ts";
 import { UIList } from "../../ui/UIList.tsx";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "../onboarding/styles.ts";
 
 export interface DataHomeProps extends DataMenuScreenProps<"Home"> {}
 export function DataHome({ navigation }: DataHomeProps) {
     const { colors } = useTheme();
 
     const { account: user } = useAccount();
-    const toc = getTOC({ admin: user?.type === AccountType.Admin });
+    const toc = getTOC({ admin: user?.role === AccountRole.Admin });
 
     const [internetStatus, setInternetStatus] = useState<InternetStatus>(InternetStatus.NOT_ATTEMPTED);
     const offline = internetStatus !== InternetStatus.CONNECTED;

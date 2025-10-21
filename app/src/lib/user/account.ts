@@ -2,19 +2,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "../supabase";
 import { FormHelper } from "../../FormHelper";
 
-export enum AccountType {
+export enum AccountRole {
     Scouter = "scouter",
     Admin = "admin",
     Rejected = "rejected",
 }
-export namespace AccountType {
-    export function toRoleName(type: AccountType): string {
+export namespace AccountRole {
+    export function getName(type: AccountRole): string {
         switch (type) {
-            case AccountType.Admin:
+            case AccountRole.Admin:
                 return "Admin";
-            case AccountType.Scouter:
+            case AccountRole.Scouter:
                 return "Scouter";
-            case AccountType.Rejected:
+            case AccountRole.Rejected:
                 return "Rejected";
         }
     }
@@ -29,7 +29,7 @@ export enum AccountStatus {
 export interface Account {
     org_id: number;
     status: AccountStatus;
-    type: AccountType;
+    role: AccountRole;
 }
 
 export async function saveAccount(account: Account | null) {
@@ -61,7 +61,7 @@ export async function login(email: string, password: string): Promise<Account> {
         .single();
     if (uattrError) throw uattrError;
 
-    const type = uattrData.admin ? AccountType.Admin : uattrData.scouter ? AccountType.Scouter : AccountType.Rejected;
+    const role = uattrData.admin ? AccountRole.Admin : uattrData.scouter ? AccountRole.Scouter : AccountRole.Rejected;
     const status = user.user_metadata.requested_deletion
         ? AccountStatus.Deleted
         : !uattrData.org_id
@@ -72,7 +72,7 @@ export async function login(email: string, password: string): Promise<Account> {
 
     return {
         ...uattrData,
-        type,
+        role,
         status,
     };
 }
