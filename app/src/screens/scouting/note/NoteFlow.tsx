@@ -16,7 +16,7 @@ import { FormHelper } from '../../../FormHelper';
 import Toast from 'react-native-toast-message';
 import Confetti from 'react-native-confetti';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { useCurrentCompetitionMatches } from '../../../lib/react/hooks/useCurrentCompetitionMatches.ts';
+import { useCurrentCompetitionMatches } from '../../../lib/hooks/useCurrentCompetitionMatches.ts';
 import { StandardButton } from '../../../ui/StandardButton';
 
 export function NoteScreen()  {

@@ -4,7 +4,7 @@ import {
     type BottomSheetModalProps,
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
 import type { ReactNode, Ref } from "react";
 

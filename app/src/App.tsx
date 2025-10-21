@@ -2,12 +2,10 @@ import "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { FormHelper } from "./FormHelper";
-import { useDeepLinking } from "./lib/react/hooks/useDeepLinking";
+import { useDeepLinking } from "./lib/hooks/useDeepLinking";
 import { ThemeOptions, ThemeOptionsMap } from "./themes";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
-import { AccountContext } from "./lib/contexts/AccountContext";
-import { type Account, recallAccount, saveAccount } from "./lib/user/account";
 import { AppHome, type AppHomeParamList } from "./AppHome";
 import { NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
 import { OnboardingFlow, type OnboardingParamList } from "./screens/onboarding";
@@ -35,15 +33,7 @@ export type RootStackParamList = {
 function App() {
     const deepLink = useDeepLinking();
 
-    const [account, setAccount] = useState<Account | null>(null);
     const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
-
-    useEffect(() => {
-        recallAccount().then(setAccount);
-    }, []);
-    useEffect(() => {
-        // saveAccount(account);
-    }, [account]);
 
     useEffect(() => {
         FormHelper.readAsyncStorage(FormHelper.THEME).then((r) => {
@@ -65,42 +55,35 @@ function App() {
                 setThemePreference,
             }}
         >
-            <AccountContext.Provider
-                value={{
-                    account,
-                    setAccount,
-                }}
-            >
-                <GestureHandlerRootView>
-                    <SafeAreaProvider>
-                        <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
-                            <HeaderButtonsProvider stackType={"native"}>
-                                <BottomSheetModalProvider>
-                                    <RootStack.Navigator
-                                        initialRouteName="Onboarding"
-                                        screenOptions={{
-                                            headerShown: false,
-                                        }}
-                                    >
-                                        <RootStack.Screen name="App" component={AppHome} />
+            <GestureHandlerRootView>
+                <SafeAreaProvider>
+                    <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
+                        <HeaderButtonsProvider stackType={"native"}>
+                            <BottomSheetModalProvider>
+                                <RootStack.Navigator
+                                    initialRouteName="Onboarding"
+                                    screenOptions={{
+                                        headerShown: false,
+                                    }}
+                                >
+                                    <RootStack.Screen name="App" component={AppHome} />
 
-                                        <RootStack.Screen
-                                            name="Onboarding"
-                                            component={OnboardingFlow}
-                                            options={{
-                                                animation: "ios_from_right",
-                                            }}
-                                        />
-                                    </RootStack.Navigator>
-                                </BottomSheetModalProvider>
-                            </HeaderButtonsProvider>
-                            <Toast />
-                        </NavigationContainer>
-                    </SafeAreaProvider>
-                </GestureHandlerRootView>
-            </AccountContext.Provider>
+                                    <RootStack.Screen
+                                        name="Onboarding"
+                                        component={OnboardingFlow}
+                                        options={{
+                                            animation: "ios_from_right",
+                                        }}
+                                    />
+                                </RootStack.Navigator>
+                            </BottomSheetModalProvider>
+                        </HeaderButtonsProvider>
+                        <Toast />
+                    </NavigationContainer>
+                </SafeAreaProvider>
+            </GestureHandlerRootView>
         </ThemeContext.Provider>
     );
 }
 
-export default withStallion(App)
+export default withStallion(App);

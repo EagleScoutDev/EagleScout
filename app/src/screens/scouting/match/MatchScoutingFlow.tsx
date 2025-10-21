@@ -8,7 +8,7 @@ import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Co
 import { MatchReportsDB } from "../../../database/ScoutMatchReports";
 import { Gamification } from "./Gamification";
 import Confetti from "react-native-confetti";
-import { useCurrentCompetitionMatches } from "../../../lib/react/hooks/useCurrentCompetitionMatches.ts";
+import { useCurrentCompetitionMatches } from "../../../lib/hooks/useCurrentCompetitionMatches.ts";
 import { Alliance, Orientation } from "../../../games/common";
 import type { ScoutMenuScreenProps } from "../ScoutingFlow";
 import { Form } from "../../../lib/forms";

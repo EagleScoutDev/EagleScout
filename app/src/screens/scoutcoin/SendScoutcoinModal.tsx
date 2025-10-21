@@ -3,7 +3,7 @@ import { Alert, Modal, StyleSheet, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../lib/supabase";
 import { StandardButton } from "../../ui/StandardButton";
-import { useProfile } from "../../lib/react/hooks/useProfile";
+import { useProfile } from "../../lib/hooks/useProfile.ts";
 import * as Bs from "../../ui/icons";
 
 interface LeaderboardUser {

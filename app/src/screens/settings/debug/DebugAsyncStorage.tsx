@@ -8,11 +8,8 @@ import { UIList } from "../../../ui/UIList.tsx";
 import BottomSheet from "@gorhom/bottom-sheet";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { UIButton } from "../../../ui/UIButton.tsx";
 import * as Bs from "../../../ui/icons";
-import { Color } from "../../../lib/color.ts";
 import { PressableOpacity } from "../../../ui/components/PressableOpacity.tsx";
-import { de } from "rn-emoji-keyboard";
 
 export function DebugAsyncStorage() {
     const [keys, setKeys] = useState<readonly string[]>([]);

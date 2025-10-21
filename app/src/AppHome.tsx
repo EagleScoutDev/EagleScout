@@ -1,10 +1,5 @@
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import {
-    createBottomTabNavigator,
-    type BottomTabScreenProps,
-    BottomTabBar,
-    useBottomTabBarHeight,
-} from "@react-navigation/bottom-tabs";
+import { type BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import { View } from "react-native";
 import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow";
@@ -13,7 +8,7 @@ import type { RootStackScreenProps } from "./App";
 import * as Bs from "./ui/icons";
 import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings/SettingsMenu";
 import { useEffect, useRef } from "react";
-import { useAccount } from "./lib/react/hooks/useAccount";
+import { useUserStore } from "./lib/stores/user.ts";
 import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
 import { UISheetModal } from "./ui/UISheetModal.tsx";
 import { PlusMenu } from "./PlusMenu.tsx";
@@ -31,7 +26,7 @@ export type AppHomeParamList = {
 export interface AppHomeProps extends RootStackScreenProps<"App"> {}
 export const AppHome = ({ navigation }: AppHomeProps) => {
     const { colors } = useTheme();
-    const { account } = useAccount();
+    const account = useUserStore.use.account();
 
     const plusMenuRef = useRef<UISheetModal>(null);
 

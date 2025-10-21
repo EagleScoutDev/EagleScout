@@ -5,9 +5,9 @@ import { useTheme } from "@react-navigation/native";
 import { type SettingsMenuScreenProps } from "./SettingsMenu";
 import * as Bs from "../../ui/icons";
 import { CompetitionsDB } from "../../database/Competitions";
-import { useProfile } from "../../lib/react/hooks/useProfile";
+import { useProfile } from "../../lib/hooks/useProfile.ts";
 import { ScoutcoinLedger } from "../../database/ScoutcoinLedger";
-import { useAccount } from "../../lib/react/hooks/useAccount";
+import { useUserStore } from "../../lib/stores/user.ts";
 import { UIList } from "../../ui/UIList.tsx";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
@@ -16,7 +16,7 @@ import { AccountRole } from "../../lib/user/account.ts";
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {
     const { colors } = useTheme();
-    const { account, logout } = useAccount();
+    const { account, logout } = useUserStore();
     const { profile } = useProfile();
 
     const [scoutcoins, setScoutcoins] = useState<number | null>(null);

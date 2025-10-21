@@ -6,7 +6,7 @@ import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
-import { useAccount } from "../../../lib/react/hooks/useAccount";
+import { useUserStore } from "../../../lib/stores/user.ts";
 
 export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {}
 export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) {
@@ -14,7 +14,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
     const [reason, setReason] = useState("");
     const { colors } = useTheme();
 
-    const { logout } = useAccount();
+    const { logout } = useUserStore();
 
     const styles = StyleSheet.create({
         text_input: {

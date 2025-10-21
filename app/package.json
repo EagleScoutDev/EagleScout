@@ -55,7 +55,8 @@
     "react-native-worklets": "^0.6.1",
     "react-navigation-header-buttons": "^13.0.0",
     "reanimated-color-picker": "^4.1.0",
-    "rn-emoji-keyboard": "^1.7.0"
+    "rn-emoji-keyboard": "^1.7.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

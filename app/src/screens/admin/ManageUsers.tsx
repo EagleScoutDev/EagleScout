@@ -5,7 +5,7 @@ import Toast from "react-native-toast-message";
 import { supabase } from "../../lib/supabase";
 import { Color } from "../../lib/color.ts";
 import { AccountRole } from "../../lib/user/account";
-import type { User } from "../../lib/user";
+import type { User } from "../../lib/user/user.ts";
 
 function SortOption({ onPress, title, isActive }: { onPress: () => void; title: string; isActive: boolean }) {
     const { colors } = useTheme();

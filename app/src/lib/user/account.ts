@@ -1,6 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "../supabase";
-import { FormHelper } from "../../FormHelper";
 
 export enum AccountRole {
     Scouter = "scouter",
@@ -32,51 +30,42 @@ export interface Account {
     role: AccountRole;
 }
 
-export async function saveAccount(account: Account | null) {
-    await AsyncStorage.setItem("account", JSON.stringify(account));
-    if (account === null) {
-        // TODO: refactor this out
-        const keys = await AsyncStorage.getAllKeys();
-        AsyncStorage.multiRemove(keys.filter((k) => !FormHelper.PERSIST_KEYS.includes(k)));
+export namespace Accounts {
+    export async function login(email: string, password: string) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error !== null) throw error;
     }
-}
-export async function recallAccount(): Promise<Account | null> {
-    const acc = await AsyncStorage.getItem("account");
-    return acc === null ? null : JSON.parse(acc);
-}
 
-export async function login(email: string, password: string): Promise<Account> {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    export async function logout() {
+        const { error } = await supabase.auth.signOut();
+        if (error !== null) throw error;
+    }
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (user === null) throw new Error("Username or password is incorrect");
+    export async function update(): Promise<Account | null> {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+        if (user === null) return null;
 
-    const { data: uattrData, error: uattrError } = await supabase
-        .from("user_attributes")
-        .select("org_id:organization_id, scouter, admin")
-        .eq("id", user.id)
-        .single();
-    if (uattrError) throw uattrError;
+        {
+            const { error, data: uattr } = await supabase
+                .from("user_attributes")
+                .select("org_id:organization_id, scouter, admin")
+                .eq("id", user.id)
+                .single();
+            if (error) throw error;
 
-    const role = uattrData.admin ? AccountRole.Admin : uattrData.scouter ? AccountRole.Scouter : AccountRole.Rejected;
-    const status = user.user_metadata.requested_deletion
-        ? AccountStatus.Deleted
-        : !uattrData.org_id
-        ? AccountStatus.Onboarding
-        : !uattrData.scouter
-        ? AccountStatus.Approval
-        : AccountStatus.Approved;
-
-    return {
-        ...uattrData,
-        role,
-        status,
-    };
-}
-
-export async function logout(): Promise<void> {
-    await supabase.auth.signOut();
+            return {
+                ...uattr,
+                role: uattr.admin ? AccountRole.Admin : uattr.scouter ? AccountRole.Scouter : AccountRole.Rejected,
+                status: user.user_metadata.requested_deletion
+                    ? AccountStatus.Deleted
+                    : !uattr.org_id // FIXME: 0 shouldn't be cast to false here
+                    ? AccountStatus.Onboarding
+                    : !uattr.scouter
+                    ? AccountStatus.Approval
+                    : AccountStatus.Approved,
+            };
+        }
+    }
 }

@@ -8,15 +8,13 @@ import { EnterUserInfo } from "./steps/EnterUserInfo";
 import { SelectTeam } from "./steps/SelectTeam";
 import { useState, useEffect } from "react";
 import type { RootStackScreenProps } from "../../App";
-import { AccountStatus } from "../../lib/user/account";
-import { useAccount } from "../../lib/react/hooks/useAccount";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AccountStatus } from "../../lib/user/account.ts";
+
+import { useAccount, useUserStore } from "../../lib/stores/user.ts";
 
 const Stack = createNativeStackNavigator<OnboardingParamList>();
-export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<
-    OnboardingParamList,
-    K
->;
+export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<OnboardingParamList, K>;
 export type OnboardingParamList = {
     Entrypoint: undefined;
 
@@ -33,7 +31,8 @@ export type OnboardingParamList = {
 export interface OnboardingProps extends RootStackScreenProps<"Onboarding"> {}
 export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
     const [error, setError] = useState("");
-    const { account, login } = useAccount();
+    const account = useUserStore.use.account();
+    const login = useUserStore.use.login();
 
     async function doLogin(username: string, password: string) {
         try {
@@ -45,7 +44,6 @@ export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
     }
 
     useEffect(() => {
-        console.log(account)
         switch (account?.status) {
             case undefined:
                 navigation.navigate("Onboarding", { screen: "Entrypoint" });
@@ -59,9 +57,7 @@ export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
                 navigation.navigate("Onboarding", { screen: "EnterUserInfo" });
                 break;
             case AccountStatus.Approval:
-                setError(
-                    "Your account has not been approved yet.\nPlease contact a admin for approval."
-                );
+                setError("Your account has not been approved yet.\nPlease contact a admin for approval.");
                 navigation.replace("Onboarding", { screen: "Entrypoint" });
                 break;
             case AccountStatus.Approved:

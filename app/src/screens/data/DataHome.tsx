@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { InternetStatus } from "../../lib/InternetStatus";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
 import { CompetitionsDB } from "../../database/Competitions";
-import { useAccount } from "../../lib/react/hooks/useAccount";
+import { useUserStore } from "../../lib/stores/user.ts";
 import { AccountRole } from "../../lib/user/account";
 import type { Icon } from "../../ui/icons";
 import * as Bs from "../../ui/icons";
@@ -17,7 +17,7 @@ export interface DataHomeProps extends DataMenuScreenProps<"Home"> {}
 export function DataHome({ navigation }: DataHomeProps) {
     const { colors } = useTheme();
 
-    const { account: user } = useAccount();
+    const { account: user } = useUserStore();
     const toc = getTOC({ admin: user?.role === AccountRole.Admin });
 
     const [internetStatus, setInternetStatus] = useState<InternetStatus>(InternetStatus.NOT_ATTEMPTED);
