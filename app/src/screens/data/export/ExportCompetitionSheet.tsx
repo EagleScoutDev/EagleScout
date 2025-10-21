@@ -5,7 +5,6 @@ import { UISheet } from "../../../ui/UISheet.tsx";
 import { UIList } from "../../../ui/UIList.tsx";
 import { Color } from "../../../lib/color.ts";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export.ts";
-import { Alert } from "react-native";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { AsyncAlert } from "../../../lib/util/react/AsyncAlert.ts";
 

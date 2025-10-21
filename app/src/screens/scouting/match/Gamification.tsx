@@ -185,7 +185,7 @@ export function Gamification({
                 setAutoPath={setAutoPath}
                 arrayData={formData}
                 setArrayData={setFormData}
-                form={(formSections && formSections.find(s => s.title === "Auto")) ?? []}
+                form={(formSections && formSections.find((s) => s.title === "Auto")) ?? []}
             />
         </>
     );

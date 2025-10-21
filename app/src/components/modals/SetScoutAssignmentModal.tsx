@@ -6,8 +6,6 @@ import { supabase } from "../../lib/supabase.ts";
 import { useEffect, useState } from "react";
 import type { CompetitionReturnData } from "../../database/Competitions.ts";
 import type { Setter } from "../../lib/util/react/types";
-import { UIMenu } from "../../ui/UIMenu.tsx";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../ui/UIButton.tsx";
 
 export function Spacer() {
     return <View style={{ height: "2%" }} />;
