@@ -1,6 +1,6 @@
 export enum PredictionConfidence {
-  UNDEFINED,
-  LOW,
-  MEDIUM,
-  HIGH,
+    UNDEFINED,
+    LOW,
+    MEDIUM,
+    HIGH,
 }

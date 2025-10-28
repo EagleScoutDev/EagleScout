@@ -1,4 +1,4 @@
-import {CrescendoActionType} from './CrescendoActions';
+import {CrescendoActionType} from './CrescendoActions.tsx';
 
 export interface AutoNode {
   type: CrescendoActionType;

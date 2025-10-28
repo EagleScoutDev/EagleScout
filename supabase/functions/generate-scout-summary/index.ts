@@ -14,7 +14,7 @@ serve(async (req) => {
       Authorization:
         'Bearer ' + Deno.env.get('OPENAI_API_KEY'),
     },
-    body: JSON.stringify({
+    itemBody: JSON.stringify({
       model: 'gpt-3.5-turbo',
       messages: [
         {
@@ -43,7 +43,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         message: 'OpenAI API error',
-      }), { 
+      }), {
         headers: { 'Content-Type': 'application/json' },
         status: 400
       }
