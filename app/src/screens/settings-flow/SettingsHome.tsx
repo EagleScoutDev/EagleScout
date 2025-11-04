@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {Path, Svg} from 'react-native-svg';
@@ -22,8 +23,9 @@ import Competitions from '../../database/Competitions';
 import {getLighterColor} from '../../lib/ColorReadability';
 import {ThemeContext} from '../../lib/contexts/ThemeContext';
 import FormHelper from '../../FormHelper';
+import {useStallionModal} from 'react-native-stallion';
 
-const VERSION = '7.7.2';
+const VERSION = '7.7.2 (OTA 2)';
 
 interface SettingsHomeProps {
   onSignOut: () => void;
@@ -106,6 +108,12 @@ SettingsHomeProps) => {
   useEffect(() => {
     testConnection();
   }, []);
+
+  const {showModal: showStallion} = useStallionModal();
+  const [secretPresses, setSecretPresses] = useState(0);
+  navigation.addListener('focus', () => {
+    setSecretPresses(0);
+  });
 
   return (
     <SafeAreaView
@@ -299,14 +307,25 @@ SettingsHomeProps) => {
           // setOled={setOled}
           navigation={navigation}
         />
-        <Text
-          selectable={true}
-          style={{
-            color: colors.text,
-            textAlign: 'center',
+        <TouchableWithoutFeedback
+          onPress={() => {
+            if (secretPresses === 4) {
+              // 5th press
+              showStallion();
+              setSecretPresses(0);
+            } else {
+              setSecretPresses(secretPresses + 1);
+            }
           }}>
-          v{VERSION}
-        </Text>
+          <Text
+            selectable={true}
+            style={{
+              color: colors.text,
+              textAlign: 'center',
+            }}>
+            v{VERSION}
+          </Text>
+        </TouchableWithoutFeedback>
       </ScrollView>
     </SafeAreaView>
   );
