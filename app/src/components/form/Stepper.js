@@ -55,6 +55,7 @@ function Stepper(props) {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-around',
+      marginTop: -3.5, marginBottom: -3.5,
     },
   });
 
