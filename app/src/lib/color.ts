@@ -26,7 +26,7 @@ export class Color {
 
         this.luminance = r * 0.299 + g * 0.587 + b * 0.114;
 
-        this.fg = 255 - this.luminance < 110 ? Color.black : Color.white;
+        this.fg = 255 - this.luminance < 110 ? Color.rgb(0, 0, 0) : Color.rgb(255, 255, 255);
     }
     public static rgb(r: number, g: number, b: number) {
         return new Color(r, g, b, 255);
