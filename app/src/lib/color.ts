@@ -3,7 +3,7 @@ import { padLeft } from "./util/padLeft.ts";
 const cache = new Map<string, Color>();
 export class Color {
     public static white: Color = Color.rgba(255, 255, 255, 255);
-    public static black: Color = Color.rgba(0, 0, 0, 1);
+    public static black: Color = Color.rgba(0, 0, 0, 255);
     public static transparent: Color = Color.rgba(0, 0, 0, 0);
 
     public readonly luminance!: number;
