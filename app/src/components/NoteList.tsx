@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes.ts";
 import * as Bs from "../ui/icons";
-import { Arrays } from "../lib/util/Arrays.ts";
+import { UIButton } from "../ui/UIButton.tsx";
 
 export enum FilterType {
     // todo: allow note list to accept and display team #
@@ -38,17 +38,6 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
     }, [searchTerm]);
 
     const styles = StyleSheet.create({
-        container: {
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            left: 0,
-            backgroundColor: colors.background,
-            paddingBottom: "10%",
-            paddingHorizontal: "5%",
-            paddingVertical: "5%",
-            height: "50%",
-        },
         filterOption: {
             backgroundColor: colors.card,
             padding: "3%",
@@ -61,13 +50,13 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
     });
 
     return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <View style={{ flex: 1 }}>
             <View
                 style={{
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    padding: 16,
+                    marginBottom: 12,
                 }}
             >
                 <TextInput
@@ -77,43 +66,20 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                     style={{
                         color: colors.text,
                         backgroundColor: colors.card,
-                        paddingHorizontal: "5%",
-                        paddingVertical: "2%",
+                        padding: 8,
                         borderWidth: 1,
                         borderColor: colors.border,
                         borderRadius: 10,
-                        marginLeft: "5%",
-                        marginRight: "2%",
                         flex: 1,
                     }}
                 />
-                <Pressable
-                    onPress={() => {
-                        setFilterModalVisible(true);
-                    }}
-                    style={{
-                        padding: "2%",
-                        marginRight: "2%",
-                    }}
-                >
-                    <Bs.ArrowDownUp size="20" fill="gray" />
-                </Pressable>
-                {onClose && (
-                    <Pressable
-                        onPress={onClose}
-                        style={{
-                            padding: "2%",
-                            marginRight: "2%",
-                        }}
-                    >
-                        <Bs.XLg size="20" fill="gray" />
-                    </Pressable>
-                )}
+                <UIButton onPress={() => setFilterModalVisible(true)} icon={Bs.ArrowDownUp} />
+                {onClose && <UIButton onPress={onClose} icon={Bs.XLg} />}
             </View>
             {filteredNotes.length > 0 && (
                 <FlatList
                     contentContainerStyle={{
-                        padding: 16,
+                        gap: 8,
                     }}
                     data={filteredNotes}
                     renderItem={({ item }) => (
@@ -128,8 +94,12 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                         >
                             <View style={{ flexDirection: "row" }}>
                                 <View style={{ flexDirection: "row", gap: 8 }}>
-                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>Match {item.match_number}</Text>
-                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>Team {item.team_number}</Text>
+                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>
+                                        Match {item.match_number}
+                                    </Text>
+                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>
+                                        Team {item.team_number}
+                                    </Text>
                                     <Text>{item.competition_name ? ` - ${item.competition_name}` : ""}</Text>
                                     <Text>{item.scouter_name ? ` - By: ${item.scouter_name}` : ""}</Text>
                                 </View>
@@ -144,8 +114,9 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                     style={{
                         backgroundColor: colors.card,
                         padding: "5%",
+                        borderWidth: 1,
+                        borderColor: colors.border,
                         borderRadius: 10,
-                        margin: "5%",
                         justifyContent: "center",
                         alignItems: "center",
                     }}
