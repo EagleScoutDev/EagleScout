@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 import RNSlider from "@react-native-community/slider";
-import { type Theme, useTheme } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
-import { exMemo } from "../../lib/util/react/memo.ts";
+import { ThreeCenterLayout } from "../layout/ThreeCenterLayout.tsx";
 
 export interface UISliderProps {
     min: number;
@@ -17,7 +17,6 @@ export interface UISliderProps {
 export function UISlider({ min, max, step = 1, value, onInput, disabled = false, minLabel, maxLabel }: UISliderProps) {
     "use memo";
     const { colors } = useTheme();
-    const styles = getStyles(colors);
 
     const [draft, setDraft] = useState<number>(value);
 
@@ -34,28 +33,11 @@ export function UISlider({ min, max, step = 1, value, onInput, disabled = false,
                 onValueChange={setDraft}
                 onSlidingComplete={() => onInput && onInput(draft)}
             />
-            <View style={styles.labelContainer}>
-                <Text style={styles.label}>{minLabel ?? min.toString()}</Text>
-                <Text style={styles.value}>{draft}</Text>
-                <Text style={styles.label}>{maxLabel ?? max.toString()}</Text>
-            </View>
+            <ThreeCenterLayout>
+                <Text style={{ color: colors.text, fontSize: 12 }}>{minLabel ?? min.toString()}</Text>
+                <Text style={{ color: colors.primary, fontSize: 12, fontWeight: "bold" }}>{draft}</Text>
+                <Text style={{ color: colors.text, fontSize: 12 }}>{maxLabel ?? max.toString()}</Text>
+            </ThreeCenterLayout>
         </View>
     );
 }
-
-const getStyles = exMemo((colors: Theme["colors"]) =>
-    StyleSheet.create({
-        labelContainer: {
-            flexDirection: "row",
-            justifyContent: "space-between",
-        },
-        label: { color: colors.text, fontSize: 12 },
-        value: {
-            color: colors.primary,
-            fontSize: 13,
-            alignSelf: "center",
-            textAlign: "center",
-            fontWeight: "bold",
-        },
-    })
-);
