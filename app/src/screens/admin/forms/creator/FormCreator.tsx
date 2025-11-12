@@ -37,9 +37,10 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
     const [items, setItems] = useState<Form.Structure>(form?.formStructure ?? []);
     const [dirty, setDirty] = useState(false); //< If there are unsaved changes
 
+    const editSheetRef = useRef<BottomSheetModal>(null);
     const [editDraft, setEditDraft] = useState<Form.Item | null>(null);
     const [editIndex, setEditIndex] = useState<number | null>(null);
-    const editSheetRef = useRef<BottomSheetModal>(null);
+    const isNewItem = editIndex === items.length;
 
     const sheetPosition = useSharedValue(0);
 
@@ -127,7 +128,7 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                 </BottomSheetView>
             </UISheet>
 
-            <UISheetModal ref={editSheetRef} handleComponent={null} gap={"25%"} keyboardBehavior={"extend"}>
+            <UISheetModal ref={editSheetRef} handleComponent={null} keyboardBehavior={"extend"}>
                 <UISheet.Header
                     left={{
                         text: "Cancel",
@@ -149,11 +150,26 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                                 setItems(Arrays.set(items, editIndex!, item));
                                 setDirty(true);
                                 editSheetRef.current?.dismiss();
+                                setEditDraft(null);
+                                setEditIndex(null);
                             }
                         },
                     }}
                 />
-                {editDraft !== null && <FormItemOptions value={editDraft} onChange={setEditDraft} />}
+                {editDraft !== null && (
+                    <FormItemOptions
+                        value={editDraft}
+                        onChange={setEditDraft}
+                        isNewItem={isNewItem}
+                        onDelete={() => {
+                            setItems(items.toSpliced(editIndex!, 1));
+                            setDirty(true);
+                            editSheetRef.current?.dismiss();
+                            setEditDraft(null);
+                            setEditIndex(null);
+                        }}
+                    />
+                )}
             </UISheetModal>
         </View>
     );
@@ -204,6 +220,7 @@ export const ITEMS = [
             question: "",
             required: false,
             options: [""],
+            defaultIndex: 0,
         }),
     },
     {
@@ -226,6 +243,9 @@ export const ITEMS = [
             question: "",
             required: false,
             slider: false,
+            low: null,
+            high: null,
+            step: 1,
         }),
     },
     {

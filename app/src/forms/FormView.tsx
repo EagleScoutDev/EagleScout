@@ -10,11 +10,11 @@ export interface FormViewProps {
     data: Form.Data;
     onInput: (data: Form.Data) => void;
 }
-export function FormView({ items, data }: FormViewProps) {
+export function FormView({ items, data, onInput }: FormViewProps) {
     return (
-        <View style={{ width: "100%" }}>
+        <View style={{ gap: 24, padding: 8 }}>
             {items.map((item, i) => {
-                return <FormItem key={i} item={item} value={data[i]} onInput={(value) => Arrays.set(data, i, value)} />;
+                return <FormItem key={i} item={item} value={data[i]} onInput={(value) => onInput(Arrays.set(data, i, value))} />;
             })}
         </View>
     );

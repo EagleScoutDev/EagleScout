@@ -29,18 +29,22 @@ export function FormItemInfo({ item }: FormItemInfoProps) {
         </FormQuestion>
     ) : item.type === ItemType.number && item.slider ? (
         <FormQuestion icon={Bs.Sliders} title={item.question} required={item.required}>
-            <View style={{ flexDirection: "row", gap: 8 }}>
-                <Text style={[styles.text, { textAlign: "left", flexGrow: 1 }]}>
-                    {item.low}{item.lowLabel && ` (${item.lowLabel})`}
-                </Text>
-                <Text style={[styles.text, { textAlign: "center" }]}>Step: {item.step}</Text>
-                <Text style={[styles.text, { textAlign: "right", flexGrow: 1 }]}>
-                    {item.highLabel && `(${item.highLabel}) `}{item.high}
-                </Text>
-            </View>
+            <Text style={styles.text}>
+                Min: {item.low}
+                {item.lowLabel && ` (${item.lowLabel})`}
+            </Text>
+            <Text style={styles.text}>
+                Max: {item.high}
+                {item.highLabel && ` (${item.highLabel})`}
+            </Text>
+            <Text style={styles.text}>Step: {item.step}</Text>
         </FormQuestion>
     ) : item.type === ItemType.number && !item.slider ? (
-        <FormQuestion icon={Bs.OneTwoThree} title={item.question} required={item.required} />
+        <FormQuestion icon={Bs.OneTwoThree} title={item.question} required={item.required}>
+            <Text style={styles.text}>Min: {item.low ?? "-∞"}</Text>
+            <Text style={styles.text}>Max: {item.high ?? "∞"}</Text>
+            <Text style={styles.text}>Step: {item.step}</Text>
+        </FormQuestion>
     ) : item.type === ItemType.textbox ? (
         <FormQuestion icon={Bs.InputCursorText} title={item.question} required={item.required} />
     ) : null;

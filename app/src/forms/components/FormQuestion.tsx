@@ -15,11 +15,11 @@ export function FormQuestion({ icon, title, required = false, children }: PropsW
     return (
         <View>
             <View style={{ flexDirection: "row" }}>
-                {icon && icon({ size: 20, fill: colors.primary, style: { marginRight: 10 } })}
+                {icon && icon({ size: 18, fill: colors.primary, style: { marginRight: 10 } })}
                 <Text
                     style={{
                         textAlign: "left",
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: 500,
                         color: colors.text,
                     }}
@@ -29,7 +29,9 @@ export function FormQuestion({ icon, title, required = false, children }: PropsW
                 </Text>
             </View>
 
-            {children && <View style={{ marginTop: 8 }}>{children}</View>}
+            {children && <View style={{ marginTop: 6 }}>{children}</View>}
         </View>
     );
 }
+
+

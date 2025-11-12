@@ -10,7 +10,7 @@ export namespace Form {
     export enum ItemType {
         heading = "heading",
         radio = "radio",
-        checkbox = "checkbox",
+        checkbox = "checkboxes",
         textbox = "textbox",
         number = "number",
     }
@@ -35,6 +35,7 @@ export namespace Form {
     export interface Radio extends BaseQuestion {
         type: ItemType.radio;
         options: string[];
+        defaultIndex: 0; // TODO: this value is completely unused and should be deleted
     }
     export interface Checkboxes extends BaseQuestion {
         type: ItemType.checkbox;
@@ -46,6 +47,9 @@ export namespace Form {
     export interface Number extends BaseQuestion {
         type: ItemType.number;
         slider: false;
+        low: number | null;
+        high: number | null;
+        step: number;
     }
     export interface Slider extends BaseQuestion {
         type: ItemType.number;
@@ -53,8 +57,8 @@ export namespace Form {
         low: number;
         high: number;
         step: number;
-        lowLabel: string | null;
-        highLabel: string | null;
+        lowLabel: string | null; // TODO: add this to the database schema
+        highLabel: string | null; // TODO: add this to the database schema
     }
 
     export interface Section {

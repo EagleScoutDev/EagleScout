@@ -22,10 +22,8 @@ export function FormItem<T extends Form.Item>({ item, value, onInput }: FormComp
                 <UIRadio
                     options={item.options}
                     required={item.required}
-                    value={value}
-                    onInput={(value: string | null) =>
-                        onInput && onInput(value === null ? null : item.options.indexOf(value))
-                    }
+                    value={item.options[value]}
+                    onInput={(value) => onInput?.(value === null ? null : item.options.indexOf(value))}
                 />
             ) : item.type === ItemType.textbox ? (
                 <UITextInput multiline={true} placeholder={"Type here"} value={value} onChangeText={onInput} />
@@ -40,7 +38,7 @@ export function FormItem<T extends Form.Item>({ item, value, onInput }: FormComp
                     onInput={onInput}
                 />
             ) : item.type === ItemType.number ? (
-                <UIStepper value={value} onInput={onInput} />
+                <UIStepper value={value ?? 0} onInput={onInput} />
             ) : item.type === ItemType.checkbox ? (
                 <UICheckboxes options={item.options} value={value} onInput={onInput} />
             ) : null}
