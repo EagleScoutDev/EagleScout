@@ -9,20 +9,38 @@ export interface NumberInputProps extends Omit<TextInputProps, "value" | `on${st
 
     style?: StyleProp<TextStyle>;
 
-    value: number | null,
-    onInput?: ((value: number) => void) | null | undefined;
+    value: number | null;
+    onInput?: ((value: number | null) => void | undefined | boolean) | null | undefined;
 }
-export function NumberInput({
-    value: initialValue = null,
-    float = false,
-    min,
-    max,
-    onInput,
-    ...passthrough
-}: NumberInputProps) {
+export function NumberInput({ value = null, float = false, min, max, onInput, ...passthrough }: NumberInputProps) {
     "use memo";
-    let [value, setValue] = useState<number | null>(initialValue);
-    let [draft, setDraft] = useState<string>(initialValue?.toString() ?? "");
+    let [draft, setDraft] = useState<string>(value?.toString() ?? "");
+
+    function updateValue(newDraft: string, blurred: boolean) {
+        setDraft(newDraft);
+
+        newDraft = newDraft.trim();
+        const newValue: number | null = newDraft === "" ? null : float ? parseFloat(newDraft) : parseInt(newDraft);
+        let validValue: number | null = value;
+
+        let valid: boolean = true;
+        if (newValue !== null) {
+            if (Number.isNaN(newValue)) {
+                validValue = value;
+                valid = false;
+            } else if (min !== undefined && newValue < min) {
+                validValue = min;
+                valid = false;
+            } else if (max !== undefined && newValue > max) {
+                validValue = max;
+                valid = false;
+            }
+        }
+
+        if (!valid || onInput?.(newValue) === false) {
+            if (blurred) setDraft(validValue?.toString() ?? "");
+        }
+    }
 
     return (
         <AutoTextInput
@@ -32,27 +50,10 @@ export function NumberInput({
             dataDetectorTypes={"none"}
             autoComplete="off"
             autoCorrect={false}
-
             {...passthrough}
-
             value={draft}
-            onChangeText={setDraft}
-            onEndEditing={() => {
-                let x = float ? parseFloat(draft) : parseInt(draft);
-                if (Number.isNaN(x)) {
-                    setDraft(value?.toString() ?? "");
-                } else if (min !== undefined && x < min) {
-                    setValue(min);
-                    setDraft(min.toString());
-                } else if (max !== undefined && x > max) {
-                    setValue(max);
-                    setDraft(max.toString());
-                } else {
-                    setValue(x);
-                    setDraft(x.toString());
-                    onInput?.(x);
-                }
-            }}
+            onChangeText={(text) => updateValue(text, false)}
+            onEndEditing={() => updateValue(draft, true)}
         />
     );
 }
