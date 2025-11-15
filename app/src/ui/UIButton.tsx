@@ -70,17 +70,23 @@ export function UIButton({
 
     return (
         <PressableOpacity onPress={doPress} style={[sizeStyles.button, { backgroundColor: bg }, buttonStyle]}>
-            {loading || processing ? (
+            {(loading || processing) && (
                 <ActivityIndicator
                     style={{ position: "absolute", width: "100%", height: "100%" }}
                     color={spinnerColor}
                 />
-            ) : (
-                children ?? <>
-                        {icon && icon({ ...sizeStyles.icon, fill: fg, opacity: loading || processing ? 0 : 1 })}
-                        {typeof text === "string" && <Text style={[sizeStyles.text, { color: fg, opacity: loading || processing ? 0 : 1 }, textStyle]}>{text}</Text>}
-                </>
             )}
+            {/* When the spinner is visible, only hide the body so proper dimensions are kept */}
+            <View style={{ opacity: loading || processing ? 0 : 1 }}>
+                {children ?? (
+                    <>
+                        {icon && icon({ ...sizeStyles.icon, fill: fg })}
+                        {typeof text === "string" && (
+                            <Text style={[sizeStyles.text, { color: fg }, textStyle]}>{text}</Text>
+                        )}
+                    </>
+                )}
+            </View>
         </PressableOpacity>
     );
 }
