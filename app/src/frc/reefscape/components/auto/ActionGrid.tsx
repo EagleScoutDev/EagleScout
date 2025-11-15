@@ -42,7 +42,9 @@ export function ActionGrid<T>({ title, options: rows, onPress }: ActionMenuProps
 
     return (
         <View style={{ alignItems: "center", flex: 1 }}>
-            <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold", marginTop: 8, marginBottom: 8 }}>{title}</Text>
+            <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold", marginTop: 8, marginBottom: 8 }}>
+                {title}
+            </Text>
             <View style={{ width: "100%", flex: 1, gap: 16 }}>
                 {rows.map((row, y) => (
                     <View key={y} style={styles.row}>

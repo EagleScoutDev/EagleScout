@@ -7,24 +7,25 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
-} from 'react-native';
-import { useMemo, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
-import { styles } from './styles';
-import { supabase } from '../../lib/supabase';
-import { MinimalSectionHeader } from '../../ui/MinimalSectionHeader';
-import { StandardButton } from '../../ui/StandardButton';
-import { type OnboardingScreenProps } from '.';
+} from "react-native";
+import { useMemo, useState } from "react";
+import { useTheme } from "@react-navigation/native";
+import { styles } from "./styles";
+import { supabase } from "../../lib/supabase";
+import { MinimalSectionHeader } from "../../ui/MinimalSectionHeader";
+import { StandardButton } from "../../ui/StandardButton";
+import { type OnboardingScreenProps } from ".";
 
-export interface SignupProps extends OnboardingScreenProps<"Signup"> {
-
-}
+export interface SignupProps extends OnboardingScreenProps<"Signup"> {}
 export const Signup = ({ navigation }: SignupProps) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const formComplete = useMemo(() => email !== '' || password !== '' || confirmPassword !== '', [email, password, confirmPassword])
+    const formComplete = useMemo(
+        () => email !== "" || password !== "" || confirmPassword !== "",
+        [email, password, confirmPassword]
+    );
 
     const { colors } = useTheme();
 
@@ -55,7 +56,7 @@ export const Signup = ({ navigation }: SignupProps) => {
                             placeholderTextColor="gray"
                             style={styles.input}
                         />
-                        <MinimalSectionHeader title={'Confirm Password'} />
+                        <MinimalSectionHeader title={"Confirm Password"} />
                         <TextInput
                             secureTextEntry={true}
                             autoCapitalize="none"
@@ -68,18 +69,20 @@ export const Signup = ({ navigation }: SignupProps) => {
 
                         <StandardButton
                             text="Register"
-                            textColor={formComplete ? 'dimgray' : colors.primary }
+                            textColor={formComplete ? "dimgray" : colors.primary}
                             disabled={!formComplete}
                             onPress={async () => {
-                                if(password !== confirmPassword) {
+                                if (password !== confirmPassword) {
                                     Alert.alert(
-                                        'Passwords do not match',
-                                        'Please try again',
-                                        [{
-                                            text: 'OK',
-                                            onPress: () => console.log('OK Pressed'),
-                                        }],
-                                        { cancelable: false },
+                                        "Passwords do not match",
+                                        "Please try again",
+                                        [
+                                            {
+                                                text: "OK",
+                                                onPress: () => console.log("OK Pressed"),
+                                            },
+                                        ],
+                                        { cancelable: false }
                                     );
                                     return;
                                 }
@@ -88,19 +91,18 @@ export const Signup = ({ navigation }: SignupProps) => {
                                     email: email,
                                     password: password,
                                     options: {
-                                        emailRedirectTo: 'eaglescout://confirm-signup',
+                                        emailRedirectTo: "eaglescout://confirm-signup",
                                     },
-                                })
-                                if(error) {
+                                });
+                                if (error) {
                                     console.error(error);
-                                    Alert.alert('Error signing up', error.toString());
-                                }
-                                else {
+                                    Alert.alert("Error signing up", error.toString());
+                                } else {
                                     Alert.alert(
-                                        'Success!',
-                                        'You received an email to confirm your account. Please follow the instructions in the email for next steps.',
-                                    )
-                                    navigation.navigate('Login')
+                                        "Success!",
+                                        "You received an email to confirm your account. Please follow the instructions in the email for next steps."
+                                    );
+                                    navigation.navigate("Login");
                                 }
                             }}
                         />
@@ -109,14 +111,15 @@ export const Signup = ({ navigation }: SignupProps) => {
                     <TouchableOpacity
                         style={styles.link_container}
                         onPress={() => {
-                            navigation.navigate('Login');
-                            setEmail('');
-                            setPassword('');
-                        }}>
+                            navigation.navigate("Login");
+                            setEmail("");
+                            setPassword("");
+                        }}
+                    >
                         <Text style={styles.text}>Log In</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-}
+};

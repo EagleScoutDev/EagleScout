@@ -86,7 +86,8 @@ export function Statbotics({ team }) {
         if (/^\d+$/.test(team) && Number(team) < 100000) {
             setIsTeamValid(true);
             fetchTeam(team).then(() => {
-                fetchTeamEvent()            });
+                fetchTeamEvent();
+            });
         } else {
             setIsTeamValid(false);
         }

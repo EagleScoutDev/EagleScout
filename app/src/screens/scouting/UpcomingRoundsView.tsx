@@ -9,7 +9,7 @@ import * as Bs from "../../ui/icons";
 import type { ScoutMenuParamList } from "./ScoutingFlow.tsx";
 
 export interface UpcomingRoundsViewProps {
-    navigation: NavigationProp<ScoutMenuParamList, "Dashboard">
+    navigation: NavigationProp<ScoutMenuParamList, "Dashboard">;
 }
 export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
     const { colors } = useTheme();

@@ -20,7 +20,7 @@ export function UICheckboxes<T extends string>({ options, value, onInput }: UICh
                         if (!onInput) return;
 
                         if (!x) {
-                            console.log(value.includes(item) ? value : [...value, item])
+                            console.log(value.includes(item) ? value : [...value, item]);
                             onInput(value.includes(item) ? value : [...value, item]);
                         } else {
                             onInput(value.filter((x) => x !== item));

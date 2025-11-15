@@ -8,10 +8,7 @@ export class FormHelper {
     static ASYNCSTORAGE_MATCHES_KEY = "current-matches";
     static THEME = "themePreference";
 
-    static PERSIST_KEYS = [
-        FormHelper.LATEST_FORM,
-        FormHelper.THEME,
-    ];
+    static PERSIST_KEYS = [FormHelper.LATEST_FORM, FormHelper.THEME];
 
     /**
      * Reads form data from AsyncStorage
@@ -31,10 +28,7 @@ export class FormHelper {
     static async saveFormOffline(dataToSubmit: any) {
         dataToSubmit.createdAt = new Date();
 
-        await AsyncStorage.setItem(
-            "form-" + dataToSubmit.createdAt.getUTCMilliseconds(),
-            JSON.stringify(dataToSubmit)
-        );
+        await AsyncStorage.setItem("form-" + dataToSubmit.createdAt.getUTCMilliseconds(), JSON.stringify(dataToSubmit));
     }
 
     /**
@@ -51,10 +45,7 @@ export class FormHelper {
             JSON.stringify(dataToSubmit)
         );
         for (let i = 0; i < images.length; i++) {
-            await AsyncStorage.setItem(
-                `pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`,
-                images[i]
-            );
+            await AsyncStorage.setItem(`pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`, images[i]);
         }
     }
 
@@ -63,9 +54,7 @@ export class FormHelper {
      */
     static async editFormOffline(data: any, createdAt: Date) {
         const millis = createdAt.getUTCMilliseconds();
-        const originalReport = JSON.parse(
-            (await AsyncStorage.getItem("form-" + millis))!
-        );
+        const originalReport = JSON.parse((await AsyncStorage.getItem("form-" + millis))!);
         await AsyncStorage.setItem(
             "form-" + millis,
             JSON.stringify({
@@ -78,10 +67,7 @@ export class FormHelper {
     static async saveNoteOffline(note: OfflineNote) {
         note.created_at = new Date();
         await AsyncStorage.setItem(
-            "note-" +
-                note.created_at.getUTCMilliseconds() +
-                "-" +
-                note.team_number,
+            "note-" + note.created_at.getUTCMilliseconds() + "-" + note.team_number,
             JSON.stringify(note)
         );
     }
@@ -89,14 +75,10 @@ export class FormHelper {
     static async getOfflineNotes() {
         const keys = await AsyncStorage.getAllKeys();
         const notes = await AsyncStorage.multiGet(keys);
-        return notes
-            .filter(([k]) => k.includes("note-"))
-            .map(([_, v]) => JSON.parse(v!));
+        return notes.filter(([k]) => k.includes("note-")).map(([_, v]) => JSON.parse(v!));
     }
 
     static async deleteOfflineNote(createdAt: Date, teamNumber: number) {
-        await AsyncStorage.removeItem(
-            `note-${createdAt.getUTCMilliseconds()}-${teamNumber}`
-        );
+        await AsyncStorage.removeItem(`note-${createdAt.getUTCMilliseconds()}-${teamNumber}`);
     }
 }

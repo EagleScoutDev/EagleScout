@@ -106,7 +106,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                                     setReefSextant(sextant);
                                 }}
                                 onPiece={(piece: number) => {
-                                    if(state.field.pieces[piece] !== undefined) return
+                                    if (state.field.pieces[piece] !== undefined) return;
 
                                     ReactNativeHapticFeedback.trigger("impactLight");
                                     setGamePiece(piece);

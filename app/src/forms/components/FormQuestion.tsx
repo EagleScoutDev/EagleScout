@@ -33,5 +33,3 @@ export function FormQuestion({ icon, title, required = false, children }: PropsW
         </View>
     );
 }
-
-

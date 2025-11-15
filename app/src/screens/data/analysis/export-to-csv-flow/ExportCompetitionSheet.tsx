@@ -1,7 +1,7 @@
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { Text } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { StandardButton } from '../../../../ui/StandardButton';
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { Text } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { StandardButton } from "../../../../ui/StandardButton";
 
 export const ExportCompetitionSheet = ({
     competitionName,
@@ -19,7 +19,7 @@ export const ExportCompetitionSheet = ({
         <BottomSheet
             index={0}
             enableDynamicSizing={false}
-            snapPoints={['55%']}
+            snapPoints={["55%"]}
             enablePanDownToClose={true}
             onClose={onClose}
             animateOnMount={true}
@@ -30,31 +30,35 @@ export const ExportCompetitionSheet = ({
                 backgroundColor: colors.card,
             }}
             containerStyle={{
-                backgroundColor: 'rgba(0,0,0,0.5)',
-            }}>
+                backgroundColor: "rgba(0,0,0,0.5)",
+            }}
+        >
             <BottomSheetView
                 style={{
                     backgroundColor: colors.card,
                     borderRadius: 10,
                     padding: 20,
                     height: 200,
-                }}>
+                }}
+            >
                 <Text
                     style={{
                         fontSize: 25,
-                        fontWeight: 'bold',
+                        fontWeight: "bold",
                         marginBottom: 5,
                         color: colors.text,
-                        textDecorationStyle: 'solid',
+                        textDecorationStyle: "solid",
                         textDecorationColor: colors.border,
-                    }}>
+                    }}
+                >
                     Export Data for {competitionName}
                 </Text>
                 <Text
                     style={{
                         color: colors.text,
                         marginBottom: 15,
-                    }}>
+                    }}
+                >
                     Select the type of data you would like to export
                 </Text>
                 <StandardButton

@@ -6,6 +6,6 @@ import { useMemo } from "react";
  */
 export function exMemo<A extends any[], R extends any>(factory: (...args: A) => R): (...args: A) => R {
     return (...args) => {
-        return useMemo(() => factory(...args), args)
-    }
+        return useMemo(() => factory(...args), args);
+    };
 }

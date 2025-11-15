@@ -6,7 +6,7 @@ import { useTheme } from "@react-navigation/native";
 import type { Icon } from "../../../../../ui/icons";
 
 export interface FormItemToolbarProps<T extends string = string> {
-    items: readonly { readonly key: T, readonly icon: Icon, readonly name: string }[]
+    items: readonly { readonly key: T; readonly icon: Icon; readonly name: string }[];
     onPress: (key: T) => void;
 }
 export function FormItemPalette<T extends string = string>({ items, onPress }: FormItemToolbarProps<T>) {
@@ -23,24 +23,22 @@ export function FormItemPalette<T extends string = string>({ items, onPress }: F
             width: 70,
             height: 40,
             borderRadius: 6,
-        }
-    })
+        },
+    });
 
     return (
         <ScrollView key="toolbar" horizontal={true} contentContainerStyle={styles.toolbar}>
-            {
-                items.map(({ key, icon, name }) => (
-                    <UIButton
-                        key={key}
-                        style={UIButtonStyle.fill}
-                        color={Color.parse(colors.card)}
-                        buttonStyle={styles.item}
-                        onPress={() => onPress(key)}
-                    >
-                        {icon({ size: 24, fill: colors.primary })}
-                    </UIButton>
-                ))
-            }
+            {items.map(({ key, icon, name }) => (
+                <UIButton
+                    key={key}
+                    style={UIButtonStyle.fill}
+                    color={Color.parse(colors.card)}
+                    buttonStyle={styles.item}
+                    onPress={() => onPress(key)}
+                >
+                    {icon({ size: 24, fill: colors.primary })}
+                </UIButton>
+            ))}
         </ScrollView>
     );
 }

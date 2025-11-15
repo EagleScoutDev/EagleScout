@@ -30,7 +30,6 @@ export function PressableOpacity({
             {...passthrough}
             disabled={disabled}
             style={[style, animatedStyle]}
-
             // TODO: these should run on the UI thread
             onPressIn={() => opacity.set(withTiming(activeOpacity, { duration: 100 }))}
             onPressOut={() => opacity.set(withTiming(1, { duration: 75 }))}

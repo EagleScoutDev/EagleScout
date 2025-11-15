@@ -3,8 +3,8 @@
  * It does not make database calls, but rather, processes data retrieved from other APIs.
  *
  * */
-import { Alliance } from '../frc/reefscape/field.ts';
-import { MatchReportsDB } from './ScoutMatchReports';
+import { Alliance } from "../frc/reefscape/field.ts";
+import { MatchReportsDB } from "./ScoutMatchReports";
 
 interface TeamWithData {
     team_number: number;
@@ -31,19 +31,17 @@ export class TeamAggregation {
     // from: https://stackoverflow.com/questions/7343890/standard-deviation-javascript
     static getStandardDeviation(array: number[]) {
         if (array.length === 0 || array.length === 1) {
-            console.log('get standard deviation called with empty array');
+            console.log("get standard deviation called with empty array");
             return 0;
         }
         const n = array.length;
         const mean = this.getMean(array);
-        return Math.sqrt(
-            array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n,
-        );
+        return Math.sqrt(array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n);
     }
 
     static getMean(array: number[]) {
         if (array.length === 0) {
-            console.warn('get mean called with empty array');
+            console.warn("get mean called with empty array");
             return 0;
         }
         let sum = 0;
@@ -52,7 +50,7 @@ export class TeamAggregation {
             sum += array[i];
         }
 
-        console.log('calculated mean: ', sum / array.length, 'from array:', array);
+        console.log("calculated mean: ", sum / array.length, "from array:", array);
         return sum / array.length;
     }
 
@@ -62,12 +60,9 @@ export class TeamAggregation {
      * @param indices an array of indices to include in the calculation
      * @returns a sum of the values at the given indices
      */
-    private static createArrayFromIndices(
-        reports: number[][],
-        indices: number[],
-    ) {
+    private static createArrayFromIndices(reports: number[][], indices: number[]) {
         if (reports.length === 0) {
-            console.warn('createArrayFromIndices called with empty reports array');
+            console.warn("createArrayFromIndices called with empty reports array");
         }
         const matches: number[] = [];
         for (let i = 0; i < reports.length; i += 1) {
@@ -80,7 +75,7 @@ export class TeamAggregation {
             matches.push(sum);
         }
 
-        console.log('matches:', matches);
+        console.log("matches:", matches);
 
         return matches;
     }
@@ -100,9 +95,7 @@ export class TeamAggregation {
 
         // Calculate A&S formula 7.1.26
         const t = 1.0 / (1.0 + p * z);
-        const y =
-            1.0 -
-            ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
+        const y = 1.0 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
 
         return 0.5 * (1.0 + sign * y);
     }
@@ -119,7 +112,7 @@ export class TeamAggregation {
         blueMean: number,
         blueStdev: number,
         redMean: number,
-        redStdev: number,
+        redStdev: number
     ): MatchPredictionResults {
         if (blueMean === 0) {
             // console.warn('determineWinner called with blueMean of 0');
@@ -214,10 +207,7 @@ export class TeamAggregation {
         ];
     }
 
-    private static finalWinnerCalculation = (
-        teamsWithoutData: number[],
-        teamsWithData: TeamWithData[],
-    ) => {
+    private static finalWinnerCalculation = (teamsWithoutData: number[], teamsWithData: TeamWithData[]) => {
         let blueMean = 0;
         let redMean = 0;
 
@@ -225,10 +215,8 @@ export class TeamAggregation {
         let redStdev = 0;
 
         for (let i = 0; i < teamsWithoutData.length; i++) {
-            let foundTeam = teamsWithData.find(
-                a => a.team_number === teamsWithoutData[i],
-            );
-            console.log('found team: ' + foundTeam);
+            let foundTeam = teamsWithData.find((a) => a.team_number === teamsWithoutData[i]);
+            console.log("found team: " + foundTeam);
             if (i < 3) {
                 redMean += foundTeam?.mean || 0;
                 redStdev += (foundTeam?.stdev || 0) ** 2;
@@ -238,30 +226,22 @@ export class TeamAggregation {
             }
         }
 
-        return TeamAggregation.determineWinner(
-            blueMean,
-            blueStdev,
-            redMean,
-            redStdev,
-        );
+        return TeamAggregation.determineWinner(blueMean, blueStdev, redMean, redStdev);
     };
 
     private static getProcessedDataForTeams = async (
         teamsWithoutData: number[],
         compId: number,
-        chosenQuestionIndices: number[],
+        chosenQuestionIndices: number[]
     ): Promise<TeamWithData[]> => {
         let temp: TeamWithData[] = [];
         let tempNumReports: number[] = [];
         for (let i = 0; i < teamsWithoutData.length; i++) {
-            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
-                teamsWithoutData[i],
-                compId,
-            );
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(teamsWithoutData[i], compId);
             if (reports.length !== 0) {
                 let data = TeamAggregation.createArrayFromIndices(
-                    reports.map(a => a.data),
-                    chosenQuestionIndices,
+                    reports.map((a) => a.data),
+                    chosenQuestionIndices
                 );
                 temp.push({
                     team_number: teamsWithoutData[i],
@@ -271,7 +251,7 @@ export class TeamAggregation {
             }
             tempNumReports.push(reports.length);
         }
-        console.log('temp: ' + temp);
+        console.log("temp: " + temp);
         return temp;
     };
 
@@ -281,16 +261,8 @@ export class TeamAggregation {
      * @param compId
      * @param chosenQuestionIndices
      */
-    static async getWinPrediction(
-        teams: number[],
-        compId: number,
-        chosenQuestionIndices: number[],
-    ) {
-        let teamsWithData: TeamWithData[] = await this.getProcessedDataForTeams(
-            teams,
-            compId,
-            chosenQuestionIndices,
-        );
+    static async getWinPrediction(teams: number[], compId: number, chosenQuestionIndices: number[]) {
+        let teamsWithData: TeamWithData[] = await this.getProcessedDataForTeams(teams, compId, chosenQuestionIndices);
 
         return this.finalWinnerCalculation(teams, teamsWithData);
     }
@@ -298,10 +270,7 @@ export class TeamAggregation {
     static getNumReportsPerTeam = async (teams: number[], compId: number) => {
         let tempNumReports: number[] = [];
         for (let i = 0; i < teams.length; i++) {
-            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
-                teams[i],
-                compId,
-            );
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(teams[i], compId);
             tempNumReports.push(reports.length);
         }
         return tempNumReports;

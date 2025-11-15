@@ -37,14 +37,13 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
     const [formList, setFormList] = useState<{ id: number; name: string; pitScouting: boolean }[]>([]);
     const matchForms = new Map<number, { id: number; name: string; pitScouting: false }>();
     const pitForms = new Map<number, { id: number; name: string; pitScouting: true }>();
-    const matchFormIds: number[] = []
-    const pitFormIds: number[] = []
+    const matchFormIds: number[] = [];
+    const pitFormIds: number[] = [];
     for (const form of formList) {
         if (form.pitScouting) {
             pitForms.set(form.id, form as typeof form & { pitScouting: true });
             pitFormIds.push(form.id);
-        }
-        else {
+        } else {
             matchForms.set(form.id, form as typeof form & { pitScouting: false });
             matchFormIds.push(form.id);
         }

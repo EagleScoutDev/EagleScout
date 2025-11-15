@@ -1,5 +1,13 @@
 import { DarkTheme, type Theme } from "@react-navigation/native";
-import { CustomLightTheme, UltraDarkTheme, DuneTheme, WaterTheme, PurpleTheme, ForestTheme, CoffeeTheme } from "./definitions";
+import {
+    CustomLightTheme,
+    UltraDarkTheme,
+    DuneTheme,
+    WaterTheme,
+    PurpleTheme,
+    ForestTheme,
+    CoffeeTheme,
+} from "./definitions";
 
 export enum ThemeOptions {
     LIGHT,
@@ -25,4 +33,4 @@ export const ThemeOptionsMap: Map<ThemeOptions, Theme> = new Map([
     [ThemeOptions.COFFEE, CoffeeTheme],
 ]);
 
-export * from "./definitions"
+export * from "./definitions";

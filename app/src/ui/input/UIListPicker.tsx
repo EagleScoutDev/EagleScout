@@ -64,7 +64,10 @@ export function UIListPicker<K extends string | number = string | number>({
                 <Display value={value} />
             ) : (
                 Display ?? (
-                    <PressableOpacity style={{ flex: 1, flexDirection: "row", alignItems: "center" }} onPress={() => sheetRef.current?.present()}>
+                    <PressableOpacity
+                        style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+                        onPress={() => sheetRef.current?.present()}
+                    >
                         <Text style={{ color: "gray", fontSize: 16, marginRight: 4, flexShrink: 1 }} numberOfLines={1}>
                             {value === null ? "None" : render(value).name}
                         </Text>

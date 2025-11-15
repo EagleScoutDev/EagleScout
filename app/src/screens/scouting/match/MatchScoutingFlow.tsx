@@ -122,7 +122,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             return;
         }
 
-
         let missing = Form.checkRequired(formSections, sectionData);
         if (missing) {
             Alert.alert(
@@ -143,7 +142,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             competitionName: competition.name,
         };
 
-        console.log("a")
+        console.log("a");
         const internetResponse = await CompetitionsDB.getCurrentCompetition()
             .then(() => true)
             .catch(() => false);
@@ -169,7 +168,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
         } else {
-            console.log("b")
+            console.log("b");
             try {
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({

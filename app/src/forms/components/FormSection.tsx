@@ -15,9 +15,7 @@ export function FormSection({ children, title }: PropsWithChildren<FormSectionPr
             <View style={s.container}>
                 {/* TODO: Display a little green checkmark (like a JUNIT test passing) if all required questions in the section are filled out */}
                 <View style={s.header}>
-                    <Text style={s.title}>
-                        {title}
-                    </Text>
+                    <Text style={s.title}>{title}</Text>
                 </View>
                 {children}
             </View>

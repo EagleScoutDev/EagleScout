@@ -98,7 +98,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
 
                 <Text style={s.label}>Number of rounds:</Text>
                 <NumberInput
-                    onInput={(x) => x !== null && (setNRounds(x),true)}
+                    onInput={(x) => x !== null && (setNRounds(x), true)}
                     value={nRounds}
                     min={1}
                     style={s.numinput}
@@ -107,7 +107,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
 
                 <Text style={s.label}>Number of rounds in a shift:</Text>
                 <NumberInput
-                    onInput={(x) => x !== null && (setNRounds(x),true)}
+                    onInput={(x) => x !== null && (setNRounds(x), true)}
                     value={nShiftRounds}
                     min={1}
                     style={s.numinput}

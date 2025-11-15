@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PitReportsDB } from '../database/ScoutPitReports';
-import BackgroundFetch from 'react-native-background-fetch';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PitReportsDB } from "../database/ScoutPitReports";
+import BackgroundFetch from "react-native-background-fetch";
 
 export class BackgroundFetchManager {
     static syncActive = false;
@@ -11,16 +11,14 @@ export class BackgroundFetchManager {
     static async syncReports(taskId?: string) {
         const allOffline = await AsyncStorage.getAllKeys();
         const offReports = allOffline.filter(
-            key => key.startsWith('pit-form-') && !key.startsWith('pit-form-image-'),
+            (key) => key.startsWith("pit-form-") && !key.startsWith("pit-form-image-")
         );
         const formsFound = [];
         for (const report of offReports) {
             const data = JSON.parse((await AsyncStorage.getItem(report))!);
             const images = [];
-            const imageKeys = allOffline.filter(key =>
-                key.startsWith(
-                    `pit-form-image-${new Date(data.createdAt).getUTCMilliseconds()}`,
-                ),
+            const imageKeys = allOffline.filter((key) =>
+                key.startsWith(`pit-form-image-${new Date(data.createdAt).getUTCMilliseconds()}`)
             );
             for (const imageKey of imageKeys) {
                 images.push((await AsyncStorage.getItem(imageKey))!);
@@ -44,17 +42,16 @@ export class BackgroundFetchManager {
             {
                 minimumFetchInterval: 15,
             },
-            async taskId => {
-                console.log('[BackgroundFetch] start');
+            async (taskId) => {
+                console.log("[BackgroundFetch] start");
                 await BackgroundFetchManager.syncReports(taskId);
-                console.log('[BackgroundFetch] finish');
+                console.log("[BackgroundFetch] finish");
             },
-            error => {
-                console.log('[BackgroundFetch] timed out');
-            },
+            (error) => {
+                console.log("[BackgroundFetch] timed out");
+            }
         );
-        BackgroundFetchManager.syncActive =
-            status === BackgroundFetch.STATUS_AVAILABLE;
-        console.log('[BackgroundFetch] status: ', status);
+        BackgroundFetchManager.syncActive = status === BackgroundFetch.STATUS_AVAILABLE;
+        console.log("[BackgroundFetch] status: ", status);
     }
 }

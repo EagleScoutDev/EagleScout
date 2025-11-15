@@ -1,6 +1,6 @@
-import { supabase } from '../lib/supabase';
-import type { CrescendoAutoPath } from '../frc/crescendo/CrescendoAutoPath';
-import type { ReefscapeAutoPath } from '../frc/reefscape/auto.ts';
+import { supabase } from "../lib/supabase";
+import type { CrescendoAutoPath } from "../frc/crescendo/CrescendoAutoPath";
+import type { ReefscapeAutoPath } from "../frc/reefscape/auto.ts";
 
 interface TimelineElement {
     time: number;
@@ -40,20 +40,17 @@ export interface MatchReportHistory {
 }
 
 export class MatchReportsDB {
-    static async getReportsForCompetition(
-        id: number,
-        fetchUserNames = false,
-    ): Promise<MatchReportReturnData[]> {
+    static async getReportsForCompetition(id: number, fetchUserNames = false): Promise<MatchReportReturnData[]> {
         const { data, error } = await supabase
-            .from('scout_reports')
+            .from("scout_reports")
             .select(
-                '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )' +
-                (fetchUserNames ? ', profiles(name)' : ''),
+                "*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )" +
+                    (fetchUserNames ? ", profiles(name)" : "")
             )
-            .eq('matches.competition_id', id);
+            .eq("matches.competition_id", id);
         if (error) throw error;
 
-        return data.map(x => ({
+        return data.map((x) => ({
             reportId: x.id,
             matchNumber: x.matches.number,
             teamNumber: x.team,
@@ -66,7 +63,7 @@ export class MatchReportsDB {
             competitionName: x.matches.competitions.name,
             timelineData: x.timeline_data,
             autoPath: x.auto_path,
-        }))
+        }));
     }
 
     static async getReportsForSelf(): Promise<MatchReportReturnData[]> {
@@ -74,17 +71,17 @@ export class MatchReportsDB {
             data: { user },
         } = await supabase.auth.getUser();
         if (user == null) {
-            throw new Error('User not logged in');
+            throw new Error("User not logged in");
         }
         const { data, error } = await supabase
-            .from('scout_reports')
+            .from("scout_reports")
             .select(
-                '*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+                "*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )"
             )
-            .eq('user_id', user.id);
-        if (error) throw error
+            .eq("user_id", user.id);
+        if (error) throw error;
 
-        return data.map(x => ({
+        return data.map((x) => ({
             reportId: x.id,
             matchNumber: x.matches.number,
             teamNumber: x.team,
@@ -96,22 +93,20 @@ export class MatchReportsDB {
             competitionName: x.matches.competitions.name,
             timelineData: x.timeline_data,
             autoPath: x.auto_path,
-        }))
+        }));
     }
 
-    static async getReportsForTeam(
-        team: number,
-    ): Promise<MatchReportReturnData[]> {
+    static async getReportsForTeam(team: number): Promise<MatchReportReturnData[]> {
         const res: MatchReportReturnData[] = [];
         const { data, error } = await supabase
-            .from('scout_reports')
+            .from("scout_reports")
             .select(
-                '*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+                "*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )"
             )
-            .eq('team', team);
-        if (error) throw error
+            .eq("team", team);
+        if (error) throw error;
 
-        return data.map(x => ({
+        return data.map((x) => ({
             reportId: x.id,
             matchNumber: x.matches.number,
             teamNumber: x.team,
@@ -123,24 +118,21 @@ export class MatchReportsDB {
             competitionName: x.matches.competitions.name,
             timelineData: x.timeline_data,
             autoPath: x.auto_path,
-        }))
+        }));
     }
 
-    static async getReportsForTeamAtCompetition(
-        team: number,
-        compId: number,
-    ): Promise<MatchReportReturnData[]> {
+    static async getReportsForTeamAtCompetition(team: number, compId: number): Promise<MatchReportReturnData[]> {
         const { data, error } = await supabase
-            .from('scout_reports')
+            .from("scout_reports")
             .select(
-                '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+                "*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )"
             )
-            .eq('team', team)
-            .eq('matches.competition_id', compId);
-        console.log('Got scout reports');
-        if (error) throw error
+            .eq("team", team)
+            .eq("matches.competition_id", compId);
+        console.log("Got scout reports");
+        if (error) throw error;
 
-        return data.map(x => ({
+        return data.map((x) => ({
             reportId: x.id,
             matchNumber: x.matches.number,
             teamNumber: x.team,
@@ -152,12 +144,12 @@ export class MatchReportsDB {
             competitionName: x.matches.competitions.name,
             timelineData: x.timeline_data,
             autoPath: x.auto_path,
-        }))
+        }));
     }
 
     // TODO: don't use Omit<> here
     static async createOnlineScoutReport(report: Omit<MatchReport, "reportId">): Promise<void> {
-        const { data, error } = await supabase.rpc('add_online_scout_report', {
+        const { data, error } = await supabase.rpc("add_online_scout_report", {
             competition_id_arg: report.competitionId,
             match_number_arg: report.matchNumber,
             team_number_arg: report.teamNumber,
@@ -172,10 +164,8 @@ export class MatchReportsDB {
         }
     }
 
-    static async createOfflineScoutReport(
-        report: MatchReportWithDate,
-    ): Promise<void> {
-        const { data, error } = await supabase.rpc('add_offline_scout_report', {
+    static async createOfflineScoutReport(report: MatchReportWithDate): Promise<void> {
+        const { data, error } = await supabase.rpc("add_offline_scout_report", {
             competition_id_arg: report.competitionId,
             match_number_arg: report.matchNumber,
             team_number_arg: report.teamNumber,
@@ -191,11 +181,8 @@ export class MatchReportsDB {
         }
     }
 
-    static async editOnlineScoutReport(
-        reportId: number,
-        newData: [],
-    ): Promise<void> {
-        const { error } = await supabase.rpc('edit_online_scout_report', {
+    static async editOnlineScoutReport(reportId: number, newData: []): Promise<void> {
+        const { error } = await supabase.rpc("edit_online_scout_report", {
             report_id_arg: reportId,
             data_arg: newData,
         });
@@ -204,20 +191,18 @@ export class MatchReportsDB {
         }
     }
 
-    static async getReportHistory(
-        reportId: number,
-    ): Promise<MatchReportHistory[]> {
-        const { data, error } = await supabase.rpc('get_scout_report_history', {
+    static async getReportHistory(reportId: number): Promise<MatchReportHistory[]> {
+        const { data, error } = await supabase.rpc("get_scout_report_history", {
             report_id_arg: reportId,
         });
-        if (error) throw error
+        if (error) throw error;
 
-        return data.map(x => ({
+        return data.map((x) => ({
             historyId: x.id,
             editedAt: x.edited_at,
             editedById: x.edited_by_id,
             data: x.data,
             name: x.name,
-        }))
+        }));
     }
 }

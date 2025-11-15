@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../../FormHelper.ts";
 
-export function useCurrentCompetition(): { competition: CompetitionReturnData | null, online: boolean } {
+export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {
     const [online, setOnline] = useState<boolean>(false);
     const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
 

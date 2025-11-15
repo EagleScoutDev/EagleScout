@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 export interface UserAttributeReturnData {
     id: string;
@@ -15,15 +15,12 @@ export interface UserAttributeWithProfile extends UserAttributeReturnData {
 
 export class UserAttributesDB {
     static async getUserAttribute(id: string): Promise<UserAttributeReturnData> {
-        const { data, error } = await supabase
-            .from('user_attributes')
-            .select('*')
-            .eq('id', id);
+        const { data, error } = await supabase.from("user_attributes").select("*").eq("id", id);
         if (error) {
             throw error;
         } else {
             if (data.length === 0) {
-                throw new Error('User Attribute not found');
+                throw new Error("User Attribute not found");
             } else {
                 return {
                     id: data[0].id,
@@ -40,23 +37,19 @@ export class UserAttributesDB {
             data: { user },
         } = await supabase.auth.getUser();
         if (user == null) {
-            throw new Error('User not logged in');
+            throw new Error("User not logged in");
         }
         return this.getUserAttribute(user.id);
     }
 
-    static async setUserAttributes(
-        userId: number,
-        scouter: boolean,
-        admin: boolean,
-    ): Promise<void> {
+    static async setUserAttributes(userId: number, scouter: boolean, admin: boolean): Promise<void> {
         const { data, error } = await supabase
-            .from('user_attributes')
+            .from("user_attributes")
             .update({
                 scouter: scouter,
                 admin: admin,
             })
-            .eq('id', userId);
+            .eq("id", userId);
         if (error) {
             throw error;
         }
@@ -64,10 +57,8 @@ export class UserAttributesDB {
 
     static async getAllTeamUsers(): Promise<UserAttributeWithProfile[]> {
         const res: UserAttributeWithProfile[] = [];
-        const { data, error } = await supabase.from('user_attributes').select('*');
-        const { data: data2, error: error2 } = await supabase
-            .from('profiles')
-            .select('*');
+        const { data, error } = await supabase.from("user_attributes").select("*");
+        const { data: data2, error: error2 } = await supabase.from("profiles").select("*");
         if (error) {
             throw error;
         } else if (error2) {
@@ -81,7 +72,7 @@ export class UserAttributesDB {
                     }
                 }
                 if (profile == null) {
-                    throw new Error('Profile not found for user with id ' + data[i].id);
+                    throw new Error("Profile not found for user with id " + data[i].id);
                 }
                 res.push({
                     id: data[i].id,

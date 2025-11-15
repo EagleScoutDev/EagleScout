@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 export interface TBAMatch {
     id: number;
@@ -13,17 +13,17 @@ export interface TBAMatch {
 export class TBAMatches {
     static async getMatchesForCompetition(compId: string): Promise<TBAMatch[]> {
         const { data: compData, error: compError } = await supabase
-            .from('competitions')
-            .select('tba_event_id')
-            .eq('id', compId)
+            .from("competitions")
+            .select("tba_event_id")
+            .eq("id", compId)
             .single();
         if (compError) {
             throw compError;
         }
         const { data, error } = await supabase
-            .from('tba_matches')
-            .select('id, team, match, predicted_time, event_id, alliance, comp_level')
-            .eq('event_id', compData.tba_event_id);
+            .from("tba_matches")
+            .select("id, team, match, predicted_time, event_id, alliance, comp_level")
+            .eq("event_id", compData.tba_event_id);
         if (error) {
             throw error;
         } else {

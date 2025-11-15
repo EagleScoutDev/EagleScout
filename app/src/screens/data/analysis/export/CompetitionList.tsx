@@ -1,11 +1,6 @@
-import {
-    ActivityIndicator,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-} from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import type { CompetitionReturnData } from '../../../../database/Competitions';
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import type { CompetitionReturnData } from "../../../../database/Competitions";
 
 export const CompetitionList = ({
     competitionList,
@@ -21,13 +16,9 @@ export const CompetitionList = ({
     const { colors } = useTheme();
     return (
         <ScrollView>
-            {competitionsLoading && (
-                <ActivityIndicator size="large" color={colors.text} />
-            )}
+            {competitionsLoading && <ActivityIndicator size="large" color={colors.text} />}
             {competitionList.length === 0 && !competitionsLoading && (
-                <Text style={{ color: colors.text, textAlign: 'center' }}>
-                    No competitions found
-                </Text>
+                <Text style={{ color: colors.text, textAlign: "center" }}>No competitions found</Text>
             )}
             {competitionList.map((comp, index) => (
                 <TouchableOpacity
@@ -39,16 +30,17 @@ export const CompetitionList = ({
                     style={{
                         padding: 20,
                         borderRadius: 10,
-                        backgroundColor:
-                            index % 2 === 0 ? colors.border : colors.background,
-                    }}>
+                        backgroundColor: index % 2 === 0 ? colors.border : colors.background,
+                    }}
+                >
                     <Text
                         style={{
                             color: colors.text,
-                            fontWeight: 'bold',
-                            textAlign: 'center',
+                            fontWeight: "bold",
+                            textAlign: "center",
                             fontSize: 16,
-                        }}>
+                        }}
+                    >
                         {comp.name} ({new Date(comp.startTime).getFullYear()})
                     </Text>
                 </TouchableOpacity>

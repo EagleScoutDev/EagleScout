@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 interface ScoutAssignmentTeamBased {
     id: number;
@@ -44,21 +44,19 @@ interface ScoutAssignmentPositionBasedCurrentUser {
 }
 
 export class ScoutAssignments {
-    static async getScoutAssignmentsForCompetitionTeamBased(
-        compId: number,
-    ): Promise<ScoutAssignmentTeamBased[]> {
+    static async getScoutAssignmentsForCompetitionTeamBased(compId: number): Promise<ScoutAssignmentTeamBased[]> {
         const { data, error } = await supabase
-            .from('scout_assignments_team_based')
-            .select('*, tba_matches(team, match)')
-            .eq('competition_id', compId);
+            .from("scout_assignments_team_based")
+            .select("*, tba_matches(team, match)")
+            .eq("competition_id", compId);
         if (error) {
             throw error;
         } else {
-            const namesPromises = data.map(async assignment => {
+            const namesPromises = data.map(async (assignment) => {
                 const { data: userData, error: userError } = await supabase
-                    .from('profiles')
-                    .select('name')
-                    .eq('id', assignment.user_id)
+                    .from("profiles")
+                    .select("name")
+                    .eq("id", assignment.user_id)
                     .single();
                 if (userError) {
                     throw userError;
@@ -83,7 +81,7 @@ export class ScoutAssignments {
     }
 
     static async getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
-        compId: number,
+        compId: number
     ): Promise<ScoutAssignmentTeamBasedCurrentUser[]> {
         const {
             data: { user },
@@ -94,10 +92,10 @@ export class ScoutAssignments {
         }
         let res: ScoutAssignmentTeamBasedCurrentUser[] = [];
         const { data, error } = await supabase
-            .from('scout_assignments_team_based')
-            .select('*, tba_matches(team, match)')
-            .eq('competition_id', compId)
-            .eq('user_id', user.id);
+            .from("scout_assignments_team_based")
+            .select("*, tba_matches(team, match)")
+            .eq("competition_id", compId)
+            .eq("user_id", user.id);
         if (error) {
             throw error;
         } else {
@@ -112,19 +110,19 @@ export class ScoutAssignments {
             }
         }
         const { data: data2, error: error2 } = await supabase
-            .from('scout_reports')
-            .select('*, matches!inner( number, competition_id )')
-            .eq('matches.competition_id', compId)
-            .eq('user_id', user.id);
+            .from("scout_reports")
+            .select("*, matches!inner( number, competition_id )")
+            .eq("matches.competition_id", compId)
+            .eq("user_id", user.id);
         if (error2) {
             throw error2;
         }
-        res = res.filter(assignment => {
+        res = res.filter((assignment) => {
             return (
                 data2.find(
-                    report =>
+                    (report) =>
                         report.matches.number === assignment.matchNumber &&
-                        report.team === parseInt(assignment.team.substring(3), 10),
+                        report.team === parseInt(assignment.team.substring(3), 10)
                 ) === undefined
             );
         });
@@ -132,20 +130,20 @@ export class ScoutAssignments {
     }
 
     static async getScoutAssignmentsForCompetitionPositionBased(
-        compId: number,
+        compId: number
     ): Promise<ScoutAssignmentPositionBased[]> {
         const { data, error } = await supabase
-            .from('scout_assignments_position_based')
-            .select('*')
-            .eq('competition_id', compId);
+            .from("scout_assignments_position_based")
+            .select("*")
+            .eq("competition_id", compId);
         if (error) {
             throw error;
         } else {
-            const namesPromises = data.map(async assignment => {
+            const namesPromises = data.map(async (assignment) => {
                 const { data: userData, error: userError } = await supabase
-                    .from('profiles')
-                    .select('name')
-                    .eq('id', assignment.user_id)
+                    .from("profiles")
+                    .select("name")
+                    .eq("id", assignment.user_id)
                     .single();
                 if (userError) {
                     throw userError;
@@ -157,26 +155,26 @@ export class ScoutAssignments {
             for (let i = 0; i < data.length; i++) {
                 let position: Position;
                 switch (data[i].robot_position) {
-                    case 'rf':
+                    case "rf":
                         position = Position.RF;
                         break;
-                    case 'rm':
+                    case "rm":
                         position = Position.RM;
                         break;
-                    case 'rc':
+                    case "rc":
                         position = Position.RC;
                         break;
-                    case 'bf':
+                    case "bf":
                         position = Position.BF;
                         break;
-                    case 'bm':
+                    case "bm":
                         position = Position.BM;
                         break;
-                    case 'bc':
+                    case "bc":
                         position = Position.BC;
                         break;
                     default:
-                        throw new Error('Invalid position');
+                        throw new Error("Invalid position");
                 }
                 res.push({
                     id: data[i].id,
@@ -192,7 +190,7 @@ export class ScoutAssignments {
     }
 
     static async getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
-        compId: number,
+        compId: number
     ): Promise<ScoutAssignmentPositionBasedCurrentUser[]> {
         const {
             data: { user },
@@ -203,10 +201,10 @@ export class ScoutAssignments {
         }
         let res: ScoutAssignmentPositionBasedCurrentUser[] = [];
         const { data, error } = await supabase
-            .from('scout_assignments_position_based')
-            .select('*')
-            .eq('competition_id', compId)
-            .eq('user_id', user.id);
+            .from("scout_assignments_position_based")
+            .select("*")
+            .eq("competition_id", compId)
+            .eq("user_id", user.id);
         if (error) {
             throw error;
         } else {
@@ -214,26 +212,26 @@ export class ScoutAssignments {
                 let position: Position;
                 console.log(data[i]);
                 switch (data[i].robot_position) {
-                    case 'rf':
+                    case "rf":
                         position = Position.RF;
                         break;
-                    case 'rm':
+                    case "rm":
                         position = Position.RM;
                         break;
-                    case 'rc':
+                    case "rc":
                         position = Position.RC;
                         break;
-                    case 'bf':
+                    case "bf":
                         position = Position.BF;
                         break;
-                    case 'bm':
+                    case "bm":
                         position = Position.BM;
                         break;
-                    case 'bc':
+                    case "bc":
                         position = Position.BC;
                         break;
                     default:
-                        throw new Error('Invalid position');
+                        throw new Error("Invalid position");
                 }
                 res.push({
                     id: data[i].id,
@@ -244,19 +242,15 @@ export class ScoutAssignments {
             }
         }
         const { data: data2, error: error2 } = await supabase
-            .from('scout_reports')
-            .select('*, matches!inner( number, competition_id )')
-            .eq('matches.competition_id', compId)
-            .eq('user_id', user.id);
+            .from("scout_reports")
+            .select("*, matches!inner( number, competition_id )")
+            .eq("matches.competition_id", compId)
+            .eq("user_id", user.id);
         if (error2) {
             throw error2;
         }
-        res = res.filter(assignment => {
-            return (
-                data2.find(
-                    report => report.matches.number === assignment.matchNumber,
-                ) === undefined
-            );
+        res = res.filter((assignment) => {
+            return data2.find((report) => report.matches.number === assignment.matchNumber) === undefined;
         });
         return res;
     }

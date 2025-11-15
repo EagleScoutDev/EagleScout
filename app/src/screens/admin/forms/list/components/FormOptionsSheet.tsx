@@ -52,7 +52,7 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                                 color: Color.parse(colors.primary),
                                 onPress: () => {
                                     // TODO: implement this
-                                }
+                                },
                             }),
                             UIForm.Button({
                                 label: "Delete",

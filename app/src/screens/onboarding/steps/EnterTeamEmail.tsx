@@ -1,31 +1,21 @@
-import { useEffect, useState } from 'react';
-import {
-    Alert,
-    Keyboard,
-    SafeAreaView,
-    Text,
-    TextInput,
-    TouchableWithoutFeedback,
-    View,
-} from 'react-native';
-import { styles } from '../styles';
-import { MinimalSectionHeader } from '../../../ui/MinimalSectionHeader';
-import { StandardButton } from '../../../ui/StandardButton';
-import { supabase } from '../../../lib/supabase';
-import { useTheme } from '@react-navigation/native';
-import { type OnboardingScreenProps } from '..';
+import { useEffect, useState } from "react";
+import { Alert, Keyboard, SafeAreaView, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { styles } from "../styles";
+import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
+import { StandardButton } from "../../../ui/StandardButton";
+import { supabase } from "../../../lib/supabase";
+import { useTheme } from "@react-navigation/native";
+import { type OnboardingScreenProps } from "..";
 import { UserAttributesDB } from "../../../database/UserAttributes";
 
-interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {
-
-}
+interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {}
 export const EnterTeamEmail = ({ navigation }: EnterTeamEmailProps) => {
     const { colors } = useTheme();
     const [orgId, setOrgId] = useState<number | null>();
-    const [email, setEmail] = useState<string>('');
+    const [email, setEmail] = useState<string>("");
 
     useEffect(() => {
-        UserAttributesDB.getCurrentUserAttribute().then(r => {
+        UserAttributesDB.getCurrentUserAttribute().then((r) => {
             if (r) {
                 setOrgId(r.organization_id);
             }
@@ -48,43 +38,40 @@ export const EnterTeamEmail = ({ navigation }: EnterTeamEmailProps) => {
                         />
                     </View>
                     <StandardButton
-                        text={'Next'}
-                        textColor={email === '' ? 'dimgray' : colors.primary}
-                        disabled={email === ''}
+                        text={"Next"}
+                        textColor={email === "" ? "dimgray" : colors.primary}
+                        disabled={email === ""}
                         onPress={async () => {
                             const { error: orgEmailError } = await supabase
-                                .from('organizations')
+                                .from("organizations")
                                 .update({
                                     email,
                                 })
-                                .eq('id', orgId);
+                                .eq("id", orgId);
                             if (orgEmailError) {
                                 console.error(orgEmailError);
                                 Alert.alert(
-                                    'Error setting team email',
-                                    'Unable to set team email. Please try again later.',
+                                    "Error setting team email",
+                                    "Unable to set team email. Please try again later."
                                 );
                             }
                             const { error: userAdminError } = await supabase
-                                .from('user_attributes')
+                                .from("user_attributes")
                                 .update({
                                     scouter: true,
                                     admin: true,
                                 })
-                                .eq('id', (await UserAttributesDB.getCurrentUserAttribute()).id);
+                                .eq("id", (await UserAttributesDB.getCurrentUserAttribute()).id);
                             if (userAdminError) {
                                 console.error(userAdminError);
                                 Alert.alert(
-                                    'Error making you an admin',
-                                    'Unable to make you an admin. Please try again later.',
+                                    "Error making you an admin",
+                                    "Unable to make you an admin. Please try again later."
                                 );
                             }
                             // todo: navigate to home screen, without requiring another login
-                            navigation.navigate('Login');
-                            Alert.alert(
-                                'Success!',
-                                'Please log in again to start using Eaglescout',
-                            );
+                            navigation.navigate("Login");
+                            Alert.alert("Success!", "Please log in again to start using Eaglescout");
                         }}
                     />
                 </View>

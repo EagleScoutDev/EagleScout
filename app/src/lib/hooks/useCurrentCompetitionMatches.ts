@@ -1,8 +1,8 @@
 import { type TBAMatch, TBAMatches } from "../../database/TBAMatches.ts";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FormHelper } from '../../FormHelper.ts';
-import { CompetitionsDB } from '../../database/Competitions.ts';
-import { useCallback, useEffect, useState } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FormHelper } from "../../FormHelper.ts";
+import { CompetitionsDB } from "../../database/Competitions.ts";
+import { useCallback, useEffect, useState } from "react";
 
 export const useCurrentCompetitionMatches = () => {
     const [competitionId, setCompetitionId] = useState<number>(-1);
@@ -12,9 +12,7 @@ export const useCurrentCompetitionMatches = () => {
         let dbRequestWorked;
         let dbMatches;
         try {
-            dbMatches = await TBAMatches.getMatchesForCompetition(
-                competitionId.toString(),
-            );
+            dbMatches = await TBAMatches.getMatchesForCompetition(competitionId.toString());
             dbRequestWorked = true;
         } catch (e) {
             dbRequestWorked = false;
@@ -24,15 +22,10 @@ export const useCurrentCompetitionMatches = () => {
         if (dbRequestWorked) {
             if (dbMatches != null) {
                 matches = dbMatches;
-                await AsyncStorage.setItem(
-                    FormHelper.ASYNCSTORAGE_MATCHES_KEY,
-                    JSON.stringify(dbMatches),
-                );
+                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_MATCHES_KEY, JSON.stringify(dbMatches));
             }
         } else {
-            const storedMatches = await FormHelper.readAsyncStorage(
-                FormHelper.ASYNCSTORAGE_MATCHES_KEY,
-            );
+            const storedMatches = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_MATCHES_KEY);
             if (storedMatches != null) {
                 matches = JSON.parse(storedMatches);
             }
@@ -56,15 +49,10 @@ export const useCurrentCompetitionMatches = () => {
         if (dbRequestWorked) {
             if (dbCompetition != null) {
                 comp = dbCompetition;
-                await AsyncStorage.setItem(
-                    FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-                    JSON.stringify(dbCompetition),
-                );
+                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(dbCompetition));
             }
         } else {
-            const storedComp = await FormHelper.readAsyncStorage(
-                FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
-            );
+            const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
             if (storedComp != null) {
                 comp = JSON.parse(storedComp);
             }
@@ -76,7 +64,7 @@ export const useCurrentCompetitionMatches = () => {
     };
 
     useEffect(() => {
-        loadCompetition().then(competitionId => {
+        loadCompetition().then((competitionId) => {
             if (competitionId != null) {
                 loadMatches(competitionId);
             }
@@ -86,14 +74,14 @@ export const useCurrentCompetitionMatches = () => {
     const getTeamsForMatch = useCallback(
         (matchNumber: number) => {
             return matches
-                .filter(match => match.compLevel === 'qm')
-                .filter(match => match.match === matchNumber)
-                .sort((a, b) => (a.alliance === 'red' ? -1 : 1))
-                .map(match => match.team.replace('frc', ''))
-                .map(match => match.replace(/[A-Za-z]/g, ' '))
-                .map(match => Number(match));
+                .filter((match) => match.compLevel === "qm")
+                .filter((match) => match.match === matchNumber)
+                .sort((a, b) => (a.alliance === "red" ? -1 : 1))
+                .map((match) => match.team.replace("frc", ""))
+                .map((match) => match.replace(/[A-Za-z]/g, " "))
+                .map((match) => Number(match));
         },
-        [matches],
+        [matches]
     );
 
     return { matches, competitionId, getTeamsForMatch };

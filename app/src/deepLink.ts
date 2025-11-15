@@ -2,12 +2,17 @@ import { useNavigation } from "@react-navigation/native";
 import { supabase } from "./lib/supabase";
 
 export async function handleDeepLink({ url }: { url: string | null }) {
-    if (url === null) return
+    if (url === null) return;
 
-    const nav = useNavigation()
+    const nav = useNavigation();
 
     const route = url.split("://")[1].split("#")[0];
-    const params = Object.fromEntries(url.split("#")[1].split("&").map(kv => kv.split("=")));
+    const params = Object.fromEntries(
+        url
+            .split("#")[1]
+            .split("&")
+            .map((kv) => kv.split("="))
+    );
 
     switch (route) {
         case "forgot-password": {
@@ -23,9 +28,9 @@ export async function handleDeepLink({ url }: { url: string | null }) {
 
             console.log("navigating to set new password");
             nav.navigate("Onboarding", {
-                screen: "SetNewPassword"
+                screen: "SetNewPassword",
             });
-            break
+            break;
         }
 
         case "confirm-signup": {
@@ -41,9 +46,9 @@ export async function handleDeepLink({ url }: { url: string | null }) {
 
             console.log("navigating to complete sign up");
             nav.navigate("Onboarding", {
-                screen: "EnterUserInfo"
+                screen: "EnterUserInfo",
             });
-            break
+            break;
         }
     }
 }

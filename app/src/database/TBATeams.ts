@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 export interface TBATeam {
     number: number;
@@ -10,7 +10,7 @@ export class TBATeams {
 
     static async fetchAllTeams(): Promise<TBATeam[]> {
         if (TBATeams.TEAM_CACHE.length === 0) {
-            const response = await supabase.from('tba_teams').select('*');
+            const response = await supabase.from("tba_teams").select("*");
             if (response.error) {
                 console.error(response.error);
                 return [];
@@ -28,9 +28,7 @@ export class TBATeams {
     static async searchTeams(query: string): Promise<TBATeam[]> {
         const teams = await TBATeams.fetchAllTeams();
         return teams.filter(
-            team =>
-                team.name.toLowerCase().includes(query.toLowerCase()) ||
-                team.number.toString().includes(query),
+            (team) => team.name.toLowerCase().includes(query.toLowerCase()) || team.number.toString().includes(query)
         );
     }
 }

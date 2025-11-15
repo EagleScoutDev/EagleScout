@@ -13,7 +13,7 @@
   ) tablespace pg_default;
 */
 
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 export interface ScoutcoinLedgerItem {
     id: number;
@@ -38,16 +38,16 @@ export class ScoutcoinLedger {
 
     static async getLogs(): Promise<ScoutcoinLedgerItem[]> {
         const { data, error } = await supabase
-            .from('scoutcoin_ledger')
+            .from("scoutcoin_ledger")
             .select(
-                '*, src_user_name:profiles!scoutcoin_ledger_src_user_fkey(name), dest_user_name:profiles!scoutcoin_ledger_dest_user_fkey(name)',
+                "*, src_user_name:profiles!scoutcoin_ledger_src_user_fkey(name), dest_user_name:profiles!scoutcoin_ledger_dest_user_fkey(name)"
             )
-            .order('created_at', { ascending: false });
+            .order("created_at", { ascending: false });
         if (error) {
             throw error;
         } else {
             console.log(data);
-            return data.map(item => {
+            return data.map((item) => {
                 return {
                     id: item.id,
                     description: item.description,

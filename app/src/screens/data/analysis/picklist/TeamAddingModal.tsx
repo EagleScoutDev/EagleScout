@@ -66,7 +66,10 @@ export function TeamAddingModal({
                             ]);
                         }}
                     >
-                        <Bs.CheckTwoCircle size="24" fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary} />
+                        <Bs.CheckTwoCircle
+                            size="24"
+                            fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary}
+                        />
                     </Pressable>
                     <Text
                         style={{

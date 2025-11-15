@@ -6,7 +6,11 @@ import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
 import { supabase } from "../../lib/supabase.ts";
 import { FormHelper } from "../../FormHelper.ts";
 import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes.ts";
-import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports.ts";
+import {
+    type MatchReportHistory,
+    type MatchReportReturnData,
+    MatchReportsDB,
+} from "../../database/ScoutMatchReports.ts";
 import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
 import { isTablet } from "../../lib/deviceType.ts";
 import * as Bs from "../../ui/icons";
@@ -124,7 +128,7 @@ export function ScoutViewer({
         }
     }, [data]);
 
-    const s = getStyles(colors)
+    const s = getStyles(colors);
 
     return (
         <Modal animationType="slide" visible={visible} transparent={true} presentationStyle={"overFullScreen"}>
@@ -353,7 +357,9 @@ export function ScoutViewer({
                   if the field is a slider*/}
                                     {/*Slider is only used when editing is active*/}
                                     {(!editingActive || !field.slider) && field.type !== "checkboxes" && (
-                                        <Text style={[s.question, editingActive ? s.editingQuestion : null]}>{field.question}</Text>
+                                        <Text style={[s.question, editingActive ? s.editingQuestion : null]}>
+                                            {field.question}
+                                        </Text>
                                     )}
                                     {field.type === "radio" && (
                                         <View>
@@ -479,67 +485,69 @@ export function ScoutViewer({
     );
 }
 
-const getStyles = exMemo((colors: Theme["colors"]) => StyleSheet.create({
-    modal_container: {
-        alignSelf: "center",
-        backgroundColor: colors.background,
-        padding: "5%",
-        // marginTop: '8%',
-        height: "100%",
-        width: "100%",
-    },
-    breadcrumbs: {
-        color: colors.text,
-        opacity: 0.8,
-        fontSize: 12,
-        fontStyle: "italic",
-        textAlign: "center",
-        marginTop: isTablet() ? "0%" : "10%",
-    },
-    close: {
-        color: colors.notification,
-        fontWeight: "bold",
-        fontSize: 17,
-        padding: "2%",
-    },
-    team_title: {
-        fontSize: 30,
-        fontWeight: "bold",
-        color: colors.text,
-        textAlign: "center",
-        marginTop: 10,
-        marginBottom: 5,
-    },
-    report_info: {
-        textAlign: "center",
-        color: colors.text,
-    },
-    section_title: {
-        // set the color to be the opposite of the background
-        color: colors.text,
-        fontSize: 18,
-        textAlign: "center",
-        fontWeight: "bold",
-        margin: "6%",
-        textDecorationLine: "underline",
-    },
-    no_info: {
-        color: colors.notification,
-        fontWeight: "bold",
-        flexWrap: "wrap",
-        fontSize: 15,
-        flex: 1,
-    },
-    question: {
-        color: colors.text,
-        fontSize: 15,
-        fontWeight: "600",
-        // wrap text if it's too long
-        flex: 1,
-        flexWrap: "wrap",
-        paddingBottom: 5,
-    },
-    editingQuestion: {
-        color: colors.primary
-    }
-}))
+const getStyles = exMemo((colors: Theme["colors"]) =>
+    StyleSheet.create({
+        modal_container: {
+            alignSelf: "center",
+            backgroundColor: colors.background,
+            padding: "5%",
+            // marginTop: '8%',
+            height: "100%",
+            width: "100%",
+        },
+        breadcrumbs: {
+            color: colors.text,
+            opacity: 0.8,
+            fontSize: 12,
+            fontStyle: "italic",
+            textAlign: "center",
+            marginTop: isTablet() ? "0%" : "10%",
+        },
+        close: {
+            color: colors.notification,
+            fontWeight: "bold",
+            fontSize: 17,
+            padding: "2%",
+        },
+        team_title: {
+            fontSize: 30,
+            fontWeight: "bold",
+            color: colors.text,
+            textAlign: "center",
+            marginTop: 10,
+            marginBottom: 5,
+        },
+        report_info: {
+            textAlign: "center",
+            color: colors.text,
+        },
+        section_title: {
+            // set the color to be the opposite of the background
+            color: colors.text,
+            fontSize: 18,
+            textAlign: "center",
+            fontWeight: "bold",
+            margin: "6%",
+            textDecorationLine: "underline",
+        },
+        no_info: {
+            color: colors.notification,
+            fontWeight: "bold",
+            flexWrap: "wrap",
+            fontSize: 15,
+            flex: 1,
+        },
+        question: {
+            color: colors.text,
+            fontSize: 15,
+            fontWeight: "600",
+            // wrap text if it's too long
+            flex: 1,
+            flexWrap: "wrap",
+            paddingBottom: 5,
+        },
+        editingQuestion: {
+            color: colors.primary,
+        },
+    })
+);

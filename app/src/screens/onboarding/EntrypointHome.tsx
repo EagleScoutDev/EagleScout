@@ -1,58 +1,56 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { StandardButton } from '../../ui/StandardButton';
-import type { OnboardingScreenProps } from '.';
+import { StyleSheet, Text, View } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { StandardButton } from "../../ui/StandardButton";
+import type { OnboardingScreenProps } from ".";
 
-export interface EntrypointProps extends OnboardingScreenProps<'Entrypoint'> {
-
-}
+export interface EntrypointProps extends OnboardingScreenProps<"Entrypoint"> {}
 export const EntrypointHome = ({ route, navigation }: EntrypointProps) => {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgb(0,0,25)',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgb(0,0,25)",
         },
         title: {
-            color: 'rgb(191, 219, 247)',
+            color: "rgb(191, 219, 247)",
             fontSize: 40,
-            fontWeight: 'bold',
+            fontWeight: "bold",
         },
         subtitle: {
-            color: 'gray',
+            color: "gray",
             fontSize: 20,
-            fontWeight: 'bold',
+            fontWeight: "bold",
         },
     });
 
     return (
         <View style={styles.container}>
             {/*    logo*/}
-            <View style={{ alignItems: 'center', flex: 0.5 }}>
+            <View style={{ alignItems: "center", flex: 0.5 }}>
                 <Text style={styles.title}>Eaglescout</Text>
                 <Text style={styles.subtitle}>The future of scouting is now.</Text>
             </View>
-            <View style={{ width: '100%', position: 'absolute', bottom: '10%' }}>
+            <View style={{ width: "100%", position: "absolute", bottom: "10%" }}>
                 <StandardButton
-                    textColor={'white'}
-                    color={'rgb(0,0,25)'}
+                    textColor={"white"}
+                    color={"rgb(0,0,25)"}
                     isLoading={false}
                     onPress={() => {
-                        navigation.navigate('Login');
+                        navigation.navigate("Login");
                     }}
-                    text={'Login'}
+                    text={"Login"}
                 />
                 <StandardButton
                     textColor={colors.primary}
-                    color={'rgb(0,0,25)'}
+                    color={"rgb(0,0,25)"}
                     isLoading={false}
                     onPress={() => {
-                        navigation.navigate('Signup');
+                        navigation.navigate("Signup");
                     }}
-                    text={'Sign Up'}
+                    text={"Sign Up"}
                 />
             </View>
         </View>
