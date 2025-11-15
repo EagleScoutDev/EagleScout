@@ -1,15 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 
-export const UITabs = ({
-    tabs,
-    selectedTab,
-    setSelectedTab,
-}: {
+export interface UITabsProps {
     tabs: string[];
     selectedTab: string;
     setSelectedTab: (tab: string) => void;
-}) => {
+}
+export function UITabs({ tabs, selectedTab, setSelectedTab }: UITabsProps) {
     "use memo";
     const { colors } = useTheme();
     const styles = getStyles(colors);
@@ -27,7 +24,7 @@ export const UITabs = ({
             ))}
         </View>
     );
-};
+}
 
 const getStyles = (colors: Theme["colors"]) =>
     StyleSheet.create({

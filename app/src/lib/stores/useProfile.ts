@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ProfilesDB } from "../../database/Profiles";
 import type { Profile } from "../user/profile";
 
-export const useProfile = () => {
+export function useProfile() {
     const [profile, setProfile] = useState<Profile | null>(null);
 
     useEffect(() => {
@@ -10,4 +10,4 @@ export const useProfile = () => {
     }, []);
 
     return { profile };
-};
+}

@@ -6,7 +6,7 @@ interface BadgeProps {
     backgroundColor: string;
 }
 
-export const UIBadge = ({ text, color, backgroundColor }: BadgeProps) => {
+export function UIBadge({ text, color, backgroundColor }: BadgeProps) {
     "use memo";
 
     return (
@@ -31,4 +31,4 @@ export const UIBadge = ({ text, color, backgroundColor }: BadgeProps) => {
             </Text>
         </View>
     );
-};
+}

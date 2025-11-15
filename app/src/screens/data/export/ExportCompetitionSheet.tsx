@@ -11,7 +11,7 @@ import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
 export interface ExportCompetitionSheetProps {
     data?: { competition: CompetitionReturnData };
 }
-export const ExportCompetitionSheet = ({ data }: ExportCompetitionSheetProps) => {
+export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
     "use memo";
     const { colors } = useTheme();
 
@@ -61,4 +61,4 @@ export const ExportCompetitionSheet = ({ data }: ExportCompetitionSheetProps) =>
             </UIList>
         </>
     );
-};
+}

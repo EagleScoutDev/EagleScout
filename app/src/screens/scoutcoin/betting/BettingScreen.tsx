@@ -26,7 +26,7 @@ export interface BettingScreenParams {
     matchNumber: number;
 }
 export interface BettingScreenProps extends DataMenuScreenProps<"MatchBetting/BettingScreen"> {}
-export const BettingScreen = ({ route }: BettingScreenProps) => {
+export function BettingScreen({ route }: BettingScreenProps) {
     const { matchNumber } = route.params;
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
@@ -501,4 +501,4 @@ export const BettingScreen = ({ route }: BettingScreenProps) => {
             </SafeAreaView>
         </SafeAreaProvider>
     );
-};
+}

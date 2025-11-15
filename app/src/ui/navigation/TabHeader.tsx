@@ -2,7 +2,11 @@ import { Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
 
-export const TabHeader = ({ title, description }: { title: string; description?: string }) => {
+export interface TabHeaderProps {
+    title: string;
+    description?: string;
+}
+export function TabHeader({ title, description }: TabHeaderProps) {
     const { colors } = useTheme();
 
     return (
@@ -30,4 +34,4 @@ export const TabHeader = ({ title, description }: { title: string; description?:
             )}
         </View>
     );
-};
+}

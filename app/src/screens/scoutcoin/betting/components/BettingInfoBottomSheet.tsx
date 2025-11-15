@@ -8,7 +8,7 @@ import { SelectAllianceStep } from "./SelectAllianceStep";
 
 const Stack = createNativeStackNavigator();
 
-export const BettingInfoBottomSheet = () => {
+export function BettingInfoBottomSheet() {
     "use memo";
     const { colors } = useTheme();
 
@@ -41,4 +41,4 @@ export const BettingInfoBottomSheet = () => {
             </BottomSheet>
         </>
     );
-};
+}

@@ -9,7 +9,7 @@ import { type OnboardingScreenProps } from "..";
 import { UserAttributesDB } from "../../../database/UserAttributes";
 
 interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {}
-export const EnterTeamEmail = ({ navigation }: EnterTeamEmailProps) => {
+export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
     const { colors } = useTheme();
     const [orgId, setOrgId] = useState<number | null>();
     const [email, setEmail] = useState<string>("");
@@ -78,4 +78,4 @@ export const EnterTeamEmail = ({ navigation }: EnterTeamEmailProps) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}

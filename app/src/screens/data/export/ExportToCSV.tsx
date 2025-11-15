@@ -61,7 +61,6 @@ export function ExportToCSV() {
 
             <UISheetModal
                 ref={modalRef}
-                gap={"40%"}
                 enablePanDownToClose
                 backdropPressBehavior={"close"}
                 handleComponent={null}

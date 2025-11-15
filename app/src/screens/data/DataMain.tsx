@@ -50,7 +50,7 @@ export type DataMenuParamList = {
     ManageMatchBets: undefined;
 };
 
-export const DataMain = () => {
+export function DataMain() {
     const { colors } = useTheme();
 
     return (
@@ -178,4 +178,4 @@ export const DataMain = () => {
             </Stack.Group>
         </Stack.Navigator>
     );
-};
+}

@@ -3,7 +3,7 @@ import { BettingInfoStep } from "./BettingInfoStep";
 import { Image, Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 
-export const SelectAllianceStep = () => {
+export function SelectAllianceStep() {
     const { colors } = useTheme();
     return (
         <BettingInfoStep index={1} title="FormSelect an alliance" nextScreen="SelectAmount" isFinalScreen={true}>
@@ -47,4 +47,4 @@ export const SelectAllianceStep = () => {
             </BottomSheetView>
         </BettingInfoStep>
     );
-};
+}

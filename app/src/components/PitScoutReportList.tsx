@@ -4,13 +4,12 @@ import { useTheme } from "@react-navigation/native";
 import { PitScoutViewer } from "./modals/PitScoutViewer";
 import { useState } from "react";
 
-export const PitScoutReportList = ({
-    reports,
-    isOffline,
-}: {
+export interface PitScoutReportListProps {
     reports: PitReportReturnData[] | null;
     isOffline: boolean;
-}) => {
+}
+
+export function PitScoutReportList({ reports, isOffline }: PitScoutReportListProps) {
     const { colors } = useTheme();
     const [chosenReport, setChosenReport] = useState<PitReportReturnData | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -159,4 +158,4 @@ export const PitScoutReportList = ({
             )}
         </View>
     );
-};
+}

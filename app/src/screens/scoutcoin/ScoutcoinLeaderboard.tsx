@@ -88,7 +88,7 @@ const LeaderboardUserItem = ({
     );
 };
 
-export const ScoutcoinLeaderboard = () => {
+export function ScoutcoinLeaderboard() {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const [leaderboardUsers, setLeaderboardUsers] = useState<LeaderboardUser[]>([]);
@@ -157,7 +157,7 @@ export const ScoutcoinLeaderboard = () => {
             )}
         </View>
     );
-};
+}
 
 const makeStyles = ({ colors }: Theme) =>
     StyleSheet.create({

@@ -17,7 +17,7 @@ import { supabase } from "../../../lib/supabase";
 import type { OnboardingScreenProps } from "..";
 
 export interface SelectTeamProps extends OnboardingScreenProps<"SelectTeam"> {}
-export const SelectTeam = ({ navigation }: SelectTeamProps) => {
+export function SelectTeam({ navigation }: SelectTeamProps) {
     const [team, setTeam] = useState("");
     const [queriedTeams, setQueriedTeams] = useState<TBATeam[]>([]);
 
@@ -80,7 +80,7 @@ export const SelectTeam = ({ navigation }: SelectTeamProps) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}
 
 const styles = StyleSheet.create({
     ...sharedStyles,

@@ -9,7 +9,7 @@ export interface OrientationChooserProps {
     alliance: Alliance;
     setAlliance: Setter<Alliance>;
 }
-export const OrientationChooser = ({ orientation, setOrientation, alliance, setAlliance }: OrientationChooserProps) => {
+export function OrientationChooser({ orientation, setOrientation, alliance, setAlliance }: OrientationChooserProps) {
     const leftAlliance = Orientation.getLeft(orientation);
     const rightAlliance = Alliance.toggle(leftAlliance);
 
@@ -32,7 +32,7 @@ export const OrientationChooser = ({ orientation, setOrientation, alliance, setA
             </Pressable>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {

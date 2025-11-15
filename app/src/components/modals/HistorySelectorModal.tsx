@@ -11,7 +11,7 @@ import { useTheme } from "@react-navigation/native";
  * @param onHistorySelect - function to call when a history is selected
  * @returns {JSX.Element} - the modal
  */
-export const HistorySelectorModal = ({ formHistory, selectedHistoryId, visible, setVisible, onHistorySelect }) => {
+export function HistorySelectorModal({ formHistory, selectedHistoryId, visible, setVisible, onHistorySelect }) {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
         report_info: {
@@ -73,4 +73,4 @@ export const HistorySelectorModal = ({ formHistory, selectedHistoryId, visible, 
             </View>
         </UIModal>
     );
-};
+}

@@ -13,7 +13,7 @@ export enum FilterType {
     TEXT,
 }
 
-export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNote)[]; onClose?: () => void }) => {
+export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNote)[]; onClose?: () => void }) {
     const { colors } = useTheme();
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [filteredNotes, setFilteredNotes] = useState<(NoteWithMatch | OfflineNote)[]>(notes);
@@ -187,4 +187,4 @@ export const NoteList = ({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
             )}
         </View>
     );
-};
+}

@@ -8,7 +8,7 @@ import { supabase } from "../../../lib/supabase";
 import type { OnboardingScreenProps } from "..";
 
 interface EnterUserInfoProps extends OnboardingScreenProps<"EnterUserInfo"> {}
-export const EnterUserInfo = ({ navigation }: EnterUserInfoProps) => {
+export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const { colors } = useTheme();
@@ -77,4 +77,4 @@ export const EnterUserInfo = ({ navigation }: EnterUserInfoProps) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}

@@ -17,7 +17,7 @@ import { supabase } from "../../lib/supabase";
 import { type OnboardingScreenProps } from ".";
 
 export interface ResetPasswordProps extends OnboardingScreenProps<"ResetPassword"> {}
-export const ResetPassword = ({ navigation }: ResetPasswordProps) => {
+export function ResetPassword({ navigation }: ResetPasswordProps) {
     const { colors } = useTheme();
     const [email, setEmail] = useState("");
 
@@ -115,4 +115,4 @@ export const ResetPassword = ({ navigation }: ResetPasswordProps) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}

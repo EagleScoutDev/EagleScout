@@ -6,11 +6,7 @@ import { UICheckboxes } from "../../ui/input/UICheckboxes";
 import { supabase } from "../../lib/supabase";
 import { FormHelper } from "../../FormHelper";
 import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes";
-import {
-    type MatchReportHistory,
-    type MatchReportReturnData,
-    MatchReportsDB
-} from "../../database/ScoutMatchReports";
+import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import { HistorySelectorModal } from "./HistorySelectorModal";
 import { isTablet } from "../../lib/deviceType";
 import * as Bs from "../../ui/icons";

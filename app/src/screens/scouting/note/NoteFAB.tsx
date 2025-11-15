@@ -2,16 +2,13 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-nat
 import { useTheme } from "@react-navigation/native";
 import * as Bs from "../../../ui/icons";
 
-export const NoteFAB = ({
-    onSubmitPress,
-    isLoading,
-    contentPresent,
-}: {
+export interface NoteFABProps {
     onSubmitPress: () => void;
     isLoading: boolean;
     // do any of the notes have content?
     contentPresent: boolean;
-}) => {
+}
+export function NoteFAB({ onSubmitPress, isLoading, contentPresent }: NoteFABProps) {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
         fab: {
@@ -48,4 +45,4 @@ export const NoteFAB = ({
             </TouchableOpacity>
         </View>
     );
-};
+}

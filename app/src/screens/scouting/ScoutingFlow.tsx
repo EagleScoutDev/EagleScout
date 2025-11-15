@@ -36,7 +36,7 @@ export function ScoutFlow() {
                     options={{
                         title: "Scout Report",
                         headerBackTitle: "Home",
-                        headerRight: TimerHeader(),
+                        headerRight: TimerHeader,
                     }}
                     component={MatchScoutingFlow}
                 />
@@ -61,7 +61,7 @@ export function ScoutFlow() {
     );
 }
 
-const TimerHeader = () => () => {
+function TimerHeader() {
     const { colors } = useTheme();
     const timer = useContext(ScoutTimerContext);
     return (
@@ -87,4 +87,4 @@ const TimerHeader = () => () => {
             </Pressable>
         </View>
     );
-};
+}

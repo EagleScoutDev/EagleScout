@@ -24,7 +24,7 @@ export type AppHomeParamList = {
 };
 
 export interface AppHomeProps extends RootStackScreenProps<"App"> {}
-export const AppHome = ({ navigation }: AppHomeProps) => {
+export function AppHome({ navigation }: AppHomeProps) {
     const { colors } = useTheme();
     const account = useUserStore.use.account();
 
@@ -115,4 +115,4 @@ export const AppHome = ({ navigation }: AppHomeProps) => {
             <PlusMenu ref={plusMenuRef} navigation={navigation} />
         </>
     );
-};
+}

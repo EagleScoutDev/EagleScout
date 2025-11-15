@@ -4,7 +4,7 @@ import { StandardButton } from "../../ui/StandardButton";
 import type { OnboardingScreenProps } from ".";
 
 export interface EntrypointProps extends OnboardingScreenProps<"Entrypoint"> {}
-export const EntrypointHome = ({ route, navigation }: EntrypointProps) => {
+export function EntrypointHome({ navigation }: EntrypointProps) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -55,4 +55,4 @@ export const EntrypointHome = ({ route, navigation }: EntrypointProps) => {
             </View>
         </View>
     );
-};
+}

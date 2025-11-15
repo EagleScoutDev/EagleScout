@@ -12,13 +12,13 @@ export interface NoteInputModalProps {
     noteContents: Record<string, string>;
     setNoteContents: (contents: { [key: string]: string }) => void;
 }
-export const NoteInputModal = ({
+export function NoteInputModal({
     onSubmit,
     isLoading,
     selectedAlliance,
     noteContents,
     setNoteContents,
-}: NoteInputModalProps) => {
+}: NoteInputModalProps) {
     const height = useHeaderHeight();
     const [localContent, setLocalContent] = useState<string>("");
     const [currentTeam, setCurrentTeam] = useState<number>(Number(Object.keys(noteContents)[0]) || 0);
@@ -105,4 +105,4 @@ export const NoteInputModal = ({
             </SafeAreaView>
         </Modal>
     );
-};
+}

@@ -29,7 +29,7 @@ export type OnboardingParamList = {
 };
 
 export interface OnboardingProps extends RootStackScreenProps<"Onboarding"> {}
-export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
+export function OnboardingFlow({ navigation }: OnboardingProps) {
     const [error, setError] = useState("");
     const account = useUserStore.use.account();
     const login = useUserStore.use.login();
@@ -89,4 +89,4 @@ export const OnboardingFlow = ({ navigation }: OnboardingProps) => {
             <Stack.Screen name="SelectTeam" component={SelectTeam} />
         </Stack.Navigator>
     );
-};
+}

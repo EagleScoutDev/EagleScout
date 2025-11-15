@@ -18,7 +18,7 @@ export interface LoginProps extends OnboardingScreenProps<"Login"> {
     onSubmit: (username: string, password: string) => void;
     error: string;
 }
-export const LoginForm = ({ route, navigation, onSubmit, error }: LoginProps) => {
+export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
     let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
     const { colors } = useTheme();
@@ -97,4 +97,4 @@ export const LoginForm = ({ route, navigation, onSubmit, error }: LoginProps) =>
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}

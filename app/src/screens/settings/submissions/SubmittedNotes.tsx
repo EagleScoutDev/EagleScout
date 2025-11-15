@@ -10,7 +10,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { Color } from "../../../lib/color";
 
-export const SubmittedNotes = () => {
+export function SubmittedNotes() {
     const { colors } = useTheme();
 
     const [onlineNotes, setOnlineNotes] = useState<NoteWithMatch[]>([]);
@@ -145,4 +145,4 @@ export const SubmittedNotes = () => {
             </SafeAreaView>
         </SafeAreaProvider>
     );
-};
+}

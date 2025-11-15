@@ -17,7 +17,7 @@ import { StandardButton } from "../../ui/StandardButton";
 import { type OnboardingScreenProps } from ".";
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {}
-export const Signup = ({ navigation }: SignupProps) => {
+export function Signup({ navigation }: SignupProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -122,4 +122,4 @@ export const Signup = ({ navigation }: SignupProps) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}

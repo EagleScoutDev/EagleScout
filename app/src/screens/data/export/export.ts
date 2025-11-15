@@ -6,7 +6,7 @@ import { type MatchReportReturnData, MatchReportsDB } from "../../../database/Sc
 import type { CompetitionReturnData } from "../../../database/Competitions";
 import { type PitReportReturnData, PitReportsDB } from "../../../database/ScoutPitReports";
 
-export const exportScoutReportsToCsv = async (comp: CompetitionReturnData) => {
+export async function exportScoutReportsToCsv(comp: CompetitionReturnData) {
     let reports: MatchReportReturnData[];
     try {
         reports = await MatchReportsDB.getReportsForCompetition(comp.id, true);
@@ -49,9 +49,9 @@ export const exportScoutReportsToCsv = async (comp: CompetitionReturnData) => {
     });
 
     return csvBuilder.build();
-};
+}
 
-export const exportPitReportsToCsv = async (comp: CompetitionReturnData) => {
+export async function exportPitReportsToCsv(comp: CompetitionReturnData) {
     let reports: PitReportReturnData[];
     try {
         reports = await PitReportsDB.getReportsForCompetition(comp.id);
@@ -99,9 +99,9 @@ export const exportPitReportsToCsv = async (comp: CompetitionReturnData) => {
     });
 
     return csvBuilder.build();
-};
+}
 
-export const writeToFile = async (name: string, content: string) => {
+export async function writeToFile(name: string, content: string) {
     let path = RNFS.CachesDirectoryPath + `/${name}`;
     try {
         await RNFS.writeFile(path, content, "utf8");
@@ -130,4 +130,4 @@ export const writeToFile = async (name: string, content: string) => {
         );
         console.log(err);
     }
-};
+}

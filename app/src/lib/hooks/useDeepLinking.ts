@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Linking } from "react-native";
 
-export const useDeepLinking = () => {
+export function useDeepLinking() {
     const [url, setUrl] = useState<string | null>(null);
     useEffect(() => {
         const eventListener = Linking.addEventListener("url", ({ url }) => {
@@ -17,4 +17,4 @@ export const useDeepLinking = () => {
         };
     }, []);
     return { url };
-};
+}

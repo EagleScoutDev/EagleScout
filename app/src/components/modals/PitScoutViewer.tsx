@@ -7,17 +7,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
 import * as Bs from "../../ui/icons";
 
-const ListSeparator = () => <View style={{ width: 10 }} />;
-
-export const PitScoutViewer = ({
-    visible,
-    setVisible,
-    data,
-}: {
+interface PitScoutViewerProps {
     visible: boolean;
     setVisible: (visible: boolean) => void;
     data: PitReportReturnData;
-}) => {
+}
+export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProps) {
     const { colors } = useTheme();
     const [sections, setSections] = useState<any[]>([]);
     const [images, setImages] = useState<string[]>([]);
@@ -110,6 +105,7 @@ export const PitScoutViewer = ({
             flex: 1,
             flexDirection: "row",
             flexWrap: "wrap",
+            gap: 10,
         },
         image: {
             width: 200,
@@ -229,7 +225,6 @@ export const PitScoutViewer = ({
                         <Text style={styles.section_title}>Images</Text>
                         <FlatList
                             style={styles.image_list}
-                            ItemSeparatorComponent={ListSeparator}
                             data={images}
                             renderItem={({ item }) => <Image source={{ uri: item }} style={styles.image} />}
                             // keyExtractor={item => item}
@@ -240,4 +235,4 @@ export const PitScoutViewer = ({
             </SafeAreaView>
         </Modal>
     );
-};
+}

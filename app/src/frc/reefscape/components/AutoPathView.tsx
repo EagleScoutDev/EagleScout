@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { AutoAction, AutoActionType, type AutoPath } from "../auto";
 
 export function AutoPathView({ path }: { path: AutoPath }) {
+    "use memo";
     if (!path || path.length === 0) {
         return (
             <View
@@ -101,6 +102,7 @@ const nodePositions = [
 ];
 
 function NodeToStartingLine({ nodeId }: { nodeId: number }) {
+    "use memo";
     return (
         <>
             <Line
@@ -116,7 +118,8 @@ function NodeToStartingLine({ nodeId }: { nodeId: number }) {
     );
 }
 
-const NodeToNodeLine = ({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2: number; order: number }) => {
+function NodeToNodeLine({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2: number; order: number }) {
+    "use memo";
     return (
         <Line
             x1={nodePositions[nodeId1].x}
@@ -127,24 +130,28 @@ const NodeToNodeLine = ({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2:
             strokeWidth={6 - order * 0.3}
         />
     );
-};
+}
 
-const DefaultNode = ({ nodeId }: { nodeId: number }) => (
-    <Circle
-        cx={nodePositions[nodeId].x}
-        cy={nodePositions[nodeId].y}
-        r="10.5"
-        fill="white"
-        stroke="#FF7A00"
-        strokeWidth="2"
-    />
-);
+function DefaultNode({ nodeId }: { nodeId: number }) {
+    "use memo";
+    return (
+        <Circle
+            cx={nodePositions[nodeId].x}
+            cy={nodePositions[nodeId].y}
+            r="10.5"
+            fill="white"
+            stroke="#FF7A00"
+            strokeWidth="2"
+        />
+    );
+}
 
 interface ActiveNodeProps {
     nodeId: number;
     status: "success" | "missed";
 }
 function ActiveNode({ nodeId, status }: ActiveNodeProps) {
+    "use memo";
     return (
         <>
             <Circle cx={nodePositions[nodeId].x} cy={nodePositions[nodeId].y} r="12" fill="#637AF4" />

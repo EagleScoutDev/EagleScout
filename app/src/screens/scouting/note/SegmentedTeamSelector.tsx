@@ -2,19 +2,21 @@ import { useTheme } from "@react-navigation/native";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Color } from "../../../lib/color";
 
-export const SegmentedTeamSelector = ({
-    color,
-    teams,
-    selectedTeam,
-    setSelectedTeam,
-    completed,
-}: {
+interface SegmentedTeamSelectorProps {
     color: string;
     teams: number[];
     selectedTeam: number;
     setSelectedTeam: (team: number) => void;
     completed: boolean[];
-}) => {
+}
+
+export function SegmentedTeamSelector({
+    color,
+    teams,
+    selectedTeam,
+    setSelectedTeam,
+    completed,
+}: SegmentedTeamSelectorProps) {
     const { colors } = useTheme();
     const buttonActiveBackgroundColor = color === "blue" ? "blue" : "red";
     return (
@@ -152,4 +154,4 @@ export const SegmentedTeamSelector = ({
             </TouchableOpacity>
         </View>
     );
-};
+}

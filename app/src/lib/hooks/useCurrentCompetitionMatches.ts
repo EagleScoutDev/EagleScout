@@ -4,7 +4,7 @@ import { FormHelper } from "../../FormHelper";
 import { CompetitionsDB } from "../../database/Competitions";
 import { useCallback, useEffect, useState } from "react";
 
-export const useCurrentCompetitionMatches = () => {
+export function useCurrentCompetitionMatches() {
     const [competitionId, setCompetitionId] = useState<number>(-1);
     const [matches, setMatches] = useState<TBAMatch[]>([]);
 
@@ -76,7 +76,7 @@ export const useCurrentCompetitionMatches = () => {
             return matches
                 .filter((match) => match.compLevel === "qm")
                 .filter((match) => match.match === matchNumber)
-                .sort((a, b) => (a.alliance === "red" ? -1 : 1))
+                .sort((a, _) => (a.alliance === "red" ? -1 : 1))
                 .map((match) => match.team.replace("frc", ""))
                 .map((match) => match.replace(/[A-Za-z]/g, " "))
                 .map((match) => Number(match));
@@ -85,4 +85,4 @@ export const useCurrentCompetitionMatches = () => {
     );
 
     return { matches, competitionId, getTeamsForMatch };
-};
+}

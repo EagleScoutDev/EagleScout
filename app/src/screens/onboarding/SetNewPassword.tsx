@@ -9,7 +9,7 @@ import { type OnboardingScreenProps } from ".";
 
 export interface SetNewPasswordProps extends OnboardingScreenProps<"SetNewPassword"> {}
 
-export const SetNewPassword = ({ navigation }: SetNewPasswordProps) => {
+export function SetNewPassword({ navigation }: SetNewPasswordProps) {
     const { colors } = useTheme();
     const [password, setPassword] = useState("");
 
@@ -89,4 +89,4 @@ export const SetNewPassword = ({ navigation }: SetNewPasswordProps) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
-};
+}

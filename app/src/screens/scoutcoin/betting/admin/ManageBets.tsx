@@ -126,7 +126,7 @@ const BetCard = ({
     );
 };
 
-export const ManageBets = () => {
+export function ManageBets() {
     const [matches, setMatches] = useState<
         {
             matchNumber: number;
@@ -189,4 +189,4 @@ export const ManageBets = () => {
             </View>
         </View>
     );
-};
+}

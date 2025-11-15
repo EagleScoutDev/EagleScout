@@ -2,17 +2,13 @@ import { useTheme } from "@react-navigation/native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Text } from "react-native";
 
-export const PlayerIcon = ({
-    emoji,
-    amount,
-    name,
-    alliance,
-}: {
+export interface PlayerIconProps {
     emoji: string;
     amount: number;
     name: string;
     alliance: "red" | "blue";
-}) => {
+}
+export function PlayerIcon({ emoji, amount, name, alliance }: PlayerIconProps) {
     const { colors } = useTheme();
     return (
         <BottomSheetView style={{ alignItems: "center" }}>
@@ -44,4 +40,4 @@ export const PlayerIcon = ({
             </Text>
         </BottomSheetView>
     );
-};
+}
