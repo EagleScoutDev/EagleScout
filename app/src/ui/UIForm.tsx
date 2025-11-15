@@ -96,7 +96,10 @@ export namespace UIForm {
                     <RNDateTimePicker
                         mode={date && time ? "datetime" : date ? "date" : time ? "time" : "datetime"}
                         value={v}
-                        onChange={(_, value) => onChange && onChange(v)}
+                        onChange={(_, x) => {
+                            if (x === undefined) return;
+                            onChange?.(x);
+                        }}
                     />
                 ),
             });
