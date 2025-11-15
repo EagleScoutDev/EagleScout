@@ -3,10 +3,13 @@ import {
     BottomSheetModal,
     type BottomSheetModalProps,
     BottomSheetView,
+    useBottomSheet,
+    useBottomSheetModalInternal,
 } from "@gorhom/bottom-sheet";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
 import type { ReactNode, Ref } from "react";
+import { useModalSafeArea } from "./ModalSafeAreaProvider.tsx";
 
 export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
     ref?: Ref<BottomSheetModal<T>>;
@@ -15,21 +18,17 @@ export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
 export interface UISheetModal<T = any> extends BottomSheetModal<T> {}
 export function UISheetModal<T = any>({ backdropPressBehavior = "none", children, ...props }: UISheetModalProps<T>) {
     "use memo";
-    const safeAreaFrame = useSafeAreaFrame();
-    const sheetInsets = useSafeAreaInsets();
-    const maxHeight = safeAreaFrame.height - sheetInsets.top;
+    const { frame, insets } = useModalSafeArea();
+    const maxHeight = frame.height - insets.top;
     const gap = 16;
 
     function wrap(children: ReactNode) {
         return (
             <BottomSheetView style={{ height: "100%" }}>
                 {/*<SafeAreaProvider>*/}
-                    <SafeAreaView
-                        edges={{ bottom: "additive", left: "additive", right: "additive" }}
-                        style={{ flex: 1 }}
-                    >
-                        {children}
-                    </SafeAreaView>
+                <SafeAreaView edges={{ bottom: "additive", left: "additive", right: "additive" }} style={{ flex: 1 }}>
+                    {children}
+                </SafeAreaView>
                 {/*</SafeAreaProvider>*/}
             </BottomSheetView>
         );
