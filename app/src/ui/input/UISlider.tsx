@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import RNSlider from "@react-native-community/slider";
 import { useTheme } from "@react-navigation/native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThreeCenterLayout } from "../layout/ThreeCenterLayout.tsx";
 
 export interface UISliderProps {
@@ -19,6 +19,11 @@ export function UISlider({ min, max, step = 1, value, onInput, disabled = false,
     const { colors } = useTheme();
 
     const [draft, setDraft] = useState<number>(value);
+
+    // Sync draft state with value prop when it changes (e.g., after form reset)
+    useEffect(() => {
+        setDraft(value);
+    }, [value]);
 
     return (
         <View>

@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
-import type { CrescendoAutoPath } from '../components/games/crescendo/CrescendoAutoPath';
-import type { ReefscapeAutoPath } from '../components/games/reefscape/ReefscapeAutoPath';
+import type { CrescendoAutoPath } from '../frc/crescendo/CrescendoAutoPath';
+import type { ReefscapeAutoPath } from '../frc/reefscape/auto.ts';
 
 interface TimelineElement {
     time: number;

@@ -16,15 +16,15 @@ export namespace Alliance {
 }
 
 export enum Orientation {
-    red = Alliance.red,
-    blue = Alliance.blue,
+    leftRed = Alliance.red,
+    leftBlue = Alliance.blue,
 }
 export namespace Orientation {
     export function toggle(x: Orientation): Orientation {
-        return x === Orientation.red ? Orientation.blue : Orientation.red;
+        return x === Orientation.leftRed ? Orientation.leftBlue : Orientation.leftRed;
     }
     export function getLeft(x: Orientation): Alliance {
-        return x === Orientation.red ? Alliance.red : Alliance.blue;
+        return x === Orientation.leftRed ? Alliance.red : Alliance.blue;
     }
     export function fromAlliance(x: Alliance): Orientation {
         return x as unknown as Orientation;

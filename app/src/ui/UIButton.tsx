@@ -69,22 +69,18 @@ export function UIButton({
         });
 
     return (
-        <PressableOpacity onPress={doPress}>
-            <View style={[sizeStyles.button, { backgroundColor: bg }, buttonStyle]}>
-                {loading || processing ? (
-                    <ActivityIndicator
-                        style={{ position: "absolute", width: "100%", height: "100%" }}
-                        color={spinnerColor}
-                    />
-                ) : (
-                    children ?? (
-                        <View style={{ opacity: loading || processing ? 0 : 1 }}>
-                            {icon ? icon({ ...sizeStyles.icon, fill: fg }) : null}
-                            <Text style={[sizeStyles.text, { color: fg }, textStyle]}>{text}</Text>
-                        </View>
-                    )
-                )}
-            </View>
+        <PressableOpacity onPress={doPress} style={[sizeStyles.button, { backgroundColor: bg }, buttonStyle]}>
+            {loading || processing ? (
+                <ActivityIndicator
+                    style={{ position: "absolute", width: "100%", height: "100%" }}
+                    color={spinnerColor}
+                />
+            ) : (
+                children ?? <>
+                        {icon && icon({ ...sizeStyles.icon, fill: fg, opacity: loading || processing ? 0 : 1 })}
+                        {typeof text === "string" && <Text style={[sizeStyles.text, { color: fg, opacity: loading || processing ? 0 : 1 }, textStyle]}>{text}</Text>}
+                </>
+            )}
         </PressableOpacity>
     );
 }
@@ -93,6 +89,7 @@ const getSizeStyles = (size: UIButtonSize) => sizeStyles[size];
 const sizeStyles = {
     [UIButtonSize.xl]: {
         button: {
+            width: "100%",
             maxWidth: 400,
             height: 48,
             paddingHorizontal: 20,
@@ -102,8 +99,10 @@ const sizeStyles = {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
+            flexWrap: "nowrap",
 
             borderRadius: 10,
+            gap: 4,
         },
         text: {
             fontSize: 20,
@@ -121,14 +120,16 @@ const sizeStyles = {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
+            flexWrap: "nowrap",
 
             borderRadius: 12,
+            gap: 4,
         },
         text: {
             fontSize: 18,
         },
         icon: {
-            iconSize: 20,
+            size: 20,
         },
     },
 } as const;

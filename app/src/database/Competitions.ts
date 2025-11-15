@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { Form } from "../lib/forms";
 
 interface Competition {
     name: string;
@@ -16,9 +17,9 @@ export enum ScoutAssignmentsConfig {
 
 export interface CompetitionReturnData extends Competition {
     id: number;
-    form: any[];
+    form: Form.Structure;
     scoutAssignmentsConfig: ScoutAssignmentsConfig;
-    pitScoutFormStructure: any[];
+    pitScoutFormStructure: Form.Structure;
 }
 
 export class CompetitionsDB {

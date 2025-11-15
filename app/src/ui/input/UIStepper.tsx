@@ -1,8 +1,9 @@
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Text } from "react-native";
-import { useTheme, type Theme } from "@react-navigation/native";
+import { StyleSheet, Text, View } from "react-native";
+import { type Theme, useTheme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { exMemo } from "../../lib/util/react/memo.ts";
+import { PressableOpacity } from "../components/PressableOpacity.tsx";
+import * as Bs from "../icons";
 
 export interface StepperProps {
     value: number;
@@ -14,63 +15,54 @@ export function UIStepper({ value, onInput }: StepperProps) {
     const styles = getStyles(colors);
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity
+        <View
+            style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+            }}
+        >
+            <PressableOpacity
+                style={[styles.button, { backgroundColor: colors.notification }]}
                 disabled={value === 0}
                 onPress={() => {
-                    onInput && onInput(value + 1);
                     ReactNativeHapticFeedback.trigger("impactLight");
+                    onInput && onInput(value - 1);
                 }}
             >
-                <View style={[styles.button, value === 0 ? styles.buttonDisabled : null]}>
-                    <Text style={styles.buttonText}>-</Text>
-                </View>
-            </TouchableOpacity>
+                <Bs.DashLg size={28} fill={"white"} />
+            </PressableOpacity>
 
             <Text style={styles.number}>{value}</Text>
 
-            <TouchableOpacity
+            <PressableOpacity
+                style={[styles.button, { backgroundColor: colors.primary }]}
                 onPress={() => {
-                    onInput && onInput(value - 1);
                     ReactNativeHapticFeedback.trigger("impactLight");
+                    onInput && onInput(value + 1);
                 }}
             >
-                <View style={styles.button}>
-                    <Text style={styles.buttonText}>+</Text>
-                </View>
-            </TouchableOpacity>
+                <Bs.PlusLg size={28} fill={"white"} />
+            </PressableOpacity>
         </View>
     );
 }
 
 const getStyles = exMemo((colors: Theme["colors"]) =>
     StyleSheet.create({
-        container: {
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around",
-        },
         button: {
-            backgroundColor: "gray", //< TODO: follow theme
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 8,
             padding: 10,
-            width: 100,
-            height: 75,
-        },
-        buttonDisabled: {
-            backgroundColor: "darkgray", //< TODO: follow theme
-        },
-        buttonText: {
-            color: "white",
-            fontSize: 30,
+            height: 48,
+            flex: 1,
         },
         number: {
             fontSize: 20,
             fontWeight: "bold",
             textAlign: "center",
-            width: 80,
+            width: 100,
             color: colors.text,
         },
     })

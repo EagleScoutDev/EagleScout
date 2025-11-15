@@ -68,7 +68,6 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                     color: colors.text,
                     fontSize: 30,
                     fontWeight: "bold",
-                    marginTop: 48,
                     marginBottom: 16,
                 }}
             >

@@ -5,15 +5,12 @@ import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
 import * as Bs from "../../ui/icons";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { PitFlow, type PitFlowParamList } from "./pit/PitFlow";
+import { PitScoutingFlow, type PitFlowParamList } from "./pit/PitScoutingFlow.tsx";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";
 import { ScoutTimer, ScoutTimerContext } from "./components/Timer";
 
 const HomeStack = createNativeStackNavigator<ScoutMenuParamList>();
-export type ScoutMenuScreenProps<T extends keyof ScoutMenuParamList> = NativeStackScreenProps<
-    ScoutMenuParamList,
-    T
->;
+export type ScoutMenuScreenProps<T extends keyof ScoutMenuParamList> = NativeStackScreenProps<ScoutMenuParamList, T>;
 export type ScoutMenuParamList = {
     Dashboard: undefined;
     Match: undefined;
@@ -57,7 +54,7 @@ export function ScoutFlow() {
                         title: "Pit Scout",
                         headerBackTitle: "Home",
                     }}
-                    component={PitFlow}
+                    component={PitScoutingFlow}
                 />
             </HomeStack.Navigator>
         </ScoutTimerContext.Provider>

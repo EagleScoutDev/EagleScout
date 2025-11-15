@@ -1,4 +1,4 @@
-import { Pressable, type ViewStyle } from "react-native";
+import { Pressable, type StyleProp, type ViewStyle } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import type { ComponentProps, ReactNode } from "react";
 
@@ -8,14 +8,14 @@ export interface PressableOpacityProps extends ComponentProps<typeof Pressable> 
     disabled?: boolean;
     activeOpacity?: number;
     disabledOpacity?: number;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     children?: ReactNode;
 }
 
 export function PressableOpacity({
     disabled = false,
     activeOpacity = 0.5,
-    disabledOpacity = 0.2,
+    disabledOpacity = 0.5,
     style,
     ...passthrough
 }: PressableOpacityProps) {

@@ -1,11 +1,12 @@
-import { Alert } from "react-native";
+import { Alert, Keyboard } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase.ts";
 import { Color } from "../../../lib/color.ts";
 import { UISheet } from "../../../ui/UISheet.tsx";
 import { UIForm } from "../../../ui/UIForm.tsx";
 import { UISheetModal } from "../../../ui/UISheetModal.tsx";
+import { TBA } from "../../../lib/frc/tba.ts";
 
 export interface CompetitionData {
     name: string;
@@ -96,7 +97,14 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
                     text: "Cancel",
                     onPress: onCancel,
                 }}
-                right={{ color: Color.parse(colors.primary), text: "Done", onPress: () => void trySubmit() }}
+                right={{
+                    color: Color.parse(colors.primary),
+                    text: "Done",
+                    onPress: () => {
+                        Keyboard.dismiss();
+                        void trySubmit();
+                    },
+                }}
                 title={"New Competition"}
             />
             <UIForm bottomSheet={true}>

@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { CompetitionsDB } from "../../database/Competitions";
 import { MatchReportsDB } from "../../database/ScoutMatchReports";
 import { useTheme } from "@react-navigation/native";
-import { type CrescendoAutoPath } from "../../components/games/crescendo/CrescendoAutoPath";
-import { CrescendoAutoViewer } from "../../components/games/crescendo/CrescendoAutoViewer";
-import { type ReefscapeAutoPath } from "../../components/games/reefscape/ReefscapeAutoPath";
-import { ReefscapeViewer } from "../../components/games/reefscape/ReefscapeViewer";
 import type { SearchMenuScreenProps } from "./SearchMenu";
+import * as Reefscape from "../../frc/reefscape";
 
 export interface AutoPathsForTeamParams {
     team_number: number;
@@ -17,31 +14,19 @@ export interface AutoPathsForTeamProps extends SearchMenuScreenProps<"AutoPaths"
 export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
     const { team_number, competitionId } = route.params;
     const { colors } = useTheme();
-    const [autoPaths, setAutoPaths] = useState<CrescendoAutoPath[] | ReefscapeAutoPath[] | undefined>();
+    const [autoPaths, setAutoPaths] = useState<Reefscape.AutoPath[] | undefined>();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [year, setYear] = useState<number>(0);
 
     useEffect(() => {
         CompetitionsDB.getCompetitionById(competitionId).then(async (competition) => {
             if (!competition) {
                 return;
             }
-            console.log("start");
-            console.log(competition.startTime.toString());
-            setYear(parseInt(competition.startTime.toString().split("-")[0]));
-            console.log(year);
             const reports = await MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id);
-            console.log("in callback");
-            console.log(reports);
             setAutoPaths(
-                reports.map((report) => report.autoPath).filter((autoPath) => autoPath) as
-                    | ReefscapeAutoPath[]
-                    | CrescendoAutoPath[]
+                reports.map((report) => report.autoPath).filter((autoPath) => autoPath) as Reefscape.AutoPath[]
             );
-            console.log(autoPaths);
-            console.log("it should be here");
         });
-        console.log("end");
     }, [team_number]);
 
     return (
@@ -68,11 +53,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                     {autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ""}
                 </Text>
                 {autoPaths ? (
-                    year === 2025 ? (
-                        <ReefscapeViewer autoPath={autoPaths[currentIndex] as ReefscapeAutoPath} />
-                    ) : (
-                        <CrescendoAutoViewer autoPath={autoPaths[currentIndex] as CrescendoAutoPath} />
-                    )
+                    <Reefscape.AutoPathView path={autoPaths[currentIndex]!} />
                 ) : (
                     <Text style={{ color: colors.text, fontSize: 25 }}>No auto paths found</Text>
                 )}

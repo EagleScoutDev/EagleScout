@@ -12,6 +12,7 @@ import { useUserStore } from "./lib/stores/user.ts";
 import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
 import { UISheetModal } from "./ui/UISheetModal.tsx";
 import { PlusMenu } from "./PlusMenu.tsx";
+import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>;
@@ -112,16 +113,7 @@ export const AppHome = ({ navigation }: AppHomeProps) => {
                 />
             </Tab.Navigator>
 
-            <UISheetModal
-                ref={plusMenuRef}
-                enableDynamicSizing
-                snapPoints={[]}
-                handleComponent={null}
-                enablePanDownToClose
-                backdropPressBehavior="close"
-            >
-                <PlusMenu navigation={navigation} />
-            </UISheetModal>
+            <PlusMenu ref={plusMenuRef} navigation={navigation} />
         </>
     );
 };

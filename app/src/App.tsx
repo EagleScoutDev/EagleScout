@@ -15,6 +15,7 @@ import { HeaderButtonsProvider } from "react-navigation-header-buttons/HeaderBut
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { withStallion } from "react-native-stallion";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 declare global {
     namespace ReactNavigation {
@@ -57,29 +58,31 @@ function App() {
         >
             <GestureHandlerRootView>
                 <SafeAreaProvider>
-                    <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
-                        <HeaderButtonsProvider stackType={"native"}>
-                            <BottomSheetModalProvider>
-                                <RootStack.Navigator
-                                    initialRouteName="Onboarding"
-                                    screenOptions={{
-                                        headerShown: false,
-                                    }}
-                                >
-                                    <RootStack.Screen name="App" component={AppHome} />
-
-                                    <RootStack.Screen
-                                        name="Onboarding"
-                                        component={OnboardingFlow}
-                                        options={{
-                                            animation: "ios_from_right",
+                    <KeyboardProvider>
+                        <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
+                            <HeaderButtonsProvider stackType={"native"}>
+                                <BottomSheetModalProvider>
+                                    <RootStack.Navigator
+                                        initialRouteName="Onboarding"
+                                        screenOptions={{
+                                            headerShown: false,
                                         }}
-                                    />
-                                </RootStack.Navigator>
-                            </BottomSheetModalProvider>
-                        </HeaderButtonsProvider>
-                        <Toast />
-                    </NavigationContainer>
+                                    >
+                                        <RootStack.Screen name="App" component={AppHome} />
+
+                                        <RootStack.Screen
+                                            name="Onboarding"
+                                            component={OnboardingFlow}
+                                            options={{
+                                                animation: "ios_from_right",
+                                            }}
+                                        />
+                                    </RootStack.Navigator>
+                                </BottomSheetModalProvider>
+                            </HeaderButtonsProvider>
+                            <Toast />
+                        </NavigationContainer>
+                    </KeyboardProvider>
                 </SafeAreaProvider>
             </GestureHandlerRootView>
         </ThemeContext.Provider>

@@ -54,8 +54,8 @@ export namespace UIForm {
         key?: string;
         label: string;
 
-        value: number;
-        onChange?: ((value: number) => void) | undefined;
+        value: number | null;
+        onChange?: ((value: number | null) => void | undefined | boolean) | undefined;
     }
     export function NumberInput({ key, label, value, onChange }: NumberInputProps) {
         "use memo";
@@ -116,7 +116,7 @@ export namespace UIForm {
     export function Select<T extends string = string>({ key, label, options, value, onChange }: SelectProps<T>) {
         "use memo";
         // TODO: implement this
-        throw new Error("Not implemented")
+        throw new Error("Not implemented");
     }
 
     export interface ListPickerProps<K extends string | number = string | number> {

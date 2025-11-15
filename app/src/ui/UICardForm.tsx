@@ -17,24 +17,24 @@ export function UICardForm({ title, children }: UICardFormProps) {
     const { colors } = useTheme();
 
     return (
-        <View style={{ width: "100%", padding: 16 }}>
-            <View
-                style={{
-                    backgroundColor: colors.card,
-                    borderWidth: 1,
-                    borderColor: colors.border,
-                    borderRadius: 10,
-                    padding: 16,
-                    paddingBottom: 24,
-                    width: "100%",
-                    gap: 16,
-                }}
-            >
-                {typeof title === "string" && <Text style={{ color: "gray", fontSize: 14, fontWeight: "bold", textTransform: "uppercase" }}>
+        <View
+            style={{
+                backgroundColor: colors.card,
+                borderWidth: 1,
+                borderColor: colors.border,
+                borderRadius: 10,
+                padding: 16,
+                paddingBottom: 24,
+                width: "100%",
+                gap: 16,
+            }}
+        >
+            {typeof title === "string" && (
+                <Text style={{ color: "gray", fontSize: 14, fontWeight: "bold", textTransform: "uppercase" }}>
                     {title}
-                </Text>}
-                {children}
-            </View>
+                </Text>
+            )}
+            {children}
         </View>
     );
 }

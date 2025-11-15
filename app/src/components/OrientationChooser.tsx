@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from "react-native";
-import { Alliance, Orientation } from "../games/common";
 import * as Bs from "../ui/icons";
 import type { Setter } from "../lib/util/react/types";
+import { Alliance, Orientation } from "../frc/common/common.ts";
 
 export interface OrientationChooserProps {
     orientation: Orientation;

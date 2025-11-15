@@ -1,12 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UpcomingRoundsView } from "./UpcomingRoundsView";
 import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
 import type { ScoutMenuScreenProps } from "./ScoutingFlow";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../ui/UIButton.tsx";
-import { UIMenu } from "../../ui/UIMenu.tsx";
-import { useRef } from "react";
 
 export interface ScoutFlowHomeProps extends ScoutMenuScreenProps<"Dashboard"> {}
 export function ScoutFlowHome({ navigation }: ScoutFlowHomeProps) {
@@ -22,22 +19,6 @@ export function ScoutFlowHome({ navigation }: ScoutFlowHomeProps) {
             fontWeight: "600",
             color: colors.text,
             paddingLeft: 20,
-        },
-        button_text: {
-            color: "white",
-            textAlign: "center",
-            fontWeight: "bold",
-            marginHorizontal: "5%",
-        },
-        scout_button: {
-            backgroundColor: colors.primary,
-            padding: "5%",
-            paddingRight: "0%",
-            borderRadius: 25,
-            justifyContent: "center",
-            position: "absolute",
-            bottom: "4%",
-            right: "5%",
         },
     });
 

@@ -1,194 +1,175 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { FormHelper } from "../../../FormHelper";
 import Toast from "react-native-toast-message";
-import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
+import { CompetitionsDB } from "../../../database/Competitions";
 import { MatchReportsDB } from "../../../database/ScoutMatchReports";
-import { Gamification } from "./Gamification";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "../../../lib/hooks/useCurrentCompetitionMatches.ts";
-import { Alliance, Orientation } from "../../../games/common";
 import type { ScoutMenuScreenProps } from "../ScoutingFlow";
 import { Form } from "../../../lib/forms";
+import { AsyncAlert } from "../../../lib/util/react/AsyncAlert.ts";
+import { useCurrentCompetition } from "../../../lib/hooks/useCurrentCompetition.ts";
+import { ScoutingFlowTab } from "../components/ScoutingFlowTab.tsx";
+import { MatchInformation } from "../components/MatchInformation.tsx";
+import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
+import { FormView } from "../../../forms/FormView.tsx";
+import { UISheetModal } from "../../../ui/UISheetModal.tsx";
+import { Arrays } from "../../../lib/util/Arrays.ts";
+import { Alliance, Orientation } from "../../../frc/common/common.ts";
+import * as Reefscape from "../../../frc/reefscape";
+import { AutoAction, AutoState } from "../../../frc/reefscape";
+import { produce } from "immer";
 
 export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
-export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps) {
-    const defaultValues = useMemo(() => {
-        return {
-            radio: "",
-            checkboxes: [],
-            textbox: "",
-            number: 0,
-            slider: 0,
-        };
-    }, []);
+const Tab = createMaterialTopTabNavigator<MatchScoutingParamList>();
+export type MatchScoutingScreenProps<K extends keyof MatchScoutingParamList> = MaterialTopTabScreenProps<
+    MatchScoutingParamList,
+    K
+>;
+export type MatchScoutingParamList = {
+    Setup: undefined;
+    [k: `Form/${string}`]: undefined;
+};
+
+export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
+    "use memo";
 
     const { colors } = useTheme();
+    const { competition, online } = useCurrentCompetition();
+    const { getTeamsForMatch } = useCurrentCompetitionMatches();
     const [match, setMatch] = useState<number | null>(null);
+    const teamsForMatch = match === null || match > 400 ? [] : getTeamsForMatch(match);
     const [team, setTeam] = useState<number | null>(null);
-    const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
 
     const formStructure = competition?.form ?? null;
-    const formSections = useMemo(
-        () => (formStructure === null ? null : Form.splitSections(formStructure)),
-        [formStructure]
-    );
+    const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
+    const autoSection = formSections?.find((s) => s.title === "Auto");
 
-    const [autoPath, setAutoPath] = useState([]);
-    const [formData, setFormData] = useState<Form.Data>([]);
+    const [sectionData, setSectionData] = useState<Form.Data[]>([]);
 
-    const [startRelativeTime, setStartRelativeTime] = useState(-1);
-    const [timeline, setTimeline] = useState([]);
-    const [fieldOrientation, setFieldOrientation] = useState<Orientation>(Orientation.red);
-    const [selectedAlliance, setSelectedAlliance] = useState<Alliance>(Alliance.red);
+    const [orientation, setOrientation] = useState<Orientation>(Orientation.leftRed);
+    const [alliance, setAlliance] = useState<Alliance>(Alliance.red);
 
-    const [isOffline, setIsOffline] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [autoState, autoReducer] = useReducer(AutoAction.reduce, AutoState());
+
     const confetti = useRef<Confetti>(null);
+    const autoModalRef = useRef<UISheetModal>(null);
 
-    const { competitionId, matches, getTeamsForMatch } = useCurrentCompetitionMatches();
-    const [teamsForMatch, setTeamsForMatch] = useState([]);
-    useEffect(() => {
-        if (!match || match > 400) {
-            return;
-        }
-        const teams = getTeamsForMatch(Number(match));
-        if (teams.length > 0) {
-            setTeamsForMatch(teams);
-        }
-    }, [match, competitionId, matches]);
-
-    function checkRequiredFields(tempArray) {
-        for (let i = 0; i < formStructure.length; i++) {
-            let item = formStructure[i];
-            let value = tempArray[i];
-
-            if (!item.required) continue;
-            if (value === "" || value == null) {
-                Alert.alert(
-                    "Required Question: " + item.question + " not filled out",
-                    "Please fill out all questions denoted with an asterisk"
-                );
-                return false;
-            }
-        }
-        return true;
+    function reset() {
+        setMatch(null);
+        setTeam(null);
+        resetResponses();
     }
+    function resetResponses() {
+        setSectionData(formSections === null ? [] : Form.initialize(formSections));
+    }
+    useEffect(() => void resetResponses(), [formStructure]);
 
-    const initForm = useCallback(
-        (form) => {
-            let tempArray = new Array(form.length);
-            for (let i = 0; i < form.length; i++) {
-                if (form[i].type === "heading") {
-                    tempArray[i] = null;
-                } else if (form[i].type === "radio") {
-                    tempArray[i] = form[i].defaultIndex;
-                } else if (form[i].type === "checkbox") {
-                    tempArray[i] = form[i].checkedByDefault;
-                } else {
-                    tempArray[i] = defaultValues[form[i].type];
+    // TODO: THIS IS AN EXTREMELY STUPID AND DANGEROUS HACK TO
+    //       COMPLY WITH THE OLD 2025 REEFSCAPE LINK SYSTEM!!!
+    //       PLEASE REMOVE THIS FOR 2026 REBUILT!!!!!!!!!!!!!!
+    //region Synchronize link data with form data
+    useEffect(() => {
+        let changed = false;
+        let x = produce(autoState, (draft) => {
+            for (let si = 0; si < formSections.length; si++) {
+                let items = formSections[si].items;
+                for (let i = 0; i < items.length; i++) {
+                    let item = items[i];
+                    if (typeof item.link_to !== "string") continue;
+
+                    if (draft.stats[item.link_to] !== (draft.stats[item.link_to] = sectionData[si][i])) {
+                        changed = true;
+                    }
                 }
             }
-            setFormData(tempArray);
-        },
-        [defaultValues]
-    );
+        });
+        if (changed) autoReducer({ type: "stupid", state: x });
+    }, [sectionData]);
+    useEffect(() => {
+        let changed = false;
+        let x = produce(sectionData, (draft) => {
+            for (let si = 0; si < formSections.length; si++) {
+                let items = formSections[si].items;
+                for (let i = 0; i < items.length; i++) {
+                    let item = items[i];
+                    if (typeof item.link_to !== "string") continue;
 
-    const loadFormStructure = useCallback(async () => {
-        let dbRequestWorked;
-        let competition: CompetitionReturnData | null = null;
-        try {
-            competition = await CompetitionsDB.getCurrentCompetition();
-            dbRequestWorked = true;
-        } catch (e) {
-            dbRequestWorked = false;
-        }
-
-        if (dbRequestWorked) {
-            if (competition != null) {
-                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(competition));
+                    if (draft[si][i] !== (draft[si][i] = autoState.stats[item.link_to])) {
+                        changed = true;
+                    }
+                }
             }
-        } else {
-            const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
-            if (storedComp != null) {
-                competition = JSON.parse(storedComp);
-            }
-        }
-        setIsOffline(!dbRequestWorked);
-        console.log("LOADINGCOMPS");
+        });
+        if (changed) setSectionData(x);
+    }, [autoState]);
+    //endregion
 
-        if (competition !== null) {
-            setCompetition(competition);
-            initForm(competition.form);
-        } else {
-            setCompetition(null);
-        }
-    }, []);
+    async function submitForm() {
+        if (competition === null || formStructure === null) return;
 
-    const submitForm = async () => {
-        if (match > 400 || !match) {
-            Alert.alert("Invalid Match Number", "Please enter a valid match number");
+        if (match === null || match > 400) {
+            await AsyncAlert.alert("Invalid Match Number", "Please enter a valid match number");
+            navigation.navigate("Match");
+            return;
+        }
+        if (team === null) {
+            await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
             navigation.navigate("Match");
             return;
         }
 
-        if (!team) {
-            Alert.alert("Invalid Team Number", "Please enter a valid team number");
-            navigation.navigate("Match");
-            return;
-        }
-        setIsSubmitting(true);
 
-        // array containing the raw values of the form
-        let tempArray = [...formData];
-
-        if (!checkRequiredFields(tempArray)) {
-            setIsSubmitting(false);
+        let missing = Form.checkRequired(formSections, sectionData);
+        if (missing) {
+            Alert.alert(
+                "Required Question: " + missing.question + " not filled out",
+                "Please fill out all questions denoted with an asterisk"
+            );
             return;
         }
 
         let dataToSubmit = {
-            data: tempArray,
-            timelineData: Object.fromEntries(timeline.entries()),
-            autoPath,
+            data: sectionData.flat(),
+            timelineData: [], // TODO: either implement this or purge it
+            autoPath: autoState.path,
+
             matchNumber: match,
             teamNumber: team,
             competitionId: competition.id,
             competitionName: competition.name,
         };
 
+        console.log("a")
         const internetResponse = await CompetitionsDB.getCurrentCompetition()
             .then(() => true)
             .catch(() => false);
-
         if (!internetResponse) {
             await FormHelper.saveFormOffline({
                 ...dataToSubmit,
                 form: formStructure,
                 formId: competition?.formId,
             });
+            reset();
+
             Toast.show({
                 type: "success",
                 text1: "Saved offline successfully!",
                 visibilityTime: 3000,
             });
+
             const currentAssignments = await AsyncStorage.getItem("scout-assignments");
-            if (currentAssignments != null) {
+            if (currentAssignments !== null) {
                 const newAssignments = JSON.parse(currentAssignments).filter(
                     (a) => !(a.matchNumber === match && (a.team === null || a.team.substring(3) === team))
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
-            setMatch(null);
-            setTeam(null);
-            setAutoPath([]);
-            initForm(formStructure);
-
-            confetti.current?.startConfetti();
-            navigation.navigate("Match");
         } else {
+            console.log("b")
             try {
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
@@ -196,44 +177,24 @@ export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps)
                     text1: "Scouting report submitted!",
                     visibilityTime: 3000,
                 });
-                setMatch(null);
-                setTeam(null);
-                resetTimer();
-                setAutoPath([]);
-                initForm(formStructure);
+                reset();
+
                 confetti.current?.startConfetti();
-                navigation.navigate("Match");
             } catch (error) {
                 console.error(error);
                 Alert.alert("Error", "There was an error submitting your scouting report.");
             }
         }
-        setIsSubmitting(false);
-    };
 
-    useEffect(() => {
-        return navigation.addListener("focus", () => {
-            if (route.params != null) {
-                const { team: paramsTeam, match: paramsMatch } = route.params;
-                console.log("team: ", paramsTeam);
-                paramsTeam != null ? setTeam(paramsTeam.toString()) : setTeam("");
-                paramsMatch != null ? setMatch(paramsMatch.toString()) : setMatch("");
-                //navigation.setParams({team: undefined, params: undefined});
-                navigation.setParams({ team: undefined, match: undefined });
-            }
-        });
-    }, [navigation, route.params]);
-
-    useEffect(() => {
-        loadFormStructure().catch(console.error);
-    }, [loadFormStructure]);
+        navigation.navigate("Match");
+    }
 
     if (competition === null) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ color: colors.text }}>There is no competition happening currently.</Text>
 
-                {isOffline && <Text>To check for competitions, please connect to the internet.</Text>}
+                {!online && <Text>To check for competitions, please connect to the internet.</Text>}
             </View>
         );
     }
@@ -242,43 +203,102 @@ export function MatchScoutingFlow({ navigation, route }: MatchScoutingFlowProps)
         <>
             <View
                 style={{
-                    zIndex: 100,
+                    ...StyleSheet.absoluteFillObject,
+                    zIndex: 114,
                     pointerEvents: "none",
-                    position: "absolute",
                     width: "100%",
                     height: "100%",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
                 }}
             >
                 <Confetti ref={confetti} timeout={10} duration={3000} />
             </View>
-            <Gamification
-                match={match}
-                setMatch={setMatch}
-                team={team}
-                setTeam={setTeam}
-                alliance={selectedAlliance}
-                orientation={fieldOrientation}
-                setOrientation={setFieldOrientation}
-                teamsForMatch={teamsForMatch}
-                colors={colors}
-                competition={competition}
-                formSections={formSections}
-                formData={formData}
-                setFormData={setFormData}
-                startRelativeTime={startRelativeTime}
-                setStartRelativeTime={setStartRelativeTime}
-                timeline={timeline}
-                setTimeline={setTimeline}
-                setAlliance={setSelectedAlliance}
-                autoPath={autoPath}
-                setAutoPath={setAutoPath}
-                submitForm={submitForm}
-                isSubmitting={isSubmitting}
-            />
+
+            <Tab.Navigator
+                screenOptions={{
+                    tabBarStyle: {
+                        backgroundColor: colors.background,
+                    },
+                    tabBarLabelStyle: {
+                        color: colors.text,
+                        fontSize: 12,
+                        fontWeight: "bold",
+                    },
+                }}
+            >
+                <Tab.Screen name={"Setup"}>
+                    {({ navigation }) => (
+                        <ScoutingFlowTab
+                            title={competition ? `${competition.name}` : "Match Report"}
+                            buttonText={"Next"}
+                            onNext={() => navigation.navigate(`Form/${formSections[0].title}`)}
+                        >
+                            <MatchInformation
+                                match={match}
+                                setMatch={setMatch}
+                                team={team}
+                                setTeam={setTeam}
+                                teamsForMatch={teamsForMatch}
+                                orientation={orientation}
+                                setOrientation={setOrientation}
+                                alliance={alliance}
+                                setAlliance={setAlliance}
+                            />
+                        </ScoutingFlowTab>
+                    )}
+                </Tab.Screen>
+                {formSections?.map(({ title, items }, i) => {
+                    const isLast = i === formSections.length - 1;
+
+                    return (
+                        <Tab.Screen
+                            key={title}
+                            name={`Form/${title}`}
+                            options={{
+                                title: title,
+                            }}
+                            listeners={{
+                                tabPress: () => {
+                                    if (title === "Auto") autoModalRef.current?.present();
+                                },
+                            }}
+                        >
+                            {({ navigation }) => (
+                                <ScoutingFlowTab
+                                    title={title}
+                                    buttonText={isLast ? "Submit" : "Next"}
+                                    onNext={
+                                        isLast
+                                            ? submitForm
+                                            : () => navigation.navigate(`Form/${formSections[i + 1].title}`)
+                                    }
+                                >
+                                    <FormView
+                                        items={items}
+                                        data={sectionData[i]}
+                                        onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
+                                    />
+                                </ScoutingFlowTab>
+                            )}
+                        </Tab.Screen>
+                    );
+                })}
+            </Tab.Navigator>
+
+            {autoSection && (
+                <UISheetModal
+                    ref={autoModalRef}
+                    enablePanDownToClose
+                    handleComponent={null}
+                    onDismiss={() => autoModalRef.current?.dismiss()}
+                >
+                    <Reefscape.AutoModal
+                        orientation={orientation}
+                        alliance={alliance}
+                        state={autoState}
+                        dispatch={autoReducer}
+                    />
+                </UISheetModal>
+            )}
         </>
     );
 }

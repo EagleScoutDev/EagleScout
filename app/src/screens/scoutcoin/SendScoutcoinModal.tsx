@@ -46,7 +46,7 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
             return;
         }
         await supabase.functions.invoke("send-scoutcoin", {
-            itemBody: JSON.stringify({
+            body: JSON.stringify({
                 targetUserId: targetUser.id,
                 amount: parseInt(amount, 10),
                 description,

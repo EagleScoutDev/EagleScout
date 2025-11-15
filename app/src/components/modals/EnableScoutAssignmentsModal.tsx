@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, Keyboard } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { supabase } from "../../lib/supabase.ts";
@@ -51,7 +51,10 @@ export function EnableScoutAssignmentsModal({ data: competition }: EnableScoutAs
                 right={{
                     text: "Done",
                     color: Color.parse(colors.primary),
-                    onPress: submit,
+                    onPress: () => {
+                        Keyboard.dismiss();
+                        return submit();
+                    },
                 }}
             />
             <UIForm>

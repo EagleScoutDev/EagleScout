@@ -1,3 +1,5 @@
+import { Alert } from "react-native";
+
 export interface Form {
     formStructure: Form.Structure;
     pitScouting: boolean;
@@ -82,7 +84,7 @@ export namespace Form {
         const out: Section[] = [];
 
         let section: Section | null = null;
-        let i = 0
+        let i = 0;
         for (let item of structure) {
             if (item.type === ItemType.heading) {
                 if (section) {
@@ -93,7 +95,7 @@ export namespace Form {
                     description: item.description,
                     items: [],
                     start: i,
-                    end: i+1
+                    end: i + 1,
                 };
             } else {
                 if (section) {
@@ -101,10 +103,43 @@ export namespace Form {
                     section.end++;
                 }
             }
-            i++
+            i++;
         }
         if (section) out.push(section);
 
         return out;
+    }
+    export function initialize(sections: Section[]) {
+        return sections.map((section) =>
+            section.items.map((item) => {
+                switch (item.type) {
+                    case "heading":
+                        return null;
+                    case "radio":
+                        return null;
+                    case "checkboxes":
+                        return [];
+                    case "textbox":
+                        return "";
+                    case "number":
+                        return Math.max(0, item.low ?? 0);
+                }
+            })
+        );
+    }
+    export function checkRequired(sections: Section[], data: Form.Data[]): Question | null {
+        for (let si = 0; si < sections.length; si++) {
+            let section = sections[si];
+            let sectionData = data[si];
+            for (let i = 0; i < section.items.length; i++) {
+                let item = section.items[i];
+                let value = sectionData[i];
+
+                if (item.type === ItemType.heading) continue;
+                else if (!item.required) continue;
+                else if (value === "" || value == null) return item;
+            }
+        }
+        return null;
     }
 }

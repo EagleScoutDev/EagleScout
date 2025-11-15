@@ -1,16 +1,21 @@
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+import { type NavigationProp, useTheme } from "@react-navigation/native";
 import { CompetitionsDB, ScoutAssignmentsConfig } from "../../database/Competitions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../../FormHelper";
 import { ScoutAssignments } from "../../database/ScoutAssignments";
 import * as Bs from "../../ui/icons";
+import type { ScoutMenuParamList } from "./ScoutingFlow.tsx";
 
-export function UpcomingRoundsView({ navigation }) {
+export interface UpcomingRoundsViewProps {
+    navigation: NavigationProp<ScoutMenuParamList, "Dashboard">
+}
+export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
+    const { colors } = useTheme();
+
     const [upcomingRounds, setUpcomingRounds] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-    const { colors } = useTheme();
     const [isCompetitionHappening, setIsCompetitionHappening] = useState(false);
     const [teamBased, setTeamBased] = useState(false);
 
@@ -116,7 +121,12 @@ export function UpcomingRoundsView({ navigation }) {
                                 justifyContent: "space-around",
                             }}
                         >
-                            <Bs.CheckCircle width="100%" height="50%" fill={colors.primary} style={{ marginVertical: "10%" }} />
+                            <Bs.CheckCircle
+                                width="100%"
+                                height="50%"
+                                fill={colors.primary}
+                                style={{ marginVertical: "10%" }}
+                            />
                             <Text
                                 style={{
                                     color: colors.text,
@@ -196,7 +206,11 @@ export function UpcomingRoundsView({ navigation }) {
                                     )}
                                 </View>
                                 <View>
-                                    <Bs.ChevronRight size="20" color={"gray"} style={{ position: "absolute", right: 20, top: 20 }} />
+                                    <Bs.ChevronRight
+                                        size="20"
+                                        color={"gray"}
+                                        style={{ position: "absolute", right: 20, top: 20 }}
+                                    />
                                 </View>
                             </TouchableOpacity>
                         ))}

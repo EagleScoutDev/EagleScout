@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { type TBAMatch, TBAMatches } from "../../../../database/TBAMatches";
 import { type MatchPredictionResults, TeamAggregation } from "../../../../database/TeamAggregation";
-import { Alliance } from "../../../../games/common";
+import { Alliance } from "../../../../frc/reefscape/field.ts";
 import { Color } from "../../../../lib/color.ts";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
 import { useCurrentCompetitionMatches } from "../../../../lib/hooks/useCurrentCompetitionMatches.ts";

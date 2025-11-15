@@ -3,7 +3,7 @@
  * It does not make database calls, but rather, processes data retrieved from other APIs.
  *
  * */
-import { Alliance } from '../games/common';
+import { Alliance } from '../frc/reefscape/field.ts';
 import { MatchReportsDB } from './ScoutMatchReports';
 
 interface TeamWithData {

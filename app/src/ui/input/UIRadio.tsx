@@ -20,7 +20,7 @@ export type UIRadioProps<T extends string> = UIOptionalRadioProps<T> | UIRequire
 export function UIRadio<T extends string>({ options, value, required, disabled = false, onInput }: UIRadioProps<T>) {
     "use memo";
     return (
-        <View>
+        <View style={{ gap: 8 }}>
             {options.map((item, index) => (
                 <UIRadioButton
                     key={index}

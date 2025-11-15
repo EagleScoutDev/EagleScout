@@ -11,6 +11,7 @@ export interface FormItemBuilderProps {
     onChange: (value: Form.Item) => void;
     onDelete: () => void;
 }
+
 export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormItemBuilderProps) {
     const { colors } = useTheme();
 
@@ -79,16 +80,19 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                     UIForm.Section({
                         items: [
                             UIForm.NumberInput({
+                                key: "low",
                                 label: "Minimum",
                                 value: value.low,
                                 onChange: (low) => onChange({ ...value, low }),
                             }),
                             UIForm.NumberInput({
+                                key: "high",
                                 label: "Maximum",
                                 value: value.high,
                                 onChange: (high) => onChange({ ...value, high }),
                             }),
                             UIForm.NumberInput({
+                                key: "step",
                                 label: "Step",
                                 value: value.step,
                                 onChange: (step) => step !== null && (onChange({ ...value, step }), true),
@@ -100,16 +104,19 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                           UIForm.Section({
                               items: [
                                   UIForm.NumberInput({
+                                      key: "low",
                                       label: "Minimum",
                                       value: value.low,
                                       onChange: (low) => low !== null && (onChange({ ...value, low }), true),
                                   }),
                                   UIForm.NumberInput({
+                                      key: "high",
                                       label: "Maximum",
                                       value: value.high,
                                       onChange: (high) => high !== null && (onChange({ ...value, high }), true),
                                   }),
                                   UIForm.NumberInput({
+                                      key: "step",
                                       label: "Step",
                                       value: value.step,
                                       onChange: (step) => step !== null && (onChange({ ...value, step }), true),

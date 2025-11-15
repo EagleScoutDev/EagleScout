@@ -10,27 +10,27 @@ import type { ReactNode, Ref } from "react";
 
 export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
     ref?: Ref<BottomSheetModal<T>>;
-    gap?: `${number}%` | number;
     backdropPressBehavior?: BackdropPressBehavior;
 }
 export interface UISheetModal<T = any> extends BottomSheetModal<T> {}
-export function UISheetModal<T = any>({
-    gap = 16,
-    backdropPressBehavior = "none",
-    children,
-    ...props
-}: UISheetModalProps<T>) {
+export function UISheetModal<T = any>({ backdropPressBehavior = "none", children, ...props }: UISheetModalProps<T>) {
     "use memo";
     const safeAreaFrame = useSafeAreaFrame();
     const sheetInsets = useSafeAreaInsets();
     const maxHeight = safeAreaFrame.height - sheetInsets.top;
+    const gap = 16;
 
     function wrap(children: ReactNode) {
         return (
-            <BottomSheetView style={{ flex: 1 }}>
-                <SafeAreaView edges={{ bottom: "additive" }} style={{ flex: 1 }}>
-                    {children}
-                </SafeAreaView>
+            <BottomSheetView style={{ height: "100%" }}>
+                {/*<SafeAreaProvider>*/}
+                    <SafeAreaView
+                        edges={{ bottom: "additive", left: "additive", right: "additive" }}
+                        style={{ flex: 1 }}
+                    >
+                        {children}
+                    </SafeAreaView>
+                {/*</SafeAreaProvider>*/}
             </BottomSheetView>
         );
     }
@@ -39,9 +39,7 @@ export function UISheetModal<T = any>({
         <BottomSheetModal
             enablePanDownToClose={false}
             enableDynamicSizing={false}
-            snapPoints={[
-                typeof gap === "string" ? maxHeight * (1 - parseFloat(gap.slice(0, -1)) / 100) : maxHeight - gap,
-            ]}
+            snapPoints={[maxHeight - gap]}
             backdropComponent={(props) => (
                 <BottomSheetBackdrop
                     {...props}
