@@ -7,7 +7,7 @@ import { Text } from "react-native";
 const VERSION = "7.7.2";
 
 export interface AboutProps extends SettingsMenuScreenProps<"About"> {}
-export function About({ navigation }: AboutProps) {
+export function About({}: AboutProps) {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
@@ -19,10 +19,6 @@ export function About({ navigation }: AboutProps) {
                                 UIList.Line({
                                     label: "Version",
                                     body: () => <Text style={{ fontSize: 16, color: "gray" }}>{VERSION}</Text>,
-                                    disabled: false,
-                                    onPress: () => {
-                                        navigation.navigate("Debug/AsyncStorage");
-                                    },
                                 }),
                             ],
                         }),
