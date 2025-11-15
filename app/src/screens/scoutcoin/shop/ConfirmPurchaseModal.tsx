@@ -28,7 +28,7 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
         }
 
         const { data } = await supabase.functions.invoke("purchase-item", {
-            itemBody: JSON.stringify({
+            body: JSON.stringify({
                 itemName: item.id,
             }),
         });

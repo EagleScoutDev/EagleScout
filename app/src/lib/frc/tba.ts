@@ -63,7 +63,7 @@ export class TBA {
 
     static async getEventsForYear(year: number): Promise<SimpleEvent[]> {
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            itemBody: { endpoint: `/events/${year}/simple` },
+            body: { endpoint: `/events/${year}/simple` },
         });
         if (error) {
             throw error;
@@ -73,7 +73,7 @@ export class TBA {
 
     static async getTeamsAtCompetition(comp_id: string): Promise<SimpleTeam[]> {
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            itemBody: { endpoint: `/event/${comp_id}/teams/simple` },
+            body: { endpoint: `/event/${comp_id}/teams/simple` },
         });
         if (error) {
             throw error;
@@ -88,9 +88,8 @@ export class TBA {
      * @returns the rank of the team at the competition, or -1 if the competition has not taken place yet, or -2 if the team is not ranked
      */
     static async getTeamRank(comp_id: string, team_number: number): Promise<number> {
-        console.log(`getting rank for ${team_number} at ${comp_id}`);
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            itemBody: {
+            body: {
                 endpoint: `/team/frc${team_number}/event/${comp_id}/status`,
             },
         });
@@ -114,7 +113,7 @@ export class TBA {
     static async getCurrentCompetitionForTeam(team_number: number): Promise<SimpleEvent> {
         const current_year = new Date().getFullYear();
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            itemBody: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
+            body: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
         });
         if (error) {
             throw error;
@@ -134,7 +133,7 @@ export class TBA {
     static async getAllCompetitionsForTeam(team_number: number): Promise<SimpleEvent[]> {
         const current_year = new Date().getFullYear();
         const { data, error } = await supabase.functions.invoke("tba-api", {
-            itemBody: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
+            body: { endpoint: `/team/frc${team_number}/events/${current_year}/simple` },
         });
         if (error) {
             throw error;

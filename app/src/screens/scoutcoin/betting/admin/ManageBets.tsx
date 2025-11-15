@@ -179,7 +179,7 @@ export const ManageBets = () => {
                         matchNumber={matchNumber}
                         onConfirm={async (result) => {
                             await supabase.functions.invoke("confirm-bet", {
-                                itemBody: JSON.stringify({ matchId, result }),
+                                body: JSON.stringify({ matchId, result }),
                             });
                             refresh();
                         }}
