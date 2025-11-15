@@ -24,14 +24,15 @@ export function UISlider({ min, max, step = 1, value, onInput, disabled = false,
         <View>
             <RNSlider
                 disabled={disabled}
-                value={draft}
+                value={value}
                 minimumTrackTintColor={colors.primary}
                 maximumTrackTintColor={colors.text}
                 maximumValue={max}
                 minimumValue={min}
                 step={step}
+                tapToSeek
                 onValueChange={setDraft}
-                onSlidingComplete={() => onInput && onInput(draft)}
+                onSlidingComplete={onInput ?? (() => {})}
             />
             <ThreeCenterLayout>
                 <Text style={{ color: colors.text, fontSize: 12 }}>{minLabel ?? min.toString()}</Text>
