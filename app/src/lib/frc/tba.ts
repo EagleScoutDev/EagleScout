@@ -54,6 +54,13 @@ export class TBA {
         // TODO
     }
 
+    static async checkEventKey(key: string): Promise<boolean> {
+        const { error } = await supabase.functions.invoke("fetch-tba-event", {
+            body: { tbakey: key },
+        });
+        return !error;
+    }
+
     static async getEventsForYear(year: number): Promise<SimpleEvent[]> {
         const { data, error } = await supabase.functions.invoke("tba-api", {
             itemBody: { endpoint: `/events/${year}/simple` },
