@@ -2,10 +2,10 @@ import { View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { NoInternet } from "../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
-import { UISheetModal } from "../../../ui/UISheetModal.tsx";
-import { TabHeader } from "../../../ui/navigation/TabHeader.tsx";
-import { ExportCompetitionSheet } from "./ExportCompetitionSheet.tsx";
-import { UIList } from "../../../ui/UIList.tsx";
+import { UISheetModal } from "../../../ui/UISheetModal";
+import { TabHeader } from "../../../ui/navigation/TabHeader";
+import { ExportCompetitionSheet } from "./ExportCompetitionSheet";
+import { UIList } from "../../../ui/UIList";
 
 export function ExportToCSV() {
     "use no memo";

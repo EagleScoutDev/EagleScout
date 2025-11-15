@@ -1,10 +1,10 @@
 import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { UIRadio } from "../../ui/input/UIRadio.tsx";
-import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
+import { UIRadio } from "../../ui/input/UIRadio";
+import { UICheckboxes } from "../../ui/input/UICheckboxes";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports.ts";
+import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
 import * as Bs from "../../ui/icons";
 
 const ListSeparator = () => <View style={{ width: 10 }} />;

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { UIRadioButton } from "./UIRadioButton.tsx";
+import { UIRadioButton } from "./UIRadioButton";
 
 export interface UIBaseRadioProps<T extends string> {
     options: T[];

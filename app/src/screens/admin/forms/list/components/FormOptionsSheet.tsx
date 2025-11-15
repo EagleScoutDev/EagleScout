@@ -1,10 +1,10 @@
-import { type FormReturnData, FormsDB } from "../../../../../database/Forms.ts";
+import { type FormReturnData, FormsDB } from "../../../../../database/Forms";
 import { Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { UISheet } from "../../../../../ui/UISheet.tsx";
-import { Color } from "../../../../../lib/color.ts";
-import { UIForm } from "../../../../../ui/UIForm.tsx";
-import { UIList } from "../../../../../ui/UIList.tsx";
+import { UISheet } from "../../../../../ui/UISheet";
+import { Color } from "../../../../../lib/color";
+import { UIForm } from "../../../../../ui/UIForm";
+import { UIList } from "../../../../../ui/UIList";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 export interface FormOptionsModalProps {

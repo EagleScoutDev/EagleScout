@@ -1,8 +1,8 @@
 import { View } from "react-native";
-import { FormItem } from "./FormItem.tsx";
+import { FormItem } from "./FormItem";
 import { Form } from "../lib/forms";
 
-import { Arrays } from "../lib/util/Arrays.ts";
+import { Arrays } from "../lib/util/Arrays";
 
 export interface FormViewProps {
     items: Form.Structure;

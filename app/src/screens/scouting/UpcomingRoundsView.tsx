@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../../FormHelper";
 import { ScoutAssignments } from "../../database/ScoutAssignments";
 import * as Bs from "../../ui/icons";
-import type { ScoutMenuParamList } from "./ScoutingFlow.tsx";
+import type { ScoutMenuParamList } from "./ScoutingFlow";
 
 export interface UpcomingRoundsViewProps {
     navigation: NavigationProp<ScoutMenuParamList, "Dashboard">;

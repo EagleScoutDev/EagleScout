@@ -1,7 +1,7 @@
 import { StyleSheet, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UpcomingRoundsView } from "./UpcomingRoundsView";
-import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
+import { TabHeader } from "../../ui/navigation/TabHeader";
 import type { ScoutMenuScreenProps } from "./ScoutingFlow";
 import { SafeAreaView } from "react-native-safe-area-context";
 

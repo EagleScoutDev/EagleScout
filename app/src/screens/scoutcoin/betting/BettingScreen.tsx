@@ -12,7 +12,7 @@ import { ProfilesDB } from "../../../database/Profiles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Profile } from "../../../lib/user/profile";
 import * as Bs from "../../../ui/icons";
-import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
+import type { DataMenuScreenProps } from "../../data/DataMain";
 
 interface Player {
     id: string;

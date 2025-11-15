@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Color } from "../../../../lib/color.ts";
-import { PressableOpacity } from "../../../../ui/components/PressableOpacity.tsx";
+import { Color } from "../../../../lib/color";
+import { PressableOpacity } from "../../../../ui/components/PressableOpacity";
 
 export interface ActionMenuProps<T> {
     title: string;

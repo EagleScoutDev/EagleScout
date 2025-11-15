@@ -1,7 +1,7 @@
-import type { SettingsMenuScreenProps } from "./SettingsMenu.tsx";
+import type { SettingsMenuScreenProps } from "./SettingsMenu";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
-import { UIList } from "../../ui/UIList.tsx";
+import { TabHeader } from "../../ui/navigation/TabHeader";
+import { UIList } from "../../ui/UIList";
 import { Text } from "react-native";
 
 const VERSION = "7.7.2";

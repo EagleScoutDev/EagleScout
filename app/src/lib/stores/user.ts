@@ -1,9 +1,9 @@
 import { create } from "zustand/react";
 import { combine, persist } from "zustand/middleware";
-import { type Account, Accounts } from "../user/account.ts";
-import { supabase } from "../supabase.ts";
-import { storage } from "./persist.ts";
-import { createSelectors } from "../util/zustand/createSelectors.ts";
+import { type Account, Accounts } from "../user/account";
+import { supabase } from "../supabase";
+import { storage } from "./persist";
+import { createSelectors } from "../util/zustand/createSelectors";
 
 export interface UserStoreState {
     account: Account | null;

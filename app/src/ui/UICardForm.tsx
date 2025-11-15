@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { type UINumberInputProps } from "./input/UINumberInput.tsx";
-import { NumberInput as RNNumberInput } from "./components/NumberInput.tsx";
+import { type UINumberInputProps } from "./input/UINumberInput";
+import { NumberInput as RNNumberInput } from "./components/NumberInput";
 import {
     OrientationChooser as UIOrientationChooser,
     type OrientationChooserProps as UIOrientationChooserProps,
-} from "../components/OrientationChooser.tsx";
+} from "../components/OrientationChooser";
 
 export interface UICardFormProps extends PropsWithChildren {
     title?: string;

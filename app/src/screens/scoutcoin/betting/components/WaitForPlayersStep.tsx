@@ -1,6 +1,6 @@
-import { BettingInfoStep } from "./BettingInfoStep.tsx";
+import { BettingInfoStep } from "./BettingInfoStep";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { PlayerIcon } from "./PlayerIcon.tsx";
+import { PlayerIcon } from "./PlayerIcon";
 
 export const WaitForPlayersStep = () => (
     <BettingInfoStep index={0} title="Wait for 2+ players" nextScreen="SelectAlliance" isFinalScreen={false}>

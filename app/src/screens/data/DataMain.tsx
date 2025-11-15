@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import { DataHome } from "./DataHome";
-import { ManageCompetitions } from "../admin/competitions/ManageCompetitions.tsx";
+import { ManageCompetitions } from "../admin/competitions/ManageCompetitions";
 import { ManageUsers } from "../admin/ManageUsers";
 import { ManageBets } from "../scoutcoin/betting/admin/ManageBets";
 import { ScoutcoinLedger } from "../scoutcoin/ScoutcoinLedger";
@@ -11,17 +11,17 @@ import { DataAggregation } from "./analysis/rank/DataAggregation";
 import { WeightedRank } from "./analysis/rank/WeightedRank";
 import { MatchPredictor } from "./analysis/predictor/MatchPredictor";
 import { ExportToCSV } from "./export/ExportToCSV";
-import { FormCreator, type FormCreatorParams } from "../admin/forms/creator/FormCreator.tsx";
-import { FormList } from "../admin/forms/list/FormList.tsx";
+import { FormCreator, type FormCreatorParams } from "../admin/forms/creator/FormCreator";
+import { FormList } from "../admin/forms/list/FormList";
 import {
     ScoutAssignmentsSpreadsheet,
     type ScoutAssignmentsSpreadsheetParams,
-} from "../admin/assignments/ScoutAssignmentsSpreadsheet.tsx";
-import { ScoutAssignmentsMain } from "../admin/assignments/ScoutAssignmentsMain.tsx";
-import { BettingScreen, type BettingScreenParams } from "../scoutcoin/betting/BettingScreen.tsx";
-import { MatchBetting } from "../scoutcoin/betting/MatchBetting.tsx";
-import { PicklistCreator, type PicklistCreatorParams } from "./analysis/picklist/PicklistCreator.tsx";
-import { Picklists } from "./analysis/picklist/Picklists.tsx";
+} from "../admin/assignments/ScoutAssignmentsSpreadsheet";
+import { ScoutAssignmentsMain } from "../admin/assignments/ScoutAssignmentsMain";
+import { BettingScreen, type BettingScreenParams } from "../scoutcoin/betting/BettingScreen";
+import { MatchBetting } from "../scoutcoin/betting/MatchBetting";
+import { PicklistCreator, type PicklistCreatorParams } from "./analysis/picklist/PicklistCreator";
+import { Picklists } from "./analysis/picklist/Picklists";
 
 const Stack = createNativeStackNavigator<DataMenuParamList>();
 export type DataMenuScreenProps<K extends keyof DataMenuParamList> = NativeStackScreenProps<DataMenuParamList, K>;

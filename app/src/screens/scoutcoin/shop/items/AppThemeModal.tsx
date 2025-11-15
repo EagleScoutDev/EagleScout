@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { ThemePicker } from "./ThemePicker.tsx";
+import { ThemePicker } from "./ThemePicker";
 import { ThemeContext } from "../../../../lib/contexts/ThemeContext";
-import { UIModal } from "../../../../ui/UIModal.tsx";
+import { UIModal } from "../../../../ui/UIModal";
 
 export interface AppThemeModalProps {
     onClose: () => void;

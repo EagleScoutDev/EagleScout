@@ -1,13 +1,13 @@
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
-import { UIModal } from "../../../ui/UIModal.tsx";
+import { UIModal } from "../../../ui/UIModal";
 import { StandardButton } from "../../../ui/StandardButton";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { NumberInput } from "../../../ui/components/NumberInput.tsx";
-import { UICheckbox } from "../../../ui/input/UICheckbox.tsx";
+import { NumberInput } from "../../../ui/components/NumberInput";
+import { UICheckbox } from "../../../ui/input/UICheckbox";
 import type { Setter } from "../../../lib/util/react/types";
-import { exMemo } from "../../../lib/util/react/memo.ts";
+import { exMemo } from "../../../lib/util/react/memo";
 
 export interface AutoAssignModalProps {
     visible: boolean;

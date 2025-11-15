@@ -1,7 +1,7 @@
 import type { SettingsMenuScreenProps } from "../SettingsMenu";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TabHeader } from "../../../ui/navigation/TabHeader.tsx";
-import { UIList } from "../../../ui/UIList.tsx";
+import { TabHeader } from "../../../ui/navigation/TabHeader";
+import { UIList } from "../../../ui/UIList";
 import * as Bs from "../../../ui/icons";
 
 export interface DebugHomeProps extends SettingsMenuScreenProps<"Debug/Home"> {}

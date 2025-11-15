@@ -7,7 +7,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
 import type { ReactNode, Ref } from "react";
-import { useModalSafeArea } from "./ModalSafeAreaProvider.tsx";
+import { useModalSafeArea } from "./ModalSafeAreaProvider";
 
 export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
     ref?: Ref<BottomSheetModal<T>>;

@@ -1,7 +1,7 @@
 import { type PropsWithChildren } from "react";
 import { Text, View } from "react-native";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
-import { Color } from "../../../lib/color.ts";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
+import { Color } from "../../../lib/color";
 import { useTheme } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 

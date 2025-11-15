@@ -8,10 +8,10 @@ import type { RootStackScreenProps } from "./App";
 import * as Bs from "./ui/icons";
 import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings/SettingsMenu";
 import { useEffect, useRef } from "react";
-import { useUserStore } from "./lib/stores/user.ts";
+import { useUserStore } from "./lib/stores/user";
 import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
-import { UISheetModal } from "./ui/UISheetModal.tsx";
-import { PlusMenu } from "./PlusMenu.tsx";
+import { UISheetModal } from "./ui/UISheetModal";
+import { PlusMenu } from "./PlusMenu";
 
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>;

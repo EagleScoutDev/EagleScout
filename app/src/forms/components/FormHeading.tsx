@@ -1,7 +1,7 @@
 import { Form } from "../../lib/forms";
 import { StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { exMemo } from "../../lib/util/react/memo.ts";
+import { exMemo } from "../../lib/util/react/memo";
 
 export interface HeadingBuilderProps {
     item: Form.Heading;

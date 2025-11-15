@@ -1,12 +1,12 @@
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
-import { TBAMatches } from "../../../database/TBAMatches.ts";
-import { SetScoutAssignmentModal } from "../../../components/modals/SetScoutAssignmentModal.tsx";
-import { Position, ScoutAssignments } from "../../../database/ScoutAssignments.ts";
+import { TBAMatches } from "../../../database/TBAMatches";
+import { SetScoutAssignmentModal } from "../../../components/modals/SetScoutAssignmentModal";
+import { Position, ScoutAssignments } from "../../../database/ScoutAssignments";
 import { useTheme } from "@react-navigation/native";
-import { ScoutAssignmentsConfig } from "../../../database/Competitions.ts";
-import { AutoAssignModal } from "./AutoAssignModal.tsx";
-import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
+import { ScoutAssignmentsConfig } from "../../../database/Competitions";
+import { AutoAssignModal } from "./AutoAssignModal";
+import type { DataMenuScreenProps } from "../../data/DataMain";
 
 export interface ScoutAssignmentsSpreadsheetParams {
     competition: number;

@@ -1,8 +1,8 @@
 import { type NavigationProp, type Theme, useTheme } from "@react-navigation/native";
 import * as Bs from "./ui/icons";
-import { PressableOpacity } from "./ui/components/PressableOpacity.tsx";
+import { PressableOpacity } from "./ui/components/PressableOpacity";
 import { StyleSheet, Text, View } from "react-native";
-import type { RootStackParamList } from "./App.tsx";
+import type { RootStackParamList } from "./App";
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { type RefObject, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";

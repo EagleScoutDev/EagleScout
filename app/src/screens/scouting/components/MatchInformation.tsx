@@ -1,6 +1,6 @@
 import { type Setter } from "../../../lib/util/react/types";
-import { UICardForm } from "../../../ui/UICardForm.tsx";
-import { Alliance, type Orientation } from "../../../frc/common/common.ts";
+import { UICardForm } from "../../../ui/UICardForm";
+import { Alliance, type Orientation } from "../../../frc/common/common";
 
 export interface MatchInformationProps {
     match: number | null;

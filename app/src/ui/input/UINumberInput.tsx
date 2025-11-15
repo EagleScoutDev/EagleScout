@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import { exMemo } from "../../lib/util/react/memo.ts";
+import { exMemo } from "../../lib/util/react/memo";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { NumberInput, type NumberInputProps } from "../components/NumberInput.tsx";
+import { NumberInput, type NumberInputProps } from "../components/NumberInput";
 
 export interface UINumberInputProps extends NumberInputProps {}
 export function UINumberInput({ style, ...passthrough }: UINumberInputProps) {

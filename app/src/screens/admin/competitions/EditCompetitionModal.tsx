@@ -1,10 +1,10 @@
 import { Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import React, { useImperativeHandle, useRef, useState } from "react";
-import { Color } from "../../../lib/color.ts";
-import { UISheet } from "../../../ui/UISheet.tsx";
-import { UIForm } from "../../../ui/UIForm.tsx";
-import { UISheetModal } from "../../../ui/UISheetModal.tsx";
+import { Color } from "../../../lib/color";
+import { UISheet } from "../../../ui/UISheet";
+import { UIForm } from "../../../ui/UIForm";
+import { UISheetModal } from "../../../ui/UISheetModal";
 
 export interface CompetitionPatch {
     id: number;

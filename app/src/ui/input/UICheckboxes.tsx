@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { UICheckbox } from "./UICheckbox.tsx";
+import { UICheckbox } from "./UICheckbox";
 
 export interface UICheckboxesProps<T extends string> {
     options: T[];

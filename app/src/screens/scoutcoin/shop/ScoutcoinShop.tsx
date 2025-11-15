@@ -5,7 +5,7 @@ import { type Theme, useTheme } from "@react-navigation/native";
 import { ConfirmPurchaseModal } from "./ConfirmPurchaseModal";
 import { AppThemeModal } from "./items/AppThemeModal";
 import * as Bs from "../../../ui/icons";
-import { PressableOpacity } from "../../../ui/components/PressableOpacity.tsx";
+import { PressableOpacity } from "../../../ui/components/PressableOpacity";
 
 type ModalProps = {
     onClose: () => void;

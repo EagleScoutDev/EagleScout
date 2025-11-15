@@ -5,13 +5,13 @@ import { useTheme } from "@react-navigation/native";
 import { type SettingsMenuScreenProps } from "./SettingsMenu";
 import * as Bs from "../../ui/icons";
 import { CompetitionsDB } from "../../database/Competitions";
-import { useProfile } from "../../lib/hooks/useProfile.ts";
+import { useProfile } from "../../lib/hooks/useProfile";
 import { ScoutcoinLedger } from "../../database/ScoutcoinLedger";
-import { useUserStore } from "../../lib/stores/user.ts";
-import { UIList } from "../../ui/UIList.tsx";
+import { useUserStore } from "../../lib/stores/user";
+import { UIList } from "../../ui/UIList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
-import { AccountRole } from "../../lib/user/account.ts";
+import { TabHeader } from "../../ui/navigation/TabHeader";
+import { AccountRole } from "../../lib/user/account";
 
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {

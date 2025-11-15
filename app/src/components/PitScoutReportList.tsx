@@ -1,7 +1,7 @@
-import { type PitReportReturnData } from "../database/ScoutPitReports.ts";
+import { type PitReportReturnData } from "../database/ScoutPitReports";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { PitScoutViewer } from "./modals/PitScoutViewer.tsx";
+import { PitScoutViewer } from "./modals/PitScoutViewer";
 import { useState } from "react";
 
 export const PitScoutReportList = ({

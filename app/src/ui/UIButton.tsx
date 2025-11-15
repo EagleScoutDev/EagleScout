@@ -1,8 +1,8 @@
 import { useTheme } from "@react-navigation/native";
 import { type PropsWithChildren, useState } from "react";
 import { ActivityIndicator, type StyleProp, Text, type TextStyle, View, type ViewStyle } from "react-native";
-import { Color } from "../lib/color.ts";
-import { PressableOpacity } from "./components/PressableOpacity.tsx";
+import { Color } from "../lib/color";
+import { PressableOpacity } from "./components/PressableOpacity";
 import type { Icon } from "./icons";
 
 export const enum UIButtonStyle {

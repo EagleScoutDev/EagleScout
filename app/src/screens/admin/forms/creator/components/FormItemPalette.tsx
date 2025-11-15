@@ -1,6 +1,6 @@
 import { ScrollView } from "react-native-gesture-handler";
-import { UIButton, UIButtonStyle } from "../../../../../ui/UIButton.tsx";
-import { Color } from "../../../../../lib/color.ts";
+import { UIButton, UIButtonStyle } from "../../../../../ui/UIButton";
+import { Color } from "../../../../../lib/color";
 import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import type { Icon } from "../../../../../ui/icons";

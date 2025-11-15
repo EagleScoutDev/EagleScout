@@ -3,9 +3,9 @@ import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { supabase } from "../../lib/supabase";
-import { Color } from "../../lib/color.ts";
+import { Color } from "../../lib/color";
 import { AccountRole } from "../../lib/user/account";
-import type { User } from "../../lib/user/user.ts";
+import type { User } from "../../lib/user/user";
 
 function SortOption({ onPress, title, isActive }: { onPress: () => void; title: string; isActive: boolean }) {
     const { colors } = useTheme();

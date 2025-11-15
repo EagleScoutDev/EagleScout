@@ -16,7 +16,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { withStallion } from "react-native-stallion";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { ModalSafeAreaProvider } from "./ui/ModalSafeAreaProvider.tsx";
+import { ModalSafeAreaProvider } from "./ui/ModalSafeAreaProvider";
 
 declare global {
     namespace ReactNavigation {

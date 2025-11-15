@@ -1,6 +1,6 @@
 import { type StyleProp, type TextInputProps, type TextStyle } from "react-native";
 import { useState } from "react";
-import { AutoTextInput } from "./AutoTextInput.tsx";
+import { AutoTextInput } from "./AutoTextInput";
 
 export interface NumberInputProps extends Omit<TextInputProps, "value" | `on${string}`> {
     float?: boolean;

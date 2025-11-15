@@ -1,10 +1,10 @@
-import { UIList, type UIListProps } from "./UIList.tsx";
+import { UIList, type UIListProps } from "./UIList";
 import { Platform, Switch as RNSwitch, Text } from "react-native";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { NumberInput as RNNumberInput } from "./components/NumberInput.tsx";
-import { UIListPicker } from "./input/UIListPicker.tsx";
-import type { Color } from "../lib/color.ts";
-import { AutoTextInput } from "./components/AutoTextInput.tsx";
+import { NumberInput as RNNumberInput } from "./components/NumberInput";
+import { UIListPicker } from "./input/UIListPicker";
+import type { Color } from "../lib/color";
+import { AutoTextInput } from "./components/AutoTextInput";
 
 export interface UIFormProps extends UIListProps {}
 

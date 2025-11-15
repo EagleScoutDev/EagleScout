@@ -1,7 +1,7 @@
-import { UIButton, type UIButtonProps, UIButtonSize, UIButtonStyle } from "./UIButton.tsx";
+import { UIButton, type UIButtonProps, UIButtonSize, UIButtonStyle } from "./UIButton";
 import { Text, View } from "react-native";
 import BottomSheet, { BottomSheetHandle, type BottomSheetProps, useBottomSheet } from "@gorhom/bottom-sheet";
-import { ThreeCenterLayout } from "./layout/ThreeCenterLayout.tsx";
+import { ThreeCenterLayout } from "./layout/ThreeCenterLayout";
 
 export interface UISheetProps extends BottomSheetProps {}
 export function UISheet(props: UISheetProps) {

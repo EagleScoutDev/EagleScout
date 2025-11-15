@@ -1,7 +1,7 @@
-import { type CompetitionReturnData, CompetitionsDB } from "../../database/Competitions.ts";
+import { type CompetitionReturnData, CompetitionsDB } from "../../database/Competitions";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../../FormHelper.ts";
+import { FormHelper } from "../../FormHelper";
 
 export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {
     const [online, setOnline] = useState<boolean>(false);

@@ -1,5 +1,5 @@
 import type { Setter } from "../../../lib/util/react/types";
-import { UICardForm } from "../../../ui/UICardForm.tsx";
+import { UICardForm } from "../../../ui/UICardForm";
 
 export interface TeamInformationProps {
     team: number | null;

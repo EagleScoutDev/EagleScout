@@ -1,4 +1,4 @@
-import { Color } from "../../../../lib/color.ts";
+import { Color } from "../../../../lib/color";
 import { Pressable, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
 

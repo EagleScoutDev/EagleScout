@@ -3,8 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
-import { UIForm } from "../../../ui/UIForm.tsx";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
+import { UIForm } from "../../../ui/UIForm";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export interface AccountEditProfileParams {

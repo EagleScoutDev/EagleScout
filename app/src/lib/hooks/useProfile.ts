@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ProfilesDB } from "../../database/Profiles.ts";
-import type { Profile } from "../user/profile.ts";
+import { ProfilesDB } from "../../database/Profiles";
+import type { Profile } from "../user/profile";
 
 export const useProfile = () => {
     // TODO: cache this in useUserStore

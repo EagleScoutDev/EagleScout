@@ -7,8 +7,8 @@ import type { AppHomeScreenProps } from "../../AppHome";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountDeletionModal } from "./account/AccountDeletionModal";
 import { AccountChangePassword } from "./account/AccountChangePassword";
-import { DebugHome } from "./debug/DebugHome.tsx";
-import { About } from "./About.tsx";
+import { DebugHome } from "./debug/DebugHome";
+import { About } from "./About";
 
 const Stack = createNativeStackNavigator<SettingsMenuParamList>();
 export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<

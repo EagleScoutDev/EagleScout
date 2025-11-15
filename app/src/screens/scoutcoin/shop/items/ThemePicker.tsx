@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../../../../FormHelper.ts";
+import { FormHelper } from "../../../../FormHelper";
 import { useTheme } from "@react-navigation/native";
 import { ThemeOptions, ThemeOptionsMap } from "../../../../themes";
 

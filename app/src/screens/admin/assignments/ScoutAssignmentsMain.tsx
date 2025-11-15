@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB, ScoutAssignmentsConfig } from "../../../database/Competitions";
 import { NoInternet } from "../../../ui/NoInternet";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { UIList } from "../../../ui/UIList.tsx";
-import { TabHeader } from "../../../ui/navigation/TabHeader.tsx";
-import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
-import { UISheetModal } from "../../../ui/UISheetModal.tsx";
+import { UIList } from "../../../ui/UIList";
+import { TabHeader } from "../../../ui/navigation/TabHeader";
+import type { DataMenuScreenProps } from "../../data/DataMain";
+import { UISheetModal } from "../../../ui/UISheetModal";
 
 export interface ScoutAssignmentsMainProps extends DataMenuScreenProps<"ScoutAssignments"> {}
 export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) {

@@ -1,21 +1,21 @@
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { UIRadio } from "../../ui/input/UIRadio.tsx";
-import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
-import { supabase } from "../../lib/supabase.ts";
-import { FormHelper } from "../../FormHelper.ts";
-import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes.ts";
+import { UIRadio } from "../../ui/input/UIRadio";
+import { UICheckboxes } from "../../ui/input/UICheckboxes";
+import { supabase } from "../../lib/supabase";
+import { FormHelper } from "../../FormHelper";
+import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes";
 import {
     type MatchReportHistory,
     type MatchReportReturnData,
     MatchReportsDB
-} from "../../database/ScoutMatchReports.ts";
-import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
-import { isTablet } from "../../lib/deviceType.ts";
+} from "../../database/ScoutMatchReports";
+import { HistorySelectorModal } from "./HistorySelectorModal";
+import { isTablet } from "../../lib/deviceType";
 import * as Bs from "../../ui/icons";
 import { type Setter } from "../../lib/util/react/types";
-import { exMemo } from "../../lib/util/react/memo.ts";
+import { exMemo } from "../../lib/util/react/memo";
 
 /**
  * This component displays the scout data in a modal.

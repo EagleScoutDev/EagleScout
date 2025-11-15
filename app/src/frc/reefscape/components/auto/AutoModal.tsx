@@ -2,18 +2,18 @@ import { View } from "react-native";
 import { useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { ActionGrid } from "./ActionGrid.tsx";
-import { UISheet } from "../../../../ui/UISheet.tsx";
-import { Color } from "../../../../lib/color.ts";
+import { ActionGrid } from "./ActionGrid";
+import { UISheet } from "../../../../ui/UISheet";
+import { Color } from "../../../../lib/color";
 import * as Bs from "../../../../ui/icons";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../../ui/UIButton.tsx";
-import { Alliance, Orientation } from "../../../common/common.ts";
-import { AutoActionType, type AutoDispatch, type AutoState } from "../../auto.ts";
-import { ReefSextant } from "../../field.ts";
-import { AutoField } from "./AutoField.tsx";
-import { ActionButton } from "./ActionButton.tsx";
-import { ActionRow } from "./ActionRow.tsx";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../../ui/UIButton";
+import { Alliance, Orientation } from "../../../common/common";
+import { AutoActionType, type AutoDispatch, type AutoState } from "../../auto";
+import { ReefSextant } from "../../field";
+import { AutoField } from "./AutoField";
+import { ActionButton } from "./ActionButton";
+import { ActionRow } from "./ActionRow";
 
 interface AutoModalProps {
     orientation: Orientation;

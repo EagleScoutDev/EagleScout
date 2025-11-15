@@ -2,10 +2,10 @@ import { Pressable, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "@react-navigation/native";
 import * as Bs from "../../../../ui/icons";
-import { Color } from "../../../../lib/color.ts";
-import type { AutoPieceState, AutoState } from "../../auto.ts";
-import { Alliance, Orientation } from "../../../common/common.ts";
-import { ReefSextant } from "../../field.ts";
+import { Color } from "../../../../lib/color";
+import type { AutoPieceState, AutoState } from "../../auto";
+import { Alliance, Orientation } from "../../../common/common";
+import { ReefSextant } from "../../field";
 
 export interface AutoFieldProps {
     orientation: Orientation;

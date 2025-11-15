@@ -6,7 +6,7 @@ import { CompetitionsDB } from "../../../../database/Competitions";
 import { PicklistsDB, type PicklistStructure } from "../../../../database/Picklists";
 import { ProfilesDB } from "../../../../database/Profiles";
 import * as Bs from "../../../../ui/icons";
-import type { DataMenuScreenProps } from "../../DataMain.tsx";
+import type { DataMenuScreenProps } from "../../DataMain";
 
 export interface PicklistsProps extends DataMenuScreenProps<"Picklists"> {}
 export function Picklists({ navigation }: PicklistsProps) {

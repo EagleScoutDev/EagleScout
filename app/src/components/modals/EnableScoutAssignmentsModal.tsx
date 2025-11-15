@@ -1,13 +1,13 @@
 import { Alert, Keyboard } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
-import { supabase } from "../../lib/supabase.ts";
-import { UISheet } from "../../ui/UISheet.tsx";
-import { Color } from "../../lib/color.ts";
-import type { CompetitionReturnData } from "../../database/Competitions.ts";
+import { supabase } from "../../lib/supabase";
+import { UISheet } from "../../ui/UISheet";
+import { Color } from "../../lib/color";
+import type { CompetitionReturnData } from "../../database/Competitions";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import type { UISheetModal } from "../../ui/UISheetModal.tsx";
-import { UIForm } from "../../ui/UIForm.tsx";
+import type { UISheetModal } from "../../ui/UISheetModal";
+import { UIForm } from "../../ui/UIForm";
 
 export interface EnableScoutAssignmentsModalProps {
     data?: CompetitionReturnData;

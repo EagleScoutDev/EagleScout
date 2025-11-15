@@ -1,12 +1,12 @@
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { UIRadio } from "../../../ui/input/UIRadio.tsx";
+import { UIRadio } from "../../../ui/input/UIRadio";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
-import { useUserStore } from "../../../lib/stores/user.ts";
+import { useUserStore } from "../../../lib/stores/user";
 
 export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {}
 export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) {

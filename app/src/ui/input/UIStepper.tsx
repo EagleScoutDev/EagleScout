@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { exMemo } from "../../lib/util/react/memo.ts";
-import { PressableOpacity } from "../components/PressableOpacity.tsx";
+import { exMemo } from "../../lib/util/react/memo";
+import { PressableOpacity } from "../components/PressableOpacity";
 import * as Bs from "../icons";
 
 export interface StepperProps {

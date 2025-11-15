@@ -1,9 +1,9 @@
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes.ts";
+import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes";
 import * as Bs from "../ui/icons";
-import { UIButton } from "../ui/UIButton.tsx";
+import { UIButton } from "../ui/UIButton";
 
 export enum FilterType {
     // todo: allow note list to accept and display team #

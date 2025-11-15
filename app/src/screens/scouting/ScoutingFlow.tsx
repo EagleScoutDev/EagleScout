@@ -5,7 +5,7 @@ import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
 import * as Bs from "../../ui/icons";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { type PitFlowParamList, PitScoutingFlow } from "./pit/PitScoutingFlow.tsx";
+import { type PitFlowParamList, PitScoutingFlow } from "./pit/PitScoutingFlow";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";
 import { ScoutTimer, ScoutTimerContext } from "./components/Timer";
 

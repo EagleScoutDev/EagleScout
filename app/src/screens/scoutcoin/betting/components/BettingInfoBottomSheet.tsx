@@ -1,10 +1,10 @@
 import { useRef } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { NavigationIndependentTree, useTheme } from "@react-navigation/native";
-import { ThemedNavigationContainer } from "../../../../ui/ThemedNavigationContainer.tsx";
+import { ThemedNavigationContainer } from "../../../../ui/ThemedNavigationContainer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { WaitForPlayersStep } from "./WaitForPlayersStep.tsx";
-import { SelectAllianceStep } from "./SelectAllianceStep.tsx";
+import { WaitForPlayersStep } from "./WaitForPlayersStep";
+import { SelectAllianceStep } from "./SelectAllianceStep";
 
 const Stack = createNativeStackNavigator();
 

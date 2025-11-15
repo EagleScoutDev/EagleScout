@@ -1,10 +1,10 @@
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
-import { UIModal } from "../../ui/UIModal.tsx";
-import { StandardButton } from "../../ui/StandardButton.tsx";
+import { UIModal } from "../../ui/UIModal";
+import { StandardButton } from "../../ui/StandardButton";
 import { useTheme } from "@react-navigation/native";
-import { supabase } from "../../lib/supabase.ts";
+import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
-import type { CompetitionReturnData } from "../../database/Competitions.ts";
+import type { CompetitionReturnData } from "../../database/Competitions";
 import type { Setter } from "../../lib/util/react/types";
 
 export function Spacer() {

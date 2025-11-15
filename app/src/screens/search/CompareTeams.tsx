@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
 import { isTablet } from "../../lib/deviceType";
 import { QuestionSummary } from "./QuestionSummary";
-import { UIModal } from "../../ui/UIModal.tsx";
+import { UIModal } from "../../ui/UIModal";
 import { LineChart } from "react-native-chart-kit";
 import { CompetitionRank } from "./CompetitionRank";
-import { Color } from "../../lib/color.ts";
+import { Color } from "../../lib/color";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import type { SearchMenuScreenProps } from "./SearchMenu";
-import type { SimpleTeam } from "../../lib/frc/tba.ts";
+import type { SimpleTeam } from "../../lib/frc/tba";
 
 export interface CompareTeamsParams {
     team: SimpleTeam;

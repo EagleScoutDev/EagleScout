@@ -1,12 +1,12 @@
 import { Alert, Keyboard } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase.ts";
-import { Color } from "../../../lib/color.ts";
-import { UISheet } from "../../../ui/UISheet.tsx";
-import { UIForm } from "../../../ui/UIForm.tsx";
-import { UISheetModal } from "../../../ui/UISheetModal.tsx";
-import { TBA } from "../../../lib/frc/tba.ts";
+import { supabase } from "../../../lib/supabase";
+import { Color } from "../../../lib/color";
+import { UISheet } from "../../../ui/UISheet";
+import { UIForm } from "../../../ui/UIForm";
+import { UISheetModal } from "../../../ui/UISheetModal";
+import { TBA } from "../../../lib/frc/tba";
 
 export interface CompetitionData {
     name: string;

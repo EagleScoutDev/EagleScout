@@ -1,11 +1,11 @@
 import { FlatList, KeyboardAvoidingView, LayoutAnimation, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
-import { ScoutViewer } from "./modals/ScoutViewer.tsx";
+import { ScoutViewer } from "./modals/ScoutViewer";
 import { useTheme } from "@react-navigation/native";
-import { CompetitionsDB } from "../database/Competitions.ts";
+import { CompetitionsDB } from "../database/Competitions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../FormHelper.ts";
-import { UIBadge } from "../ui/UIBadge.tsx";
+import { FormHelper } from "../FormHelper";
+import { UIBadge } from "../ui/UIBadge";
 import * as Bs from "../ui/icons";
 
 function CompetitionFlatList({

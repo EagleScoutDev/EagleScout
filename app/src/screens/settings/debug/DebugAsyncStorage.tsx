@@ -4,12 +4,12 @@ import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { UIList } from "../../../ui/UIList.tsx";
+import { UIList } from "../../../ui/UIList";
 import BottomSheet from "@gorhom/bottom-sheet";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import * as Bs from "../../../ui/icons";
-import { PressableOpacity } from "../../../ui/components/PressableOpacity.tsx";
+import { PressableOpacity } from "../../../ui/components/PressableOpacity";
 
 export function DebugAsyncStorage() {
     const [keys, setKeys] = useState<readonly string[]>([]);

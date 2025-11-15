@@ -1,5 +1,5 @@
-import { FormHeading } from "../../../../../forms/components/FormHeading.tsx";
-import { FormQuestion } from "../../../../../forms/components/FormQuestion.tsx";
+import { FormHeading } from "../../../../../forms/components/FormHeading";
+import { FormQuestion } from "../../../../../forms/components/FormQuestion";
 import { Form } from "../../../../../lib/forms";
 import * as Bs from "../../../../../ui/icons";
 import { StyleSheet, Text } from "react-native";

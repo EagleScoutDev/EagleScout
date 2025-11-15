@@ -3,7 +3,7 @@ import { useTheme } from "@react-navigation/native";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { type MatchBet, MatchBets } from "../../../../database/MatchBets";
 import { supabase } from "../../../../lib/supabase";
-import { Color } from "../../../../lib/color.ts";
+import { Color } from "../../../../lib/color";
 
 const BetCard = ({
     matchNumber,

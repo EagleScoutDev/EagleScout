@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
-import { useProfile } from "../../../../lib/hooks/useProfile.ts";
+import { useProfile } from "../../../../lib/hooks/useProfile";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { supabase } from "../../../../lib/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UIModal } from "../../../../ui/UIModal.tsx";
+import { UIModal } from "../../../../ui/UIModal";
 
 export interface ProfileEmojiModalProps {
     onClose: () => void;

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Statbotics } from "../../components/Statbotics.tsx";
+import { Statbotics } from "../../components/Statbotics";
 import { CompetitionRank } from "./CompetitionRank";
 import { ScoutSummary } from "./ScoutSummary";
 import { QuestionFormulaCreator } from "../data/QuestionFormulaCreator";
 import { CombinedGraph } from "./CombinedGraph"; // adjust the import path to match your file structur
 import type { SearchMenuScreenProps } from "./SearchMenu";
-import type { SimpleTeam } from "../../lib/frc/tba.ts";
+import type { SimpleTeam } from "../../lib/frc/tba";
 import * as Bs from "../../ui/icons";
-import { UIList } from "../../ui/UIList.tsx";
+import { UIList } from "../../ui/UIList";
 
 export interface TeamViewerParams {
     team: SimpleTeam;

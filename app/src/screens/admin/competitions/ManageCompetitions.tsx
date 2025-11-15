@@ -1,14 +1,14 @@
 import { Alert, TouchableOpacity, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { NoInternet } from "../../../ui/NoInternet.tsx";
-import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions.ts";
+import { NoInternet } from "../../../ui/NoInternet";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import * as Bs from "../../../ui/icons";
-import { UIList } from "../../../ui/UIList.tsx";
-import { TabHeader } from "../../../ui/navigation/TabHeader.tsx";
-import { EditCompetitionModal } from "./EditCompetitionModal.tsx";
-import { supabase } from "../../../lib/supabase.ts";
-import { AddCompetitionModal } from "./AddCompetitionModal.tsx";
+import { UIList } from "../../../ui/UIList";
+import { TabHeader } from "../../../ui/navigation/TabHeader";
+import { EditCompetitionModal } from "./EditCompetitionModal";
+import { supabase } from "../../../lib/supabase";
+import { AddCompetitionModal } from "./AddCompetitionModal";
 
 export function ManageCompetitions() {
     "use no memo";

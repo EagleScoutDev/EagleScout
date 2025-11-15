@@ -1,13 +1,13 @@
 import { Text, View } from "react-native";
-import { UISheetModal } from "../UISheetModal.tsx";
-import { UISheet } from "../UISheet.tsx";
+import { UISheetModal } from "../UISheetModal";
+import { UISheet } from "../UISheet";
 import * as Bs from "../../ui/icons";
 import type { ReactNode } from "react";
 import React, { type Ref, useImperativeHandle, useRef } from "react";
-import { Color } from "../../lib/color.ts";
+import { Color } from "../../lib/color";
 import { useTheme } from "@react-navigation/native";
-import { PressableOpacity } from "../components/PressableOpacity.tsx";
-import { UIList } from "../UIList.tsx";
+import { PressableOpacity } from "../components/PressableOpacity";
+import { UIList } from "../UIList";
 
 export interface UIListPickerProps<K extends string | number = string | number> {
     ref?: Ref<UIListPicker<K>>;

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UserAttributesDB } from "../../../database/UserAttributes";
-import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
-import { UICardForm } from "../../../ui/UICardForm.tsx";
+import type { DataMenuScreenProps } from "../../data/DataMain";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
+import { UICardForm } from "../../../ui/UICardForm";
 
 export interface MatchBettingProps extends DataMenuScreenProps<"MatchBetting"> {}
 export function MatchBetting({ navigation }: MatchBettingProps) {

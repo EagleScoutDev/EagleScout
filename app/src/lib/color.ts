@@ -1,4 +1,4 @@
-import { padLeft } from "./util/padLeft.ts";
+import { padLeft } from "./util/padLeft";
 
 const cache = new Map<string, Color>();
 export class Color {

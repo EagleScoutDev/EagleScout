@@ -1,5 +1,5 @@
 import { Dimensions, Pressable, Text, View } from "react-native";
-import { UIModal } from "../../ui/UIModal.tsx";
+import { UIModal } from "../../ui/UIModal";
 import { LineChart } from "react-native-chart-kit";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";

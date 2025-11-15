@@ -9,9 +9,9 @@ import { SelectTeam } from "./steps/SelectTeam";
 import { useEffect, useState } from "react";
 import type { RootStackScreenProps } from "../../App";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AccountStatus } from "../../lib/user/account.ts";
+import { AccountStatus } from "../../lib/user/account";
 
-import { useUserStore } from "../../lib/stores/user.ts";
+import { useUserStore } from "../../lib/stores/user";
 
 const Stack = createNativeStackNavigator<OnboardingParamList>();
 export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<OnboardingParamList, K>;

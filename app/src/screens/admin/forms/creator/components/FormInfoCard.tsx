@@ -2,7 +2,7 @@ import { Switch, TextInput } from "react-native-gesture-handler";
 import { StyleSheet, Text, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import type { Setter } from "../../../../../lib/util/react/types";
-import { exMemo } from "../../../../../lib/util/react/memo.ts";
+import { exMemo } from "../../../../../lib/util/react/memo";
 
 export interface InfoCardProps {
     title: string;

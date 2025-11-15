@@ -1,15 +1,15 @@
 import { Text, View } from "react-native";
-import { ReportList } from "../../components/ReportList.tsx";
+import { ReportList } from "../../components/ReportList";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import { NotesDB, type NoteWithMatch } from "../../database/ScoutNotes";
-import { UITabs } from "../../ui/UITabs.tsx";
-import { NoteList } from "../../components/NoteList.tsx";
+import { UITabs } from "../../ui/UITabs";
+import { NoteList } from "../../components/NoteList";
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
-import { PitScoutReportList } from "../../components/PitScoutReportList.tsx";
-import type { SearchMenuScreenProps } from "./SearchMenu.tsx";
+import { PitScoutReportList } from "../../components/PitScoutReportList";
+import type { SearchMenuScreenProps } from "./SearchMenu";
 
 export interface ReportsForTeamParams {
     team_number: number;

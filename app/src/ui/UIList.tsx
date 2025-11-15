@@ -12,8 +12,8 @@ import { type Theme, useTheme } from "@react-navigation/native";
 import * as Bs from "./icons";
 import { type Icon } from "./icons";
 import { BottomSheetSectionList } from "@gorhom/bottom-sheet";
-import type { Color } from "../lib/color.ts";
-import { PressableOpacity } from "./components/PressableOpacity.tsx";
+import type { Color } from "../lib/color";
+import { PressableOpacity } from "./components/PressableOpacity";
 
 export interface UIListProps {
     contentContainerStyle?: StyleProp<ViewStyle>;

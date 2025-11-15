@@ -1,3 +1,3 @@
 export * from "./components";
-export * from "./auto.ts";
-export * from "./field.ts";
+export * from "./auto";
+export * from "./field";

@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import RNSlider from "@react-native-community/slider";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { ThreeCenterLayout } from "../layout/ThreeCenterLayout.tsx";
+import { ThreeCenterLayout } from "../layout/ThreeCenterLayout";
 
 export interface UISliderProps {
     min: number;

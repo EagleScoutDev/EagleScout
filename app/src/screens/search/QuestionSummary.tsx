@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { OpenAI } from "../../lib/OpenAI";
 import { isTablet } from "../../lib/deviceType";
 import { DataGraph } from "./DataGraph";
-import { Color } from "../../lib/color.ts";
+import { Color } from "../../lib/color";
 
 interface Props {
     item: any;

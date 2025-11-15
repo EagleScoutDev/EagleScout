@@ -1,25 +1,25 @@
 import { type Theme, usePreventRemove, useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
-import { FormsDB } from "../../../../database/Forms.ts";
+import { FormsDB } from "../../../../database/Forms";
 import { Form } from "../../../../lib/forms";
 import * as Bs from "../../../../ui/icons";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
-import { key } from "../../../../lib/util/react/key.ts";
-import type { DataMenuScreenProps } from "../../../data/DataMain.tsx";
+import { key } from "../../../../lib/util/react/key";
+import type { DataMenuScreenProps } from "../../../data/DataMain";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Alert, Keyboard, StyleSheet, View } from "react-native";
-import { AsyncAlert } from "../../../../lib/util/react/AsyncAlert.ts";
-import { FormInfoCard } from "./components/FormInfoCard.tsx";
-import { FormItemPalette } from "./components/FormItemPalette.tsx";
-import { UISheet } from "../../../../ui/UISheet.tsx";
+import { AsyncAlert } from "../../../../lib/util/react/AsyncAlert";
+import { FormInfoCard } from "./components/FormInfoCard";
+import { FormItemPalette } from "./components/FormItemPalette";
+import { UISheet } from "../../../../ui/UISheet";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import { UISheetModal } from "../../../../ui/UISheetModal.tsx";
-import { Color } from "../../../../lib/color.ts";
-import { FormItemOptions } from "./components/FormItemOptions.tsx";
-import { FormItemInfo } from "./components/FormItemInfo.tsx";
+import { UISheetModal } from "../../../../ui/UISheetModal";
+import { Color } from "../../../../lib/color";
+import { FormItemOptions } from "./components/FormItemOptions";
+import { FormItemInfo } from "./components/FormItemInfo";
 import { Pressable } from "react-native-gesture-handler";
-import { Arrays } from "../../../../lib/util/Arrays.ts";
+import { Arrays } from "../../../../lib/util/Arrays";
 import ItemType = Form.ItemType;
 
 export interface FormCreatorParams {

@@ -3,7 +3,7 @@ import { Modal, Pressable, Text, View } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import { useTheme } from "@react-navigation/native";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
-import { Color } from "../../../../lib/color.ts";
+import { Color } from "../../../../lib/color";
 import type { Setter } from "../../../../lib/util/react/types";
 
 export interface TagColorChangeModalProps {

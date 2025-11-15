@@ -1,6 +1,6 @@
 import { Circle, G, Line, Path, Rect, Svg } from "react-native-svg";
 import { Text, View } from "react-native";
-import { AutoAction, AutoActionType, type AutoPath } from "../auto.ts";
+import { AutoAction, AutoActionType, type AutoPath } from "../auto";
 
 export function AutoPathView({ path }: { path: AutoPath }) {
     if (!path || path.length === 0) {

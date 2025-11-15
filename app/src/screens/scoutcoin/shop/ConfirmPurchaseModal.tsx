@@ -3,12 +3,12 @@ import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../../lib/supabase";
 import { type ShopItem } from "./ScoutcoinShop";
 import { Color } from "../../../lib/color";
-import { useProfile } from "../../../lib/hooks/useProfile.ts";
+import { useProfile } from "../../../lib/hooks/useProfile";
 import * as Bs from "../../../ui/icons";
-import { UIModal } from "../../../ui/UIModal.tsx";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
-import { AsyncAlert } from "../../../lib/util/react/AsyncAlert.ts";
-import { PressableOpacity } from "../../../ui/components/PressableOpacity.tsx";
+import { UIModal } from "../../../ui/UIModal";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
+import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
+import { PressableOpacity } from "../../../ui/components/PressableOpacity";
 
 export interface ConfirmPurchaseModalProps {
     item: ShopItem;

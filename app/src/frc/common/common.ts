@@ -1,4 +1,4 @@
-import { Color } from "../../lib/color.ts";
+import { Color } from "../../lib/color";
 
 export enum Alliance {
     red = "red",

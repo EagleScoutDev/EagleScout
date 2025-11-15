@@ -1,14 +1,14 @@
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl.tsx";
+import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl";
 import { FormHelper } from "../../../FormHelper";
 import { NotesDB, type NoteWithMatch, type OfflineNote } from "../../../database/ScoutNotes";
-import { NoteList } from "../../../components/NoteList.tsx";
+import { NoteList } from "../../../components/NoteList";
 import { CompetitionsDB } from "../../../database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
-import { Color } from "../../../lib/color.ts";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
+import { Color } from "../../../lib/color";
 
 export const SubmittedNotes = () => {
     const { colors } = useTheme();

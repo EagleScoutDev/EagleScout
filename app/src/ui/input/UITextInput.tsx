@@ -1,5 +1,5 @@
 import { StyleSheet, TextInput, type TextInputProps } from "react-native";
-import { exMemo } from "../../lib/util/react/memo.ts";
+import { exMemo } from "../../lib/util/react/memo";
 import { type Theme, useTheme } from "@react-navigation/native";
 
 export interface UITextInputProps extends TextInputProps {}

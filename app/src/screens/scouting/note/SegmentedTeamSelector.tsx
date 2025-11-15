@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Color } from "../../../lib/color.ts";
+import { Color } from "../../../lib/color";
 
 export const SegmentedTeamSelector = ({
     color,

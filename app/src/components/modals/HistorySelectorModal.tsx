@@ -1,4 +1,4 @@
-import { UIModal } from "../../ui/UIModal.tsx";
+import { UIModal } from "../../ui/UIModal";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 

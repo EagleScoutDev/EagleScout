@@ -6,10 +6,10 @@
  */
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { useEffect, useState } from "react";
-import { ReportList } from "../../../components/ReportList.tsx";
+import { ReportList } from "../../../components/ReportList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@react-navigation/native";
-import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl.tsx";
+import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl";
 import { StandardButton } from "../../../ui/StandardButton";
 import Toast from "react-native-toast-message";
 import { type MatchReportReturnData, MatchReportsDB } from "../../../database/ScoutMatchReports";

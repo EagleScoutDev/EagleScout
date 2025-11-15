@@ -1,8 +1,8 @@
-import { UIForm } from "../../../../../ui/UIForm.tsx";
-import { Color } from "../../../../../lib/color.ts";
+import { UIForm } from "../../../../../ui/UIForm";
+import { Color } from "../../../../../lib/color";
 import { Form } from "../../../../../lib/forms";
 import { useTheme } from "@react-navigation/native";
-import { Arrays } from "../../../../../lib/util/Arrays.ts";
+import { Arrays } from "../../../../../lib/util/Arrays";
 import ItemType = Form.ItemType;
 
 export interface FormItemBuilderProps {

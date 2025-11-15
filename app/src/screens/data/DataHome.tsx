@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { InternetStatus } from "../../lib/InternetStatus";
-import { TabHeader } from "../../ui/navigation/TabHeader.tsx";
+import { TabHeader } from "../../ui/navigation/TabHeader";
 import { CompetitionsDB } from "../../database/Competitions";
-import { useUserStore } from "../../lib/stores/user.ts";
+import { useUserStore } from "../../lib/stores/user";
 import { AccountRole } from "../../lib/user/account";
 import type { Icon } from "../../ui/icons";
 import * as Bs from "../../ui/icons";
 import type { DataMenuParamList, DataMenuScreenProps } from "./DataMain";
-import { exMemo } from "../../lib/util/react/memo.ts";
-import { UIList } from "../../ui/UIList.tsx";
+import { exMemo } from "../../lib/util/react/memo";
+import { UIList } from "../../ui/UIList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export interface DataHomeProps extends DataMenuScreenProps<"Home"> {}
