@@ -19,9 +19,8 @@ import { Color } from "../../../../lib/color.ts";
 import { FormItemOptions } from "./components/FormItemOptions.tsx";
 import { FormItemInfo } from "./components/FormItemInfo.tsx";
 import { Pressable } from "react-native-gesture-handler";
-import ItemType = Form.ItemType;
 import { Arrays } from "../../../../lib/util/Arrays.ts";
-import { KeyboardController } from "react-native-keyboard-controller";
+import ItemType = Form.ItemType;
 
 export interface FormCreatorParams {
     form: Form | null;

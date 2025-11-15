@@ -1,5 +1,5 @@
 import { create } from "zustand/react";
-import { persist, combine } from "zustand/middleware";
+import { combine, persist } from "zustand/middleware";
 import { type Account, Accounts } from "../user/account.ts";
 import { supabase } from "../supabase.ts";
 import { storage } from "./persist.ts";
@@ -22,7 +22,7 @@ export const useUserStore = createSelectors(
                     account: null,
                     // profile: null,
                 },
-                (set, get) => ({
+                (set, _) => ({
                     login: Accounts.login,
                     logout: Accounts.logout,
                     async update() {
@@ -39,6 +39,4 @@ export const useUserStore = createSelectors(
     )
 );
 
-supabase.auth.onAuthStateChange((e) => {
-    void useUserStore.getState().update();
-});
+supabase.auth.onAuthStateChange(() => void useUserStore.getState().update());

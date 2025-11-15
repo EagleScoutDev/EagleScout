@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import type { DataMenuScreenProps } from "../../DataMain";
-import { CompetitionsDB, type CompetitionReturnData } from "../../../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { MatchReportsDB } from "../../../../database/ScoutMatchReports";
 
 interface Question {
@@ -11,7 +11,7 @@ interface Question {
 }
 
 export interface DataAggregationProps extends DataMenuScreenProps<"TeamRank"> {}
-export function DataAggregation({ navigation }: DataAggregationProps) {
+export function DataAggregation({}: DataAggregationProps) {
     const { colors } = useTheme();
 
     // competition form
@@ -32,8 +32,6 @@ export function DataAggregation({ navigation }: DataAggregationProps) {
     // const navigation = useNavigation();
 
     const [fullCompetitionsList, setFullCompetitionsList] = useState<CompetitionReturnData[]>([]);
-
-    const [weightedVisible, setWeightedVisible] = useState<boolean>(false);
 
     useEffect(() => {
         CompetitionsDB.getCurrentCompetition().then((competition) => {

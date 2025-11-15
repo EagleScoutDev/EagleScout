@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UserAttributesDB } from "../../../database/UserAttributes";
-import { CompetitionsDB } from "../../../database/Competitions";
 import type { DataMenuScreenProps } from "../../data/DataMain.tsx";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
-import { UINumberInput } from "../../../ui/input/UINumberInput.tsx";
 import { UICardForm } from "../../../ui/UICardForm.tsx";
 
 export interface MatchBettingProps extends DataMenuScreenProps<"MatchBetting"> {}
@@ -13,17 +11,11 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
     const { colors } = useTheme();
     const [matchNumber, setMatchNumber] = useState<number | null>(null);
     const [orgId, setOrgId] = useState<number | null>(null);
-    const [competitionActive, setCompetitionActive] = useState<boolean>(false);
 
     useEffect(() => {
         UserAttributesDB.getCurrentUserAttribute().then((userAttribute) => {
             if (userAttribute) {
                 setOrgId(userAttribute.organization_id);
-            }
-        });
-        CompetitionsDB.getCurrentCompetition().then((competition) => {
-            if (competition) {
-                setCompetitionActive(true);
             }
         });
     }, []);

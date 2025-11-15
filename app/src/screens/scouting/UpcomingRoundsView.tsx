@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
 import { type NavigationProp, useTheme } from "@react-navigation/native";
 import { CompetitionsDB, ScoutAssignmentsConfig } from "../../database/Competitions";
@@ -143,7 +143,7 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                     <ScrollView
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}
                     >
-                        {upcomingRounds.map((round, index) => (
+                        {upcomingRounds.map((round) => (
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: colors.card,

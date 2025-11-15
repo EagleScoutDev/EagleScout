@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { View, LayoutAnimation, ActivityIndicator } from "react-native";
+import { ActivityIndicator, LayoutAnimation, View } from "react-native";
 
 import { useTheme } from "@react-navigation/native";
-import { CompetitionsDB } from "../../database/Competitions";
-import { type CompetitionReturnData } from "../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../database/Competitions";
 import { Dropdown } from "react-native-element-dropdown";
 import type { Setter } from "../../lib/util/react/types";
 

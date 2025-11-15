@@ -3,8 +3,8 @@ import { UIModal } from "../../ui/UIModal.tsx";
 import { LineChart } from "react-native-chart-kit";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { MatchReportsDB, type MatchReportReturnData } from "../../database/ScoutMatchReports";
-import { FormsDB, type FormReturnData } from "../../database/Forms";
+import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
+import { type FormReturnData, FormsDB } from "../../database/Forms";
 import { CompetitionsDB } from "../../database/Competitions";
 import type { Setter } from "../../lib/util/react/types";
 
@@ -121,7 +121,7 @@ export function CombinedGraph({
                                         data: relevantReports
                                             .sort((a, b) => a.matchNumber - b.matchNumber)
                                             .map((report) => report.data[index]),
-                                        color: (opacity = 1.0) =>
+                                        color: () =>
                                             questionToColor.get(form!.formStructure[index].question) ??
                                             "rgba(0, 0, 0, 1.0)",
                                         strokeWidth: 4, // optional

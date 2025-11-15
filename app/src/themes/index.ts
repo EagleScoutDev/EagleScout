@@ -1,12 +1,12 @@
 import { DarkTheme, type Theme } from "@react-navigation/native";
 import {
-    CustomLightTheme,
-    UltraDarkTheme,
-    DuneTheme,
-    WaterTheme,
-    PurpleTheme,
-    ForestTheme,
     CoffeeTheme,
+    CustomLightTheme,
+    DuneTheme,
+    ForestTheme,
+    PurpleTheme,
+    UltraDarkTheme,
+    WaterTheme,
 } from "./definitions";
 
 export enum ThemeOptions {

@@ -1,5 +1,3 @@
-import { Alert } from "react-native";
-
 export interface Form {
     formStructure: Form.Structure;
     pitScouting: boolean;

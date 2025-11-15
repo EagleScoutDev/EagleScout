@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTheme, type Theme } from "@react-navigation/native";
+import { type Theme, useTheme } from "@react-navigation/native";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { ProfilesDB } from "../../database/Profiles";

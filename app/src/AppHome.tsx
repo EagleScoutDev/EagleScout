@@ -12,7 +12,6 @@ import { useUserStore } from "./lib/stores/user.ts";
 import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
 import { UISheetModal } from "./ui/UISheetModal.tsx";
 import { PlusMenu } from "./PlusMenu.tsx";
-import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const Tab = createBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = BottomTabScreenProps<AppHomeParamList, K>;

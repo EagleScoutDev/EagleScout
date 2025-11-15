@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, type DimensionValue } from "react-native";
+import { ActivityIndicator, type DimensionValue, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 export interface StandardButtonProps {
     textColor?: string;

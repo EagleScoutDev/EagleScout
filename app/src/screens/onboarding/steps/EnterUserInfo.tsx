@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert, Keyboard, SafeAreaView, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
-import { useNavigation, useTheme } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { styles } from "../styles";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";

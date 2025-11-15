@@ -1,5 +1,5 @@
 import { useTheme } from "@react-navigation/native";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Alert } from "react-native";
+import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
 import { NotesDB } from "../../../database/ScoutNotes";
 import { NoteInputModal } from "./NoteInputModal";

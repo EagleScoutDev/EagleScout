@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { View, Text, Pressable } from "react-native";
-import { useTheme, type NavigatorScreenParams } from "@react-navigation/native";
+import { Pressable, Text, View } from "react-native";
+import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
 import * as Bs from "../../ui/icons";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { PitScoutingFlow, type PitFlowParamList } from "./pit/PitScoutingFlow.tsx";
+import { type PitFlowParamList, PitScoutingFlow } from "./pit/PitScoutingFlow.tsx";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";
 import { ScoutTimer, ScoutTimerContext } from "./components/Timer";
 

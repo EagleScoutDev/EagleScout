@@ -1,7 +1,7 @@
 import { type FC, useMemo, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { ProfileEmojiModal } from "./items/ProfileEmojiModal";
-import { useTheme, type Theme } from "@react-navigation/native";
+import { type Theme, useTheme } from "@react-navigation/native";
 import { ConfirmPurchaseModal } from "./ConfirmPurchaseModal";
 import { AppThemeModal } from "./items/AppThemeModal";
 import * as Bs from "../../../ui/icons";

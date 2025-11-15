@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { ReportList } from "../../components/ReportList.tsx";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";

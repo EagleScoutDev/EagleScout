@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Statbotics } from "../../components/Statbotics.tsx";
 import { CompetitionRank } from "./CompetitionRank";

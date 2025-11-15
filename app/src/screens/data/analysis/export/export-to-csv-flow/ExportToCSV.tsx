@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { CompetitionList } from "./CompetitionList";
 import { ExportCompetitionSheet } from "./ExportCompetitionSheet";
-import { CompetitionsDB, type CompetitionReturnData } from "../../../../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../../../database/Competitions";
 import { NoInternet } from "../../../../../ui/NoInternet";
-import { exportScoutReportsToCsv, writeToFile, exportPitReportsToCsv } from "../../../export/export";
+import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "../../../export/export";
 
 export function ExportToCSV() {
     const { colors } = useTheme();

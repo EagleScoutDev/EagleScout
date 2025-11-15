@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTheme, type Theme } from "@react-navigation/native";
+import { type Theme, useTheme } from "@react-navigation/native";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { ScoutcoinLedger as ScoutcoinLedgerDB, type ScoutcoinLedgerItem } from "../../database/ScoutcoinLedger";
 import { TextInput } from "react-native-gesture-handler";

@@ -30,5 +30,5 @@ for f in $icons_loc/*; do
         | perl -pe 's/ (width|height)=".*?"/ \1={props.size ?? "16"}/g;' \
         | perl -pe 's/viewBox="0 0 16 16"/viewBox="0 0 16 16" {...props}/' \
         | perl -pe 's/>\s*</></g'
-    )"; };"
+    )"; }"
 done >> ./icons.generated.tsx

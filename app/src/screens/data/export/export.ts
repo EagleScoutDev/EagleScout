@@ -2,9 +2,9 @@ import { Alert } from "react-native";
 import { CSVBuilder } from "../../../lib/csv";
 import RNFS from "react-native-fs";
 import Share from "react-native-share";
-import { MatchReportsDB, type MatchReportReturnData } from "../../../database/ScoutMatchReports";
+import { type MatchReportReturnData, MatchReportsDB } from "../../../database/ScoutMatchReports";
 import type { CompetitionReturnData } from "../../../database/Competitions";
-import { PitReportsDB, type PitReportReturnData } from "../../../database/ScoutPitReports";
+import { type PitReportReturnData, PitReportsDB } from "../../../database/ScoutPitReports";
 
 export const exportScoutReportsToCsv = async (comp: CompetitionReturnData) => {
     let reports: MatchReportReturnData[];

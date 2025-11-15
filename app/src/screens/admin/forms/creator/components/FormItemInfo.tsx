@@ -1,9 +1,9 @@
 import { FormHeading } from "../../../../../forms/components/FormHeading.tsx";
 import { FormQuestion } from "../../../../../forms/components/FormQuestion.tsx";
 import { Form } from "../../../../../lib/forms";
-import ItemType = Form.ItemType;
 import * as Bs from "../../../../../ui/icons";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import ItemType = Form.ItemType;
 
 export interface FormItemInfoProps {
     item: Form.Item;

@@ -1,10 +1,10 @@
-import { Alert, View } from "react-native";
+import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
 import { UIForm } from "../../../ui/UIForm.tsx";
-import { UIButton, UIButtonStyle, UIButtonSize } from "../../../ui/UIButton.tsx";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export interface AccountEditProfileParams {

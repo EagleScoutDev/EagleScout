@@ -1,4 +1,4 @@
-import { Alert, Modal, ScrollView, Text, TextInput, TouchableOpacity, View, StyleSheet, Pressable } from "react-native";
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { UIRadio } from "../../ui/input/UIRadio.tsx";
@@ -9,7 +9,7 @@ import { type UserAttributeReturnData, UserAttributesDB } from "../../database/U
 import {
     type MatchReportHistory,
     type MatchReportReturnData,
-    MatchReportsDB,
+    MatchReportsDB
 } from "../../database/ScoutMatchReports.ts";
 import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
 import { isTablet } from "../../lib/deviceType.ts";

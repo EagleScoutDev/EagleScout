@@ -3,7 +3,7 @@ import * as Bs from "./ui/icons";
 import { PressableOpacity } from "./ui/components/PressableOpacity.tsx";
 import { StyleSheet, Text, View } from "react-native";
 import type { RootStackParamList } from "./App.tsx";
-import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { type RefObject, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 

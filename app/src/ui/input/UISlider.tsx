@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import RNSlider from "@react-native-community/slider";
 import { useTheme } from "@react-navigation/native";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ThreeCenterLayout } from "../layout/ThreeCenterLayout.tsx";
 
 export interface UISliderProps {

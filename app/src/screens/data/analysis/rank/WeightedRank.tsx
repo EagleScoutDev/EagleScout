@@ -2,7 +2,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
-import { CompetitionsDB, type CompetitionReturnData } from "../../../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { type MatchReportReturnData, MatchReportsDB } from "../../../../database/ScoutMatchReports";
 import * as Bs from "../../../../ui/icons";
 
@@ -39,8 +39,6 @@ export function WeightedRank() {
 
     const [fullCompetitionsList, setFullCompetitionsList] = useState<CompetitionReturnData[]>([]);
 
-    const [compName, setCompName] = useState<string>();
-
     useEffect(() => {
         CompetitionsDB.getCurrentCompetition().then((competition) => {
             if (!competition) {
@@ -55,7 +53,6 @@ export function WeightedRank() {
 
             setCurrForm(competition.form);
             setCompID(competition.id);
-            setCompName(competition.name);
             setNoActiveCompetition(false);
         });
     }, []);
