@@ -8,7 +8,6 @@ export interface UICheckboxesProps<T extends string> {
 }
 export function UICheckboxes<T extends string>({ options, value, onInput }: UICheckboxesProps<T>) {
     "use memo";
-    console.log(value)
 
     return (
         <View style={{ gap: 8 }}>
