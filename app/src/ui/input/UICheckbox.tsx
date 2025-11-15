@@ -21,6 +21,9 @@ export function UICheckbox({ text, value, disabled = false, onInput, style }: Ch
             iconStyle={{
                 borderRadius: 3,
             }}
+            innerIconStyle={{
+                borderRadius: 3,
+            }}
             textStyle={{
                 color: colors.text,
                 textDecorationLine: "none",
