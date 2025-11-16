@@ -102,7 +102,7 @@ export function UIListPicker<K extends string | number = string | number>({
                             // TODO: use a flatlist-like interface for this
                             items: options.map((key) => {
                                 const { name } = render(key);
-                                return UIList.Line({
+                                return UIList.Label({
                                     key: key.toString(),
                                     label: name,
                                     icon: value === key ? Bs.CheckLg : true,

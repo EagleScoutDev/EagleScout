@@ -46,8 +46,8 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
 
     usePreventRemove(dirty, ({ data }) => {
         Alert.alert("Unsaved changes", "Are you sure you want to leave? Your work will be lost!", [
-            { text: "Stay", style: "cancel", isPreferred: true, onPress: () => {} },
-            { text: "Leave", style: "destructive", onPress: () => navigation.dispatch(data.action) },
+            { label: "Stay", style: "cancel", isPreferred: true, onPress: () => {} },
+            { label: "Leave", style: "destructive", onPress: () => navigation.dispatch(data.action) },
         ]);
     });
 

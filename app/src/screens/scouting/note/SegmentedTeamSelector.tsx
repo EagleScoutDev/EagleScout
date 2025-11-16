@@ -18,7 +18,7 @@ export function SegmentedTeamSelector({
     completed,
 }: SegmentedTeamSelectorProps) {
     const { colors } = useTheme();
-    const buttonActiveBackgroundColor = color === "blue" ? "blue" : "red";
+    const buttonActiveBackgroundColor = color === "blue" ? Color.rgb(0, 0, 255) : Color.rgb(255, 0, 0);
     return (
         <View
             style={{
@@ -49,7 +49,7 @@ export function SegmentedTeamSelector({
                 <Text
                     style={{
                         color:
-                            selectedTeam === teams[0] ? Color.parse(buttonActiveBackgroundColor).fg.hex : colors.text,
+                            selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                         opacity: selectedTeam === teams[0] ? 1 : 0.6,
                         fontWeight: "bold",
                         textAlign: "center",
@@ -62,7 +62,7 @@ export function SegmentedTeamSelector({
                         style={{
                             color:
                                 selectedTeam === teams[0]
-                                    ? Color.parse(buttonActiveBackgroundColor).fg.hex
+                                    ? buttonActiveBackgroundColor.fg.hex
                                     : colors.text,
                             opacity: selectedTeam === teams[0] ? 1 : 0.6,
                             fontWeight: "bold",
@@ -89,7 +89,7 @@ export function SegmentedTeamSelector({
                 <Text
                     style={{
                         color:
-                            selectedTeam === teams[1] ? Color.parse(buttonActiveBackgroundColor).fg.hex : colors.text,
+                            selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                         opacity: selectedTeam === teams[1] ? 1 : 0.6,
                         fontWeight: "bold",
                         textAlign: "center",
@@ -102,7 +102,7 @@ export function SegmentedTeamSelector({
                         style={{
                             color:
                                 selectedTeam === teams[1]
-                                    ? Color.parse(buttonActiveBackgroundColor).fg.hex
+                                    ? buttonActiveBackgroundColor.fg.hex
                                     : colors.text,
                             opacity: selectedTeam === teams[1] ? 1 : 0.6,
                             fontWeight: "bold",
@@ -129,7 +129,7 @@ export function SegmentedTeamSelector({
                 <Text
                     style={{
                         color:
-                            selectedTeam === teams[2] ? Color.parse(buttonActiveBackgroundColor).fg.hex : colors.text,
+                            selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                         opacity: selectedTeam === teams[2] ? 1 : 0.6,
                         fontWeight: "bold",
                         textAlign: "center",
@@ -142,7 +142,7 @@ export function SegmentedTeamSelector({
                         style={{
                             color:
                                 selectedTeam === teams[2]
-                                    ? Color.parse(buttonActiveBackgroundColor).fg.hex
+                                    ? buttonActiveBackgroundColor.fg.hex
                                     : colors.text,
                             opacity: selectedTeam === teams[2] ? 1 : 0.6,
                             fontWeight: "bold",

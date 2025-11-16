@@ -16,7 +16,7 @@ export function About({}: AboutProps) {
                     {[
                         UIList.Section({
                             items: [
-                                UIList.Line({
+                                UIList.Label({
                                     label: "Version",
                                     body: () => <Text style={{ fontSize: 16, color: "gray" }}>{VERSION}</Text>,
                                 }),

@@ -64,7 +64,12 @@ export function ReportsForTeam({
                     >
                         Reports for Team #{team_number}
                     </Text>
-                    <ReportList reports={scoutReports} isOffline={false} expandable={false} displayHeaders={false} />
+                    <ReportList
+                        reports={scoutReports ?? []}
+                        reportsAreOffline={false}
+                        expandable={false}
+                        displayHeaders={false}
+                    />
                 </View>
             )}
             {tab === "Notes" && (

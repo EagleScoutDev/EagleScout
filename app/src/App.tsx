@@ -17,6 +17,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { withStallion } from "react-native-stallion";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { ModalSafeAreaProvider } from "./ui/ModalSafeAreaProvider";
+import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
 
 declare global {
     namespace ReactNavigation {
@@ -51,44 +52,46 @@ function App() {
     }, [deepLink]);
 
     return (
-        <ThemeContext.Provider
-            value={{
-                themePreference,
-                setThemePreference,
-            }}
-        >
-            <GestureHandlerRootView>
-                <SafeAreaProvider>
-                    <KeyboardProvider>
-                        <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
-                            <HeaderButtonsProvider stackType={"native"}>
-                                <ModalSafeAreaProvider>
-                                    <BottomSheetModalProvider>
-                                        <RootStack.Navigator
-                                            initialRouteName="Onboarding"
-                                            screenOptions={{
-                                                headerShown: false,
-                                            }}
-                                        >
-                                            <RootStack.Screen name="App" component={AppHome} />
-
-                                            <RootStack.Screen
-                                                name="Onboarding"
-                                                component={OnboardingFlow}
-                                                options={{
-                                                    animation: "ios_from_right",
+        <ErrorBoundary>
+            <ThemeContext.Provider
+                value={{
+                    themePreference,
+                    setThemePreference,
+                }}
+            >
+                <GestureHandlerRootView>
+                    <SafeAreaProvider>
+                        <KeyboardProvider>
+                            <NavigationContainer theme={ThemeOptionsMap.get(themePreference)!}>
+                                <HeaderButtonsProvider stackType={"native"}>
+                                    <ModalSafeAreaProvider>
+                                        <BottomSheetModalProvider>
+                                            <RootStack.Navigator
+                                                initialRouteName="Onboarding"
+                                                screenOptions={{
+                                                    headerShown: false,
                                                 }}
-                                            />
-                                        </RootStack.Navigator>
-                                    </BottomSheetModalProvider>
-                                </ModalSafeAreaProvider>
-                            </HeaderButtonsProvider>
-                            <Toast />
-                        </NavigationContainer>
-                    </KeyboardProvider>
-                </SafeAreaProvider>
-            </GestureHandlerRootView>
-        </ThemeContext.Provider>
+                                            >
+                                                <RootStack.Screen name="App" component={AppHome} />
+
+                                                <RootStack.Screen
+                                                    name="Onboarding"
+                                                    component={OnboardingFlow}
+                                                    options={{
+                                                        animation: "ios_from_right",
+                                                    }}
+                                                />
+                                            </RootStack.Navigator>
+                                        </BottomSheetModalProvider>
+                                    </ModalSafeAreaProvider>
+                                </HeaderButtonsProvider>
+                                <Toast />
+                            </NavigationContainer>
+                        </KeyboardProvider>
+                    </SafeAreaProvider>
+                </GestureHandlerRootView>
+            </ThemeContext.Provider>
+        </ErrorBoundary>
     );
 }
 

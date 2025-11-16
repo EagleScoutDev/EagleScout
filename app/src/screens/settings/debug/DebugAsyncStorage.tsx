@@ -52,7 +52,7 @@ export function DebugAsyncStorage() {
                     {[
                         UIList.Section({
                             items: keys?.map((key, i) =>
-                                UIList.Line({
+                                UIList.Label({
                                     key,
                                     onPress: () => selectKey(key),
                                     label: key,

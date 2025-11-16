@@ -22,12 +22,12 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                     UIForm.Section({
                         items: [
                             UIForm.TextInput({
-                                label: "Title",
+                                text: "Title",
                                 value: value.title,
                                 onChange: (title) => onChange({ ...value, title }),
                             }),
                             UIForm.TextInput({
-                                label: "Description",
+                                text: "Description",
                                 value: value.description,
                                 onChange: (description) => onChange({ ...value, description }),
                             }),
@@ -38,12 +38,12 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                     UIForm.Section({
                         items: [
                             UIForm.TextInput({
-                                label: "Question",
+                                text: "Question",
                                 value: value.question,
                                 onChange: (question) => onChange({ ...value, question }),
                             }),
                             UIForm.Switch({
-                                label: "Required",
+                                text: "Required",
                                 value: value.required,
                                 onChange: (required) => onChange({ ...value, required }),
                             }),
@@ -56,7 +56,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                         items: [
                             ...value.options.map((option, i) =>
                                 UIForm.TextInput({
-                                    label: `Option ${i + 1}`,
+                                    text: `Option ${i + 1}`,
                                     value: option,
                                     onChange: (option) => {
                                         console.log(option);
@@ -68,7 +68,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                                 })
                             ),
                             UIForm.Button({
-                                label: "Add Option",
+                                text: "Add Option",
                                 color: Color.parse(colors.primary),
                                 onPress: () => onChange({ ...value, options: [...value.options, ""] }),
                             }),
@@ -81,19 +81,19 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                         items: [
                             UIForm.NumberInput({
                                 key: "low",
-                                label: "Minimum",
+                                text: "Minimum",
                                 value: value.low,
                                 onChange: (low) => onChange({ ...value, low }),
                             }),
                             UIForm.NumberInput({
                                 key: "high",
-                                label: "Maximum",
+                                text: "Maximum",
                                 value: value.high,
                                 onChange: (high) => onChange({ ...value, high }),
                             }),
                             UIForm.NumberInput({
                                 key: "step",
-                                label: "Step",
+                                text: "Step",
                                 value: value.step,
                                 onChange: (step) => step !== null && (onChange({ ...value, step }), true),
                             }),
@@ -105,19 +105,19 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                               items: [
                                   UIForm.NumberInput({
                                       key: "low",
-                                      label: "Minimum",
+                                      text: "Minimum",
                                       value: value.low,
                                       onChange: (low) => low !== null && (onChange({ ...value, low }), true),
                                   }),
                                   UIForm.NumberInput({
                                       key: "high",
-                                      label: "Maximum",
+                                      text: "Maximum",
                                       value: value.high,
                                       onChange: (high) => high !== null && (onChange({ ...value, high }), true),
                                   }),
                                   UIForm.NumberInput({
                                       key: "step",
-                                      label: "Step",
+                                      text: "Step",
                                       value: value.step,
                                       onChange: (step) => step !== null && (onChange({ ...value, step }), true),
                                   }),
@@ -126,12 +126,12 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                           UIForm.Section({
                               items: [
                                   UIForm.TextInput({
-                                      label: "Minimum Label",
+                                      text: "Minimum Label",
                                       value: value.lowLabel,
                                       onChange: (lowLabel) => onChange({ ...value, lowLabel }),
                                   }),
                                   UIForm.TextInput({
-                                      label: "Maximum Label",
+                                      text: "Maximum Label",
                                       value: value.highLabel,
                                       onChange: (highLabel) => onChange({ ...value, highLabel }),
                                   }),
@@ -144,7 +144,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                     UIForm.Section({
                         items: [
                             UIForm.Button({
-                                label: "Delete Item",
+                                text: "Delete Item",
                                 color: Color.parse(colors.notification),
                                 onPress: onDelete,
                             }),

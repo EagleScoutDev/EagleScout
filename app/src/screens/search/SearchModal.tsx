@@ -5,7 +5,7 @@ import type { SimpleTeam } from "../../lib/frc/tba";
 import type { MatchReportReturnData } from "../../database/ScoutMatchReports";
 import { ProfilesDB } from "../../database/Profiles";
 import { Dropdown } from "react-native-element-dropdown";
-import { ScoutViewer } from "../../components/modals/ScoutViewer";
+import { MatchReportViewer } from "../../components/modals/MatchReportViewer.tsx";
 import { isTablet } from "../../lib/deviceType";
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import type { Profile } from "../../lib/user/profile";
@@ -498,13 +498,17 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                 )}
             </View>
             {scoutViewerVisible && currentReport && (
-                <ScoutViewer
-                    visible={scoutViewerVisible}
-                    setVisible={setScoutViewerVisible}
-                    data={currentReport ?? []}
-                    chosenComp={currentReport?.competitionName ?? ""}
-                    updateFormData={() => {}}
+                <MatchReportViewer
+                    onDismiss={() => setScoutViewerVisible(false)}
+                    data={currentReport}
                     isOfflineForm={false}
+                    navigateToTeamViewer={() => {
+                        // Navigation not implemented in SearchModal
+                    }}
+                    onEdit={async () => {
+                        // Editing not supported in search modal
+                        return false;
+                    }}
                 />
             )}
         </>

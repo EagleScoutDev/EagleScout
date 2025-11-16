@@ -112,12 +112,12 @@ export function Picklists({ navigation }: PicklistsProps) {
                                             "Are you sure you want to delete this picklist?",
                                             [
                                                 {
-                                                    text: "Cancel",
+                                                    label: "Cancel",
                                                     onPress: () => console.log("Cancel Pressed"),
                                                     style: "cancel",
                                                 },
                                                 {
-                                                    text: "Delete",
+                                                    label: "Delete",
                                                     onPress: () => {
                                                         PicklistsDB.deletePicklist(item.id).then(() => {
                                                             getPicklists(item.competition_id);

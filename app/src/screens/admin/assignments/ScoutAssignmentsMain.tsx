@@ -45,7 +45,7 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
                     {[
                         UIList.Section({
                             items: competitionList.map((comp, index) =>
-                                UIList.Line({
+                                UIList.Label({
                                     key: comp.id.toString(),
                                     label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
                                     onPress: () => {

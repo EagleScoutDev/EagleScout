@@ -68,12 +68,12 @@ export function DataHome({ navigation }: DataHomeProps) {
                             UIList.Section({
                                 key: label,
                                 header: label,
-                                items: items.map(({ label, icon, caret, route }) =>
-                                    UIList.Line({
-                                        key: label,
-                                        label,
-                                        caret: caret,
-                                        icon: icon,
+                                items: items.map(({ text, icon, caret, route }, i) =>
+                                    UIList.Label({
+                                        key: i,
+                                        label: text,
+                                        caret,
+                                        icon,
                                         disabled: offline,
                                         onPress: () => navigation.navigate(route),
                                     })
@@ -90,7 +90,7 @@ type TOC = {
     label: string;
     shown: boolean;
     items: {
-        label: string;
+        text: string;
         icon: Icon;
         caret: boolean;
         route: {
@@ -102,34 +102,34 @@ const getTOC = exMemo(
     ({ admin }: { admin: boolean }): TOC => [
         {
             shown: true,
-            label: "Data Analysis",
+            text: "Data Analysis",
             items: [
-                { label: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
-                { label: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
-                { label: "Weighted Team Rank", icon: Bs.Sliders, caret: true, route: "WeightedTeamRank" },
-                { label: "Match Predictor", icon: Bs.Hourglass, caret: true, route: "MatchPredictor" },
-                { label: "Export to CSV", icon: Bs.Upload, caret: true, route: "ExportCSV" },
+                { text: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
+                { text: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
+                { text: "Weighted Team Rank", icon: Bs.Sliders, caret: true, route: "WeightedTeamRank" },
+                { text: "Match Predictor", icon: Bs.Hourglass, caret: true, route: "MatchPredictor" },
+                { text: "Export to CSV", icon: Bs.Upload, caret: true, route: "ExportCSV" },
             ],
         },
         {
             shown: true,
-            label: "Scoutcoin",
+            text: "Scoutcoin",
             items: [
-                { label: "Match Betting", icon: Bs.CashCoin, caret: true, route: "MatchBetting" },
-                { label: "Leaderboard", icon: Bs.Award, caret: true, route: "ScoutcoinLeaderboard" },
-                { label: "Ledger", icon: Bs.Newspaper, caret: true, route: "ScoutcoinLedger" },
-                { label: "Shop", icon: Bs.Cart, caret: true, route: "ScoutcoinShop" },
+                { text: "Match Betting", icon: Bs.CashCoin, caret: true, route: "MatchBetting" },
+                { text: "Leaderboard", icon: Bs.Award, caret: true, route: "ScoutcoinLeaderboard" },
+                { text: "Ledger", icon: Bs.Newspaper, caret: true, route: "ScoutcoinLedger" },
+                { text: "Shop", icon: Bs.Cart, caret: true, route: "ScoutcoinShop" },
             ],
         },
         {
             shown: admin,
-            label: "Administrative",
+            text: "Administrative",
             items: [
-                { label: "Competitions", icon: Bs.TrophyFill, caret: true, route: "ManageCompetitions" },
-                { label: "Users", icon: Bs.PeopleFill, caret: true, route: "ManageUsers" },
-                { label: "Forms", icon: Bs.ClipboardData, caret: true, route: "Forms" },
-                { label: "Scout Assignments", icon: Bs.CalendarThree, caret: true, route: "ScoutAssignments" },
-                { label: "Match Bets", icon: Bs.CashCoin, caret: true, route: "ManageMatchBets" },
+                { text: "Competitions", icon: Bs.TrophyFill, caret: true, route: "ManageCompetitions" },
+                { text: "Users", icon: Bs.PeopleFill, caret: true, route: "ManageUsers" },
+                { text: "Forms", icon: Bs.ClipboardData, caret: true, route: "Forms" },
+                { text: "Scout Assignments", icon: Bs.CalendarThree, caret: true, route: "ScoutAssignments" },
+                { text: "Match Bets", icon: Bs.CashCoin, caret: true, route: "ManageMatchBets" },
             ],
         },
     ]

@@ -132,7 +132,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         }
 
         let dataToSubmit = {
-            data: sectionData.flat(),
+            data: Form.packSectionData(sectionData),
             timelineData: [], // TODO: either implement this or purge it
             autoPath: autoState.path,
 

@@ -238,7 +238,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         if (teams_list === presetPicklist?.teams) {
             Alert.alert("No Changes", "You have not made any changes to this picklist.", [
                 {
-                    text: "OK",
+                    label: "OK",
                     style: "cancel",
                 },
             ]);
@@ -248,7 +248,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         if (teams_list.length === 0) {
             Alert.alert("Error: Empty Picklist", "You have not added any teams to this picklist.", [
                 {
-                    text: "OK",
+                    label: "OK",
                     style: "cancel",
                 },
             ]);
@@ -260,11 +260,11 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             : "";
         Alert.alert("Upload Picklist", "Are you sure you want to upload this picklist?" + additional_message, [
             {
-                text: "Cancel",
+                label: "Cancel",
                 style: "cancel",
             },
             {
-                text: "Upload",
+                label: "Upload",
                 onPress: () => {
                     savePicklistToDB();
                     navigation.navigate("Manager");
@@ -811,11 +811,11 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                     "Are you sure you want to remove this team from the picklist?",
                                                     [
                                                         {
-                                                            text: "Cancel",
+                                                            label: "Cancel",
                                                             style: "cancel",
                                                         },
                                                         {
-                                                            text: "Remove",
+                                                            label: "Remove",
                                                             onPress: () => {
                                                                 removeTeam(item.team_number);
                                                                 setSelectedTeamWithAnimation(null);

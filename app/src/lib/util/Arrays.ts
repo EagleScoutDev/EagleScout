@@ -10,13 +10,13 @@ export namespace Arrays {
         return out;
     }
 
-    export function push<T>(a: T[], x: T) {
+    export function push<T>(a: readonly T[], x: T) {
         return [...a, x];
     }
 
-    export function set<T>(a: T[], i: number, v: T) {
-        a = a.slice(0);
-        a[i] = v;
-        return a;
+    export function set<T>(a: readonly T[], i: number, v: T) {
+        const b = a.slice(0) satisfies readonly T[] as T[];
+        b[i] = v;
+        return b;
     }
 }

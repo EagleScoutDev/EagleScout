@@ -26,7 +26,7 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
                 {[
                     UIList.Section({
                         items: [
-                            UIList.Line({
+                            UIList.Label({
                                 label: "Export Scout Reports",
                                 labelColor: Color.parse(colors.primary),
                                 onPress: async () => {
@@ -37,7 +37,7 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
                                     modal.dismiss();
                                 },
                             }),
-                            UIList.Line({
+                            UIList.Label({
                                 label: "Export Pit Scout Reports",
                                 labelColor: Color.parse(colors.primary),
                                 onPress: async () => {

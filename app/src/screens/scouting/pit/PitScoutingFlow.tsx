@@ -68,7 +68,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         }
 
         const data: PitReportWithoutId = {
-            data: sectionData.flat(),
+            data: Form.packSectionData(sectionData),
             teamNumber: team,
             competitionId: competition.id,
         };

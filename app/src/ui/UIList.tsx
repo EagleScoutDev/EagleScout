@@ -7,7 +7,7 @@ import {
     View,
     type ViewStyle,
 } from "react-native";
-import React, { isValidElement, type ReactElement, type ReactNode, useState } from "react";
+import React, { isValidElement, type Key, type ReactElement, type ReactNode, useState } from "react";
 import { type Theme, useTheme } from "@react-navigation/native";
 import * as Bs from "./icons";
 import { type Icon } from "./icons";
@@ -74,7 +74,7 @@ export function UIList({
                 onRefresh && !loading ? <RefreshControl refreshing={refreshing} onRefresh={doRefresh} /> : undefined
             }
             sections={sections}
-            keyExtractor={(x, i) => x.key ?? i.toString()}
+            keyExtractor={(x, i) => String(x.key ?? i)}
             ListHeaderComponent={loading && !refreshing ? ActivityIndicator : null}
             ListHeaderComponentStyle={{ marginBottom: 10 }}
             ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
@@ -112,23 +112,23 @@ export function UIList({
 
 export namespace UIList {
     export interface SectionProps {
-        key?: string | undefined;
+        key?: Key | undefined;
         header?: string | null | undefined;
         footer?: string | null | undefined;
-        items?: readonly (UIList.Line | false | null | undefined)[];
+        items?: readonly (UIList.Label | false | null | undefined)[];
     }
     export interface Section {
-        key?: string | undefined;
+        key?: Key | undefined;
         header?: string | null | undefined;
         footer?: string | null | undefined;
-        data: readonly (UIList.Line | ReactElement)[];
+        data: readonly (UIList.Label | ReactElement)[];
     }
     export function Section({ key, header, footer, items }: SectionProps): Section {
         return { key, header, footer, data: (items ?? []).filter((x) => !!x) };
     }
 
     export interface ItemInfo {
-        key?: string | undefined;
+        key?: Key | undefined;
 
         render: () => ReactNode;
 
@@ -137,8 +137,9 @@ export namespace UIList {
         onLongPress?: (() => void) | undefined | null;
     }
 
-    export interface LineProps {
-        key?: string | undefined;
+    export interface LabelProps {
+        key?: Key | undefined;
+
         icon?: Icon | true;
         label?: string;
         labelColor?: Color;
@@ -149,44 +150,42 @@ export namespace UIList {
         onPress?: (() => void) | undefined | null;
         onLongPress?: (() => void) | undefined | null;
     }
-
     /**
      * List item with an icon, label, body, and caret.
      */
-    export interface Line extends ItemInfo {}
-    export function Line({ key, ...props }: LineProps): ItemInfo {
+    export interface Label extends ItemInfo {}
+    export function Label({ key, ...props }: LabelProps): ItemInfo {
         return {
             key,
             ...props,
-            render: () => <RenderLine {...props} />,
+            render: () => <RenderLabel {...props} />,
         };
     }
 }
 
-function RenderLine({ icon, label, labelColor, body, caret }: UIList.LineProps) {
+function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps) {
     "use memo";
     const { colors } = useTheme();
 
-    const styles = getLineStyles(colors, labelColor);
     return (
         <>
-            {(icon || label) && (
-                <View style={styles.label}>
+            {(icon !== undefined || label !== undefined) && (
+                <View style={labelStyles.label}>
                     {icon && (
-                        <View style={styles.labelIcon}>
+                        <View style={labelStyles.icon}>
                             {icon === true ? null : icon({ size: 18, fill: colors.primary })}
                         </View>
                     )}
                     {label !== undefined && (
-                        <Text style={[styles.labelText]} numberOfLines={1}>
+                        <Text style={labelStyles.text(colors, labelColor)} numberOfLines={1}>
                             {label}
                         </Text>
                     )}
                 </View>
             )}
-            <View style={styles.body}>
+            <View style={labelStyles.body}>
                 {body?.()}
-                {caret && <Bs.ChevronRight size="16" style={styles.caret} />}
+                {caret && <Bs.ChevronRight size="16" style={labelStyles.caret} />}
             </View>
         </>
     );
@@ -257,30 +256,30 @@ const getListStyles = (colors: Theme["colors"]) =>
         },
     } as const);
 
-const getLineStyles = (colors: Theme["colors"], labelColor: Color | undefined) =>
-    ({
-        label: {
-            flexDirection: "row",
-            gap: 8,
-            alignItems: "center",
-        },
-        labelIcon: {
-            marginLeft: 4,
-            width: 24,
-            overflow: "hidden",
-        },
-        labelText: {
+const labelStyles = {
+    label: {
+        flexDirection: "row",
+        gap: 8,
+        alignItems: "center",
+    },
+    icon: {
+        marginLeft: 4,
+        width: 24,
+        overflow: "hidden",
+    },
+    text: (colors: Theme["colors"], textColor: Color | undefined) =>
+        ({
             flexShrink: 1,
             fontSize: 16,
             fontWeight: "normal",
-            color: labelColor?.hex ?? colors.text,
-        },
+            color: textColor?.hex ?? colors.text,
+        } as const),
 
-        body: {
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            flex: 1,
-        },
-        caret: {},
-    } as const);
+    body: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        flex: 1,
+    },
+    caret: {},
+} as const;

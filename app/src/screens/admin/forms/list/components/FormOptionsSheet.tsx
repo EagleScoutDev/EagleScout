@@ -40,7 +40,7 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                 {[
                     UIForm.Section({
                         items: [
-                            UIList.Line({
+                            UIList.Label({
                                 label: form.name,
                             }),
                         ],
@@ -48,14 +48,14 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                     UIForm.Section({
                         items: [
                             UIForm.Button({
-                                label: "View Questions",
+                                text: "View Questions",
                                 color: Color.parse(colors.primary),
                                 onPress: () => {
                                     // TODO: implement this
                                 },
                             }),
                             UIForm.Button({
-                                label: "Delete",
+                                text: "Delete",
                                 color: Color.parse(colors.notification),
                                 onPress: () => {
                                     FormsDB.deleteForm(form)

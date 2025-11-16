@@ -90,7 +90,7 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
                     UIForm.Section({
                         items: [
                             UIForm.TextInput({
-                                label: "Name",
+                                text: "Name",
                                 value: name,
                                 onChange: setName,
                             }),
@@ -99,14 +99,14 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
                     UIForm.Section({
                         items: [
                             UIForm.DateTime({
-                                label: "Start",
+                                text: "Start",
                                 date: true,
                                 time: true,
                                 value: start,
                                 onChange: setStart,
                             }),
                             UIForm.DateTime({
-                                label: "End",
+                                text: "End",
                                 date: true,
                                 time: true,
                                 value: end,
@@ -118,7 +118,7 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
                     UIForm.Section({
                         items: [
                             UIForm.Button({
-                                label: "Delete Competition",
+                                text: "Delete Competition",
                                 color: Color.parse(colors.notification),
                                 onPress: tryDelete,
                             }),

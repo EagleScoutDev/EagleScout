@@ -3,6 +3,8 @@ import { SettingsHome } from "./SettingsHome";
 import { AccountEditProfile, type AccountEditProfileParams } from "./account/AccountEditProfile";
 import { SubmittedForms } from "./submissions/SubmittedForms";
 import { SubmittedNotes } from "./submissions/SubmittedNotes";
+import { SelectCompetitionForForms } from "./submissions/SelectCompetitionForForms";
+import { SelectCompetitionForNotes } from "./submissions/SelectCompetitionForNotes";
 import type { AppHomeScreenProps } from "../../AppHome";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AccountDeletionModal } from "./account/AccountDeletionModal";
@@ -21,8 +23,10 @@ export type SettingsMenuParamList = {
     "Account/EditProfile": AccountEditProfileParams;
     "Account/ChangePassword": undefined;
     "Account/Delete": undefined;
-    "Scout/Reports": undefined;
-    "Scout/Notes": undefined;
+    "Scout/SelectCompetitionForReports": undefined;
+    "Scout/ViewReports": { competitionId: number; competitionName: string };
+    "Scout/SelectCompetitionForNotes": undefined;
+    "Scout/ViewNotes": { competitionId: number; competitionName: string };
     "Debug/Home": undefined;
     "Debug/AsyncStorage": undefined;
     About: undefined;
@@ -63,18 +67,32 @@ export function SettingsMenu({}: SettingsMenuProps) {
             />
 
             <Stack.Screen
-                name="Scout/Reports"
-                component={SubmittedForms}
+                name="Scout/SelectCompetitionForReports"
+                component={SelectCompetitionForForms}
                 options={{
-                    title: "Submitted Reports",
+                    title: "Select Competition",
                 }}
             />
             <Stack.Screen
-                name={"Scout/Notes"}
+                name="Scout/ViewReports"
+                component={SubmittedForms}
+                options={({ route }) => ({
+                    title: route.params.competitionName,
+                })}
+            />
+            <Stack.Screen
+                name="Scout/SelectCompetitionForNotes"
+                component={SelectCompetitionForNotes}
                 options={{
-                    title: "Submitted Notes",
+                    title: "Select Competition",
                 }}
+            />
+            <Stack.Screen
+                name="Scout/ViewNotes"
                 component={SubmittedNotes}
+                options={({ route }) => ({
+                    title: route.params.competitionName,
+                })}
             />
 
             <Stack.Screen

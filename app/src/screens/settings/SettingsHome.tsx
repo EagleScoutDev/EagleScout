@@ -148,7 +148,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                         UIList.Section({
                             header: "Account",
                             items: [
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.PenFill,
                                     label: "Edit Profile",
                                     caret: true,
@@ -160,7 +160,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                         });
                                     },
                                 }),
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.Asterisk,
                                     label: "Change Password",
                                     caret: true,
@@ -169,7 +169,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                         navigation.navigate("Account/ChangePassword");
                                     },
                                 }),
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.Ban,
                                     label: "Request Account Deletion",
                                     caret: true,
@@ -178,7 +178,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                         navigation.navigate("Account/Delete");
                                     },
                                 }),
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.QuestionCircle,
                                     label: "Contact Support",
                                     caret: false,
@@ -187,7 +187,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                         Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9");
                                     },
                                 }),
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.BoxArrowRight,
                                     label: "Sign Out",
                                     caret: false,
@@ -199,22 +199,22 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                         UIList.Section({
                             header: "Submissions",
                             items: [
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.JournalBookmarkFill,
                                     label: "View Your Reports",
                                     caret: true,
                                     disabled: false,
                                     onPress: () => {
-                                        navigation.navigate("Scout/Reports");
+                                        navigation.navigate("Scout/SelectCompetitionForReports");
                                     },
                                 }),
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.Sticky,
                                     label: "View Your Notes",
                                     caret: true,
                                     disabled: false,
                                     onPress: () => {
-                                        navigation.navigate("Scout/Notes");
+                                        navigation.navigate("Scout/SelectCompetitionForNotes");
                                     },
                                 }),
                             ],
@@ -222,7 +222,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                         UIList.Section({
                             header: "Other",
                             items: [
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.Bug,
                                     label: "Debug",
                                     caret: true,
@@ -231,7 +231,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                         navigation.navigate("Debug/Home");
                                     },
                                 }),
-                                UIList.Line({
+                                UIList.Label({
                                     icon: Bs.QuestionCircle,
                                     label: "About",
                                     caret: true,

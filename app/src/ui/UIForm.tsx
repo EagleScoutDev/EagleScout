@@ -20,9 +20,9 @@ export namespace UIForm {
         return UIList.Section(props);
     }
 
-    export interface ItemProps extends UIList.LineProps {}
+    export interface ItemProps extends UIList.LabelProps {}
     export function Item(props: ItemProps) {
-        return UIList.Line(props);
+        return UIList.Label(props);
     }
 
     export interface TextInputProps {
@@ -61,7 +61,7 @@ export namespace UIForm {
         "use memo";
         return Item({
             key,
-            label,
+            label: label,
             body: () => (
                 <RNNumberInput
                     style={{ height: "100%", fontSize: 16, flex: 1, textAlign: "right" }}
@@ -91,7 +91,7 @@ export namespace UIForm {
         if (Platform.OS === "ios") {
             return Item({
                 key,
-                label,
+                label: label,
                 body: () => (
                     <RNDateTimePicker
                         mode={date && time ? "datetime" : date ? "date" : time ? "time" : "datetime"}
@@ -144,7 +144,7 @@ export namespace UIForm {
 
         return Item({
             key,
-            label,
+            label: label,
             body: () => (
                 <UIListPicker<K> value={value} onChange={onChange} title={title} options={options} render={render} />
             ),
@@ -162,7 +162,7 @@ export namespace UIForm {
         "use memo";
         return Item({
             key,
-            label,
+            label: label,
             body: () => <RNSwitch value={value} onValueChange={onChange} />,
         });
     }

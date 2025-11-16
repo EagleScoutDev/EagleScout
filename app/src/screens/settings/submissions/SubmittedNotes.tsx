@@ -9,8 +9,12 @@ import { CompetitionsDB } from "../../../database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { Color } from "../../../lib/color";
+import type { SettingsMenuScreenProps } from "../SettingsMenu";
 
-export function SubmittedNotes() {
+export function SubmittedNotes({
+    route,
+}: SettingsMenuScreenProps<"Scout/ViewNotes">) {
+    const { competitionId } = route.params;
     const { colors } = useTheme();
 
     const [onlineNotes, setOnlineNotes] = useState<NoteWithMatch[]>([]);
@@ -23,17 +27,15 @@ export function SubmittedNotes() {
         setOfflineNotes(allOffline);
     }
 
-    async function fetchOnlineNotes() {
-        const reports = await NotesDB.getNotesForSelf();
-        setOnlineNotes(reports);
+    async function fetchOnlineNotesForCompetition() {
+        const notes = await NotesDB.getNotesForCompetition(competitionId);
+        setOnlineNotes(notes);
     }
 
-    function fetchAllNotes() {
-        setLoading(true);
-        return Promise.all([fetchOfflineNotes(), fetchOfflineNotes()]).then(() => setLoading(false));
-    }
-
-    useEffect(() => void fetchAllNotes(), []);
+    useEffect(() => {
+        void fetchOnlineNotesForCompetition();
+        void fetchOfflineNotes();
+    }, [competitionId]);
 
     return (
         <SafeAreaProvider>
@@ -53,7 +55,7 @@ export function SubmittedNotes() {
                                     case "In Database":
                                         setSelectedTheme("In Database");
                                         setLoading(true);
-                                        fetchOnlineNotes().then(() => setLoading(false));
+                                        fetchOnlineNotesForCompetition().then(() => setLoading(false));
                                         break;
                                 }
                             }}
@@ -131,7 +133,7 @@ export function SubmittedNotes() {
                                         );
                                     }
                                     await Promise.all(promises);
-                                    await fetchOnlineNotes();
+                                    await fetchOnlineNotesForCompetition();
                                     await fetchOfflineNotes();
                                     setLoading(false);
                                 }}

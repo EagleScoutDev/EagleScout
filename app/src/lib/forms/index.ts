@@ -107,7 +107,7 @@ export namespace Form {
 
         return out;
     }
-    export function initialize(sections: Section[]) {
+    export function initialize(sections: Section[]): Form.Data[] {
         return sections.map((section) =>
             section.items.map((item) => {
                 switch (item.type) {
@@ -139,5 +139,9 @@ export namespace Form {
             }
         }
         return null;
+    }
+
+    export function packSectionData(sectionData: Form.Data[]): Form.Data {
+        return sectionData.flatMap((section) => [null, ...section]);
     }
 }

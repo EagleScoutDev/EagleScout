@@ -78,7 +78,7 @@ export function Signup({ navigation }: SignupProps) {
                                         "Please try again",
                                         [
                                             {
-                                                text: "OK",
+                                                label: "OK",
                                                 onPress: () => console.log("OK Pressed"),
                                             },
                                         ],

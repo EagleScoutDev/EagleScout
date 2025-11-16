@@ -1,11 +1,11 @@
-import { UIRadio } from "../ui/input/UIRadio";
-import { UIStepper } from "../ui/input/UIStepper";
-import { UICheckboxes } from "../ui/input/UICheckboxes";
-import { Form } from "../lib/forms";
-import { UISlider } from "../ui/input/UISlider";
-import { FormHeading } from "./components/FormHeading";
-import { FormQuestion } from "./components/FormQuestion";
-import { UITextInput } from "../ui/input/UITextInput";
+import { UIRadio } from "../../ui/input/UIRadio";
+import { UIStepper } from "../../ui/input/UIStepper";
+import { UICheckboxes } from "../../ui/input/UICheckboxes";
+import { Form } from "../../lib/forms";
+import { UISlider } from "../../ui/input/UISlider";
+import { FormHeading } from "./FormHeading";
+import { FormQuestion } from "./FormQuestion";
+import { UITextInput } from "../../ui/input/UITextInput";
 import ItemType = Form.ItemType;
 
 export interface FormComponentProps<T extends Form.Item> {

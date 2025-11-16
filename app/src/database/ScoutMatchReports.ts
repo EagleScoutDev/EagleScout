@@ -1,6 +1,6 @@
 import { supabase } from "../lib/supabase";
-import type { CrescendoAutoPath } from "../frc/crescendo/CrescendoAutoPath";
-import type { ReefscapeAutoPath } from "../frc/reefscape/auto";
+import * as Reefscape from "../frc/reefscape";
+import { Form } from "../lib/forms";
 
 interface TimelineElement {
     time: number;
@@ -14,15 +14,15 @@ interface MatchReport {
     data: any[];
     competitionId: number;
     timelineData?: TimelineElement[];
-    autoPath?: CrescendoAutoPath | ReefscapeAutoPath;
+    autoPath?: Reefscape.AutoPath;
 }
 
 interface MatchReportWithDate extends MatchReport {
-    createdAt: Date;
+    createdAt: string;
 }
 
 export interface MatchReportReturnData extends MatchReportWithDate {
-    form: [];
+    form: Form.Structure;
     userId: string;
     userName?: string;
     competitionName: string;
@@ -97,7 +97,6 @@ export class MatchReportsDB {
     }
 
     static async getReportsForTeam(team: number): Promise<MatchReportReturnData[]> {
-        const res: MatchReportReturnData[] = [];
         const { data, error } = await supabase
             .from("scout_reports")
             .select(

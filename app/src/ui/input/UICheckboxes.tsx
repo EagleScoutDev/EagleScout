@@ -3,10 +3,11 @@ import { UICheckbox } from "./UICheckbox";
 
 export interface UICheckboxesProps<T extends string> {
     options: T[];
+    disabled?: boolean;
     value: T[];
     onInput?: undefined | ((x: T[]) => void);
 }
-export function UICheckboxes<T extends string>({ options, value, onInput }: UICheckboxesProps<T>) {
+export function UICheckboxes<T extends string>({ options, disabled = false, value, onInput }: UICheckboxesProps<T>) {
     "use memo";
 
     return (
@@ -14,6 +15,7 @@ export function UICheckboxes<T extends string>({ options, value, onInput }: UICh
             {options.map((item, index) => (
                 <UICheckbox
                     key={index}
+                    disabled={disabled}
                     text={item}
                     value={value.includes(item)}
                     onInput={(x) => {

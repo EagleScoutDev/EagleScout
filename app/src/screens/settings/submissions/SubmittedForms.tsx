@@ -1,5 +1,6 @@
 /**
- * This file will separate the forms the user has submitted into two:
+ * This file displays the forms the user has submitted for a specific competition.
+ * Forms are separated into two:
  * 1) the forms they have submitted offline, but have not been pushed
  *    give option for "select all" and submit, or user can select manually
  * 2) the forms they have uploaded to the database in the past
@@ -15,8 +16,12 @@ import Toast from "react-native-toast-message";
 import { type MatchReportReturnData, MatchReportsDB } from "../../../database/ScoutMatchReports";
 import { CompetitionsDB } from "../../../database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import type { SettingsMenuScreenProps } from "../SettingsMenu";
 
-export function SubmittedForms() {
+export function SubmittedForms({
+    route,
+}: SettingsMenuScreenProps<"Scout/ViewReports">) {
+    const { competitionId } = route.params;
     const [reports, setReports] = useState<MatchReportReturnData[]>([]);
     const [offlineReports, setOfflineReports] = useState<MatchReportReturnData[]>([]);
     const { colors } = useTheme();
@@ -32,13 +37,17 @@ export function SubmittedForms() {
 
         setOfflineReports(formsFound);
     }
-    async function fetchReports() {
+
+    async function fetchReportsForCompetition() {
         setLoading(true);
-        setReports(await MatchReportsDB.getReportsForSelf());
+        setReports(await MatchReportsDB.getReportsForCompetition(competitionId));
         setLoading(false);
     }
 
-    useEffect(() => void fetchReports(), []);
+    useEffect(() => {
+        void fetchReportsForCompetition();
+        void getOfflineReports();
+    }, [competitionId]);
 
     return (
         <SafeAreaProvider>
@@ -56,7 +65,8 @@ export function SubmittedForms() {
                                     break;
                                 case "In Database":
                                     setSelectedTheme("In Database");
-                                    void fetchReports();
+                                    setLoading(true);
+                                    fetchReportsForCompetition();
                                     break;
                             }
                         }}
@@ -139,7 +149,7 @@ export function SubmittedForms() {
                                 // clear the offline reports
                                 setOfflineReports([]);
                                 // refresh the reports
-                                MatchReportsDB.getReportsForSelf().then((results) => {
+                                MatchReportsDB.getReportsForCompetition(competitionId).then((results) => {
                                     setReports(results);
                                     Toast.show({
                                         type: "success",
@@ -148,13 +158,13 @@ export function SubmittedForms() {
                                 });
                             }}
                         />
-                        <ReportList reports={offlineReports} isOffline={true} />
+                        <ReportList reports={offlineReports} reportsAreOffline={true} />
                     </View>
                 )}
 
                 {selectedTheme === "In Database" && (
                     <View style={{ flex: 1 }}>
-                        <ReportList reports={reports} isOffline={false} />
+                        <ReportList reports={reports} reportsAreOffline={false} />
                     </View>
                 )}
             </SafeAreaView>

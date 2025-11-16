@@ -16,7 +16,6 @@ export function UIBadge({ text, color, backgroundColor }: BadgeProps) {
                 borderRadius: 10,
                 paddingHorizontal: 5,
                 paddingVertical: 2,
-                marginTop: 5,
             }}
         >
             <Text

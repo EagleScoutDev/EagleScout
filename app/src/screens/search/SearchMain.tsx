@@ -6,7 +6,7 @@ import * as Bs from "../../ui/icons";
 import type { SimpleTeam } from "../../lib/frc/tba";
 import { TBA } from "../../lib/frc/tba";
 import { CompetitionChanger } from "./CompetitionChanger";
-import { ScoutViewer } from "../../components/modals/ScoutViewer";
+import { MatchReportViewer } from "../../components/modals/MatchReportViewer.tsx";
 import { CompetitionsDB } from "../../database/Competitions";
 import { NotesDB, type NoteWithMatch } from "../../database/ScoutNotes";
 import { NoteList } from "../../components/NoteList";
@@ -292,12 +292,9 @@ export function SearchMain({ navigation }: SearchMainProps) {
                 }}
             />
             {scoutViewerVisible && currentReport && (
-                <ScoutViewer
-                    visible={scoutViewerVisible}
-                    setVisible={setScoutViewerVisible}
-                    data={currentReport ?? []}
-                    chosenComp={currentReport?.competitionName ?? ""}
-                    updateFormData={() => {}}
+                <MatchReportViewer
+                    onDismiss={() => setScoutViewerVisible(false)}
+                    data={currentReport}
                     isOfflineForm={false}
                     navigateToTeamViewer={() => {
                         if (currentReport) {
@@ -309,6 +306,10 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                 Alert.alert("Error: Team not found", "Report likely inputted with wrong team number.");
                             }
                         }
+                    }}
+                    onEdit={async () => {
+                        // Editing not supported in search view
+                        return false;
                     }}
                 />
             )}

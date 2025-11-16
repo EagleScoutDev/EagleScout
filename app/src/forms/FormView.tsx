@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { FormItem } from "./FormItem";
+import { FormItem } from "./components/FormItem";
 import { Form } from "../lib/forms";
 
 import { Arrays } from "../lib/util/Arrays";

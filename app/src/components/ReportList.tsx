@@ -1,315 +1,60 @@
-import { FlatList, KeyboardAvoidingView, LayoutAnimation, Text, TouchableOpacity, View } from "react-native";
-import { useEffect, useState } from "react";
-import { ScoutViewer } from "./modals/ScoutViewer";
+import { KeyboardAvoidingView, SectionList, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { CompetitionsDB } from "../database/Competitions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../FormHelper";
 import { UIBadge } from "../ui/UIBadge";
 import * as Bs from "../ui/icons";
+import { useCurrentCompetition } from "../lib/hooks/useCurrentCompetition.ts";
+import { Arrays } from "../lib/util/Arrays.ts";
+import type { MatchReportReturnData } from "../database/ScoutMatchReports.ts";
+import { PressableOpacity } from "../ui/components/PressableOpacity.tsx";
+import { Sets } from "../lib/util/Sets.ts";
+import { MatchReportViewer } from "./modals/MatchReportViewer.tsx";
+import Animated from "react-native-reanimated";
 
-function CompetitionFlatList({
-    compName,
-    data,
-    overrideCollapsed,
-    isCurrentlyRunning,
-    setChosenScoutForm,
-    setChosenScoutFormIndex,
-    setChosenCompetitionIndex,
-    setModalVisible,
-    displayHeader,
-    setIsInitialCollapse,
-}) {
-    const [isCollapsed, setIsCollapsed] = useState(overrideCollapsed);
-    const [sort, setSort] = useState("");
-    const [dataCopy, setDataCopy] = useState(data);
-    const { colors } = useTheme();
+export interface ReportListProps {
+    reports: MatchReportReturnData[];
+    reportsAreOffline: boolean;
 
-    useEffect(() => {
-        setIsCollapsed(overrideCollapsed);
-    }, [overrideCollapsed]);
-
-    useEffect(() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    }, [isCollapsed]);
-
-    const onPress = () => {
-        setIsCollapsed(!isCollapsed);
-        if (setIsInitialCollapse != null) {
-            setIsInitialCollapse(false);
-        }
-    };
-
-    const handleSort = (sortName, sortFunc) => {
-        if (sort === sortName) {
-            setSort("");
-            setDataCopy(data);
-        } else {
-            setSort(sortName);
-            setDataCopy(dataCopy.sort(sortFunc));
-        }
-    };
-
-    return (
-        <FlatList
-            data={data}
-            style={{
-                paddingBottom: 20,
-            }}
-            ListHeaderComponent={() => (
-                <View>
-                    {displayHeader && (
-                        <TouchableOpacity onPress={onPress}>
-                            <View
-                                style={{
-                                    width: "90%",
-                                    alignSelf: "center",
-                                    flexDirection: "row",
-                                    paddingTop: 10,
-                                    paddingBottom: 20,
-                                    paddingHorizontal: 20,
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                }}
-                            >
-                                <View style={{ flexDirection: "column" }}>
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                            gap: 10,
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                color: colors.text,
-                                                fontSize: 24,
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            {compName}
-                                        </Text>
-                                        {isCurrentlyRunning && (
-                                            <UIBadge
-                                                color={colors.background}
-                                                backgroundColor={colors.primary}
-                                                text={"Active"}
-                                            />
-                                        )}
-                                    </View>
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 16,
-                                        }}
-                                    >
-                                        {data.length} {data.length === 1 ? "report" : "reports"}
-                                    </Text>
-                                </View>
-                                {isCollapsed ? (
-                                    <Bs.ChevronUp width={30} height={30} />
-                                ) : (
-                                    <Bs.ChevronDown width={30} height={30} />
-                                )}
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                    <View
-                        style={{
-                            display: isCollapsed ? "none" : "flex",
-                            width: "90%",
-                            alignSelf: "center",
-                            borderRadius: 15,
-                            paddingHorizontal: 20,
-                            paddingBottom: 10,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                flex: 1.5,
-                                borderRadius: 15,
-                            }}
-                            onPress={() => handleSort("team", (a, b) => a.teamNumber - b.teamNumber)}
-                        >
-                            <Text
-                                style={{
-                                    color: sort === "team" ? colors.primary : colors.text,
-                                    fontSize: 16,
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                Team
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{
-                                flex: 1,
-                            }}
-                            onPress={() => handleSort("match", (a, b) => a.matchNumber - b.matchNumber)}
-                        >
-                            <Text
-                                style={{
-                                    color: sort === "match" ? colors.primary : colors.text,
-                                    fontSize: 16,
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                }}
-                            >
-                                Match
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{
-                                flex: 2,
-                                borderRadius: 15,
-                            }}
-                            onPress={() => handleSort("date", (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())}
-                        >
-                            <Text
-                                style={{
-                                    color: sort === "date" ? colors.primary : colors.text,
-                                    fontSize: 16,
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                }}
-                            >
-                                Date
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            )}
-            renderItem={({ item, index, separators }) => (
-                <TouchableOpacity
-                    onPress={() => {
-                        setChosenScoutForm(item);
-                        setChosenScoutFormIndex(index);
-                        setChosenCompetitionIndex();
-                        setModalVisible(true);
-                    }}
-                    style={{
-                        display: isCollapsed ? "none" : "flex",
-                    }}
-                >
-                    <View
-                        style={{
-                            display: item.isCollapsed ? "none" : "flex",
-                            backgroundColor: colors.card,
-                            width: "90%",
-                            alignSelf: "center",
-                            borderRadius: 15,
-                            padding: 20,
-                            marginVertical: 5,
-                            borderWidth: 1,
-                            borderColor: colors.border,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontSize: 16,
-                                fontWeight: "bold",
-                                flex: 1.5,
-                            }}
-                        >
-                            {item.teamNumber}
-                        </Text>
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontSize: 16,
-                                fontWeight: "bold",
-                                flex: 1,
-                                textAlign: "center",
-                            }}
-                        >
-                            {item.matchNumber}
-                        </Text>
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontSize: 16,
-                                fontWeight: "bold",
-                                flex: 2,
-                                textAlign: "right",
-                            }}
-                        >
-                            {item.createdAt.toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                            })}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            )}
-            // keyExtractor={item => item.id}
-        />
-    );
+    onEdit?: (orig: MatchReportReturnData, edited: MatchReportReturnData) => Promise<boolean>;
 }
+export function ReportList({
+    reports,
+    reportsAreOffline,
+    onEdit,
+}: ReportListProps) {
+    "use memo";
 
-export function ReportList({ reports, isOffline, expandable = true, displayHeaders = true }) {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [chosenScoutForm, setChosenScoutForm] = useState(null);
-    const [chosenScoutFormIndex, setChosenScoutFormIndex] = useState(null);
-    const [chosenCompetitionIndex, setChosenCompetitionIndex] = useState(null);
-    const [dataCopy, setDataCopy] = useState([]);
-    const [isCollapsedAll, setIsCollapsedAll] = useState(true);
-    const [isInitialCollapse, setIsInitialCollapse] = useState(true);
     const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        itemText: {
+            color: colors.text,
+            fontSize: 16,
+            fontWeight: "bold",
+            flexWrap: "nowrap",
+        },
+    });
 
+    const { competition: currentCompetition } = useCurrentCompetition();
+
+    const [chosenReport, setChosenReport] = useState<MatchReportReturnData | null>(null);
+    const reportViewerRef = useRef<MatchReportViewer>(null);
+
+    const [collapsedComps, setCollapsedComps] = useState<ReadonlySet<string>>(new Set());
+
+    // Present the modal when a report is chosen
     useEffect(() => {
-        if (!reports) {
-            return;
+        if (chosenReport) {
+            // Small delay to ensure the modal ref is ready
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    reportViewerRef.current?.present();
+                }, 100);
+            });
         }
+    }, [chosenReport]);
 
-        const effect = async () => {
-            let currComp;
-            if (!isOffline) {
-                currComp = await CompetitionsDB.getCurrentCompetition();
-            } else {
-                const currCompObj = await AsyncStorage.getItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
-                if (currCompObj != null) {
-                    currComp = JSON.parse(currCompObj);
-                }
-            }
-            const comps = {};
-            for (const report of reports) {
-                if (!comps[report.competitionName]) {
-                    comps[report.competitionName] = [];
-                }
-                comps[report.competitionName].push(report);
-            }
-            setDataCopy(
-                Object.keys(comps)
-                    .map((comp) => ({
-                        title: comp,
-                        data: comps[comp],
-                        // currently checks by name, but might want to change to ID in future if needed.
-                        isCurrentlyRunning: currComp && comp === currComp.name,
-                    }))
-                    .sort((a, b) => (a.isCurrentlyRunning ? -1 : 1))
-            );
-        };
-        effect().catch(console.log);
-    }, [isOffline, reports]);
-
-    /**
-     * Locally updates the dataCopy array with the new data, so we don't have to re-fetch the db after a report edit
-     * @param newData - the new data to update the array with
-     */
-    const updateFormData = (newData) => {
-        const newForms = [...dataCopy];
-        console.log("datacopoy");
-        console.log(dataCopy);
-        console.log(chosenScoutFormIndex);
-        newForms[chosenCompetitionIndex].data[chosenScoutFormIndex].data = newData;
-        setDataCopy(newForms);
-    };
+    const reportsByComp = Arrays.group(reports, (report) => report.competitionName);
+    const competitions = Array.from(reportsByComp.keys());
 
     if (!reports || reports.length === 0) {
         return (
@@ -318,11 +63,9 @@ export function ReportList({ reports, isOffline, expandable = true, displayHeade
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor: colors.card,
-                    width: "80%",
                     alignSelf: "center",
                     borderRadius: 15,
                     padding: 20,
-                    marginTop: 20,
                 }}
             >
                 <Text
@@ -341,68 +84,52 @@ export function ReportList({ reports, isOffline, expandable = true, displayHeade
 
     return (
         <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
-            {expandable && (
-                <TouchableOpacity
-                    onPress={() => {
-                        setIsCollapsedAll(!isCollapsedAll);
-                        setIsInitialCollapse(false);
-                    }}
-                    style={{
-                        alignSelf: "flex-end",
-                        // backgroundColor: colors.primary,
-                        paddingHorizontal: 10,
-                        // borderRadius: 10,
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: colors.primary,
-                            fontWeight: "bold",
-                            fontSize: 17,
-                        }}
-                    >
-                        {isCollapsedAll ? "Expand All" : "Collapse All"}
-                    </Text>
-                </TouchableOpacity>
-            )}
-            {/* instead of a FlatList, use a view to avoid the weird error when removing from DOM */}
-            <View
-                style={{
-                    paddingBottom: 20,
+            <SectionList
+                sections={competitions.map((name) => ({ name, data: reportsByComp.get(name) ?? [] }))}
+                extraData={collapsedComps}
+                keyExtractor={(_, index) => index.toString()}
+                renderItem={({ item }) => {
+                    if (collapsedComps.has(item.competitionName)) return <></>;
+
+                    return (
+                        <PressableOpacity
+                            onPress={() => setChosenReport(item)}
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                padding: 8,
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            <Text style={[styles.itemText, { textAlign: "center", flex: 1 }]}>{item.teamNumber}</Text>
+                            <Text style={[styles.itemText, { textAlign: "center", flex: 1 }]}>{item.matchNumber}</Text>
+                            <Text style={[styles.itemText, { textAlign: "center", flex: 2 }]}>
+                                {new Date(item.createdAt).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                })}
+                            </Text>
+                        </PressableOpacity>
+                    );
                 }}
-            >
-                {dataCopy.map((item, index) => (
-                    <CompetitionFlatList
-                        key={item.index}
-                        compName={item.title}
-                        data={item.data}
-                        isCurrentlyRunning={item.isCurrentlyRunning}
-                        overrideCollapsed={
-                            expandable && !(isInitialCollapse && item.isCurrentlyRunning) && isCollapsedAll
-                        }
-                        setChosenScoutForm={(chosenForm) => {
-                            console.log("set scout form", chosenForm);
-                            setChosenScoutForm(chosenForm);
-                        }}
-                        setChosenScoutFormIndex={setChosenScoutFormIndex}
-                        setChosenCompetitionIndex={() => {
-                            setChosenCompetitionIndex(index);
-                        }}
-                        setModalVisible={setModalVisible}
-                        displayHeader={displayHeaders}
-                        setIsInitialCollapse={item.isCurrentlyRunning ? setIsInitialCollapse : null}
-                    />
-                ))}
-            </View>
-            {modalVisible && (
-                <ScoutViewer
-                    visible={modalVisible}
-                    setVisible={setModalVisible}
-                    data={chosenScoutForm}
-                    updateFormData={updateFormData}
-                    // TODO: add accurate competition name
-                    chosenComp={chosenScoutForm.competitionName}
-                    isOfflineForm={isOffline}
+            />
+
+            {chosenReport !== null && (
+                <MatchReportViewer
+                    ref={reportViewerRef}
+                    onDismiss={() => setChosenReport(null)}
+                    data={chosenReport}
+                    isOfflineForm={reportsAreOffline}
+                    onEdit={(orig, edited) => {
+                        // TODO: implement this
+                    }}
+                    navigateToTeamViewer={() => {
+                        // TODO: implement navigation to team viewer
+                    }}
                 />
             )}
         </KeyboardAvoidingView>

@@ -48,7 +48,7 @@ export function ManageCompetitions() {
                 {[
                     UIList.Section({
                         items: competitionList.map((comp) =>
-                            UIList.Line({
+                            UIList.Label({
                                 key: comp.id.toString(),
                                 label: comp.name,
                                 onPress: () => {

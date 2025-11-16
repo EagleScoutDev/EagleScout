@@ -120,12 +120,12 @@ export function ManageUsers() {
                     "Are you sure you want to unapprove this user? This will remove their access from creating and viewing scouting reports.",
                     [
                         {
-                            text: "Cancel",
+                            label: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            text: "OK",
+                            label: "OK",
                             onPress: async () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 if (user.admin) {
@@ -155,12 +155,12 @@ export function ManageUsers() {
                     "Are you sure you want to approve this user?",
                     [
                         {
-                            text: "Cancel",
+                            label: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            text: "OK",
+                            label: "OK",
                             onPress: () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 updateApproveStatus(user, true).then(successAlert);
@@ -177,12 +177,12 @@ export function ManageUsers() {
                     "Are you sure you want to remove this user as admin?",
                     [
                         {
-                            text: "Cancel",
+                            label: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            text: "OK",
+                            label: "OK",
                             onPress: async () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 const res = await supabase.auth.getUser();
@@ -206,12 +206,12 @@ export function ManageUsers() {
                     "Are you sure you want to make this user an admin?",
                     [
                         {
-                            text: "Cancel",
+                            label: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            text: "OK",
+                            label: "OK",
                             onPress: () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 updateAdminStatus(user, true);
