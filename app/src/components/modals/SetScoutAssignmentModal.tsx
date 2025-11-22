@@ -248,7 +248,7 @@ export function SetScoutAssignmentModal({
                             }))}
                             searchEnabled={false}
                             searchPlaceholder={"Search for a user..."}
-                            placeholder={"FormSelect a user..."}
+                            placeholder={"Select a user..."}
                             notFoundText={"No users found"}
                             maxHeight={100}
                         />
