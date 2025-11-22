@@ -17,7 +17,7 @@ export interface AutoFieldProps {
 export function AutoField({ orientation, alliance, onReef, onPiece, state }: AutoFieldProps) {
     "use memo";
 
-    const leftSide = (alliance = Orientation.getLeft(orientation));
+    const leftSide = alliance === Orientation.getLeft(orientation);
 
     return (
         <View
