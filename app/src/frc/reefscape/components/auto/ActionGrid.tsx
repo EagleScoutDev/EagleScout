@@ -52,7 +52,7 @@ export function ActionGrid<T>({ title, options: rows, onPress }: ActionMenuProps
                             <PressableOpacity
                                 key={x}
                                 style={role === "success" ? styles.button : styles.failButton}
-                                onPress={() => onPress(value, true)}
+                                onPress={() => onPress(value, role === "success")}
                             >
                                 <Text style={styles.text}>{text}</Text>
                             </PressableOpacity>
