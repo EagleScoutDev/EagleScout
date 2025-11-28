@@ -40,7 +40,7 @@ export function ScoutFlow() {
                     <HomeStack.Screen
                         name="Match"
                         options={{
-                            title: "Scout Report",
+                            title: "Match Scouting",
                             headerRight: TimerHeader,
                         }}
                         component={MatchScoutingFlow}
@@ -55,7 +55,7 @@ export function ScoutFlow() {
                     <HomeStack.Screen
                         name="Pit"
                         options={{
-                            title: "Pit Scout",
+                            title: "Pit Scouting",
                         }}
                         component={PitScoutingFlow}
                     />
