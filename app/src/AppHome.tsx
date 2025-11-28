@@ -45,7 +45,7 @@ export function AppHome({ navigation }: AppHomeProps) {
                     name="Search"
                     component={SearchMenu}
                     options={{
-                        title: "Search",
+                        title: "Teams",
                         tabBarIcon: () => require("bootstrap-icons/icons/search.svg"),
                     }}
                 />
