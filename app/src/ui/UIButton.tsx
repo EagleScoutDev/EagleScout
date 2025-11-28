@@ -27,6 +27,7 @@ export interface UIButtonProps {
     icon?: Icon;
     text?: string;
     loading?: boolean;
+    disabled?: boolean;
 
     onPress?: (() => void | Promise<void>) | null | undefined;
 }
@@ -39,6 +40,7 @@ export function UIButton({
     icon,
     text,
     loading = false,
+    disabled = false,
     onPress = null,
     children,
 }: PropsWithChildren<UIButtonProps>) {
@@ -68,7 +70,13 @@ export function UIButton({
         });
 
     return (
-        <PressableOpacity onPress={doPress} style={[sizeStyles.button, { backgroundColor: bg }, buttonStyle]}>
+        <PressableOpacity
+            onPress={doPress}
+            style={[sizeStyles.button, { backgroundColor: bg }, buttonStyle]}
+            disabled={disabled}
+            // TODO: fix the opacity when disabled
+            disabledOpacity={1}
+        >
             {(loading || processing) && (
                 <ActivityIndicator
                     style={{ position: "absolute", width: "100%", height: "100%" }}

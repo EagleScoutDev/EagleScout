@@ -11,6 +11,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@bottom-tabs/react-navigation": "^1.0.2",
     "@floating-ui/react-native": "^0.10.7",
     "@gorhom/bottom-sheet": "^5.2.6",
     "@miblanchard/react-native-slider": "^2.6.0",
@@ -18,7 +19,6 @@
     "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/datetimepicker": "^8.4.4",
     "@react-native-community/slider": "^5.0.1",
-    "@react-navigation/bottom-tabs": "^7.4.7",
     "@react-navigation/drawer": "^7.5.8",
     "@react-navigation/material-top-tabs": "^7.3.7",
     "@react-navigation/native": "^7.1.18",
@@ -31,6 +31,7 @@
     "react": "19.1.0",
     "react-native": "0.81.1",
     "react-native-background-fetch": "^4.2.8",
+    "react-native-bottom-tabs": "^1.0.2",
     "react-native-bouncy-checkbox": "^4.1.2",
     "react-native-chart-kit": "^6.12.0",
     "react-native-confetti": "^0.1.0",

@@ -57,92 +57,86 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
         navigation.addListener("focus", () => void getUpcomingRounds());
     }, [navigation]);
 
-    const teamFormatter = (team: string) => (team.startsWith("frc") ? team.slice(3) : team);
-
     if (competition === null) {
-        return <Text style={{ color: colors.text, padding: "5%" }}>There is no competition happening currently.</Text>;
+        return null;
     }
 
     if (!online) {
         return <Text style={{ color: colors.text }}>Connect to the internet to fetch upcoming rounds.</Text>;
     }
 
+    const nRounds = upcomingRounds.length;
+
     return (
-        <View style={{ flex: 1 }}>
+        <View>
             <View
                 style={{
-                    alignSelf: "center",
-                    height: "100%",
+                    backgroundColor: colors.card,
                     borderRadius: 10,
-                    padding: "8%",
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                    flexDirection: "row",
+                    alignItems: "center",
                     width: "100%",
+                    paddingHorizontal: 12,
+                    paddingVertical: 12,
                 }}
             >
-                {upcomingRounds.length !== 0 && (
-                    <Text style={{ color: colors.text, paddingBottom: "5%" }}>
-                        You have {upcomingRounds.length} round
-                        {upcomingRounds.length !== 1 ? "s" : ""} left today.
-                    </Text>
-                )}
-                {upcomingRounds.length === 0 && (
-                    <View
+                {nRounds === 0 && <Bs.CheckCircle size={48} fill={colors.primary} />}
+
+                <Text
+                    style={{
+                        marginLeft: 12,
+                        color: colors.text,
+                        fontSize: 18,
+                        flex: 1,
+                        flexWrap: "wrap",
+                    }}
+                >
+                    You have {nRounds === 0 ? "no" : nRounds} round
+                    {nRounds !== 1 ? "s" : ""} left to scout today.
+                </Text>
+            </View>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}>
+                {upcomingRounds.map((round, index) => (
+                    <TouchableOpacity
                         style={{
                             backgroundColor: colors.card,
-                            alignItems: "center",
-                            padding: "5%",
+                            padding: 10,
                             borderRadius: 10,
+                            marginBottom: 10,
                             borderWidth: 1,
                             borderColor: colors.border,
-                            justifyContent: "space-around",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            flex: 1,
+                        }}
+                        onPress={() => {
+                            navigation.navigate("Match", {
+                                match: round.matchNumber,
+                                team: teamBased ? teamFormatter(round.team) : null,
+                            });
                         }}
                     >
-                        <Bs.CheckCircle
-                            width="100%"
-                            height="50%"
-                            fill={colors.primary}
-                            style={{ marginVertical: "10%" }}
-                        />
-                        <Text
+                        <View
                             style={{
-                                color: colors.text,
-                                fontSize: 24,
-                                padding: "5%",
-                                textAlign: "center",
-                                flex: 1,
+                                // backgroundColor: 'red',
+                                padding: "2%",
+                                paddingTop: "0%",
                             }}
                         >
-                            You have no rounds left to scout today.
-                        </Text>
-                    </View>
-                )}
-                <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}>
-                    {upcomingRounds.map((round, index) => (
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: colors.card,
-                                padding: 10,
-                                borderRadius: 10,
-                                marginBottom: 10,
-                                borderWidth: 1,
-                                borderColor: colors.border,
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                flex: 1,
-                            }}
-                            onPress={() => {
-                                navigation.navigate("Scout Report", {
-                                    match: round.matchNumber,
-                                    team: teamBased ? teamFormatter(round.team) : null,
-                                });
-                            }}
-                        >
-                            <View
+                            <Text
                                 style={{
-                                    // backgroundColor: 'red',
-                                    padding: "2%",
-                                    paddingTop: "0%",
+                                    fontWeight: "bold",
+                                    fontSize: 16,
+                                    color: colors.text,
+                                    // padding: '2%',
                                 }}
                             >
+                                Match: {round.matchNumber}
+                            </Text>
+                            <View style={{ height: "20%" }} />
+                            {teamBased ? (
                                 <Text
                                     style={{
                                         fontWeight: "bold",
@@ -151,44 +145,31 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                                         // padding: '2%',
                                     }}
                                 >
-                                    Match: {round.matchNumber}
+                                    Team: {teamFormatter(round.team)}
                                 </Text>
-                                <View style={{ height: "20%" }} />
-                                {teamBased ? (
-                                    <Text
-                                        style={{
-                                            fontWeight: "bold",
-                                            fontSize: 16,
-                                            color: colors.text,
-                                            // padding: '2%',
-                                        }}
-                                    >
-                                        Team: {teamFormatter(round.team)}
-                                    </Text>
-                                ) : (
-                                    <Text
-                                        style={{
-                                            fontWeight: "bold",
-                                            fontSize: 16,
-                                            color: colors.text,
-                                            // padding: '2%',
-                                        }}
-                                    >
-                                        Position: {positionText[round.position]}
-                                    </Text>
-                                )}
-                            </View>
-                            <View>
-                                <Bs.ChevronRight
-                                    size="20"
-                                    color={"gray"}
-                                    style={{ position: "absolute", right: 20, top: 20 }}
-                                />
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-            </View>
+                            ) : (
+                                <Text
+                                    style={{
+                                        fontWeight: "bold",
+                                        fontSize: 16,
+                                        color: colors.text,
+                                        // padding: '2%',
+                                    }}
+                                >
+                                    Position: {positionText[round.position]}
+                                </Text>
+                            )}
+                        </View>
+                        <View>
+                            <Bs.ChevronRight
+                                size="20"
+                                color={"gray"}
+                                style={{ position: "absolute", right: 20, top: 20 }}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
         </View>
     );
 }

@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { Pressable, Text, View } from "react-native";
-import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
 import * as Bs from "../../ui/icons";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { type PitFlowParamList, PitScoutingFlow } from "./pit/PitScoutingFlow";
+import { PitScoutingFlow } from "./pit/PitScoutingFlow";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";
 import { ScoutTimer, ScoutTimerContext } from "./components/Timer";
 
@@ -15,7 +15,7 @@ export type ScoutMenuParamList = {
     Dashboard: undefined;
     Match: undefined;
     Note: undefined;
-    Pit: NavigatorScreenParams<PitFlowParamList>;
+    Pit: undefined;
 };
 
 export function ScoutFlow() {
@@ -31,31 +31,35 @@ export function ScoutFlow() {
                     }}
                 />
 
-                <HomeStack.Screen
-                    name="Match"
-                    options={{
-                        title: "Scout Report",
-                        headerBackTitle: "Home",
-                        headerRight: TimerHeader,
+                <HomeStack.Group
+                    screenOptions={{
+                        headerTransparent: true,
+                        headerBackButtonDisplayMode: "minimal",
                     }}
-                    component={MatchScoutingFlow}
-                />
-                <HomeStack.Screen
-                    name="Note"
-                    options={{
-                        title: "Note",
-                        headerBackTitle: "Home",
-                    }}
-                    component={NoteScreen}
-                />
-                <HomeStack.Screen
-                    name="Pit"
-                    options={{
-                        title: "Pit Scout",
-                        headerBackTitle: "Home",
-                    }}
-                    component={PitScoutingFlow}
-                />
+                >
+                    <HomeStack.Screen
+                        name="Match"
+                        options={{
+                            title: "Scout Report",
+                            headerRight: TimerHeader,
+                        }}
+                        component={MatchScoutingFlow}
+                    />
+                    <HomeStack.Screen
+                        name="Note"
+                        options={{
+                            title: "Note",
+                        }}
+                        component={NoteScreen}
+                    />
+                    <HomeStack.Screen
+                        name="Pit"
+                        options={{
+                            title: "Pit Scout",
+                        }}
+                        component={PitScoutingFlow}
+                    />
+                </HomeStack.Group>
             </HomeStack.Navigator>
         </ScoutTimerContext.Provider>
     );

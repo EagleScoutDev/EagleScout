@@ -1751,6 +1751,65 @@ PODS:
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
     - SocketRocket
+  - react-native-bottom-tabs (1.0.2):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - react-native-bottom-tabs/common (= 1.0.2)
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - SwiftUIIntrospect (~> 1.0)
+    - Yoga
+  - react-native-bottom-tabs/common (1.0.2):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - SwiftUIIntrospect (~> 1.0)
+    - Yoga
   - react-native-image-picker (8.2.1):
     - boost
     - DoubleConversion
@@ -2991,6 +3050,7 @@ PODS:
     - SocketRocket
     - Yoga
   - SocketRocket (0.7.1)
+  - SwiftUIIntrospect (1.3.0)
   - VisionCamera (4.7.2):
     - VisionCamera/Core (= 4.7.2)
     - VisionCamera/React (= 4.7.2)
@@ -3043,6 +3103,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-bottom-tabs (from `../node_modules/react-native-bottom-tabs`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
@@ -3099,6 +3160,7 @@ SPEC REPOS:
   trunk:
     - React-Codegen
     - SocketRocket
+    - SwiftUIIntrospect
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -3185,6 +3247,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-bottom-tabs:
+    :path: "../node_modules/react-native-bottom-tabs"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-keyboard-controller:
@@ -3329,6 +3393,7 @@ SPEC CHECKSUMS:
   React-logger: d27dd2000f520bf891d24f6e141cde34df41f0ee
   React-Mapbuffer: 0746ffab5ac0f49b7c9347338e3d0c1d9dd634c8
   React-microtasksnativemodule: b0fb3f97372df39bda3e657536039f1af227cc29
+  react-native-bottom-tabs: 448809f8b7a7bd14b39769c29287631d51aec171
   react-native-image-picker: 43e6cd4231e670030fe09b079d696fa5a634ccfc
   react-native-keyboard-controller: c6a60f1f46e0b9b7a81b0821b6bcb4bd545a32ca
   react-native-pager-view: 899989dd025d219d3ac0d386b2bc162f81ae8330
@@ -3378,6 +3443,7 @@ SPEC CHECKSUMS:
   RNSVG: eca4f6bb09bcaf582c4f082f3989a6b8513b3e93
   RNWorklets: daa0a3e7946a9c4042f3a962c87a12dc5bc0badd
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  SwiftUIIntrospect: fee9aa07293ee280373a591e1824e8ddc869ba5d
   VisionCamera: 2230ecfd78a1f6cddd8be0fe4e6589f21a6385e1
   Yoga: 11c9686a21e2cd82a094a723649d9f4507200fb0
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351

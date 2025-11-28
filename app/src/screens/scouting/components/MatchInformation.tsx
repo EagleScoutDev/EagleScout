@@ -54,6 +54,7 @@ export function MatchInformation({
                 }
             />
             <UICardForm.OrientationChooser
+                label={"Field Orientation"}
                 orientation={orientation}
                 setOrientation={setOrientation}
                 alliance={alliance}

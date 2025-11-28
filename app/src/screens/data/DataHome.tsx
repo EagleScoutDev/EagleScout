@@ -39,7 +39,7 @@ export function DataHome({ navigation }: DataHomeProps) {
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView edges={["top", "left", "right"]}>
                 <TabHeader title={"Data"} />
 
                 {internetStatus === InternetStatus.FAILED && (
@@ -59,29 +59,29 @@ export function DataHome({ navigation }: DataHomeProps) {
                         </Pressable>
                     </View>
                 )}
-
-                {/* TODO: for some reason this ScrollView gets covered by the bottom tab bar instead of shrinking?? */}
-                <UIList>
-                    {toc.map(
-                        ({ label, shown, items }) =>
-                            shown &&
-                            UIList.Section({
-                                key: label,
-                                header: label,
-                                items: items.map(({ text, icon, caret, route }, i) =>
-                                    UIList.Label({
-                                        key: i,
-                                        label: text,
-                                        caret,
-                                        icon,
-                                        disabled: offline,
-                                        onPress: () => navigation.navigate(route),
-                                    })
-                                ),
-                            })
-                    )}
-                </UIList>
             </SafeAreaView>
+
+            {/* TODO: for some reason this ScrollView gets covered by the bottom tab bar instead of shrinking?? */}
+            <UIList>
+                {toc.map(
+                    ({ label, shown, items }) =>
+                        shown &&
+                        UIList.Section({
+                            key: label,
+                            header: label,
+                            items: items.map(({ text, icon, caret, route }, i) =>
+                                UIList.Label({
+                                    key: i,
+                                    label: text,
+                                    caret,
+                                    icon,
+                                    disabled: offline,
+                                    onPress: () => navigation.navigate(route),
+                                })
+                            ),
+                        })
+                )}
+            </UIList>
         </SafeAreaProvider>
     );
 }
@@ -102,7 +102,7 @@ const getTOC = exMemo(
     ({ admin }: { admin: boolean }): TOC => [
         {
             shown: true,
-            text: "Data Analysis",
+            label: "Data Analysis",
             items: [
                 { text: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
                 { text: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
@@ -113,7 +113,7 @@ const getTOC = exMemo(
         },
         {
             shown: true,
-            text: "Scoutcoin",
+            label: "Scoutcoin",
             items: [
                 { text: "Match Betting", icon: Bs.CashCoin, caret: true, route: "MatchBetting" },
                 { text: "Leaderboard", icon: Bs.Award, caret: true, route: "ScoutcoinLeaderboard" },
@@ -123,7 +123,7 @@ const getTOC = exMemo(
         },
         {
             shown: admin,
-            text: "Administrative",
+            label: "Administrative",
             items: [
                 { text: "Competitions", icon: Bs.TrophyFill, caret: true, route: "ManageCompetitions" },
                 { text: "Users", icon: Bs.PeopleFill, caret: true, route: "ManageUsers" },

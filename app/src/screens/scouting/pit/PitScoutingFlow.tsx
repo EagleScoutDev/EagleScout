@@ -15,6 +15,7 @@ import { useCurrentCompetition } from "../../../lib/hooks/useCurrentCompetition"
 import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
 import { Arrays } from "../../../lib/util/Arrays";
 import { PitScoutingImageList } from "./PitScoutingImageList";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createMaterialTopTabNavigator();
 export type PitFlowScreenProps<K extends keyof PitFlowParamList> = MaterialTopTabScreenProps<PitFlowParamList, K>;
@@ -118,71 +119,73 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
     }
 
     return (
-        <>
-            <Tab.Navigator
-                screenOptions={{
-                    tabBarStyle: {
-                        backgroundColor: colors.background,
-                    },
-                    tabBarLabelStyle: {
-                        color: colors.text,
-                        fontSize: 12,
-                        fontWeight: "bold",
-                    },
-                }}
-            >
-                <Tab.Screen
-                    name={"Match"}
-                    options={{
-                        title: "Match",
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+                <Tab.Navigator
+                    screenOptions={{
+                        tabBarStyle: {
+                            backgroundColor: colors.background,
+                        },
+                        tabBarLabelStyle: {
+                            color: colors.text,
+                            fontSize: 12,
+                            fontWeight: "bold",
+                        },
                     }}
-                    children={({ navigation }) => (
-                        <ScoutingFlowTab
-                            title={competition ? `${competition.name}` : "Pit Scouting"}
-                            buttonText={"Next"}
-                            onNext={() => navigation.navigate({ screen: `Form/${formSections[0].title}` })}
-                        >
-                            <TeamInformation team={team} setTeam={setTeam} />
-                        </ScoutingFlowTab>
-                    )}
-                />
-                {formSections?.map((section, i) => (
+                >
                     <Tab.Screen
-                        key={section.title}
-                        name={`Form/${section.title}`}
+                        name={"Match"}
                         options={{
-                            title: section.title,
+                            title: "Match",
                         }}
                         children={({ navigation }) => (
                             <ScoutingFlowTab
+                                title={competition ? `${competition.name}` : "Pit Scouting"}
                                 buttonText={"Next"}
-                                title={section.title}
-                                onNext={() => {
-                                    navigation.navigate({
-                                        screen:
-                                            i === formSections.length - 1
-                                                ? "Images"
-                                                : `Form/${formSections[i + 1].title}`,
-                                    });
-                                }}
+                                onNext={() => navigation.navigate({ screen: `Form/${formSections[0].title}` })}
                             >
-                                <FormView
-                                    items={section.items}
-                                    data={sectionData[i]}
-                                    onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                                />
+                                <TeamInformation team={team} setTeam={setTeam} />
                             </ScoutingFlowTab>
                         )}
                     />
-                ))}
-                <Tab.Screen name={"Images"}>
-                    {() => (
-                        <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
-                            <PitScoutingImageList images={images} setImages={setImages} />
-                        </ScoutingFlowTab>
-                    )}
-                </Tab.Screen>
-            </Tab.Navigator>
-        </>
+                    {formSections?.map((section, i) => (
+                        <Tab.Screen
+                            key={section.title}
+                            name={`Form/${section.title}`}
+                            options={{
+                                title: section.title,
+                            }}
+                            children={({ navigation }) => (
+                                <ScoutingFlowTab
+                                    buttonText={"Next"}
+                                    title={section.title}
+                                    onNext={() => {
+                                        navigation.navigate({
+                                            screen:
+                                                i === formSections.length - 1
+                                                    ? "Images"
+                                                    : `Form/${formSections[i + 1].title}`,
+                                        });
+                                    }}
+                                >
+                                    <FormView
+                                        items={section.items}
+                                        data={sectionData[i]}
+                                        onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
+                                    />
+                                </ScoutingFlowTab>
+                            )}
+                        />
+                    ))}
+                    <Tab.Screen name={"Images"}>
+                        {() => (
+                            <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
+                                <PitScoutingImageList images={images} setImages={setImages} />
+                            </ScoutingFlowTab>
+                        )}
+                    </Tab.Screen>
+                </Tab.Navigator>
+            </SafeAreaView>
+        </SafeAreaProvider>
     );
 }

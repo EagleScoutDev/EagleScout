@@ -1,6 +1,7 @@
 import { Alert, TouchableOpacity, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { NoInternet } from "../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import * as Bs from "../../../ui/icons";
@@ -41,7 +42,7 @@ export function ManageCompetitions() {
     }
 
     return (
-        <View style={{ width: "100%", height: "100%" }}>
+        <View style={{ width: "100%", height: "100%", position: "relative" }}>
             <TabHeader title={"Competitions"} />
 
             <UIList onRefresh={refreshCompetitions}>
@@ -65,19 +66,20 @@ export function ManageCompetitions() {
                 ]}
             </UIList>
 
-            <TouchableOpacity
-                onPress={() => {
-                    addSheetRef.current?.present();
-                }}
-                style={{
-                    margin: 20,
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                }}
-            >
-                <Bs.PlusCircleFill size="60" fill={colors.primary} />
-            </TouchableOpacity>
+            <SafeAreaView edges={["left", "bottom", "right"]}>
+                <TouchableOpacity
+                    onPress={() => {
+                        addSheetRef.current?.present();
+                    }}
+                    style={{
+                        padding: 20,
+                        marginLeft: "auto",
+                        marginTop: "auto",
+                    }}
+                >
+                    <Bs.PlusCircleFill size={60} color={colors.primary} />
+                </TouchableOpacity>
+            </SafeAreaView>
 
             <AddCompetitionModal
                 ref={addSheetRef}

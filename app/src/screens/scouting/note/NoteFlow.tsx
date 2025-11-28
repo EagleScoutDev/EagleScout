@@ -1,5 +1,5 @@
 import { useTheme } from "@react-navigation/native";
-import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { NotesDB } from "../../../database/ScoutNotes";
 import { NoteInputModal } from "./NoteInputModal";
@@ -7,19 +7,20 @@ import { CompetitionsDB } from "../../../database/Competitions";
 import { FormHelper } from "../../../FormHelper";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { useCurrentCompetitionMatches } from "../../../lib/hooks/useCurrentCompetitionMatches";
-import { StandardButton } from "../../../ui/StandardButton";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
+import { UICardForm } from "../../../ui/UICardForm.tsx";
+import { Alliance } from "../../../frc/common/common.ts";
 
 export function NoteScreen() {
     const { colors } = useTheme();
-    const height = useHeaderHeight();
 
-    const [matchNumber, setMatchNumber] = useState<number | null>(null);
+    const [match, setMatch] = useState<number | null>(null);
     const [matchNumberValid, setMatchNumberValid] = useState<boolean>(false);
 
     const [alliances, setAlliances] = useState<{ red: number[]; blue: number[] }>({ red: [], blue: [] });
-    const [selectedAlliance, setSelectedAlliance] = useState<"red" | "blue" | null>(null);
+    const [selectedAlliance, setSelectedAlliance] = useState<Alliance>(Alliance.red);
 
     const [noteContents, setNoteContents] = useState<Record<string, string>>({});
 
@@ -30,9 +31,9 @@ export function NoteScreen() {
     const { competitionId, getTeamsForMatch } = useCurrentCompetitionMatches();
 
     useEffect(() => {
-        if (matchNumber === null) return;
+        if (match === null) return;
 
-        const teams = getTeamsForMatch(matchNumber);
+        const teams = getTeamsForMatch(match);
         if (teams.length !== 6) setMatchNumberValid(false);
         else {
             setAlliances({
@@ -41,7 +42,7 @@ export function NoteScreen() {
             });
             setMatchNumberValid(true);
         }
-    }, [matchNumber]);
+    }, [match]);
 
     useEffect(() => {
         if (selectedAlliance === null) return;
@@ -66,13 +67,13 @@ export function NoteScreen() {
                 continue;
             }
             if (internetResponse) {
-                promises.push(NotesDB.createNote(noteContents[team], Number(team), Number(matchNumber), competitionId));
+                promises.push(NotesDB.createNote(noteContents[team], Number(team), Number(match), competitionId));
             } else {
                 promises.push(
                     FormHelper.saveNoteOffline({
                         contents: noteContents[team],
                         team_number: Number(team),
-                        match_number: Number(matchNumber),
+                        match_number: Number(match),
                         comp_id: competitionId,
                         created_at: new Date(),
                     })
@@ -102,47 +103,9 @@ export function NoteScreen() {
     };
 
     const clearAllFields = () => {
-        setMatchNumber(0);
+        setMatch(0);
         setNoteContents({});
     };
-
-    const styles = StyleSheet.create({
-        number_label: {
-            color: colors.text,
-            fontWeight: "bold",
-        },
-        number_field: {
-            color: colors.text,
-            fontSize: 20,
-            fontWeight: "bold",
-            textAlign: "center",
-            backgroundColor: colors.card,
-            padding: "2%",
-            borderRadius: 10,
-        },
-        number_container: {
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginVertical: "3%",
-            width: "90%",
-            paddingHorizontal: "8%",
-        },
-        submit_button_styling: {
-            backgroundColor: matchNumber === null || selectedAlliance === null ? "grey" : colors.primary,
-            borderRadius: 10,
-            marginHorizontal: "5%",
-            marginBottom: "10%",
-            paddingVertical: "0%",
-        },
-        title_text_input: {
-            color: colors.text,
-            fontSize: 30,
-            fontWeight: "bold",
-            paddingHorizontal: "5%",
-            paddingTop: "5%",
-        },
-    });
 
     if (competitionId === -1) {
         return (
@@ -162,7 +125,7 @@ export function NoteScreen() {
     }
 
     return (
-        <>
+        <SafeAreaProvider>
             <View
                 style={{
                     zIndex: 100,
@@ -180,90 +143,37 @@ export function NoteScreen() {
                 <Confetti ref={setConfettiView} timeout={10} duration={3000} />
             </View>
 
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"} keyboardVerticalOffset={height}>
-                <Text style={styles.title_text_input}>Create a Note</Text>
+            <SafeAreaView style={{ flex: 1, padding: 16 }}>
+                <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
+                    <UICardForm title={"Information"}>
+                        <UICardForm.NumberInput
+                            label={"Match Number"}
+                            placeholder="000"
+                            max={999}
+                            value={match}
+                            onInput={setMatch}
+                            error={
+                                match === null
+                                    ? null
+                                    : match === 0
+                                    ? "Match number cannot be 0"
+                                    : match > 400
+                                    ? "Match number cannot be greater than 400"
+                                    : null
+                            }
+                        />
+                        <UICardForm.AllianceChooser
+                            label={"Alliance"}
+                            alliance={selectedAlliance}
+                            setAlliance={setSelectedAlliance}
+                        />
+                    </UICardForm>
 
-                <View style={styles.number_container}>
-                    <Text style={styles.number_label}>Match Number</Text>
-                    <TextInput
-                        onChangeText={(x) => setMatchNumber(Number(x))}
-                        value={matchNumber?.toString()}
-                        placeholder={"###"}
-                        placeholderTextColor={"grey"}
-                        keyboardType={"number-pad"}
-                        style={[styles.number_field]}
-                    />
-                </View>
+                    <View style={{ flex: 1 }} />
 
-                {matchNumber !== null && (
-                    <View>
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                textAlign: "center",
-                                marginVertical: "2%",
-                            }}
-                        >
-                            Select Alliance
-                        </Text>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                marginVertical: "2%",
-                                justifyContent: "space-between",
-                                marginRight: "5%",
-                                marginLeft: "5%",
-                                gap: 10,
-                            }}
-                        >
-                            <TouchableOpacity
-                                style={{
-                                    backgroundColor: selectedAlliance === "red" ? "red" : colors.card,
-                                    padding: "5%",
-                                    borderRadius: 10,
-                                    flex: 1,
-                                }}
-                                onPress={() => setSelectedAlliance("red")}
-                            >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    Red
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={{
-                                    backgroundColor: selectedAlliance === "blue" ? "blue" : colors.card,
-                                    padding: "5%",
-                                    borderRadius: 10,
-                                    flex: 1,
-                                }}
-                                onPress={() => setSelectedAlliance("blue")}
-                            >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    Blue
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                )}
-
-                <View style={{ flex: 1 }} />
-
-                <View style={styles.submit_button_styling}>
-                    <StandardButton
+                    <UIButton
+                        style={UIButtonStyle.fill}
+                        size={UIButtonSize.xl}
                         text={"Next"}
                         onPress={() => {
                             if (matchNumberValid) {
@@ -275,10 +185,10 @@ export function NoteScreen() {
                                 );
                             }
                         }}
-                        disabled={matchNumber === null || selectedAlliance === null}
+                        disabled={match === null || selectedAlliance === null}
                     />
-                </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
 
             {modalVisible && (
                 <NoteInputModal
@@ -289,6 +199,6 @@ export function NoteScreen() {
                     setNoteContents={setNoteContents}
                 />
             )}
-        </>
+        </SafeAreaProvider>
     );
 }

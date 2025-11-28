@@ -7,6 +7,10 @@ import {
     OrientationChooser as UIOrientationChooser,
     type OrientationChooserProps as UIOrientationChooserProps,
 } from "../components/OrientationChooser";
+import {
+    AllianceChooser as UIAllianceChooser,
+    type AllianceChooserProps as UIAllianceChooserProps,
+} from "../components/AllianceChooser";
 
 export interface UICardFormProps extends PropsWithChildren {
     title?: string;
@@ -83,25 +87,56 @@ export namespace UICardForm {
         );
     }
 
-    export interface OrientationChooserProps extends UIOrientationChooserProps {}
-    export function OrientationChooser(props: OrientationChooserProps) {
+    export interface OrientationChooserProps extends UIOrientationChooserProps {
+        label?: string;
+    }
+    export function OrientationChooser({ label, ...props }: OrientationChooserProps) {
         "use memo";
 
         const { colors } = useTheme();
 
         return (
             <View style={{ marginTop: 8, width: "100%", alignItems: "center" }}>
-                <Text
-                    style={{
-                        color: colors.text,
-                        fontSize: 16,
-                        fontWeight: "bold",
-                        marginBottom: 8,
-                    }}
-                >
-                    Field Orientation
-                </Text>
+                {typeof label === "string" && (
+                    <Text
+                        style={{
+                            color: colors.text,
+                            fontSize: 16,
+                            fontWeight: "bold",
+                            marginBottom: 8,
+                        }}
+                    >
+                        {label}
+                    </Text>
+                )}
                 <UIOrientationChooser {...props} />
+            </View>
+        );
+    }
+
+    export interface AllianceChooserProps extends UIAllianceChooserProps {
+        label?: string;
+    }
+    export function AllianceChooser({ label, ...props }: AllianceChooserProps) {
+        "use memo";
+
+        const { colors } = useTheme();
+
+        return (
+            <View style={{ marginTop: 8, width: "100%", alignItems: "center" }}>
+                {typeof label === "string" && (
+                    <Text
+                        style={{
+                            color: colors.text,
+                            fontSize: 16,
+                            fontWeight: "bold",
+                            marginBottom: 8,
+                        }}
+                    >
+                        {label}
+                    </Text>
+                )}
+                <UIAllianceChooser {...props} />
             </View>
         );
     }

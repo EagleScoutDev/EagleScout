@@ -22,6 +22,7 @@ import { Alliance, Orientation } from "../../../frc/common/common";
 import * as Reefscape from "../../../frc/reefscape";
 import { AutoAction, AutoState } from "../../../frc/reefscape";
 import { produce } from "immer";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
 const Tab = createMaterialTopTabNavigator<MatchScoutingParamList>();
@@ -199,7 +200,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     }
 
     return (
-        <>
+        <SafeAreaProvider>
             <View
                 style={{
                     ...StyleSheet.absoluteFillObject,
@@ -212,76 +213,78 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 <Confetti ref={confetti} timeout={10} duration={3000} />
             </View>
 
-            <Tab.Navigator
-                screenOptions={{
-                    tabBarStyle: {
-                        backgroundColor: colors.background,
-                    },
-                    tabBarLabelStyle: {
-                        color: colors.text,
-                        fontSize: 12,
-                        fontWeight: "bold",
-                    },
-                }}
-            >
-                <Tab.Screen name={"Setup"}>
-                    {({ navigation }) => (
-                        <ScoutingFlowTab
-                            title={competition ? `${competition.name}` : "Match Report"}
-                            buttonText={"Next"}
-                            onNext={() => navigation.navigate(`Form/${formSections[0].title}`)}
-                        >
-                            <MatchInformation
-                                match={match}
-                                setMatch={setMatch}
-                                team={team}
-                                setTeam={setTeam}
-                                teamsForMatch={teamsForMatch}
-                                orientation={orientation}
-                                setOrientation={setOrientation}
-                                alliance={alliance}
-                                setAlliance={setAlliance}
-                            />
-                        </ScoutingFlowTab>
-                    )}
-                </Tab.Screen>
-                {formSections?.map(({ title, items }, i) => {
-                    const isLast = i === formSections.length - 1;
+            <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+                <Tab.Navigator
+                    screenOptions={{
+                        tabBarStyle: {
+                            backgroundColor: colors.background,
+                        },
+                        tabBarLabelStyle: {
+                            color: colors.text,
+                            fontSize: 12,
+                            fontWeight: "bold",
+                        },
+                    }}
+                >
+                    <Tab.Screen name={"Setup"}>
+                        {({ navigation }) => (
+                            <ScoutingFlowTab
+                                title={competition ? `${competition.name}` : "Match Report"}
+                                buttonText={"Next"}
+                                onNext={() => navigation.navigate(`Form/${formSections[0].title}`)}
+                            >
+                                <MatchInformation
+                                    match={match}
+                                    setMatch={setMatch}
+                                    team={team}
+                                    setTeam={setTeam}
+                                    teamsForMatch={teamsForMatch}
+                                    orientation={orientation}
+                                    setOrientation={setOrientation}
+                                    alliance={alliance}
+                                    setAlliance={setAlliance}
+                                />
+                            </ScoutingFlowTab>
+                        )}
+                    </Tab.Screen>
+                    {formSections?.map(({ title, items }, i) => {
+                        const isLast = i === formSections.length - 1;
 
-                    return (
-                        <Tab.Screen
-                            key={title}
-                            name={`Form/${title}`}
-                            options={{
-                                title: title,
-                            }}
-                            listeners={{
-                                tabPress: () => {
-                                    if (title === "Auto") autoModalRef.current?.present();
-                                },
-                            }}
-                        >
-                            {({ navigation }) => (
-                                <ScoutingFlowTab
-                                    title={title}
-                                    buttonText={isLast ? "Submit" : "Next"}
-                                    onNext={
-                                        isLast
-                                            ? submitForm
-                                            : () => navigation.navigate(`Form/${formSections[i + 1].title}`)
-                                    }
-                                >
-                                    <FormView
-                                        items={items}
-                                        data={sectionData[i]}
-                                        onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                                    />
-                                </ScoutingFlowTab>
-                            )}
-                        </Tab.Screen>
-                    );
-                })}
-            </Tab.Navigator>
+                        return (
+                            <Tab.Screen
+                                key={title}
+                                name={`Form/${title}`}
+                                options={{
+                                    title: title,
+                                }}
+                                listeners={{
+                                    tabPress: () => {
+                                        if (title === "Auto") autoModalRef.current?.present();
+                                    },
+                                }}
+                            >
+                                {({ navigation }) => (
+                                    <ScoutingFlowTab
+                                        title={title}
+                                        buttonText={isLast ? "Submit" : "Next"}
+                                        onNext={
+                                            isLast
+                                                ? submitForm
+                                                : () => navigation.navigate(`Form/${formSections[i + 1].title}`)
+                                        }
+                                    >
+                                        <FormView
+                                            items={items}
+                                            data={sectionData[i]}
+                                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
+                                        />
+                                    </ScoutingFlowTab>
+                                )}
+                            </Tab.Screen>
+                        );
+                    })}
+                </Tab.Navigator>
+            </SafeAreaView>
 
             {autoSection && (
                 <UISheetModal
@@ -298,6 +301,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                     />
                 </UISheetModal>
             )}
-        </>
+        </SafeAreaProvider>
     );
 }

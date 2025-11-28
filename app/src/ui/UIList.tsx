@@ -68,6 +68,7 @@ export function UIList({
         <SectionListImpl
             style={styles.list}
             scrollToOverflowEnabled={true}
+            contentInsetAdjustmentBehavior={"automatic"}
             extraData={[styles]}
             contentContainerStyle={[styles.listContents, contentContainerStyle]}
             refreshControl={
@@ -263,9 +264,11 @@ const labelStyles = {
         alignItems: "center",
     },
     icon: {
-        marginLeft: 4,
+        marginRight: 4,
         width: 24,
         overflow: "hidden",
+        alignItems: "center",
+        justifyContent: "center",
     },
     text: (colors: Theme["colors"], textColor: Color | undefined) =>
         ({
