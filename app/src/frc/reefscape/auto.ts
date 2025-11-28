@@ -134,7 +134,7 @@ export namespace AutoAction {
 
                     switch (action.type) {
                         case AutoActionType.Intake:
-                            draft.field.pieces[action.target] = undefined;
+                            draft.field.pieces[action.target] = null;
                             break;
                         case AutoActionType.Reef:
                             if (action.success)
