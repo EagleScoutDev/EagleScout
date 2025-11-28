@@ -43,15 +43,11 @@ export namespace UISheet {
         return (
             <View style={{ padding: 8, paddingTop: 0 }}>
                 <View style={{ height: 8 }}>{handle && <BottomSheetHandle {...sheet} />}</View>
-                <View
-                    style={{
-                        marginTop: handle ? 4 : 0,
-                    }}
-                >
+                <View style={{ marginTop: handle ? 4 : 0 }}>
                     <ThreeCenterLayout>
                         <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...left} />
 
-                        <Text style={{ fontSize: 18, fontWeight: "bold" }} numberOfLines={1}>
+                        <Text style={{ paddingVertical: 8, fontSize: 18, fontWeight: "bold" }} numberOfLines={1}>
                             {title}
                         </Text>
 

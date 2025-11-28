@@ -12,11 +12,15 @@ export function ThreeCenterLayout({ gap = 16, children }: ThreeCenterLayoutProps
     // remaining centered relative to the container
     const leftWidth = useSharedValue(0);
     const rightWidth = useSharedValue(0);
+    const centerHeight = useSharedValue(0);
     function updateLeftLayout(e: LayoutChangeEvent) {
         leftWidth.set(e.nativeEvent.layout.width);
     }
     function updateRightLayout(e: LayoutChangeEvent) {
         rightWidth.set(e.nativeEvent.layout.width);
+    }
+    function updateCenterLayout(e: LayoutChangeEvent) {
+        centerHeight.set(e.nativeEvent.layout.height);
     }
 
     const centerMargin = useDerivedValue(
@@ -25,7 +29,14 @@ export function ThreeCenterLayout({ gap = 16, children }: ThreeCenterLayoutProps
     );
 
     return (
-        <View style={{ flexDirection: "row", justifyContent: "space-between", position: "relative" }}>
+        <Animated.View
+            style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                position: "relative",
+                minHeight: centerHeight,
+            }}
+        >
             <View onLayout={updateLeftLayout}>{children[0]}</View>
             <View
                 style={{
@@ -33,13 +44,15 @@ export function ThreeCenterLayout({ gap = 16, children }: ThreeCenterLayoutProps
                     flexDirection: "row",
                     justifyContent: "center",
                     width: "100%",
-                    height: "100%",
+                    minHeight: "100%",
                     alignItems: "center",
                 }}
             >
-                <Animated.View style={{ marginHorizontal: centerMargin }}>{children[1]}</Animated.View>
+                <Animated.View style={{ marginHorizontal: centerMargin }} onLayout={updateCenterLayout}>
+                    {children[1]}
+                </Animated.View>
             </View>
             <View onLayout={updateRightLayout}>{children[2]}</View>
-        </View>
+        </Animated.View>
     );
 }
