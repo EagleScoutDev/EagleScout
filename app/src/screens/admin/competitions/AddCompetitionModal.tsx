@@ -67,7 +67,7 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
         if (matchForm == null) return Alert.alert("Error", "Please select a form for scouting matches.");
         if (pitForm == null) return Alert.alert("Error", "Please select a form for pit scouting.");
 
-        if (await TBA.checkEventKey(tbaKey)) return Alert.alert("Error", "Failed to fetch TBA information.");
+        if (!(await TBA.checkEventKey(tbaKey))) return Alert.alert("Error", "Failed to fetch TBA information.");
 
         const { data: eventData, error: eventError } = await supabase
             .from("tba_events")
