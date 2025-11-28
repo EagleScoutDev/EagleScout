@@ -1,11 +1,11 @@
 import { supabase } from "../supabase";
 
 export interface SimpleEvent {
-    rank: number | null;
     key: string;
     name: string;
     event_code: string;
     event_type: number;
+    rank: number | null;
     district: {
         abbreviation: string;
         display_name: string;
@@ -28,25 +28,6 @@ export interface SimpleTeam {
     city: string;
     state_prov: string;
     country: string;
-}
-
-export interface SimpleEvent {
-    key: string;
-    name: string;
-    event_code: string;
-    event_type: number;
-    district: {
-        abbreviation: string;
-        display_name: string;
-        key: string;
-        year: number;
-    };
-    city: string;
-    state_prov: string;
-    country: string;
-    start_date: string;
-    end_date: string;
-    year: number;
 }
 
 export class TBA {
