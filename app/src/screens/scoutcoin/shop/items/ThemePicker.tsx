@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../../../../FormHelper";
 import { useTheme } from "@react-navigation/native";
-import { ThemeOptions, ThemeOptionsMap } from "../../../../themes";
+import { ThemeOptions, ThemeOptionsMap } from "../../../../theme";
 
 export interface ThemePickerProps {
     setTheme: (theme: ThemeOptions) => void;

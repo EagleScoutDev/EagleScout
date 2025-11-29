@@ -11,6 +11,7 @@ import { AccountDeletionModal } from "./account/AccountDeletionModal";
 import { AccountChangePassword } from "./account/AccountChangePassword";
 import { DebugHome } from "./debug/DebugHome";
 import { About } from "./About";
+import { useStackThemeConfig } from "../../theme/native.ts";
 
 const Stack = createNativeStackNavigator<SettingsMenuParamList>();
 export type SettingsMenuScreenProps<K extends keyof SettingsMenuParamList> = NativeStackScreenProps<
@@ -35,7 +36,13 @@ export type SettingsMenuParamList = {
 export interface SettingsMenuProps extends AppHomeScreenProps<"Settings"> {}
 export function SettingsMenu({}: SettingsMenuProps) {
     return (
-        <Stack.Navigator initialRouteName="Home" screenOptions={{ headerBackTitle: "Back" }}>
+        <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+                headerBackTitle: "Back",
+                ...useStackThemeConfig(),
+            }}
+        >
             <Stack.Screen
                 name="Home"
                 component={SettingsHome}

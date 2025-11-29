@@ -7,6 +7,7 @@ import { SearchModal, type SearchModalParams } from "./SearchModal";
 import { CompareTeams, type CompareTeamsParams } from "./CompareTeams";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Platform } from "react-native";
+import { useStackThemeConfig } from "../../theme/native.ts";
 
 const Stack = createNativeStackNavigator<SearchMenuParamList>();
 export type SearchMenuScreenProps<K extends keyof SearchMenuParamList> = NativeStackScreenProps<SearchMenuParamList, K>;
@@ -22,7 +23,7 @@ export type SearchMenuParamList = {
 
 export function SearchMenu() {
     return (
-        <Stack.Navigator initialRouteName={"Main"}>
+        <Stack.Navigator initialRouteName={"Main"} screenOptions={useStackThemeConfig()}>
             <Stack.Screen
                 name="Main"
                 component={SearchMain}
@@ -43,6 +44,7 @@ export function SearchMenu() {
                     headerTitle: "",
                     headerBackTitle: "Back",
                     headerTransparent: Platform.OS === "ios",
+                    ...useStackThemeConfig(),
                 }}
             >
                 <Stack.Screen name="TeamViewer" component={TeamViewer} />

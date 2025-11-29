@@ -1,5 +1,5 @@
 import { createContext, type Dispatch, type SetStateAction } from "react";
-import { ThemeOptions } from "../../themes";
+import { ThemeOptions } from "../../theme";
 
 export const ThemeContext = createContext<{
     themePreference: ThemeOptions;

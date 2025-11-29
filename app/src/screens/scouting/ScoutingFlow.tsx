@@ -8,6 +8,7 @@ import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-
 import { PitScoutingFlow } from "./pit/PitScoutingFlow";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";
 import { ScoutTimer, ScoutTimerContext } from "./components/Timer";
+import { useStackThemeConfig } from "../../theme/native.ts";
 
 const HomeStack = createNativeStackNavigator<ScoutMenuParamList>();
 export type ScoutMenuScreenProps<T extends keyof ScoutMenuParamList> = NativeStackScreenProps<ScoutMenuParamList, T>;
@@ -21,7 +22,7 @@ export type ScoutMenuParamList = {
 export function ScoutFlow() {
     return (
         <ScoutTimerContext.Provider value={ScoutTimer()}>
-            <HomeStack.Navigator initialRouteName="Dashboard">
+            <HomeStack.Navigator initialRouteName="Dashboard" screenOptions={useStackThemeConfig()}>
                 <HomeStack.Screen
                     name="Dashboard"
                     component={ScoutFlowHome}
@@ -34,6 +35,7 @@ export function ScoutFlow() {
                 <HomeStack.Group
                     screenOptions={{
                         headerBackButtonDisplayMode: "minimal",
+                        ...material3HeaderConfig,
                     }}
                 >
                     <HomeStack.Screen

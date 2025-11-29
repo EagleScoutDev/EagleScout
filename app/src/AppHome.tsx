@@ -1,5 +1,5 @@
 import { createNativeBottomTabNavigator, type NativeBottomTabScreenProps } from "@bottom-tabs/react-navigation";
-import { type NavigatorScreenParams } from "@react-navigation/native";
+import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
 import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow";
 import { SearchMenu, type SearchMenuParamList } from "./screens/search/SearchMenu";
 import type { RootStackScreenProps } from "./App";
@@ -7,6 +7,7 @@ import { SettingsMenu, type SettingsMenuParamList } from "./screens/settings/Set
 import { useEffect } from "react";
 import { useUserStore } from "./lib/stores/user";
 import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
+import { Platform } from "react-native";
 
 const Tab = createNativeBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = NativeBottomTabScreenProps<AppHomeParamList, K>;
@@ -19,6 +20,8 @@ export type AppHomeParamList = {
 
 export interface AppHomeProps extends RootStackScreenProps<"App"> {}
 export function AppHome({ navigation }: AppHomeProps) {
+    const { colors } = useTheme();
+
     const account = useUserStore.use.account();
 
     useEffect(() => {
@@ -32,13 +35,23 @@ export function AppHome({ navigation }: AppHomeProps) {
 
     return (
         <>
-            <Tab.Navigator labeled>
+            <Tab.Navigator
+                labeled
+                translucent
+                tabBarStyle={{ backgroundColor: colors.card }}
+                tabBarActiveTintColor={Platform.OS === "ios" ? colors.primary : colors.text}
+                tabBarInactiveTintColor={colors.text}
+                activeIndicatorColor={colors.background} //< Android only
+            >
                 <Tab.Screen
                     name="Home"
                     component={ScoutFlow}
                     options={{
                         title: "Scouting",
-                        tabBarIcon: () => require("bootstrap-icons/icons/binoculars-fill.svg"),
+                        tabBarIcon: ({ focused }) =>
+                            Platform.OS === "ios" || focused
+                                ? require("bootstrap-icons/icons/binoculars-fill.svg")
+                                : require("bootstrap-icons/icons/binoculars.svg"),
                     }}
                 />
                 <Tab.Screen
@@ -46,7 +59,10 @@ export function AppHome({ navigation }: AppHomeProps) {
                     component={SearchMenu}
                     options={{
                         title: "Teams",
-                        tabBarIcon: () => require("bootstrap-icons/icons/search.svg"),
+                        tabBarIcon: ({ focused }) =>
+                            Platform.OS !== "ios" && focused
+                                ? require("bootstrap-icons/icons/search-heart-fill.svg")
+                                : require("bootstrap-icons/icons/search.svg"),
                     }}
                 />
                 <Tab.Screen
@@ -54,7 +70,10 @@ export function AppHome({ navigation }: AppHomeProps) {
                     component={DataMain}
                     options={{
                         title: "Data",
-                        tabBarIcon: () => require("bootstrap-icons/icons/bar-chart-line-fill.svg"),
+                        tabBarIcon: ({ focused }) =>
+                            Platform.OS === "ios" || focused
+                                ? require("bootstrap-icons/icons/bar-chart-line-fill.svg")
+                                : require("bootstrap-icons/icons/bar-chart-line.svg"),
                     }}
                 />
                 <Tab.Screen
@@ -62,7 +81,10 @@ export function AppHome({ navigation }: AppHomeProps) {
                     component={SettingsMenu}
                     options={{
                         title: "Profile",
-                        tabBarIcon: () => require("bootstrap-icons/icons/person-fill.svg"),
+                        tabBarIcon: ({ focused }) =>
+                            Platform.OS === "ios" || focused
+                                ? require("bootstrap-icons/icons/person-fill.svg")
+                                : require("bootstrap-icons/icons/person.svg"),
                     }}
                 />
             </Tab.Navigator>

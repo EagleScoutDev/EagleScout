@@ -1,4 +1,3 @@
-import { useTheme } from "@react-navigation/native";
 import { DataHome } from "./DataHome";
 import { ManageCompetitions } from "../admin/competitions/ManageCompetitions";
 import { ManageUsers } from "../admin/ManageUsers";
@@ -22,6 +21,7 @@ import { BettingScreen, type BettingScreenParams } from "../scoutcoin/betting/Be
 import { MatchBetting } from "../scoutcoin/betting/MatchBetting";
 import { PicklistCreator, type PicklistCreatorParams } from "./analysis/picklist/PicklistCreator";
 import { Picklists } from "./analysis/picklist/Picklists";
+import { useStackThemeConfig } from "../../theme/native.ts";
 
 const Stack = createNativeStackNavigator<DataMenuParamList>();
 export type DataMenuScreenProps<K extends keyof DataMenuParamList> = NativeStackScreenProps<DataMenuParamList, K>;
@@ -51,15 +51,11 @@ export type DataMenuParamList = {
 };
 
 export function DataMain() {
-    const { colors } = useTheme();
-
     return (
         <Stack.Navigator
             screenOptions={{
                 headerBackTitle: "Back",
-                headerStyle: {
-                    backgroundColor: colors.background,
-                },
+                ...useStackThemeConfig(),
             }}
         >
             <Stack.Screen

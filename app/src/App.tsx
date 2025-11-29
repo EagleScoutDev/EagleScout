@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { FormHelper } from "./FormHelper";
 import { useDeepLinking } from "./lib/hooks/useDeepLinking";
-import { ThemeOptions, ThemeOptionsMap } from "./themes";
+import { ThemeOptions, ThemeOptionsMap } from "./theme";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
 import { AppHome, type AppHomeParamList } from "./AppHome";
