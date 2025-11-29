@@ -6,7 +6,7 @@ export function useStackThemeConfig(): NativeStackNavigationOptions {
 
     return {
         headerStyle: {
-            backgroundColor: colors.bg1.hex,
+            backgroundColor: colors.bg2.hex,
         },
         headerTintColor: colors.fg.hex,
         headerTitleStyle: {
