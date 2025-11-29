@@ -31,7 +31,7 @@ export function UICheckbox({ text, value, disabled = false, onInput, style }: Ch
             disabled={disabled}
             useBuiltInState={false}
             isChecked={value}
-            onPress={onInput}
+            onPress={() => onInput(!value)}
         />
     );
 }

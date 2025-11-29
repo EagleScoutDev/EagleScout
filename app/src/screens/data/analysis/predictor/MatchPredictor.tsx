@@ -1,17 +1,19 @@
 import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { type TBAMatch, TBAMatches } from "../../../../database/TBAMatches";
 import { type MatchPredictionResults, TeamAggregation } from "../../../../database/TeamAggregation";
-import { Alliance } from "../../../../frc/reefscape/field";
 import { Color } from "../../../../lib/color";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
 import { useCurrentCompetitionMatches } from "../../../../lib/hooks/useCurrentCompetitionMatches";
 import { PredictionExplainerModal } from "./PredictionExplainerModal";
-import { QuestionFormulaCreator } from "../../QuestionFormulaCreator";
+import { FormQuestionPicker } from "../../FormQuestionPicker.tsx";
 import { PercentageWinBar } from "./PercentageWinBar";
 import { PredictionConfidenceTag } from "./PredictionConfidenceTag";
+import type { Form } from "../../../../lib/forms";
+import { UISheetModal } from "../../../../ui/UISheetModal.tsx";
+import { Alliance } from "../../../../frc/common/common.ts";
 
 export function MatchPredictor() {
     const { colors } = useTheme();
@@ -28,6 +30,7 @@ export function MatchPredictor() {
     // modal for choosing questions
     const [formulaCreatorActive, setFormulaCreatorActive] = useState<boolean>(false);
     const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>([]);
+    const questionPickerRef = useRef<UISheetModal>(null);
 
     const [predictionConfidence, setPredictionConfidence] = useState<PredictionConfidence>(
         PredictionConfidence.UNDEFINED
@@ -40,7 +43,7 @@ export function MatchPredictor() {
     const [winningAllianceColor, setWinningAllianceColor] = useState<Alliance | null>(null);
 
     const [compId, setCompID] = useState<number>(-1);
-    const [currForm, setCurrForm] = useState<Array<Object>>();
+    const [currForm, setCurrForm] = useState<Form.Structure | null>();
     const [compName, setCompName] = useState<string>();
 
     const [noActiveCompetition, setNoActiveCompetition] = useState<boolean>(true);
@@ -333,13 +336,15 @@ export function MatchPredictor() {
                 <Pressable onPress={() => setFormulaCreatorActive(true)}>
                     <Text style={styles.question_prompt}>Choose your questions</Text>
                 </Pressable>
-                <QuestionFormulaCreator
-                    visible={formulaCreatorActive}
-                    setVisible={setFormulaCreatorActive}
-                    chosenQuestionIndices={chosenQuestionIndices}
-                    setChosenQuestionIndices={setChosenQuestionIndices}
-                    compId={compId}
-                />
+
+                <UISheetModal ref={questionPickerRef} handleComponent={null} enablePanDownToClose>
+                    <FormQuestionPicker
+                        form={currForm}
+                        value={chosenQuestionIndices}
+                        setValue={setChosenQuestionIndices}
+                        onSubmit={() => questionPickerRef.current?.dismiss()}
+                    />
+                </UISheetModal>
             </View>
         );
     }
@@ -370,13 +375,15 @@ export function MatchPredictor() {
                 </Pressable>
             </View>
 
-            <QuestionFormulaCreator
-                visible={formulaCreatorActive}
-                setVisible={setFormulaCreatorActive}
-                chosenQuestionIndices={chosenQuestionIndices}
-                setChosenQuestionIndices={setChosenQuestionIndices}
-                compId={compId}
-            />
+            <UISheetModal ref={questionPickerRef} handleComponent={null} enablePanDownToClose>
+                <FormQuestionPicker
+                    form={currForm}
+                    value={chosenQuestionIndices}
+                    setValue={setChosenQuestionIndices}
+                    onSubmit={() => questionPickerRef.current?.dismiss()}
+                />
+            </UISheetModal>
+
             <View style={styles.match_input_container}>
                 <Text style={styles.match_label}>Match</Text>
                 <TextInput
@@ -391,15 +398,6 @@ export function MatchPredictor() {
             {matchNumber !== 0 && allianceBreakdown.length !== 0 && (
                 <PercentageWinBar bluePercentage={bluePercentage} redPercentage={redPercentage} />
             )}
-            {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
-            {/*  {chosenQuestionIndices.toString()}*/}
-            {/*</Text>*/}
-            {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
-            {/*  {numReportsPerTeam.toString()}*/}
-            {/*</Text>*/}
-            {/*<Text style={{color: colors.text, textAlign: 'center', fontSize: 20}}>*/}
-            {/*  {teamsWithoutData.toString()}*/}
-            {/*</Text>*/}
             {matchNumber !== 0 && allianceBreakdown.length !== 0 && (
                 <>
                     <View style={{ height: 20 }} />

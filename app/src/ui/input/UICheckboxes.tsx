@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import { UICheckbox } from "./UICheckbox";
 
-export interface UICheckboxesProps<T extends string> {
-    options: T[];
+export interface UICheckboxesProps<T> {
+    options: ((T & string) | { key: T; label: string })[];
     disabled?: boolean;
     value: T[];
     onInput?: undefined | ((x: T[]) => void);
@@ -12,24 +12,28 @@ export function UICheckboxes<T extends string>({ options, disabled = false, valu
 
     return (
         <View style={{ gap: 8 }}>
-            {options.map((item, index) => (
-                <UICheckbox
-                    key={index}
-                    disabled={disabled}
-                    text={item}
-                    value={value.includes(item)}
-                    onInput={(x) => {
-                        if (!onInput) return;
+            {options.map((item, index) => {
+                const [key, label]: [T, string] = typeof item === "string" ? [item, item] : [item.key, item.label];
+                const checked = value.includes(key);
 
-                        if (!x) {
-                            console.log(value.includes(item) ? value : [...value, item]);
-                            onInput(value.includes(item) ? value : [...value, item]);
-                        } else {
-                            onInput(value.filter((x) => x !== item));
-                        }
-                    }}
-                />
-            ))}
+                return (
+                    <UICheckbox
+                        key={index}
+                        disabled={disabled}
+                        text={label}
+                        value={checked}
+                        onInput={(x) => {
+                            if (!onInput) return;
+
+                            if (x) {
+                                onInput(checked ? value : [...value, key]);
+                            } else {
+                                onInput(value.filter((x) => x !== item));
+                            }
+                        }}
+                    />
+                );
+            })}
         </View>
     );
 }

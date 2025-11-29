@@ -48,14 +48,14 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                     UIForm.Section({
                         items: [
                             UIForm.Button({
-                                text: "View Questions",
+                                label: "View Questions",
                                 color: Color.parse(colors.primary),
                                 onPress: () => {
                                     // TODO: implement this
                                 },
                             }),
                             UIForm.Button({
-                                text: "Delete",
+                                label: "Delete",
                                 color: Color.parse(colors.notification),
                                 onPress: () => {
                                     FormsDB.deleteForm(form)

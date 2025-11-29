@@ -96,14 +96,14 @@ export function Statbotics({ team }) {
 
     const styles = StyleSheet.create({
         formSection: {
+            width: "100%",
             flexDirection: "column",
-            minWidth: "95%",
-            maxWidth: "95%",
-            padding: "5%",
+            padding: 16,
             backgroundColor: colors.card,
+            borderWidth: 1,
+            borderColor: colors.border,
             borderRadius: 10,
             alignSelf: "center",
-            marginTop: "5%",
         },
     });
 

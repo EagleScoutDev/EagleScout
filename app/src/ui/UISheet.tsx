@@ -32,8 +32,8 @@ export namespace UISheet {
         handle?: boolean;
 
         title?: string | null | undefined;
-        left?: UIButtonProps | null | undefined;
-        right?: UIButtonProps | null | undefined;
+        left?: UIButtonProps | false | null | undefined;
+        right?: UIButtonProps | false | null | undefined;
     }
     export function Header({ handle = false, title, left, right }: HeaderProps) {
         "use memo";
@@ -45,13 +45,13 @@ export namespace UISheet {
                 <View style={{ height: 8 }}>{handle && <BottomSheetHandle {...sheet} />}</View>
                 <View style={{ marginTop: handle ? 4 : 0 }}>
                     <ThreeCenterLayout>
-                        <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...left} />
+                        <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...(left || {})} />
 
                         <Text style={{ paddingVertical: 8, fontSize: 18, fontWeight: "bold" }} numberOfLines={1}>
                             {title}
                         </Text>
 
-                        <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...right} />
+                        <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...(right || {})} />
                     </ThreeCenterLayout>
                 </View>
             </View>

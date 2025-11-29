@@ -1,7 +1,6 @@
-import { Alert, TouchableOpacity, View } from "react-native";
+import { Alert } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NoInternet } from "../../../ui/NoInternet";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import * as Bs from "../../../ui/icons";
@@ -10,13 +9,15 @@ import { TabHeader } from "../../../ui/navigation/TabHeader";
 import { EditCompetitionModal } from "./EditCompetitionModal";
 import { supabase } from "../../../lib/supabase";
 import { AddCompetitionModal } from "./AddCompetitionModal";
+import { UISheetModal } from "../../../ui/UISheetModal.tsx";
+import { UIFab } from "../../../ui/UIFab.tsx";
+import { AsyncAlert } from "../../../lib/util/react/AsyncAlert.ts";
 
 export function ManageCompetitions() {
     "use no memo";
     // FIXME: Enable memoization when react compiler stops
     //        complaining about passing refs to UIList.Line
 
-    const { colors } = useTheme();
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
 
@@ -42,8 +43,10 @@ export function ManageCompetitions() {
     }
 
     return (
-        <View style={{ width: "100%", height: "100%", position: "relative" }}>
-            <TabHeader title={"Competitions"} />
+        <SafeAreaProvider>
+            <SafeAreaView edges={["top", "left", "right"]}>
+                <TabHeader title={"Competitions"} />
+            </SafeAreaView>
 
             <UIList onRefresh={refreshCompetitions}>
                 {[
@@ -66,46 +69,33 @@ export function ManageCompetitions() {
                 ]}
             </UIList>
 
-            <SafeAreaView edges={["left", "bottom", "right"]}>
-                <TouchableOpacity
-                    onPress={() => {
-                        addSheetRef.current?.present();
-                    }}
-                    style={{
-                        padding: 20,
-                        marginLeft: "auto",
-                        marginTop: "auto",
-                    }}
-                >
-                    <Bs.PlusCircleFill size={60} color={colors.primary} />
-                </TouchableOpacity>
-            </SafeAreaView>
+            <UIFab icon={Bs.Plus} onPress={() => void addSheetRef.current?.present()} />
 
-            <AddCompetitionModal
-                ref={addSheetRef}
-                onCancel={() => addSheetRef.current?.dismiss()}
-                onSubmit={async (comp) => {
-                    const { error } = await supabase.from("competitions").insert({
-                        name: comp.name,
-                        start_time: comp.start,
-                        end_time: comp.end,
-                        form_id: comp.matchForm,
-                        pit_scout_form_id: comp.pitForm,
-                        tba_event_id: comp.tbaEventId,
-                    });
-                    if (error !== null) {
-                        console.error(error);
-                        Alert.alert("Error", "An error occurred, please try again later.");
-                    } else {
-                        addSheetRef.current?.dismiss();
-                    }
+            <UISheetModal ref={addSheetRef} handleComponent={null}>
+                <AddCompetitionModal
+                    onSubmit={async (comp) => {
+                        const { error } = await supabase.from("competitions").insert({
+                            name: comp.name,
+                            start_time: comp.start,
+                            end_time: comp.end,
+                            form_id: comp.matchForm,
+                            pit_scout_form_id: comp.pitForm,
+                            tba_event_id: comp.tbaEventId,
+                        });
+                        if (error !== null) {
+                            console.error(error);
+                            await AsyncAlert.alert("Error", "An error occurred, please try again later.");
+                        } else {
+                            addSheetRef.current?.dismiss();
+                        }
 
-                    void refreshCompetitions();
-                }}
-            />
+                        void refreshCompetitions();
+                    }}
+                />
+            </UISheetModal>
+
             <EditCompetitionModal
                 ref={editSheetRef}
-                onCancel={() => editSheetRef.current?.dismiss()}
                 onSubmit={async (comp) => {
                     const { error } = await supabase
                         .from("competitions")
@@ -136,6 +126,6 @@ export function ManageCompetitions() {
                     void refreshCompetitions();
                 }}
             />
-        </View>
+        </SafeAreaProvider>
     );
 }

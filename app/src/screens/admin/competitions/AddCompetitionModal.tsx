@@ -7,6 +7,7 @@ import { UISheet } from "../../../ui/UISheet";
 import { UIForm } from "../../../ui/UIForm";
 import { UISheetModal } from "../../../ui/UISheetModal";
 import { TBA } from "../../../lib/frc/tba";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 export interface CompetitionData {
     name: string;
@@ -18,14 +19,13 @@ export interface CompetitionData {
 }
 
 export interface AddCompetitionModalProps {
-    ref?: React.Ref<AddCompetitionModal>;
-    onCancel: () => void;
-    onSubmit: (competitionData: CompetitionData) => void;
+    onSubmit: (competitionData: CompetitionData) => void | Promise<void>;
 }
 export interface AddCompetitionModal extends UISheetModal {}
-export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionModalProps) {
+export function AddCompetitionModal({ onSubmit }: AddCompetitionModalProps) {
     "use memo";
     const { colors } = useTheme();
+    const modal = useBottomSheetModal();
 
     const [name, setName] = useState("");
     const [start, setStart] = useState(new Date());
@@ -76,32 +76,30 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
             .single();
         if (eventError) return Alert.alert("Error", "Failed to get TBA key from events in database.");
 
-        const final = {
+        await onSubmit({
             name,
             start,
             end,
             tbaEventId: eventData.id,
             matchForm,
             pitForm,
-        };
-
-        onSubmit(final);
+        });
     }
 
     return (
-        <UISheetModal {...(ref ? { ref } : {})} handleComponent={null}>
+        <>
             <UISheet.Header
                 left={{
                     color: Color.parse(colors.notification),
                     text: "Cancel",
-                    onPress: onCancel,
+                    onPress: () => void modal.dismiss(),
                 }}
                 right={{
                     color: Color.parse(colors.primary),
                     text: "Done",
                     onPress: () => {
                         Keyboard.dismiss();
-                        void trySubmit();
+                        return trySubmit();
                     },
                 }}
                 title={"New Competition"}
@@ -165,6 +163,6 @@ export function AddCompetitionModal({ ref, onCancel, onSubmit }: AddCompetitionM
                     }),
                 ]}
             </UIForm>
-        </UISheetModal>
+        </>
     );
 }

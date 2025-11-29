@@ -23,11 +23,9 @@ export function UISheetModal<T = any>({ backdropPressBehavior = "none", children
     function wrap(children: ReactNode) {
         return (
             <BottomSheetView style={{ height: "100%" }}>
-                {/*<SafeAreaProvider>*/}
                 <SafeAreaView edges={{ bottom: "additive", left: "additive", right: "additive" }} style={{ flex: 1 }}>
                     {children}
                 </SafeAreaView>
-                {/*</SafeAreaProvider>*/}
             </BottomSheetView>
         );
     }

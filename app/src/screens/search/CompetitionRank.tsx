@@ -7,11 +7,12 @@ import * as Bs from "../../ui/icons";
 // TODO: Add a loading indicator
 // TODO: When it is clicked on, expand and show their rank history for the past few competitions they have attended
 export function CompetitionRank({ team_number }: { team_number: number }) {
+    const { colors } = useTheme();
+
     const [currentCompetition, setCurrentCompetition] = useState<SimpleEvent | null>(null);
     const [currentCompetitionRank, setCurrentCompetitionRank] = useState<number | null>(null);
     const [allCompetitions, setAllCompetitions] = useState<SimpleEvent[]>([]);
     const [historyVisible, setHistoryVisible] = useState<boolean>(false);
-    const { colors } = useTheme();
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -139,11 +140,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     setHistoryVisible(!historyVisible);
                 }}
                 style={{
-                    minWidth: "95%",
-                    maxWidth: "95%",
-                    padding: "5%",
-                    marginTop: "5%",
-                    marginBottom: historyVisible ? 6 : 20,
+                    padding: 16,
                     borderColor: loading ? "gray" : rankToColor(currentCompetitionRank!),
                     borderWidth: 4,
                     backgroundColor: colors.background,
@@ -151,7 +148,6 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     alignSelf: "center",
 
                     alignItems: "center",
-                    justifyContent: "space-evenly",
                     flexDirection: "row",
                 }}
             >
@@ -161,9 +157,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                             color: colors.text,
                             textAlign: "center",
                             fontSize: 20,
-                            // marginTop: '2%',
                             fontWeight: "800",
-                            // flex: 1,
                         }}
                     >
                         {loading ? (
@@ -185,82 +179,71 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                             color: colors.text,
                             textAlign: "center",
                             fontSize: 20,
-                            // marginTop: '2%',
                         }}
                     >
                         {loading ? " " : <>{currentCompetition != null ? "at " + currentCompetition.name : " "}</>}
                     </Text>
                 </View>
-                <View style={{ flex: 0 }}>
-                    {historyVisible ? (
-                        <Bs.ChevronDown size="20" fill={colors.text} />
-                    ) : (
-                        <Bs.ChevronRight size="20" fill={colors.text} />
-                    )}
-                </View>
+
+                {historyVisible ? (
+                    <Bs.ChevronDown size="20" fill={colors.text} />
+                ) : (
+                    <Bs.ChevronRight size="20" fill={colors.text} />
+                )}
             </Pressable>
+
             {historyVisible && (
                 <ScrollView
                     style={{
-                        marginTop: 10,
-                        marginBottom: 20,
-                        // borderWidth: 2,
-                        // borderColor: colors.border,
-                        // marginHorizontal: '5%',
-                        minWidth: "95%",
-                        maxWidth: "95%",
+                        width: "100%",
+                        maxHeight: 400,
+                        marginTop: 8,
                         alignSelf: "center",
-                        // padding: '5%',
-                        // borderRadius: 0,
-                        // borderBottomLeftRadius: 10,
-                        // borderBottomRightRadius: 10,
 
                         borderColor: rankToColor(currentCompetitionRank!),
                         borderWidth: 1,
                         borderRadius: 10,
                     }}
                 >
-                    {allCompetitions.map((item, index) => {
-                        return (
-                            <View
-                                key={item.key}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
+                    {allCompetitions.map((item, index) => (
+                        <View
+                            key={item.key}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                width: "100%",
 
-                                    padding: 20,
-                                    paddingHorizontal: "3%",
-                                    backgroundColor: index % 2 == 0 ? colors.card : colors.background,
+                                padding: 20,
+                                backgroundColor: index % 2 == 0 ? colors.card : colors.background,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontWeight: "bold",
+                                    textAlign: "left",
+                                    flex: 2,
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontWeight: "bold",
-                                        textAlign: "left",
-                                        flex: 2,
-                                    }}
-                                >
-                                    {index + 1}. {item.name}
-                                </Text>
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                        flex: 1,
-                                    }}
-                                >
-                                    {item.rank === -1
-                                        ? "Future Competition"
-                                        : item.rank === -2
-                                        ? "Unranked"
-                                        : "Rank #" + item.rank}
-                                </Text>
-                            </View>
-                        );
-                    })}
+                                {index + 1}. {item.name}
+                            </Text>
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontWeight: "bold",
+                                    textAlign: "center",
+                                    flex: 1,
+                                }}
+                            >
+                                {item.rank === -1
+                                    ? "Future Competition"
+                                    : item.rank === -2
+                                    ? "Unranked"
+                                    : "Rank #" + item.rank}
+                            </Text>
+                        </View>
+                    ))}
                 </ScrollView>
             )}
         </View>

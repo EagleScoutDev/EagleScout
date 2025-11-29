@@ -23,6 +23,7 @@ export function CombinedGraph({
     questionIndices,
 }: CombinedGraphProps) {
     const { colors, dark } = useTheme();
+    
     const chartConfig = {
         backgroundGradientFrom: colors.card,
         backgroundGradientFromOpacity: 1.0,
@@ -30,9 +31,8 @@ export function CombinedGraph({
         backgroundGradientToOpacity: 1.0,
         color: (opacity = 1) => (dark ? `rgba(255, 255, 255, ${opacity})` : "rgba(0, 0, 0, 1)"),
         backgroundColor: colors.card,
-        strokeWidth: 2, // optional, default 3
-        // barPercentage: 0.5,
-        useShadowColorFromDataset: false, // optional
+        strokeWidth: 2,
+        useShadowColorFromDataset: false,
         fillShadowGradient: colors.card,
     };
     const [relevantReports, setRelevantReports] = useState<MatchReportReturnData[]>([]);
@@ -69,6 +69,7 @@ export function CombinedGraph({
         <UIModal
             title={"Team " + team_number.toString(10) + " Performance"}
             visible={modalActive}
+            backdropPressBehavior={"none"}
             onDismiss={() => {
                 setModalActive(false);
             }}
