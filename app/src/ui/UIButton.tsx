@@ -84,7 +84,7 @@ export function UIButton({
                 />
             )}
             {/* When the spinner is visible, only hide the body so proper dimensions are kept */}
-            <View style={{ opacity: loading || processing ? 0 : 1 }}>
+            <View style={{ flexDirection: "row", opacity: loading || processing ? 0 : 1 }}>
                 {children ?? (
                     <>
                         {icon && icon({ ...sizeStyles.icon, fill: fg })}
