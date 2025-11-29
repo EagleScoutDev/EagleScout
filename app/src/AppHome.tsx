@@ -38,7 +38,7 @@ export function AppHome({ navigation }: AppHomeProps) {
             <Tab.Navigator
                 labeled
                 translucent
-                tabBarStyle={{ backgroundColor: colors.card }}
+                tabBarStyle={Platform.OS === "ios" ? {} : { backgroundColor: colors.card }}
                 tabBarActiveTintColor={Platform.OS === "ios" ? colors.primary : colors.text}
                 tabBarInactiveTintColor={colors.text}
                 activeIndicatorColor={colors.background} //< Android only

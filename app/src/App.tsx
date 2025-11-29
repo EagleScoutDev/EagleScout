@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { FormHelper } from "./FormHelper";
 import { useDeepLinking } from "./lib/hooks/useDeepLinking";
-import { ThemeOptions, ThemeOptionsMap } from "./theme";
+import { CustomLightTheme, ThemeOptions, ThemeOptionsMap } from "./theme";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
 import { AppHome, type AppHomeParamList } from "./AppHome";
-import { NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
+import { DarkTheme, NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
 import { OnboardingFlow, type OnboardingParamList } from "./screens/onboarding";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -18,6 +18,7 @@ import { withStallion } from "react-native-stallion";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { ModalSafeAreaProvider } from "./ui/ModalSafeAreaProvider";
 import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
+import { Appearance, useColorScheme } from "react-native";
 
 declare global {
     namespace ReactNavigation {
@@ -36,7 +37,14 @@ export type RootStackParamList = {
 function App() {
     const deepLink = useDeepLinking();
 
+    const systemScheme = useColorScheme();
     const [themePreference, setThemePreference] = useState(ThemeOptions.SYSTEM);
+    const theme =
+        themePreference === ThemeOptions.SYSTEM
+            ? systemScheme === "dark"
+                ? DarkTheme
+                : CustomLightTheme
+            : ThemeOptionsMap.get(themePreference)!;
 
     useEffect(() => {
         FormHelper.readAsyncStorage(FormHelper.THEME).then((r) => {
@@ -51,12 +59,17 @@ function App() {
         handleDeepLink(deepLink);
     }, [deepLink]);
 
+    useEffect(() => {
+        Appearance.setColorScheme(theme.dark ? "dark" : "light");
+    }, [theme.dark]);
+
     return (
         <ErrorBoundary>
             <ThemeContext.Provider
                 value={{
                     themePreference,
                     setThemePreference,
+                    theme,
                 }}
             >
                 <GestureHandlerRootView>
