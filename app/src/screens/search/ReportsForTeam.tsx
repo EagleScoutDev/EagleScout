@@ -10,6 +10,7 @@ import { NoteList } from "../../components/NoteList";
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
 import { PitScoutReportList } from "../../components/PitScoutReportList";
 import type { SearchMenuScreenProps } from "./SearchMenu";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export interface ReportsForTeamParams {
     team_number: number;
@@ -49,61 +50,63 @@ export function ReportsForTeam({
     }, [team_number]);
 
     return (
-        <View style={{ flex: 1 }}>
-            <UITabs tabs={["Scout Reports", "Notes", "Pit Reports"]} selectedTab={tab} setSelectedTab={setTab} />
-            {tab === "Scout Reports" && (
-                <View style={{ flex: 1 }}>
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            fontSize: 25,
-                            paddingLeft: "5%",
-                            color: colors.text,
-                            marginVertical: "5%",
-                        }}
-                    >
-                        Reports for Team #{team_number}
-                    </Text>
-                    <ReportList
-                        reports={scoutReports ?? []}
-                        reportsAreOffline={false}
-                        expandable={false}
-                        displayHeaders={false}
-                    />
-                </View>
-            )}
-            {tab === "Notes" && (
-                <View style={{ flex: 1 }}>
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            fontSize: 25,
-                            paddingLeft: "5%",
-                            color: colors.text,
-                            marginTop: "5%",
-                        }}
-                    >
-                        Notes for Team #{team_number}
-                    </Text>
-                    <NoteList notes={notes} />
-                </View>
-            )}
-            {tab === "Pit Reports" && (
-                <View style={{ flex: 1 }}>
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            fontSize: 25,
-                            paddingLeft: "5%",
-                            color: colors.text,
-                            marginTop: "5%",
-                        }}
-                    >
-                        Pit Scouting Reports for Team #{team_number}
-                    </Text>
-                    <PitScoutReportList reports={pitResponses} isOffline={false} />
-                </View>
-            )}
-        </View>
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+                <UITabs tabs={["Scout Reports", "Notes", "Pit Reports"]} selectedTab={tab} setSelectedTab={setTab} />
+                {tab === "Scout Reports" && (
+                    <View style={{ flex: 1 }}>
+                        <Text
+                            style={{
+                                fontWeight: "bold",
+                                fontSize: 25,
+                                paddingLeft: "5%",
+                                color: colors.text,
+                                marginVertical: "5%",
+                            }}
+                        >
+                            Reports for Team #{team_number}
+                        </Text>
+                        <ReportList
+                            reports={scoutReports ?? []}
+                            reportsAreOffline={false}
+                            expandable={false}
+                            displayHeaders={false}
+                        />
+                    </View>
+                )}
+                {tab === "Notes" && (
+                    <View style={{ flex: 1 }}>
+                        <Text
+                            style={{
+                                fontWeight: "bold",
+                                fontSize: 25,
+                                paddingLeft: "5%",
+                                color: colors.text,
+                                marginTop: "5%",
+                            }}
+                        >
+                            Notes for Team #{team_number}
+                        </Text>
+                        <NoteList notes={notes} />
+                    </View>
+                )}
+                {tab === "Pit Reports" && (
+                    <View style={{ flex: 1 }}>
+                        <Text
+                            style={{
+                                fontWeight: "bold",
+                                fontSize: 25,
+                                paddingLeft: "5%",
+                                color: colors.text,
+                                marginTop: "5%",
+                            }}
+                        >
+                            Pit Scouting Reports for Team #{team_number}
+                        </Text>
+                        <PitScoutReportList reports={pitResponses} isOffline={false} />
+                    </View>
+                )}
+            </SafeAreaView>
+        </SafeAreaProvider>
     );
 }
