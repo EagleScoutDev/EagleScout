@@ -1,7 +1,7 @@
 import createClient from "openapi-fetch";
 import type { components, paths } from "./schema.generated";
 
-export namespace StatboticsAPI {
+export namespace Statbotics {
     const BASE_URL = "https://api.statbotics.io/v3";
     const YEAR: YearNumber = new Date().getFullYear() as YearNumber;
 

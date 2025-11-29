@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { StatboticsAPI } from "../lib/frc/statbotics";
+import { Statbotics } from "../lib/frc/statbotics";
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
 
@@ -41,9 +41,9 @@ function InfoRow({ children }) {
     );
 }
 
-export function Statbotics({ team }) {
-    const [overall, setOverall] = useState<StatboticsAPI.TeamYear | null>(null);
-    const [competitions, setCompetitions] = useState<StatboticsAPI.TeamEvent[] | null>(null);
+export function StatboticsSummary({ team }) {
+    const [overall, setOverall] = useState<Statbotics.TeamYear | null>(null);
+    const [competitions, setCompetitions] = useState<Statbotics.TeamEvent[] | null>(null);
     const [visible, setVisible] = useState(true);
     const [isTeam, setIsTeam] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +57,7 @@ export function Statbotics({ team }) {
      */
     async function fetchTeam() {
         setIsLoading(true);
-        const teamData = await StatboticsAPI.getTeamYear(team);
+        const teamData = await Statbotics.getTeamYear(team);
         if (teamData) {
             setOverall(teamData);
             setIsTeam(true);
@@ -72,7 +72,7 @@ export function Statbotics({ team }) {
      * This includes every event that the team participated in.
      */
     async function fetchTeamEvent() {
-        const teamEvents = await StatboticsAPI.getTeamEvents(team);
+        const teamEvents = await Statbotics.getTeamEvents(team);
         if (teamEvents) {
             setCompetitions(teamEvents);
         } else {

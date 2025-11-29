@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Statbotics } from "../../components/Statbotics";
+import { StatboticsSummary } from "../../components/StatboticsSummary.tsx";
 import { CompetitionRank } from "./CompetitionRank";
 import { ScoutSummary } from "./ScoutSummary";
 import { CombinedGraph } from "./CombinedGraph"; // adjust the import path to match your file structur
@@ -103,7 +103,7 @@ export function TeamViewer({
                     ],
                 })}
 
-                <Statbotics team={team.team_number} />
+                <StatboticsSummary team={team.team_number} />
                 <ScoutSummary team_number={team.team_number} competitionId={competitionId} />
             </UIList>
 
