@@ -112,7 +112,6 @@ export function TeamViewer({
                     form={form?.formStructure}
                     value={chosenQuestionIndices}
                     setValue={setChosenQuestionIndices}
-                    compId={competitionId}
                     onSubmit={() => setGraphActive(true)}
                 />
             </UISheetModal>
