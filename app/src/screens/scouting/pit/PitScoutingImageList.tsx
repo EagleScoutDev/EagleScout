@@ -2,7 +2,7 @@ import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
 import { UIText } from "../../../ui/UIText";
 import { launchCamera } from "react-native-image-picker";
 import * as Bs from "../../../ui/icons";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface PitScoutingImageListProps {
     images: string[];
@@ -24,13 +24,13 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
             height: 250,
             margin: 10,
             borderRadius: 10,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             justifyContent: "center",
             alignItems: "center",
         },
         plusText: {
             fontSize: 50,
-            color: colors.text,
+            color: colors.fg.hex,
         },
         deleteContainer: {
             position: "absolute",
@@ -39,7 +39,7 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
             zIndex: 1,
         },
         deleteButton: {
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             padding: 10,
             borderRadius: 999,
             display: "flex",
@@ -89,7 +89,7 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
                             }}
                         >
                             <View style={styles.deleteButton}>
-                                <Bs.Trash size="20" fill={colors.text} />
+                                <Bs.Trash size="20" fill={colors.fg.hex} />
                             </View>
                         </Pressable>
                         <Image source={{ uri: item }} style={styles.image} />

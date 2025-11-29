@@ -5,10 +5,11 @@ import * as Bs from "../../ui/icons";
 import type { ReactNode } from "react";
 import React, { type Ref, useImperativeHandle, useRef } from "react";
 import { Color } from "../../lib/color";
-import { useTheme } from "@react-navigation/native";
+
 import { PressableOpacity } from "../components/PressableOpacity";
 import { UIList } from "../UIList";
 import { UIText } from "../UIText";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface UIListPickerProps<K extends string | number = string | number> {
     ref?: Ref<UIListPicker<K>>;
@@ -91,7 +92,7 @@ export function UIListPicker<K extends string | number = string | number>({
                     title={title ?? "Select an option"}
                     right={{
                         text: "Done",
-                        color: Color.parse(colors.primary),
+                        color: Color.parse(colors.primary.hex),
                         onPress: () => {
                             sheetRef.current?.dismiss();
                         },

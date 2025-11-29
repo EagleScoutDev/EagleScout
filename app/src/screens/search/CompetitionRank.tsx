@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../ui/UIText";
 import { type SimpleEvent, TBA } from "../../lib/frc/tba/TBA.ts";
-import { useTheme } from "@react-navigation/native";
+
 import { Pressable, ScrollView, View } from "react-native";
 import * as Bs from "../../ui/icons";
 
@@ -144,7 +144,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     padding: 16,
                     borderColor: loading ? "gray" : rankToColor(currentCompetitionRank!),
                     borderWidth: 4,
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.bg0.hex,
                     borderRadius: 10,
                     alignSelf: "center",
 
@@ -174,9 +174,9 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                 </View>
 
                 {historyVisible ? (
-                    <Bs.ChevronDown size="20" fill={colors.text} />
+                    <Bs.ChevronDown size="20" fill={colors.fg.hex} />
                 ) : (
-                    <Bs.ChevronRight size="20" fill={colors.text} />
+                    <Bs.ChevronRight size="20" fill={colors.fg.hex} />
                 )}
             </Pressable>
 
@@ -203,7 +203,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                                 width: "100%",
 
                                 padding: 20,
-                                backgroundColor: index % 2 == 0 ? colors.card : colors.background,
+                                backgroundColor: index % 2 == 0 ? colors.bg1.hex : colors.bg0.hex,
                             }}
                         >
                             <UIText bold style={{ textAlign: "left", flex: 2 }}>

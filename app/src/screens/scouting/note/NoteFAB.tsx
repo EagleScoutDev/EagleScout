@@ -1,6 +1,7 @@
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import * as Bs from "../../../ui/icons";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface NoteFABProps {
     onSubmitPress: () => void;
@@ -18,7 +19,7 @@ export function NoteFAB({ onSubmitPress, isLoading, contentPresent }: NoteFABPro
             alignSelf: "flex-end",
         },
         fabButton: {
-            backgroundColor: contentPresent ? colors.primary : colors.notification,
+            backgroundColor: contentPresent ? colors.primary.hex : colors.danger.hex,
             padding: 20,
             borderRadius: 99,
             elevation: 2,

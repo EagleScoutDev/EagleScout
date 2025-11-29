@@ -1,15 +1,14 @@
 import { View } from "react-native";
 import { UIText } from "../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../../lib/supabase";
 import { type ShopItem } from "./ScoutcoinShop";
-import { Color } from "../../../lib/color";
 import { useProfile } from "../../../lib/hooks/useProfile";
 import * as Bs from "../../../ui/icons";
 import { UIModal } from "../../../ui/UIModal";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
 import { PressableOpacity } from "../../../ui/components/PressableOpacity";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface ConfirmPurchaseModalProps {
     item: ShopItem;
@@ -33,15 +32,12 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
                 itemName: item.id,
             }),
         });
-        console.log(data);
         if (data !== "Success") {
             await AsyncAlert.alert(data);
             onClose(true);
         }
         onClose(true);
     }
-
-    const buyFg = Color.parse(colors.primary).fg;
 
     return (
         <UIModal visible onDismiss={() => onClose(false)} backdropPressBehavior={"dismiss"}>
@@ -50,7 +46,7 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
             </PressableOpacity>
 
             <View style={{ alignItems: "center", marginBottom: 16, gap: 8 }}>
-                <item.icon size={100} fill={colors.text} />
+                <item.icon size={100} fill={colors.fg.hex} />
                 <UIText size={28} bold>
                     {item.name}
                 </UIText>
@@ -60,13 +56,13 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
             </View>
             <View style={{ width: "100%" }}>
                 <UIButton size={UIButtonSize.xl} style={UIButtonStyle.fill} onPress={purchaseItem}>
-                    <UIText size={20} color={buyFg} style={{ marginRight: 16 }}>
+                    <UIText size={20} color={colors.primary.fg} style={{ marginRight: 16 }}>
                         Buy
                     </UIText>
-                    <UIText size={20} color={buyFg} style={{ marginRight: 4 }}>
+                    <UIText size={20} color={colors.primary.fg} style={{ marginRight: 4 }}>
                         {item.cost}
                     </UIText>
-                    <Bs.Coin size={20} fill={buyFg.hex} />
+                    <Bs.Coin size={20} fill={colors.primary.fg.hex} />
                 </UIButton>
             </View>
         </UIModal>

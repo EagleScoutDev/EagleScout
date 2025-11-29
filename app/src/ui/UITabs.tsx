@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { UIText } from "../ui/UIText";
-import { type Theme, useTheme } from "@react-navigation/native";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../theme";
 
 export interface UITabsProps {
     tabs: string[];
@@ -45,17 +46,17 @@ const getStyles = (colors: Theme["colors"]) =>
             borderRadius: 10,
         },
         tab: {
-            backgroundColor: colors.background,
+            backgroundColor: colors.bg0.hex,
         },
         tab_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "normal",
         },
         selected_tab: {
-            backgroundColor: colors.text,
+            backgroundColor: colors.fg.hex,
         },
         selected_tab_text: {
-            color: colors.background,
+            color: colors.bg0.hex,
             fontWeight: "bold",
         },
     });

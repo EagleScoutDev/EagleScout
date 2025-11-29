@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { NavigationIndependentTree, useTheme } from "@react-navigation/native";
 import { ThemedNavigationContainer } from "../../../../ui/ThemedNavigationContainer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { WaitForPlayersStep } from "./WaitForPlayersStep";
 import { SelectAllianceStep } from "./SelectAllianceStep";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
+import { NavigationIndependentTree } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,10 +25,10 @@ export function BettingInfoBottomSheet() {
                 enablePanDownToClose={true}
                 animateOnMount={true}
                 handleIndicatorStyle={{
-                    backgroundColor: colors.text,
+                    backgroundColor: colors.fg.hex,
                 }}
                 backgroundStyle={{
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                 }}
             >
                 <NavigationIndependentTree>

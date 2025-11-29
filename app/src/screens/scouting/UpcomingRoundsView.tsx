@@ -1,13 +1,14 @@
 import { RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
 import { UIText } from "../../ui/UIText";
 import { useEffect, useState } from "react";
-import { type NavigationProp, useTheme } from "@react-navigation/native";
 import { ScoutAssignmentsConfig } from "../../database/Competitions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScoutAssignments } from "../../database/ScoutAssignments";
 import * as Bs from "../../ui/icons";
 import type { ScoutMenuParamList } from "./ScoutingFlow";
 import { useCurrentCompetition } from "../../lib/hooks/useCurrentCompetition";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import type { NavigationProp } from "@react-navigation/native";
 
 export interface UpcomingRoundsViewProps {
     navigation: NavigationProp<ScoutMenuParamList, "Dashboard">;
@@ -72,10 +73,10 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
         <View>
             <View
                 style={{
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                     borderRadius: 10,
                     borderWidth: 1,
-                    borderColor: colors.border,
+                    borderColor: colors.border.hex,
                     flexDirection: "row",
                     alignItems: "center",
                     width: "100%",
@@ -83,7 +84,7 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                     paddingVertical: 12,
                 }}
             >
-                {nRounds === 0 && <Bs.CheckCircle size={48} fill={colors.primary} />}
+                {nRounds === 0 && <Bs.CheckCircle size={48} fill={colors.primary.hex} />}
 
                 <UIText size={18} style={{ marginLeft: 12, flex: 1 }}>
                     You have {nRounds === 0 ? "no" : nRounds} round
@@ -94,12 +95,12 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                 {upcomingRounds.map((round, index) => (
                     <TouchableOpacity
                         style={{
-                            backgroundColor: colors.card,
+                            backgroundColor: colors.bg1.hex,
                             padding: 10,
                             borderRadius: 10,
                             marginBottom: 10,
                             borderWidth: 1,
-                            borderColor: colors.border,
+                            borderColor: colors.border.hex,
                             flexDirection: "row",
                             justifyContent: "space-between",
                             flex: 1,

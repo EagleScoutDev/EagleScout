@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { TBAMatches } from "../../../database/TBAMatches";
 import { SetScoutAssignmentModal } from "../../../components/modals/SetScoutAssignmentModal";
 import { Position, ScoutAssignments } from "../../../database/ScoutAssignments";
-import { useTheme } from "@react-navigation/native";
+
 import { ScoutAssignmentsConfig } from "../../../database/Competitions";
 import { AutoAssignModal } from "./AutoAssignModal";
 import type { DataMenuScreenProps } from "../../data/DataMain";
 import { Color } from "../../../lib/color";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface ScoutAssignmentsSpreadsheetParams {
     competition: number;
@@ -296,13 +297,13 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                         onPress={() => setAutoAssignModalVisible(!selectMode)}
                         style={{
                             alignSelf: "flex-start",
-                            // backgroundColor: colors.primary,
+                            // backgroundColor: colors.primary.hex,
                             padding: 10,
                             borderRadius: 10,
                             position: "absolute",
                         }}
                     >
-                        <UIText size={17} bold color={Color.parse(colors.primary)}>
+                        <UIText size={17} bold color={Color.parse(colors.primary.hex)}>
                             Auto-Assign
                         </UIText>
                     </TouchableOpacity>
@@ -311,7 +312,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                     onPress={() => setSelectMode(!selectMode)}
                     style={{
                         alignSelf: "flex-end",
-                        // backgroundColor: colors.primary,
+                        // backgroundColor: colors.primary.hex,
                         padding: 10,
                         borderRadius: 10,
                         position: "absolute",
@@ -319,7 +320,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                 >
                     <UIText
                         style={{
-                            color: selectMode ? colors.primary : "gray",
+                            color: selectMode ? colors.primary.hex : "gray",
                             fontWeight: "bold",
                             fontSize: 17,
                         }}
@@ -340,7 +341,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                             position: "absolute",
                         }}
                     >
-                        <UIText size={17} bold color={Color.parse(colors.primary)}>
+                        <UIText size={17} bold color={Color.parse(colors.primary.hex)}>
                             OK
                         </UIText>
                     </TouchableOpacity>

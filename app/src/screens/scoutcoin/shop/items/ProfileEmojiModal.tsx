@@ -3,11 +3,12 @@ import { UIText } from "../../../../ui/UIText";
 import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
 import { useProfile } from "../../../../lib/hooks/useProfile";
-import { type Theme, useTheme } from "@react-navigation/native";
 import { supabase } from "../../../../lib/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UIModal } from "../../../../ui/UIModal";
 import { AsyncAlert } from "../../../../lib/util/react/AsyncAlert.ts";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../../../theme";
 
 export interface ProfileEmojiModalProps {
     onClose: () => void;
@@ -60,14 +61,14 @@ const makeStyles = ({ colors }: Theme) =>
             fontWeight: "bold",
             marginBottom: 20,
             textAlign: "center",
-            color: colors.text,
+            color: colors.fg.hex,
         },
         emojiContainer: {
             alignItems: "center",
             justifyContent: "center",
             padding: 10,
             borderRadius: 10,
-            backgroundColor: colors.primary,
+            backgroundColor: colors.primary.hex,
         },
         emoji: {
             fontSize: 60,

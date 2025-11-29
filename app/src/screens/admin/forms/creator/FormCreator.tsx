@@ -1,4 +1,3 @@
-import { type Theme, usePreventRemove, useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { FormsDB } from "../../../../database/Forms";
 import { Form } from "../../../../lib/forms";
@@ -20,6 +19,9 @@ import { FormItemInfo } from "./components/FormItemInfo";
 import { Pressable } from "react-native-gesture-handler";
 import { Arrays } from "../../../../lib/util/Arrays";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
+import { usePreventRemove } from "@react-navigation/native";
+import type { Theme } from "../../../../theme";
 import ItemType = Form.ItemType;
 
 export interface FormCreatorParams {
@@ -80,7 +82,7 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor: colors.card }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg1.hex }}>
                 <DraggableFlatList
                     contentContainerStyle={styles.canvasContent}
                     onDragEnd={({ data }) => setItems(data)}
@@ -131,7 +133,7 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                     <UISheet.Header
                         left={{
                             text: "Cancel",
-                            color: Color.parse(colors.notification),
+                            color: Color.parse(colors.danger.hex),
                             onPress: () => {
                                 Keyboard.dismiss();
                                 editSheetRef.current?.dismiss();
@@ -139,7 +141,7 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                         }}
                         right={{
                             text: "Done",
-                            color: Color.parse(colors.primary),
+                            color: Color.parse(colors.primary.hex),
                             onPress: () => {
                                 Keyboard.dismiss();
                                 const item = finishDraft(editDraft!);
@@ -185,7 +187,7 @@ const getStyles = (colors: Theme["colors"]) =>
             marginVertical: 2.5,
             width: "100%",
             borderRadius: 16,
-            backgroundColor: colors.background,
+            backgroundColor: colors.bg0.hex,
             boxShadow: [
                 {
                     offsetX: 1,

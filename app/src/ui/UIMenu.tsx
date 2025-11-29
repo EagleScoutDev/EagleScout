@@ -1,8 +1,9 @@
 import React, { type ReactNode, type Ref, useImperativeHandle, useState } from "react";
 import { Modal, type StyleProp, TouchableWithoutFeedback, View, type ViewStyle } from "react-native";
 import { useFloating } from "@floating-ui/react-native";
-import { useTheme } from "@react-navigation/native";
+
 import type { MiddlewareState, Placement } from "@floating-ui/core";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface UIMenuProps<T = unknown> {
     ref?: Ref<UIMenu<T>>;
@@ -94,7 +95,7 @@ export function UIMenu<T = unknown>({ ref, onClose, placement, content: Content,
                                         ],
                                         borderRadius: 24,
                                         padding: 8,
-                                        backgroundColor: colors.background,
+                                        backgroundColor: colors.bg0.hex,
                                     },
                                     floatingStyles,
                                     style,

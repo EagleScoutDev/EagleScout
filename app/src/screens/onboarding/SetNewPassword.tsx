@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { UIText } from "../../ui/UIText";
 import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { styles } from "./styles";
 import { StandardButton } from "../../ui/StandardButton";
 import { MinimalSectionHeader } from "../../ui/MinimalSectionHeader";
 import { supabase } from "../../lib/supabase";
 import { type OnboardingScreenProps } from ".";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface SetNewPasswordProps extends OnboardingScreenProps<"SetNewPassword"> {}
 
@@ -28,13 +29,13 @@ export function SetNewPassword({ navigation }: SetNewPasswordProps) {
                             placeholderTextColor={"gray"}
                             style={{
                                 ...styles.input,
-                                borderColor: password === "" ? "gray" : colors.primary,
+                                borderColor: password === "" ? "gray" : colors.primary.hex,
                             }}
                             secureTextEntry={true}
                         />
                         <StandardButton
                             text={"Set New Password"}
-                            textColor={password === "" ? "dimgray" : colors.primary}
+                            textColor={password === "" ? "dimgray" : colors.primary.hex}
                             disabled={password === ""}
                             onPress={async () => {
                                 if (password === "") {

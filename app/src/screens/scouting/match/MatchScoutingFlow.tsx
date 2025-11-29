@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, View } from "react-native";
 import { UIText } from "../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { FormHelper } from "../../../FormHelper";
@@ -24,6 +24,7 @@ import * as Reefscape from "../../../frc/reefscape";
 import { AutoAction, AutoState } from "../../../frc/reefscape";
 import { produce } from "immer";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
 const Tab = createMaterialTopTabNavigator<MatchScoutingParamList>();
@@ -218,10 +219,10 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 <Tab.Navigator
                     screenOptions={{
                         tabBarStyle: {
-                            backgroundColor: colors.background,
+                            backgroundColor: colors.bg0.hex,
                         },
                         tabBarLabelStyle: {
-                            color: colors.text,
+                            color: colors.fg.hex,
                             fontSize: 12,
                             fontWeight: "bold",
                         },

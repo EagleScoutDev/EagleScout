@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, LayoutAnimation, View } from "react-native";
 
-import { useTheme } from "@react-navigation/native";
 import { type CompetitionReturnData, CompetitionsDB } from "../../database/Competitions";
 import { Dropdown } from "react-native-element-dropdown";
 import type { Setter } from "../../lib/util/react/types";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface CompetitionChangerProps {
     currentCompId: number;
@@ -68,7 +68,7 @@ export function CompetitionChanger({ currentCompId, setCurrentCompId, loading }:
                 valueField={"value"}
                 disable={competitionsList.length === 0}
                 placeholderStyle={{
-                    color: colors.text,
+                    color: colors.fg.hex,
                 }}
                 placeholder={
                     loading
@@ -82,31 +82,31 @@ export function CompetitionChanger({ currentCompId, setCurrentCompId, loading }:
                     setCompetitionName(item.label);
                     setIsActive(false);
                 }}
-                activeColor={colors.card}
+                activeColor={colors.bg1.hex}
                 style={{
                     borderRadius: 10,
                     padding: "2%",
                     marginVertical: "2%",
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.bg0.hex,
                     paddingLeft: "6%",
                 }}
                 selectedTextStyle={{
-                    color: colors.text,
+                    color: colors.fg.hex,
                     fontWeight: "bold",
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.bg0.hex,
                 }}
                 containerStyle={{
                     borderRadius: 10,
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.bg0.hex,
                 }}
                 itemContainerStyle={{
                     borderRadius: 10,
                     borderBottomWidth: 1,
-                    borderColor: colors.border,
-                    backgroundColor: colors.background,
+                    borderColor: colors.border.hex,
+                    backgroundColor: colors.bg0.hex,
                 }}
                 itemTextStyle={{
-                    color: colors.text,
+                    color: colors.fg.hex,
                 }}
                 value={{
                     label: competitionName,
@@ -114,7 +114,7 @@ export function CompetitionChanger({ currentCompId, setCurrentCompId, loading }:
                 }}
                 renderLeftIcon={() => {
                     if (loading) {
-                        return <ActivityIndicator style={{ marginRight: "4%" }} size={"small"} color={colors.text} />;
+                        return <ActivityIndicator style={{ marginRight: "4%" }} size={"small"} color={colors.fg.hex} />;
                     }
                 }}
             />

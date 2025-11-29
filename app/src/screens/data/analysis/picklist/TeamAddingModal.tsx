@@ -1,10 +1,11 @@
 import { Alert, FlatList, Modal, Pressable, View } from "react-native";
 import { UIText } from "../../../../ui/UIText";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { useTheme } from "@react-navigation/native";
+
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
 import type { Setter } from "../../../../lib/util/react/types";
 import * as Bs from "../../../../ui/icons";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface TeamAddingModalProps {
     visible: boolean;
@@ -37,7 +38,7 @@ export function TeamAddingModal({
             <View
                 style={{
                     flex: 1,
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                 }}
             >
                 <View
@@ -69,7 +70,7 @@ export function TeamAddingModal({
                     >
                         <Bs.CheckTwoCircle
                             size="24"
-                            fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary}
+                            fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary.hex}
                         />
                     </Pressable>
                     <UIText size={20} bold style={{ marginVertical: "2%" }}>
@@ -98,11 +99,11 @@ export function TeamAddingModal({
                             >
                                 <BouncyCheckbox
                                     size={30}
-                                    fillColor={colors.primary}
+                                    fillColor={colors.primary.hex}
                                     unFillColor="#FFFFFF"
                                     text={item.team_number.toString()}
                                     textStyle={{
-                                        color: colors.text,
+                                        color: colors.fg.hex,
                                         padding: "2%",
                                         fontSize: 20,
                                         textDecorationLine: "none",

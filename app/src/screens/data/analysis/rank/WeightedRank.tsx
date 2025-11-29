@@ -1,11 +1,12 @@
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { UIText } from "../../../../ui/UIText";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import Slider from "@react-native-community/slider";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { type MatchReportReturnData, MatchReportsDB } from "../../../../database/ScoutMatchReports";
 import * as Bs from "../../../../ui/icons";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 enum WeightedRankStatus {
     CHOOSING_WEIGHTS,
@@ -140,38 +141,38 @@ export function WeightedRank() {
 
     const styles = StyleSheet.create({
         header: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 20,
         },
         container: {
-            // backgroundColor: colors.card,
+            // backgroundColor: colors.bg1.hex,
             paddingHorizontal: "10%",
             flex: 1,
             marginBottom: "10%",
         },
         list_item: {
             borderBottomWidth: 1,
-            borderBottomColor: colors.border,
+            borderBottomColor: colors.border.hex,
             paddingVertical: "5%",
             flexDirection: "row",
         },
         list_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 14,
             flex: 1,
             textAlign: "left",
         },
         question_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             // fontWeight: 'bold',
             fontSize: 16,
         },
         rank_list_item: {
-            // backgroundColor: colors.card,
+            // backgroundColor: colors.bg1.hex,
             color: "red",
             flexDirection: "row",
             // borderBottomWidth: 1,
-            // borderColor: colors.border,
+            // borderColor: colors.border.hex,
             padding: "5%",
             paddingVertical: "2%",
         },
@@ -309,7 +310,7 @@ export function WeightedRank() {
                                                 listOfWeights[index] === 0
                                                     ? "dimgray"
                                                     : listOfWeights[index] > 0
-                                                    ? colors.primary
+                                                    ? colors.primary.hex
                                                     : "red"
                                             }
                                             tapToSeek={true}
@@ -338,7 +339,7 @@ export function WeightedRank() {
                                 marginVertical: "10%",
                                 justifyContent: "space-evenly",
                                 flexDirection: "row",
-                                backgroundColor: colors.primary,
+                                backgroundColor: colors.primary.hex,
                                 marginHorizontal: "5%",
                                 padding: "5%",
                                 borderRadius: 12,

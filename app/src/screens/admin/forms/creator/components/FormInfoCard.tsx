@@ -1,9 +1,10 @@
 import { Switch, TextInput } from "react-native-gesture-handler";
 import { UIText } from "../../../../../ui/UIText";
 import { StyleSheet, View } from "react-native";
-import { type Theme, useTheme } from "@react-navigation/native";
 import type { Setter } from "../../../../../lib/util/react/types";
 import { exMemo } from "../../../../../lib/util/react/memo";
+import { useTheme } from "../../../../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../../../../theme";
 
 export interface InfoCardProps {
     title: string;
@@ -55,7 +56,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
             fontWeight: "bold",
             paddingBottom: 5,
             borderBottomWidth: 1,
-            borderColor: colors.border,
+            borderColor: colors.border.hex,
             borderStyle: "dotted",
             marginBottom: 10,
         },
@@ -64,7 +65,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
         //     paddingBottom: 5,
         //     borderBottomWidth: 1,
         //     borderStyle: "dotted",
-        //     borderColor: colors.border,
+        //     borderColor: colors.border.hex,
         // },
     })
 );

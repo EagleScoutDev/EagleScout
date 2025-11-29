@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import { UIText } from "../../ui/UIText";
-import { type Theme, useTheme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { exMemo } from "../../lib/util/react/memo";
 import { PressableOpacity } from "../components/PressableOpacity";
 import * as Bs from "../icons";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../theme";
 
 export interface StepperProps {
     value: number;
@@ -24,7 +25,7 @@ export function UIStepper({ value, onInput }: StepperProps) {
             }}
         >
             <PressableOpacity
-                style={[styles.button, { backgroundColor: colors.notification }]}
+                style={[styles.button, { backgroundColor: colors.danger.hex }]}
                 disabled={value === 0}
                 onPress={() => {
                     ReactNativeHapticFeedback.trigger("impactLight");
@@ -37,7 +38,7 @@ export function UIStepper({ value, onInput }: StepperProps) {
             <UIText style={styles.number}>{value}</UIText>
 
             <PressableOpacity
-                style={[styles.button, { backgroundColor: colors.primary }]}
+                style={[styles.button, { backgroundColor: colors.primary.hex }]}
                 onPress={() => {
                     ReactNativeHapticFeedback.trigger("impactLight");
                     onInput && onInput(value + 1);
@@ -64,7 +65,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
             fontWeight: "bold",
             textAlign: "center",
             width: 100,
-            color: colors.text,
+            color: colors.fg.hex,
         },
     })
 );

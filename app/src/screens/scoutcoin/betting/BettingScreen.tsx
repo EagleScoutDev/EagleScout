@@ -1,4 +1,4 @@
-import { useNavigation, useTheme } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { Image, ImageBackground, Pressable, View } from "react-native";
@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Profile } from "../../../lib/user/profile";
 import * as Bs from "../../../ui/icons";
 import type { DataMenuScreenProps } from "../../data/DataMain";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 interface Player {
     id: string;
@@ -198,7 +199,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         navigation.goBack();
                     }}
                 >
-                    <Bs.Back size="24" fill={colors.text} />
+                    <Bs.Back size="24" fill={colors.fg.hex} />
                 </Pressable>
                 <View
                     style={{
@@ -212,7 +213,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                 >
                     <UIText
                         style={{
-                            color: colors.text,
+                            color: colors.fg.hex,
                             fontSize: 24,
                             fontWeight: "bold",
                             textAlign: "center",
@@ -242,7 +243,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         navigation.goBack();
                     }}
                 >
-                    <Bs.Back size="24" fill={colors.text} />
+                    <Bs.Back size="24" fill={colors.fg.hex} />
                 </Pressable>
                 <View
                     style={{
@@ -261,7 +262,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     <View style={{ flexDirection: "column", alignItems: "center" }} key={player.id}>
                                         <UIText
                                             style={{
-                                                color: colors.text,
+                                                color: colors.fg.hex,
                                                 fontSize: 60,
                                                 fontWeight: "bold",
                                             }}
@@ -270,7 +271,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         </UIText>
                                         <UIText
                                             style={{
-                                                color: colors.text,
+                                                color: colors.fg.hex,
                                                 fontSize: 14,
                                             }}
                                         >
@@ -278,7 +279,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         </UIText>
                                         <UIText
                                             style={{
-                                                color: player.betAlliance ? player.betAlliance : colors.text,
+                                                color: player.betAlliance ? player.betAlliance : colors.fg.hex,
                                                 fontSize: 18,
                                                 fontWeight: "bold",
                                             }}
@@ -289,18 +290,20 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 ))}
                         {!players ||
                             (players.length < 2 && (
-                                <UIText style={{ color: colors.text, fontSize: 18 }}>Waiting for players...</UIText>
+                                <UIText style={{ color: colors.fg.hex, fontSize: 18 }}>Waiting for players...</UIText>
                             ))}
                     </View>
 
-                    <UIText style={{ color: colors.text, fontSize: 30, fontWeight: "bold" }}>Match {matchNumber}</UIText>
-                    <UIText style={{ color: colors.text, fontSize: 18 }}>Select Alliance</UIText>
+                    <UIText style={{ color: colors.fg.hex, fontSize: 30, fontWeight: "bold" }}>
+                        Match {matchNumber}
+                    </UIText>
+                    <UIText style={{ color: colors.fg.hex, fontSize: 18 }}>Select Alliance</UIText>
                     <View style={{ flexDirection: "row", gap: 20, width: "80%" }}>
                         {!selectedAlliance ? (
                             <>
                                 <Pressable
                                     style={{
-                                        backgroundColor: colors.card,
+                                        backgroundColor: colors.bg1.hex,
                                         opacity: selectedAlliance === "blue" ? 1 : 0.5,
                                         padding: 20,
                                         borderRadius: 10,
@@ -321,7 +324,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 </Pressable>
                                 <Pressable
                                     style={{
-                                        backgroundColor: colors.card,
+                                        backgroundColor: colors.bg1.hex,
                                         opacity: selectedAlliance === "red" ? 1 : 0.5,
                                         padding: 20,
                                         borderRadius: 10,
@@ -342,7 +345,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 </Pressable>
                             </>
                         ) : (
-                            <UIText style={{ color: colors.text, fontSize: 18 }}>
+                            <UIText style={{ color: colors.fg.hex, fontSize: 18 }}>
                                 Your selected alliance: {selectedAlliance}
                             </UIText>
                         )}
@@ -359,7 +362,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         >
                             <UIText
                                 style={{
-                                    color: colors.text,
+                                    color: colors.fg.hex,
                                     fontSize: 18,
                                     alignSelf: "center",
                                 }}
@@ -379,7 +382,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                             />
                             <Pressable
                                 style={{
-                                    backgroundColor: colors.card,
+                                    backgroundColor: colors.bg1.hex,
                                     borderRadius: 99,
                                     padding: 20,
                                 }}
@@ -404,7 +407,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     }
                                 }}
                             >
-                                <Bs.ArrowUp size="24" fill={colors.text} />
+                                <Bs.ArrowUp size="24" fill={colors.fg.hex} />
                             </Pressable>
                         </View>
                     )}
@@ -437,7 +440,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                             >
                                 <Pressable
                                     style={{
-                                        backgroundColor: colors.card,
+                                        backgroundColor: colors.bg1.hex,
                                         padding: 20,
                                         borderRadius: 10,
                                         alignSelf: "flex-start",
@@ -456,7 +459,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 >
                                     <UIText
                                         style={{
-                                            color: colors.text,
+                                            color: colors.fg.hex,
                                             fontSize: 18,
                                             textAlign: "center",
                                         }}
@@ -470,7 +473,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         <View
                             style={{
                                 flex: 1,
-                                backgroundColor: colors.card,
+                                backgroundColor: colors.bg1.hex,
                                 padding: 20,
                                 borderRadius: 10,
                                 alignItems: "center",
@@ -479,7 +482,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         >
                             <UIText
                                 style={{
-                                    color: colors.text,
+                                    color: colors.fg.hex,
                                     fontSize: 60,
                                     fontWeight: "bold",
                                 }}
@@ -488,7 +491,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                             </UIText>
                             <UIText
                                 style={{
-                                    color: colors.text,
+                                    color: colors.fg.hex,
                                     fontSize: 18,
                                     fontWeight: "bold",
                                 }}

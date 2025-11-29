@@ -4,11 +4,12 @@ import { UIModal } from "../../../ui/UIModal";
 import { StandardButton } from "../../../ui/StandardButton";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
-import { type Theme, useTheme } from "@react-navigation/native";
 import { NumberInput } from "../../../ui/components/NumberInput";
 import { UICheckbox } from "../../../ui/input/UICheckbox";
 import type { Setter } from "../../../lib/util/react/types";
 import { exMemo } from "../../../lib/util/react/memo";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../../theme";
 
 export interface AutoAssignModalProps {
     visible: boolean;
@@ -117,7 +118,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
 
                 <View style={s.button_row}>
                     <StandardButton
-                        color={colors.primary}
+                        color={colors.primary.hex}
                         onPress={() => setVisible(false)}
                         text={"Cancel"}
                         width={"40%"}
@@ -148,8 +149,8 @@ const styles = exMemo((colors: Theme["colors"]) =>
             borderWidth: 1,
             borderRadius: 10,
             padding: 10,
-            color: colors.text,
-            borderColor: colors.text,
+            color: colors.fg.hex,
+            borderColor: colors.fg.hex,
         },
         userlist: {
             maxHeight: "50%",

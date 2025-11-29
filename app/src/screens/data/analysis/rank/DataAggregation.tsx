@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../../../ui/UIText";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import type { DataMenuScreenProps } from "../../DataMain";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { MatchReportsDB } from "../../../../database/ScoutMatchReports";
@@ -103,11 +103,11 @@ export function DataAggregation({}: DataAggregationProps) {
 
     const styles = StyleSheet.create({
         header: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 20,
         },
         container: {
-            // backgroundColor: colors.card,
+            // backgroundColor: colors.bg1.hex,
             marginHorizontal: "10%",
             // padding: '10%',
             borderRadius: 20,
@@ -115,12 +115,12 @@ export function DataAggregation({}: DataAggregationProps) {
         },
         list_item: {
             borderBottomWidth: 1,
-            borderBottomColor: colors.border,
+            borderBottomColor: colors.border.hex,
             paddingVertical: "5%",
             flexDirection: "row",
         },
         list_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 14,
             flex: 1,
             textAlign: "left",
@@ -132,11 +132,11 @@ export function DataAggregation({}: DataAggregationProps) {
             textAlign: "center",
         },
         rank_list_item: {
-            // backgroundColor: colors.card,
+            // backgroundColor: colors.bg1.hex,
             color: "red",
             flexDirection: "row",
             // borderBottomWidth: 1,
-            // borderColor: colors.border,
+            // borderColor: colors.border.hex,
             padding: "5%",
             paddingVertical: "2%",
         },
@@ -252,7 +252,7 @@ export function DataAggregation({}: DataAggregationProps) {
                     </View>
                     <ScrollView
                         style={{
-                            // backgroundColor: colors.card,
+                            // backgroundColor: colors.bg1.hex,
                             // margin: '10%',
                             paddingHorizontal: "10%",
                             // borderRadius: 20,

@@ -1,8 +1,9 @@
 import { UIModal } from "../../ui/UIModal";
 import { UIText } from "../../ui/UIText";
 import { TouchableOpacity, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { Color } from "../../lib/color.ts";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 /**
  * Modal that allows the user to select a form history to view
@@ -50,7 +51,7 @@ export function HistorySelectorModal({ formHistory, selectedHistoryId, visible, 
                             }}
                         >
                             <UIText
-                                color={selectedHistoryId === history.historyId && Color.parse(colors.primary)}
+                                color={selectedHistoryId === history.historyId && Color.parse(colors.primary.hex)}
                                 bold={selectedHistoryId === history.historyId}
                                 style={{ textAlign: "center" }}
                             >

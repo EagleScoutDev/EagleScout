@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { UIText } from "../../ui/UIText";
 import { Alert, Modal, StyleSheet, TextInput, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { supabase } from "../../lib/supabase";
 import { StandardButton } from "../../ui/StandardButton";
 import { useProfile } from "../../lib/hooks/useProfile";
 import * as Bs from "../../ui/icons";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 interface LeaderboardUser {
     id: string;
@@ -67,7 +68,7 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
         },
         modalView: {
             margin: 20,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             borderRadius: 20,
             padding: 35,
             alignItems: "center",
@@ -83,16 +84,16 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
             textAlign: "center",
             fontSize: 20,
             fontWeight: "bold",
-            color: colors.text,
+            color: colors.fg.hex,
         },
         input: {
             width: "100%",
             margin: 12,
             borderWidth: 1,
             borderRadius: 10,
-            borderColor: colors.text,
+            borderColor: colors.fg.hex,
             padding: 10,
-            color: colors.text,
+            color: colors.fg.hex,
         },
         buttonContainer: {
             flexDirection: "row",
@@ -104,7 +105,7 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
             backgroundColor: "rgba(0, 0, 0, 0.5)",
         },
         text: {
-            color: colors.text,
+            color: colors.fg.hex,
         },
     });
 
@@ -116,13 +117,13 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
                     <UIText style={styles.modalText}>Send Scoutcoin to {targetUser.name}</UIText>
                     <View style={styles.coinContainer}>
                         <UIText style={styles.text}>Your Scoutcoin: {profile?.scoutcoins}</UIText>
-                        <Bs.Coin size="12" fill={colors.text} />
+                        <Bs.Coin size="12" fill={colors.fg.hex} />
                     </View>
                     <TextInput
                         style={styles.input}
-                        selectionColor={colors.text}
-                        cursorColor={colors.text}
-                        placeholderTextColor={colors.text}
+                        selectionColor={colors.fg.hex}
+                        cursorColor={colors.fg.hex}
+                        placeholderTextColor={colors.fg.hex}
                         placeholder="Amount"
                         value={amount}
                         onChangeText={setAmount}
@@ -130,9 +131,9 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
                     />
                     <TextInput
                         style={styles.input}
-                        selectionColor={colors.text}
-                        cursorColor={colors.text}
-                        placeholderTextColor={colors.text}
+                        selectionColor={colors.fg.hex}
+                        cursorColor={colors.fg.hex}
+                        placeholderTextColor={colors.fg.hex}
                         placeholder="Reason"
                         value={description}
                         onChangeText={setDescription}
@@ -143,14 +144,14 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
                             text="Cancel"
                             onPress={onClose}
                             disabled={sending}
-                            color={colors.notification}
+                            color={colors.danger.hex}
                         />
                         <StandardButton
                             width="50%"
                             text="Send"
                             onPress={sendScoutcoin}
                             disabled={sending}
-                            color={colors.primary}
+                            color={colors.primary.hex}
                         />
                     </View>
                 </View>

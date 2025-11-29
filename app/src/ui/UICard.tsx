@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { type UINumberInputProps } from "./input/UINumberInput";
 import { NumberInput as RNNumberInput } from "./components/NumberInput";
 import {
@@ -13,6 +13,7 @@ import {
 } from "../components/AllianceChooser";
 import { UIText } from "./UIText";
 import { Color } from "../lib/color.ts";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface UICard extends PropsWithChildren {
     title?: string;
@@ -25,9 +26,9 @@ export function UICard({ title, children }: UICard) {
     return (
         <View
             style={{
-                backgroundColor: colors.card,
+                backgroundColor: colors.bg1.hex,
                 borderWidth: 1,
-                borderColor: colors.border,
+                borderColor: colors.border.hex,
                 borderRadius: 10,
                 padding: 16,
                 width: "100%",
@@ -73,7 +74,7 @@ export namespace UICard {
                                 borderColor: "gray",
                                 borderBottomWidth: 2,
                                 padding: 10,
-                                color: colors.text,
+                                color: colors.fg.hex,
                                 fontFamily: "monospace",
                                 minWidth: "20%",
                                 textAlign: "center",
@@ -84,7 +85,7 @@ export namespace UICard {
                 </View>
 
                 {typeof error === "string" && (
-                    <UIText color={Color.parse(colors.notification)} style={{ textAlign: "center", marginTop: 8 }}>
+                    <UIText color={Color.parse(colors.danger.hex)} style={{ textAlign: "center", marginTop: 8 }}>
                         {error}
                     </UIText>
                 )}

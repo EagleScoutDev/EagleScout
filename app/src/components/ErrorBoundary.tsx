@@ -14,11 +14,10 @@ export interface ErrorBoundaryProps extends PropsWithChildren {
     onError?: (error: Error, info: ErrorInfo) => void;
 }
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-    state: ErrorBoundaryState = { error: null };
-
     static defaultProps: ErrorBoundaryProps = {
         FallbackComponent: () => <View></View>,
     };
+    state: ErrorBoundaryState = { error: null };
 
     static getDerivedStateFromError(error: Error): ErrorBoundaryState {
         return { error };

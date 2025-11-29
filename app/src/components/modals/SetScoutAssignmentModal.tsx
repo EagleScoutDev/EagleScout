@@ -2,11 +2,12 @@ import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { UIText } from "../../ui/UIText";
 import { UIModal } from "../../ui/UIModal";
 import { StandardButton } from "../../ui/StandardButton";
-import { useTheme } from "@react-navigation/native";
+
 import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 import type { CompetitionReturnData } from "../../database/Competitions";
 import type { Setter } from "../../lib/util/react/types";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export function Spacer() {
     return <View style={{ height: "2%" }} />;
@@ -42,7 +43,7 @@ export function SetScoutAssignmentModal({
             borderRadius: 10,
             padding: 10,
             marginBottom: 10,
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 18,
         },
         button_row: { flexDirection: "row", justifyContent: "space-evenly" },
@@ -238,7 +239,7 @@ export function SetScoutAssignmentModal({
                     <Spacer />
                     <View style={styles.button_row}>
                         <StandardButton
-                            color={colors.primary}
+                            color={colors.primary.hex}
                             onPress={() => setVisible(false)}
                             text={"Cancel"}
                             width={"40%"}

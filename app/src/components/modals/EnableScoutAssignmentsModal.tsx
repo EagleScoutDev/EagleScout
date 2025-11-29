@@ -1,5 +1,5 @@
 import { Alert, Keyboard } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { UISheet } from "../../ui/UISheet";
@@ -45,12 +45,12 @@ export function EnableScoutAssignmentsModal({ data: competition }: EnableScoutAs
                 title="Scout Assignments"
                 left={{
                     text: "Cancel",
-                    color: Color.parse(colors.notification),
+                    color: Color.parse(colors.danger.hex),
                     onPress: () => void modal.dismiss(),
                 }}
                 right={{
                     text: "Done",
-                    color: Color.parse(colors.primary),
+                    color: Color.parse(colors.primary.hex),
                     onPress: () => {
                         Keyboard.dismiss();
                         return submit();

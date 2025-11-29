@@ -5,9 +5,10 @@ import { styles } from "../styles";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
-import { useTheme } from "@react-navigation/native";
+
 import { type OnboardingScreenProps } from "..";
 import { UserAttributesDB } from "../../../database/UserAttributes";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {}
 export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
@@ -40,7 +41,7 @@ export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
                     </View>
                     <StandardButton
                         text={"Next"}
-                        textColor={email === "" ? "dimgray" : colors.primary}
+                        textColor={email === "" ? "dimgray" : colors.primary.hex}
                         disabled={email === ""}
                         onPress={async () => {
                             const { error: orgEmailError } = await supabase

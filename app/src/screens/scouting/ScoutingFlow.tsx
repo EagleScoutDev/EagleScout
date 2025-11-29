@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { UIText } from "../../ui/UIText";
 import { Pressable, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
 import * as Bs from "../../ui/icons";
@@ -10,6 +10,7 @@ import { PitScoutingFlow } from "./pit/PitScoutingFlow";
 import { MatchScoutingFlow } from "./match/MatchScoutingFlow";
 import { ScoutTimer, ScoutTimerContext } from "./components/Timer";
 import { useStackThemeConfig } from "../../theme/native.ts";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 const HomeStack = createNativeStackNavigator<ScoutMenuParamList>();
 export type ScoutMenuScreenProps<T extends keyof ScoutMenuParamList> = NativeStackScreenProps<ScoutMenuParamList, T>;
@@ -81,7 +82,7 @@ function TimerHeader() {
                 {timer.seconds}
             </UIText>
             <Pressable onLongPress={timer.resetTimer} onPress={timer.toggleTimer}>
-                <Bs.Stopwatch size="24" fill={timer.active ? colors.primary : "gray"} />
+                <Bs.Stopwatch size="24" fill={timer.active ? colors.primary.hex : "gray"} />
             </Pressable>
         </View>
     );

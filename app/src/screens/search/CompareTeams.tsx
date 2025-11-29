@@ -1,6 +1,6 @@
 import { ActivityIndicator, Dimensions, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { UIText } from "../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
 import { isTablet } from "../../lib/deviceType";
@@ -12,6 +12,7 @@ import { Color } from "../../lib/color";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface CompareTeamsParams {
     team: SimpleTeam;
@@ -34,16 +35,16 @@ export function CompareTeams({ route }: CompareTeamsProps) {
     const [chosenQuestionIndex, setChosenQuestionIndex] = useState<number>(0);
 
     const chartConfig = {
-        backgroundGradientFrom: colors.card,
+        backgroundGradientFrom: colors.bg1.hex,
         backgroundGradientFromOpacity: 1.0,
-        backgroundGradientTo: colors.card,
+        backgroundGradientTo: colors.bg1.hex,
         backgroundGradientToOpacity: 1.0,
         color: (opacity = 1) => (dark ? `rgba(255, 255, 255, ${opacity})` : "rgba(0, 0, 0, 1)"),
-        backgroundColor: colors.card,
+        backgroundColor: colors.bg1.hex,
         strokeWidth: 2, // optional, default 3
         // barPercentage: 0.5,
         useShadowColorFromDataset: false, // optional
-        fillShadowGradient: colors.card,
+        fillShadowGradient: colors.bg1.hex,
     };
 
     // initialization
@@ -86,7 +87,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: colors.background,
+            backgroundColor: colors.bg0.hex,
             alignItems: "center",
             justifyContent: "space-evenly",
             flexDirection: "row",
@@ -99,17 +100,17 @@ export function CompareTeams({ route }: CompareTeamsProps) {
             flexBasis: "100%",
         },
         section_heading: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             textAlign: "left",
             fontSize: 30,
         },
         section_description: {
-            color: Color.parse(colors.primary).fg.hex,
+            color: Color.parse(colors.primary.hex).fg.hex,
             fontWeight: "bold",
         },
         question: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             textAlign: "left",
             // flex: 2,
@@ -126,7 +127,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                     <UIText size={50}>{team.team_number}</UIText>
                 </View>
                 {(secondTeamScoutData === null) !== (secondTeam === null) ? (
-                    <View style={{ height: "90%", width: 1, backgroundColor: colors.border }} />
+                    <View style={{ height: "90%", width: 1, backgroundColor: colors.border.hex }} />
                 ) : (
                     <ActivityIndicator size={"large"} />
                 )}
@@ -137,10 +138,10 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                                 onPress={() => setSecondTeam(team_number)}
                                 style={{
                                     padding: 16,
-                                    backgroundColor: colors.background,
+                                    backgroundColor: colors.bg0.hex,
                                     borderRadius: 10,
                                     borderBottomWidth: 1,
-                                    borderColor: colors.border,
+                                    borderColor: colors.border.hex,
                                 }}
                             >
                                 <UIText size={20} style={{ textAlign: "center" }}>
@@ -163,7 +164,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                     borderBottomWidth: 1,
-                    borderColor: colors.border,
+                    borderColor: colors.border.hex,
                 }}
             >
                 <View style={{ flex: 1 }}>
@@ -281,14 +282,14 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                                     data: firstTeamScoutData
                                         .sort((a, b) => a.matchNumber - b.matchNumber)
                                         .map((report) => report.data[chosenQuestionIndex]),
-                                    color: (opacity = 1.0) => colors.primary,
+                                    color: (opacity = 1.0) => colors.primary.hex,
                                     strokeWidth: 4, // optional
                                 },
                                 {
                                     data: secondTeamScoutData
                                         .sort((a, b) => a.matchNumber - b.matchNumber)
                                         .map((report) => report.data[chosenQuestionIndex]),
-                                    color: (opacity = 1.0) => colors.text,
+                                    color: (opacity = 1.0) => colors.fg.hex,
                                     strokeWidth: 4, // optional
                                 },
                             ],

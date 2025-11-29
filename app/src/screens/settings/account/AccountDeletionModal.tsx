@@ -1,13 +1,14 @@
 import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { UIText } from "../../../ui/UIText";
 import { useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { UIRadio } from "../../../ui/input/UIRadio";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import { type SettingsMenuScreenProps } from "../SettingsMenu";
 import { useUserStore } from "../../../lib/stores/user";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface AccountDeletionModalProps extends SettingsMenuScreenProps<"Account/Delete"> {}
 export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) {
@@ -26,7 +27,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
             borderRadius: 10,
             padding: 10,
             marginBottom: 10,
-            color: colors.text,
+            color: colors.fg.hex,
         },
         button_row: { flexDirection: "row", justifyContent: "space-evenly" },
     });
@@ -71,7 +72,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                 </View>
             </View>
             <StandardButton
-                color={colors.notification}
+                color={colors.danger.hex}
                 onPress={async () => {
                     Alert.alert("Are you sure?", "This action is irreversible.", [
                         {

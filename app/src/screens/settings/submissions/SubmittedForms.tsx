@@ -10,7 +10,7 @@ import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { ReportList } from "../../../components/ReportList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useTheme } from "@react-navigation/native";
+
 import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl";
 import { StandardButton } from "../../../ui/StandardButton";
 import Toast from "react-native-toast-message";
@@ -18,6 +18,7 @@ import { type MatchReportReturnData, MatchReportsDB } from "../../../database/Sc
 import { CompetitionsDB } from "../../../database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { SettingsMenuScreenProps } from "../SettingsMenu";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export function SubmittedForms({ route }: SettingsMenuScreenProps<"Scout/ViewReports">) {
     const { competitionId } = route.params;
@@ -80,7 +81,7 @@ export function SubmittedForms({ route }: SettingsMenuScreenProps<"Scout/ViewRep
                             padding: 20,
                             borderRadius: 10,
                             alignContent: "center",
-                            backgroundColor: colors.border,
+                            backgroundColor: colors.border.hex,
                         }}
                     >
                         <UIText size={20} bold style={{ textAlign: "center" }}>

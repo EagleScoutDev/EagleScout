@@ -1,5 +1,5 @@
 import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
 import { type TBAMatch, TBAMatches } from "../../../../database/TBAMatches";
@@ -15,6 +15,7 @@ import type { Form } from "../../../../lib/forms";
 import { UISheetModal } from "../../../../ui/UISheetModal.tsx";
 import { Alliance } from "../../../../frc/common/common.ts";
 import { UIText } from "../../../../ui/UIText";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export function MatchPredictor() {
     const { colors } = useTheme();
@@ -200,31 +201,31 @@ export function MatchPredictor() {
 
     const styles = StyleSheet.create({
         container: {
-            // backgroundColor: colors.card,
+            // backgroundColor: colors.bg1.hex,
             paddingHorizontal: "10%",
             flex: 1,
         },
         list_item: {
             borderBottomWidth: 1,
-            borderBottomColor: colors.border,
+            borderBottomColor: colors.border.hex,
             paddingVertical: "5%",
             flexDirection: "row",
         },
         list_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 14,
             flex: 1,
             textAlign: "left",
         },
         header: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 20,
         },
 
         textInput: {
             flex: 1,
             borderColor: "gray",
-            color: colors.text,
+            color: colors.fg.hex,
             fontFamily: "monospace",
             textAlign: "center",
             fontSize: 20,
@@ -246,12 +247,12 @@ export function MatchPredictor() {
             marginTop: 20,
         },
         match_label: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 20,
             flex: 1,
         },
         team_item: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 20,
             marginHorizontal: 4,
         },
@@ -261,25 +262,25 @@ export function MatchPredictor() {
             marginHorizontal: 4,
         },
         question_prompt: {
-            color: colors.primary,
+            color: colors.primary.hex,
             fontSize: 20,
             textAlign: "center",
             marginVertical: "4%",
         },
         small_question_prompt: {
-            color: colors.primary,
+            color: colors.primary.hex,
             fontSize: 16,
             textAlign: "right",
         },
         breakdown_button: {
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             padding: 10,
             borderRadius: 10,
             marginHorizontal: "5%",
             marginVertical: "4%",
         },
         breakdown_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             textAlign: "center",
             fontSize: 16,
@@ -287,7 +288,7 @@ export function MatchPredictor() {
         },
         data_point: {
             fontSize: 12,
-            color: colors.text,
+            color: colors.fg.hex,
         },
         data_point_container: {
             flexDirection: "column",
@@ -431,7 +432,7 @@ export function MatchPredictor() {
                             size={20}
                             bold
                             style={{
-                                color: winningAllianceColor === Alliance.blue ? "white" : colors.text,
+                                color: winningAllianceColor === Alliance.blue ? "white" : colors.fg.hex,
                                 marginBottom: 10,
                             }}
                         >
@@ -464,7 +465,7 @@ export function MatchPredictor() {
                             size={20}
                             bold
                             style={{
-                                color: winningAllianceColor === Alliance.red ? "white" : colors.text,
+                                color: winningAllianceColor === Alliance.red ? "white" : colors.fg.hex,
                                 marginBottom: 10,
                             }}
                         >
@@ -496,7 +497,7 @@ export function MatchPredictor() {
                             Keyboard.dismiss();
                         }}
                         style={{
-                            backgroundColor: chosenQuestionIndices.length === 0 ? "gray" : colors.primary,
+                            backgroundColor: chosenQuestionIndices.length === 0 ? "gray" : colors.primary.hex,
                             padding: 10,
                             borderRadius: 10,
                             marginHorizontal: "5%",
@@ -509,7 +510,7 @@ export function MatchPredictor() {
                             size={20}
                             bold
                             style={{
-                                color: Color.parse(colors.primary).fg.hex,
+                                color: Color.parse(colors.primary.hex).fg.hex,
                                 textAlign: "center",
                                 marginLeft: 10,
                             }}
@@ -555,8 +556,8 @@ export function MatchPredictor() {
                                         marginHorizontal: "4%",
                                     }}
                                 >
-                                    <UIText style={{ color: colors.text }}>Team</UIText>
-                                    <UIText style={{ color: colors.text }}># Reports</UIText>
+                                    <UIText style={{ color: colors.fg.hex }}>Team</UIText>
+                                    <UIText style={{ color: colors.fg.hex }}># Reports</UIText>
                                 </View>
                                 {teamsWithoutData.map((team, index) => (
                                     <>

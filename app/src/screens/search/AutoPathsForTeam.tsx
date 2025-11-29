@@ -3,10 +3,11 @@ import { UIText } from "../../ui/UIText";
 import { Pressable, View } from "react-native";
 import { CompetitionsDB } from "../../database/Competitions";
 import { MatchReportsDB } from "../../database/ScoutMatchReports";
-import { useTheme } from "@react-navigation/native";
+
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import * as Reefscape from "../../frc/reefscape";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface AutoPathsForTeamParams {
     team_number: number;
@@ -39,7 +40,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                         fontWeight: "bold",
                         fontSize: 25,
                         paddingLeft: "5%",
-                        color: colors.text,
+                        color: colors.fg.hex,
                     }}
                 >
                     Auto Paths for Team {team_number}
@@ -70,7 +71,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                         >
                             <Pressable
                                 style={{
-                                    backgroundColor: colors.card,
+                                    backgroundColor: colors.bg1.hex,
                                     padding: 10,
                                     borderRadius: 10,
                                 }}
@@ -84,7 +85,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                             </Pressable>
                             <Pressable
                                 style={{
-                                    backgroundColor: colors.card,
+                                    backgroundColor: colors.bg1.hex,
                                     padding: 10,
                                     borderRadius: 10,
                                 }}

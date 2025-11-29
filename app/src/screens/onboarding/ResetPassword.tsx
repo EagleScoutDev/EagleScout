@@ -9,12 +9,13 @@ import {
     TouchableWithoutFeedback,
     View,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { styles } from "./styles";
 import { StandardButton } from "../../ui/StandardButton";
 import { MinimalSectionHeader } from "../../ui/MinimalSectionHeader";
 import { supabase } from "../../lib/supabase";
 import { type OnboardingScreenProps } from ".";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface ResetPasswordProps extends OnboardingScreenProps<"ResetPassword"> {}
 export function ResetPassword({ navigation }: ResetPasswordProps) {
@@ -36,13 +37,13 @@ export function ResetPassword({ navigation }: ResetPasswordProps) {
                             placeholderTextColor={"gray"}
                             style={{
                                 ...styles.input,
-                                borderColor: email === "" ? "gray" : colors.primary,
+                                borderColor: email === "" ? "gray" : colors.primary.hex,
                             }}
                             inputMode={"email"}
                         />
                         <StandardButton
                             text={"Reset Password"}
-                            textColor={email === "" ? "dimgray" : colors.primary}
+                            textColor={email === "" ? "dimgray" : colors.primary.hex}
                             disabled={email === ""}
                             onPress={async () => {
                                 if (email === "") {

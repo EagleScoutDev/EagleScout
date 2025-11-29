@@ -1,16 +1,16 @@
-import { useTheme } from "@react-navigation/native";
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export function useStackThemeConfig(): NativeStackNavigationOptions {
     const { colors } = useTheme();
 
     return {
         headerStyle: {
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
         },
-        headerTintColor: colors.text,
+        headerTintColor: colors.fg.hex,
         headerTitleStyle: {
-            color: colors.text,
+            color: colors.fg.hex,
         },
     };
 }

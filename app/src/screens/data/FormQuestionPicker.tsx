@@ -1,4 +1,3 @@
-import { useTheme } from "@react-navigation/native";
 import { UIText } from "../../ui/UIText";
 import { FlatList, View } from "react-native";
 import type { Setter } from "../../lib/util/react/types";
@@ -7,6 +6,7 @@ import { Color } from "../../lib/color";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Form } from "../../lib/forms";
 import { UICheckbox } from "../../ui/input/UICheckbox.tsx";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface FormQuestionPickerProps {
     form: Form.Structure | null | undefined;
@@ -26,14 +26,14 @@ export function FormQuestionPicker({ form, value, setValue, onSubmit }: FormQues
             <UISheet.Header
                 left={{
                     text: "Close",
-                    color: Color.parse(colors.notification),
+                    color: Color.parse(colors.danger.hex),
                     onPress: () => void modal.dismiss(),
                 }}
                 title="Choose Questions"
                 right={
                     value.length > 0 && {
                         text: "Save",
-                        color: Color.parse(colors.primary),
+                        color: Color.parse(colors.primary.hex),
                         onPress: () => onSubmit(value),
                     }
                 }

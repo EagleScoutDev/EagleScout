@@ -1,7 +1,7 @@
 import { Alert, FlatList, Modal, Pressable, TouchableOpacity, View } from "react-native";
 import { UIText } from "../../ui/UIText";
 import { useCallback, useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import * as Bs from "../../ui/icons";
 import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
@@ -15,6 +15,7 @@ import { Color } from "../../lib/color";
 import { isTablet } from "../../lib/deviceType";
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface SearchMainProps extends SearchMenuScreenProps<"Main"> {}
 export function SearchMain({ navigation }: SearchMainProps) {
@@ -142,7 +143,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
                             style={{
                                 paddingHorizontal: "8%",
                                 paddingVertical: "4%",
-                                // backgroundColor: colors.card,
+                                // backgroundColor: colors.bg1.hex,
                             }}
                             onPress={() => {
                                 navigation.navigate("SearchModal", {
@@ -152,7 +153,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                 });
                             }}
                         >
-                            <Bs.Search size="20" fill={colors.text} />
+                            <Bs.Search size="20" fill={colors.fg.hex} />
                         </Pressable>
                     )}
                 </View>
@@ -160,7 +161,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
                     style={{
                         height: 1,
                         width: "100%",
-                        backgroundColor: colors.border,
+                        backgroundColor: colors.border.hex,
                     }}
                 />
             </View>
@@ -200,13 +201,13 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                 <View
                                     style={{
                                         height: 2,
-                                        backgroundColor: colors.border,
+                                        backgroundColor: colors.border.hex,
                                         flex: 1,
                                     }}
                                 />
                                 <TouchableOpacity
                                     style={{
-                                        backgroundColor: colors.card,
+                                        backgroundColor: colors.bg1.hex,
                                         padding: "3%",
                                         borderRadius: 99,
                                         marginRight: "4%",
@@ -216,7 +217,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                         setCurrentMatchNumber(item);
                                     }}
                                 >
-                                    <Bs.StickyFill size="16" fill={Color.parse(colors.primary).fg.hex} />
+                                    <Bs.StickyFill size="16" fill={Color.parse(colors.primary.hex).fg.hex} />
                                 </TouchableOpacity>
                             </View>
                             <View
@@ -238,18 +239,18 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                                 alignItems: "center",
                                                 // borderWidth: 1,
                                                 backgroundColor: index < 3 ? "red" : "dodgerblue",
-                                                // shadowColor: colors.card,
+                                                // shadowColor: colors.bg1.hex,
                                                 // shadowOffset: {width: 0, height: 2},
                                                 // shadowOpacity: 0.25,
                                                 // shadowRadius: 4,
                                                 // elevation: 5,
-                                                borderColor: colors.text,
+                                                borderColor: colors.fg.hex,
 
                                                 margin: "2%",
                                                 padding: "6%",
                                                 borderRadius: 10,
                                                 minWidth: "25%",
-                                                // backgroundColor: colors.card,
+                                                // backgroundColor: colors.bg1.hex,
                                             }}
                                         >
                                             <UIText bold style={{ textAlign: "center", flex: 1 }}>
@@ -287,7 +288,7 @@ export function SearchMain({ navigation }: SearchMainProps) {
             )}
             {notesViewerVisible && (
                 <Modal visible={notesViewerVisible} animationType="slide">
-                    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+                    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg0.hex }}>
                         <NoteList
                             notes={notesByMatch.get(currentMatchNumber) ?? []}
                             onClose={() => setNotesViewerVisible(false)}

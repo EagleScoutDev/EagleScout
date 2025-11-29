@@ -3,9 +3,10 @@ import { UIText } from "../../../ui/UIText";
 import { View } from "react-native";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { Color } from "../../../lib/color";
-import { useTheme } from "@react-navigation/native";
+
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 interface ReportFlowTabProps {
     title: string;
@@ -30,7 +31,7 @@ export function ScoutingFlowTab({ title, buttonText, onNext, children }: PropsWi
                 <View style={{ marginBottom: 16 }}>{children}</View>
                 <UIButton
                     style={UIButtonStyle.fill}
-                    color={Color.parse(colors.primary)}
+                    color={Color.parse(colors.primary.hex)}
                     size={UIButtonSize.xl}
                     buttonStyle={{ marginTop: "auto", width: "100%" }}
                     text={buttonText}

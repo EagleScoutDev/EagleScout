@@ -1,5 +1,5 @@
 import { createNativeBottomTabNavigator, type NativeBottomTabScreenProps } from "@bottom-tabs/react-navigation";
-import { type NavigatorScreenParams, useTheme } from "@react-navigation/native";
+import { type NavigatorScreenParams } from "@react-navigation/native";
 import { ScoutFlow, type ScoutMenuParamList } from "./screens/scouting/ScoutingFlow";
 import { SearchMenu, type SearchMenuParamList } from "./screens/search/SearchMenu";
 import type { RootStackScreenProps } from "./App";
@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useUserStore } from "./lib/stores/user";
 import { DataMain, type DataMenuParamList } from "./screens/data/DataMain";
 import { Platform } from "react-native";
+import { useTheme } from "./lib/contexts/ThemeContext.ts";
 
 const Tab = createNativeBottomTabNavigator<AppHomeParamList>();
 export type AppHomeScreenProps<K extends keyof AppHomeParamList> = NativeBottomTabScreenProps<AppHomeParamList, K>;
@@ -38,10 +39,10 @@ export function AppHome({ navigation }: AppHomeProps) {
             <Tab.Navigator
                 labeled
                 translucent
-                tabBarStyle={Platform.OS === "ios" ? {} : { backgroundColor: colors.card }}
-                tabBarActiveTintColor={Platform.OS === "ios" ? colors.primary : colors.text}
-                tabBarInactiveTintColor={colors.text}
-                activeIndicatorColor={colors.background} //< Android only
+                tabBarStyle={Platform.OS === "ios" ? {} : { backgroundColor: colors.bg2.hex }}
+                tabBarActiveTintColor={Platform.OS === "ios" ? colors.primary.hex : colors.fg.hex}
+                tabBarInactiveTintColor={colors.fg.hex}
+                activeIndicatorColor={colors.tertiary.hex} //< Android only
             >
                 <Tab.Screen
                     name="Home"

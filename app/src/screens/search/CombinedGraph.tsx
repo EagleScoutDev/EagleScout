@@ -3,12 +3,13 @@ import { UIText } from "../../ui/UIText";
 import { UIModal } from "../../ui/UIModal";
 import { LineChart } from "react-native-chart-kit";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import { type FormReturnData, FormsDB } from "../../database/Forms";
 import { CompetitionsDB } from "../../database/Competitions";
 import type { Setter } from "../../lib/util/react/types";
 import { Color } from "../../lib/color.ts";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface CombinedGraphProps {
     modalActive: boolean;
@@ -27,15 +28,15 @@ export function CombinedGraph({
     const { colors, dark } = useTheme();
 
     const chartConfig = {
-        backgroundGradientFrom: colors.card,
+        backgroundGradientFrom: colors.bg1.hex,
         backgroundGradientFromOpacity: 1.0,
-        backgroundGradientTo: colors.card,
+        backgroundGradientTo: colors.bg1.hex,
         backgroundGradientToOpacity: 1.0,
         color: (opacity = 1) => (dark ? `rgba(255, 255, 255, ${opacity})` : "rgba(0, 0, 0, 1)"),
-        backgroundColor: colors.card,
+        backgroundColor: colors.bg1.hex,
         strokeWidth: 2,
         useShadowColorFromDataset: false,
-        fillShadowGradient: colors.card,
+        fillShadowGradient: colors.bg1.hex,
     };
     const [relevantReports, setRelevantReports] = useState<MatchReportReturnData[]>([]);
     const [form, setForm] = useState<FormReturnData>();
@@ -137,7 +138,7 @@ export function CombinedGraph({
                 </UIText>
             </View>
             <Pressable style={{ marginTop: "4%" }} onPress={() => setModalActive(false)}>
-                <UIText size={16} color={Color.parse(colors.primary)}>
+                <UIText size={16} color={Color.parse(colors.primary.hex)}>
                     Close
                 </UIText>
             </Pressable>

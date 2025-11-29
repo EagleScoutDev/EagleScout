@@ -1,6 +1,6 @@
 import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, TextInput, View } from "react-native";
 import { UIText } from "../../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { useEffect, useState } from "react";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import type { PicklistTeam } from "../../../../database/Picklists";
@@ -8,6 +8,7 @@ import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import type { Setter } from "../../../../lib/util/react/types";
 import * as Bs from "../../../../ui/icons";
 import { Color } from "../../../../lib/color.ts";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface TagsModalProps {
     visible: boolean;
@@ -112,7 +113,7 @@ export function TagsModal({
             >
                 <View
                     style={{
-                        backgroundColor: colors.card,
+                        backgroundColor: colors.bg1.hex,
                         padding: "5%",
                         margin: "5%",
                         marginVertical: "30%",
@@ -135,7 +136,7 @@ export function TagsModal({
                             <Pressable onPress={() => setDeletionActive((prev) => !prev)} style={{ flex: 0.2 }}>
                                 <UIText
                                     style={{
-                                        color: deletionActive ? colors.primary : colors.text,
+                                        color: deletionActive ? colors.primary.hex : colors.fg.hex,
                                     }}
                                 >
                                     Edit
@@ -171,7 +172,7 @@ export function TagsModal({
                                         onPress={() => onTagPress(item)}
                                         style={{
                                             flex: 1,
-                                            backgroundColor: colors.background,
+                                            backgroundColor: colors.bg0.hex,
                                             padding: "5%",
                                             margin: "2%",
                                             borderRadius: 10,
@@ -182,9 +183,9 @@ export function TagsModal({
                                             borderColor:
                                                 selected_team !== null
                                                     ? selectedTags.includes(Number.parseInt(item.id ?? "", 10))
-                                                        ? colors.primary
-                                                        : colors.border
-                                                    : colors.border,
+                                                        ? colors.primary.hex
+                                                        : colors.border.hex
+                                                    : colors.border.hex,
                                         }}
                                     >
                                         <View style={{ flexDirection: "row" }}>
@@ -205,7 +206,7 @@ export function TagsModal({
                                                     style={{
                                                         backgroundColor: item.color,
                                                         borderWidth: 1,
-                                                        borderColor: colors.border,
+                                                        borderColor: colors.border.hex,
                                                         borderRadius: 100,
                                                         width: 20,
                                                         height: 20,
@@ -215,7 +216,7 @@ export function TagsModal({
                                             )}
                                             {deletionActive && (
                                                 <Pressable onPress={() => attemptDeleteTag(item)}>
-                                                    <UIText color={Color.parse(colors.notification)}>Delete</UIText>
+                                                    <UIText color={Color.parse(colors.danger.hex)}>Delete</UIText>
                                                 </Pressable>
                                             )}
                                         </View>
@@ -237,14 +238,14 @@ export function TagsModal({
                     <View
                         style={{
                             borderTopWidth: 1,
-                            borderTopColor: colors.border,
+                            borderTopColor: colors.border.hex,
                             paddingTop: "5%",
                         }}
                     >
                         <TextInput
                             style={{
-                                color: colors.text,
-                                backgroundColor: colors.background,
+                                color: colors.fg.hex,
+                                backgroundColor: colors.bg0.hex,
                                 padding: "5%",
                                 borderRadius: 10,
                                 minWidth: "100%",
@@ -265,7 +266,7 @@ export function TagsModal({
                                 });
                             }}
                             style={{
-                                backgroundColor: newTagName === "" ? "gray" : colors.primary,
+                                backgroundColor: newTagName === "" ? "gray" : colors.primary.hex,
                                 padding: "5%",
                                 borderRadius: 10,
                                 marginTop: "5%",

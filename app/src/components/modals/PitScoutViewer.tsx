@@ -1,6 +1,6 @@
 import { FlatList, Image, Modal, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { UIText } from "../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { useEffect, useState } from "react";
 import { UIRadio } from "../../ui/input/UIRadio";
 import { UICheckboxes } from "../../ui/input/UICheckboxes";
@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
 import * as Bs from "../../ui/icons";
 import { Color } from "../../lib/color.ts";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 interface PitScoutViewerProps {
     visible: boolean;
@@ -60,7 +61,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
     const styles = StyleSheet.create({
         container: {
             alignSelf: "center",
-            backgroundColor: colors.background,
+            backgroundColor: colors.bg0.hex,
             padding: "5%",
             // marginTop: '8%',
             height: "100%",
@@ -119,7 +120,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                     padding: "2%",
                                     width: 40,
                                     height: 40,
-                                    fill: colors.notification,
+                                    fill: colors.danger.hex,
                                 }}
                             />
                         </TouchableOpacity>
@@ -153,7 +154,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                                     ? "column"
                                                     : "row",
                                             justifyContent: "space-between",
-                                            backgroundColor: field.isEven ? colors.border : "transparent",
+                                            backgroundColor: field.isEven ? colors.border.hex : "transparent",
                                             padding: 10,
                                             margin: 5,
                                             borderRadius: 10,
@@ -188,7 +189,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                             <UIText
                                                 size={15}
                                                 bold
-                                                color={Color.parse(colors.primary)}
+                                                color={Color.parse(colors.primary.hex)}
                                                 style={{
                                                     flex: 1,
                                                     textAlign: field.type === "textbox" ? "left" : "center",
@@ -202,7 +203,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                             <UIText
                                                 size={15}
                                                 bold
-                                                color={Color.parse(colors.notification)}
+                                                color={Color.parse(colors.danger.hex)}
                                                 style={styles.no_info}
                                             >
                                                 N/A

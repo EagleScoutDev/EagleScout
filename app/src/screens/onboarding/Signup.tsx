@@ -9,12 +9,13 @@ import {
 } from "react-native";
 import { UIText } from "../../ui/UIText";
 import { useMemo, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { styles } from "./styles";
 import { supabase } from "../../lib/supabase";
 import { MinimalSectionHeader } from "../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../ui/StandardButton";
 import { type OnboardingScreenProps } from ".";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {}
 export function Signup({ navigation }: SignupProps) {
@@ -69,7 +70,7 @@ export function Signup({ navigation }: SignupProps) {
 
                         <StandardButton
                             text="Register"
-                            textColor={formComplete ? "dimgray" : colors.primary}
+                            textColor={formComplete ? "dimgray" : colors.primary.hex}
                             disabled={!formComplete}
                             onPress={async () => {
                                 if (password !== confirmPassword) {
@@ -78,7 +79,7 @@ export function Signup({ navigation }: SignupProps) {
                                         "Please try again",
                                         [
                                             {
-                                                label: "OK",
+                                                text: "OK",
                                                 onPress: () => console.log("OK Pressed"),
                                             },
                                         ],

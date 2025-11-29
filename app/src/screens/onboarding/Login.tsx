@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { UIText } from "../../ui/UIText";
 import { Keyboard, SafeAreaView, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { styles } from "./styles";
 import { StandardButton } from "../../ui/StandardButton";
 import { MinimalSectionHeader } from "../../ui/MinimalSectionHeader";
 import type { OnboardingScreenProps } from ".";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface LoginProps extends OnboardingScreenProps<"Login"> {
     onSubmit: (username: string, password: string) => void;
@@ -61,7 +62,7 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
                         />
                         <StandardButton
                             text={"Log In"}
-                            textColor={username === "" || password === "" ? "dimgray" : colors.primary}
+                            textColor={username === "" || password === "" ? "dimgray" : colors.primary.hex}
                             disabled={username === "" || password === ""}
                             onPress={() => onSubmit(username, password)}
                         />

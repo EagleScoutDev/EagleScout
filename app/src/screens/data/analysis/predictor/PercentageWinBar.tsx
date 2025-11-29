@@ -66,7 +66,7 @@ export function PercentageWinBar({ bluePercentage, redPercentage }: PercentageWi
             </View>
             {/*<Text*/}
             {/*  style={{*/}
-            {/*    color: bluePercentage > redPercentage ? colors.primary : 'red',*/}
+            {/*    color: bluePercentage > redPercentage ? colors.primary.hex : 'red',*/}
             {/*    textAlign: 'center',*/}
             {/*    marginTop: 10,*/}
             {/*    fontSize: 20,*/}

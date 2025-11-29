@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { type MatchBet, MatchBets } from "../../../../database/MatchBets";
 import { supabase } from "../../../../lib/supabase";
 import { Color } from "../../../../lib/color";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 const BetCard = ({
     matchNumber,
@@ -20,7 +21,7 @@ const BetCard = ({
             style={{
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: colors.card,
+                backgroundColor: colors.bg1.hex,
                 padding: 15,
                 margin: 10,
                 borderRadius: 10,
@@ -33,12 +34,12 @@ const BetCard = ({
                     alignItems: "center",
                 }}
             >
-                {pressed && <ActivityIndicator size="small" color={colors.text} style={{ marginRight: 10 }} />}
+                {pressed && <ActivityIndicator size="small" color={colors.fg.hex} style={{ marginRight: 10 }} />}
                 <UIText
                     style={{
                         fontSize: 18,
                         fontWeight: "bold",
-                        color: colors.text,
+                        color: colors.fg.hex,
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
@@ -56,7 +57,7 @@ const BetCard = ({
             >
                 <Pressable
                     style={{
-                        backgroundColor: colors.primary,
+                        backgroundColor: colors.primary.hex,
                         padding: 10,
                         borderRadius: 10,
                         margin: 10,
@@ -93,7 +94,7 @@ const BetCard = ({
                 >
                     <UIText
                         style={{
-                            color: colors.text,
+                            color: colors.fg.hex,
                         }}
                     >
                         Tie
@@ -101,7 +102,7 @@ const BetCard = ({
                 </Pressable>
                 <Pressable
                     style={{
-                        backgroundColor: colors.notification,
+                        backgroundColor: colors.danger.hex,
                         padding: 10,
                         borderRadius: 10,
                         margin: 10,
@@ -163,7 +164,7 @@ export function ManageBets() {
                     paddingTop: 20,
                     fontSize: 20,
                     fontWeight: "bold",
-                    color: colors.text,
+                    color: colors.fg.hex,
                 }}
             >
                 Active Bets

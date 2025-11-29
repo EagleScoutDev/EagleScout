@@ -1,8 +1,9 @@
 import { StyleSheet, View } from "react-native";
 import { UIText } from "../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { StandardButton } from "../../ui/StandardButton";
 import type { OnboardingScreenProps } from ".";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface EntrypointProps extends OnboardingScreenProps<"Entrypoint"> {}
 export function EntrypointHome({ navigation }: EntrypointProps) {
@@ -45,7 +46,7 @@ export function EntrypointHome({ navigation }: EntrypointProps) {
                     text={"Login"}
                 />
                 <StandardButton
-                    textColor={colors.primary}
+                    textColor={colors.primary.hex}
                     color={"rgb(0,0,25)"}
                     isLoading={false}
                     onPress={() => {

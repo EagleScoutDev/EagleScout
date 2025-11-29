@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../ui/UIText";
 import { Pressable, StyleSheet, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { OpenAI } from "../../lib/OpenAI";
 import { isTablet } from "../../lib/deviceType";
 import { DataGraph } from "./DataGraph";
 import { Color } from "../../lib/color";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 interface Props {
     item: any;
@@ -72,11 +73,11 @@ export function QuestionSummary({
             flexGrow: 1,
             borderRadius: 12,
 
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             marginVertical: "2%",
         },
         question: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             textAlign: "left",
             // flex: 2,
@@ -87,18 +88,18 @@ export function QuestionSummary({
             alignItems: "center",
             justifyContent: "space-between",
             borderBottomWidth: isTablet() ? 1 : 0,
-            borderBottomColor: colors.border,
+            borderBottomColor: colors.border.hex,
         },
         overall_statistic_container: {
             flexDirection: isTablet() ? "column" : "row",
             justifyContent: "space-around",
         },
         statistic_label: {
-            color: Color.parse(colors.primary).fg.hex,
+            color: Color.parse(colors.primary.hex).fg.hex,
             fontWeight: "bold",
         },
         statistic: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             fontSize: 25,
         },
@@ -110,13 +111,13 @@ export function QuestionSummary({
             flexBasis: "100%",
         },
         section_heading: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             textAlign: "left",
             fontSize: 30,
         },
         section_description: {
-            color: Color.parse(colors.primary).fg.hex,
+            color: Color.parse(colors.primary.hex).fg.hex,
             fontWeight: "bold",
         },
         multiple_option_container: {
@@ -126,7 +127,7 @@ export function QuestionSummary({
             marginVertical: "2%",
         },
         multiple_option_option: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
             textAlign: "left",
             flex: 2,
@@ -134,11 +135,11 @@ export function QuestionSummary({
         multiple_option_separator: {
             height: 1,
             width: "100%",
-            backgroundColor: colors.border,
+            backgroundColor: colors.border.hex,
             marginVertical: "3%",
         },
         multiple_option_response_count: {
-            color: Color.parse(colors.primary).fg.hex,
+            color: Color.parse(colors.primary.hex).fg.hex,
             textAlign: "center",
         },
         multiple_option_percentage_container: {
@@ -152,24 +153,24 @@ export function QuestionSummary({
         },
         ai_summary_container: {
             marginVertical: "2%",
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             padding: "5%",
             borderRadius: 12,
-            borderColor: colors.border,
+            borderColor: colors.border.hex,
         },
         ai_summary_header: {
             color: "gray",
             fontWeight: "bold",
         },
         ai_summary_text: {
-            color: colors.primary,
+            color: colors.primary.hex,
             fontWeight: "bold",
         },
         comment_container: {
             marginVertical: "2%",
         },
         comment_match_number: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
         },
         comment_text: {
@@ -265,7 +266,9 @@ export function QuestionSummary({
                                         style={{
                                             ...styles.multiple_option_percentage_container,
                                             backgroundColor:
-                                                index_of_item === indexOfGreatestValue ? colors.primary : colors.card,
+                                                index_of_item === indexOfGreatestValue
+                                                    ? colors.primary.hex
+                                                    : colors.bg1.hex,
                                             paddingVertical: index_of_item === indexOfGreatestValue ? "2%" : 0,
                                         }}
                                     >
@@ -274,8 +277,8 @@ export function QuestionSummary({
                                                 ...styles.multiple_option_percentage_text,
                                                 color:
                                                     index_of_item === indexOfGreatestValue
-                                                        ? Color.parse(colors.primary).fg.hex
-                                                        : colors.text,
+                                                        ? Color.parse(colors.primary.hex).fg.hex
+                                                        : colors.fg.hex,
                                             }}
                                         >
                                             {(
@@ -305,7 +308,7 @@ export function QuestionSummary({
                                         style={{
                                             ...styles.multiple_option_percentage_container,
                                             backgroundColor:
-                                                index === valueOfMostOccurrences ? colors.primary : colors.card,
+                                                index === valueOfMostOccurrences ? colors.primary.hex : colors.bg1.hex,
                                             paddingVertical: index === valueOfMostOccurrences ? "2%" : 0,
                                         }}
                                     >
@@ -314,8 +317,8 @@ export function QuestionSummary({
                                                 ...styles.multiple_option_percentage_text,
                                                 color:
                                                     index === valueOfMostOccurrences
-                                                        ? Color.parse(colors.primary).fg.hex
-                                                        : colors.text,
+                                                        ? Color.parse(colors.primary.hex).fg.hex
+                                                        : colors.fg.hex,
                                             }}
                                         >
                                             {((frequencies.get(label)! / data.length) * 100).toFixed(2)}%
@@ -372,7 +375,9 @@ export function QuestionSummary({
                             return (
                                 <View style={styles.comment_container}>
                                     <UIText style={styles.comment_match_number}>Match {datum.match}</UIText>
-                                    <UIText style={styles.comment_text}>{datum.data.replace(/(\r\n|\n|\r)/gm, "")}</UIText>
+                                    <UIText style={styles.comment_text}>
+                                        {datum.data.replace(/(\r\n|\n|\r)/gm, "")}
+                                    </UIText>
                                 </View>
                             );
                         })

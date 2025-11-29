@@ -1,7 +1,7 @@
 import { padLeft } from "./util/padLeft";
 
 // TODO: find a better solution for placeholder/gray text
-const LEVEL_OPACITY = [255, 153, 102, 76] as const;
+const LEVEL_OPACITY = [255, 170, 102, 76] as const;
 
 const cache = new Map<string, Color>();
 export class Color {

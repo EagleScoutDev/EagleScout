@@ -1,8 +1,9 @@
 import { Circle, G, Line, Path, Rect, Svg } from "react-native-svg";
 import { View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { AutoAction, AutoActionType, type AutoPath } from "../auto";
 import { UIText } from "../../../ui/UIText";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export function AutoPathView({ path }: { path: AutoPath }) {
     "use memo";
@@ -11,7 +12,7 @@ export function AutoPathView({ path }: { path: AutoPath }) {
         return (
             <View
                 style={{
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                     alignItems: "center",
                     padding: 10,
                     borderRadius: 8,

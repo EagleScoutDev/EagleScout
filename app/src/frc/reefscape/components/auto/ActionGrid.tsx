@@ -51,7 +51,7 @@ export function ActionGrid<T>({ title, options: rows, onPress }: ActionMenuProps
                                     style={role === "success" ? styles.button : styles.failButton}
                                     onPress={() => onPress(value, role === "success")}
                                 >
-                                    <UIText size={20} color={colors.primary}>
+                                    <UIText size={20} color={colors.primary.hex}>
                                         {text}
                                     </UIText>
                                 </PressableOpacity>

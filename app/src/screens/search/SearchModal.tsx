@@ -1,7 +1,7 @@
 import { FlatList, Pressable, TextInput, View } from "react-native";
 import { UIText } from "../../ui/UIText";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
 import type { MatchReportReturnData } from "../../database/ScoutMatchReports";
 import { ProfilesDB } from "../../database/Profiles";
@@ -11,6 +11,7 @@ import { isTablet } from "../../lib/deviceType";
 import type { SearchMenuScreenProps } from "./SearchMenu";
 import type { Profile } from "../../lib/user/profile";
 import * as Bs from "../../ui/icons";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 enum FilterState {
     TEAM,
@@ -89,7 +90,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
             <View
                 style={{
                     flex: 1,
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.bg0.hex,
                     paddingTop: isTablet() ? "0%" : "10%",
                 }}
             >
@@ -118,7 +119,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             style={{
                                 marginHorizontal: "4%",
                                 height: 40,
-                                color: colors.text,
+                                color: colors.fg.hex,
                                 flex: 1,
                             }}
                             onChangeText={(text) => setSearchTerm(text)}
@@ -166,7 +167,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             flexDirection: "row",
                             alignItems: "center",
                             padding: "2%",
-                            backgroundColor: filterState === FilterState.TEAM ? colors.text : colors.background,
+                            backgroundColor: filterState === FilterState.TEAM ? colors.fg.hex : colors.bg0.hex,
                             borderRadius: 10,
                             flex: 1,
                             justifyContent: "center",
@@ -174,7 +175,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                     >
                         <UIText
                             style={{
-                                color: filterState === FilterState.TEAM ? colors.background : colors.text,
+                                color: filterState === FilterState.TEAM ? colors.bg0.hex : colors.fg.hex,
                                 fontWeight: filterState === FilterState.TEAM ? "bold" : "normal",
                             }}
                         >
@@ -189,7 +190,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             flexDirection: "row",
                             alignItems: "center",
                             padding: "2%",
-                            backgroundColor: filterState === FilterState.MATCH ? colors.text : colors.background,
+                            backgroundColor: filterState === FilterState.MATCH ? colors.fg.hex : colors.bg0.hex,
                             borderRadius: 10,
                             flex: 1,
                             justifyContent: "center",
@@ -197,7 +198,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                     >
                         <UIText
                             style={{
-                                color: filterState === FilterState.MATCH ? colors.background : colors.text,
+                                color: filterState === FilterState.MATCH ? colors.bg0.hex : colors.fg.hex,
                                 fontWeight: filterState === FilterState.MATCH ? "bold" : "normal",
                             }}
                         >
@@ -212,7 +213,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             flexDirection: "row",
                             alignItems: "center",
                             padding: "2%",
-                            backgroundColor: filterState === FilterState.PERSON ? colors.text : colors.background,
+                            backgroundColor: filterState === FilterState.PERSON ? colors.fg.hex : colors.bg0.hex,
                             borderRadius: 10,
                             flex: 1,
                             justifyContent: "center",
@@ -220,7 +221,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                     >
                         <UIText
                             style={{
-                                color: filterState === FilterState.PERSON ? colors.background : colors.text,
+                                color: filterState === FilterState.PERSON ? colors.bg0.hex : colors.fg.hex,
                                 fontWeight: filterState === FilterState.PERSON ? "bold" : "normal",
                             }}
                         >
@@ -232,7 +233,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                     style={{
                         height: 1,
                         width: "100%",
-                        backgroundColor: colors.border,
+                        backgroundColor: colors.border.hex,
                     }}
                 />
                 {filterState === FilterState.TEAM && (
@@ -257,7 +258,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                         alignItems: "center",
                                         padding: "4%",
                                         borderBottomWidth: 1,
-                                        borderBottomColor: colors.border,
+                                        borderBottomColor: colors.border.hex,
                                     }}
                                 >
                                     <UIText size={16} style={{ flex: 1 }}>
@@ -290,7 +291,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                     >
                                         <UIText
                                             style={{
-                                                color: colors.text,
+                                                color: colors.fg.hex,
                                                 opacity: 0.6,
                                                 marginHorizontal: "4%",
                                                 fontWeight: "bold",
@@ -303,7 +304,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                             style={{
                                                 height: 2,
                                                 width: "100%",
-                                                backgroundColor: colors.border,
+                                                backgroundColor: colors.border.hex,
                                             }}
                                         />
                                     </View>
@@ -363,34 +364,34 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                 });
                                 setSelectedUser(newSelectedUser);
                             }}
-                            activeColor={colors.card}
+                            activeColor={colors.bg1.hex}
                             style={{
                                 borderRadius: 10,
                                 padding: "2%",
                                 margin: "2%",
-                                backgroundColor: colors.background,
+                                backgroundColor: colors.bg0.hex,
                             }}
                             selectedTextStyle={{
-                                color: colors.text,
+                                color: colors.fg.hex,
                                 fontWeight: "bold",
-                                backgroundColor: colors.background,
+                                backgroundColor: colors.bg0.hex,
                             }}
                             containerStyle={{
                                 borderRadius: 10,
-                                backgroundColor: colors.background,
+                                backgroundColor: colors.bg0.hex,
                             }}
                             itemContainerStyle={{
                                 borderRadius: 10,
                                 borderBottomWidth: 1,
-                                borderColor: colors.border,
-                                backgroundColor: colors.background,
+                                borderColor: colors.border.hex,
+                                backgroundColor: colors.bg0.hex,
                             }}
                             itemTextStyle={{
-                                color: colors.text,
+                                color: colors.fg.hex,
                             }}
                             placeholder={"Select a user"}
                             placeholderStyle={{
-                                color: colors.primary,
+                                color: colors.primary.hex,
                             }}
                             value={{
                                 label: selectedUser?.name ?? "Select a user",
@@ -398,7 +399,11 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             }}
                             renderLeftIcon={() => {
                                 return (
-                                    <Bs.PersonCircle size="20" fill={colors.primary} style={{ marginRight: "4%" }} />
+                                    <Bs.PersonCircle
+                                        size="20"
+                                        fill={colors.primary.hex}
+                                        style={{ marginRight: "4%" }}
+                                    />
                                 );
                             }}
                         />
@@ -427,7 +432,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                                     style={{
                                                         height: 2,
                                                         width: "100%",
-                                                        backgroundColor: colors.border,
+                                                        backgroundColor: colors.border.hex,
                                                     }}
                                                 />
                                             </View>

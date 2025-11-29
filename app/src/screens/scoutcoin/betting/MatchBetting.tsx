@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../../ui/UIText";
 import { View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { UserAttributesDB } from "../../../database/UserAttributes";
 import type { DataMenuScreenProps } from "../../data/DataMain";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { UICard } from "../../../ui/UICard.tsx";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface MatchBettingProps extends DataMenuScreenProps<"MatchBetting"> {}
 export function MatchBetting({ navigation }: MatchBettingProps) {
@@ -34,7 +35,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
             >
                 <UIText
                     style={{
-                        color: colors.text,
+                        color: colors.fg.hex,
                         fontSize: 30,
                         fontWeight: "bold",
                         marginTop: 48,
@@ -58,7 +59,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
         >
             <UIText
                 style={{
-                    color: colors.text,
+                    color: colors.fg.hex,
                     fontSize: 30,
                     fontWeight: "bold",
                     marginBottom: 16,

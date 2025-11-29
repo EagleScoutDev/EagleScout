@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../ui/UIText";
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import Toast from "react-native-toast-message";
 import { supabase } from "../../lib/supabase";
 import { Color } from "../../lib/color";
 import { AccountRole } from "../../lib/user/account";
 import type { User } from "../../lib/user/user";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 function SortOption({ onPress, title, isActive }: { onPress: () => void; title: string; isActive: boolean }) {
     const { colors } = useTheme();
@@ -16,16 +17,16 @@ function SortOption({ onPress, title, isActive }: { onPress: () => void; title: 
                 onPress();
             }}
             style={{
-                backgroundColor: isActive ? colors.primary : colors.card,
+                backgroundColor: isActive ? colors.primary.hex : colors.bg1.hex,
                 padding: 12,
                 paddingHorizontal: 20,
                 borderRadius: 25,
                 margin: 10,
                 borderWidth: 1,
-                borderColor: colors.border,
+                borderColor: colors.border.hex,
             }}
         >
-            <UIText color={isActive ? Color.parse(colors.primary).fg : Color.parse(colors.text)}>{title}</UIText>
+            <UIText color={isActive ? Color.parse(colors.primary.hex).fg : Color.parse(colors.fg.hex)}>{title}</UIText>
         </TouchableOpacity>
     );
 }
@@ -223,25 +224,25 @@ export function ManageUsers() {
     const styles = StyleSheet.create({
         option: {
             padding: 10,
-            color: colors.text,
+            color: colors.fg.hex,
         },
         chosen: {
-            backgroundColor: colors.primary,
-            color: Color.parse(colors.primary).fg.hex,
+            backgroundColor: colors.primary.hex,
+            color: Color.parse(colors.primary.hex).fg.hex,
             padding: 10,
             borderWidth: 2,
             borderRadius: 10,
-            borderColor: colors.primary,
+            borderColor: colors.primary.hex,
             // prevent the background color from showing through the border
             overflow: "hidden",
         },
         chosenRejected: {
-            backgroundColor: colors.notification,
+            backgroundColor: colors.danger.hex,
             color: "white",
             padding: 10,
             borderWidth: 2,
             borderRadius: 10,
-            borderColor: colors.notification,
+            borderColor: colors.danger.hex,
             // prevent the background color from showing through the border
             overflow: "hidden",
         },
@@ -252,7 +253,7 @@ export function ManageUsers() {
             <View
                 style={{
                     flexDirection: "row",
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                     justifyContent: "space-around",
                     padding: 5,
 
@@ -346,13 +347,13 @@ export function ManageUsers() {
                         <View
                             style={{
                                 flexDirection: "column",
-                                backgroundColor: colors.card,
+                                backgroundColor: colors.bg1.hex,
                                 paddingTop: 15,
                                 paddingLeft: 15,
                                 margin: 5,
                                 borderRadius: 10,
                                 borderWidth: 2,
-                                borderColor: colors.border,
+                                borderColor: colors.border.hex,
                             }}
                             key={user.email}
                         >

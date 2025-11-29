@@ -1,11 +1,12 @@
 import { type FormReturnData, FormsDB } from "../../../../../database/Forms";
 import { Alert } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { UISheet } from "../../../../../ui/UISheet";
 import { Color } from "../../../../../lib/color";
 import { UIForm } from "../../../../../ui/UIForm";
 import { UIList } from "../../../../../ui/UIList";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { useTheme } from "../../../../../lib/contexts/ThemeContext.ts";
 
 export interface FormOptionsModalProps {
     data?: { form: FormReturnData };
@@ -23,14 +24,14 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                 title={"Form Options"}
                 left={{
                     text: "Cancel",
-                    color: Color.parse(colors.notification),
+                    color: Color.parse(colors.danger.hex),
                     onPress: () => {
                         modal.dismiss();
                     },
                 }}
                 right={{
                     text: "Done",
-                    color: Color.parse(colors.primary),
+                    color: Color.parse(colors.primary.hex),
                     onPress: () => {
                         modal.dismiss();
                     },
@@ -49,14 +50,14 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                         items: [
                             UIForm.Button({
                                 label: "View Questions",
-                                color: Color.parse(colors.primary),
+                                color: Color.parse(colors.primary.hex),
                                 onPress: () => {
                                     // TODO: implement this
                                 },
                             }),
                             UIForm.Button({
                                 label: "Delete",
-                                color: Color.parse(colors.notification),
+                                color: Color.parse(colors.danger.hex),
                                 onPress: () => {
                                     FormsDB.deleteForm(form)
                                         .catch((e) => {

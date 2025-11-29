@@ -1,10 +1,10 @@
-import { useTheme } from "@react-navigation/native";
 import { UIText } from "../ui/UIText";
 import { type PropsWithChildren, useState } from "react";
 import { ActivityIndicator, type StyleProp, type TextStyle, View, type ViewStyle } from "react-native";
 import { Color } from "../lib/color";
 import { PressableOpacity } from "./components/PressableOpacity";
 import type { Icon } from "./icons";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export const enum UIButtonStyle {
     fill,
@@ -48,7 +48,7 @@ export function UIButton({
     "use memo";
     const { colors } = useTheme();
 
-    color = color ?? Color.parse(colors.primary);
+    color = color ?? Color.parse(colors.primary.hex);
 
     const {
         fg: { hex: fg },

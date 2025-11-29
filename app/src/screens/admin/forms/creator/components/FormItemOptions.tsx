@@ -1,8 +1,9 @@
 import { UIForm } from "../../../../../ui/UIForm";
 import { Color } from "../../../../../lib/color";
 import { Form } from "../../../../../lib/forms";
-import { useTheme } from "@react-navigation/native";
+
 import { Arrays } from "../../../../../lib/util/Arrays";
+import { useTheme } from "../../../../../lib/contexts/ThemeContext.ts";
 import ItemType = Form.ItemType;
 
 export interface FormItemBuilderProps {
@@ -69,7 +70,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                             ),
                             UIForm.Button({
                                 label: "Add Option",
-                                color: Color.parse(colors.primary),
+                                color: Color.parse(colors.primary.hex),
                                 onPress: () => onChange({ ...value, options: [...value.options, ""] }),
                             }),
                         ],
@@ -145,7 +146,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                         items: [
                             UIForm.Button({
                                 label: "Delete Item",
-                                color: Color.parse(colors.notification),
+                                color: Color.parse(colors.danger.hex),
                                 onPress: onDelete,
                             }),
                         ],

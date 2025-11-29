@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native";
 import { exMemo } from "../../lib/util/react/memo";
-import { type Theme, useTheme } from "@react-navigation/native";
 import { NumberInput, type NumberInputProps } from "../components/NumberInput";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../theme";
 
 export interface UINumberInputProps extends NumberInputProps {}
 export function UINumberInput({ style, ...passthrough }: UINumberInputProps) {
@@ -17,7 +18,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
             height: 40,
             padding: 10,
             marginVertical: 5,
-            color: colors.text,
+            color: colors.fg.hex,
         },
     })
 );

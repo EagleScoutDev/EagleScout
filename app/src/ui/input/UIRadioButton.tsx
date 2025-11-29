@@ -1,5 +1,5 @@
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface RadioButtonProps {
     text?: string;
@@ -13,10 +13,10 @@ export function UIRadioButton({ text, value, disabled = false, onPress }: RadioB
 
     return (
         <BouncyCheckbox
-            fillColor={colors.primary}
+            fillColor={colors.primary.hex}
             text={text ?? ""}
             textStyle={{
-                color: colors.text,
+                color: colors.fg.hex,
                 textDecorationLine: "none",
             }}
             useBuiltInState={false}

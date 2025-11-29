@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { UIText } from "../../ui/UIText";
-import { type Theme, useTheme } from "@react-navigation/native";
 import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { ProfilesDB } from "../../database/Profiles";
 import { SendScoutcoinModal } from "./SendScoutcoinModal";
 import { useProfile } from "../../lib/hooks/useProfile";
 import * as Bs from "../../ui/icons";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../theme";
 
 interface LeaderboardUser {
     id: string;
@@ -42,7 +43,7 @@ const LeaderboardUserItem = ({
             alignItems: "center",
         },
         placeText: {
-            color: colors.text,
+            color: colors.fg.hex,
         },
         emoji: {
             fontSize: 34,
@@ -51,11 +52,11 @@ const LeaderboardUserItem = ({
             flexDirection: "column",
         },
         name: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontWeight: "bold",
         },
         coins: {
-            color: colors.text,
+            color: colors.fg.hex,
         },
         coinContainer: {
             flexDirection: "row",
@@ -82,7 +83,7 @@ const LeaderboardUserItem = ({
                 <UIText style={styles.name}>{user.name}</UIText>
                 <View style={styles.coinContainer}>
                     <UIText style={styles.coins}>{user.scoutcoins}</UIText>
-                    <Bs.Coin size="12" fill={colors.text} />
+                    <Bs.Coin size="12" fill={colors.fg.hex} />
                 </View>
             </View>
         </TouchableOpacity>
@@ -137,9 +138,9 @@ export function ScoutcoinLeaderboard() {
                         );
                     }}
                     style={styles.filterText}
-                    selectionColor={theme.colors.text}
-                    cursorColor={theme.colors.text}
-                    placeholderTextColor={theme.colors.text}
+                    selectionColor={theme.colors.fg.hex}
+                    cursorColor={theme.colors.fg.hex}
+                    placeholderTextColor={theme.colors.fg.hex}
                 />
             </View>
             <FlatList
@@ -171,9 +172,9 @@ const makeStyles = ({ colors }: Theme) =>
             marginHorizontal: 16,
         },
         filterText: {
-            color: colors.text,
+            color: colors.fg.hex,
             padding: 10,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             borderRadius: 5,
         },
     });

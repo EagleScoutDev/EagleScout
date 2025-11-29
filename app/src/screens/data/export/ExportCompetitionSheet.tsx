@@ -1,4 +1,3 @@
-import { useTheme } from "@react-navigation/native";
 import React from "react";
 import type { CompetitionReturnData } from "../../../database/Competitions";
 import { UISheet } from "../../../ui/UISheet";
@@ -7,6 +6,7 @@ import { Color } from "../../../lib/color";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "./export";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface ExportCompetitionSheetProps {
     data?: { competition: CompetitionReturnData };
@@ -28,7 +28,7 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
                         items: [
                             UIList.Label({
                                 label: "Export Scout Reports",
-                                labelColor: Color.parse(colors.primary),
+                                labelColor: Color.parse(colors.primary.hex),
                                 onPress: async () => {
                                     const data = await exportScoutReportsToCsv(competition);
                                     if (!data) return;
@@ -39,7 +39,7 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
                             }),
                             UIList.Label({
                                 label: "Export Pit Scout Reports",
-                                labelColor: Color.parse(colors.primary),
+                                labelColor: Color.parse(colors.primary.hex),
                                 onPress: async () => {
                                     if (!competition.pitScoutFormId) {
                                         await AsyncAlert.alert(

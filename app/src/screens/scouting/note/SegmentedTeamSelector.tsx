@@ -1,7 +1,7 @@
-import { useTheme } from "@react-navigation/native";
 import { UIText } from "../../../ui/UIText";
 import { TouchableOpacity, View } from "react-native";
 import { Color } from "../../../lib/color";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 interface SegmentedTeamSelectorProps {
     color: string;
@@ -32,7 +32,7 @@ export function SegmentedTeamSelector({
         >
             <TouchableOpacity
                 style={{
-                    backgroundColor: selectedTeam === teams[0] ? buttonActiveBackgroundColor : colors.card,
+                    backgroundColor: selectedTeam === teams[0] ? buttonActiveBackgroundColor : colors.bg1.hex,
                     padding: "2%",
                     paddingVertical: "3%",
                     borderTopLeftRadius: 10,
@@ -41,7 +41,7 @@ export function SegmentedTeamSelector({
                     alignItems: "center",
                     justifyContent: "center",
                     borderRightWidth: 1,
-                    borderRightColor: colors.background,
+                    borderRightColor: colors.bg0.hex,
                     flexDirection: "row",
                     gap: 5,
                 }}
@@ -50,7 +50,7 @@ export function SegmentedTeamSelector({
                 <UIText
                     bold
                     style={{
-                        color: selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                        color: selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.fg.hex,
                         opacity: selectedTeam === teams[0] ? 1 : 0.6,
                         textAlign: "center",
                     }}
@@ -61,7 +61,7 @@ export function SegmentedTeamSelector({
                     <UIText
                         bold
                         style={{
-                            color: selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                            color: selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.fg.hex,
                             opacity: selectedTeam === teams[0] ? 1 : 0.6,
                         }}
                     >
@@ -71,13 +71,13 @@ export function SegmentedTeamSelector({
             </TouchableOpacity>
             <TouchableOpacity
                 style={{
-                    backgroundColor: selectedTeam === teams[1] ? buttonActiveBackgroundColor : colors.card,
+                    backgroundColor: selectedTeam === teams[1] ? buttonActiveBackgroundColor : colors.bg1.hex,
                     padding: "2%",
                     flex: 1,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRightWidth: 1,
-                    borderRightColor: colors.background,
+                    borderRightColor: colors.bg0.hex,
                     flexDirection: "row",
                     gap: 5,
                 }}
@@ -86,7 +86,7 @@ export function SegmentedTeamSelector({
                 <UIText
                     bold
                     style={{
-                        color: selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                        color: selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.fg.hex,
                         opacity: selectedTeam === teams[1] ? 1 : 0.6,
                         textAlign: "center",
                     }}
@@ -97,7 +97,7 @@ export function SegmentedTeamSelector({
                     <UIText
                         bold
                         style={{
-                            color: selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                            color: selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.fg.hex,
                             opacity: selectedTeam === teams[1] ? 1 : 0.6,
                         }}
                     >
@@ -107,7 +107,7 @@ export function SegmentedTeamSelector({
             </TouchableOpacity>
             <TouchableOpacity
                 style={{
-                    backgroundColor: selectedTeam === teams[2] ? buttonActiveBackgroundColor : colors.card,
+                    backgroundColor: selectedTeam === teams[2] ? buttonActiveBackgroundColor : colors.bg1.hex,
                     padding: "2%",
                     borderTopRightRadius: 10,
                     borderBottomRightRadius: 10,
@@ -122,7 +122,7 @@ export function SegmentedTeamSelector({
                 <UIText
                     bold
                     style={{
-                        color: selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                        color: selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.fg.hex,
                         opacity: selectedTeam === teams[2] ? 1 : 0.6,
                         textAlign: "center",
                     }}
@@ -133,7 +133,7 @@ export function SegmentedTeamSelector({
                     <UIText
                         bold
                         style={{
-                            color: selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                            color: selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.fg.hex,
                             opacity: selectedTeam === teams[2] ? 1 : 0.6,
                         }}
                     >

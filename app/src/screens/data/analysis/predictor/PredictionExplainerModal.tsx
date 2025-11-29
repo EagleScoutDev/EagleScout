@@ -1,9 +1,10 @@
 import { Modal, StyleSheet, View } from "react-native";
 import { UIText } from "../../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { PredictionConfidenceTag } from "./PredictionConfidenceTag";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
 import type { Setter } from "../../../../lib/util/react/types";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 const explanations: Map<PredictionConfidence, string> = new Map([
     [
@@ -29,10 +30,10 @@ export function PredictionExplainerModal({ visible, setVisible }: PredictionExpl
             justifyContent: "space-between",
             paddingVertical: 20,
             borderBottomWidth: 1,
-            borderColor: colors.border,
+            borderColor: colors.border.hex,
         },
         explanation_text: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 16,
             flexWrap: "wrap",
             flex: 0.8,
@@ -47,7 +48,7 @@ export function PredictionExplainerModal({ visible, setVisible }: PredictionExpl
                 setVisible(false);
             }}
         >
-            <View style={{ backgroundColor: colors.card, flex: 1 }}>
+            <View style={{ backgroundColor: colors.bg1.hex, flex: 1 }}>
                 <View style={{ padding: "6%" }}>
                     <UIText size={20} bold style={{ textAlign: "center" }}>
                         Prediction Tag Explanation

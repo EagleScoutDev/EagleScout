@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { UIText } from "../ui/UIText";
 import { StandardButton } from "./StandardButton";
 import * as Bs from "./icons";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface NoInternetProps {
     onRefresh: () => void;
@@ -15,7 +15,7 @@ export function NoInternet({ onRefresh }: NoInternetProps) {
     return (
         <View
             style={{
-                backgroundColor: colors.card,
+                backgroundColor: colors.bg1.hex,
                 borderRadius: 10,
                 paddingTop: 20,
                 margin: 10,
@@ -23,7 +23,7 @@ export function NoInternet({ onRefresh }: NoInternetProps) {
                 borderColor: "red",
             }}
         >
-            <Bs.WifiOff width="100%" height="40%" fill={colors.text} />
+            <Bs.WifiOff width="100%" height="40%" fill={colors.fg.hex} />
 
             <View
                 style={{

@@ -1,5 +1,4 @@
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { type Theme, useTheme } from "@react-navigation/native";
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { UIRadio } from "../../ui/input/UIRadio.tsx";
 import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
@@ -19,6 +18,8 @@ import { exMemo } from "../../lib/util/react/memo.ts";
 import { Form } from "../../lib/forms";
 import { FormQuestion } from "../../forms/components/FormQuestion.tsx";
 import { UITextInput } from "../../ui/input/UITextInput.tsx";
+import { UIText } from "../../ui/UIText.tsx";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface MatchReportViewerProps {
     ref?: React.Ref<MatchReportViewer>;
@@ -149,13 +150,13 @@ export function MatchReportViewer({
                             !selectedHistoryId
                                 ? {
                                       text: "Edit",
-                                      color: Color.parse(colors.primary),
+                                      color: Color.parse(colors.primary.hex),
                                       onPress: () => setEditing(true),
                                   }
                                 : !editing && historyButtonVisible
                                 ? {
                                       icon: Bs.ClockHistory,
-                                      color: Color.parse(historyButtonEnabled ? colors.text : colors.primary),
+                                      color: Color.parse(historyButtonEnabled ? colors.fg.hex : colors.primary.hex),
                                       onPress: () => {
                                           setHistorySelectorModalVisible(true);
                                           setHistoryButtonEnabled(true);
@@ -165,7 +166,7 @@ export function MatchReportViewer({
                         }
                         right={{
                             text: "Done",
-                            color: Color.parse(colors.primary),
+                            color: Color.parse(colors.primary.hex),
                             onPress: () => modalRef.current?.dismiss(),
                         }}
                     />
@@ -175,12 +176,12 @@ export function MatchReportViewer({
                         title={"Scout Report"}
                         left={{
                             text: "Cancel",
-                            color: Color.parse(colors.notification),
+                            color: Color.parse(colors.danger.hex),
                             onPress: () => setEditing(false),
                         }}
                         right={{
                             text: "Save",
-                            color: Color.parse(colors.primary),
+                            color: Color.parse(colors.primary.hex),
                             onPress: () => setEditing(false),
                         }}
                     />
@@ -227,7 +228,7 @@ export function MatchReportViewer({
                             ) : (
                                 <View
                                     style={{
-                                        backgroundColor: index % 2 === 0 ? colors.card : "transparent",
+                                        backgroundColor: index % 2 === 0 ? colors.bg1.hex : "transparent",
                                         padding: 8,
                                         borderRadius: 8,
                                     }}
@@ -238,7 +239,7 @@ export function MatchReportViewer({
                                         ) : (
                                             <UIText
                                                 style={{
-                                                    color: colors.text,
+                                                    color: colors.fg.hex,
                                                     fontWeight: "bold",
                                                     fontSize: 20,
                                                     marginLeft: "auto",
@@ -280,17 +281,17 @@ function ReportMetadataView({
                     style={{
                         fontSize: 30,
                         fontWeight: "bold",
-                        color: colors.text,
+                        color: colors.fg.hex,
                     }}
                 >
                     Team #{data.teamNumber}
                 </UIText>
             </Pressable>
-            <UIText style={{ color: colors.text }}>
+            <UIText style={{ color: colors.fg.hex }}>
                 Round {data.matchNumber} of {data.competitionName}
             </UIText>
-            {userName !== null && <UIText style={{ color: colors.text }}>Submitted by {userName}</UIText>}
-            <UIText style={{ color: colors.text }}>{new Date(data.createdAt).toLocaleString()}</UIText>
+            {userName !== null && <UIText style={{ color: colors.fg.hex }}>Submitted by {userName}</UIText>}
+            <UIText style={{ color: colors.fg.hex }}>{new Date(data.createdAt).toLocaleString()}</UIText>
         </View>
     );
 }
@@ -298,7 +299,7 @@ function ReportMetadataView({
 const getStyles = exMemo((colors: Theme["colors"]) =>
     StyleSheet.create({
         sectionTitle: {
-            color: colors.text,
+            color: colors.fg.hex,
             fontSize: 18,
             textAlign: "center",
             fontWeight: "bold",
@@ -306,7 +307,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
             marginBottom: 8,
         },
         na: {
-            color: colors.notification,
+            color: colors.danger.hex,
             fontWeight: "bold",
             flexWrap: "wrap",
             fontSize: 15,

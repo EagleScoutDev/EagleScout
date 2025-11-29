@@ -1,5 +1,5 @@
 import { Alert, Keyboard } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { Color } from "../../../lib/color";
@@ -8,6 +8,7 @@ import { UIForm } from "../../../ui/UIForm";
 import { UISheetModal } from "../../../ui/UISheetModal";
 import { TBA } from "../../../lib/frc/tba/TBA.ts";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface CompetitionData {
     name: string;
@@ -90,12 +91,12 @@ export function AddCompetitionModal({ onSubmit }: AddCompetitionModalProps) {
         <>
             <UISheet.Header
                 left={{
-                    color: Color.parse(colors.notification),
+                    color: Color.parse(colors.danger.hex),
                     text: "Cancel",
                     onPress: () => void modal.dismiss(),
                 }}
                 right={{
-                    color: Color.parse(colors.primary),
+                    color: Color.parse(colors.primary.hex),
                     text: "Done",
                     onPress: () => {
                         Keyboard.dismiss();

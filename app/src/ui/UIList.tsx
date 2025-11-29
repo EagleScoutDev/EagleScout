@@ -1,12 +1,13 @@
 import { ActivityIndicator, RefreshControl, SectionList, type StyleProp, View, type ViewStyle } from "react-native";
 import { UIText } from "../ui/UIText";
 import React, { isValidElement, type Key, type ReactElement, type ReactNode, useState } from "react";
-import { type Theme, useTheme } from "@react-navigation/native";
 import * as Bs from "./icons";
 import { type Icon } from "./icons";
 import { BottomSheetSectionList } from "@gorhom/bottom-sheet";
 import type { Color } from "../lib/color";
 import { PressableOpacity } from "./components/PressableOpacity";
+import type { Theme } from "../theme";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface UIListProps {
     contentContainerStyle?: StyleProp<ViewStyle>;
@@ -167,11 +168,11 @@ function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps
                 <View style={labelStyles.label}>
                     {icon && (
                         <View style={labelStyles.icon}>
-                            {icon === true ? null : icon({ size: 18, fill: colors.primary })}
+                            {icon === true ? null : icon({ size: 18, fill: colors.primary.hex })}
                         </View>
                     )}
                     {label !== undefined && (
-                        <UIText style={labelStyles.text(colors, labelColor)} numberOfLines={1}>
+                        <UIText size={16} color={labelColor} style={labelStyles.text} numberOfLines={1}>
                             {label}
                         </UIText>
                     )}
@@ -179,7 +180,7 @@ function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps
             )}
             <View style={labelStyles.body}>
                 {body?.()}
-                {caret && <Bs.ChevronRight size="16" style={labelStyles.caret} />}
+                {caret && <Bs.ChevronRight size="16" color={colors.fg.level(1).hex} />}
             </View>
         </>
     );
@@ -199,7 +200,7 @@ const getListStyles = (colors: Theme["colors"]) =>
             marginBottom: 5,
         },
         sectionHeaderText: {
-            color: colors.text,
+            color: colors.fg.hex,
             opacity: 0.6,
             fontSize: 12,
             fontWeight: "bold",
@@ -213,22 +214,22 @@ const getListStyles = (colors: Theme["colors"]) =>
             marginBottom: 0,
         },
         sectionFooterText: {
-            color: colors.text,
+            color: colors.fg.hex,
             opacity: 0.6,
             fontSize: 12,
         },
 
         itemSeparator: {
             borderBottomWidth: 1,
-            borderBottomColor: colors.border,
+            borderBottomColor: colors.border.hex,
         },
 
         item: {
             minHeight: 48,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             borderLeftWidth: 1,
             borderRightWidth: 1,
-            borderColor: colors.border,
+            borderColor: colors.border.hex,
 
             width: "100%",
             flexDirection: "row",
@@ -263,19 +264,13 @@ const labelStyles = {
         alignItems: "center",
         justifyContent: "center",
     },
-    text: (colors: Theme["colors"], textColor: Color | undefined) =>
-        ({
-            flexShrink: 1,
-            fontSize: 16,
-            fontWeight: "normal",
-            color: textColor?.hex ?? colors.text,
-        } as const),
-
+    text: {
+        flexShrink: 1,
+    },
     body: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
         flex: 1,
     },
-    caret: {},
 } as const;

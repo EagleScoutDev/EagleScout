@@ -1,7 +1,7 @@
-import { useTheme } from "@react-navigation/native";
 import { BettingInfoStep } from "./BettingInfoStep";
 import { Image, Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export function SelectAllianceStep() {
     const { colors } = useTheme();
@@ -10,7 +10,7 @@ export function SelectAllianceStep() {
             <BottomSheetView style={{ flexDirection: "row", gap: 20, width: "100%" }}>
                 <Pressable
                     style={{
-                        backgroundColor: colors.card,
+                        backgroundColor: colors.bg1.hex,
                         opacity: 1,
                         padding: 20,
                         borderRadius: 10,
@@ -28,7 +28,7 @@ export function SelectAllianceStep() {
                 </Pressable>
                 <Pressable
                     style={{
-                        backgroundColor: colors.card,
+                        backgroundColor: colors.bg1.hex,
                         opacity: 0.5,
                         padding: 20,
                         borderRadius: 10,

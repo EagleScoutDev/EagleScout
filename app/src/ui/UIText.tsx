@@ -5,7 +5,7 @@ import { useTheme } from "../lib/contexts/ThemeContext.ts";
 export interface UITextProps extends Omit<TextProps, "role"> {
     size?: number;
     level?: 0 | 1 | 2 | 3;
-    color?: Color | false;
+    color?: Color | false | undefined | null;
     bold?: boolean;
     italic?: boolean;
     underline?: boolean;

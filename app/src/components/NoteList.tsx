@@ -1,10 +1,10 @@
 import { FlatList, Modal, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
 import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes";
 import * as Bs from "../ui/icons";
 import { UIButton } from "../ui/UIButton";
 import { UIText } from "../ui/UIText.tsx";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export enum FilterType {
     // todo: allow note list to accept and display team #
@@ -40,13 +40,13 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
 
     const styles = StyleSheet.create({
         filterOption: {
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             padding: "3%",
             paddingHorizontal: "5%",
             borderRadius: 10,
             margin: "1%",
             borderWidth: 2,
-            borderColor: colors.border,
+            borderColor: colors.border.hex.hex,
         },
     });
 
@@ -62,14 +62,14 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
             >
                 <TextInput
                     placeholder={"Search"}
-                    placeholderTextColor={colors.text}
+                    placeholderTextColor={colors.fg.hex}
                     onChangeText={(text) => setSearchTerm(text)}
                     style={{
-                        color: colors.text,
-                        backgroundColor: colors.card,
+                        color: colors.fg.hex,
+                        backgroundColor: colors.bg1.hex,
                         padding: 8,
                         borderWidth: 1,
-                        borderColor: colors.border,
+                        borderColor: colors.border.hex.hex,
                         borderRadius: 10,
                         flex: 1,
                     }}
@@ -86,9 +86,9 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                     renderItem={({ item }) => (
                         <View
                             style={{
-                                backgroundColor: colors.card,
+                                backgroundColor: colors.bg1.hex,
                                 borderWidth: 1,
-                                borderColor: colors.border,
+                                borderColor: colors.border.hex.hex,
                                 borderRadius: 10,
                                 padding: 16,
                             }}
@@ -109,10 +109,10 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
             {filteredNotes.length === 0 && (
                 <View
                     style={{
-                        backgroundColor: colors.card,
+                        backgroundColor: colors.bg1.hex,
                         padding: "5%",
                         borderWidth: 1,
-                        borderColor: colors.border,
+                        borderColor: colors.border.hex.hex,
                         borderRadius: 10,
                         justifyContent: "center",
                         alignItems: "center",
@@ -130,7 +130,7 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                         }}
                         onTouchEnd={() => setFilterModalVisible(false)}
                     />
-                    <View style={styles.container}>
+                    <View>
                         <UIText size={24} bold style={{ marginBottom: "5%" }}>
                             Filter By
                         </UIText>
@@ -141,7 +141,8 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                             }}
                             style={{
                                 ...styles.filterOption,
-                                borderColor: filterBy === FilterType.MATCH_NUMBER ? colors.primary : colors.background,
+                                borderColor:
+                                    filterBy === FilterType.MATCH_NUMBER ? colors.primary.hex.hex : colors.bg0.hex,
                             }}
                         >
                             <UIText size={18}>Match/Team</UIText>
@@ -153,7 +154,7 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                             }}
                             style={{
                                 ...styles.filterOption,
-                                borderColor: filterBy === FilterType.TEXT ? colors.primary : colors.background,
+                                borderColor: filterBy === FilterType.TEXT ? colors.primary.hex.hex : colors.bg0.hex,
                             }}
                         >
                             <UIText size={18}>Text</UIText>

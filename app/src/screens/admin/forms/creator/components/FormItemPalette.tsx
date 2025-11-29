@@ -2,8 +2,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { UIButton, UIButtonStyle } from "../../../../../ui/UIButton";
 import { Color } from "../../../../../lib/color";
 import { StyleSheet } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import type { Icon } from "../../../../../ui/icons";
+import { useTheme } from "../../../../../lib/contexts/ThemeContext.ts";
 
 export interface FormItemToolbarProps<T extends string = string> {
     items: readonly { readonly key: T; readonly icon: Icon; readonly name: string }[];
@@ -32,11 +33,11 @@ export function FormItemPalette<T extends string = string>({ items, onPress }: F
                 <UIButton
                     key={key}
                     style={UIButtonStyle.fill}
-                    color={Color.parse(colors.card)}
+                    color={Color.parse(colors.bg1.hex)}
                     buttonStyle={styles.item}
                     onPress={() => onPress(key)}
                 >
-                    {icon({ size: 24, fill: colors.primary })}
+                    {icon({ size: 24, fill: colors.primary.hex })}
                 </UIButton>
             ))}
         </ScrollView>

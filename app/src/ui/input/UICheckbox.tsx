@@ -1,6 +1,7 @@
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { useTheme } from "@react-navigation/native";
+
 import type { StyleProp, ViewStyle } from "react-native";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface CheckboxProps {
     text?: string;
@@ -15,7 +16,7 @@ export function UICheckbox({ text, value, disabled = false, onInput, style }: Ch
 
     return (
         <BouncyCheckbox
-            fillColor={colors.primary}
+            fillColor={colors.primary.hex}
             text={text ?? ""}
             style={style}
             iconStyle={{
@@ -25,7 +26,7 @@ export function UICheckbox({ text, value, disabled = false, onInput, style }: Ch
                 borderRadius: 3,
             }}
             textStyle={{
-                color: colors.text,
+                color: colors.fg.hex,
                 textDecorationLine: "none",
             }}
             disabled={disabled}

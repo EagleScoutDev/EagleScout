@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { UIText } from "../../../../ui/UIText";
 import { Alert, FlatList, Modal, Pressable, TextInput, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { StandardButton } from "../../../../ui/StandardButton";
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
 import { TeamAddingModal } from "./TeamAddingModal";
 import * as Bs from "../../../../ui/icons";
 import { Color } from "../../../../lib/color.ts";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface DoNotPickModalProps {
     visible: boolean;
@@ -49,7 +50,7 @@ export function DoNotPickModal({
             <View
                 style={{
                     flex: 1,
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                 }}
             >
                 <View
@@ -58,7 +59,7 @@ export function DoNotPickModal({
                         borderRadius: 10,
                     }}
                 >
-                    <UIText size={30} bold color={Color.parse(colors.notification)} style={{ textAlign: "center" }}>
+                    <UIText size={30} bold color={Color.parse(colors.danger.hex)} style={{ textAlign: "center" }}>
                         Do Not Pick
                     </UIText>
                     <View
@@ -79,7 +80,7 @@ export function DoNotPickModal({
                             style={{
                                 marginHorizontal: "4%",
                                 height: 40,
-                                color: colors.text,
+                                color: colors.fg.hex,
                                 flex: 1,
                             }}
                             onChangeText={(text) => setSearchTerm(text)}
@@ -96,7 +97,7 @@ export function DoNotPickModal({
                             flexDirection: "row",
                             justifyContent: "space-between",
                             borderBottomWidth: 1,
-                            borderColor: colors.border,
+                            borderColor: colors.border.hex,
                             paddingVertical: "2%",
                         }}
                     >
@@ -138,7 +139,7 @@ export function DoNotPickModal({
                                         flexDirection: "row",
                                         justifyContent: "space-between",
                                         borderBottomWidth: 1,
-                                        borderColor: colors.border,
+                                        borderColor: colors.border.hex,
                                         paddingVertical: "2%",
                                     }}
                                 >
@@ -153,7 +154,7 @@ export function DoNotPickModal({
                         }}
                     />
                     <StandardButton
-                        color={colors.primary}
+                        color={colors.primary.hex}
                         width={"100%"}
                         text={"Add teams to Do Not Pick"}
                         onPress={() => {

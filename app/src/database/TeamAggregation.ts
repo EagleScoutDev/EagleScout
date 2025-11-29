@@ -55,6 +55,27 @@ export class TeamAggregation {
     }
 
     /**
+     * Given a list of teams, a competition, and a list of questions, return the probability of each alliance winning.
+     * @param teams
+     * @param compId
+     * @param chosenQuestionIndices
+     */
+    static async getWinPrediction(teams: number[], compId: number, chosenQuestionIndices: number[]) {
+        let teamsWithData: TeamWithData[] = await this.getProcessedDataForTeams(teams, compId, chosenQuestionIndices);
+
+        return this.finalWinnerCalculation(teams, teamsWithData);
+    }
+
+    static getNumReportsPerTeam = async (teams: number[], compId: number) => {
+        let tempNumReports: number[] = [];
+        for (let i = 0; i < teams.length; i++) {
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(teams[i], compId);
+            tempNumReports.push(reports.length);
+        }
+        return tempNumReports;
+    };
+
+    /**
      * This function returns a sum.
      * @param reports an array of arrays of numbers to process
      * @param indices an array of indices to include in the calculation
@@ -253,26 +274,5 @@ export class TeamAggregation {
         }
         console.log("temp: " + temp);
         return temp;
-    };
-
-    /**
-     * Given a list of teams, a competition, and a list of questions, return the probability of each alliance winning.
-     * @param teams
-     * @param compId
-     * @param chosenQuestionIndices
-     */
-    static async getWinPrediction(teams: number[], compId: number, chosenQuestionIndices: number[]) {
-        let teamsWithData: TeamWithData[] = await this.getProcessedDataForTeams(teams, compId, chosenQuestionIndices);
-
-        return this.finalWinnerCalculation(teams, teamsWithData);
-    }
-
-    static getNumReportsPerTeam = async (teams: number[], compId: number) => {
-        let tempNumReports: number[] = [];
-        for (let i = 0; i < teams.length; i++) {
-            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(teams[i], compId);
-            tempNumReports.push(reports.length);
-        }
-        return tempNumReports;
     };
 }

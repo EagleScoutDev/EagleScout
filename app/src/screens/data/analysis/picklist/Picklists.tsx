@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../../../ui/UIText";
 import { Alert, FlatList, Pressable, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { StandardButton } from "../../../../ui/StandardButton";
 import { CompetitionsDB } from "../../../../database/Competitions";
 import { PicklistsDB, type PicklistStructure } from "../../../../database/Picklists";
 import { ProfilesDB } from "../../../../database/Profiles";
 import * as Bs from "../../../../ui/icons";
 import type { DataMenuScreenProps } from "../../DataMain";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface PicklistsProps extends DataMenuScreenProps<"Picklists"> {}
 export function Picklists({ navigation }: PicklistsProps) {
@@ -123,7 +124,7 @@ export function Picklists({ navigation }: PicklistsProps) {
                                         );
                                     }}
                                     style={{
-                                        backgroundColor: colors.card,
+                                        backgroundColor: colors.bg1.hex,
                                         padding: "5%",
                                         borderRadius: 10,
                                         marginTop: "5%",
@@ -131,7 +132,8 @@ export function Picklists({ navigation }: PicklistsProps) {
                                         flexDirection: "row",
                                         // alignItems: 'center',
                                         borderWidth: hoveredPicklistID === item.name ? 1.5 : 1,
-                                        borderColor: hoveredPicklistID === item.name ? colors.primary : colors.border,
+                                        borderColor:
+                                            hoveredPicklistID === item.name ? colors.primary.hex : colors.border.hex,
                                     }}
                                 >
                                     <View>
@@ -154,7 +156,7 @@ export function Picklists({ navigation }: PicklistsProps) {
                         }}
                     />
                     <StandardButton
-                        color={colors.primary}
+                        color={colors.primary.hex}
                         onPress={() => {
                             navigation.navigate("Creator", {
                                 picklist_id: -1,

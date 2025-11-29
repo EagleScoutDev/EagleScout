@@ -2,11 +2,12 @@ import { type FC, useMemo, useState } from "react";
 import { UIText } from "../../../ui/UIText";
 import { StyleSheet, View } from "react-native";
 import { ProfileEmojiModal } from "./items/ProfileEmojiModal";
-import { type Theme, useTheme } from "@react-navigation/native";
 import { ConfirmPurchaseModal } from "./ConfirmPurchaseModal";
 import { AppThemeModal } from "./items/AppThemeModal";
 import * as Bs from "../../../ui/icons";
 import { PressableOpacity } from "../../../ui/components/PressableOpacity";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../../theme";
 
 type ModalProps = {
     onClose: () => void;
@@ -61,11 +62,11 @@ export function ScoutcoinShop() {
                             setConfirmPurchaseModalVisible(true);
                         }}
                     >
-                        <value.icon size="50" fill={colors.text} />
+                        <value.icon size="50" fill={colors.fg.hex} />
                         <UIText style={styles.itemNameText}>{value.name}</UIText>
                         <View style={styles.coinContainer}>
                             <UIText style={styles.costText}>{value.cost}</UIText>
-                            <Bs.Coin size="12" fill={colors.text} />
+                            <Bs.Coin size="12" fill={colors.fg.hex} />
                         </View>
                     </PressableOpacity>
                 ))}
@@ -107,7 +108,7 @@ const makeStyles = (colors: Theme["colors"]) =>
             fontWeight: "bold",
             textAlign: "center",
             marginBottom: 20,
-            color: colors.text,
+            color: colors.fg.hex,
         },
         itemsContainer: {
             flexDirection: "row",
@@ -122,8 +123,8 @@ const makeStyles = (colors: Theme["colors"]) =>
             padding: 10,
             borderRadius: 10,
             borderWidth: 1,
-            borderColor: colors.border,
-            backgroundColor: colors.card,
+            borderColor: colors.border.hex,
+            backgroundColor: colors.bg1.hex,
             display: "flex",
             alignItems: "center",
             gap: 5,
@@ -132,7 +133,7 @@ const makeStyles = (colors: Theme["colors"]) =>
             fontSize: 14,
             fontWeight: "bold",
             textAlign: "center",
-            color: colors.text,
+            color: colors.fg.hex,
         },
         coinContainer: {
             flexDirection: "row",
@@ -140,6 +141,6 @@ const makeStyles = (colors: Theme["colors"]) =>
             gap: 2,
         },
         costText: {
-            color: colors.text,
+            color: colors.fg.hex,
         },
     });

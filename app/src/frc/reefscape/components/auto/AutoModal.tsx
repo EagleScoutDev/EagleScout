@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { ActionGrid } from "./ActionGrid";
 import { UISheet } from "../../../../ui/UISheet";
@@ -14,6 +14,7 @@ import { ReefSextant } from "../../field";
 import { AutoField } from "./AutoField";
 import { ActionButton } from "./ActionButton";
 import { ActionRow } from "./ActionRow";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 interface AutoModalProps {
     orientation: Orientation;
@@ -38,7 +39,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
         <>
             <UISheet.Header
                 title={"Auto"}
-                right={{ color: Color.parse(colors.primary), text: "Done", onPress: () => void modal.dismiss() }}
+                right={{ color: Color.parse(colors.primary.hex), text: "Done", onPress: () => void modal.dismiss() }}
             />
             <View style={{ paddingHorizontal: 16, paddingBottom: 16, flex: 1 }}>
                 {levelChooserActive ? (
@@ -89,9 +90,9 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                             style={{
                                 width: "100%",
                                 maxWidth: "100%",
-                                backgroundColor: colors.card,
+                                backgroundColor: colors.bg1.hex,
                                 borderWidth: 1,
-                                borderColor: colors.border,
+                                borderColor: colors.border.hex,
                                 borderRadius: 10,
                                 overflow: "hidden",
                                 aspectRatio: 1,

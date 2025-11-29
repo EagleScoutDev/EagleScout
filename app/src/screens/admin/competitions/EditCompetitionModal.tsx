@@ -1,10 +1,11 @@
 import { Alert } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { Color } from "../../../lib/color";
 import { UISheet } from "../../../ui/UISheet";
 import { UIForm } from "../../../ui/UIForm";
 import { UISheetModal } from "../../../ui/UISheetModal";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface CompetitionPatch {
     id: number;
@@ -78,11 +79,11 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
         <UISheetModal ref={sheetRef} handleComponent={null}>
             <UISheet.Header
                 left={{
-                    color: Color.parse(colors.notification),
+                    color: Color.parse(colors.danger.hex),
                     text: "Cancel",
                     onPress: () => sheetRef.current?.dismiss(),
                 }}
-                right={{ color: Color.parse(colors.primary), text: "Done", onPress: trySubmit }}
+                right={{ color: Color.parse(colors.primary.hex), text: "Done", onPress: trySubmit }}
                 title={"Edit Competition"}
             />
             <UIForm bottomSheet={true}>
@@ -119,7 +120,7 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
                         items: [
                             UIForm.Button({
                                 label: "Delete Competition",
-                                color: Color.parse(colors.notification),
+                                color: Color.parse(colors.danger.hex),
                                 onPress: tryDelete,
                             }),
                         ],

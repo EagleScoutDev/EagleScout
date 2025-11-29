@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UIText } from "../../../ui/UIText";
 import { Alert, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import Toast from "react-native-toast-message";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
 import { TeamInformation } from "../components/TeamInformation";
@@ -17,6 +17,7 @@ import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
 import { Arrays } from "../../../lib/util/Arrays";
 import { PitScoutingImageList } from "./PitScoutingImageList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 const Tab = createMaterialTopTabNavigator();
 export type PitFlowScreenProps<K extends keyof PitFlowParamList> = MaterialTopTabScreenProps<PitFlowParamList, K>;
@@ -125,10 +126,10 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
                 <Tab.Navigator
                     screenOptions={{
                         tabBarStyle: {
-                            backgroundColor: colors.background,
+                            backgroundColor: colors.bg0.hex,
                         },
                         tabBarLabelStyle: {
-                            color: colors.text,
+                            color: colors.fg.hex,
                             fontSize: 12,
                             fontWeight: "bold",
                         },

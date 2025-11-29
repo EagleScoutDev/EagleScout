@@ -1,8 +1,9 @@
 import { Modal, TouchableWithoutFeedback, View } from "react-native";
 import { UIText } from "../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import type { PropsWithChildren } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface StandardModalProps extends PropsWithChildren {
     visible: boolean;
@@ -40,7 +41,7 @@ export function UIModal({ visible, title, onDismiss, backdropPressBehavior, chil
                                     width: "85%",
                                     maxWidth: 400,
                                     maxHeight: 800,
-                                    backgroundColor: colors.card,
+                                    backgroundColor: colors.bg1.hex,
                                     justifyContent: "center",
                                     alignItems: "center",
                                     borderRadius: 20,

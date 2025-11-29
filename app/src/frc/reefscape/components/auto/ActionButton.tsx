@@ -1,7 +1,7 @@
 import { Color } from "../../../../lib/color";
 import { UIText } from "../../../../ui/UIText";
 import { Pressable } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface ActionButtonProps {
     label: string;
@@ -14,7 +14,7 @@ export function ActionButton({ label, role, value, onPress }: ActionButtonProps)
     "use memo";
 
     const { colors } = useTheme();
-    const color = role === "success" ? Color.parse(colors.primary) : Color.parse(colors.notification);
+    const color = role === "success" ? Color.parse(colors.primary.hex) : Color.parse(colors.danger.hex);
 
     return (
         <Pressable

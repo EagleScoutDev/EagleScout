@@ -1,7 +1,7 @@
 import { ActivityIndicator, Alert, Linking, Pressable, View } from "react-native";
 import { InternetStatus } from "../../lib/InternetStatus";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { type SettingsMenuScreenProps } from "./SettingsMenu";
 import * as Bs from "../../ui/icons";
 import { CompetitionsDB } from "../../database/Competitions";
@@ -13,6 +13,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "../../ui/navigation/TabHeader";
 import { AccountRole } from "../../lib/user/account";
 import { UIText } from "../../ui/UIText";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {
@@ -127,7 +128,7 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                                     <UIText>{AccountRole.getName(account.role)}</UIText>
                                                 </View>
                                                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                                                    <Bs.Coin size={24} fill={colors.text} />
+                                                    <Bs.Coin size={24} fill={colors.fg.hex} />
                                                     <UIText size={18}>{scoutcoins}</UIText>
                                                 </View>
                                             </>

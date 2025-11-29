@@ -1,6 +1,6 @@
 import { TouchableOpacity, View } from "react-native";
 import { UIText } from "../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface SegmentedOptionProps<T extends string> {
     options: { title: T }[];
@@ -19,7 +19,7 @@ export function UISegmentedControl<T extends string>({ options, selected, onPres
                 alignContent: "center",
                 padding: 2,
                 borderRadius: 10,
-                backgroundColor: colors.border, //< TODO: this isn't a border
+                backgroundColor: colors.border.hex, //< TODO: this isn't a border
             }}
         >
             {options.map(({ title }) => (
@@ -30,8 +30,8 @@ export function UISegmentedControl<T extends string>({ options, selected, onPres
                         padding: 10,
                         borderWidth: selected === title ? 2 : 0,
                         borderRadius: 8,
-                        borderColor: colors.primary,
-                        backgroundColor: selected === title ? colors.background : colors.border,
+                        borderColor: colors.primary.hex,
+                        backgroundColor: selected === title ? colors.bg0.hex : colors.border.hex,
                     }}
                     onPress={() => onPress(title)}
                 >

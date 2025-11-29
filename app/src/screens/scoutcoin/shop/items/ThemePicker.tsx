@@ -1,7 +1,8 @@
 import { Pressable, ScrollView, View } from "react-native";
 import { UIText } from "../../../../ui/UIText";
-import { useTheme } from "@react-navigation/native";
+
 import { Theme, ThemeOption } from "../../../../theme";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface ThemePickerProps {
     options: { id: ThemeOption; name: string }[];
@@ -20,7 +21,7 @@ export function ThemePicker({ options, value, onSubmit }: ThemePickerProps) {
                     padding: 2,
                     borderRadius: 10,
                     borderWidth: 2,
-                    borderColor: colors.border,
+                    borderColor: colors.border.hex,
                     alignContent: "center",
                     height: "36%",
                 }}
@@ -37,11 +38,11 @@ export function ThemePicker({ options, value, onSubmit }: ThemePickerProps) {
                                 flex: 1,
                                 borderWidth: 2,
                                 borderRadius: 10,
-                                borderColor: selected ? colors.text : colors.card,
+                                borderColor: selected ? colors.fg.hex : colors.bg1.hex,
                                 padding: 10,
                                 justifyContent: "space-between",
                                 alignItems: "center",
-                                backgroundColor: selected ? colors.background : colors.card,
+                                backgroundColor: selected ? colors.bg0.hex : colors.bg1.hex,
                             }}
                         >
                             <View style={{ flexDirection: "row", alignItems: "center" }}>

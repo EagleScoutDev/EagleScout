@@ -19,7 +19,11 @@ export function About({}: AboutProps) {
                             items: [
                                 UIList.Label({
                                     label: "Version",
-                                    body: () => <UIText size={16} level={1}>{VERSION}</UIText>,
+                                    body: () => (
+                                        <UIText size={16} level={1}>
+                                            {VERSION}
+                                        </UIText>
+                                    ),
                                 }),
                             ],
                         }),

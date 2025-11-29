@@ -1,6 +1,6 @@
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { QuestionSummary } from "./QuestionSummary";
 import { CompetitionsDB } from "../../database/Competitions";
 import { isTablet } from "../../lib/deviceType";
@@ -8,6 +8,7 @@ import { type MatchReportReturnData, MatchReportsDB } from "../../database/Scout
 import * as Bs from "../../ui/icons";
 import { UIText } from "../../ui/UIText";
 import { Color } from "../../lib/color.ts";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export function ScoutSummary({ team_number, competitionId }: { team_number: number; competitionId: number }) {
     const { colors } = useTheme();
@@ -40,7 +41,7 @@ export function ScoutSummary({ team_number, competitionId }: { team_number: numb
                     flexDirection: "column",
                     // align content horizontally
                     alignItems: "center",
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                     marginHorizontal: "5%",
                     padding: "5%",
                     borderRadius: 12,
@@ -50,7 +51,7 @@ export function ScoutSummary({ team_number, competitionId }: { team_number: numb
                     minWidth: "85%",
                 }}
             >
-                <UIText size={20} color={Color.parse(colors.notification)} style={{ textAlign: "center" }}>
+                <UIText size={20} color={Color.parse(colors.danger.hex)} style={{ textAlign: "center" }}>
                     No reports found for this team.
                 </UIText>
             </View>

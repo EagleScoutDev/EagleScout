@@ -1,10 +1,9 @@
 import { type PitReportReturnData } from "../database/ScoutPitReports";
 import { FlatList, TouchableOpacity, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
 import { PitScoutViewer } from "./modals/PitScoutViewer";
 import { useState } from "react";
 import { UIText } from "../ui/UIText.tsx";
-import { Color } from "../lib/color.ts";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface PitScoutReportListProps {
     reports: PitReportReturnData[] | null;
@@ -21,7 +20,7 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                 style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                     width: "80%",
                     alignSelf: "center",
                     borderRadius: 15,
@@ -29,7 +28,7 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                     marginTop: 20,
                 }}
             >
-                <UIText size={16} color={Color.parse(colors.notification)} bold style={{ paddingHorizontal: "10%" }}>
+                <UIText size={16} color={colors.danger} bold style={{ paddingHorizontal: "10%" }}>
                     No reports found.
                 </UIText>
             </View>
@@ -94,14 +93,14 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                         <View
                             style={{
                                 display: "flex",
-                                backgroundColor: colors.card,
+                                backgroundColor: colors.bg1.hex,
                                 width: "90%",
                                 alignSelf: "center",
                                 borderRadius: 15,
                                 padding: 20,
                                 marginVertical: 5,
                                 borderWidth: 1,
-                                borderColor: colors.border,
+                                borderColor: colors.border.hex,
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                             }}

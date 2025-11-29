@@ -1,7 +1,7 @@
 import { ActivityIndicator, Alert, View } from "react-native";
 import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl";
 import { FormHelper } from "../../../FormHelper";
 import { NotesDB, type NoteWithMatch, type OfflineNote } from "../../../database/ScoutNotes";
@@ -11,6 +11,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { Color } from "../../../lib/color";
 import type { SettingsMenuScreenProps } from "../SettingsMenu";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export function SubmittedNotes({ route }: SettingsMenuScreenProps<"Scout/ViewNotes">) {
     const { competitionId } = route.params;
@@ -69,7 +70,7 @@ export function SubmittedNotes({ route }: SettingsMenuScreenProps<"Scout/ViewNot
                                 padding: 20,
                                 borderRadius: 10,
                                 alignContent: "center",
-                                backgroundColor: colors.border,
+                                backgroundColor: colors.border.hex,
                             }}
                         >
                             <UIText size={20} bold style={{ textAlign: "center" }}>

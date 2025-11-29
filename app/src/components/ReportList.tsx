@@ -1,13 +1,14 @@
 import { KeyboardAvoidingView, SectionList, View } from "react-native";
 import { UIText } from "../ui/UIText";
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { useCurrentCompetition } from "../lib/hooks/useCurrentCompetition.ts";
 import { Arrays } from "../lib/util/Arrays.ts";
 import type { MatchReportReturnData } from "../database/ScoutMatchReports.ts";
 import { PressableOpacity } from "../ui/components/PressableOpacity.tsx";
 import { MatchReportViewer } from "./modals/MatchReportViewer.tsx";
 import { Color } from "../lib/color.ts";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface ReportListProps {
     reports: MatchReportReturnData[];
@@ -48,13 +49,13 @@ export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListPro
                 style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: colors.card,
+                    backgroundColor: colors.bg1.hex,
                     alignSelf: "center",
                     borderRadius: 15,
                     padding: 20,
                 }}
             >
-                <UIText size={16} bold color={Color.parse(colors.notification)} style={{ paddingHorizontal: "10%" }}>
+                <UIText size={16} bold color={Color.parse(colors.danger.hex)} style={{ paddingHorizontal: "10%" }}>
                     No reports found.
                 </UIText>
             </View>
@@ -74,8 +75,8 @@ export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListPro
                         <PressableOpacity
                             onPress={() => setChosenReport(item)}
                             style={{
-                                backgroundColor: colors.card,
-                                borderColor: colors.border,
+                                backgroundColor: colors.bg1.hex,
+                                borderColor: colors.border.hex,
                                 borderWidth: 1,
                                 borderRadius: 10,
                                 padding: 8,

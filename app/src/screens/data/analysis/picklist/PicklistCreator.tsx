@@ -11,7 +11,6 @@ import {
     UIManager,
     View,
 } from "react-native";
-import { useNavigation, useTheme } from "@react-navigation/native";
 import DraggableFlatList, { type RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 import { TeamAddingModal } from "./TeamAddingModal";
 import { TagsModal } from "./TagsModal";
@@ -35,6 +34,8 @@ import type { Setter } from "../../../../lib/util/react/types";
 import type { DataMenuScreenProps } from "../../DataMain";
 import { UIText } from "../../../../ui/UIText";
 import { UITextInput } from "../../../../ui/input/UITextInput.tsx";
+import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface PicklistCreatorParams {
     picklist_id: number;
@@ -42,6 +43,8 @@ export interface PicklistCreatorParams {
 }
 export interface PicklistCreatorProps extends DataMenuScreenProps<"Picklists/Create"> {}
 export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
+    "use memo";
+
     const { colors } = useTheme();
     const rootNavigation = useNavigation();
 
@@ -165,7 +168,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         gap: 10,
                     }}
                 >
-                    {presetPicklist && syncing && <ActivityIndicator size="small" color={colors.primary} />}
+                    {presetPicklist && syncing && <ActivityIndicator size="small" color={colors.primary.hex} />}
                     {presetPicklist && !syncing && (
                         <Pressable onPress={() => fetchPicklist()}>
                             <Bs.ArrowClockwise size="30" fill="gray" style={{ marginRight: "5%" }} />
@@ -177,7 +180,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         </Pressable>
                     )}
                     <Pressable onPress={() => setDraggingActive((prev) => !prev)}>
-                        <Bs.PencilSquare size="24" fill={dragging_active ? colors.primary : "dimgray"} />
+                        <Bs.PencilSquare size="24" fill={dragging_active ? colors.primary.hex : "dimgray"} />
                     </Pressable>
                 </View>
             ),
@@ -383,7 +386,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             fontWeight: name ? "normal" : "200",
         },
         container: {
-            color: colors.text,
+            color: colors.fg.hex,
             padding: "5%",
             flex: 1,
         },
@@ -396,8 +399,8 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             padding: "2%",
             flexDirection: "column",
             alignItems: "center",
-            backgroundColor: colors.card,
-            borderColor: colors.border,
+            backgroundColor: colors.bg1.hex,
+            borderColor: colors.border.hex,
             borderWidth: 1,
             borderRadius: 10,
             marginVertical: 8,
@@ -418,7 +421,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         modal_activation_button_container: {
             width: "16%",
             height: 30,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             borderRadius: 10,
             padding: "2%",
             margin: "2%",
@@ -435,7 +438,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                 <Pressable
                     style={{
                         ...styles.team_item_in_list,
-                        backgroundColor: isActive ? colors.card : colors.background,
+                        backgroundColor: isActive ? colors.bg1.hex : colors.bg0.hex,
                     }}
                     onPressIn={drag}
                 >
@@ -445,7 +448,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                             alignItems: "center",
                         }}
                     >
-                        <BouncyCheckbox isChecked={false} disabled={true} fillColor={colors.primary} />
+                        <BouncyCheckbox isChecked={false} disabled={true} fillColor={colors.primary.hex} />
                         <UIText level={1}>{teams_list.indexOf(item) + 1}</UIText>
                         <UIText size={18} style={{ flex: 1, marginLeft: "5%" }}>
                             {item.team_number}
@@ -556,7 +559,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 }
                             }}
                             style={{
-                                backgroundColor: filteredTags.has(tag) ? getTagFromTagId(tag)?.color : colors.card,
+                                backgroundColor: filteredTags.has(tag) ? getTagFromTagId(tag)?.color : colors.bg1.hex,
                                 paddingHorizontal: "4%",
                                 paddingVertical: "2%",
                                 margin: 4,
@@ -571,7 +574,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 style={{
                                     color: filteredTags.has(tag)
                                         ? Color.parse(getTagFromTagId(tag)?.color ?? "").fg.hex
-                                        : colors.text,
+                                        : colors.fg.hex,
                                     fontWeight: filteredTags.has(tag) ? "bold" : "normal",
                                 }}
                             >
@@ -599,7 +602,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                 <Pressable onPress={() => setTeamAddingModalVisible(true)}>
                     <UIText
                         style={{
-                            color: colors.primary,
+                            color: colors.primary.hex,
                             fontSize: 20,
                             fontWeight: "bold",
                             textAlign: "center",
@@ -674,7 +677,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                         <BouncyCheckbox
                                             isChecked={removed_teams.includes(item)}
                                             disabled={item !== selectedTeam && selectedTeam !== null}
-                                            fillColor={colors.primary}
+                                            fillColor={colors.primary.hex}
                                             onPress={() => {
                                                 addOrRemoveTeamLiveMode(item);
                                                 ReactNativeHapticFeedback.trigger("notificationSuccess", {
@@ -689,7 +692,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                 removed_teams.includes(item)
                                                     ? {
                                                           ...styles.team_number_displayed,
-                                                          color: colors.text,
+                                                          color: colors.fg.hex,
                                                           opacity: 0.5,
                                                           textDecorationLine: "line-through",
                                                           textDecorationStyle: "solid",

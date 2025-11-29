@@ -1,8 +1,9 @@
 import { type PropsWithChildren, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { Statbotics } from "../lib/frc/statbotics";
 import { UIText } from "../ui/UIText";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
 
@@ -57,9 +58,9 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
         container: {
             width: "100%",
             padding: 16,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             borderWidth: 1,
-            borderColor: colors.border,
+            borderColor: colors.border.hex,
             borderRadius: 10,
         },
     });

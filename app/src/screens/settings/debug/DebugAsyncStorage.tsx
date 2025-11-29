@@ -1,7 +1,7 @@
 import { ScrollView, View } from "react-native";
 import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,6 +11,7 @@ import Animated, { useSharedValue } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import * as Bs from "../../../ui/icons";
 import { PressableOpacity } from "../../../ui/components/PressableOpacity";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export function DebugAsyncStorage() {
     const [keys, setKeys] = useState<readonly string[]>([]);
@@ -59,7 +60,7 @@ export function DebugAsyncStorage() {
                                     label: key,
                                     body: () => (
                                         <PressableOpacity onPress={() => deleteKey(key)}>
-                                            <Bs.Trash size={20} color={colors.notification} />
+                                            <Bs.Trash size={20} color={colors.danger.hex} />
                                         </PressableOpacity>
                                     ),
                                 })
@@ -72,7 +73,7 @@ export function DebugAsyncStorage() {
             <BottomSheet
                 animatedPosition={sheetPosition}
                 backgroundStyle={{
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.bg0.hex,
                     borderRadius: 24,
                 }}
                 style={{
@@ -92,7 +93,7 @@ export function DebugAsyncStorage() {
                 enableDynamicSizing={false}
             >
                 <View style={{ flex: 1, padding: 8 }}>
-                    <View style={{ padding: 8, borderBottomWidth: 1, borderColor: colors.border }}>
+                    <View style={{ padding: 8, borderBottomWidth: 1, borderColor: colors.border.hex }}>
                         <UIText
                             size={16}
                             style={{ fontFamily: "monospace" }}

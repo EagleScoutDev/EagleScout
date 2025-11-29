@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { UIText } from "../../../ui/UIText";
 import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+
 import { styles } from "../styles";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
 import { supabase } from "../../../lib/supabase";
 import type { OnboardingScreenProps } from "..";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 interface EnterUserInfoProps extends OnboardingScreenProps<"EnterUserInfo"> {}
 export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
@@ -43,7 +44,7 @@ export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
                     </View>
                     <StandardButton
                         text={"Next"}
-                        textColor={firstName === "" || lastName === "" ? "dimgray" : colors.primary}
+                        textColor={firstName === "" || lastName === "" ? "dimgray" : colors.primary.hex}
                         disabled={firstName === "" || lastName === ""}
                         onPress={async () => {
                             const {

@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { UIText } from "../../../../ui/UIText";
 import { Modal, Pressable, View } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
-import { useTheme } from "@react-navigation/native";
+
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import { Color } from "../../../../lib/color";
 import type { Setter } from "../../../../lib/util/react/types";
+import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
 
 export interface TagColorChangeModalProps {
     visible: boolean;
@@ -44,7 +45,7 @@ export function TagColorChangeModal({ visible, setVisible, tag }: TagColorChange
             >
                 <View
                     style={{
-                        backgroundColor: colors.card,
+                        backgroundColor: colors.bg1.hex,
                         padding: "5%",
                         margin: "5%",
                         marginVertical: "20%",

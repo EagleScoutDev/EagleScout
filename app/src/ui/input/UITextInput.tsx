@@ -7,7 +7,7 @@ export interface UITextInputProps extends Omit<TextInputProps, "editable"> {
 export function UITextInput({ style, disabled = true, ...passthrough }: UITextInputProps) {
     "use memo";
     const { colors } = useTheme();
-    
+
     const styles = {
         main: {
             fontSize: 14,

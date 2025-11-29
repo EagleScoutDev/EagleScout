@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useTheme } from "@react-navigation/native";
+
 import { KeyboardAvoidingView, Modal, SafeAreaView, TextInput, View } from "react-native";
 import { SegmentedTeamSelector } from "./SegmentedTeamSelector";
 import { NoteFAB } from "./NoteFAB";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface NoteInputModalProps {
     onSubmit: () => void;
@@ -33,7 +34,7 @@ export function NoteInputModal({
                 height: "100%",
             }}
         >
-            <SafeAreaView style={{ flex: 1, height: "100%", backgroundColor: colors.card }}>
+            <SafeAreaView style={{ flex: 1, height: "100%", backgroundColor: colors.bg1.hex }}>
                 <KeyboardAvoidingView
                     style={{
                         flex: 1,
@@ -73,7 +74,7 @@ export function NoteInputModal({
                         >
                             <TextInput
                                 multiline={true}
-                                style={{ flex: 1, color: colors.text, fontSize: 20 }}
+                                style={{ flex: 1, color: colors.fg.hex, fontSize: 20 }}
                                 onChangeText={(text) => {
                                     setLocalContent(text);
                                     setNoteContents({
