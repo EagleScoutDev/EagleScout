@@ -35,7 +35,6 @@ export function ScoutFlow() {
                 <HomeStack.Group
                     screenOptions={{
                         headerBackButtonDisplayMode: "minimal",
-                        ...material3HeaderConfig,
                     }}
                 >
                     <HomeStack.Screen
