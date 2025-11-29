@@ -2,6 +2,9 @@ import { Color } from "../lib/color.ts";
 import { Appearance } from "react-native";
 import { type Theme as RNTheme } from "@react-navigation/native";
 
+// TODO: this is a hack because doing Appearance.getColorScheme(null) to bypass our own modifications doesn't seem to be working right now
+const SYSTEM_COLOR_SCHEME = Appearance.getColorScheme();
+
 export interface Theme {
     readonly motif: Color;
 
@@ -68,7 +71,7 @@ export namespace Theme {
             case ThemeOption.dark:
                 return dark;
             case ThemeOption.system:
-                return Appearance.getColorScheme() === "dark" ? dark : light;
+                return SYSTEM_COLOR_SCHEME === "dark" ? dark : light;
         }
     }
 
