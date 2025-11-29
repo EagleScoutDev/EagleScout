@@ -1,14 +1,22 @@
-import { createContext, type Dispatch, type SetStateAction } from "react";
-import { CustomLightTheme, ThemeOptions } from "../../theme";
-import { DarkTheme, type Theme } from "@react-navigation/native";
-import { Appearance } from "react-native";
+import { createContext, useContext } from "react";
+import { Theme, ThemeOption } from "../../theme";
 
-export const ThemeContext = createContext<{
-    themePreference: ThemeOptions;
-    setThemePreference: Dispatch<SetStateAction<ThemeOptions>>;
+export interface Theming {
+    themePreference: ThemeOption;
+    setThemePreference: (preference: ThemeOption) => void;
     theme: Theme;
-}>({
-    themePreference: ThemeOptions.SYSTEM,
+}
+
+export const ThemeContext = createContext<Theming>({
+    themePreference: ThemeOption.system,
     setThemePreference: () => {},
-    theme: Appearance.getColorScheme() === "dark" ? DarkTheme : CustomLightTheme,
+    theme: Theme.get(ThemeOption.system),
 });
+
+export function useTheme(): Theme {
+    return useContext(ThemeContext).theme;
+}
+
+export function useTheming(): Theming {
+    return useContext(ThemeContext);
+}

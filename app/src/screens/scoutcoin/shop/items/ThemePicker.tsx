@@ -1,33 +1,15 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../../../../FormHelper";
 import { useTheme } from "@react-navigation/native";
-import { ThemeOptions, ThemeOptionsMap } from "../../../../theme";
+import { Theme, ThemeOption } from "../../../../theme";
 
 export interface ThemePickerProps {
-    setTheme: (theme: ThemeOptions) => void;
+    options: { id: ThemeOption; name: string }[];
+    value: ThemeOption;
+    onSubmit: (theme: ThemeOption) => void;
 }
-export function ThemePicker({ setTheme }: ThemePickerProps) {
+export function ThemePicker({ options, value, onSubmit }: ThemePickerProps) {
     "use memo";
     const { colors } = useTheme();
-    const [selectedTheme, setSelectedTheme] = useState(ThemeOptions.SYSTEM);
-
-    const saveThemePreference = async (value: ThemeOptions) => {
-        try {
-            await AsyncStorage.setItem(FormHelper.THEME, value.toString(10));
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    useEffect(() => {
-        FormHelper.readAsyncStorage(FormHelper.THEME).then((r) => {
-            if (r != null) {
-                setSelectedTheme(parseInt(r, 10) as ThemeOptions);
-            }
-        });
-    }, []);
 
     return (
         <View>
@@ -42,26 +24,23 @@ export function ThemePicker({ setTheme }: ThemePickerProps) {
                     height: "36%",
                 }}
             >
-                {Array.from(ThemeOptionsMap.keys()).map((themeOption) => {
+                {options.map(({ id, name }) => {
+                    const selected = value === id;
+                    const theme = Theme.get(id);
                     return (
                         <Pressable
-                            onPress={() => {
-                                setSelectedTheme(themeOption);
-                                setTheme(themeOption);
-                                saveThemePreference(themeOption);
-                            }}
-                            key={themeOption}
+                            key={id}
+                            onPress={() => onSubmit(id)}
                             style={{
                                 flexDirection: "row",
                                 flex: 1,
-                                borderWidth: 2, //themeOption === selectedTheme ? 2 : 0,
+                                borderWidth: 2,
                                 borderRadius: 10,
-                                borderColor: themeOption === selectedTheme ? colors.text : colors.card,
-                                // borderRadius: 10,
+                                borderColor: selected ? colors.text : colors.card,
                                 padding: 10,
                                 justifyContent: "space-between",
                                 alignItems: "center",
-                                backgroundColor: themeOption === selectedTheme ? colors.background : colors.card,
+                                backgroundColor: selected ? colors.background : colors.card,
                             }}
                         >
                             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -73,8 +52,7 @@ export function ThemePicker({ setTheme }: ThemePickerProps) {
                                         fontSize: 16,
                                     }}
                                 >
-                                    {ThemeOptions[themeOption].toLowerCase().charAt(0).toUpperCase() +
-                                        ThemeOptions[themeOption].toLowerCase().slice(1)}
+                                    {name}
                                 </Text>
 
                                 <View
@@ -82,7 +60,7 @@ export function ThemePicker({ setTheme }: ThemePickerProps) {
                                         borderRadius: 200,
                                         width: 40,
                                         height: 40,
-                                        backgroundColor: ThemeOptionsMap.get(themeOption)?.colors.background,
+                                        backgroundColor: theme.motif.hex,
                                     }}
                                 />
                             </View>

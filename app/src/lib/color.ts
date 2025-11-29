@@ -12,7 +12,7 @@ export class Color {
     public readonly hex!: string;
     public readonly rgba: string;
 
-    private constructor(public r: number, public g: number, public b: number, public a: number) {
+    private constructor(public r: number, public g: number, public b: number, public a: number, fg?: Color) {
         this.rgba = `rgba(${r},${g},${b},${a})`;
         if (cache.has(this.rgba)) return cache.get(this.rgba)!;
         else cache.set(this.rgba, this);
@@ -26,24 +26,28 @@ export class Color {
 
         this.luminance = r * 0.299 + g * 0.587 + b * 0.114;
 
-        this.fg = 255 - this.luminance < 110 ? Color.rgb(0, 0, 0) : Color.rgb(255, 255, 255);
+        this.fg = fg ?? 255 - this.luminance < 110 ? Color.rgb(0, 0, 0) : Color.rgb(255, 255, 255);
     }
-    public static rgb(r: number, g: number, b: number) {
-        return new Color(r, g, b, 255);
+    public static rgb(r: number, g: number, b: number, fg?: Color) {
+        return new Color(r, g, b, 255, fg);
     }
-    public static rgba(r: number, g: number, b: number, a: number) {
-        return new Color(r, g, b, a);
+    public static rgba(r: number, g: number, b: number, a: number, fg?: Color) {
+        return new Color(r, g, b, a, fg);
+    }
+    public static hex(hex: string, fg?: Color) {
+        return new Color(
+            ...(<[number, number, number, number]>(hex + "FF")
+                .match(/[a-z0-9]{2}/gi)!
+                .slice(0, 4)
+                .map((x) => parseInt(x, 16))),
+            fg
+        );
     }
     public static parse(str: string) {
         if (str.startsWith("rgb(")) {
             return Color.rgb(...(<[number, number, number]>str.match(/\d+/g)!.slice(0, 3).map(Number)));
         } else if (str.startsWith("#")) {
-            return Color.rgb(
-                ...(<[number, number, number]>str
-                    .match(/[a-z0-9]{2}/gi)!
-                    .slice(0, 3)
-                    .map((x) => parseInt(x, 16)))
-            );
+            return Color.hex(str);
         } else throw new Error("unrecognized rgb color format");
     }
     public map(f: (x: number) => number): Color {
