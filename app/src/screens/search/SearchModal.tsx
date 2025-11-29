@@ -1,7 +1,7 @@
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import type { SimpleTeam } from "../../lib/frc/tba";
+import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
 import type { MatchReportReturnData } from "../../database/ScoutMatchReports";
 import { ProfilesDB } from "../../database/Profiles";
 import { Dropdown } from "react-native-element-dropdown";

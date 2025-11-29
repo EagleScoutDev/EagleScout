@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-cd "$(dirname "$0")"
+echo Generating icons...
+
+cd "$(dirname "$0")" || exit
 
 icons_loc=$(realpath ../../../node_modules/bootstrap-icons/icons)
 

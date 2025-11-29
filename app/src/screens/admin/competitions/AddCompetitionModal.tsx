@@ -6,7 +6,7 @@ import { Color } from "../../../lib/color";
 import { UISheet } from "../../../ui/UISheet";
 import { UIForm } from "../../../ui/UIForm";
 import { UISheetModal } from "../../../ui/UISheetModal";
-import { TBA } from "../../../lib/frc/tba";
+import { TBA } from "../../../lib/frc/tba/TBA.ts";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 export interface CompetitionData {

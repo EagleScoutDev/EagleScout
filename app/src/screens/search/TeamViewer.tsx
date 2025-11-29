@@ -6,7 +6,7 @@ import { CompetitionRank } from "./CompetitionRank";
 import { ScoutSummary } from "./ScoutSummary";
 import { CombinedGraph } from "./CombinedGraph"; // adjust the import path to match your file structur
 import type { SearchMenuScreenProps } from "./SearchMenu";
-import type { SimpleTeam } from "../../lib/frc/tba";
+import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
 import * as Bs from "../../ui/icons";
 import { UIList } from "../../ui/UIList";
 import { FormQuestionPicker } from "../data/FormQuestionPicker.tsx";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { StatboticsAPI } from "../lib/frc/Statbotics";
+import { StatboticsAPI } from "../lib/frc/statbotics";
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
 
@@ -42,8 +42,8 @@ function InfoRow({ children }) {
 }
 
 export function Statbotics({ team }) {
-    const [overall, setOverall] = useState(null);
-    const [competitions, setCompetitions] = useState(null);
+    const [overall, setOverall] = useState<StatboticsAPI.TeamYear | null>(null);
+    const [competitions, setCompetitions] = useState<StatboticsAPI.TeamEvent[] | null>(null);
     const [visible, setVisible] = useState(true);
     const [isTeam, setIsTeam] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -282,7 +282,8 @@ export function Statbotics({ team }) {
                     Past Competition Stats
                 </Text>
                 <ScrollView>
-                    {overall && "epa" in overall &&
+                    {overall &&
+                        "epa" in overall &&
                         competitions != null &&
                         competitions[0] != null &&
                         competitions.map((comp) => (

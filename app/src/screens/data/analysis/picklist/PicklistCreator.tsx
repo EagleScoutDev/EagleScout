@@ -30,7 +30,7 @@ import {
 import { ProfilesDB } from "../../../../database/Profiles";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import { Color } from "../../../../lib/color";
-import { TBA } from "../../../../lib/frc/tba";
+import { TBA } from "../../../../lib/frc/tba/TBA.ts";
 import * as Bs from "../../../../ui/icons";
 import type { Setter } from "../../../../lib/util/react/types";
 import type { DataMenuScreenProps } from "../../DataMain";

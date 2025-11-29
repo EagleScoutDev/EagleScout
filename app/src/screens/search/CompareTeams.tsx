@@ -10,7 +10,7 @@ import { CompetitionRank } from "./CompetitionRank";
 import { Color } from "../../lib/color";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import type { SearchMenuScreenProps } from "./SearchMenu";
-import type { SimpleTeam } from "../../lib/frc/tba";
+import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
 
 export interface CompareTeamsParams {
     team: SimpleTeam;
