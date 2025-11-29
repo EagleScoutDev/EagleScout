@@ -21,7 +21,7 @@ function InfoCapsule({ title, value }: InfoCapsuleProps) {
 }
 
 function InfoRow({ children }: PropsWithChildren) {
-    return <View style={{ flexDirection: "row", justifyContent: "space-around" }}>{children}</View>;
+    return <View style={{ flexDirection: "row", justifyContent: "space-around", paddingVertical: 4 }}>{children}</View>;
 }
 
 export interface StatboticsSummaryProps {
