@@ -32,7 +32,7 @@ export function AppHome({ navigation }: AppHomeProps) {
 
     return (
         <>
-            <Tab.Navigator>
+            <Tab.Navigator labeled>
                 <Tab.Screen
                     name="Home"
                     component={ScoutFlow}
