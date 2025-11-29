@@ -9,7 +9,7 @@ import { type PitReportReturnData, PitReportsDB } from "../../../database/ScoutP
 export async function exportScoutReportsToCsv(comp: CompetitionReturnData) {
     let reports: MatchReportReturnData[];
     try {
-        reports = await MatchReportsDB.getReportsForCompetition(comp.id, true);
+        reports = await MatchReportsDB.getReportsForCompetition(comp.id);
     } catch (error) {
         console.error(error);
         Alert.alert(

@@ -40,12 +40,11 @@ export interface MatchReportHistory {
 }
 
 export class MatchReportsDB {
-    static async getReportsForCompetition(id: number, fetchUserNames = false): Promise<MatchReportReturnData[]> {
+    static async getReportsForCompetition(id: number): Promise<MatchReportReturnData[]> {
         const { data, error } = await supabase
             .from("scout_reports")
             .select(
-                "*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )" +
-                    (fetchUserNames ? ", profiles(name)" : "")
+                `*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure))), profiles( name )`
             )
             .eq("matches.competition_id", id);
         if (error) throw error;
@@ -58,7 +57,7 @@ export class MatchReportsDB {
             competitionId: x.matches.competition_id,
             form: x.matches.competitions.forms.form_structure,
             userId: x.user_id,
-            userName: fetchUserNames ? x.profiles.name : undefined,
+            userName: x.profiles.name,
             createdAt: x.created_at,
             competitionName: x.matches.competitions.name,
             timelineData: x.timeline_data,
