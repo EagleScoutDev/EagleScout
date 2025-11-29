@@ -1,5 +1,6 @@
 import { useTheme } from "@react-navigation/native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { TouchableOpacity, View } from "react-native";
 import { Color } from "../../../lib/color";
 
 interface SegmentedTeamSelectorProps {
@@ -46,30 +47,26 @@ export function SegmentedTeamSelector({
                 }}
                 onPress={() => setSelectedTeam(teams[0])}
             >
-                <Text
+                <UIText
+                    bold
                     style={{
-                        color:
-                            selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                        color: selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                         opacity: selectedTeam === teams[0] ? 1 : 0.6,
-                        fontWeight: "bold",
                         textAlign: "center",
                     }}
                 >
                     {teams[0]}
-                </Text>
+                </UIText>
                 {completed[0] && (
-                    <Text
+                    <UIText
+                        bold
                         style={{
-                            color:
-                                selectedTeam === teams[0]
-                                    ? buttonActiveBackgroundColor.fg.hex
-                                    : colors.text,
+                            color: selectedTeam === teams[0] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                             opacity: selectedTeam === teams[0] ? 1 : 0.6,
-                            fontWeight: "bold",
                         }}
                     >
                         ✓
-                    </Text>
+                    </UIText>
                 )}
             </TouchableOpacity>
             <TouchableOpacity
@@ -86,30 +83,26 @@ export function SegmentedTeamSelector({
                 }}
                 onPress={() => setSelectedTeam(teams[1])}
             >
-                <Text
+                <UIText
+                    bold
                     style={{
-                        color:
-                            selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                        color: selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                         opacity: selectedTeam === teams[1] ? 1 : 0.6,
-                        fontWeight: "bold",
                         textAlign: "center",
                     }}
                 >
                     {teams[1]}
-                </Text>
+                </UIText>
                 {completed[1] && (
-                    <Text
+                    <UIText
+                        bold
                         style={{
-                            color:
-                                selectedTeam === teams[1]
-                                    ? buttonActiveBackgroundColor.fg.hex
-                                    : colors.text,
+                            color: selectedTeam === teams[1] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                             opacity: selectedTeam === teams[1] ? 1 : 0.6,
-                            fontWeight: "bold",
                         }}
                     >
                         ✓
-                    </Text>
+                    </UIText>
                 )}
             </TouchableOpacity>
             <TouchableOpacity
@@ -126,30 +119,26 @@ export function SegmentedTeamSelector({
                 }}
                 onPress={() => setSelectedTeam(teams[2])}
             >
-                <Text
+                <UIText
+                    bold
                     style={{
-                        color:
-                            selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.text,
+                        color: selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                         opacity: selectedTeam === teams[2] ? 1 : 0.6,
-                        fontWeight: "bold",
                         textAlign: "center",
                     }}
                 >
                     {teams[2]}
-                </Text>
+                </UIText>
                 {completed[2] && (
-                    <Text
+                    <UIText
+                        bold
                         style={{
-                            color:
-                                selectedTeam === teams[2]
-                                    ? buttonActiveBackgroundColor.fg.hex
-                                    : colors.text,
+                            color: selectedTeam === teams[2] ? buttonActiveBackgroundColor.fg.hex : colors.text,
                             opacity: selectedTeam === teams[2] ? 1 : 0.6,
-                            fontWeight: "bold",
                         }}
                     >
                         ✓
-                    </Text>
+                    </UIText>
                 )}
             </TouchableOpacity>
         </View>

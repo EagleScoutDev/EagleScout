@@ -1,5 +1,6 @@
 import { Color } from "../../../../lib/color";
-import { Pressable, Text } from "react-native";
+import { UIText } from "../../../../ui/UIText";
+import { Pressable } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 export interface ActionButtonProps {
@@ -28,24 +29,10 @@ export function ActionButton({ label, role, value, onPress }: ActionButtonProps)
             }}
             onPress={onPress}
         >
-            <Text
-                style={{
-                    color: color.fg.hex,
-                    fontWeight: "bold",
-                }}
-            >
-                {label}
-            </Text>
-            <Text
-                style={{
-                    color: color.fg.hex,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    fontSize: 38,
-                }}
-            >
+            <UIText bold>{label}</UIText>
+            <UIText size={38} bold style={{ textAlign: "center" }}>
                 {value}
-            </Text>
+            </UIText>
         </Pressable>
     );
 }

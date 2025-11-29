@@ -1,4 +1,5 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { Modal, StyleSheet, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { PredictionConfidenceTag } from "./PredictionConfidenceTag";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
@@ -48,20 +49,13 @@ export function PredictionExplainerModal({ visible, setVisible }: PredictionExpl
         >
             <View style={{ backgroundColor: colors.card, flex: 1 }}>
                 <View style={{ padding: "6%" }}>
-                    <Text
-                        style={{
-                            color: colors.text,
-                            fontSize: 20,
-                            fontWeight: "bold",
-                            textAlign: "center",
-                        }}
-                    >
+                    <UIText size={20} bold style={{ textAlign: "center" }}>
                         Prediction Tag Explanation
-                    </Text>
+                    </UIText>
                     {Array.from(explanations).map(([confidence, explanation]) => (
                         <View style={styles.explanation_row} key={confidence}>
                             <PredictionConfidenceTag confidence={confidence} setModal={() => {}} tagOnly={true} />
-                            <Text style={styles.explanation_text}>{explanation}</Text>
+                            <UIText style={styles.explanation_text}>{explanation}</UIText>
                         </View>
                     ))}
                 </View>

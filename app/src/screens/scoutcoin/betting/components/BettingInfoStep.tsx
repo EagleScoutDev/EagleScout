@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from "react";
+import { UIText } from "../../../../ui/UIText";
 import { type Theme, useNavigation, useTheme } from "@react-navigation/native";
 import { BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { StandardButton } from "../../../../ui/StandardButton";
 
 export const BettingInfoStep = ({
@@ -28,8 +29,8 @@ export const BettingInfoStep = ({
 
     return (
         <BottomSheetView style={styles.container}>
-            <Text style={styles.heading}>How to Bet</Text>
-            <Text style={styles.subheading}>{title}</Text>
+            <UIText style={styles.heading}>How to Bet</UIText>
+            <UIText style={styles.subheading}>{title}</UIText>
             <BottomSheetView style={styles.infoBox}>{children}</BottomSheetView>
             <BottomSheetView style={styles.buttonBox}>
                 <StandardButton

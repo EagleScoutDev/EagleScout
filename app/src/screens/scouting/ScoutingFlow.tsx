@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { Pressable, Text, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Pressable, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { ScoutFlowHome } from "./Dashboard";
 import { NoteScreen } from "./note/NoteFlow";
@@ -76,16 +77,9 @@ function TimerHeader() {
                 justifyContent: "flex-end",
             }}
         >
-            <Text
-                style={{
-                    color: colors.text,
-                    fontSize: 14,
-                    fontWeight: "bold",
-                    marginRight: 5,
-                }}
-            >
+            <UIText bold style={{ marginRight: 5 }}>
                 {timer.seconds}
-            </Text>
+            </UIText>
             <Pressable onLongPress={timer.resetTimer} onPress={timer.toggleTimer}>
                 <Bs.Stopwatch size="24" fill={timer.active ? colors.primary : "gray"} />
             </Pressable>

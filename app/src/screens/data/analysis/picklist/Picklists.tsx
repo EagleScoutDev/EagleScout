@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, FlatList, Pressable, Text, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
+import { Alert, FlatList, Pressable, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { StandardButton } from "../../../../ui/StandardButton";
 import { CompetitionsDB } from "../../../../database/Competitions";
@@ -69,21 +70,14 @@ export function Picklists({ navigation }: PicklistsProps) {
         <View style={{ flex: 1, paddingBottom: 10 }}>
             {!currentCompHappening ? (
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ color: colors.text }}>There is no competition happening currently.</Text>
+                    <UIText>There is no competition happening currently.</UIText>
                 </View>
             ) : (
                 <>
                     {picklists.length === 0 && (
-                        <Text
-                            style={{
-                                textAlign: "center",
-                                fontSize: 20,
-                                marginTop: "5%",
-                                color: colors.text,
-                            }}
-                        >
+                        <UIText size={20} style={{ textAlign: "center", marginTop: "5%" }}>
                             No picklists found.{"\n"}Create one to get started!
-                        </Text>
+                        </UIText>
                     )}
                     <FlatList
                         data={picklists}
@@ -141,25 +135,14 @@ export function Picklists({ navigation }: PicklistsProps) {
                                     }}
                                 >
                                     <View>
-                                        <Text
-                                            style={{
-                                                fontSize: 20,
-                                                fontWeight: "bold",
-                                                color: colors.text,
-                                            }}
-                                        >
+                                        <UIText size={20} bold>
                                             {item.name}
-                                        </Text>
-                                        {/*<Text>{item.teams.toString()}</Text>*/}
-                                        <Text
-                                            style={{
-                                                fontSize: 12,
-                                                color: "gray",
-                                            }}
-                                        >
+                                        </UIText>
+                                        {/*<UIText>{item.teams.toString()}</UIText>*/}
+                                        <UIText size={12} level={1}>
                                             By {users.get(item.created_by) || "Unknown"}, at{" "}
                                             {new Date(item.created_at).toLocaleString()}
-                                        </Text>
+                                        </UIText>
                                     </View>
                                     <Bs.ChevronRight
                                         size="20"

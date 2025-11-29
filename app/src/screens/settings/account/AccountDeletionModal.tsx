@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { UIRadio } from "../../../ui/input/UIRadio";
@@ -41,9 +42,9 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                     gap: 10,
                 }}
             >
-                <Text style={{ fontSize: 25, color: colors.text }}>We are sorry to see you go!</Text>
+                <UIText size={25}>We are sorry to see you go!</UIText>
                 <View style={{ width: "100%", paddingBottom: 10 }}>
-                    <Text style={{ color: colors.text }}>Please let us know why you are leaving:</Text>
+                    <UIText>Please let us know why you are leaving:</UIText>
                     <UIRadio
                         required={true}
                         onInput={setReason}
@@ -51,7 +52,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         options={["Graduating from team", "Leaving team", "Concerns over data usage", "Other"]}
                     />
                 </View>
-                <Text style={{ color: colors.text }}>Please enter your account password to confirm deletion.</Text>
+                <UIText>Please enter your account password to confirm deletion.</UIText>
                 <View style={{ width: "100%" }}>
                     <MinimalSectionHeader title={"Password"} />
                     <TextInput
@@ -60,19 +61,13 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         value={password}
                         secureTextEntry={true}
                     />
-                    <Text
-                        style={{
-                            color: colors.text,
-                            opacity: 0.5,
-                            alignSelf: "center",
-                            textAlign: "center",
-                            marginTop: -5,
-                            marginBottom: 10,
-                        }}
+                    <UIText
+                        level={1}
+                        style={{ alignSelf: "center", textAlign: "center", marginTop: -5, marginBottom: 10 }}
                     >
                         Notice: If your password is inputted incorrectly, your account will not be deleted and you will
                         be signed out!
-                    </Text>
+                    </UIText>
                 </View>
             </View>
             <StandardButton
@@ -134,17 +129,9 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                 text={"Delete Account"}
                 width={"60%"}
             />
-            <Text
-                style={{
-                    color: colors.text,
-                    opacity: 0.5,
-                    alignSelf: "center",
-                    textAlign: "center",
-                    marginTop: 10,
-                }}
-            >
+            <UIText level={1} style={{ alignSelf: "center", textAlign: "center", marginTop: 10 }}>
                 Account deletion requests may take up to 30 days to process.
-            </Text>
+            </UIText>
         </View>
     );
 }

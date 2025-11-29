@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { QuestionSummary } from "./QuestionSummary";
@@ -6,6 +6,8 @@ import { CompetitionsDB } from "../../database/Competitions";
 import { isTablet } from "../../lib/deviceType";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
 import * as Bs from "../../ui/icons";
+import { UIText } from "../../ui/UIText";
+import { Color } from "../../lib/color.ts";
 
 export function ScoutSummary({ team_number, competitionId }: { team_number: number; competitionId: number }) {
     const { colors } = useTheme();
@@ -48,7 +50,9 @@ export function ScoutSummary({ team_number, competitionId }: { team_number: numb
                     minWidth: "85%",
                 }}
             >
-                <Text style={{ color: "red", fontSize: 20, textAlign: "center" }}>No reports found for this team.</Text>
+                <UIText size={20} color={Color.parse(colors.notification)} style={{ textAlign: "center" }}>
+                    No reports found for this team.
+                </UIText>
             </View>
         );
     }
@@ -96,16 +100,9 @@ export function ScoutSummary({ team_number, competitionId }: { team_number: numb
                 }}
             >
                 <Bs.Stars width="10%" height="100%" fill="white" style={{ alignSelf: "center" }} />
-                <Text
-                    style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: "bold",
-                    }}
-                >
+                <UIText size={20} bold style={{ color: "white", textAlign: "center" }}>
                     Generate AI Summary
-                </Text>
+                </UIText>
             </Pressable>
         </View>
     );

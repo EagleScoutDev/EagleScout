@@ -1,5 +1,6 @@
 import { UIList, type UIListProps } from "./UIList";
-import { Platform, Switch as RNSwitch, Text } from "react-native";
+import { UIText } from "../ui/UIText";
+import { Platform, Switch as RNSwitch } from "react-native";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { NumberInput as RNNumberInput } from "./components/NumberInput";
 import { UIListPicker } from "./input/UIListPicker";
@@ -181,7 +182,11 @@ export namespace UIForm {
             key,
             onPress,
             onLongPress,
-            body: () => <Text style={{ flex: 1, fontSize: 16, color: color.rgba }}>{label}</Text>,
+            body: () => (
+                <UIText size={16} color={color} style={{ flex: 1 }}>
+                    {label}
+                </UIText>
+            ),
         });
     }
 }

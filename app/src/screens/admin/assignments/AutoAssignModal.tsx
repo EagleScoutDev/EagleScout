@@ -1,4 +1,5 @@
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { UIModal } from "../../../ui/UIModal";
 import { StandardButton } from "../../../ui/StandardButton";
 import { useEffect, useState } from "react";
@@ -77,7 +78,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
                         <ActivityIndicator size="large" />
                     </View>
                 )}
-                <Text style={s.label}>Select users that will scout:</Text>
+                <UIText>Select users that will scout:</UIText>
                 <ScrollView style={s.userlist}>
                     {users.map((user, idx) => (
                         <View key={user.id} style={s.user}>
@@ -91,12 +92,12 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
                                     setUsersKey(usersKey + 1);
                                 }}
                             />
-                            <Text style={s.user_name}>{user.name}</Text>
+                            <UIText style={{ marginLeft: "auto" }}>{user.name}</UIText>
                         </View>
                     ))}
                 </ScrollView>
 
-                <Text style={s.label}>Number of rounds:</Text>
+                <UIText>Number of rounds:</UIText>
                 <NumberInput
                     onInput={(x) => x !== null && (setNRounds(x), true)}
                     value={nRounds}
@@ -105,7 +106,7 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
                     placeholder="Number of rounds"
                 />
 
-                <Text style={s.label}>Number of rounds in a shift:</Text>
+                <UIText>Number of rounds in a shift:</UIText>
                 <NumberInput
                     onInput={(x) => x !== null && (setNRounds(x), true)}
                     value={nShiftRounds}
@@ -140,9 +141,6 @@ const styles = exMemo((colors: Theme["colors"]) =>
             alignItems: "center",
             zIndex: 10,
         },
-        label: {
-            color: colors.text,
-        },
         numinput: {
             height: 40,
             width: "100%",
@@ -160,10 +158,6 @@ const styles = exMemo((colors: Theme["colors"]) =>
         user: {
             flexDirection: "row",
             alignItems: "center",
-        },
-        user_name: {
-            color: colors.text,
-            marginLeft: "auto",
         },
         button_row: { flexDirection: "row", justifyContent: "space-evenly" },
     })

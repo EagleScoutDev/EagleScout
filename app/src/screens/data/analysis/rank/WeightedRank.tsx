@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
@@ -184,10 +185,8 @@ export function WeightedRank() {
                     paddingVertical: "10%",
                 }}
             >
-                <Text style={styles.header}>No Active Competition</Text>
-                <Text style={{ color: colors.text, fontSize: 14 }}>
-                    Please choose which competition you would like to view data for.
-                </Text>
+                <UIText style={styles.header}>No Active Competition</UIText>
+                <UIText>Please choose which competition you would like to view data for.</UIText>
                 {fullCompetitionsList.map((item, index) => (
                     <Pressable
                         key={index}
@@ -199,7 +198,7 @@ export function WeightedRank() {
                         }}
                     >
                         <View style={styles.list_item}>
-                            <Text style={styles.list_text}>{item.name}</Text>
+                            <UIText style={styles.list_text}>{item.name}</UIText>
                         </View>
                     </Pressable>
                 ))}
@@ -217,14 +216,7 @@ export function WeightedRank() {
                     marginVertical: "5%",
                 }}
             >
-                <Text
-                    style={{
-                        color: colors.text,
-                        fontSize: 24,
-                    }}
-                >
-                    Weighted Rank
-                </Text>
+                <UIText size={24}>Weighted Rank</UIText>
 
                 {(status === WeightedRankStatus.PRESENTING_RANKINGS || originalWeights !== listOfWeights) && (
                     <Pressable
@@ -233,15 +225,9 @@ export function WeightedRank() {
                             setStatus(WeightedRankStatus.CHOOSING_WEIGHTS);
                         }}
                     >
-                        <Text
-                            style={{
-                                color: "gray",
-                                fontSize: 14,
-                                textAlign: "left",
-                            }}
-                        >
+                        <UIText level={1} style={{ textAlign: "left" }}>
                             Reset
-                        </Text>
+                        </UIText>
                     </Pressable>
                 )}
             </View>
@@ -249,26 +235,12 @@ export function WeightedRank() {
                 <View style={{ flex: 1 }}>
                     <View style={styles.list_item}>
                         <View style={{ flex: 0.3 }} />
-                        <Text
-                            style={{
-                                fontWeight: "bold",
-                                color: colors.text,
-                                fontSize: 16,
-                                flex: 1,
-                            }}
-                        >
+                        <UIText size={16} bold style={{ flex: 1 }}>
                             Team
-                        </Text>
-                        <Text
-                            style={{
-                                fontWeight: "bold",
-                                color: colors.text,
-                                fontSize: 16,
-                                width: 50,
-                            }}
-                        >
+                        </UIText>
+                        <UIText size={16} bold style={{ width: 50 }}>
                             Score
-                        </Text>
+                        </UIText>
                     </View>
                     <ScrollView>
                         {Array.from(teamMap)
@@ -277,20 +249,15 @@ export function WeightedRank() {
                             .map((team, index) => {
                                 return (
                                     <View style={styles.list_item} key={index}>
-                                        <Text
-                                            style={{
-                                                color: "gray",
-                                                fontSize: 16,
-                                                flex: 0.3,
-                                                fontWeight: "bold",
-                                            }}
-                                        >
+                                        <UIText size={16} bold level={1} style={{ flex: 0.3 }}>
                                             {index + 1}
-                                        </Text>
-                                        <Text style={{ color: colors.text, fontSize: 16, flex: 1 }}>{team[0]}</Text>
-                                        <Text style={{ color: colors.text, fontSize: 16, width: 50 }}>
+                                        </UIText>
+                                        <UIText size={16} style={{ flex: 1 }}>
+                                            {team[0]}
+                                        </UIText>
+                                        <UIText size={16} style={{ width: 50 }}>
                                             {parseFloat((team[1].sum / team[1].count).toFixed(2))}
-                                        </Text>
+                                        </UIText>
                                     </View>
                                 );
                             })}
@@ -298,7 +265,9 @@ export function WeightedRank() {
                 </View>
             )}
             {status === WeightedRankStatus.PROCESSING && (
-                <Text style={{ color: colors.text, fontSize: 20, textAlign: "center" }}>Processing...</Text>
+                <UIText size={20} style={{ textAlign: "center" }}>
+                    Processing...
+                </UIText>
             )}
             {status === WeightedRankStatus.CHOOSING_WEIGHTS && (
                 <ScrollView>
@@ -306,17 +275,9 @@ export function WeightedRank() {
                         currForm.map((question, index) => {
                             if (question.type === "heading") {
                                 return (
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 20,
-                                            fontWeight: "bold",
-                                            marginVertical: "5%",
-                                        }}
-                                        key={index}
-                                    >
+                                    <UIText size={20} bold style={{ marginVertical: "5%" }} key={index}>
                                         {question.title}
-                                    </Text>
+                                    </UIText>
                                 );
                             }
                             if (question.type === "number") {
@@ -335,16 +296,11 @@ export function WeightedRank() {
                                                 setListOfWeights(temp);
                                             }}
                                         >
-                                            <Text
-                                                style={{
-                                                    color: listOfWeights[index] === 0 ? "gray" : colors.text,
-                                                    fontSize: 16,
-                                                }}
-                                            >
+                                            <UIText size={16} level={listOfWeights[index] === 0 ? 1 : 0}>
                                                 {question.question}
-                                            </Text>
+                                            </UIText>
                                         </Pressable>
-                                        {/*<Text>{listOfWeights[index]}</Text>*/}
+                                        {/*<UIText>{listOfWeights[index]}</UIText>*/}
                                         <Slider
                                             style={{ width: "100%", height: 40 }}
                                             minimumValue={-1}
@@ -366,9 +322,9 @@ export function WeightedRank() {
                                         />
                                         {listOfWeights.length > 0 && (
                                             <View>
-                                                <Text style={{ color: colors.text, textAlign: "center" }}>
+                                                <UIText style={{ textAlign: "center" }}>
                                                     {listOfWeights[index].toFixed(2)}
-                                                </Text>
+                                                </UIText>
                                             </View>
                                         )}
                                     </View>
@@ -390,16 +346,9 @@ export function WeightedRank() {
                             }}
                         >
                             <Bs.CalculatorFill size="24" fill="white" />
-                            <Text
-                                style={{
-                                    color: "white",
-                                    fontSize: 20,
-                                    textAlign: "center",
-                                    fontWeight: "bold",
-                                }}
-                            >
+                            <UIText size={20} bold style={{ color: "white", textAlign: "center" }}>
                                 Generate Rankings
-                            </Text>
+                            </UIText>
                         </Pressable>
                     )}
                 </ScrollView>

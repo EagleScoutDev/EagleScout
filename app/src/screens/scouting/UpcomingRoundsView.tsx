@@ -1,4 +1,5 @@
-import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useEffect, useState } from "react";
 import { type NavigationProp, useTheme } from "@react-navigation/native";
 import { ScoutAssignmentsConfig } from "../../database/Competitions";
@@ -62,7 +63,7 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
     }
 
     if (!online) {
-        return <Text style={{ color: colors.text }}>Connect to the internet to fetch upcoming rounds.</Text>;
+        return <UIText>Connect to the internet to fetch upcoming rounds.</UIText>;
     }
 
     const nRounds = upcomingRounds.length;
@@ -84,18 +85,10 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
             >
                 {nRounds === 0 && <Bs.CheckCircle size={48} fill={colors.primary} />}
 
-                <Text
-                    style={{
-                        marginLeft: 12,
-                        color: colors.text,
-                        fontSize: 18,
-                        flex: 1,
-                        flexWrap: "wrap",
-                    }}
-                >
+                <UIText size={18} style={{ marginLeft: 12, flex: 1 }}>
                     You have {nRounds === 0 ? "no" : nRounds} round
                     {nRounds !== 1 ? "s" : ""} left to scout today.
-                </Text>
+                </UIText>
             </View>
             <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}>
                 {upcomingRounds.map((round, index) => (
@@ -125,39 +118,18 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                                 paddingTop: "0%",
                             }}
                         >
-                            <Text
-                                style={{
-                                    fontWeight: "bold",
-                                    fontSize: 16,
-                                    color: colors.text,
-                                    // padding: '2%',
-                                }}
-                            >
+                            <UIText size={16} bold>
                                 Match: {round.matchNumber}
-                            </Text>
+                            </UIText>
                             <View style={{ height: "20%" }} />
                             {teamBased ? (
-                                <Text
-                                    style={{
-                                        fontWeight: "bold",
-                                        fontSize: 16,
-                                        color: colors.text,
-                                        // padding: '2%',
-                                    }}
-                                >
+                                <UIText size={16} bold>
                                     Team: {teamFormatter(round.team)}
-                                </Text>
+                                </UIText>
                             ) : (
-                                <Text
-                                    style={{
-                                        fontWeight: "bold",
-                                        fontSize: 16,
-                                        color: colors.text,
-                                        // padding: '2%',
-                                    }}
-                                >
+                                <UIText size={16} bold>
                                     Position: {positionText[round.position]}
-                                </Text>
+                                </UIText>
                             )}
                         </View>
                         <View>

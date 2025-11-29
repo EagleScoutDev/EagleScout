@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { UIText } from "../ui/UIText";
 import { type Theme, useTheme } from "@react-navigation/native";
 
 export interface UITabsProps {
@@ -19,7 +20,7 @@ export function UITabs({ tabs, selectedTab, setSelectedTab }: UITabsProps) {
                     onPress={() => setSelectedTab(tab)}
                     style={[styles.baseTab, selectedTab === tab ? styles.selected_tab : styles.tab]}
                 >
-                    <Text style={selectedTab === tab ? styles.selected_tab_text : styles.tab_text}>{tab}</Text>
+                    <UIText style={selectedTab === tab ? styles.selected_tab_text : styles.tab_text}>{tab}</UIText>
                 </Pressable>
             ))}
         </View>

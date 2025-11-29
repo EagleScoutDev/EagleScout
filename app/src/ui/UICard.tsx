@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { type UINumberInputProps } from "./input/UINumberInput";
 import { NumberInput as RNNumberInput } from "./components/NumberInput";
@@ -11,6 +11,8 @@ import {
     AllianceChooser as UIAllianceChooser,
     type AllianceChooserProps as UIAllianceChooserProps,
 } from "../components/AllianceChooser";
+import { UIText } from "./UIText";
+import { Color } from "../lib/color.ts";
 
 export interface UICard extends PropsWithChildren {
     title?: string;
@@ -33,9 +35,9 @@ export function UICard({ title, children }: UICard) {
             }}
         >
             {typeof title === "string" && (
-                <Text style={{ color: "gray", fontSize: 14, fontWeight: "bold", textTransform: "uppercase" }}>
+                <UIText size={14} bold level={1} style={{ textTransform: "uppercase" }}>
                     {title}
-                </Text>
+                </UIText>
             )}
             {children}
         </View>
@@ -61,7 +63,9 @@ export namespace UICard {
                         justifyContent: "space-evenly",
                     }}
                 >
-                    <Text style={{ color: colors.text, fontSize: 16, fontWeight: "bold" }}>{label}</Text>
+                    <UIText size={16} bold>
+                        {label}
+                    </UIText>
                     <RNNumberInput
                         {...props}
                         style={[
@@ -80,7 +84,9 @@ export namespace UICard {
                 </View>
 
                 {typeof error === "string" && (
-                    <Text style={{ color: colors.notification, textAlign: "center", marginTop: 8 }}>{error}</Text>
+                    <UIText color={Color.parse(colors.notification)} style={{ textAlign: "center", marginTop: 8 }}>
+                        {error}
+                    </UIText>
                 )}
             </View>
         );
@@ -92,21 +98,12 @@ export namespace UICard {
     export function OrientationChooser({ label, ...props }: OrientationChooserProps) {
         "use memo";
 
-        const { colors } = useTheme();
-
         return (
             <View style={{ marginTop: 8, width: "100%", alignItems: "center" }}>
                 {typeof label === "string" && (
-                    <Text
-                        style={{
-                            color: colors.text,
-                            fontSize: 16,
-                            fontWeight: "bold",
-                            marginBottom: 8,
-                        }}
-                    >
+                    <UIText size={16} bold style={{ marginBottom: 8 }}>
                         {label}
-                    </Text>
+                    </UIText>
                 )}
                 <UIOrientationChooser {...props} />
             </View>
@@ -119,21 +116,12 @@ export namespace UICard {
     export function AllianceChooser({ label, ...props }: AllianceChooserProps) {
         "use memo";
 
-        const { colors } = useTheme();
-
         return (
             <View style={{ marginTop: 8, width: "100%", alignItems: "center" }}>
                 {typeof label === "string" && (
-                    <Text
-                        style={{
-                            color: colors.text,
-                            fontSize: 16,
-                            fontWeight: "bold",
-                            marginBottom: 8,
-                        }}
-                    >
+                    <UIText size={16} bold style={{ marginBottom: 8 }}>
                         {label}
-                    </Text>
+                    </UIText>
                 )}
                 <UIAllianceChooser {...props} />
             </View>

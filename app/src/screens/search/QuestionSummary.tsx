@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { OpenAI } from "../../lib/OpenAI";
 import { isTablet } from "../../lib/deviceType";
@@ -238,15 +239,15 @@ export function QuestionSummary({
     if (item.type === "heading") {
         return (
             <View key={item.key} style={styles.section_heading_container}>
-                <Text style={styles.section_heading}>{item.title}</Text>
-                <Text style={styles.section_description}>{item.description}</Text>
+                <UIText style={styles.section_heading}>{item.title}</UIText>
+                <UIText style={styles.section_description}>{item.description}</UIText>
             </View>
         );
     }
 
     return (
         <View key={item.key} style={styles.container}>
-            {show_question && <Text style={styles.question}>{item.question}</Text>}
+            {show_question && <UIText style={styles.question}>{item.question}</UIText>}
             {item.type === "radio" && (
                 <Pressable
                     onPress={() => {
@@ -259,7 +260,7 @@ export function QuestionSummary({
                         return (
                             <View>
                                 <View key={index_of_item} style={styles.multiple_option_container}>
-                                    <Text style={styles.multiple_option_option}>{label}</Text>
+                                    <UIText style={styles.multiple_option_option}>{label}</UIText>
                                     <View
                                         style={{
                                             ...styles.multiple_option_percentage_container,
@@ -268,7 +269,7 @@ export function QuestionSummary({
                                             paddingVertical: index_of_item === indexOfGreatestValue ? "2%" : 0,
                                         }}
                                     >
-                                        <Text
+                                        <UIText
                                             style={{
                                                 ...styles.multiple_option_percentage_text,
                                                 color:
@@ -283,14 +284,14 @@ export function QuestionSummary({
                                                 100
                                             ).toFixed(2)}
                                             %
-                                        </Text>
+                                        </UIText>
                                     </View>
                                 </View>
                                 <View style={styles.multiple_option_separator} />
                             </View>
                         );
                     })}
-                    <Text style={styles.multiple_option_response_count}>{data.length} total responses</Text>
+                    <UIText style={styles.multiple_option_response_count}>{data.length} total responses</UIText>
                 </Pressable>
             )}
             {item.type === "checkboxes" && (
@@ -299,7 +300,7 @@ export function QuestionSummary({
                         return (
                             <View>
                                 <View key={index} style={styles.multiple_option_container}>
-                                    <Text style={styles.multiple_option_option}>{label}</Text>
+                                    <UIText style={styles.multiple_option_option}>{label}</UIText>
                                     <View
                                         style={{
                                             ...styles.multiple_option_percentage_container,
@@ -308,7 +309,7 @@ export function QuestionSummary({
                                             paddingVertical: index === valueOfMostOccurrences ? "2%" : 0,
                                         }}
                                     >
-                                        <Text
+                                        <UIText
                                             style={{
                                                 ...styles.multiple_option_percentage_text,
                                                 color:
@@ -318,14 +319,14 @@ export function QuestionSummary({
                                             }}
                                         >
                                             {((frequencies.get(label)! / data.length) * 100).toFixed(2)}%
-                                        </Text>
+                                        </UIText>
                                     </View>
                                 </View>
                                 <View style={styles.multiple_option_separator} />
                             </View>
                         );
                     })}
-                    <Text style={styles.multiple_option_response_count}>{data.length} total responses</Text>
+                    <UIText style={styles.multiple_option_response_count}>{data.length} total responses</UIText>
                 </View>
             )}
             {item.type === "number" && (
@@ -338,18 +339,18 @@ export function QuestionSummary({
                     }}
                 >
                     <View style={styles.statistic_container}>
-                        <Text style={styles.statistic_label}>AVG</Text>
-                        <Text style={styles.statistic}>{stats ? stats.average.toFixed(2) : "loading..."}</Text>
+                        <UIText style={styles.statistic_label}>AVG</UIText>
+                        <UIText style={styles.statistic}>{stats ? stats.average.toFixed(2) : "loading..."}</UIText>
                     </View>
                     {!only_average && (
                         <>
                             <View style={styles.statistic_container}>
-                                <Text style={styles.statistic_label}>MIN</Text>
-                                <Text style={styles.statistic}>{stats ? stats.min : "loading..."}</Text>
+                                <UIText style={styles.statistic_label}>MIN</UIText>
+                                <UIText style={styles.statistic}>{stats ? stats.min : "loading..."}</UIText>
                             </View>
                             <View style={styles.statistic_container}>
-                                <Text style={styles.statistic_label}>MAX</Text>
-                                <Text style={styles.statistic}>{stats ? stats.max : "loading..."}</Text>
+                                <UIText style={styles.statistic_label}>MAX</UIText>
+                                <UIText style={styles.statistic}>{stats ? stats.max : "loading..."}</UIText>
                             </View>
                         </>
                     )}
@@ -357,8 +358,8 @@ export function QuestionSummary({
             )}
             {response && (
                 <View style={styles.ai_summary_container}>
-                    <Text style={styles.ai_summary_header}>AI SUMMARY</Text>
-                    <Text style={styles.ai_summary_text}>{response}</Text>
+                    <UIText style={styles.ai_summary_header}>AI SUMMARY</UIText>
+                    <UIText style={styles.ai_summary_text}>{response}</UIText>
                 </View>
             )}
             {item.type === "textbox" && (
@@ -370,8 +371,8 @@ export function QuestionSummary({
                             }
                             return (
                                 <View style={styles.comment_container}>
-                                    <Text style={styles.comment_match_number}>Match {datum.match}</Text>
-                                    <Text style={styles.comment_text}>{datum.data.replace(/(\r\n|\n|\r)/gm, "")}</Text>
+                                    <UIText style={styles.comment_match_number}>Match {datum.match}</UIText>
+                                    <UIText style={styles.comment_text}>{datum.data.replace(/(\r\n|\n|\r)/gm, "")}</UIText>
                                 </View>
                             );
                         })

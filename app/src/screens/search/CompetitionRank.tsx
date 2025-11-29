@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { UIText } from "../../ui/UIText";
 import { type SimpleEvent, TBA } from "../../lib/frc/tba/TBA.ts";
 import { useTheme } from "@react-navigation/native";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import * as Bs from "../../ui/icons";
 
 // TODO: Add a loading indicator
@@ -152,14 +153,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                 }}
             >
                 <View style={{ flex: 1 }}>
-                    <Text
-                        style={{
-                            color: colors.text,
-                            textAlign: "center",
-                            fontSize: 20,
-                            fontWeight: "800",
-                        }}
-                    >
+                    <UIText size={20} bold style={{ textAlign: "center" }}>
                         {loading ? (
                             "Loading..."
                         ) : (
@@ -173,16 +167,10 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                                     : "Ranked #" + currentCompetitionRank}
                             </>
                         )}
-                    </Text>
-                    <Text
-                        style={{
-                            color: colors.text,
-                            textAlign: "center",
-                            fontSize: 20,
-                        }}
-                    >
+                    </UIText>
+                    <UIText size={20} style={{ textAlign: "center" }}>
                         {loading ? " " : <>{currentCompetition != null ? "at " + currentCompetition.name : " "}</>}
-                    </Text>
+                    </UIText>
                 </View>
 
                 {historyVisible ? (
@@ -218,30 +206,16 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                                 backgroundColor: index % 2 == 0 ? colors.card : colors.background,
                             }}
                         >
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontWeight: "bold",
-                                    textAlign: "left",
-                                    flex: 2,
-                                }}
-                            >
+                            <UIText bold style={{ textAlign: "left", flex: 2 }}>
                                 {index + 1}. {item.name}
-                            </Text>
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                    flex: 1,
-                                }}
-                            >
+                            </UIText>
+                            <UIText bold style={{ textAlign: "center", flex: 1 }}>
                                 {item.rank === -1
                                     ? "Future Competition"
                                     : item.rank === -2
                                     ? "Unranked"
                                     : "Rank #" + item.rank}
-                            </Text>
+                            </UIText>
                         </View>
                     ))}
                 </ScrollView>

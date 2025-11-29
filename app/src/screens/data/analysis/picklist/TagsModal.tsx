@@ -1,4 +1,5 @@
-import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, TextInput, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
@@ -6,6 +7,7 @@ import type { PicklistTeam } from "../../../../database/Picklists";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
 import type { Setter } from "../../../../lib/util/react/types";
 import * as Bs from "../../../../ui/icons";
+import { Color } from "../../../../lib/color.ts";
 
 export interface TagsModalProps {
     visible: boolean;
@@ -126,29 +128,22 @@ export function TagsModal({
                             marginBottom: "5%",
                         }}
                     >
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontSize: 20,
-                                fontWeight: "bold",
-                                flex: 1,
-                            }}
-                        >
+                        <UIText size={20} bold style={{ flex: 1 }}>
                             {selected_team !== null ? "Tags for Team " + selected_team.team_number : "Tags"}
-                        </Text>
+                        </UIText>
                         {selected_team === null && (
                             <Pressable onPress={() => setDeletionActive((prev) => !prev)} style={{ flex: 0.2 }}>
-                                <Text
+                                <UIText
                                     style={{
                                         color: deletionActive ? colors.primary : colors.text,
                                     }}
                                 >
                                     Edit
-                                </Text>
+                                </UIText>
                             </Pressable>
                         )}
                         <Pressable onPress={() => setVisible(false)}>
-                            <Text style={{ color: colors.text }}>Close</Text>
+                            <UIText>Close</UIText>
                         </Pressable>
                     </View>
                     {listOfTags.length > 0 && (
@@ -193,7 +188,7 @@ export function TagsModal({
                                         }}
                                     >
                                         <View style={{ flexDirection: "row" }}>
-                                            <Text style={{ color: colors.text, flex: 1 }}>{item.name}</Text>
+                                            <UIText style={{ flex: 1 }}>{item.name}</UIText>
                                             {!deletionActive && (
                                                 <Pressable
                                                     onPress={() => {
@@ -220,7 +215,7 @@ export function TagsModal({
                                             )}
                                             {deletionActive && (
                                                 <Pressable onPress={() => attemptDeleteTag(item)}>
-                                                    <Text style={{ color: colors.notification }}>Delete</Text>
+                                                    <UIText color={Color.parse(colors.notification)}>Delete</UIText>
                                                 </Pressable>
                                             )}
                                         </View>
@@ -280,15 +275,15 @@ export function TagsModal({
                                 gap: 10,
                             }}
                         >
-                            <Text
+                            <UIText
+                                bold
                                 style={{
                                     color: "white",
-                                    fontWeight: "bold",
                                     textAlign: "center",
                                 }}
                             >
                                 Create Tag
-                            </Text>
+                            </UIText>
                         </Pressable>
                     </View>
                     {/*)}*/}

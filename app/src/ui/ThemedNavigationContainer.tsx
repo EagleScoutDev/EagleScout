@@ -1,4 +1,4 @@
-import { NavigationContainer, type NavigationContainerProps} from "@react-navigation/native";
+import { NavigationContainer, type NavigationContainerProps } from "@react-navigation/native";
 import { useTheme } from "../lib/contexts/ThemeContext.ts";
 import { Theme } from "../theme";
 

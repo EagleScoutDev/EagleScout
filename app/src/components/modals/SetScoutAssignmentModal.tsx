@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { UIModal } from "../../ui/UIModal";
 import { StandardButton } from "../../ui/StandardButton";
 import { useTheme } from "@react-navigation/native";
@@ -191,35 +192,15 @@ export function SetScoutAssignmentModal({
                 <UIModal title={"Set scout assignment"} visible={visible}>
                     {matches.length === 1 && (
                         <>
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontSize: 18,
-                                    fontWeight: "600",
-                                    textAlign: "center",
-                                }}
-                            >
+                            <UIText size={18} bold style={{ textAlign: "center" }}>
                                 Match: {matches[0].match}
-                            </Text>
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontSize: 18,
-                                    fontWeight: "600",
-                                    textAlign: "center",
-                                }}
-                            >
+                            </UIText>
+                            <UIText size={18} bold style={{ textAlign: "center" }}>
                                 Team: {matches[0].teamFormatted}
-                            </Text>
+                            </UIText>
                         </>
                     )}
-                    <Text
-                        style={{
-                            color: colors.text,
-                        }}
-                    >
-                        Search for a user
-                    </Text>
+                    <UIText>Search for a user</UIText>
                     <Spacer />
                     <TextInput
                         style={styles.user_name_input}

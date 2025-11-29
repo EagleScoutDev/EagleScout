@@ -1,4 +1,5 @@
-import { ActivityIndicator, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
@@ -120,9 +121,9 @@ export function CompareTeams({ route }: CompareTeamsProps) {
     if (secondTeam === null || secondTeamScoutData === null) {
         return (
             <View style={styles.container}>
-                <View style={{ flex: 1 }}>
-                    <Text style={{ color: colors.text, fontSize: 20, textAlign: "center" }}>Team 1</Text>
-                    <Text style={{ color: colors.text, fontSize: 50, textAlign: "center" }}>{team.team_number}</Text>
+                <View style={{ flex: 1, alignItems: "center" }}>
+                    <UIText size={20}>Team 1</UIText>
+                    <UIText size={50}>{team.team_number}</UIText>
                 </View>
                 {(secondTeamScoutData === null) !== (secondTeam === null) ? (
                     <View style={{ height: "90%", width: 1, backgroundColor: colors.border }} />
@@ -142,15 +143,9 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                                     borderColor: colors.border,
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontSize: 20,
-                                        textAlign: "center",
-                                    }}
-                                >
+                                <UIText size={20} style={{ textAlign: "center" }}>
                                     {team_number}
-                                </Text>
+                                </UIText>
                             </Pressable>
                         );
                     })}
@@ -172,12 +167,14 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                 }}
             >
                 <View style={{ flex: 1 }}>
-                    <Text style={{ color: colors.text, fontSize: 50, textAlign: "center" }}>{team.team_number}</Text>
+                    <UIText size={50}>{team.team_number}</UIText>
                 </View>
-                <Text style={{ color: colors.text, fontSize: 20, textAlign: "center" }}>vs</Text>
+                <UIText size={20}>vs</UIText>
                 <View style={{ flex: 1 }}>
                     <Pressable onPress={() => setSecondTeam(null)}>
-                        <Text style={{ color: colors.text, fontSize: 50, textAlign: "center" }}>{secondTeam}</Text>
+                        <UIText size={50} style={{ textAlign: "center" }}>
+                            {secondTeam}
+                        </UIText>
                     </Pressable>
                 </View>
             </View>
@@ -202,8 +199,8 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                         if (item.type === "heading") {
                             return (
                                 <View key={index} style={styles.section_heading_container}>
-                                    <Text style={styles.section_heading}>{item.title}</Text>
-                                    <Text style={styles.section_description}>{item.description}</Text>
+                                    <UIText style={styles.section_heading}>{item.title}</UIText>
+                                    <UIText style={styles.section_description}>{item.description}</UIText>
                                 </View>
                             );
                         }
@@ -220,7 +217,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                                     padding: 10,
                                 }}
                             >
-                                <Text style={styles.question}>{item.question}</Text>
+                                <UIText style={styles.question}>{item.question}</UIText>
                                 <View
                                     style={{
                                         flexDirection: "row",
@@ -271,6 +268,7 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                 title={formStructure ? formStructure[chosenQuestionIndex].question : ""}
                 visible={graphActive}
                 onDismiss={() => setGraphActive(false)}
+                backdropPressBehavior={"dismiss"}
             >
                 {firstTeamScoutData && secondTeamScoutData ? (
                     <LineChart
@@ -304,17 +302,19 @@ export function CompareTeams({ route }: CompareTeamsProps) {
                 ) : (
                     <ActivityIndicator />
                 )}
-                <Text style={{ color: colors.text, textAlign: "center", fontWeight: "bold" }}>Match Number</Text>
+                <UIText bold style={{ textAlign: "center" }}>
+                    Match Number
+                </UIText>
                 {formStructure &&
                     formStructure[chosenQuestionIndex].options &&
                     formStructure[chosenQuestionIndex].options.length > 0 && (
                         <>
-                            <Text style={{ color: colors.text, textAlign: "center" }}>Graph Interpretation</Text>
+                            <UIText style={{ textAlign: "center" }}>Graph Interpretation</UIText>
                             {formStructure[chosenQuestionIndex].options?.map((option: string, index: number) => {
                                 return (
-                                    <Text style={{ color: colors.text, textAlign: "center" }}>
+                                    <UIText style={{ textAlign: "center" }}>
                                         {index + " - " + formStructure[chosenQuestionIndex].options![index]}
-                                    </Text>
+                                    </UIText>
                                 );
                             })}
                         </>

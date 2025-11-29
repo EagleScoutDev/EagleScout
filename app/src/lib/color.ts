@@ -1,5 +1,8 @@
 import { padLeft } from "./util/padLeft";
 
+// TODO: find a better solution for placeholder/gray text
+const LEVEL_OPACITY = [255, 153, 102, 76] as const;
+
 const cache = new Map<string, Color>();
 export class Color {
     public static white: Color = Color.rgba(255, 255, 255, 255);
@@ -55,6 +58,9 @@ export class Color {
     }
     public set(r?: number | null, g?: number | null, b?: number | null, a?: number | null) {
         return new Color(r ?? this.r, g ?? this.g, b ?? this.b, a ?? this.a);
+    }
+    public level(level: 0 | 1 | 2 | 3): Color {
+        return new Color(this.r, this.g, this.b, LEVEL_OPACITY[level]);
     }
 
     public [Symbol.toPrimitive]() {

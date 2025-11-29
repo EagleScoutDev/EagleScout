@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { type Theme, useTheme } from "@react-navigation/native";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { ScoutcoinLedger as ScoutcoinLedgerDB, type ScoutcoinLedgerItem } from "../../database/ScoutcoinLedger";
-import { TextInput } from "react-native-gesture-handler";
+import { UIText } from "../../ui/UIText";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import type { Theme } from "../../theme";
+import { UITextInput } from "../../ui/input/UITextInput.tsx";
 
 const formatDate = (date: Date) => {
     const month = date.toLocaleString("default", { month: "short" });
@@ -17,6 +19,7 @@ const boughtRegex = /Bought item: /;
 
 export function ScoutcoinLedger() {
     "use memo";
+
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const [scoutcoinLedger, setScoutcoinLedger] = useState<ScoutcoinLedgerItem[]>([]);
@@ -31,7 +34,7 @@ export function ScoutcoinLedger() {
     return (
         <View style={styles.container}>
             <View style={styles.filterContainer}>
-                <TextInput
+                <UITextInput
                     placeholder="Search ledger"
                     onChangeText={(text) => {
                         setFilteredScoutcoinLedger(
@@ -43,7 +46,6 @@ export function ScoutcoinLedger() {
                             )
                         );
                     }}
-                    placeholderTextColor={theme.colors.text}
                     style={styles.filterBox}
                 />
             </View>
@@ -51,48 +53,54 @@ export function ScoutcoinLedger() {
                 data={filteredScoutcoinLedger}
                 renderItem={({ item }) => (
                     <View style={styles.row}>
-                        <Text style={styles.date}>{formatDate(item.created_at)}</Text>
-                        <Text style={styles.description}>
+                        <UIText style={styles.date}>{formatDate(item.created_at)}</UIText>
+                        <UIText style={styles.description}>
                             {item.description}
                             {"\n"}
                             {item.description.match(betRegex) ? (
                                 <>
                                     {item.amount_change < 0 ? (
-                                        <Text>
-                                            <Text style={styles.negativeText}>Lost by</Text>{" "}
+                                        <UIText>
+                                            <UIText color={theme.colors.loss}>Lost by</UIText>{" "}
                                             {item.src_user_name || item.dest_user_name}
-                                        </Text>
+                                        </UIText>
                                     ) : (
-                                        <Text>
-                                            <Text style={{ color: "green" }}>Won by</Text>{" "}
+                                        <UIText>
+                                            <UIText color={theme.colors.win}>Won by</UIText>{" "}
                                             {item.dest_user_name || item.src_user_name}
-                                        </Text>
+                                        </UIText>
                                     )}
                                 </>
                             ) : item.description.match(boughtRegex) ? (
-                                <Text>
-                                    <Text style={styles.negativeText}>Bought by</Text> {item.src_user_name}
-                                </Text>
+                                <UIText>
+                                    <UIText color={theme.colors.loss}>Bought by</UIText> {item.src_user_name}
+                                </UIText>
                             ) : (
                                 <>
-                                    <Text>
-                                        <Text style={styles.positiveText}>Sent by</Text>{" "}
+                                    <UIText>
+                                        <UIText color={theme.colors.win}>Sent by</UIText>{" "}
                                         {item.amount_change < 0 ? item.src_user_name : item.dest_user_name}{" "}
-                                        <Text style={styles.negativeText}>to</Text>{" "}
+                                        <UIText color={theme.colors.loss}>to</UIText>{" "}
                                         {item.amount_change < 0 ? item.dest_user_name : item.src_user_name}
-                                    </Text>
+                                    </UIText>
                                 </>
                             )}
-                        </Text>
-                        <Text style={styles.amount}>{Math.abs(item.amount_change)}</Text>
+                        </UIText>
+                        <UIText style={styles.amount}>{Math.abs(item.amount_change)}</UIText>
                     </View>
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={() => (
                     <View style={styles.header}>
-                        <Text style={{ ...styles.headerText, ...styles.date }}>Date</Text>
-                        <Text style={{ ...styles.headerText, ...styles.description }}>Description</Text>
-                        <Text style={styles.headerAmountText}>Amount</Text>
+                        <UIText style={styles.date} bold>
+                            Date
+                        </UIText>
+                        <UIText style={styles.description} bold>
+                            Description
+                        </UIText>
+                        <UIText style={styles.headerAmountText} bold>
+                            Amount
+                        </UIText>
                     </View>
                 )}
             />
@@ -112,9 +120,8 @@ const makeStyles = ({ colors }: Theme) =>
         },
         filterBox: {
             padding: 10,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             borderRadius: 5,
-            color: colors.text,
         },
         row: {
             flexDirection: "row",
@@ -122,7 +129,7 @@ const makeStyles = ({ colors }: Theme) =>
             padding: 20,
             marginVertical: 8,
             marginHorizontal: 16,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
             alignItems: "center",
             gap: 4,
         },
@@ -132,34 +139,20 @@ const makeStyles = ({ colors }: Theme) =>
             padding: 20,
             marginVertical: 8,
             marginHorizontal: 16,
-            backgroundColor: colors.card,
-        },
-        headerText: {
-            fontWeight: "bold",
+            backgroundColor: colors.bg1.hex,
         },
         headerAmountText: {
-            fontWeight: "bold",
             flex: 1,
             textAlign: "right",
-            color: colors.text,
         },
         date: {
             flex: 1,
-            color: colors.text,
         },
         description: {
             flex: 2,
-            color: colors.text,
         },
         amount: {
             flex: 1 / 2,
-            color: colors.text,
             textAlign: "right",
-        },
-        negativeText: {
-            color: "red",
-        },
-        positiveText: {
-            color: "green",
         },
     });

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { UISheetModal } from "../UISheetModal";
 import { UISheet } from "../UISheet";
 import * as Bs from "../../ui/icons";
@@ -8,6 +8,7 @@ import { Color } from "../../lib/color";
 import { useTheme } from "@react-navigation/native";
 import { PressableOpacity } from "../components/PressableOpacity";
 import { UIList } from "../UIList";
+import { UIText } from "../UIText";
 
 export interface UIListPickerProps<K extends string | number = string | number> {
     ref?: Ref<UIListPicker<K>>;
@@ -68,9 +69,9 @@ export function UIListPicker<K extends string | number = string | number>({
                         style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
                         onPress={() => sheetRef.current?.present()}
                     >
-                        <Text style={{ color: "gray", fontSize: 16, marginRight: 4, flexShrink: 1 }} numberOfLines={1}>
+                        <UIText size={16} level={1} style={{ marginRight: 4, flexShrink: 1 }} numberOfLines={1}>
                             {value === null ? "None" : render(value).name}
-                        </Text>
+                        </UIText>
                         <View style={{ width: 20, height: 20 }}>
                             <Bs.ChevronExpand fill={"gray"} size={20} />
                         </View>

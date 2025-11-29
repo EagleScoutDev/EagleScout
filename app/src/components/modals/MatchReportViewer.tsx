@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { UIRadio } from "../../ui/input/UIRadio.tsx";
@@ -191,7 +191,7 @@ export function MatchReportViewer({
                     {data.form.map((field, index) => (
                         <View key={index}>
                             {field.type === Form.ItemType.heading ? (
-                                <Text style={s.sectionTitle}>{field.title}</Text>
+                                <UIText style={s.sectionTitle}>{field.title}</UIText>
                             ) : field.type === Form.ItemType.radio ||
                               field.type === Form.ItemType.textbox ||
                               field.type === Form.ItemType.checkbox ? (
@@ -234,9 +234,9 @@ export function MatchReportViewer({
                                 >
                                     <FormQuestion title={field.question} required={field.required} inline>
                                         {formData[index] === null ? (
-                                            <Text style={s.na}>N/A</Text>
+                                            <UIText style={s.na}>N/A</UIText>
                                         ) : (
-                                            <Text
+                                            <UIText
                                                 style={{
                                                     color: colors.text,
                                                     fontWeight: "bold",
@@ -247,7 +247,7 @@ export function MatchReportViewer({
                                                 }}
                                             >
                                                 {formData[index] ?? ""}
-                                            </Text>
+                                            </UIText>
                                         )}
                                     </FormQuestion>
                                 </View>
@@ -276,7 +276,7 @@ function ReportMetadataView({
     return (
         <View style={{ alignItems: "center" }}>
             <Pressable style={{ flexDirection: "row", justifyContent: "center" }} onPress={navigateToTeamViewer}>
-                <Text
+                <UIText
                     style={{
                         fontSize: 30,
                         fontWeight: "bold",
@@ -284,13 +284,13 @@ function ReportMetadataView({
                     }}
                 >
                     Team #{data.teamNumber}
-                </Text>
+                </UIText>
             </Pressable>
-            <Text style={{ color: colors.text }}>
+            <UIText style={{ color: colors.text }}>
                 Round {data.matchNumber} of {data.competitionName}
-            </Text>
-            {userName !== null && <Text style={{ color: colors.text }}>Submitted by {userName}</Text>}
-            <Text style={{ color: colors.text }}>{new Date(data.createdAt).toLocaleString()}</Text>
+            </UIText>
+            {userName !== null && <UIText style={{ color: colors.text }}>Submitted by {userName}</UIText>}
+            <UIText style={{ color: colors.text }}>{new Date(data.createdAt).toLocaleString()}</UIText>
         </View>
     );
 }

@@ -1,4 +1,5 @@
-import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { UISegmentedControl } from "../../../ui/input/pickers/UISegmentedControl";
@@ -11,9 +12,7 @@ import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
 import { Color } from "../../../lib/color";
 import type { SettingsMenuScreenProps } from "../SettingsMenu";
 
-export function SubmittedNotes({
-    route,
-}: SettingsMenuScreenProps<"Scout/ViewNotes">) {
+export function SubmittedNotes({ route }: SettingsMenuScreenProps<"Scout/ViewNotes">) {
     const { competitionId } = route.params;
     const { colors } = useTheme();
 
@@ -73,25 +72,12 @@ export function SubmittedNotes({
                                 backgroundColor: colors.border,
                             }}
                         >
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    textAlign: "center",
-                                    fontSize: 20,
-                                    fontWeight: "bold",
-                                }}
-                            >
+                            <UIText size={20} bold style={{ textAlign: "center" }}>
                                 No offline reports!
-                            </Text>
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    textAlign: "center",
-                                    fontSize: 15,
-                                }}
-                            >
+                            </UIText>
+                            <UIText size={15} style={{ textAlign: "center" }}>
                                 Great job keeping your data up-to-date.
-                            </Text>
+                            </UIText>
                         </View>
                     )}
 

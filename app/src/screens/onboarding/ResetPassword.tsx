@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { UIText } from "../../ui/UIText";
 import {
     Alert,
     Keyboard,
     SafeAreaView,
-    Text,
     TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -24,7 +24,7 @@ export function ResetPassword({ navigation }: ResetPasswordProps) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.background}>
-                <Text style={styles.titleText}>Reset Password</Text>
+                <UIText style={styles.titleText}>Reset Password</UIText>
                 <>
                     <View>
                         <MinimalSectionHeader title={"Email"} />
@@ -100,7 +100,7 @@ export function ResetPassword({ navigation }: ResetPasswordProps) {
                             setEmail("");
                         }}
                     >
-                        <Text style={styles.text}>Log In</Text>
+                        <UIText style={styles.text}>Log In</UIText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.link_container}
@@ -109,7 +109,7 @@ export function ResetPassword({ navigation }: ResetPasswordProps) {
                             setEmail("");
                         }}
                     >
-                        <Text style={styles.text}>Create Account</Text>
+                        <UIText style={styles.text}>Create Account</UIText>
                     </TouchableOpacity>
                 </>
             </SafeAreaView>

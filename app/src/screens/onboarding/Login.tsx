@@ -1,13 +1,6 @@
 import { useState } from "react";
-import {
-    Keyboard,
-    SafeAreaView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-} from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Keyboard, SafeAreaView, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { styles } from "./styles";
 import { StandardButton } from "../../ui/StandardButton";
@@ -28,10 +21,10 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
             <SafeAreaView style={styles.background}>
                 {error !== "" && (
                     <View style={styles.error}>
-                        <Text style={styles.error_text}>{error}</Text>
+                        <UIText style={styles.error_text}>{error}</UIText>
                     </View>
                 )}
-                <Text style={styles.titleText}>Log In</Text>
+                <UIText style={styles.titleText}>Log In</UIText>
                 <>
                     <View>
                         <MinimalSectionHeader title={"Email"} />
@@ -81,7 +74,7 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
                             setPassword("");
                         }}
                     >
-                        <Text style={styles.text}>Reset Password</Text>
+                        <UIText style={styles.text}>Reset Password</UIText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.link_container}
@@ -91,7 +84,7 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
                             setPassword("");
                         }}
                     >
-                        <Text style={styles.text}>Create Account</Text>
+                        <UIText style={styles.text}>Create Account</UIText>
                     </TouchableOpacity>
                 </>
             </SafeAreaView>

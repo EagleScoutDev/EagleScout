@@ -1,5 +1,6 @@
 import { Switch, TextInput } from "react-native-gesture-handler";
-import { StyleSheet, Text, View } from "react-native";
+import { UIText } from "../../../../../ui/UIText";
+import { StyleSheet, View } from "react-native";
 import { type Theme, useTheme } from "@react-navigation/native";
 import type { Setter } from "../../../../../lib/util/react/types";
 import { exMemo } from "../../../../../lib/util/react/memo";
@@ -37,7 +38,9 @@ export function FormInfoCard({ title, setTitle, isPit, setIsPit }: InfoCardProps
             {/*    onChangeText={setDescription}*/}
             {/*/>*/}
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
-                <Text style={{ color: colors.text, fontSize: 16, marginRight: "auto" }}>Used in pit scouting?</Text>
+                <UIText size={16} style={{ marginRight: "auto" }}>
+                    Used in pit scouting?
+                </UIText>
                 <Switch value={isPit} onValueChange={setIsPit} />
             </View>
         </>

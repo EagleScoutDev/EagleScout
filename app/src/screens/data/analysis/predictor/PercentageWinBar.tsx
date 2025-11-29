@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 
 export interface PercentageWinBarProps {
     bluePercentage: number;
@@ -28,7 +29,7 @@ export function PercentageWinBar({ bluePercentage, redPercentage }: PercentageWi
                             borderRadius: bluePercentage === 100 ? 10 : 0,
                         }}
                     >
-                        <Text
+                        <UIText
                             style={{
                                 color: "white",
                                 textAlign: "center",
@@ -36,7 +37,7 @@ export function PercentageWinBar({ bluePercentage, redPercentage }: PercentageWi
                             }}
                         >
                             {bluePercentage}%
-                        </Text>
+                        </UIText>
                     </View>
                 )}
                 {redPercentage !== 0 && (
@@ -51,7 +52,7 @@ export function PercentageWinBar({ bluePercentage, redPercentage }: PercentageWi
                             borderRadius: redPercentage === 100 ? 10 : 0,
                         }}
                     >
-                        <Text
+                        <UIText
                             style={{
                                 color: "white",
                                 textAlign: "center",
@@ -59,7 +60,7 @@ export function PercentageWinBar({ bluePercentage, redPercentage }: PercentageWi
                             }}
                         >
                             {redPercentage}%
-                        </Text>
+                        </UIText>
                     </View>
                 )}
             </View>
@@ -73,7 +74,7 @@ export function PercentageWinBar({ bluePercentage, redPercentage }: PercentageWi
             {/*  {bluePercentage > redPercentage ? bluePercentage : redPercentage}%{' '}*/}
             {/*  likelihood of {bluePercentage > redPercentage ? 'Blue' : 'Red'} Alliance*/}
             {/*  win*/}
-            {/*</Text>*/}
+            {/*</UIText>*/}
         </View>
     );
 }

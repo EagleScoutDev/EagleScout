@@ -1,4 +1,5 @@
-import { Dimensions, Pressable, Text, View } from "react-native";
+import { Dimensions, Pressable, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { UIModal } from "../../ui/UIModal";
 import { LineChart } from "react-native-chart-kit";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import { type MatchReportReturnData, MatchReportsDB } from "../../database/Scout
 import { type FormReturnData, FormsDB } from "../../database/Forms";
 import { CompetitionsDB } from "../../database/Competitions";
 import type { Setter } from "../../lib/util/react/types";
+import { Color } from "../../lib/color.ts";
 
 export interface CombinedGraphProps {
     modalActive: boolean;
@@ -23,7 +25,7 @@ export function CombinedGraph({
     questionIndices,
 }: CombinedGraphProps) {
     const { colors, dark } = useTheme();
-    
+
     const chartConfig = {
         backgroundGradientFrom: colors.card,
         backgroundGradientFromOpacity: 1.0,
@@ -102,15 +104,9 @@ export function CombinedGraph({
                                             marginRight: "2%",
                                         }}
                                     />
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 16,
-                                            fontWeight: "bold",
-                                        }}
-                                    >
+                                    <UIText size={16} bold>
                                         {question}
-                                    </Text>
+                                    </UIText>
                                 </View>
                             ))}
                         </View>
@@ -136,19 +132,14 @@ export function CombinedGraph({
                         />
                     </>
                 )}
-                <Text
-                    style={{
-                        color: colors.text,
-                        textAlign: "center",
-
-                        fontWeight: "bold",
-                    }}
-                >
+                <UIText bold style={{ textAlign: "center" }}>
                     Match Number
-                </Text>
+                </UIText>
             </View>
             <Pressable style={{ marginTop: "4%" }} onPress={() => setModalActive(false)}>
-                <Text style={{ color: colors.primary, fontSize: 16 }}>Close</Text>
+                <UIText size={16} color={Color.parse(colors.primary)}>
+                    Close
+                </UIText>
             </Pressable>
         </UIModal>
     );

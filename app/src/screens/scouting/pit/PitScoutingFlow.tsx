@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { Alert, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
@@ -111,9 +112,9 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
     if (competition === null) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ color: colors.text }}>There is no competition happening currently.</Text>
+                <UIText>There is no competition happening currently.</UIText>
 
-                {!online && <Text>To check for competitions, please connect to the internet.</Text>}
+                {!online && <UIText>To check for competitions, please connect to the internet.</UIText>}
             </View>
         );
     }

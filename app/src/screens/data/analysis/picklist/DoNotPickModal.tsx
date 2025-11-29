@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Alert, FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
+import { Alert, FlatList, Modal, Pressable, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { StandardButton } from "../../../../ui/StandardButton";
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
 import { TeamAddingModal } from "./TeamAddingModal";
 import * as Bs from "../../../../ui/icons";
+import { Color } from "../../../../lib/color.ts";
 
 export interface DoNotPickModalProps {
     visible: boolean;
@@ -56,16 +58,9 @@ export function DoNotPickModal({
                         borderRadius: 10,
                     }}
                 >
-                    <Text
-                        style={{
-                            color: "red",
-                            fontSize: 30,
-                            fontWeight: "bold",
-                            textAlign: "center",
-                        }}
-                    >
+                    <UIText size={30} bold color={Color.parse(colors.notification)} style={{ textAlign: "center" }}>
                         Do Not Pick
-                    </Text>
+                    </UIText>
                     <View
                         style={{
                             flexDirection: "row",
@@ -105,8 +100,12 @@ export function DoNotPickModal({
                             paddingVertical: "2%",
                         }}
                     >
-                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Team</Text>
-                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Notes</Text>
+                        <UIText size={20} bold>
+                            Team
+                        </UIText>
+                        <UIText size={20} bold>
+                            Notes
+                        </UIText>
                     </View>
                     <FlatList
                         data={teams
@@ -143,12 +142,12 @@ export function DoNotPickModal({
                                         paddingVertical: "2%",
                                     }}
                                 >
-                                    <Text style={{ color: colors.text, fontSize: 20 }}>
+                                    <UIText size={20}>
                                         {item.team_number}
                                         {numbersToNames.size === 0 ? "" : " "}
                                         {numbersToNames.get(item.team_number)}
-                                    </Text>
-                                    <Text style={{ color: colors.text, fontSize: 20 }}>{item.notes}</Text>
+                                    </UIText>
+                                    <UIText size={20}>{item.notes}</UIText>
                                 </Pressable>
                             );
                         }}

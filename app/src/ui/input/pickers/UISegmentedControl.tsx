@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 
 export interface SegmentedOptionProps<T extends string> {
@@ -34,15 +35,9 @@ export function UISegmentedControl<T extends string>({ options, selected, onPres
                     }}
                     onPress={() => onPress(title)}
                 >
-                    <Text
-                        style={{
-                            color: colors.text,
-                            textAlign: "center",
-                            fontWeight: selected === title ? "bold" : "normal",
-                        }}
-                    >
+                    <UIText bold={selected === title} style={{ textAlign: "center" }}>
                         {title}
-                    </Text>
+                    </UIText>
                 </TouchableOpacity>
             ))}
         </View>

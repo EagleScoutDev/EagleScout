@@ -1,7 +1,8 @@
 import { type PropsWithChildren, useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Statbotics } from "../lib/frc/statbotics";
+import { UIText } from "../ui/UIText";
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
 
@@ -10,12 +11,14 @@ interface InfoCapsuleProps {
     value: number | null;
 }
 function InfoCapsule({ title, value }: InfoCapsuleProps) {
-    const { colors } = useTheme();
-
     return (
         <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: colors.text }}>{value ?? "N/A"}</Text>
-            <Text style={{ fontSize: 12, color: "gray" }}>{title}</Text>
+            <UIText size={20} bold>
+                {value ?? "N/A"}
+            </UIText>
+            <UIText size={12} level={1}>
+                {title}
+            </UIText>
         </View>
     );
 }
@@ -71,25 +74,12 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
     if (message !== undefined) {
         return (
             <View style={styles.container}>
-                <Text
-                    style={{
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        color: colors.text,
-                    }}
-                >
+                <UIText size={20} bold style={{ textAlign: "center" }}>
                     {title}
-                </Text>
-                <Text
-                    style={{
-                        textAlign: "center",
-                        fontStyle: "italic",
-                        color: colors.text,
-                    }}
-                >
+                </UIText>
+                <UIText italic style={{ textAlign: "center" }}>
                     {message}
-                </Text>
+                </UIText>
             </View>
         );
     } else {
@@ -101,15 +91,9 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
             <View style={styles.container}>
                 {overall.epa.breakdown && (
                     <>
-                        <Text
-                            style={{
-                                fontWeight: "bold",
-                                fontSize: 15,
-                                color: colors.text,
-                            }}
-                        >
+                        <UIText size={15} bold>
                             Overall Statistics
-                        </Text>
+                        </UIText>
                         <InfoRow>
                             <InfoCapsule title="Auto EPA" value={overall.epa.breakdown.auto_points} />
                             <InfoCapsule title="Teleop EPA" value={overall.epa.breakdown.teleop_points} />
@@ -118,27 +102,18 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
                     </>
                 )}
 
-                <Text
-                    style={{
-                        fontWeight: "bold",
-                        fontSize: 15,
-                        marginTop: 16,
-                        color: colors.text,
-                    }}
-                >
+                <UIText size={15} bold style={{ marginTop: 16 }}>
                     Past Competitions
-                </Text>
+                </UIText>
                 <FlatList
                     style={{ marginTop: 6 }}
                     data={competitions}
                     keyExtractor={(item) => item.event_key}
-                    ListEmptyComponent={() => (
-                        <Text style={{ color: colors.text, fontStyle: "italic" }}>No competitions found.</Text>
-                    )}
+                    ListEmptyComponent={() => <UIText italic>No competitions found.</UIText>}
                     ItemSeparatorComponent={() => <View style={{ height: 8 }}></View>}
                     renderItem={({ item }) => (
                         <View>
-                            <Text style={{ fontWeight: "500", color: colors.text }}>{item.event_name}</Text>
+                            <UIText style={{ fontWeight: "500" }}>{item.event_name}</UIText>
                             {item.epa.breakdown && (
                                 <InfoRow>
                                     <InfoCapsule title="Auto EPA" value={item.epa.breakdown.auto_points} />
@@ -149,7 +124,7 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
                         </View>
                     )}
                 />
-                <Text style={{ marginTop: 16, textAlign: "center", color: "gray" }}>Powered by Statbotics</Text>
+                <UIText level={1}>Powered by Statbotics</UIText>
             </View>
         );
     }

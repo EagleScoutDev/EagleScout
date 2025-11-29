@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Keyboard, SafeAreaView, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { styles } from "./styles";
 import { StandardButton } from "../../ui/StandardButton";
@@ -16,7 +17,7 @@ export function SetNewPassword({ navigation }: SetNewPasswordProps) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.background}>
-                <Text style={styles.titleText}>Set New Password</Text>
+                <UIText style={styles.titleText}>Set New Password</UIText>
                 <>
                     <View>
                         <MinimalSectionHeader title={"New Password"} />

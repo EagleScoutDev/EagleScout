@@ -1,9 +1,10 @@
-import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Modal, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes";
 import * as Bs from "../ui/icons";
 import { UIButton } from "../ui/UIButton";
+import { UIText } from "../ui/UIText.tsx";
 
 export enum FilterType {
     // todo: allow note list to accept and display team #
@@ -94,17 +95,13 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                         >
                             <View style={{ flexDirection: "row" }}>
                                 <View style={{ flexDirection: "row", gap: 8 }}>
-                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>
-                                        Match {item.match_number}
-                                    </Text>
-                                    <Text style={{ color: colors.text, fontWeight: "bold" }}>
-                                        Team {item.team_number}
-                                    </Text>
-                                    <Text>{item.competition_name ? ` - ${item.competition_name}` : ""}</Text>
-                                    <Text>{item.scouter_name ? ` - By: ${item.scouter_name}` : ""}</Text>
+                                    <UIText bold>Match {item.match_number}</UIText>
+                                    <UIText bold>Team {item.team_number}</UIText>
+                                    <UIText>{item.competition_name ? ` - ${item.competition_name}` : ""}</UIText>
+                                    <UIText>{item.scouter_name ? ` - By: ${item.scouter_name}` : ""}</UIText>
                                 </View>
                             </View>
-                            <Text style={{ color: colors.text }}>{item.content}</Text>
+                            <UIText>{item.content}</UIText>
                         </View>
                     )}
                 />
@@ -121,7 +118,7 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                         alignItems: "center",
                     }}
                 >
-                    <Text style={{ color: colors.text }}>No notes found for this match.</Text>
+                    <UIText>No notes found for this match.</UIText>
                 </View>
             )}
             {filterModalVisible && (
@@ -134,16 +131,9 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                         onTouchEnd={() => setFilterModalVisible(false)}
                     />
                     <View style={styles.container}>
-                        <Text
-                            style={{
-                                color: colors.text,
-                                fontWeight: "bold",
-                                fontSize: 24,
-                                marginBottom: "5%",
-                            }}
-                        >
+                        <UIText size={24} bold style={{ marginBottom: "5%" }}>
                             Filter By
-                        </Text>
+                        </UIText>
                         <Pressable
                             onPress={() => {
                                 setFilterBy(FilterType.MATCH_NUMBER);
@@ -154,14 +144,7 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                                 borderColor: filterBy === FilterType.MATCH_NUMBER ? colors.primary : colors.background,
                             }}
                         >
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontSize: 18,
-                                }}
-                            >
-                                Match/Team
-                            </Text>
+                            <UIText size={18}>Match/Team</UIText>
                         </Pressable>
                         <Pressable
                             onPress={() => {
@@ -173,14 +156,7 @@ export function NoteList({ notes, onClose }: { notes: (NoteWithMatch | OfflineNo
                                 borderColor: filterBy === FilterType.TEXT ? colors.primary : colors.background,
                             }}
                         >
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontSize: 18,
-                                }}
-                            >
-                                Text
-                            </Text>
+                            <UIText size={18}>Text</UIText>
                         </Pressable>
                     </View>
                 </Modal>

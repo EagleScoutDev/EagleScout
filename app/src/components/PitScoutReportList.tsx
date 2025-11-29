@@ -1,8 +1,10 @@
 import { type PitReportReturnData } from "../database/ScoutPitReports";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { PitScoutViewer } from "./modals/PitScoutViewer";
 import { useState } from "react";
+import { UIText } from "../ui/UIText.tsx";
+import { Color } from "../lib/color.ts";
 
 export interface PitScoutReportListProps {
     reports: PitReportReturnData[] | null;
@@ -27,16 +29,9 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                     marginTop: 20,
                 }}
             >
-                <Text
-                    style={{
-                        paddingHorizontal: "10%",
-                        color: "red",
-                        fontSize: 16,
-                        fontWeight: "bold",
-                    }}
-                >
+                <UIText size={16} color={Color.parse(colors.notification)} bold style={{ paddingHorizontal: "10%" }}>
                     No reports found.
-                </Text>
+                </UIText>
             </View>
         );
     }
@@ -69,15 +64,9 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                                     borderRadius: 15,
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontSize: 16,
-                                        fontWeight: "bold",
-                                    }}
-                                >
+                                <UIText size={16} bold>
                                     Competition
-                                </Text>
+                                </UIText>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
@@ -85,16 +74,9 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                                     borderRadius: 15,
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        fontSize: 16,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                    }}
-                                >
+                                <UIText size={16} bold style={{ textAlign: "center" }}>
                                     Date
-                                </Text>
+                                </UIText>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -124,31 +106,16 @@ export function PitScoutReportList({ reports, isOffline }: PitScoutReportListPro
                                 justifyContent: "space-between",
                             }}
                         >
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontSize: 16,
-                                    fontWeight: "bold",
-                                    flex: 1.5,
-                                }}
-                            >
+                            <UIText size={16} bold style={{ flex: 1.5 }}>
                                 {item.competitionName}
-                            </Text>
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    fontSize: 16,
-                                    fontWeight: "bold",
-                                    flex: 2,
-                                    textAlign: "right",
-                                }}
-                            >
+                            </UIText>
+                            <UIText size={16} bold style={{ flex: 2, textAlign: "right" }}>
                                 {item.createdAt.toLocaleDateString("en-US", {
                                     month: "short",
                                     day: "numeric",
                                     year: "numeric",
                                 })}
-                            </Text>
+                            </UIText>
                         </View>
                     </TouchableOpacity>
                 )}

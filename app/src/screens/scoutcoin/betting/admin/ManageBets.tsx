@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { UIText } from "../../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { type MatchBet, MatchBets } from "../../../../database/MatchBets";
 import { supabase } from "../../../../lib/supabase";
 import { Color } from "../../../../lib/color";
@@ -33,7 +34,7 @@ const BetCard = ({
                 }}
             >
                 {pressed && <ActivityIndicator size="small" color={colors.text} style={{ marginRight: 10 }} />}
-                <Text
+                <UIText
                     style={{
                         fontSize: 18,
                         fontWeight: "bold",
@@ -44,7 +45,7 @@ const BetCard = ({
                     }}
                 >
                     Match {matchNumber}
-                </Text>
+                </UIText>
             </View>
             <View
                 style={{
@@ -68,13 +69,13 @@ const BetCard = ({
                         onConfirm("blue");
                     }}
                 >
-                    <Text
+                    <UIText
                         style={{
                             color: Color.rgb(0, 0, 255).fg.hex,
                         }}
                     >
                         Blue win
-                    </Text>
+                    </UIText>
                 </Pressable>
                 <Pressable
                     style={{
@@ -90,13 +91,13 @@ const BetCard = ({
                         onConfirm("tie");
                     }}
                 >
-                    <Text
+                    <UIText
                         style={{
                             color: colors.text,
                         }}
                     >
                         Tie
-                    </Text>
+                    </UIText>
                 </Pressable>
                 <Pressable
                     style={{
@@ -113,13 +114,13 @@ const BetCard = ({
                         onConfirm("red");
                     }}
                 >
-                    <Text
+                    <UIText
                         style={{
                             color: Color.rgb(255, 0, 0).fg.hex,
                         }}
                     >
                         Red win
-                    </Text>
+                    </UIText>
                 </Pressable>
             </View>
         </View>
@@ -157,7 +158,7 @@ export function ManageBets() {
                 alignItems: "center",
             }}
         >
-            <Text
+            <UIText
                 style={{
                     paddingTop: 20,
                     fontSize: 20,
@@ -166,7 +167,7 @@ export function ManageBets() {
                 }}
             >
                 Active Bets
-            </Text>
+            </UIText>
             <View
                 style={{
                     display: "flex",

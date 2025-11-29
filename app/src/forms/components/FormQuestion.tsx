@@ -1,7 +1,8 @@
-import { Text, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { type PropsWithChildren } from "react";
 import type { Icon } from "../../ui/icons";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface FormQuestionProps {
     icon?: Icon | null;
@@ -22,18 +23,11 @@ export function FormQuestion({
     return (
         <View style={inline ? { flex: 1, flexDirection: "row", alignItems: "center" } : undefined}>
             <View style={{ flexDirection: "row" }}>
-                {icon && icon({ size: 18, fill: colors.primary, style: { marginRight: 10 } })}
-                <Text
-                    style={{
-                        textAlign: "left",
-                        fontSize: 16,
-                        fontWeight: 500,
-                        color: colors.text,
-                    }}
-                >
+                {icon && icon({ size: 18, color: colors.primary.hex, style: { marginRight: 10 } })}
+                <UIText size={16} bold style={{ textAlign: "left" }}>
                     {title}
-                    {required && <Text style={{ color: colors.notification }}>*</Text>}
-                </Text>
+                    {required && <UIText color={colors.danger}>*</UIText>}
+                </UIText>
             </View>
 
             {children && inline ? children : <View style={{ marginTop: 6 }}>{children}</View>}

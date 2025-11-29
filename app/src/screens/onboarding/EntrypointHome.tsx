@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { StandardButton } from "../../ui/StandardButton";
 import type { OnboardingScreenProps } from ".";
@@ -30,8 +31,8 @@ export function EntrypointHome({ navigation }: EntrypointProps) {
         <View style={styles.container}>
             {/*    logo*/}
             <View style={{ alignItems: "center", flex: 0.5 }}>
-                <Text style={styles.title}>Eaglescout</Text>
-                <Text style={styles.subtitle}>The future of scouting is now.</Text>
+                <UIText style={styles.title}>Eaglescout</UIText>
+                <UIText style={styles.subtitle}>The future of scouting is now.</UIText>
             </View>
             <View style={{ width: "100%", position: "absolute", bottom: "10%" }}>
                 <StandardButton

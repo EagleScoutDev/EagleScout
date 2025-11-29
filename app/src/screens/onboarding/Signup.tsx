@@ -2,12 +2,12 @@ import {
     Alert,
     Keyboard,
     SafeAreaView,
-    Text,
     TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useMemo, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { styles } from "./styles";
@@ -32,7 +32,7 @@ export function Signup({ navigation }: SignupProps) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.background}>
-                <Text style={styles.titleText}>Sign Up</Text>
+                <UIText style={styles.titleText}>Sign Up</UIText>
                 <View>
                     <View>
                         <MinimalSectionHeader title="Email" />
@@ -116,7 +116,7 @@ export function Signup({ navigation }: SignupProps) {
                             setPassword("");
                         }}
                     >
-                        <Text style={styles.text}>Log In</Text>
+                        <UIText style={styles.text}>Log In</UIText>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

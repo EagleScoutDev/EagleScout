@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { type Theme, useTheme } from "@react-navigation/native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { exMemo } from "../../lib/util/react/memo";
@@ -33,7 +34,7 @@ export function UIStepper({ value, onInput }: StepperProps) {
                 <Bs.DashLg size={28} fill={"white"} />
             </PressableOpacity>
 
-            <Text style={styles.number}>{value}</Text>
+            <UIText style={styles.number}>{value}</UIText>
 
             <PressableOpacity
                 style={[styles.button, { backgroundColor: colors.primary }]}

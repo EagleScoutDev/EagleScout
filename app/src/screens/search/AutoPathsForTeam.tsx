@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Pressable, View } from "react-native";
 import { CompetitionsDB } from "../../database/Competitions";
 import { MatchReportsDB } from "../../database/ScoutMatchReports";
 import { useTheme } from "@react-navigation/native";
@@ -33,7 +34,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
-                <Text
+                <UIText
                     style={{
                         fontWeight: "bold",
                         fontSize: 25,
@@ -42,7 +43,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                     }}
                 >
                     Auto Paths for Team {team_number}
-                </Text>
+                </UIText>
                 <View
                     style={{
                         flex: 1,
@@ -51,13 +52,11 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                         gap: 10,
                     }}
                 >
-                    <Text style={{ color: colors.text }}>
-                        {autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ""}
-                    </Text>
+                    <UIText>{autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ""}</UIText>
                     {autoPaths ? (
                         <Reefscape.AutoPathView path={autoPaths[currentIndex]!} />
                     ) : (
-                        <Text style={{ color: colors.text, fontSize: 25 }}>No auto paths found</Text>
+                        <UIText size={25}>No auto paths found</UIText>
                     )}
                     {autoPaths ? (
                         <View
@@ -81,7 +80,7 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                                     }
                                 }}
                             >
-                                <Text style={{ color: colors.text }}>Previous</Text>
+                                <UIText>Previous</UIText>
                             </Pressable>
                             <Pressable
                                 style={{
@@ -95,11 +94,11 @@ export function AutoPathsForTeam({ route }: AutoPathsForTeamProps) {
                                     }
                                 }}
                             >
-                                <Text style={{ color: colors.text }}>Next</Text>
+                                <UIText>Next</UIText>
                             </Pressable>
                         </View>
                     ) : (
-                        <Text style={{ color: colors.text, fontSize: 20 }}>:(</Text>
+                        <UIText size={20}>:(</UIText>
                     )}
                 </View>
             </SafeAreaView>

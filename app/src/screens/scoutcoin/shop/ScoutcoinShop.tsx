@@ -1,5 +1,6 @@
 import { type FC, useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { StyleSheet, View } from "react-native";
 import { ProfileEmojiModal } from "./items/ProfileEmojiModal";
 import { type Theme, useTheme } from "@react-navigation/native";
 import { ConfirmPurchaseModal } from "./ConfirmPurchaseModal";
@@ -49,7 +50,7 @@ export function ScoutcoinShop() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Items</Text>
+            <UIText style={styles.heading}>Items</UIText>
             <View style={styles.itemsContainer}>
                 {Object.entries(shopItems).map(([key, value]) => (
                     <PressableOpacity
@@ -61,9 +62,9 @@ export function ScoutcoinShop() {
                         }}
                     >
                         <value.icon size="50" fill={colors.text} />
-                        <Text style={styles.itemNameText}>{value.name}</Text>
+                        <UIText style={styles.itemNameText}>{value.name}</UIText>
                         <View style={styles.coinContainer}>
-                            <Text style={styles.costText}>{value.cost}</Text>
+                            <UIText style={styles.costText}>{value.cost}</UIText>
                             <Bs.Coin size="12" fill={colors.text} />
                         </View>
                     </PressableOpacity>

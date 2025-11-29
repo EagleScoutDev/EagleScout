@@ -1,4 +1,4 @@
-import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
@@ -14,6 +14,7 @@ import { PredictionConfidenceTag } from "./PredictionConfidenceTag";
 import type { Form } from "../../../../lib/forms";
 import { UISheetModal } from "../../../../ui/UISheetModal.tsx";
 import { Alliance } from "../../../../frc/common/common.ts";
+import { UIText } from "../../../../ui/UIText";
 
 export function MatchPredictor() {
     const { colors } = useTheme();
@@ -303,10 +304,8 @@ export function MatchPredictor() {
                     paddingVertical: "10%",
                 }}
             >
-                <Text style={styles.header}>No Active Competition</Text>
-                <Text style={{ color: colors.text, fontSize: 14 }}>
-                    Please choose which competition you would like to view data for.
-                </Text>
+                <UIText style={styles.header}>No Active Competition</UIText>
+                <UIText>Please choose which competition you would like to view data for.</UIText>
                 {fullCompetitionsList.map((item, index) => (
                     <Pressable
                         key={index}
@@ -322,7 +321,7 @@ export function MatchPredictor() {
                         }}
                     >
                         <View style={styles.list_item}>
-                            <Text style={styles.list_text}>{item.name}</Text>
+                            <UIText style={styles.list_text}>{item.name}</UIText>
                         </View>
                     </Pressable>
                 ))}
@@ -334,7 +333,7 @@ export function MatchPredictor() {
         return (
             <View>
                 <Pressable onPress={() => setFormulaCreatorActive(true)}>
-                    <Text style={styles.question_prompt}>Choose your questions</Text>
+                    <UIText style={styles.question_prompt}>Choose your questions</UIText>
                 </Pressable>
 
                 <UISheetModal ref={questionPickerRef} handleComponent={null} enablePanDownToClose>
@@ -368,10 +367,10 @@ export function MatchPredictor() {
                         setCompName("");
                     }}
                 >
-                    <Text style={styles.small_question_prompt}>{compName}</Text>
+                    <UIText style={styles.small_question_prompt}>{compName}</UIText>
                 </Pressable>
                 <Pressable onPress={() => setFormulaCreatorActive(true)}>
-                    <Text style={styles.small_question_prompt}>Change Questions</Text>
+                    <UIText style={styles.small_question_prompt}>Change Questions</UIText>
                 </Pressable>
             </View>
 
@@ -385,7 +384,7 @@ export function MatchPredictor() {
             </UISheetModal>
 
             <View style={styles.match_input_container}>
-                <Text style={styles.match_label}>Match</Text>
+                <UIText style={styles.match_label}>Match</UIText>
                 <TextInput
                     style={styles.textInput}
                     placeholder="###"
@@ -428,19 +427,19 @@ export function MatchPredictor() {
                             backgroundColor: winningAllianceColor === Alliance.blue ? "dodgerblue" : "none",
                         }}
                     >
-                        <Text
+                        <UIText
+                            size={20}
+                            bold
                             style={{
                                 color: winningAllianceColor === Alliance.blue ? "white" : colors.text,
-                                fontSize: 20,
                                 marginBottom: 10,
-                                fontWeight: "bold",
                             }}
                         >
                             Blue Alliance
-                        </Text>
+                        </UIText>
                         {teamsWithoutData.slice(3, 6).map((team, index) => (
                             <View style={{ flexDirection: "row" }}>
-                                <Text
+                                <UIText
                                     key={team}
                                     style={
                                         winningAllianceColor === Alliance.blue
@@ -449,7 +448,7 @@ export function MatchPredictor() {
                                     }
                                 >
                                     {team}
-                                </Text>
+                                </UIText>
                             </View>
                         ))}
                     </View>
@@ -461,19 +460,19 @@ export function MatchPredictor() {
                             borderColor: "red",
                         }}
                     >
-                        <Text
+                        <UIText
+                            size={20}
+                            bold
                             style={{
                                 color: winningAllianceColor === Alliance.red ? "white" : colors.text,
-                                fontSize: 20,
                                 marginBottom: 10,
-                                fontWeight: "bold",
                             }}
                         >
                             Red Alliance
-                        </Text>
+                        </UIText>
                         {teamsWithoutData.slice(0, 3).map((team, index) => (
                             <View style={{ flexDirection: "row" }}>
-                                <Text
+                                <UIText
                                     key={team}
                                     style={
                                         winningAllianceColor === Alliance.red
@@ -482,7 +481,7 @@ export function MatchPredictor() {
                                     }
                                 >
                                     {team}
-                                </Text>
+                                </UIText>
                             </View>
                         ))}
                     </View>
@@ -506,17 +505,17 @@ export function MatchPredictor() {
                         }}
                     >
                         {(findingReports || determiningWinner) && <ActivityIndicator size={"small"} color={"black"} />}
-                        <Text
+                        <UIText
+                            size={20}
+                            bold
                             style={{
                                 color: Color.parse(colors.primary).fg.hex,
                                 textAlign: "center",
-                                fontSize: 20,
-                                fontWeight: "700",
                                 marginLeft: 10,
                             }}
                         >
                             Predict
-                        </Text>
+                        </UIText>
                     </Pressable>
                 </View>
             )}
@@ -526,27 +525,27 @@ export function MatchPredictor() {
                         style={styles.breakdown_button}
                         onPress={() => setBreakdownVisible((prevState) => !prevState)}
                     >
-                        <Text style={styles.breakdown_text}>See Breakdown</Text>
+                        <UIText style={styles.breakdown_text}>See Breakdown</UIText>
                     </Pressable>
                     {breakdownVisible && (
                         <View style={{ flexDirection: "row" }}>
                             <View style={styles.data_point_container}>
-                                <Text style={styles.data_point}>
+                                <UIText style={styles.data_point}>
                                     Blue Mean: {calculatedMeanStdev.blueMean.toFixed(2)}
-                                </Text>
-                                <Text style={styles.data_point}>
+                                </UIText>
+                                <UIText style={styles.data_point}>
                                     Blue Stdev: {calculatedMeanStdev.blueStdev.toFixed(2)}
-                                </Text>
+                                </UIText>
                                 <View style={{ height: 20 }} />
-                                <Text style={styles.data_point}>
+                                <UIText style={styles.data_point}>
                                     Red Mean: {calculatedMeanStdev.redMean.toFixed(2)}
-                                </Text>
-                                <Text style={styles.data_point}>
+                                </UIText>
+                                <UIText style={styles.data_point}>
                                     Red Stdev: {calculatedMeanStdev.redStdev.toFixed(2)}
-                                </Text>
+                                </UIText>
                                 <View style={{ height: 20 }} />
-                                <Text style={styles.data_point}>Blue Probability: {bluePercentage}%</Text>
-                                <Text style={styles.data_point}>Red Probability: {redPercentage}%</Text>
+                                <UIText style={styles.data_point}>Blue Probability: {bluePercentage}%</UIText>
+                                <UIText style={styles.data_point}>Red Probability: {redPercentage}%</UIText>
                             </View>
                             <View style={{ flex: 1 }}>
                                 <View
@@ -556,8 +555,8 @@ export function MatchPredictor() {
                                         marginHorizontal: "4%",
                                     }}
                                 >
-                                    <Text style={{ color: colors.text }}>Team</Text>
-                                    <Text style={{ color: colors.text }}># Reports</Text>
+                                    <UIText style={{ color: colors.text }}>Team</UIText>
+                                    <UIText style={{ color: colors.text }}># Reports</UIText>
                                 </View>
                                 {teamsWithoutData.map((team, index) => (
                                     <>
@@ -570,14 +569,8 @@ export function MatchPredictor() {
                                                 paddingHorizontal: "4%",
                                             }}
                                         >
-                                            <Text
-                                                style={{
-                                                    color: "white",
-                                                }}
-                                            >
-                                                {team}
-                                            </Text>
-                                            <Text style={{ color: "white" }}>{numReportsPerTeam[index]}</Text>
+                                            <UIText>{team}</UIText>
+                                            <UIText>{numReportsPerTeam[index]}</UIText>
                                         </View>
                                     </>
                                 ))}

@@ -1,6 +1,7 @@
 import { useTheme } from "@react-navigation/native";
+import { UIText } from "../ui/UIText";
 import { type PropsWithChildren, useState } from "react";
-import { ActivityIndicator, type StyleProp, Text, type TextStyle, View, type ViewStyle } from "react-native";
+import { ActivityIndicator, type StyleProp, type TextStyle, View, type ViewStyle } from "react-native";
 import { Color } from "../lib/color";
 import { PressableOpacity } from "./components/PressableOpacity";
 import type { Icon } from "./icons";
@@ -89,7 +90,7 @@ export function UIButton({
                     <>
                         {icon && icon({ ...sizeStyles.icon, fill: fg })}
                         {typeof text === "string" && (
-                            <Text style={[sizeStyles.text, { color: fg }, textStyle]}>{text}</Text>
+                            <UIText style={[sizeStyles.text, { color: fg }, textStyle]}>{text}</UIText>
                         )}
                     </>
                 )}

@@ -1,9 +1,11 @@
-import { Dimensions, Pressable, Text, View } from "react-native";
+import { Dimensions, Pressable, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { UIModal } from "../../ui/UIModal";
 import { LineChart } from "react-native-chart-kit";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import type { Setter } from "../../lib/util/react/types";
+import { Color } from "../../lib/color.ts";
 
 export interface DataGraphProps {
     modalActive: boolean;
@@ -69,31 +71,24 @@ export function DataGraph({ item, modalActive, setModalActive, data }: DataGraph
                     chartConfig={chartConfig}
                     bezier
                 />
-                <Text
-                    style={{
-                        color: colors.text,
-                        textAlign: "center",
-                        marginVertical: "3%",
-                        fontWeight: "bold",
-                    }}
-                >
+                <UIText bold style={{ textAlign: "center", marginVertical: "3%" }}>
                     Match Number
-                </Text>
+                </UIText>
                 {item.options && item.options.length > 0 && (
                     <>
-                        <Text style={{ color: colors.text, textAlign: "center" }}>Graph Interpretation</Text>
+                        <UIText style={{ textAlign: "center" }}>Graph Interpretation</UIText>
                         {item.options?.map((option: string, index: number) => {
                             return (
-                                <Text style={{ color: colors.text, textAlign: "center" }}>
-                                    {index + " - " + item.options![index]}
-                                </Text>
+                                <UIText style={{ textAlign: "center" }}>{index + " - " + item.options![index]}</UIText>
                             );
                         })}
                     </>
                 )}
             </View>
             <Pressable style={{ marginTop: "4%" }} onPress={() => setModalActive(false)}>
-                <Text style={{ color: colors.primary, fontSize: 16 }}>Close</Text>
+                <UIText size={16} color={Color.parse(colors.primary)}>
+                    Close
+                </UIText>
             </Pressable>
         </UIModal>
     );

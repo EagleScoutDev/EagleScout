@@ -1,8 +1,10 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { UIText } from "../UIText.tsx";
 import RNSlider from "@react-native-community/slider";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { ThreeCenterLayout } from "../layout/ThreeCenterLayout";
+import { Color } from "../../lib/color.ts";
 
 export interface UISliderProps {
     min: number;
@@ -40,9 +42,11 @@ export function UISlider({ min, max, step = 1, value, onInput, disabled = false,
                 onSlidingComplete={onInput ?? (() => {})}
             />
             <ThreeCenterLayout>
-                <Text style={{ color: colors.text, fontSize: 12 }}>{minLabel ?? min.toString()}</Text>
-                <Text style={{ color: colors.primary, fontSize: 12, fontWeight: "bold" }}>{draft}</Text>
-                <Text style={{ color: colors.text, fontSize: 12 }}>{maxLabel ?? max.toString()}</Text>
+                <UIText size={12}>{minLabel ?? min.toString()}</UIText>
+                <UIText size={12} bold color={Color.parse(colors.primary)}>
+                    {draft}
+                </UIText>
+                <UIText size={12}>{maxLabel ?? max.toString()}</UIText>
             </ThreeCenterLayout>
         </View>
     );

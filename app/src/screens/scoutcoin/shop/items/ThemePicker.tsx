@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { Theme, ThemeOption } from "../../../../theme";
 
@@ -44,16 +45,9 @@ export function ThemePicker({ options, value, onSubmit }: ThemePickerProps) {
                             }}
                         >
                             <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        flex: 1,
-                                        fontWeight: "bold",
-                                        fontSize: 16,
-                                    }}
-                                >
+                                <UIText size={16} bold style={{ flex: 1 }}>
                                     {name}
-                                </Text>
+                                </UIText>
 
                                 <View
                                     style={{

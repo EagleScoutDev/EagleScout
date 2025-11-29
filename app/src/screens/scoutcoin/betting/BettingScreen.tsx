@@ -1,6 +1,7 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
+import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Pressable, Text, View } from "react-native";
+import { Image, ImageBackground, Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
 import { supabase } from "../../../lib/supabase";
@@ -209,7 +210,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         padding: 20,
                     }}
                 >
-                    <Text
+                    <UIText
                         style={{
                             color: colors.text,
                             fontSize: 24,
@@ -218,7 +219,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                         }}
                     >
                         Hey, you! Don't try to bet on a match that's over 😉
-                    </Text>
+                    </UIText>
                 </View>
             </SafeAreaView>
         );
@@ -258,7 +259,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 .filter((p: Player) => p.id !== userProfile.id)
                                 .map((player: Player) => (
                                     <View style={{ flexDirection: "column", alignItems: "center" }} key={player.id}>
-                                        <Text
+                                        <UIText
                                             style={{
                                                 color: colors.text,
                                                 fontSize: 60,
@@ -266,16 +267,16 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                             }}
                                         >
                                             {player.emoji}
-                                        </Text>
-                                        <Text
+                                        </UIText>
+                                        <UIText
                                             style={{
                                                 color: colors.text,
                                                 fontSize: 14,
                                             }}
                                         >
                                             {player.name}
-                                        </Text>
-                                        <Text
+                                        </UIText>
+                                        <UIText
                                             style={{
                                                 color: player.betAlliance ? player.betAlliance : colors.text,
                                                 fontSize: 18,
@@ -283,17 +284,17 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                             }}
                                         >
                                             {player.betAmount}
-                                        </Text>
+                                        </UIText>
                                     </View>
                                 ))}
                         {!players ||
                             (players.length < 2 && (
-                                <Text style={{ color: colors.text, fontSize: 18 }}>Waiting for players...</Text>
+                                <UIText style={{ color: colors.text, fontSize: 18 }}>Waiting for players...</UIText>
                             ))}
                     </View>
 
-                    <Text style={{ color: colors.text, fontSize: 30, fontWeight: "bold" }}>Match {matchNumber}</Text>
-                    <Text style={{ color: colors.text, fontSize: 18 }}>Select Alliance</Text>
+                    <UIText style={{ color: colors.text, fontSize: 30, fontWeight: "bold" }}>Match {matchNumber}</UIText>
+                    <UIText style={{ color: colors.text, fontSize: 18 }}>Select Alliance</UIText>
                     <View style={{ flexDirection: "row", gap: 20, width: "80%" }}>
                         {!selectedAlliance ? (
                             <>
@@ -341,9 +342,9 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 </Pressable>
                             </>
                         ) : (
-                            <Text style={{ color: colors.text, fontSize: 18 }}>
+                            <UIText style={{ color: colors.text, fontSize: 18 }}>
                                 Your selected alliance: {selectedAlliance}
-                            </Text>
+                            </UIText>
                         )}
                     </View>
                     <View style={{ flex: 1 }} />
@@ -356,7 +357,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 gap: 20,
                             }}
                         >
-                            <Text
+                            <UIText
                                 style={{
                                     color: colors.text,
                                     fontSize: 18,
@@ -364,7 +365,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 }}
                             >
                                 {currentBet}
-                            </Text>
+                            </UIText>
                             <Slider
                                 containerStyle={{
                                     flex: 1,
@@ -453,7 +454,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         setBetActive(true);
                                     }}
                                 >
-                                    <Text
+                                    <UIText
                                         style={{
                                             color: colors.text,
                                             fontSize: 18,
@@ -461,10 +462,10 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         }}
                                     >
                                         Bet
-                                    </Text>
+                                    </UIText>
                                 </Pressable>
                             </ImageBackground>
-                            <Text>Your balance: {userProfile.scoutcoins}</Text>
+                            <UIText>Your balance: {userProfile.scoutcoins}</UIText>
                         </View>
                         <View
                             style={{
@@ -476,7 +477,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 justifyContent: "center",
                             }}
                         >
-                            <Text
+                            <UIText
                                 style={{
                                     color: colors.text,
                                     fontSize: 60,
@@ -484,8 +485,8 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 }}
                             >
                                 {userProfile.emoji}
-                            </Text>
-                            <Text
+                            </UIText>
+                            <UIText
                                 style={{
                                     color: colors.text,
                                     fontSize: 18,
@@ -493,7 +494,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 }}
                             >
                                 {betAmount}
-                            </Text>
+                            </UIText>
                         </View>
                     </View>
                 </View>

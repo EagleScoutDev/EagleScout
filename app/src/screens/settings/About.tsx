@@ -2,7 +2,8 @@ import type { SettingsMenuScreenProps } from "./SettingsMenu";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "../../ui/navigation/TabHeader";
 import { UIList } from "../../ui/UIList";
-import { Text } from "react-native";
+
+import { UIText } from "../../ui/UIText";
 
 const VERSION = "7.7.2";
 
@@ -18,7 +19,7 @@ export function About({}: AboutProps) {
                             items: [
                                 UIList.Label({
                                     label: "Version",
-                                    body: () => <Text style={{ fontSize: 16, color: "gray" }}>{VERSION}</Text>,
+                                    body: () => <UIText size={16} level={1}>{VERSION}</UIText>,
                                 }),
                             ],
                         }),

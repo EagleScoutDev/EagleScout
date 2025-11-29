@@ -1,8 +1,8 @@
 import { FormHeading } from "../../../../../forms/components/FormHeading";
+import { UIText } from "../../../../../ui/UIText";
 import { FormQuestion } from "../../../../../forms/components/FormQuestion";
 import { Form } from "../../../../../lib/forms";
 import * as Bs from "../../../../../ui/icons";
-import { StyleSheet, Text } from "react-native";
 import ItemType = Form.ItemType;
 
 export interface FormItemInfoProps {
@@ -10,40 +10,34 @@ export interface FormItemInfoProps {
 }
 export function FormItemInfo({ item }: FormItemInfoProps) {
     "use memo";
-    const styles = StyleSheet.create({
-        text: {
-            fontSize: 16,
-            flexGrow: 1,
-        },
-    });
 
     return item.type === ItemType.heading ? (
         <FormHeading item={item} />
     ) : item.type === ItemType.radio ? (
         <FormQuestion icon={Bs.UiRadios} title={item.question} required={item.required}>
-            <Text style={styles.text}>{item.options.join(", ")}</Text>
+            <UIText size={16}>{item.options.join(", ")}</UIText>
         </FormQuestion>
     ) : item.type === ItemType.checkbox ? (
         <FormQuestion icon={Bs.UiChecksGrid} title={item.question} required={item.required}>
-            <Text style={styles.text}>{item.options.join(", ")}</Text>
+            <UIText size={16}>{item.options.join(", ")}</UIText>
         </FormQuestion>
     ) : item.type === ItemType.number && item.slider ? (
         <FormQuestion icon={Bs.Sliders} title={item.question} required={item.required}>
-            <Text style={styles.text}>
+            <UIText size={16}>
                 Min: {item.low}
                 {item.lowLabel && ` (${item.lowLabel})`}
-            </Text>
-            <Text style={styles.text}>
+            </UIText>
+            <UIText size={16}>
                 Max: {item.high}
                 {item.highLabel && ` (${item.highLabel})`}
-            </Text>
-            <Text style={styles.text}>Step: {item.step}</Text>
+            </UIText>
+            <UIText size={16}>Step: {item.step}</UIText>
         </FormQuestion>
     ) : item.type === ItemType.number && !item.slider ? (
         <FormQuestion icon={Bs.OneTwoThree} title={item.question} required={item.required}>
-            <Text style={styles.text}>Min: {item.low ?? "-∞"}</Text>
-            <Text style={styles.text}>Max: {item.high ?? "∞"}</Text>
-            <Text style={styles.text}>Step: {item.step}</Text>
+            <UIText size={16}>Min: {item.low ?? "-∞"}</UIText>
+            <UIText size={16}>Max: {item.high ?? "∞"}</UIText>
+            <UIText size={16}>Step: {item.step}</UIText>
         </FormQuestion>
     ) : item.type === ItemType.textbox ? (
         <FormQuestion icon={Bs.InputCursorText} title={item.question} required={item.required} />

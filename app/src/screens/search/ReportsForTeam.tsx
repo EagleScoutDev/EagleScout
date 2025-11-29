@@ -1,6 +1,6 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { ReportList } from "../../components/ReportList";
-import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "../../database/Competitions";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
@@ -22,7 +22,6 @@ export function ReportsForTeam({
         params: { team_number, competitionId },
     },
 }: ReportsForTeamProps) {
-    const { colors } = useTheme();
     const [tab, setTab] = useState<string>("Scout Reports");
     const [scoutReports, setScoutReports] = useState<MatchReportReturnData[] | null>(null);
     const [notes, setNotes] = useState<NoteWithMatch[]>([]);
@@ -55,17 +54,9 @@ export function ReportsForTeam({
                 <UITabs tabs={["Scout Reports", "Notes", "Pit Reports"]} selectedTab={tab} setSelectedTab={setTab} />
                 {tab === "Scout Reports" && (
                     <View style={{ flex: 1 }}>
-                        <Text
-                            style={{
-                                fontWeight: "bold",
-                                fontSize: 25,
-                                paddingLeft: "5%",
-                                color: colors.text,
-                                marginVertical: "5%",
-                            }}
-                        >
+                        <UIText size={25} bold style={{ paddingLeft: "5%", marginVertical: "5%" }}>
                             Reports for Team #{team_number}
-                        </Text>
+                        </UIText>
                         <ReportList
                             reports={scoutReports ?? []}
                             reportsAreOffline={false}
@@ -76,33 +67,17 @@ export function ReportsForTeam({
                 )}
                 {tab === "Notes" && (
                     <View style={{ flex: 1 }}>
-                        <Text
-                            style={{
-                                fontWeight: "bold",
-                                fontSize: 25,
-                                paddingLeft: "5%",
-                                color: colors.text,
-                                marginTop: "5%",
-                            }}
-                        >
+                        <UIText size={25} bold style={{ paddingLeft: "5%", marginTop: "5%" }}>
                             Notes for Team #{team_number}
-                        </Text>
+                        </UIText>
                         <NoteList notes={notes} />
                     </View>
                 )}
                 {tab === "Pit Reports" && (
                     <View style={{ flex: 1 }}>
-                        <Text
-                            style={{
-                                fontWeight: "bold",
-                                fontSize: 25,
-                                paddingLeft: "5%",
-                                color: colors.text,
-                                marginTop: "5%",
-                            }}
-                        >
+                        <UIText size={25} bold style={{ paddingLeft: "5%", marginTop: "5%" }}>
                             Pit Scouting Reports for Team #{team_number}
-                        </Text>
+                        </UIText>
                         <PitScoutReportList reports={pitResponses} isOffline={false} />
                     </View>
                 )}

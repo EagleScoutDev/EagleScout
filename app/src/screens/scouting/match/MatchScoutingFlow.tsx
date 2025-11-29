@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useReducer, useRef, useState } from "react";
@@ -192,9 +193,9 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     if (competition === null) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ color: colors.text }}>There is no competition happening currently.</Text>
+                <UIText>There is no competition happening currently.</UIText>
 
-                {!online && <Text>To check for competitions, please connect to the internet.</Text>}
+                {!online && <UIText>To check for competitions, please connect to the internet.</UIText>}
             </View>
         );
     }

@@ -5,7 +5,8 @@
  *    give option for "select all" and submit, or user can select manually
  * 2) the forms they have uploaded to the database in the past
  */
-import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { ReportList } from "../../../components/ReportList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,9 +19,7 @@ import { CompetitionsDB } from "../../../database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { SettingsMenuScreenProps } from "../SettingsMenu";
 
-export function SubmittedForms({
-    route,
-}: SettingsMenuScreenProps<"Scout/ViewReports">) {
+export function SubmittedForms({ route }: SettingsMenuScreenProps<"Scout/ViewReports">) {
     const { competitionId } = route.params;
     const [reports, setReports] = useState<MatchReportReturnData[]>([]);
     const [offlineReports, setOfflineReports] = useState<MatchReportReturnData[]>([]);
@@ -84,25 +83,12 @@ export function SubmittedForms({
                             backgroundColor: colors.border,
                         }}
                     >
-                        <Text
-                            style={{
-                                color: colors.text,
-                                textAlign: "center",
-                                fontSize: 20,
-                                fontWeight: "bold",
-                            }}
-                        >
+                        <UIText size={20} bold style={{ textAlign: "center" }}>
                             No offline reports!
-                        </Text>
-                        <Text
-                            style={{
-                                color: colors.text,
-                                textAlign: "center",
-                                fontSize: 15,
-                            }}
-                        >
+                        </UIText>
+                        <UIText size={15} style={{ textAlign: "center" }}>
                             Great job keeping your data up-to-date.
-                        </Text>
+                        </UIText>
                     </View>
                 )}
 

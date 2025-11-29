@@ -1,15 +1,13 @@
-import { KeyboardAvoidingView, SectionList, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, SectionList, View } from "react-native";
+import { UIText } from "../ui/UIText";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { UIBadge } from "../ui/UIBadge";
-import * as Bs from "../ui/icons";
 import { useCurrentCompetition } from "../lib/hooks/useCurrentCompetition.ts";
 import { Arrays } from "../lib/util/Arrays.ts";
 import type { MatchReportReturnData } from "../database/ScoutMatchReports.ts";
 import { PressableOpacity } from "../ui/components/PressableOpacity.tsx";
-import { Sets } from "../lib/util/Sets.ts";
 import { MatchReportViewer } from "./modals/MatchReportViewer.tsx";
-import Animated from "react-native-reanimated";
+import { Color } from "../lib/color.ts";
 
 export interface ReportListProps {
     reports: MatchReportReturnData[];
@@ -17,22 +15,10 @@ export interface ReportListProps {
 
     onEdit?: (orig: MatchReportReturnData, edited: MatchReportReturnData) => Promise<boolean>;
 }
-export function ReportList({
-    reports,
-    reportsAreOffline,
-    onEdit,
-}: ReportListProps) {
+export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListProps) {
     "use memo";
 
     const { colors } = useTheme();
-    const styles = StyleSheet.create({
-        itemText: {
-            color: colors.text,
-            fontSize: 16,
-            fontWeight: "bold",
-            flexWrap: "nowrap",
-        },
-    });
 
     const { competition: currentCompetition } = useCurrentCompetition();
 
@@ -68,16 +54,9 @@ export function ReportList({
                     padding: 20,
                 }}
             >
-                <Text
-                    style={{
-                        paddingHorizontal: "10%",
-                        color: "red",
-                        fontSize: 16,
-                        fontWeight: "bold",
-                    }}
-                >
+                <UIText size={16} bold color={Color.parse(colors.notification)} style={{ paddingHorizontal: "10%" }}>
                     No reports found.
-                </Text>
+                </UIText>
             </View>
         );
     }
@@ -104,15 +83,17 @@ export function ReportList({
                                 justifyContent: "space-between",
                             }}
                         >
-                            <Text style={[styles.itemText, { textAlign: "center", flex: 1 }]}>{item.teamNumber}</Text>
-                            <Text style={[styles.itemText, { textAlign: "center", flex: 1 }]}>{item.matchNumber}</Text>
-                            <Text style={[styles.itemText, { textAlign: "center", flex: 2 }]}>
-                                {new Date(item.createdAt).toLocaleDateString("en-US", {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                })}
-                            </Text>
+                            <UIText size={16} bold nowrap>
+                                <UIText style={{ textAlign: "center", flex: 1 }}>{item.teamNumber}</UIText>
+                                <UIText style={{ textAlign: "center", flex: 1 }}>{item.matchNumber}</UIText>
+                                <UIText style={{ textAlign: "center", flex: 2 }}>
+                                    {new Date(item.createdAt).toLocaleDateString("en-US", {
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "numeric",
+                                    })}
+                                </UIText>
+                            </UIText>
                         </PressableOpacity>
                     );
                 }}

@@ -1,4 +1,5 @@
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { TBAMatches } from "../../../database/TBAMatches";
 import { SetScoutAssignmentModal } from "../../../components/modals/SetScoutAssignmentModal";
@@ -7,6 +8,7 @@ import { useTheme } from "@react-navigation/native";
 import { ScoutAssignmentsConfig } from "../../../database/Competitions";
 import { AutoAssignModal } from "./AutoAssignModal";
 import type { DataMenuScreenProps } from "../../data/DataMain";
+import { Color } from "../../../lib/color";
 
 export interface ScoutAssignmentsSpreadsheetParams {
     competition: number;
@@ -300,15 +302,9 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                             position: "absolute",
                         }}
                     >
-                        <Text
-                            style={{
-                                color: colors.primary,
-                                fontWeight: "bold",
-                                fontSize: 17,
-                            }}
-                        >
+                        <UIText size={17} bold color={Color.parse(colors.primary)}>
                             Auto-Assign
-                        </Text>
+                        </UIText>
                     </TouchableOpacity>
                 )}
                 <TouchableOpacity
@@ -321,7 +317,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                         position: "absolute",
                     }}
                 >
-                    <Text
+                    <UIText
                         style={{
                             color: selectMode ? colors.primary : "gray",
                             fontWeight: "bold",
@@ -329,7 +325,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                         }}
                     >
                         {selectMode ? "Exit" : "FormSelect Mode"}
-                    </Text>
+                    </UIText>
                 </TouchableOpacity>
                 {selectMode && (
                     <TouchableOpacity
@@ -344,15 +340,9 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                             position: "absolute",
                         }}
                     >
-                        <Text
-                            style={{
-                                color: colors.primary,
-                                fontWeight: "bold",
-                                fontSize: 17,
-                            }}
-                        >
+                        <UIText size={17} bold color={Color.parse(colors.primary)}>
                             OK
-                        </Text>
+                        </UIText>
                     </TouchableOpacity>
                 )}
             </View>
@@ -371,7 +361,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                                 paddingLeft: 10,
                             }}
                         >
-                            <Text
+                            <UIText
                                 style={{
                                     fontSize: 15,
                                     fontWeight: 400,
@@ -379,7 +369,7 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                                 }}
                             >
                                 {matches.title}
-                            </Text>
+                            </UIText>
                         </View>
                         <View
                             style={[
@@ -404,12 +394,12 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                                     }
                                 >
                                     <View>
-                                        <Text style={styles.scoutAssignmentCode}>
+                                        <UIText style={styles.scoutAssignmentCode}>
                                             {competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED
                                                 ? matches.data[elem].teamFormatted
                                                 : getPosition(matches.data[elem].position)}
-                                        </Text>
-                                        <Text style={styles.scoutAssignmentName}>{matches.data[elem].name}</Text>
+                                        </UIText>
+                                        <UIText style={styles.scoutAssignmentName}>{matches.data[elem].name}</UIText>
                                     </View>
                                 </TouchableOpacity>
                             ))}
@@ -437,12 +427,12 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                                     }
                                 >
                                     <View>
-                                        <Text style={styles.scoutAssignmentCode}>
+                                        <UIText style={styles.scoutAssignmentCode}>
                                             {competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED
                                                 ? matches.data[elem].teamFormatted
                                                 : getPosition(matches.data[elem].position)}
-                                        </Text>
-                                        <Text style={styles.scoutAssignmentName}>{matches.data[elem].name}</Text>
+                                        </UIText>
+                                        <UIText style={styles.scoutAssignmentName}>{matches.data[elem].name}</UIText>
                                     </View>
                                 </TouchableOpacity>
                             ))}

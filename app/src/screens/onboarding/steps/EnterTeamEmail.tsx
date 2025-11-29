@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, Keyboard, SafeAreaView, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { styles } from "../styles";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
 import { StandardButton } from "../../../ui/StandardButton";
@@ -26,7 +27,7 @@ export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.background}>
                 <View>
-                    <Text style={styles.titleText}>Enter Team Email</Text>
+                    <UIText style={styles.titleText}>Enter Team Email</UIText>
                     <View>
                         <MinimalSectionHeader title="Team Email" />
                         <TextInput

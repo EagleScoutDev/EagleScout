@@ -50,6 +50,6 @@ export namespace Statbotics {
             console.error(error);
             return null;
         }
-        return data
+        return data;
     }
 }

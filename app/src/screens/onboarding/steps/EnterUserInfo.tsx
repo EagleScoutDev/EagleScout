@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Keyboard, SafeAreaView, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { styles } from "../styles";
 import { MinimalSectionHeader } from "../../../ui/MinimalSectionHeader";
@@ -17,7 +18,7 @@ export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.background}>
                 <View>
-                    <Text style={styles.titleText}>Set Up Your Account</Text>
+                    <UIText style={styles.titleText}>Set Up Your Account</UIText>
                     <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                         <View>
                             <MinimalSectionHeader title="First Name" />

@@ -3,12 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { FormsDB } from "../../../../database/Forms";
 import { Form } from "../../../../lib/forms";
 import * as Bs from "../../../../ui/icons";
-import Animated, { useSharedValue } from "react-native-reanimated";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
 import { key } from "../../../../lib/util/react/key";
 import type { DataMenuScreenProps } from "../../../data/DataMain";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Alert, Keyboard, StyleSheet, View } from "react-native";
+import { Alert, Keyboard, StyleSheet } from "react-native";
 import { AsyncAlert } from "../../../../lib/util/react/AsyncAlert";
 import { FormInfoCard } from "./components/FormInfoCard";
 import { FormItemPalette } from "./components/FormItemPalette";
@@ -20,6 +19,7 @@ import { FormItemOptions } from "./components/FormItemOptions";
 import { FormItemInfo } from "./components/FormItemInfo";
 import { Pressable } from "react-native-gesture-handler";
 import { Arrays } from "../../../../lib/util/Arrays";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import ItemType = Form.ItemType;
 
 export interface FormCreatorParams {
@@ -41,8 +41,6 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
     const [editDraft, setEditDraft] = useState<Form.Item | null>(null);
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const isNewItem = editIndex === items.length;
-
-    const sheetPosition = useSharedValue(0);
 
     usePreventRemove(dirty, ({ data }) => {
         Alert.alert("Unsaved changes", "Are you sure you want to leave? Your work will be lost!", [
@@ -81,8 +79,8 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
     }, [navigation, trySubmit]);
 
     return (
-        <View style={{ flex: 1, backgroundColor: colors.card }}>
-            <Animated.View style={{ height: sheetPosition }}>
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1, backgroundColor: colors.card }}>
                 <DraggableFlatList
                     contentContainerStyle={styles.canvasContent}
                     onDragEnd={({ data }) => setItems(data)}
@@ -114,70 +112,71 @@ export function FormCreator({ route, navigation }: DataMenuScreenProps<"Forms/Ed
                         );
                     }}
                 />
-            </Animated.View>
-            <UISheet animatedPosition={sheetPosition} snapPoints={[90]} enableDynamicSizing={false}>
-                <BottomSheetView>
-                    <FormItemPalette
-                        items={ITEMS}
-                        onPress={(key) => {
-                            setEditDraft(ITEM_MAP[key].draft());
-                            setEditIndex(items.length);
-                            editSheetRef.current?.present();
+                <UISheet enableDynamicSizing>
+                    <BottomSheetView>
+                        <SafeAreaView style={{ flex: 1 }}>
+                            <FormItemPalette
+                                items={ITEMS}
+                                onPress={(key) => {
+                                    setEditDraft(ITEM_MAP[key].draft());
+                                    setEditIndex(items.length);
+                                    editSheetRef.current?.present();
+                                }}
+                            />
+                        </SafeAreaView>
+                    </BottomSheetView>
+                </UISheet>
+
+                <UISheetModal ref={editSheetRef} handleComponent={null} keyboardBehavior={"extend"}>
+                    <UISheet.Header
+                        left={{
+                            text: "Cancel",
+                            color: Color.parse(colors.notification),
+                            onPress: () => {
+                                Keyboard.dismiss();
+                                editSheetRef.current?.dismiss();
+                            },
+                        }}
+                        right={{
+                            text: "Done",
+                            color: Color.parse(colors.primary),
+                            onPress: () => {
+                                Keyboard.dismiss();
+                                const item = finishDraft(editDraft!);
+                                if (typeof item === "string") {
+                                    Alert.alert("Error", item);
+                                } else {
+                                    setItems(Arrays.set(items, editIndex!, item));
+                                    setDirty(true);
+                                    editSheetRef.current?.dismiss();
+                                    setEditDraft(null);
+                                    setEditIndex(null);
+                                }
+                            },
                         }}
                     />
-                </BottomSheetView>
-            </UISheet>
-
-            <UISheetModal ref={editSheetRef} handleComponent={null} keyboardBehavior={"extend"}>
-                <UISheet.Header
-                    left={{
-                        text: "Cancel",
-                        color: Color.parse(colors.notification),
-                        onPress: () => {
-                            Keyboard.dismiss();
-                            editSheetRef.current?.dismiss();
-                        },
-                    }}
-                    right={{
-                        text: "Done",
-                        color: Color.parse(colors.primary),
-                        onPress: () => {
-                            Keyboard.dismiss();
-                            const item = finishDraft(editDraft!);
-                            if (typeof item === "string") {
-                                Alert.alert("Error", item);
-                            } else {
-                                setItems(Arrays.set(items, editIndex!, item));
+                    {editDraft !== null && (
+                        <FormItemOptions
+                            value={editDraft}
+                            onChange={setEditDraft}
+                            isNewItem={isNewItem}
+                            onDelete={() => {
+                                setItems(items.toSpliced(editIndex!, 1));
                                 setDirty(true);
                                 editSheetRef.current?.dismiss();
                                 setEditDraft(null);
                                 setEditIndex(null);
-                            }
-                        },
-                    }}
-                />
-                {editDraft !== null && (
-                    <FormItemOptions
-                        value={editDraft}
-                        onChange={setEditDraft}
-                        isNewItem={isNewItem}
-                        onDelete={() => {
-                            setItems(items.toSpliced(editIndex!, 1));
-                            setDirty(true);
-                            editSheetRef.current?.dismiss();
-                            setEditDraft(null);
-                            setEditIndex(null);
-                        }}
-                    />
-                )}
-            </UISheetModal>
-        </View>
+                            }}
+                        />
+                    )}
+                </UISheetModal>
+            </SafeAreaView>
+        </SafeAreaProvider>
     );
 }
 const getStyles = (colors: Theme["colors"]) =>
     StyleSheet.create({
         canvasContent: {
-            flexDirection: "column",
             paddingHorizontal: 15,
             paddingTop: 5,
             paddingBottom: "100%",

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { UIText } from "../../ui/UIText";
 import { type Theme, useTheme } from "@react-navigation/native";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { ProfilesDB } from "../../database/Profiles";
 import { SendScoutcoinModal } from "./SendScoutcoinModal";
@@ -74,13 +75,13 @@ const LeaderboardUserItem = ({
             }}
         >
             <View style={styles.place}>
-                <Text style={styles.placeText}>{place}</Text>
+                <UIText style={styles.placeText}>{place}</UIText>
             </View>
-            <Text style={styles.emoji}>{user.emoji}</Text>
+            <UIText style={styles.emoji}>{user.emoji}</UIText>
             <View style={styles.innerContainer}>
-                <Text style={styles.name}>{user.name}</Text>
+                <UIText style={styles.name}>{user.name}</UIText>
                 <View style={styles.coinContainer}>
-                    <Text style={styles.coins}>{user.scoutcoins}</Text>
+                    <UIText style={styles.coins}>{user.scoutcoins}</UIText>
                     <Bs.Coin size="12" fill={colors.text} />
                 </View>
             </View>

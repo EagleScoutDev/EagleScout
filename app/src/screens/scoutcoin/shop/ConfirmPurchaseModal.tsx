@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../../lib/supabase";
 import { type ShopItem } from "./ScoutcoinShop";
@@ -40,7 +41,7 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
         onClose(true);
     }
 
-    const buyFg = Color.parse(colors.primary).fg.hex;
+    const buyFg = Color.parse(colors.primary).fg;
 
     return (
         <UIModal visible onDismiss={() => onClose(false)} backdropPressBehavior={"dismiss"}>
@@ -50,14 +51,22 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
 
             <View style={{ alignItems: "center", marginBottom: 16, gap: 8 }}>
                 <item.icon size={100} fill={colors.text} />
-                <Text style={{ color: colors.text, fontSize: 28, fontWeight: "bold" }}>{item.name}</Text>
-                <Text style={{ color: colors.text, fontSize: 16, textAlign: "center" }}>{item.description}</Text>
+                <UIText size={28} bold>
+                    {item.name}
+                </UIText>
+                <UIText size={16} style={{ textAlign: "center" }}>
+                    {item.description}
+                </UIText>
             </View>
             <View style={{ width: "100%" }}>
                 <UIButton size={UIButtonSize.xl} style={UIButtonStyle.fill} onPress={purchaseItem}>
-                    <Text style={{ fontSize: 20, color: buyFg, marginRight: 16 }}>Buy</Text>
-                    <Text style={{ fontSize: 20, color: buyFg, marginRight: 4 }}>{item.cost}</Text>
-                    <Bs.Coin size={20} fill={buyFg} />
+                    <UIText size={20} color={buyFg} style={{ marginRight: 16 }}>
+                        Buy
+                    </UIText>
+                    <UIText size={20} color={buyFg} style={{ marginRight: 4 }}>
+                        {item.cost}
+                    </UIText>
+                    <Bs.Coin size={20} fill={buyFg.hex} />
                 </UIButton>
             </View>
         </UIModal>

@@ -1,13 +1,11 @@
 import { Alert } from "react-native";
 import { useEffect, useState } from "react";
-import { CompetitionsDB, type CompetitionReturnData } from "../../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "../../../database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UIList } from "../../../ui/UIList";
 import type { SettingsMenuScreenProps } from "../SettingsMenu";
 
-export function SelectCompetitionForNotes({
-    navigation,
-}: SettingsMenuScreenProps<"Scout/SelectCompetitionForNotes">) {
+export function SelectCompetitionForNotes({ navigation }: SettingsMenuScreenProps<"Scout/SelectCompetitionForNotes">) {
     const [competitions, setCompetitions] = useState<CompetitionReturnData[]>([]);
     const [loading, setLoading] = useState(false);
 

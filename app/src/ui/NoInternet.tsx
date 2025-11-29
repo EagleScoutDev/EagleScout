@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { UIText } from "../ui/UIText";
 import { StandardButton } from "./StandardButton";
 import * as Bs from "./icons";
 import { useTheme } from "@react-navigation/native";
@@ -29,17 +30,10 @@ export function NoInternet({ onRefresh }: NoInternetProps) {
                     padding: "4%",
                 }}
             >
-                <Text
-                    style={{
-                        color: colors.text,
-                        fontWeight: "bold",
-                        fontSize: 25,
-                        textAlign: "center",
-                    }}
-                >
+                <UIText size={25} bold style={{ textAlign: "center" }}>
                     No Internet Connection
-                </Text>
-                <Text style={{ color: colors.text, textAlign: "center" }}>Press the button below to try again.</Text>
+                </UIText>
+                <UIText style={{ textAlign: "center" }}>Press the button below to try again.</UIText>
                 <StandardButton text={"Refresh"} color={"red"} onPress={() => onRefresh()} />
             </View>
         </View>

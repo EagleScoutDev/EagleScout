@@ -1,6 +1,5 @@
-import { StyleSheet, TextInput, type TextInputProps, View } from "react-native";
-import { exMemo } from "../../lib/util/react/memo";
-import { type Theme, useTheme } from "@react-navigation/native";
+import { TextInput, type TextInputProps, View } from "react-native";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface UITextInputProps extends Omit<TextInputProps, "editable"> {
     disabled?: boolean;
@@ -8,24 +7,24 @@ export interface UITextInputProps extends Omit<TextInputProps, "editable"> {
 export function UITextInput({ style, disabled = true, ...passthrough }: UITextInputProps) {
     "use memo";
     const { colors } = useTheme();
-    const styles = getStyles(colors);
-    if (disabled) {
-        return <View {...passthrough} style={[styles.main, style]} />;
-    } else {
-        return <TextInput placeholderTextColor={"gray"} {...passthrough} style={[styles.main, style]} />;
-    }
-}
-
-const getStyles = exMemo((colors: Theme["colors"]) =>
-    StyleSheet.create({
+    
+    const styles = {
         main: {
             fontSize: 14,
             height: 40,
             padding: 10,
             marginVertical: 5,
-            color: colors.text,
+            color: colors.fg.hex,
             borderRadius: 8,
-            backgroundColor: colors.card,
+            backgroundColor: colors.bg1.hex,
         },
-    })
-);
+    } as const;
+
+    if (disabled) {
+        return <View {...passthrough} style={[styles.main, style]} />;
+    } else {
+        return (
+            <TextInput placeholderTextColor={colors.fg.level(1).hex} {...passthrough} style={[styles.main, style]} />
+        );
+    }
+}

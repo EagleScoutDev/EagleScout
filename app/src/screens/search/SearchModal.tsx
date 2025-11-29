@@ -1,4 +1,5 @@
-import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, TextInput, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import type { SimpleTeam } from "../../lib/frc/tba/TBA.ts";
@@ -146,13 +147,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                         }}
                         onPress={() => navigation.popTo("Main")}
                     >
-                        <Text
-                            style={{
-                                color: colors.text,
-                            }}
-                        >
-                            Cancel
-                        </Text>
+                        <UIText>Cancel</UIText>
                     </Pressable>
                 </View>
                 <View
@@ -177,14 +172,14 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             justifyContent: "center",
                         }}
                     >
-                        <Text
+                        <UIText
                             style={{
                                 color: filterState === FilterState.TEAM ? colors.background : colors.text,
                                 fontWeight: filterState === FilterState.TEAM ? "bold" : "normal",
                             }}
                         >
                             Team
-                        </Text>
+                        </UIText>
                     </Pressable>
                     <Pressable
                         onPress={() => {
@@ -200,14 +195,14 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             justifyContent: "center",
                         }}
                     >
-                        <Text
+                        <UIText
                             style={{
                                 color: filterState === FilterState.MATCH ? colors.background : colors.text,
                                 fontWeight: filterState === FilterState.MATCH ? "bold" : "normal",
                             }}
                         >
                             Match
-                        </Text>
+                        </UIText>
                     </Pressable>
                     <Pressable
                         onPress={() => {
@@ -223,14 +218,14 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                             justifyContent: "center",
                         }}
                     >
-                        <Text
+                        <UIText
                             style={{
                                 color: filterState === FilterState.PERSON ? colors.background : colors.text,
                                 fontWeight: filterState === FilterState.PERSON ? "bold" : "normal",
                             }}
                         >
                             Person
-                        </Text>
+                        </UIText>
                     </Pressable>
                 </View>
                 <View
@@ -265,10 +260,12 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                         borderBottomColor: colors.border,
                                     }}
                                 >
-                                    <Text style={{ color: colors.text, flex: 1, fontSize: 16 }}>
+                                    <UIText size={16} style={{ flex: 1 }}>
                                         {item.team_number}
-                                    </Text>
-                                    <Text style={{ color: colors.text, flex: 5, fontSize: 16 }}>{item.nickname}</Text>
+                                    </UIText>
+                                    <UIText size={16} style={{ flex: 5 }}>
+                                        {item.nickname}
+                                    </UIText>
                                     <Bs.ChevronRight size="16" fill="gray" style={{ flex: 1 }} />
                                 </Pressable>
                             );
@@ -291,7 +288,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                             marginVertical: "3%",
                                         }}
                                     >
-                                        <Text
+                                        <UIText
                                             style={{
                                                 color: colors.text,
                                                 opacity: 0.6,
@@ -301,7 +298,7 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                             }}
                                         >
                                             {item}
-                                        </Text>
+                                        </UIText>
                                         <View
                                             style={{
                                                 height: 2,
@@ -334,16 +331,9 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                                         minWidth: "25%",
                                                     }}
                                                 >
-                                                    <Text
-                                                        style={{
-                                                            color: colors.text,
-                                                            fontWeight: "bold",
-                                                            textAlign: "center",
-                                                            flex: 1,
-                                                        }}
-                                                    >
+                                                    <UIText bold style={{ textAlign: "center", flex: 1 }}>
                                                         {report.teamNumber}
-                                                    </Text>
+                                                    </UIText>
                                                 </Pressable>
                                             );
                                         })}
@@ -430,16 +420,9 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                                     marginVertical: "3%",
                                                 }}
                                             >
-                                                <Text
-                                                    style={{
-                                                        color: "grey",
-                                                        marginHorizontal: "4%",
-                                                        fontWeight: "bold",
-                                                        fontSize: 18,
-                                                    }}
-                                                >
+                                                <UIText size={18} bold level={1} style={{ marginHorizontal: "4%" }}>
                                                     {item}
-                                                </Text>
+                                                </UIText>
                                                 <View
                                                     style={{
                                                         height: 2,
@@ -474,16 +457,9 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                                                                     minWidth: "25%",
                                                                 }}
                                                             >
-                                                                <Text
-                                                                    style={{
-                                                                        color: colors.text,
-                                                                        fontWeight: "bold",
-                                                                        textAlign: "center",
-                                                                        flex: 1,
-                                                                    }}
-                                                                >
+                                                                <UIText bold style={{ textAlign: "center", flex: 1 }}>
                                                                     {report.teamNumber}
-                                                                </Text>
+                                                                </UIText>
                                                             </Pressable>
                                                         );
                                                     }

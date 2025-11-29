@@ -1,5 +1,6 @@
 import { UIButton, type UIButtonProps, UIButtonSize, UIButtonStyle } from "./UIButton";
-import { Text, View } from "react-native";
+import { UIText } from "../ui/UIText";
+import { View } from "react-native";
 import BottomSheet, { BottomSheetHandle, type BottomSheetProps, useBottomSheet } from "@gorhom/bottom-sheet";
 import { ThreeCenterLayout } from "./layout/ThreeCenterLayout";
 
@@ -47,9 +48,9 @@ export namespace UISheet {
                     <ThreeCenterLayout>
                         <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...(left || {})} />
 
-                        <Text style={{ paddingVertical: 8, fontSize: 18, fontWeight: "bold" }} numberOfLines={1}>
+                        <UIText size={18} bold style={{ paddingVertical: 8 }} numberOfLines={1}>
                             {title}
-                        </Text>
+                        </UIText>
 
                         <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...(right || {})} />
                     </ThreeCenterLayout>

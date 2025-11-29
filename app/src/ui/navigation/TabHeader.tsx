@@ -1,5 +1,5 @@
-import { Text, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { View } from "react-native";
+import { UIText } from "../UIText.tsx";
 import React from "react";
 
 export interface TabHeaderProps {
@@ -7,30 +7,15 @@ export interface TabHeaderProps {
     description?: string;
 }
 export function TabHeader({ title, description }: TabHeaderProps) {
-    const { colors } = useTheme();
-
     return (
         <View style={{ marginBottom: 8, paddingHorizontal: 30 }}>
-            <Text
-                style={{
-                    fontSize: 34,
-                    fontWeight: "600",
-                    color: colors.text,
-                    marginTop: 30,
-                }}
-            >
+            <UIText size={34} bold style={{ marginTop: 30 }}>
                 {title}
-            </Text>
+            </UIText>
             {description && (
-                <Text
-                    style={{
-                        fontSize: 16,
-                        color: colors.text,
-                        marginTop: 6,
-                    }}
-                >
+                <UIText size={16} style={{ marginTop: 6 }}>
                     {description}
-                </Text>
+                </UIText>
             )}
         </View>
     );

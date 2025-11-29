@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { UIText } from "../../../../ui/UIText";
+import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
 import { useProfile } from "../../../../lib/hooks/useProfile";
 import { type Theme, useTheme } from "@react-navigation/native";
@@ -25,7 +26,7 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
     return (
         <UIModal visible onClose={onClose} backdropPressBehavior={"none"} title={"Select New Emoji"}>
             <TouchableOpacity style={styles.emojiContainer} onPress={() => setEmojiModalVisible(true)}>
-                <Text style={styles.emoji}>{profile?.emoji}</Text>
+                <UIText style={styles.emoji}>{profile?.emoji}</UIText>
             </TouchableOpacity>
             <EmojiPicker
                 onEmojiSelected={async (e) => {

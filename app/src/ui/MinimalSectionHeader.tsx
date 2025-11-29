@@ -1,25 +1,14 @@
-import { Text } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { UIText } from "../ui/UIText";
 
 export interface MinimalSectionHeaderProps {
     title: string;
 }
 export function MinimalSectionHeader({ title }: MinimalSectionHeaderProps) {
     "use memo";
-    const { colors } = useTheme();
 
     return (
-        <Text
-            style={{
-                color: colors.text,
-                opacity: 0.6, //< TODO: no
-                fontWeight: "bold",
-                fontSize: 12,
-                paddingLeft: "2%",
-                paddingTop: "2%",
-            }}
-        >
+        <UIText size={12} bold level={1} style={{ paddingLeft: "2%", paddingTop: "2%" }}>
             {title.toUpperCase()}
-        </Text>
+        </UIText>
     );
 }

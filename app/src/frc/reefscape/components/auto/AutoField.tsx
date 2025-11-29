@@ -1,4 +1,5 @@
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "@react-navigation/native";
 import * as Bs from "../../../../ui/icons";
@@ -124,7 +125,9 @@ function Piece({ type, state, onPress }: PieceProps) {
         >
             {state !== null && (
                 <>
-                    <Text style={{ color: bg.fg.rgba, fontSize: 20, fontWeight: "bold" }}>{state.order + 1}</Text>
+                    <UIText size={20} bold>
+                        {state.order + 1}
+                    </UIText>
                     <View style={{ position: "absolute", bottom: -12, right: -12 }}>
                         {state.success ? <Bs.CheckTwo size={36} /> : <Bs.X size={36} />}
                     </View>

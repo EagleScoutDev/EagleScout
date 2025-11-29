@@ -1,20 +1,25 @@
 import { Circle, G, Line, Path, Rect, Svg } from "react-native-svg";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { useTheme } from "@react-navigation/native";
 import { AutoAction, AutoActionType, type AutoPath } from "../auto";
+import { UIText } from "../../../ui/UIText";
 
 export function AutoPathView({ path }: { path: AutoPath }) {
     "use memo";
     if (!path || path.length === 0) {
+        const { colors } = useTheme();
         return (
             <View
                 style={{
-                    backgroundColor: "#5F5F5F",
+                    backgroundColor: colors.card,
                     alignItems: "center",
                     padding: 10,
                     borderRadius: 8,
                 }}
             >
-                <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>No Auto Paths found.</Text>
+                <UIText size={20} bold>
+                    No Auto Paths found.
+                </UIText>
             </View>
         );
     }

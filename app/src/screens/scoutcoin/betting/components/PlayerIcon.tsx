@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
+import { UIText } from "../../../../ui/UIText";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { Text } from "react-native";
 
 export interface PlayerIconProps {
     emoji: string;
@@ -12,7 +12,7 @@ export function PlayerIcon({ emoji, amount, name, alliance }: PlayerIconProps) {
     const { colors } = useTheme();
     return (
         <BottomSheetView style={{ alignItems: "center" }}>
-            <Text
+            <UIText
                 style={{
                     color: colors.text,
                     fontSize: 60,
@@ -20,16 +20,16 @@ export function PlayerIcon({ emoji, amount, name, alliance }: PlayerIconProps) {
                 }}
             >
                 {emoji}
-            </Text>
-            <Text
+            </UIText>
+            <UIText
                 style={{
                     color: colors.text,
                     fontSize: 14,
                 }}
             >
                 {name}
-            </Text>
-            <Text
+            </UIText>
+            <UIText
                 style={{
                     color: alliance === "red" ? "red" : "blue",
                     fontSize: 18,
@@ -37,7 +37,7 @@ export function PlayerIcon({ emoji, amount, name, alliance }: PlayerIconProps) {
                 }}
             >
                 {amount}
-            </Text>
+            </UIText>
         </BottomSheetView>
     );
 }

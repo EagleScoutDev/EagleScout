@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { UserAttributesDB } from "../../../database/UserAttributes";
 import type { DataMenuScreenProps } from "../../data/DataMain";
@@ -31,7 +32,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                     alignItems: "center",
                 }}
             >
-                <Text
+                <UIText
                     style={{
                         color: colors.text,
                         fontSize: 30,
@@ -42,7 +43,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                 >
                     {/* TODO: Make it come */}
                     Coming soon...
-                </Text>
+                </UIText>
             </View>
         );
     }
@@ -55,7 +56,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                 alignItems: "center",
             }}
         >
-            <Text
+            <UIText
                 style={{
                     color: colors.text,
                     fontSize: 30,
@@ -64,7 +65,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                 }}
             >
                 Bet on a match!
-            </Text>
+            </UIText>
 
             <UICard title={"Match Information"}>
                 <UICard.NumberInput

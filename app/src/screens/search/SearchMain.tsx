@@ -1,4 +1,5 @@
-import { Alert, FlatList, Modal, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, Pressable, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useCallback, useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { type MatchReportReturnData, MatchReportsDB } from "../../database/ScoutMatchReports";
@@ -171,26 +172,12 @@ export function SearchMain({ navigation }: SearchMainProps) {
                         alignItems: "center",
                     }}
                 >
-                    <Text
-                        style={{
-                            color: colors.text,
-                            fontSize: 20,
-                            textAlign: "center",
-                        }}
-                    >
+                    <UIText size={20} style={{ textAlign: "center" }}>
                         No reports found
-                    </Text>
-                    <Text
-                        style={{
-                            color: colors.text,
-                            fontSize: 18,
-                            textAlign: "center",
-                            marginTop: 20,
-                            opacity: 0.7,
-                        }}
-                    >
+                    </UIText>
+                    <UIText size={18} level={1} style={{ textAlign: "center", marginTop: 20 }}>
                         Select a competition above to get started
-                    </Text>
+                    </UIText>
                 </View>
             )}
             <FlatList
@@ -207,17 +194,9 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                     marginVertical: "3%",
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: colors.text,
-                                        opacity: 0.7,
-                                        marginHorizontal: "4%",
-                                        fontWeight: "bold",
-                                        fontSize: 18,
-                                    }}
-                                >
+                                <UIText size={18} bold level={1} style={{ marginHorizontal: "4%" }}>
                                     {item}
-                                </Text>
+                                </UIText>
                                 <View
                                     style={{
                                         height: 2,
@@ -273,16 +252,9 @@ export function SearchMain({ navigation }: SearchMainProps) {
                                                 // backgroundColor: colors.card,
                                             }}
                                         >
-                                            <Text
-                                                style={{
-                                                    color: colors.text,
-                                                    fontWeight: "bold",
-                                                    textAlign: "center",
-                                                    flex: 1,
-                                                }}
-                                            >
+                                            <UIText bold style={{ textAlign: "center", flex: 1 }}>
                                                 {report.teamNumber}
-                                            </Text>
+                                            </UIText>
                                         </Pressable>
                                     );
                                 })}

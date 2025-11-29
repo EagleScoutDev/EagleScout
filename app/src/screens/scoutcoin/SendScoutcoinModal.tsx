@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Alert, Modal, StyleSheet, TextInput, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { supabase } from "../../lib/supabase";
 import { StandardButton } from "../../ui/StandardButton";
@@ -112,9 +113,9 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
             <View style={styles.mask} />
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Send Scoutcoin to {targetUser.name}</Text>
+                    <UIText style={styles.modalText}>Send Scoutcoin to {targetUser.name}</UIText>
                     <View style={styles.coinContainer}>
-                        <Text style={styles.text}>Your Scoutcoin: {profile?.scoutcoins}</Text>
+                        <UIText style={styles.text}>Your Scoutcoin: {profile?.scoutcoins}</UIText>
                         <Bs.Coin size="12" fill={colors.text} />
                     </View>
                     <TextInput

@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import { type SetStateAction } from "react";
 import { PredictionConfidence } from "../../../../lib/PredictionConfidence";
 
@@ -9,8 +9,6 @@ export interface PredictionConfidenceTagProps {
     tagOnly?: boolean;
 }
 export function PredictionConfidenceTag({ confidence, setModal, tagOnly = false }: PredictionConfidenceTagProps) {
-    const { colors } = useTheme();
-
     const getConfidenceText = (c: PredictionConfidence) => {
         switch (c) {
             case PredictionConfidence.LOW:
@@ -60,7 +58,7 @@ export function PredictionConfidenceTag({ confidence, setModal, tagOnly = false 
                 justifyContent: "space-around",
             }}
         >
-            {!tagOnly && <Text style={{ color: colors.text, fontWeight: "bold" }}>Prediction Confidence</Text>}
+            {!tagOnly && <UIText bold>Prediction Confidence</UIText>}
             <Pressable
                 onPress={() => setModal(true)}
                 style={
@@ -71,7 +69,7 @@ export function PredictionConfidenceTag({ confidence, setModal, tagOnly = false 
                         : styles.low_container
                 }
             >
-                <Text style={styles.text}>{getConfidenceText(confidence).toUpperCase()}</Text>
+                <UIText style={styles.text}>{getConfidenceText(confidence).toUpperCase()}</UIText>
             </Pressable>
         </View>
     );

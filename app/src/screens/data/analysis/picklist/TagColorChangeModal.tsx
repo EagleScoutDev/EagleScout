@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
+import { Modal, Pressable, View } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import { useTheme } from "@react-navigation/native";
 import { TagsDB, type TagStructure } from "../../../../database/Tags";
@@ -63,15 +64,9 @@ export function TagColorChangeModal({ visible, setVisible, tag }: TagColorChange
                             borderColor: color,
                         }}
                     >
-                        <Text
-                            style={{
-                                color: Color.parse(color ?? "").fg.hex,
-                                fontWeight: "bold",
-                                fontSize: 20,
-                            }}
-                        >
+                        <UIText size={20} bold color={Color.parse(color ?? "").fg}>
                             {tag?.name}
-                        </Text>
+                        </UIText>
                     </View>
                     <ColorPicker
                         onChange={onChangeColor}

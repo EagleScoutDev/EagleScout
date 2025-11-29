@@ -1,5 +1,5 @@
-import { useTheme } from "@react-navigation/native";
-import { Alert, KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
+import { Alert, KeyboardAvoidingView, View } from "react-native";
 import { useEffect, useState } from "react";
 import { NotesDB } from "../../../database/ScoutNotes";
 import { NoteInputModal } from "./NoteInputModal";
@@ -14,8 +14,6 @@ import { UICard } from "../../../ui/UICard.tsx";
 import { Alliance } from "../../../frc/common/common.ts";
 
 export function NoteScreen() {
-    const { colors } = useTheme();
-
     const [match, setMatch] = useState<number | null>(null);
     const [matchNumberValid, setMatchNumberValid] = useState<boolean>(false);
 
@@ -117,9 +115,9 @@ export function NoteScreen() {
                     padding: "5%",
                 }}
             >
-                <Text style={{ fontSize: 30, fontWeight: "bold", color: colors.text }}>
+                <UIText size={30} bold>
                     A competition must be running to submit notes!
-                </Text>
+                </UIText>
             </View>
         );
     }

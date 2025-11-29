@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { InternetStatus } from "../../lib/InternetStatus";
 import { TabHeader } from "../../ui/navigation/TabHeader";
@@ -12,6 +12,8 @@ import type { DataMenuParamList, DataMenuScreenProps } from "./DataMain";
 import { exMemo } from "../../lib/util/react/memo";
 import { UIList } from "../../ui/UIList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { UIText } from "../../ui/UIText";
+import { Color } from "../../lib/color";
 
 export interface DataHomeProps extends DataMenuScreenProps<"Home"> {}
 export function DataHome({ navigation }: DataHomeProps) {
@@ -51,11 +53,13 @@ export function DataHome({ navigation }: DataHomeProps) {
                             marginBottom: "4%",
                         }}
                     >
-                        <Text style={{ flex: 1, color: "grey" }}>
+                        <UIText level={1} style={{ flex: 1 }}>
                             Some features may be disabled until you regain an internet connection.
-                        </Text>
+                        </UIText>
                         <Pressable onPress={testConnection}>
-                            <Text style={{ flex: 1, color: colors.primary, fontWeight: "bold" }}>Try again?</Text>
+                            <UIText bold color={Color.parse(colors.primary)} style={{ flex: 1 }}>
+                                Try again?
+                            </UIText>
                         </Pressable>
                     </View>
                 )}

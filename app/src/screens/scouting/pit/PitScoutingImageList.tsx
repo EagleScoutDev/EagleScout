@@ -1,4 +1,5 @@
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { launchCamera } from "react-native-image-picker";
 import * as Bs from "../../../ui/icons";
 import { useTheme } from "@react-navigation/native";
@@ -74,7 +75,7 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
                             }}
                         >
                             <View style={styles.plusButton}>
-                                <Text style={styles.plusText}>+</Text>
+                                <UIText style={styles.plusText}>+</UIText>
                             </View>
                         </Pressable>
                     );

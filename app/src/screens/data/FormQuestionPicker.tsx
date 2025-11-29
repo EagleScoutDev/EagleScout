@@ -1,5 +1,6 @@
 import { useTheme } from "@react-navigation/native";
-import { FlatList, Text, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { FlatList, View } from "react-native";
 import type { Setter } from "../../lib/util/react/types";
 import { UISheet } from "../../ui/UISheet";
 import { Color } from "../../lib/color";
@@ -44,9 +45,9 @@ export function FormQuestionPicker({ form, value, setValue, onSubmit }: FormQues
                 renderItem={({ item, index }) => {
                     if (item.type === Form.ItemType.heading) {
                         return (
-                            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "bold", marginVertical: 8 }}>
+                            <UIText size={18} bold style={{ marginVertical: 8 }}>
                                 {item.title}
-                            </Text>
+                            </UIText>
                         );
                     } else if (item.type === Form.ItemType.number) {
                         return (

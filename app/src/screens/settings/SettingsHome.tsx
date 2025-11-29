@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, Linking, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Linking, Pressable, View } from "react-native";
 import { InternetStatus } from "../../lib/InternetStatus";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -12,6 +12,7 @@ import { UIList } from "../../ui/UIList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "../../ui/navigation/TabHeader";
 import { AccountRole } from "../../lib/user/account";
+import { UIText } from "../../ui/UIText";
 
 export interface SettingsHomeProps extends SettingsMenuScreenProps<"Home"> {}
 export function SettingsHome({ navigation }: SettingsHomeProps) {
@@ -76,19 +77,13 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                             marginBottom: "4%",
                         }}
                     >
-                        <Text style={{ flex: 1, color: "grey" }}>
+                        <UIText level={1} style={{ flex: 1 }}>
                             Some features may be disabled until you regain an internet connection.
-                        </Text>
+                        </UIText>
                         <Pressable onPress={testConnection}>
-                            <Text
-                                style={{
-                                    flex: 1,
-                                    color: colors.primary,
-                                    fontWeight: "bold",
-                                }}
-                            >
+                            <UIText bold style={{ flex: 1 }}>
                                 Try again?
-                            </Text>
+                            </UIText>
                         </Pressable>
                     </View>
                 )}
@@ -119,20 +114,21 @@ export function SettingsHome({ navigation }: SettingsHomeProps) {
                                                         justifyContent: "center",
                                                     }}
                                                 >
-                                                    <Text style={{ fontSize: 48 }}>{profile.emoji}</Text>
+                                                    <UIText size={48}>{profile.emoji}</UIText>
                                                 </View>
                                                 <View style={{ flex: 1, marginRight: "auto" }}>
-                                                    <Text
-                                                        style={{ flexShrink: 1, fontSize: 20, marginBottom: 4 }}
+                                                    <UIText
+                                                        size={20}
                                                         numberOfLines={1}
+                                                        style={{ flexShrink: 1, marginBottom: 4 }}
                                                     >
                                                         {profile.name}
-                                                    </Text>
-                                                    <Text>{AccountRole.getName(account.role)}</Text>
+                                                    </UIText>
+                                                    <UIText>{AccountRole.getName(account.role)}</UIText>
                                                 </View>
                                                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
                                                     <Bs.Coin size={24} fill={colors.text} />
-                                                    <Text style={{ fontSize: 18 }}>{scoutcoins}</Text>
+                                                    <UIText size={18}>{scoutcoins}</UIText>
                                                 </View>
                                             </>
                                         ) : (

@@ -1,4 +1,5 @@
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
+import { UIText } from "../../../ui/UIText";
 import { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -92,8 +93,9 @@ export function DebugAsyncStorage() {
             >
                 <View style={{ flex: 1, padding: 8 }}>
                     <View style={{ padding: 8, borderBottomWidth: 1, borderColor: colors.border }}>
-                        <Text
-                            style={{ fontFamily: "monospace", fontSize: 16 }}
+                        <UIText
+                            size={16}
+                            style={{ fontFamily: "monospace" }}
                             onPress={() => {
                                 if (currentKey === null) return;
                                 Clipboard.setString(currentKey);
@@ -103,11 +105,11 @@ export function DebugAsyncStorage() {
                             }}
                         >
                             {currentKey}
-                        </Text>
+                        </UIText>
                     </View>
                     <ScrollView style={{ padding: 8 }}>
-                        <Text
-                            style={{ fontFamily: "monospace", color: colors.text }}
+                        <UIText
+                            style={{ fontFamily: "monospace" }}
                             onPress={() => {
                                 if (currentValue === null) return;
                                 Clipboard.setString(currentValue);
@@ -117,7 +119,7 @@ export function DebugAsyncStorage() {
                             }}
                         >
                             {currentValue}
-                        </Text>
+                        </UIText>
                     </ScrollView>
                 </View>
             </BottomSheet>

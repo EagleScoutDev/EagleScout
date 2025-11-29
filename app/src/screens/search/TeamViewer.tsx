@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Text, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { UIText } from "../../ui/UIText";
+import { View } from "react-native";
 import { StatboticsSummary } from "../../components/StatboticsSummary.tsx";
 import { CompetitionRank } from "./CompetitionRank";
 import { ScoutSummary } from "./ScoutSummary";
@@ -27,8 +27,6 @@ export function TeamViewer({
     },
     navigation,
 }: TeamViewerProps) {
-    const { colors } = useTheme();
-
     const [form, setForm] = useState<FormReturnData | null>(null);
     useEffect(() => {
         CompetitionsDB.getCompetitionById(competitionId).then(({ formId }) => {
@@ -45,12 +43,12 @@ export function TeamViewer({
         <SafeAreaProvider>
             <UIList>
                 <View style={{ alignItems: "center" }}>
-                    <Text style={{ color: colors.text, fontSize: 30, fontWeight: "bold" }}>
+                    <UIText size={30} bold>
                         Team #{team.team_number}
-                    </Text>
-                    <Text style={{ color: colors.text, fontSize: 20, fontStyle: "italic", marginBottom: 16 }}>
+                    </UIText>
+                    <UIText size={20} italic style={{ marginBottom: 16 }}>
                         {team.nickname}
-                    </Text>
+                    </UIText>
 
                     <CompetitionRank team_number={team.team_number} />
                 </View>

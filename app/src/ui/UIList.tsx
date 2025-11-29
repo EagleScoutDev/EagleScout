@@ -1,12 +1,5 @@
-import {
-    ActivityIndicator,
-    RefreshControl,
-    SectionList,
-    type StyleProp,
-    Text,
-    View,
-    type ViewStyle,
-} from "react-native";
+import { ActivityIndicator, RefreshControl, SectionList, type StyleProp, View, type ViewStyle } from "react-native";
+import { UIText } from "../ui/UIText";
 import React, { isValidElement, type Key, type ReactElement, type ReactNode, useState } from "react";
 import { type Theme, useTheme } from "@react-navigation/native";
 import * as Bs from "./icons";
@@ -37,12 +30,12 @@ export function UIList({
     const styles = getListStyles(colors);
     const renderSectionHeader = ({ section: { header } }: { section: UIList.Section }) => (
         <View style={styles.sectionHeader}>
-            {typeof header === "string" && <Text style={styles.sectionHeaderText}>{header}</Text>}
+            {typeof header === "string" && <UIText style={styles.sectionHeaderText}>{header}</UIText>}
         </View>
     );
     const renderSectionFooter = ({ section }: { section: UIList.Section }) => (
         <View style={[styles.sectionFooter, section === lastSection && styles.lastSectionFooter]}>
-            {typeof section.footer === "string" && <Text style={styles.sectionFooterText}>{section.footer}</Text>}
+            {typeof section.footer === "string" && <UIText style={styles.sectionFooterText}>{section.footer}</UIText>}
         </View>
     );
 
@@ -178,9 +171,9 @@ function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps
                         </View>
                     )}
                     {label !== undefined && (
-                        <Text style={labelStyles.text(colors, labelColor)} numberOfLines={1}>
+                        <UIText style={labelStyles.text(colors, labelColor)} numberOfLines={1}>
                             {label}
-                        </Text>
+                        </UIText>
                     )}
                 </View>
             )}

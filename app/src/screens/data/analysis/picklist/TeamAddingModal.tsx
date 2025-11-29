@@ -1,4 +1,5 @@
-import { Alert, FlatList, Modal, Pressable, Text, View } from "react-native";
+import { Alert, FlatList, Modal, Pressable, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useTheme } from "@react-navigation/native";
 import type { PicklistTeam, SimpleTeam } from "../../../../database/Picklists";
@@ -71,16 +72,9 @@ export function TeamAddingModal({
                             fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary}
                         />
                     </Pressable>
-                    <Text
-                        style={{
-                            color: colors.text,
-                            fontSize: 20,
-                            fontWeight: "bold",
-                            marginVertical: "2%",
-                        }}
-                    >
+                    <UIText size={20} bold style={{ marginVertical: "2%" }}>
                         List of Teams
-                    </Text>
+                    </UIText>
                     <Pressable
                         onPress={() => {
                             setVisible(false);

@@ -5,7 +5,7 @@ import { useDeepLinking } from "./lib/hooks/useDeepLinking";
 import { ThemeContext } from "./lib/contexts/ThemeContext";
 import { handleDeepLink } from "./deepLink";
 import { AppHome, type AppHomeParamList } from "./AppHome";
-import { NavigationContainer, type NavigatorScreenParams } from "@react-navigation/native";
+import { type NavigatorScreenParams } from "@react-navigation/native";
 import { OnboardingFlow, type OnboardingParamList } from "./screens/onboarding";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

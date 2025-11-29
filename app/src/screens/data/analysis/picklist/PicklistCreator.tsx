@@ -7,7 +7,6 @@ import {
     Platform,
     Pressable,
     StyleSheet,
-    Text,
     TextInput,
     UIManager,
     View,
@@ -34,6 +33,8 @@ import { TBA } from "../../../../lib/frc/tba/TBA.ts";
 import * as Bs from "../../../../ui/icons";
 import type { Setter } from "../../../../lib/util/react/types";
 import type { DataMenuScreenProps } from "../../DataMain";
+import { UIText } from "../../../../ui/UIText";
+import { UITextInput } from "../../../../ui/input/UITextInput.tsx";
 
 export interface PicklistCreatorParams {
     picklist_id: number;
@@ -377,7 +378,6 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
 
     const styles = StyleSheet.create({
         name_input: {
-            color: colors.text,
             fontSize: 30,
             fontFamily: "monospace",
             fontWeight: name ? "normal" : "200",
@@ -415,12 +415,6 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             fontSize: 18,
             marginLeft: "5%",
         },
-        team_number_displayed: {
-            // flex: 1,
-            color: colors.text,
-            fontSize: 18,
-            marginLeft: "5%",
-        },
         modal_activation_button_container: {
             width: "16%",
             height: 30,
@@ -452,17 +446,12 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         }}
                     >
                         <BouncyCheckbox isChecked={false} disabled={true} fillColor={colors.primary} />
-                        <Text style={{ color: "gray" }}>{teams_list.indexOf(item) + 1}</Text>
-                        <Text
-                            style={{
-                                ...styles.team_number_displayed,
-                                flex: 1,
-                            }}
-                        >
+                        <UIText level={1}>{teams_list.indexOf(item) + 1}</UIText>
+                        <UIText size={18} style={{ flex: 1, marginLeft: "5%" }}>
                             {item.team_number}
                             {teamNumberToNameMap.size === 0 ? "" : " "}
                             {teamNumberToNameMap.get(item.team_number)}
-                        </Text>
+                        </UIText>
                         <View
                             style={{
                                 justifyContent: "flex-end",
@@ -496,8 +485,8 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             {/*  if the picklist was made by someone else, show the name and title. else, let the user enter a title */}
             {presetPicklist ? (
                 <View>
-                    <Text style={styles.name_input}>{presetPicklist.name}</Text>
-                    <Text style={{ color: "gray" }}>By {creatorName}</Text>
+                    <UIText style={styles.name_input}>{presetPicklist.name}</UIText>
+                    <UIText level={1}>By {creatorName}</UIText>
                 </View>
             ) : (
                 <TextInput
@@ -578,7 +567,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 borderColor: getTagFromTagId(tag)?.color,
                             }}
                         >
-                            <Text
+                            <UIText
                                 style={{
                                     color: filteredTags.has(tag)
                                         ? Color.parse(getTagFromTagId(tag)?.color ?? "").fg.hex
@@ -587,7 +576,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 }}
                             >
                                 {allTags.find((t) => Number.parseInt(t.id ?? "", 10) === tag)?.name ?? "Unknown"}
-                            </Text>
+                            </UIText>
                         </Pressable>
                     );
                 })}
@@ -608,7 +597,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             />
             {teams_list.length === 0 && (
                 <Pressable onPress={() => setTeamAddingModalVisible(true)}>
-                    <Text
+                    <UIText
                         style={{
                             color: colors.primary,
                             fontSize: 20,
@@ -618,7 +607,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         }}
                     >
                         Add teams to the picklist
-                    </Text>
+                    </UIText>
                 </Pressable>
             )}
             <TeamAddingModal
@@ -694,25 +683,26 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                 });
                                             }}
                                         />
-                                        <Text style={{ color: "gray" }}>{teams_list.indexOf(item) + 1}</Text>
-                                        <Text
+                                        <UIText level={1}>{teams_list.indexOf(item) + 1}</UIText>
+                                        <UIText
                                             style={
                                                 removed_teams.includes(item)
                                                     ? {
                                                           ...styles.team_number_displayed,
-                                                          color: "gray",
+                                                          color: colors.text,
+                                                          opacity: 0.5,
                                                           textDecorationLine: "line-through",
                                                           textDecorationStyle: "solid",
                                                       }
                                                     : item.dnp
-                                                    ? { ...styles.team_number_displayed, color: "red" }
+                                                    ? { ...styles.team_number_displayed, color: colors.danger }
                                                     : styles.team_number_displayed
                                             }
                                         >
                                             {item.team_number}
                                             {teamNumberToNameMap.size === 0 ? "" : " - "}
                                             {teamNumberToNameMap.get(item.team_number)}
-                                        </Text>
+                                        </UIText>
                                         <View
                                             style={{
                                                 flex: 1,
@@ -738,8 +728,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                         </View>
                                     </View>
                                     {selectedTeam === item && (
-                                        <TextInput
-                                            inputMode={"text"}
+                                        <UITextInput
                                             placeholder={"Notes"}
                                             onChangeText={(text) => {
                                                 let newTeams = teams_list.map((t) => {
@@ -751,11 +740,8 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                 setTeamsList(newTeams);
                                             }}
                                             defaultValue={item.notes}
-                                            placeholderTextColor={"gray"}
-                                            multiline={true}
+                                            multiline
                                             style={{
-                                                color: colors.text,
-                                                backgroundColor: colors.card,
                                                 padding: "2%",
                                                 marginTop: "2%",
                                             }}

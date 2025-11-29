@@ -1,4 +1,5 @@
-import { Modal, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Modal, TouchableWithoutFeedback, View } from "react-native";
+import { UIText } from "../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import type { PropsWithChildren } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -14,7 +15,12 @@ export function UIModal({ visible, title, onDismiss, backdropPressBehavior, chil
     const { colors } = useTheme();
 
     return (
-        <Modal transparent={true} animationType="fade" visible={visible} onDismiss={backdropPressBehavior === "dismiss" ? onDismiss : undefined}>
+        <Modal
+            transparent={true}
+            animationType="fade"
+            visible={visible}
+            onDismiss={backdropPressBehavior === "dismiss" ? onDismiss : undefined}
+        >
             <SafeAreaProvider>
                 <TouchableWithoutFeedback
                     onPress={() => backdropPressBehavior === "dismiss" && onDismiss && onDismiss()}
@@ -44,16 +50,9 @@ export function UIModal({ visible, title, onDismiss, backdropPressBehavior, chil
                             >
                                 {/* TODO: move this title element to a new UIModal.Title component */}
                                 {typeof title === "string" && (
-                                    <Text
-                                        style={{
-                                            fontSize: 20,
-                                            color: colors.text,
-                                            fontWeight: "600",
-                                            paddingBottom: 20,
-                                        }}
-                                    >
+                                    <UIText size={20} bold style={{ paddingBottom: 20 }}>
                                         {title}
-                                    </Text>
+                                    </UIText>
                                 )}
                                 {children}
                             </View>

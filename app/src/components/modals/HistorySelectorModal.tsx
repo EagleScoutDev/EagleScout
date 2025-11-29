@@ -1,6 +1,8 @@
 import { UIModal } from "../../ui/UIModal";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
+import { Color } from "../../lib/color.ts";
 
 /**
  * Modal that allows the user to select a form history to view
@@ -13,12 +15,7 @@ import { useTheme } from "@react-navigation/native";
  */
 export function HistorySelectorModal({ formHistory, selectedHistoryId, visible, setVisible, onHistorySelect }) {
     const { colors } = useTheme();
-    const styles = StyleSheet.create({
-        report_info: {
-            textAlign: "center",
-            color: colors.text,
-        },
-    });
+
     return (
         <UIModal
             title="Form History"
@@ -52,22 +49,16 @@ export function HistorySelectorModal({ formHistory, selectedHistoryId, visible, 
                                 onHistorySelect(history.historyId);
                             }}
                         >
-                            <Text
-                                style={[
-                                    styles.report_info,
-                                    {
-                                        ...(selectedHistoryId === history.historyId && {
-                                            fontWeight: "bold",
-                                            color: colors.primary,
-                                        }),
-                                    },
-                                ]}
+                            <UIText
+                                color={selectedHistoryId === history.historyId && Color.parse(colors.primary)}
+                                bold={selectedHistoryId === history.historyId}
+                                style={{ textAlign: "center" }}
                             >
                                 {history.historyId === formHistory[0].historyId
                                     ? "Current"
                                     : new Date(history.editedAt).toLocaleString()}
-                            </Text>
-                            <Text style={styles.report_info}>{history.name}</Text>
+                            </UIText>
+                            <UIText style={{ textAlign: "center" }}>{history.name}</UIText>
                         </TouchableOpacity>
                     ))}
             </View>

@@ -1,4 +1,5 @@
-import { ActivityIndicator, type DimensionValue, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, type DimensionValue, StyleSheet, TouchableOpacity } from "react-native";
+import { UIText } from "../ui/UIText";
 
 export interface StandardButtonProps {
     textColor?: string;
@@ -52,7 +53,7 @@ export function StandardButton({
             disabled={isLoading || disabled}
         >
             {isLoading && <ActivityIndicator size="small" color="#ffffff" />}
-            <Text style={styles.button_text}>{text}</Text>
+            <UIText style={styles.button_text}>{text}</UIText>
         </TouchableOpacity>
     );
 }

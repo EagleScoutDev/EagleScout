@@ -1,4 +1,5 @@
-import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Modal, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../ui/UIText";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { UIRadio } from "../../ui/input/UIRadio";
@@ -6,6 +7,7 @@ import { UICheckboxes } from "../../ui/input/UICheckboxes";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
 import * as Bs from "../../ui/icons";
+import { Color } from "../../lib/color.ts";
 
 interface PitScoutViewerProps {
     visible: boolean;
@@ -64,41 +66,16 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
             height: "100%",
             width: "100%",
         },
-        team_title: {
-            fontSize: 30,
-            fontWeight: "bold",
-            color: colors.text,
-            textAlign: "center",
-            marginTop: 10,
-            marginBottom: 5,
-        },
-        report_info: {
-            textAlign: "center",
-            color: colors.text,
-        },
         section_title: {
-            // set the color to be the opposite of the background
-            color: colors.text,
-            fontSize: 18,
             textAlign: "center",
-            fontWeight: "bold",
             margin: "6%",
-            textDecorationLine: "underline",
         },
         no_info: {
-            color: colors.notification,
-            fontWeight: "bold",
             flexWrap: "wrap",
-            fontSize: 15,
             flex: 1,
         },
         question: {
-            color: colors.text,
-            fontSize: 15,
-            fontWeight: "600",
-            // wrap text if it's too long
             flex: 1,
-            flexWrap: "wrap",
             paddingBottom: 5,
         },
         image_list: {
@@ -152,15 +129,20 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                             style={{
                                 borderRadius: 10,
                                 padding: "5%",
+                                alignItems: "center",
                             }}
                         >
-                            <Text style={styles.team_title}>Team #{data.teamNumber}</Text>
-                            <Text style={styles.report_info}>By: {data.submittedName}</Text>
-                            <Text style={styles.report_info}>{data.createdAt.toLocaleString()}</Text>
+                            <UIText size={30} bold style={{ marginTop: 10, marginBottom: 5 }}>
+                                Team #{data.teamNumber}
+                            </UIText>
+                            <UIText>By: {data.submittedName}</UIText>
+                            <UIText>{data.createdAt.toLocaleString()}</UIText>
                         </View>
                         {sections.map((sec, index) => (
                             <View key={index}>
-                                <Text style={styles.section_title}>{sec.title}</Text>
+                                <UIText size={18} bold underline style={styles.section_title}>
+                                    {sec.title}
+                                </UIText>
                                 {sec.questions.map((field) => (
                                     <View
                                         style={{
@@ -177,7 +159,9 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                             borderRadius: 10,
                                         }}
                                     >
-                                        <Text style={styles.question}>{field.question}</Text>
+                                        <UIText size={15} bold style={styles.question}>
+                                            {field.question}
+                                        </UIText>
                                         {field.type === "radio" && (
                                             <View>
                                                 <UIRadio
@@ -201,28 +185,36 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                             </>
                                         )}
                                         {field.type !== "radio" && field.type !== "checkboxes" && (
-                                            <Text
+                                            <UIText
+                                                size={15}
+                                                bold
+                                                color={Color.parse(colors.primary)}
                                                 style={{
-                                                    color: colors.primary,
-                                                    fontWeight: "bold",
-                                                    flexWrap: "wrap",
-                                                    fontSize: 15,
                                                     flex: 1,
                                                     textAlign: field.type === "textbox" ? "left" : "center",
                                                     alignSelf: field.type === "textbox" ? "flex-start" : "center",
                                                 }}
                                             >
                                                 {field.data.toString()}
-                                            </Text>
+                                            </UIText>
                                         )}
                                         {(field.data == null || field.data === "") && (
-                                            <Text style={styles.no_info}>N/A</Text>
+                                            <UIText
+                                                size={15}
+                                                bold
+                                                color={Color.parse(colors.notification)}
+                                                style={styles.no_info}
+                                            >
+                                                N/A
+                                            </UIText>
                                         )}
                                     </View>
                                 ))}
                             </View>
                         ))}
-                        <Text style={styles.section_title}>Images</Text>
+                        <UIText size={18} bold underline style={styles.section_title}>
+                            Images
+                        </UIText>
                         <FlatList
                             style={styles.image_list}
                             data={images}

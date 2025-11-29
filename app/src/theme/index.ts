@@ -17,6 +17,9 @@ export interface ThemeColors {
     readonly tertiary: Color;
     readonly danger: Color;
 
+    readonly win: Color;
+    readonly loss: Color;
+
     readonly fg: Color;
     readonly bg0: Color;
     readonly bg1: Color;
@@ -85,6 +88,9 @@ export namespace Theme {
             tertiary: Color.hex("#7ba9ff"),
             danger: Color.hex("#f13d3d"),
 
+            win: Color.hex("#008500"),
+            loss: Color.hex("#f13d3d"),
+
             fg: Color.hex("#0b0b0b"),
             bg0: Color.hex("#ffffff", Color.hex("#0b0b0b")),
             bg1: Color.hex("#faf9f9", Color.hex("#0b0b0b")),
@@ -105,6 +111,9 @@ export namespace Theme {
             tertiary: Color.hex("#7ba9ff"),
             danger: Color.hex("#f13d3d"),
 
+            win: Color.hex("#008500"),
+            loss: Color.hex("#f13d3d"),
+
             fg: Color.hex("#ffffff"),
             bg0: Color.hex("#0c0c0c", Color.hex("#ffffff")),
             bg1: Color.hex("#121212", Color.hex("#ffffff")),
@@ -124,6 +133,9 @@ export namespace Theme {
             secondary: Color.hex("#ff5555"),
             tertiary: Color.hex("#ff5555"),
             danger: Color.hex("#ff5555"),
+
+            win: Color.hex("#008500"),
+            loss: Color.hex("#f13d3d"),
 
             fg: Color.hex("#1e1612"),
             bg0: Color.hex("#fae0bf", Color.hex("#1e1612")),

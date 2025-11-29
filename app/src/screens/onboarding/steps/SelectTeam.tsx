@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { UIText } from "../../../ui/UIText";
 import {
     Alert,
     FlatList,
     Keyboard,
     SafeAreaView,
     StyleSheet,
-    Text,
     TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -32,7 +32,7 @@ export function SelectTeam({ navigation }: SelectTeamProps) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.background}>
                 <View style={styles.container}>
-                    <Text style={styles.titleText}>Select Your Team</Text>
+                    <UIText style={styles.titleText}>Select Your Team</UIText>
                     <TextInput
                         onChangeText={setTeam}
                         value={team}
@@ -69,8 +69,8 @@ export function SelectTeam({ navigation }: SelectTeamProps) {
                                 }}
                             >
                                 <View style={styles.teamContainer}>
-                                    <Text style={styles.teamNumber}>{item.number}</Text>
-                                    <Text style={styles.teamName}>{item.name}</Text>
+                                    <UIText style={styles.teamNumber}>{item.number}</UIText>
+                                    <UIText style={styles.teamName}>{item.name}</UIText>
                                 </View>
                             </TouchableOpacity>
                         )}

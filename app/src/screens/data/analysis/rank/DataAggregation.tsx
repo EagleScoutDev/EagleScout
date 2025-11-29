@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { UIText } from "../../../../ui/UIText";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import type { DataMenuScreenProps } from "../../DataMain";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
@@ -149,10 +150,8 @@ export function DataAggregation({}: DataAggregationProps) {
                     paddingVertical: "10%",
                 }}
             >
-                <Text style={styles.header}>No Active Competition</Text>
-                <Text style={{ color: colors.text, fontSize: 14 }}>
-                    Please choose which competition you would like to view data for.
-                </Text>
+                <UIText style={styles.header}>No Active Competition</UIText>
+                <UIText>Please choose which competition you would like to view data for.</UIText>
                 {fullCompetitionsList.map((item, index) => (
                     <Pressable
                         key={index}
@@ -164,7 +163,7 @@ export function DataAggregation({}: DataAggregationProps) {
                         }}
                     >
                         <View style={styles.list_item}>
-                            <Text style={styles.list_text}>{item.name}</Text>
+                            <UIText style={styles.list_text}>{item.name}</UIText>
                         </View>
                     </Pressable>
                 ))}
@@ -182,28 +181,13 @@ export function DataAggregation({}: DataAggregationProps) {
                             setTeamsToAverage(null);
                         }}
                     >
-                        <Text
-                            style={{
-                                color: colors.primary,
-                                fontSize: 18,
-                                paddingTop: "5%",
-                                paddingLeft: "5%",
-                            }}
-                        >
+                        <UIText size={18} style={{ paddingTop: "5%", paddingLeft: "5%" }}>
                             Back
-                        </Text>
+                        </UIText>
                     </Pressable>
-                    <Text
-                        style={{
-                            textAlign: "center",
-                            fontSize: 20,
-                            color: colors.text,
-                            marginVertical: "5%",
-                            marginHorizontal: "8%",
-                        }}
-                    >
+                    <UIText size={20} style={{ textAlign: "center", marginVertical: "5%", marginHorizontal: "8%" }}>
                         {chosenQuestion && chosenQuestion.question}
-                    </Text>
+                    </UIText>
                 </View>
             )}
             {chosenQuestion === null && (
@@ -217,12 +201,10 @@ export function DataAggregation({}: DataAggregationProps) {
                             marginVertical: "2%",
                         }}
                     >
-                        <Text style={{ color: colors.text, fontSize: 24 }}>
-                            {compName ? compName : "No Competition Selected"}
-                        </Text>
+                        <UIText size={24}>{compName ? compName : "No Competition Selected"}</UIText>
                     </View>
                     <View style={{ marginHorizontal: "10%" }}>
-                        <Text style={styles.question_text}>Choose a question to begin.</Text>
+                        <UIText style={styles.question_text}>Choose a question to begin.</UIText>
                         <ScrollView>
                             {currForm &&
                                 currForm.map((item, index) => (
@@ -236,20 +218,13 @@ export function DataAggregation({}: DataAggregationProps) {
                                         key={item.question + String(index)}
                                     >
                                         {item.type === "heading" && (
-                                            <Text
-                                                style={{
-                                                    color: "gray",
-                                                    fontSize: 14,
-                                                    fontWeight: "bold",
-                                                    marginTop: "10%",
-                                                }}
-                                            >
+                                            <UIText bold level={1} style={{ marginTop: "10%" }}>
                                                 {item.title.toUpperCase()}
-                                            </Text>
+                                            </UIText>
                                         )}
                                         {item.type === "number" && (
                                             <View style={styles.list_item}>
-                                                <Text style={{ color: colors.text, flex: 1 }}>{item.question}</Text>
+                                                <UIText style={{ flex: 1 }}>{item.question}</UIText>
                                             </View>
                                         )}
                                     </Pressable>
@@ -260,7 +235,7 @@ export function DataAggregation({}: DataAggregationProps) {
             )}
             {processing && (
                 <View style={styles.container}>
-                    <Text style={styles.question_text}>Processing...</Text>
+                    <UIText style={styles.question_text}>Processing...</UIText>
                     <ActivityIndicator size={"large"} />
                 </View>
             )}
@@ -268,27 +243,12 @@ export function DataAggregation({}: DataAggregationProps) {
                 <View>
                     <View style={{ flexDirection: "row", paddingHorizontal: "10%" }}>
                         <View style={{ flex: 0.2 }} />
-                        <Text
-                            style={{
-                                flex: 1,
-                                color: colors.text,
-                                fontSize: 16,
-                                fontWeight: "bold",
-                            }}
-                        >
+                        <UIText size={16} bold style={{ flex: 1 }}>
                             Team
-                        </Text>
-                        <Text
-                            style={{
-                                flex: 1,
-                                color: colors.text,
-                                fontSize: 16,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                            }}
-                        >
+                        </UIText>
+                        <UIText size={16} bold style={{ flex: 1, textAlign: "right" }}>
                             Average Value
-                        </Text>
+                        </UIText>
                     </View>
                     <ScrollView
                         style={{
@@ -304,24 +264,11 @@ export function DataAggregation({}: DataAggregationProps) {
                                 .reverse()
                                 .map(([key, value], index) => (
                                     <View key={key} style={styles.rank_list_item}>
-                                        <Text
-                                            style={{
-                                                flex: 0.2,
-                                                color: "gray",
-                                                fontWeight: "bold",
-                                            }}
-                                        >
+                                        <UIText bold level={1} style={{ flex: 0.2 }}>
                                             {index + 1}.
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                flex: 1,
-                                                color: colors.text,
-                                            }}
-                                        >
-                                            {key}
-                                        </Text>
-                                        <Text style={styles.list_text}>{value.toFixed(2)}</Text>
+                                        </UIText>
+                                        <UIText style={{ flex: 1 }}>{key}</UIText>
+                                        <UIText style={styles.list_text}>{value.toFixed(2)}</UIText>
                                     </View>
                                 ))}
                     </ScrollView>

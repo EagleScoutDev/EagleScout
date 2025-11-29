@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { UIText } from "../../ui/UIText";
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { supabase } from "../../lib/supabase";
@@ -24,13 +25,7 @@ function SortOption({ onPress, title, isActive }: { onPress: () => void; title: 
                 borderColor: colors.border,
             }}
         >
-            <Text
-                style={{
-                    color: isActive ? Color.parse(colors.primary).fg.hex : colors.text,
-                }}
-            >
-                {title}
-            </Text>
+            <UIText color={isActive ? Color.parse(colors.primary).fg : Color.parse(colors.text)}>{title}</UIText>
         </TouchableOpacity>
     );
 }
@@ -265,7 +260,7 @@ export function ManageUsers() {
                     borderRadius: 10,
                 }}
             >
-                <Text
+                <UIText
                     style={user.scouter ? styles.option : styles.chosenRejected}
                     onPress={() => {
                         if (user.scouter) {
@@ -274,8 +269,8 @@ export function ManageUsers() {
                     }}
                 >
                     Rejected
-                </Text>
-                <Text
+                </UIText>
+                <UIText
                     onPress={() => {
                         if (!user.scouter) {
                             handlePress(user, "approved");
@@ -286,8 +281,8 @@ export function ManageUsers() {
                     style={user.scouter ? (user.admin ? styles.option : styles.chosen) : styles.option}
                 >
                     Scouter
-                </Text>
-                <Text
+                </UIText>
+                <UIText
                     style={user.admin ? styles.chosen : styles.option}
                     onPress={() => {
                         if (!user.admin) {
@@ -296,7 +291,7 @@ export function ManageUsers() {
                     }}
                 >
                     Captain
-                </Text>
+                </UIText>
             </View>
         );
     };
@@ -361,8 +356,10 @@ export function ManageUsers() {
                             }}
                             key={user.email}
                         >
-                            <Text style={{ fontWeight: "bold", fontSize: 20, color: colors.text }}>{user.name}</Text>
-                            <Text style={{ color: colors.text }}>{user.email}</Text>
+                            <UIText size={20} bold>
+                                {user.name}
+                            </UIText>
+                            <UIText>{user.email}</UIText>
                             {picker(user)}
                         </View>
                     ))}
