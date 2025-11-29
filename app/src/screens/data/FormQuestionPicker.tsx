@@ -38,7 +38,7 @@ export function FormQuestionPicker({ form, value, setValue, onSubmit }: FormQues
                 }
             />
             <FlatList
-                style={{ padding: 16, flex: 1, backgroundColor: "red" }}
+                style={{ padding: 16, flex: 1 }}
                 data={form ?? []}
                 keyExtractor={(_, index) => index.toString()}
                 renderItem={({ item, index }) => {
