@@ -33,11 +33,23 @@ export enum ThemeOption {
     system = "system",
     light = "light",
     dark = "dark",
+    coffee = "coffee",
+    dune = "dune",
+    forest = "forest",
+    purple = "purple",
+    midnight = "midnight",
+    water = "water",
 }
 export const THEME_OPTIONS: { id: ThemeOption; name: string }[] = [
     { id: ThemeOption.system, name: "System" },
     { id: ThemeOption.light, name: "Light" },
     { id: ThemeOption.dark, name: "Dark" },
+    { id: ThemeOption.coffee, name: "Coffee" },
+    { id: ThemeOption.dune, name: "Dune" },
+    { id: ThemeOption.forest, name: "Forest" },
+    { id: ThemeOption.purple, name: "Purple" },
+    { id: ThemeOption.midnight, name: "Midnight" },
+    { id: ThemeOption.water, name: "Water" },
 ];
 
 export namespace Theme {
@@ -73,6 +85,18 @@ export namespace Theme {
                 return light;
             case ThemeOption.dark:
                 return dark;
+            case ThemeOption.coffee:
+                return coffee;
+            case ThemeOption.dune:
+                return dune;
+            case ThemeOption.forest:
+                return forest;
+            case ThemeOption.purple:
+                return purple;
+            case ThemeOption.midnight:
+                return midnight;
+            case ThemeOption.water:
+                return water;
             case ThemeOption.system:
                 return SYSTEM_COLOR_SCHEME === "dark" ? dark : light;
         }
@@ -102,7 +126,7 @@ export namespace Theme {
     };
 
     export const dark: Theme = {
-        motif: Color.hex("#000000"),
+        motif: Color.hex("#151515"),
 
         dark: true,
         colors: {
@@ -129,93 +153,136 @@ export namespace Theme {
 
         dark: false,
         colors: {
-            primary: Color.hex("#ff5555"),
-            secondary: Color.hex("#ff5555"),
-            tertiary: Color.hex("#ff5555"),
+            primary: Color.hex("#593e2f"),
+            secondary: Color.hex("#bd724a"),
+            tertiary: Color.hex("#e3a584"),
             danger: Color.hex("#ff5555"),
 
             win: Color.hex("#008500"),
             loss: Color.hex("#f13d3d"),
 
-            fg: Color.hex("#1e1612"),
-            bg0: Color.hex("#fae0bf", Color.hex("#1e1612")),
-            bg1: Color.hex("#f3be82", Color.hex("#1e1612")),
-            bg2: Color.hex("#e8a256", Color.hex("#1e1612")),
+            fg: Color.hex("#17110e"),
+            bg0: Color.hex("#fae0bf", Color.hex("#17110e")),
+            bg1: Color.hex("#efc690", Color.hex("#17110e")),
+            bg2: Color.hex("#e8a256", Color.hex("#17110e")),
 
-            border: Color.hex("#60300e"),
+            border: Color.hex("#916f5b"),
             shadow: Color.hex("#000000"),
         },
     };
 
-    // export const CustomLightTheme: Theme = {
-    //     dark: false
-    //     colors: {
-    //         primary: Color.rgb(0, 122, 255),
-    //         card: Color.rgb(242, 242, 242),
-    //         background: Color.rgb(255, 255, 255),
-    //         text: Color.rgb(0, 0, 0),
-    //         border: Color.rgb(216, 216, 216),
-    //         danger: Color.rgb(255, 59, 48),
-    //     },
-    // };
-    //
-    // export const DuneTheme: Theme = {
-    //     dark: true,
-    //     colors: {
-    //         primary: Color.rgb(255, 148, 83),
-    //         background: Color.rgb(168, 79, 0),
-    //         card: Color.rgb(154, 66, 12),
-    //         text: Color.rgb(255, 255, 255),
-    //         border: Color.rgb(103, 60, 30),
-    //         danger: Color.rgb(255, 69, 58),
-    //     },
-    // };
-    //
-    // export const ForestTheme: Theme = {
-    //     dark: true,
-    //     colors: {
-    //         primary: Color.rgb(241, 80, 37),
-    //         background: Color.rgb(39, 60, 44),
-    //         card: Color.rgb(30, 49, 35),
-    //         text: Color.rgb(241, 250, 238),
-    //         border: Color.rgb(13, 33, 20),
-    //         danger: Color.rgb(208, 5, 0),
-    //     },
-    // };
-    //
-    // export const PurpleTheme: Theme = {
-    //     dark: true,
-    //     colors: {
-    //         primary: Color.rgb(143, 50, 223),
-    //         background: Color.rgb(26, 9, 57),
-    //         card: Color.rgb(47, 21, 101),
-    //         text: Color.rgb(255, 255, 255),
-    //         border: Color.rgb(203, 151, 246),
-    //         danger: Color.rgb(125, 96, 211),
-    //     },
-    // };
-    //
-    // export const UltraDarkTheme: Theme = {
-    //     dark: true,
-    //     colors: {
-    //         primary: Color.rgb(10, 132, 255),
-    //         background: Color.rgb(0, 0, 0),
-    //         card: Color.rgb(0, 0, 0),
-    //         text: Color.rgb(255, 255, 255),
-    //         border: Color.rgb(39, 39, 41),
-    //         danger: Color.rgb(255, 69, 58),
-    //     },
-    // };
-    //
-    // export const WaterTheme: Theme = {
-    //     dark: true,
-    //     colors: {
-    //         primary: Color.rgb(89, 170, 255),
-    //         background: Color.rgb(0, 35, 119),
-    //         card: Color.rgb(0, 36, 121),
-    //         text: Color.rgb(255, 255, 255),
-    //         border: Color.rgb(111, 111, 255),
-    //         danger: Color.rgb(255, 69, 58),
-    //     },
-    // };
+    export const dune: Theme = {
+        motif: Color.hex("#9a420c"),
+
+        dark: true,
+        colors: {
+            primary: Color.hex("#ff9453"),
+            secondary: Color.hex("#bd724a"),
+            tertiary: Color.hex("#e3a584"),
+            danger: Color.hex("#ff5555"),
+
+            win: Color.hex("#008500"),
+            loss: Color.hex("#f13d3d"),
+
+            fg: Color.hex("#ffffff"),
+            bg0: Color.hex("#a84f00", Color.hex("#ffffff")),
+            bg1: Color.hex("#9a420c", Color.hex("#ffffff")),
+            bg2: Color.hex("#e8a256", Color.hex("#ffffff")),
+
+            border: Color.hex("#673c1e"),
+            shadow: Color.hex("#000000"),
+        },
+    };
+
+    export const forest: Theme = {
+        motif: Color.hex("#0e7700"),
+
+        dark: true,
+        colors: {
+            primary: Color.hex("#f15025"),
+            secondary: Color.hex("#bd724a"),
+            tertiary: Color.hex("#e3a584"),
+            danger: Color.hex("#d00500"),
+
+            win: Color.hex("#4eff4e"),
+            loss: Color.hex("#d00500"),
+
+            fg: Color.hex("#f1faee"),
+            bg0: Color.hex("#273c2c", Color.hex("#f1faee")),
+            bg1: Color.hex("#1e3123", Color.hex("#f1faee")),
+            bg2: Color.hex("#18291b", Color.hex("#f1faee")),
+
+            border: Color.hex("#0d2114"),
+            shadow: Color.hex("#000000"),
+        },
+    };
+
+    export const purple: Theme = {
+        motif: Color.hex("#0e7700"),
+
+        dark: true,
+        colors: {
+            primary: Color.hex("#8F32DF"),
+            secondary: Color.hex("#c61bff"),
+            tertiary: Color.hex("#bc7eff"),
+            danger: Color.hex("#7D60D3"),
+
+            win: Color.hex("#4eff4e"),
+            loss: Color.hex("#d00500"),
+
+            fg: Color.hex("#ffffff"),
+            bg0: Color.hex("#1a0939", Color.hex("#ffffff")),
+            bg1: Color.hex("#2f1565", Color.hex("#ffffff")),
+            bg2: Color.hex("#381b75", Color.hex("#ffffff")),
+
+            border: Color.hex("#cb97f6"),
+            shadow: Color.hex("#000000"),
+        },
+    };
+
+    export const midnight: Theme = {
+        motif: Color.hex("#000000"),
+
+        dark: true,
+        colors: {
+            primary: Color.hex("#0a84ff"),
+            secondary: Color.hex("#6375ff"),
+            tertiary: Color.hex("#7ba9ff"),
+            danger: Color.hex("#ff453a"),
+
+            win: Color.hex("#4eff4e"),
+            loss: Color.hex("#d00500"),
+
+            fg: Color.hex("#ffffff"),
+            bg0: Color.hex("#000000", Color.hex("#ffffff")),
+            bg1: Color.hex("#000000", Color.hex("#ffffff")),
+            bg2: Color.hex("#000000", Color.hex("#ffffff")),
+
+            border: Color.hex("#272729"),
+            shadow: Color.hex("#000000"),
+        },
+    };
+
+    export const water: Theme = {
+        motif: Color.hex("#2469ff"),
+
+        dark: true,
+        colors: {
+            primary: Color.hex("#59aaff"),
+            secondary: Color.hex("#9958c6"),
+            tertiary: Color.hex("#2e489c"),
+            danger: Color.hex("#ff453a"),
+
+            win: Color.hex("#4eff4e"),
+            loss: Color.hex("#d00500"),
+
+            fg: Color.hex("#ffffff"),
+            bg0: Color.hex("#002377", Color.hex("#ffffff")),
+            bg1: Color.hex("#002479", Color.hex("#ffffff")),
+            bg2: Color.hex("#00267a", Color.hex("#ffffff")),
+
+            border: Color.hex("#6f6fff"),
+            shadow: Color.hex("#000000"),
+        },
+    };
 }
