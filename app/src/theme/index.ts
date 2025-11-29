@@ -153,18 +153,18 @@ export namespace Theme {
 
         dark: false,
         colors: {
-            primary: Color.hex("#593e2f"),
+            primary: Color.hex("#67564a"),
             secondary: Color.hex("#bd724a"),
             tertiary: Color.hex("#e3a584"),
-            danger: Color.hex("#ff5555"),
+            danger: Color.hex("#d65858"),
 
-            win: Color.hex("#008500"),
-            loss: Color.hex("#f13d3d"),
+            win: Color.hex("#00a800"),
+            loss: Color.hex("#d65858"),
 
             fg: Color.hex("#17110e"),
             bg0: Color.hex("#fae0bf", Color.hex("#17110e")),
-            bg1: Color.hex("#efc690", Color.hex("#17110e")),
-            bg2: Color.hex("#e8a256", Color.hex("#17110e")),
+            bg1: Color.hex("#f4cd9a", Color.hex("#17110e")),
+            bg2: Color.hex("#eac186", Color.hex("#17110e")),
 
             border: Color.hex("#916f5b"),
             shadow: Color.hex("#000000"),
