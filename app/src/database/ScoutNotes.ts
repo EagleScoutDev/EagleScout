@@ -129,7 +129,7 @@ export class NotesDB {
             for (let i = 0; i < data.length; i += 1) {
                 res.push({
                     id: data[i].id,
-                    contents: data[i].content,
+                    content: data[i].content,
                     team_number: data[i].team_number,
                     match_id: data[i].match_id,
                     match_number: data[i].matches.number,
@@ -151,7 +151,7 @@ export class NotesDB {
             for (let i = 0; i < data.length; i += 1) {
                 res.push({
                     id: data[i].id,
-                    contents: data[i].content,
+                    content: data[i].content,
                     team_number: data[i].team_number,
                     match_id: data[i].match_id,
                     created_at: data[i].created_at,
@@ -182,7 +182,7 @@ export class NotesDB {
             for (let i = 0; i < data.length; i += 1) {
                 res.push({
                     id: data[i].id,
-                    contents: data[i].content,
+                    content: data[i].content,
                     team_number: data[i].team_number,
                     match_id: data[i].match_id,
                     match_number: data[i].matches.number,
@@ -213,7 +213,7 @@ export class NotesDB {
             for (let i = 0; i < data.length; i += 1) {
                 res.push({
                     id: data[i].id,
-                    contents: data[i].content,
+                    content: data[i].content,
                     team_number: data[i].team_number,
                     match_id: data[i].match_id,
                     created_at: data[i].created_at,

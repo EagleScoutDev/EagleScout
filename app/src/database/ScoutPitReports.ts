@@ -105,8 +105,6 @@ export class PitReportsDB {
      * @param competitionId
      */
     static async getReportsForTeamAtCompetition(teamId: number, competitionId: number): Promise<PitReportReturnData[]> {
-        console.log("teamId", teamId);
-        console.log("competitionId", competitionId);
         const { data, error } = await supabase
             .from("pit_scout_reports")
             .select(

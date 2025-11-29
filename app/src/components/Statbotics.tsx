@@ -282,7 +282,7 @@ export function Statbotics({ team }) {
                     Past Competition Stats
                 </Text>
                 <ScrollView>
-                    {"epa" in overall &&
+                    {overall && "epa" in overall &&
                         competitions != null &&
                         competitions[0] != null &&
                         competitions.map((comp) => (
