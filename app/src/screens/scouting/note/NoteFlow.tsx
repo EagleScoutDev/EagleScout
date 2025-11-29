@@ -10,7 +10,7 @@ import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "../../../lib/hooks/useCurrentCompetitionMatches";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton.tsx";
-import { UICardForm } from "../../../ui/UICardForm.tsx";
+import { UICard } from "../../../ui/UICard.tsx";
 import { Alliance } from "../../../frc/common/common.ts";
 
 export function NoteScreen() {
@@ -145,8 +145,8 @@ export function NoteScreen() {
 
             <SafeAreaView style={{ flex: 1, padding: 16 }}>
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
-                    <UICardForm title={"Information"}>
-                        <UICardForm.NumberInput
+                    <UICard title={"Information"}>
+                        <UICard.NumberInput
                             label={"Match Number"}
                             placeholder="000"
                             max={999}
@@ -162,12 +162,12 @@ export function NoteScreen() {
                                     : null
                             }
                         />
-                        <UICardForm.AllianceChooser
+                        <UICard.AllianceChooser
                             label={"Alliance"}
                             alliance={selectedAlliance}
                             setAlliance={setSelectedAlliance}
                         />
-                    </UICardForm>
+                    </UICard>
 
                     <View style={{ flex: 1 }} />
 

@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { UserAttributesDB } from "../../../database/UserAttributes";
 import type { DataMenuScreenProps } from "../../data/DataMain";
 import { UIButton, UIButtonSize, UIButtonStyle } from "../../../ui/UIButton";
-import { UICardForm } from "../../../ui/UICardForm";
+import { UICard } from "../../../ui/UICard.tsx";
 
 export interface MatchBettingProps extends DataMenuScreenProps<"MatchBetting"> {}
 export function MatchBetting({ navigation }: MatchBettingProps) {
@@ -66,8 +66,8 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                 Bet on a match!
             </Text>
 
-            <UICardForm title={"Match Information"}>
-                <UICardForm.NumberInput
+            <UICard title={"Match Information"}>
+                <UICard.NumberInput
                     label={"Match Number"}
                     placeholder={"000"}
                     max={999}
@@ -75,7 +75,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                     value={matchNumber}
                     onInput={setMatchNumber}
                 />
-                <UICardForm.NumberInput
+                <UICard.NumberInput
                     label={"Team Number"}
                     placeholder={"000"}
                     max={999}
@@ -83,7 +83,7 @@ export function MatchBetting({ navigation }: MatchBettingProps) {
                     value={matchNumber}
                     onInput={setMatchNumber}
                 />
-            </UICardForm>
+            </UICard>
             <UIButton
                 size={UIButtonSize.xl}
                 style={UIButtonStyle.fill}

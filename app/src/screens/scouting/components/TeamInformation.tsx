@@ -1,5 +1,5 @@
 import type { Setter } from "../../../lib/util/react/types";
-import { UICardForm } from "../../../ui/UICardForm";
+import { UICard } from "../../../ui/UICard.tsx";
 
 export interface TeamInformationProps {
     team: number | null;
@@ -7,8 +7,8 @@ export interface TeamInformationProps {
 }
 export function TeamInformation({ team, setTeam }: TeamInformationProps) {
     return (
-        <UICardForm title={"Team Information"}>
-            <UICardForm.NumberInput label={"Team Number"} placeholder="000" max={999} value={team} onInput={setTeam} />
-        </UICardForm>
+        <UICard title={"Team Information"}>
+            <UICard.NumberInput label={"Team Number"} placeholder="000" max={999} value={team} onInput={setTeam} />
+        </UICard>
     );
 }

@@ -1,5 +1,5 @@
 import { type Setter } from "../../../lib/util/react/types";
-import { UICardForm } from "../../../ui/UICardForm";
+import { UICard } from "../../../ui/UICard.tsx";
 import { Alliance, type Orientation } from "../../../frc/common/common";
 
 export interface MatchInformationProps {
@@ -26,8 +26,8 @@ export function MatchInformation({
     setAlliance,
 }: MatchInformationProps) {
     return (
-        <UICardForm title={"Match Information"}>
-            <UICardForm.NumberInput
+        <UICard title={"Match Information"}>
+            <UICard.NumberInput
                 label={"Match Number"}
                 placeholder="000"
                 max={999}
@@ -43,7 +43,7 @@ export function MatchInformation({
                         : null
                 }
             />
-            <UICardForm.NumberInput
+            <UICard.NumberInput
                 label={"Team Number"}
                 placeholder="000"
                 max={999}
@@ -53,13 +53,13 @@ export function MatchInformation({
                     team !== null && !teamsForMatch.includes(team) ? `Warning: Team ${team} is not in this match` : null
                 }
             />
-            <UICardForm.OrientationChooser
+            <UICard.OrientationChooser
                 label={"Field Orientation"}
                 orientation={orientation}
                 setOrientation={setOrientation}
                 alliance={alliance}
                 setAlliance={setAlliance}
             />
-        </UICardForm>
+        </UICard>
     );
 }

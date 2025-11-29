@@ -12,10 +12,10 @@ import {
     type AllianceChooserProps as UIAllianceChooserProps,
 } from "../components/AllianceChooser";
 
-export interface UICardFormProps extends PropsWithChildren {
+export interface UICard extends PropsWithChildren {
     title?: string;
 }
-export function UICardForm({ title, children }: UICardFormProps) {
+export function UICard({ title, children }: UICard) {
     "use memo";
 
     const { colors } = useTheme();
@@ -28,7 +28,6 @@ export function UICardForm({ title, children }: UICardFormProps) {
                 borderColor: colors.border,
                 borderRadius: 10,
                 padding: 16,
-                paddingBottom: 24,
                 width: "100%",
                 gap: 16,
             }}
@@ -43,7 +42,7 @@ export function UICardForm({ title, children }: UICardFormProps) {
     );
 }
 
-export namespace UICardForm {
+export namespace UICard {
     export interface NumberInputProps extends UINumberInputProps {
         label: string;
         error?: string | null | undefined;
