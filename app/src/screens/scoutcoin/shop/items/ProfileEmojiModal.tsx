@@ -6,6 +6,7 @@ import { type Theme, useTheme } from "@react-navigation/native";
 import { supabase } from "../../../../lib/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UIModal } from "../../../../ui/UIModal";
+import { AsyncAlert } from "../../../../lib/util/react/AsyncAlert.ts";
 
 export interface ProfileEmojiModalProps {
     onClose: () => void;
@@ -42,7 +43,7 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
                             emoji: e.emoji,
                         })
                     );
-                    Alert.alert(`Emoji updated to ${e.emoji}`);
+                    AsyncAlert.alert(`Emoji updated to ${e.emoji}`);
                 }}
                 open={emojiModalVisible}
                 onClose={() => setEmojiModalVisible(false)}

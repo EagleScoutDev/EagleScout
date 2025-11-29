@@ -14,7 +14,7 @@ export function UIModal({ visible, title, onDismiss, backdropPressBehavior, chil
     const { colors } = useTheme();
 
     return (
-        <Modal transparent={true} animationType="fade" visible={visible} onDismiss={onDismiss}>
+        <Modal transparent={true} animationType="fade" visible={visible} onDismiss={backdropPressBehavior === "dismiss" ? onDismiss : undefined}>
             <SafeAreaProvider>
                 <TouchableWithoutFeedback
                     onPress={() => backdropPressBehavior === "dismiss" && onDismiss && onDismiss()}
