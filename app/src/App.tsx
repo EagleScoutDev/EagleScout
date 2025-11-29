@@ -19,6 +19,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
 import { Appearance } from "react-native";
 import { useLocalStore } from "./lib/stores/local.ts";
 import { Theme } from "./theme";
+import { ThemedNavigationContainer } from "./ui/ThemedNavigationContainer.tsx";
 
 declare global {
     namespace ReactNavigation {
@@ -57,7 +58,7 @@ function App() {
                 <GestureHandlerRootView>
                     <SafeAreaProvider>
                         <KeyboardProvider>
-                            <NavigationContainer theme={Theme.toReactNavigation(theme)}>
+                            <ThemedNavigationContainer>
                                 <HeaderButtonsProvider stackType={"native"}>
                                     <ModalSafeAreaProvider>
                                         <BottomSheetModalProvider>
@@ -81,7 +82,7 @@ function App() {
                                     </ModalSafeAreaProvider>
                                 </HeaderButtonsProvider>
                                 <Toast />
-                            </NavigationContainer>
+                            </ThemedNavigationContainer>
                         </KeyboardProvider>
                     </SafeAreaProvider>
                 </GestureHandlerRootView>
