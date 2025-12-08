@@ -1,5 +1,5 @@
 import { TouchableOpacity, View } from "react-native";
-import { UIText } from "../../../ui/UIText";
+import { UIText } from "../../UIText.tsx";
 import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
 
 export interface SegmentedOptionProps<T extends string> {
@@ -18,8 +18,10 @@ export function UISegmentedControl<T extends string>({ options, selected, onPres
                 flexWrap: "nowrap",
                 alignContent: "center",
                 padding: 2,
+                borderWidth: 1,
+                borderColor: colors.border.hex,
                 borderRadius: 10,
-                backgroundColor: colors.border.hex, //< TODO: this isn't a border
+                backgroundColor: colors.bg1.hex,
             }}
         >
             {options.map(({ title }) => (
@@ -28,10 +30,10 @@ export function UISegmentedControl<T extends string>({ options, selected, onPres
                     style={{
                         flex: 1,
                         padding: 10,
-                        borderWidth: selected === title ? 2 : 0,
-                        borderRadius: 8,
-                        borderColor: colors.primary.hex,
-                        backgroundColor: selected === title ? colors.bg0.hex : colors.border.hex,
+                        borderWidth: selected === title ? 1 : 0,
+                        borderRadius: 7,
+                        borderColor: colors.border.hex,
+                        backgroundColor: selected === title ? colors.bg2.hex : colors.bg1.hex,
                     }}
                     onPress={() => onPress(title)}
                 >

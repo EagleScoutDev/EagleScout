@@ -31,7 +31,7 @@ export class TagsDB {
         }
     }
 
-    static async renameTag(tag_id: string, name: string) {
+    static async renameTag(tag_id: number, name: string) {
         try {
             const { error } = await supabase.from("tags").update({ name: name }).eq("id", tag_id);
         } catch (error) {
@@ -39,7 +39,7 @@ export class TagsDB {
         }
     }
 
-    static async updateColorOfTag(tag_id: string, color: string) {
+    static async updateColorOfTag(tag_id: number, color: string) {
         try {
             const { error } = await supabase.from("tags").update({ color: color }).eq("id", tag_id);
         } catch (error) {

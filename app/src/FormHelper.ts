@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BackgroundFetchManager } from "./lib/BackgroundFetchManager";
 import type { OfflineNote } from "./database/ScoutNotes";
+import { type MatchReportReturnData } from "./database/ScoutMatchReports.ts";
 
 export class FormHelper {
     static LATEST_FORM = "current-form";
@@ -73,12 +74,19 @@ export class FormHelper {
     }
 
     static async getOfflineNotes() {
-        const keys = await AsyncStorage.getAllKeys();
-        const notes = await AsyncStorage.multiGet(keys);
-        return notes.filter(([k]) => k.includes("note-")).map(([_, v]) => JSON.parse(v!));
+        const keys = (await AsyncStorage.getAllKeys()).filter((key) => key.startsWith("note-"));
+        return (await AsyncStorage.multiGet(keys)).map(([_, v]) => JSON.parse(v!));
     }
 
     static async deleteOfflineNote(createdAt: Date, teamNumber: number) {
         await AsyncStorage.removeItem(`note-${createdAt.getUTCMilliseconds()}-${teamNumber}`);
+    }
+
+    static async getOfflineForms(): Promise<MatchReportReturnData[]> {
+        const keys = (await AsyncStorage.getAllKeys()).filter((key) => key.startsWith("form-"));
+        return (await AsyncStorage.multiGet(keys)).map(([_, v]) => JSON.parse(v!));
+    }
+    static async deleteOfflineReport(createdAt: Date) {
+        await AsyncStorage.removeItem("form-" + createdAt.getUTCMilliseconds());
     }
 }

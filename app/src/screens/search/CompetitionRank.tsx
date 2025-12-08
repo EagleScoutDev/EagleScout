@@ -4,6 +4,7 @@ import { type SimpleEvent, TBA } from "../../lib/frc/tba/TBA.ts";
 
 import { Pressable, ScrollView, View } from "react-native";
 import * as Bs from "../../ui/icons";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 // TODO: Add a loading indicator
 // TODO: When it is clicked on, expand and show their rank history for the past few competitions they have attended

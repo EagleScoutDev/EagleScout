@@ -4,18 +4,28 @@ import {
     type BottomSheetModalProps,
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { SafeAreaView } from "react-native-safe-area-context";
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
 import type { ReactNode, Ref } from "react";
 import { useModalSafeArea } from "./ModalSafeAreaProvider";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
     ref?: Ref<BottomSheetModal<T>>;
     backdropPressBehavior?: BackdropPressBehavior;
 }
 export interface UISheetModal<T = any> extends BottomSheetModal<T> {}
-export function UISheetModal<T = any>({ backdropPressBehavior = "none", children, ...props }: UISheetModalProps<T>) {
+export function UISheetModal<T = any>({
+    backdropPressBehavior = "none",
+    children,
+    style,
+    backgroundStyle,
+    ...props
+}: UISheetModalProps<T>) {
     "use memo";
+
+    const { colors } = useTheme();
+
     const { frame, insets } = useModalSafeArea();
     const maxHeight = frame.height - insets.top;
     const gap = 16;
@@ -23,12 +33,15 @@ export function UISheetModal<T = any>({ backdropPressBehavior = "none", children
     function wrap(children: ReactNode) {
         return (
             <BottomSheetView style={{ height: "100%" }}>
-                <SafeAreaView edges={{ bottom: "additive", left: "additive", right: "additive" }} style={{ flex: 1 }}>
+                <SafeAreaProvider>
+                    {/*<SafeAreaView edges={{ bottom: "additive", left: "additive", right: "additive" }} style={{ flex: 1 }}>*/}
                     {children}
-                </SafeAreaView>
+                    {/*</SafeAreaView>*/}
+                </SafeAreaProvider>
             </BottomSheetView>
         );
     }
+    //
 
     return (
         <BottomSheetModal
@@ -59,9 +72,9 @@ export function UISheetModal<T = any>({ backdropPressBehavior = "none", children
                     borderRadius: 24,
                     flex: 1,
                 },
-                props.style,
+                style,
             ]}
-            backgroundStyle={[{ borderRadius: 24 }, props.backgroundStyle]}
+            backgroundStyle={[{ backgroundColor: colors.bg0.hex, borderRadius: 24 }, backgroundStyle]}
         >
             {typeof children === "function"
                 ? (props) => {

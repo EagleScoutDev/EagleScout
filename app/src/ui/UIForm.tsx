@@ -6,6 +6,7 @@ import { NumberInput as RNNumberInput } from "./components/NumberInput";
 import { UIListPicker } from "./input/UIListPicker";
 import type { Color } from "../lib/color";
 import { AutoTextInput } from "./components/AutoTextInput";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface UIFormProps extends UIListProps {}
 
@@ -36,13 +37,16 @@ export namespace UIForm {
     }
     export function TextInput({ key, label, secure = false, value, onChange }: TextInputProps) {
         "use memo";
+
+        const { colors } = useTheme();
+
         return Item({
             key,
             body: () => (
                 <AutoTextInput
-                    style={{ height: "100%", fontSize: 16, flex: 1 }}
+                    style={{ padding: 8, fontSize: 16, flex: 1 }}
                     placeholder={label}
-                    placeholderTextColor={"gray"}
+                    placeholderTextColor={colors.fg.level(1).hex}
                     value={value ?? undefined}
                     onChangeText={onChange ?? undefined}
                     secureTextEntry={secure}

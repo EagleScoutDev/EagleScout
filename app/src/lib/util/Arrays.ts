@@ -1,4 +1,7 @@
 export namespace Arrays {
+    export type Recursive<T> = T | Arrays.Recursive<T>[];
+    export type ReadonlyRecursive<T> = T | readonly Arrays.ReadonlyRecursive<T>[];
+
     export function group<T, K>(items: Iterable<T>, key: (x: T) => K): Map<K, T[]> {
         const out = new Map<K, T[]>();
         for (const item of items) {

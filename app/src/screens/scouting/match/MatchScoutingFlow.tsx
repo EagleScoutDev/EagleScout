@@ -25,6 +25,7 @@ import { AutoAction, AutoState } from "../../../frc/reefscape";
 import { produce } from "immer";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
+import { useMaterialTopTabThemeConfig } from "../../../theme/native.ts";
 
 export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
 const Tab = createMaterialTopTabNavigator<MatchScoutingParamList>();
@@ -40,7 +41,9 @@ export type MatchScoutingParamList = {
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use memo";
 
+    const themeScreenOptions = useMaterialTopTabThemeConfig();
     const { colors } = useTheme();
+
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
     const [match, setMatch] = useState<number | null>(null);
@@ -171,7 +174,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
         } else {
-            console.log("b");
             try {
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
@@ -216,18 +218,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             </View>
 
             <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-                <Tab.Navigator
-                    screenOptions={{
-                        tabBarStyle: {
-                            backgroundColor: colors.bg0.hex,
-                        },
-                        tabBarLabelStyle: {
-                            color: colors.fg.hex,
-                            fontSize: 12,
-                            fontWeight: "bold",
-                        },
-                    }}
-                >
+                <Tab.Navigator screenOptions={themeScreenOptions}>
                     <Tab.Screen name={"Setup"}>
                         {({ navigation }) => (
                             <ScoutingFlowTab

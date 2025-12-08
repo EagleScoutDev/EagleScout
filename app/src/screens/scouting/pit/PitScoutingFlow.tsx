@@ -17,7 +17,7 @@ import { AsyncAlert } from "../../../lib/util/react/AsyncAlert";
 import { Arrays } from "../../../lib/util/Arrays";
 import { PitScoutingImageList } from "./PitScoutingImageList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
+import { useMaterialTopTabThemeConfig } from "../../../theme/native.ts";
 
 const Tab = createMaterialTopTabNavigator();
 export type PitFlowScreenProps<K extends keyof PitFlowParamList> = MaterialTopTabScreenProps<PitFlowParamList, K>;
@@ -31,8 +31,7 @@ export interface PitFlowProps extends ScoutMenuScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
     "use memo";
 
-    const theme = useTheme();
-    const colors = theme.colors;
+    const themeScreenOptions = useMaterialTopTabThemeConfig();
 
     const { competition, online } = useCurrentCompetition();
     const formStructure = competition?.pitScoutFormStructure ?? null;
@@ -123,18 +122,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-                <Tab.Navigator
-                    screenOptions={{
-                        tabBarStyle: {
-                            backgroundColor: colors.bg0.hex,
-                        },
-                        tabBarLabelStyle: {
-                            color: colors.fg.hex,
-                            fontSize: 12,
-                            fontWeight: "bold",
-                        },
-                    }}
-                >
+                <Tab.Navigator screenOptions={themeScreenOptions}>
                     <Tab.Screen
                         name={"Match"}
                         options={{

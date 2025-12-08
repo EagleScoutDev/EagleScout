@@ -43,15 +43,22 @@ export function SearchMenu() {
                 screenOptions={{
                     headerTitle: "",
                     headerBackTitle: "Back",
-                    headerTransparent: Platform.OS === "ios",
-                    ...useStackThemeConfig(),
+                    ...(Platform.OS === "ios" ? { headerTransparent: true, headerStyle: {} } : {}),
                 }}
             >
                 <Stack.Screen name="TeamViewer" component={TeamViewer} />
-                <Stack.Screen name="TeamReports" component={ReportsForTeam} />
                 <Stack.Screen name="AutoPaths" component={AutoPathsForTeam} />
                 <Stack.Screen name="CompareTeams" component={CompareTeams} />
             </Stack.Group>
+
+            <Stack.Screen
+                name="TeamReports"
+                component={ReportsForTeam}
+                options={({ route: { params } }) => ({
+                    title: `Scouting for Team ${params.team_number}`,
+                    headerBackButtonDisplayMode: "minimal",
+                })}
+            />
         </Stack.Navigator>
     );
 }

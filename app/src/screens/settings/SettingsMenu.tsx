@@ -84,7 +84,8 @@ export function SettingsMenu({}: SettingsMenuProps) {
                 name="Scout/ViewReports"
                 component={SubmittedForms}
                 options={({ route }) => ({
-                    title: route.params.competitionName,
+                    title: `Reports for ${route.params.competitionName}`,
+                    headerBackButtonDisplayMode: "minimal",
                 })}
             />
             <Stack.Screen
@@ -98,7 +99,8 @@ export function SettingsMenu({}: SettingsMenuProps) {
                 name="Scout/ViewNotes"
                 component={SubmittedNotes}
                 options={({ route }) => ({
-                    title: route.params.competitionName,
+                    title: `Notes for ${route.params.competitionName}`,
+                    headerBackButtonDisplayMode: "minimal",
                 })}
             />
 

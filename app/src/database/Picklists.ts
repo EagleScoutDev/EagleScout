@@ -36,7 +36,7 @@ export class PicklistsDB {
         }
     }
 
-    static async getPicklist(picklist_id: string): Promise<PicklistStructure> {
+    static async getPicklist(picklist_id: number): Promise<PicklistStructure> {
         const { data, error } = await supabase.from("picklist").select("*").eq("id", picklist_id);
         if (error) {
             throw error;

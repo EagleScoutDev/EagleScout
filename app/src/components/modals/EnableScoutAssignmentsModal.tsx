@@ -8,6 +8,7 @@ import type { CompetitionReturnData } from "../../database/Competitions";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import type { UISheetModal } from "../../ui/UISheetModal";
 import { UIForm } from "../../ui/UIForm";
+import { useTheme } from "../../lib/contexts/ThemeContext.ts";
 
 export interface EnableScoutAssignmentsModalProps {
     data?: CompetitionReturnData;

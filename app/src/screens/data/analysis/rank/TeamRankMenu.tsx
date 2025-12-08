@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UIText } from "../../../../ui/UIText";
 import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import React from "react";
 
 import type { DataMenuScreenProps } from "../../DataMain";
 import { type CompetitionReturnData, CompetitionsDB } from "../../../../database/Competitions";
@@ -14,8 +13,8 @@ interface Question {
     index: number;
 }
 
-export interface DataAggregationProps extends DataMenuScreenProps<"TeamRank"> {}
-export function DataAggregation({ navigation }: DataAggregationProps) {
+export interface TeamRankMenuProps extends DataMenuScreenProps<"TeamRank"> {}
+export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
     // competition form
     const [currForm, setCurrForm] = useState<Form.Structure>();
 
@@ -52,7 +51,7 @@ export function DataAggregation({ navigation }: DataAggregationProps) {
             compId: compID,
             compName: compName,
         };
-        navigation.navigate("TeamRankList", {
+        navigation.navigate("TeamRank/View", {
             compId: payload.compId,
             compName: payload.compName,
             questionIndex: payload.index,
@@ -74,9 +73,9 @@ export function DataAggregation({ navigation }: DataAggregationProps) {
                     </View>
                     {UIList.Section({
                         header: "Competitions",
-                        items: fullCompetitionsList.map((item, index) =>
+                        items: fullCompetitionsList.map((item, i) =>
                             UIList.Label({
-                                key: index,
+                                key: i,
                                 label: item.name,
                                 onPress: () => {
                                     setNoActiveCompetition(false);
@@ -101,32 +100,35 @@ export function DataAggregation({ navigation }: DataAggregationProps) {
                     <UIText size={24} bold style={{ marginBottom: 8 }}>
                         {compName ? compName : "No Competition Selected"}
                     </UIText>
-                    <UIText style={{ color: "dimgray", fontSize: 12 }}>Choose a question to begin.</UIText>
+                    <UIText size={12} level={1}>
+                        Choose a question to begin.
+                    </UIText>
                 </View>
-                {formSections.map((section, sectionIndex) => {
-                    // Filter to only number questions and track their actual indices
-                    const numberItems: Array<{ item: Form.Question; index: number }> = [];
-                    let currentIndex = section.start + 1; // Start after the heading
+                {
+                    formSections.map((section, i) => {
+                        const items: { item: Form.Question; i: number }[] = [];
+                        let currentIndex = section.start + 1; // Start after the heading
 
-                    for (const item of section.items) {
-                        if (item.type === Form.ItemType.number) {
-                            numberItems.push({ item, index: currentIndex });
+                        for (const item of section.items) {
+                            if (item.type === Form.ItemType.number) {
+                                items.push({ item, i: currentIndex });
+                            }
+                            currentIndex++;
                         }
-                        currentIndex++;
-                    }
 
-                    return UIList.Section({
-                        key: sectionIndex,
-                        header: section.title,
-                        items: numberItems.map(({ item, index }) =>
-                            UIList.Label({
-                                key: `${sectionIndex}-${index}`,
-                                label: item.question,
-                                onPress: () => onPress(index, item.question),
-                            })
-                        ),
-                    });
-                }) as any}
+                        return UIList.Section({
+                            key: i,
+                            header: section.title,
+                            items: items.map(({ item, i }) => {
+                                return UIList.Label({
+                                    key: i,
+                                    label: item.question,
+                                    onPress: () => onPress(i, item.question),
+                                });
+                            }),
+                        });
+                    }) as any
+                }
             </UIList>
         </SafeAreaProvider>
     );

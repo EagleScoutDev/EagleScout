@@ -1,9 +1,6 @@
-import { KeyboardAvoidingView, SectionList, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { UIText } from "../ui/UIText";
 import { useEffect, useRef, useState } from "react";
-
-import { useCurrentCompetition } from "../lib/hooks/useCurrentCompetition.ts";
-import { Arrays } from "../lib/util/Arrays.ts";
 import type { MatchReportReturnData } from "../database/ScoutMatchReports.ts";
 import { PressableOpacity } from "../ui/components/PressableOpacity.tsx";
 import { MatchReportViewer } from "./modals/MatchReportViewer.tsx";
@@ -21,12 +18,8 @@ export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListPro
 
     const { colors } = useTheme();
 
-    const { competition: currentCompetition } = useCurrentCompetition();
-
     const [chosenReport, setChosenReport] = useState<MatchReportReturnData | null>(null);
     const reportViewerRef = useRef<MatchReportViewer>(null);
-
-    const [collapsedComps, setCollapsedComps] = useState<ReadonlySet<string>>(new Set());
 
     // Present the modal when a report is chosen
     useEffect(() => {
@@ -39,9 +32,6 @@ export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListPro
             });
         }
     }, [chosenReport]);
-
-    const reportsByComp = Arrays.group(reports, (report) => report.competitionName);
-    const competitions = Array.from(reportsByComp.keys());
 
     if (!reports || reports.length === 0) {
         return (
@@ -64,13 +54,13 @@ export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListPro
 
     return (
         <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
-            <SectionList
-                sections={competitions.map((name) => ({ name, data: reportsByComp.get(name) ?? [] }))}
-                extraData={collapsedComps}
+            <FlatList
+                data={reports}
+                contentContainerStyle={{ padding: 16 }}
+                contentInsetAdjustmentBehavior={"automatic"}
                 keyExtractor={(_, index) => index.toString()}
+                ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
                 renderItem={({ item }) => {
-                    if (collapsedComps.has(item.competitionName)) return <></>;
-
                     return (
                         <PressableOpacity
                             onPress={() => setChosenReport(item)}
@@ -79,22 +69,27 @@ export function ReportList({ reports, reportsAreOffline, onEdit }: ReportListPro
                                 borderColor: colors.border.hex,
                                 borderWidth: 1,
                                 borderRadius: 10,
-                                padding: 8,
+                                padding: 16,
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                             }}
                         >
-                            <UIText size={16} bold nowrap>
-                                <UIText style={{ textAlign: "center", flex: 1 }}>{item.teamNumber}</UIText>
-                                <UIText style={{ textAlign: "center", flex: 1 }}>{item.matchNumber}</UIText>
-                                <UIText style={{ textAlign: "center", flex: 2 }}>
+                            <View style={{ flex: 1, alignItems: "flex-start" }}>
+                                <UIText bold>
+                                    Team {item.teamNumber} Match {item.matchNumber}
+                                </UIText>
+                                <UIText bold>{item.competitionName}</UIText>
+                            </View>
+                            <View style={{ flex: 1, alignItems: "flex-end" }}>
+                                <UIText>{item.userName}</UIText>
+                                <UIText>
                                     {new Date(item.createdAt).toLocaleDateString("en-US", {
                                         month: "short",
                                         day: "numeric",
                                         year: "numeric",
                                     })}
                                 </UIText>
-                            </UIText>
+                            </View>
                         </PressableOpacity>
                     );
                 }}

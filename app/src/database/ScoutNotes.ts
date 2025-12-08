@@ -117,29 +117,28 @@ export class NotesDB {
     }
 
     static async getNotesForCompetition(competitionId: number): Promise<NoteWithMatch[]> {
-        const res: NoteWithMatch[] = [];
         // TODO: query is including values where the competition_id is wrong
         const { data, error } = await supabase
             .from("notes")
-            .select("*, matches!inner(number), profiles(name)")
+            .select("*, matches!inner( number, competition_id, competitions!inner(name) ), profiles(name)")
             .eq("matches.competition_id", competitionId);
         if (error) {
+            console.log(error)
             throw error;
-        } else {
-            for (let i = 0; i < data.length; i += 1) {
-                res.push({
-                    id: data[i].id,
-                    content: data[i].content,
-                    team_number: data[i].team_number,
-                    match_id: data[i].match_id,
-                    match_number: data[i].matches.number,
-                    created_at: data[i].created_at,
-                    created_by: data[i].created_by,
-                    scouter_name: data[i].profiles.name,
-                });
-            }
         }
-        return res;
+        console.log(data)
+
+        return data.map((note) => ({
+            id: note.id,
+            content: note.content,
+            team_number: note.team_number,
+            match_id: note.match_id,
+            match_number: note.matches.number,
+            created_at: note.created_at,
+            created_by: note.created_by,
+            scouter_name: note.profiles.name,
+            competition_name: note.matches.competitions.name
+        }));
     }
 
     static async getNotesForTeam(teamNumber: number): Promise<Note[]> {

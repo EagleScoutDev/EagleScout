@@ -3,10 +3,13 @@ import { UIText } from "../ui/UIText";
 import { View } from "react-native";
 import BottomSheet, { BottomSheetHandle, type BottomSheetProps, useBottomSheet } from "@gorhom/bottom-sheet";
 import { ThreeCenterLayout } from "./layout/ThreeCenterLayout";
+import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface UISheetProps extends BottomSheetProps {}
 export function UISheet(props: UISheetProps) {
     "use memo";
+
+    const { colors } = useTheme();
 
     return (
         <BottomSheet
@@ -22,7 +25,10 @@ export function UISheet(props: UISheetProps) {
                 ],
                 borderRadius: 24,
             }}
-            backgroundStyle={{ borderRadius: 24 }}
+            backgroundStyle={{
+                backgroundColor: colors.bg0.hex,
+                borderRadius: 24,
+            }}
             {...props}
         />
     );

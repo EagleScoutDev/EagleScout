@@ -218,14 +218,14 @@ export namespace Theme {
     };
 
     export const purple: Theme = {
-        motif: Color.hex("#0e7700"),
+        motif: Color.hex("#7f28ff"),
 
         dark: true,
         colors: {
             primary: Color.hex("#8F32DF"),
             secondary: Color.hex("#c61bff"),
             tertiary: Color.hex("#bc7eff"),
-            danger: Color.hex("#7D60D3"),
+            danger: Color.hex("#754ae4"),
 
             win: Color.hex("#4eff4e"),
             loss: Color.hex("#d00500"),
@@ -235,7 +235,7 @@ export namespace Theme {
             bg1: Color.hex("#2f1565", Color.hex("#ffffff")),
             bg2: Color.hex("#381b75", Color.hex("#ffffff")),
 
-            border: Color.hex("#cb97f6"),
+            border: Color.hex("#794fac"),
             shadow: Color.hex("#000000"),
         },
     };

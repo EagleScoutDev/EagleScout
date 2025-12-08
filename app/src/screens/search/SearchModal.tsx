@@ -486,10 +486,6 @@ export function SearchModal({ route, navigation }: SearchModalProps) {
                     navigateToTeamViewer={() => {
                         // Navigation not implemented in SearchModal
                     }}
-                    onEdit={async () => {
-                        // Editing not supported in search modal
-                        return false;
-                    }}
                 />
             )}
         </>

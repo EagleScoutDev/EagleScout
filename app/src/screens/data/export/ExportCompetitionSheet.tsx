@@ -33,8 +33,8 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
                                     const data = await exportScoutReportsToCsv(competition);
                                     if (!data) return;
 
-                                    await writeToFile(`${competition.name}.csv`, data);
                                     modal.dismiss();
+                                    await writeToFile(`${competition.name}.csv`, data);
                                 },
                             }),
                             UIList.Label({
@@ -51,8 +51,8 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
                                     const data = await exportPitReportsToCsv(competition);
                                     if (!data) return;
 
-                                    await writeToFile(`${competition.name}.csv`, data);
                                     modal.dismiss();
+                                    await writeToFile(`${competition.name}.csv`, data);
                                 },
                             }),
                         ],

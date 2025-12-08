@@ -2,10 +2,13 @@ import { type CompetitionReturnData, CompetitionsDB } from "../../database/Compe
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FormHelper } from "../../FormHelper";
+import { useNavigation } from "@react-navigation/native";
 
 export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {
     const [online, setOnline] = useState<boolean>(false);
     const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
+
+    const navigation = useNavigation();
 
     async function load() {
         try {
@@ -24,7 +27,11 @@ export function useCurrentCompetition(): { competition: CompetitionReturnData | 
             }
         }
     }
-    useEffect(() => void load(), []);
+    useEffect(() => {
+        void load();
+        
+        return navigation.addListener("focus", () => load());
+    }, []);
 
     return { competition, online };
 }

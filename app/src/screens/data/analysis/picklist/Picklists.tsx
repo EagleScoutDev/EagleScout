@@ -1,3 +1,5 @@
+// TODO: delete or rewrite this
+
 import { useEffect, useState } from "react";
 import { UIText } from "../../../../ui/UIText";
 import { Alert, FlatList, Pressable, View } from "react-native";
@@ -96,7 +98,7 @@ export function Picklists({ navigation }: PicklistsProps) {
                                         setHoveredPicklistID("");
                                     }}
                                     onPress={() => {
-                                        navigation.navigate("Creator", {
+                                        navigation.navigate("Picklists/Create", {
                                             picklist_id: item.id,
                                             currentCompID: currentCompID,
                                         });
@@ -107,12 +109,12 @@ export function Picklists({ navigation }: PicklistsProps) {
                                             "Are you sure you want to delete this picklist?",
                                             [
                                                 {
-                                                    label: "Cancel",
+                                                    text: "Cancel",
                                                     onPress: () => console.log("Cancel Pressed"),
                                                     style: "cancel",
                                                 },
                                                 {
-                                                    label: "Delete",
+                                                    text: "Delete",
                                                     onPress: () => {
                                                         PicklistsDB.deletePicklist(item.id).then(() => {
                                                             getPicklists(item.competition_id);
@@ -158,7 +160,7 @@ export function Picklists({ navigation }: PicklistsProps) {
                     <StandardButton
                         color={colors.primary.hex}
                         onPress={() => {
-                            navigation.navigate("Creator", {
+                            navigation.navigate("Picklists/Create", {
                                 picklist_id: -1,
                                 currentCompID: currentCompID,
                             });

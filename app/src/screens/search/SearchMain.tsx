@@ -280,10 +280,6 @@ export function SearchMain({ navigation }: SearchMainProps) {
                             }
                         }
                     }}
-                    onEdit={async () => {
-                        // Editing not supported in search view
-                        return false;
-                    }}
                 />
             )}
             {notesViewerVisible && (

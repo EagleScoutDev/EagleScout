@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from "react";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface PressableOpacityProps extends ComponentProps<typeof Pressable> {
-    disabled?: boolean;
+    disabled?: boolean | undefined;
     activeOpacity?: number;
     disabledOpacity?: number;
     style?: StyleProp<ViewStyle>;

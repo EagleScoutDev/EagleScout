@@ -6,7 +6,8 @@ import { ScoutcoinLedger } from "../scoutcoin/ScoutcoinLedger";
 import { ScoutcoinLeaderboard } from "../scoutcoin/ScoutcoinLeaderboard";
 import { ScoutcoinShop } from "../scoutcoin/shop/ScoutcoinShop";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DataAggregation } from "./analysis/rank/DataAggregation";
+import { TeamRankMenu } from "./analysis/rank/TeamRankMenu.tsx";
+import { TeamRankView } from "./analysis/rank/TeamRankView.tsx";
 import { WeightedRank } from "./analysis/rank/WeightedRank";
 import { MatchPredictor } from "./analysis/predictor/MatchPredictor";
 import { ExportToCSV } from "./export/ExportToCSV";
@@ -31,6 +32,12 @@ export type DataMenuParamList = {
     Picklists: undefined;
     "Picklists/Create": PicklistCreatorParams;
     TeamRank: undefined;
+    "TeamRank/View": {
+        compId: number;
+        compName?: string | undefined;
+        questionIndex: number;
+        questionText: string;
+    };
     WeightedTeamRank: undefined;
     MatchPredictor: undefined;
     ExportCSV: undefined;
@@ -84,10 +91,17 @@ export function DataMain() {
             />
             <Stack.Screen
                 name="TeamRank"
-                component={DataAggregation}
+                component={TeamRankMenu}
                 options={{
                     title: "Team Rank",
                 }}
+            />
+            <Stack.Screen
+                name="TeamRank/View"
+                component={TeamRankView}
+                options={({ route }) => ({
+                    title: route.params.questionText,
+                })}
             />
             <Stack.Screen
                 name="WeightedTeamRank"

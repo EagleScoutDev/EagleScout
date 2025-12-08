@@ -8,6 +8,7 @@ import type { Color } from "../lib/color";
 import { PressableOpacity } from "./components/PressableOpacity";
 import type { Theme } from "../theme";
 import { useTheme } from "../lib/contexts/ThemeContext.ts";
+import { Arrays } from "../lib/util/Arrays.ts";
 
 export interface UIListProps {
     contentContainerStyle?: StyleProp<ViewStyle>;
@@ -16,7 +17,7 @@ export interface UIListProps {
     onRefresh?: (() => Promise<void>) | undefined | null;
     minRefreshMs?: number;
 
-    children?: readonly (UIList.Section | ReactElement | false | null | undefined)[];
+    children?: Arrays.ReadonlyRecursive<UIList.Section | ReactElement | false | null | undefined>;
     bottomSheet?: boolean; //< TODO: find an alternative to this
 }
 export function UIList({
@@ -50,11 +51,15 @@ export function UIList({
         setRefreshing(false);
     }
 
-    const sections = (children ?? [])
-        .filter((x) => !!x)
-        .map((x) =>
-            isValidElement(x) ? { data: [x], renderSectionHeader: () => null, renderSectionFooter: () => null } : x
-        );
+    const sections = !children
+        ? []
+        : (Array.isArray(children) ? children.flat() : [children])
+              .filter((x) => !!x)
+              .map((x, i) =>
+                  isValidElement(x)
+                      ? { data: [x], renderSectionHeader: () => null, renderSectionFooter: () => null }
+                      : { ...x, key: x.key === null || x.key ===undefined ? "#" + String(i) : "$" + String(x.key)}
+              );
     const lastSection = sections[sections.length - 1];
 
     const SectionListImpl = bottomSheet ? BottomSheetSectionList : SectionList;
@@ -69,7 +74,7 @@ export function UIList({
                 onRefresh && !loading ? <RefreshControl refreshing={refreshing} onRefresh={doRefresh} /> : undefined
             }
             sections={sections}
-            keyExtractor={(x, i) => String(x.key ?? i)}
+            keyExtractor={(x, i) => x.key === null || x.key === undefined ? "#"+String(i) : "$"+String(x.key)}
             ListHeaderComponent={loading && !refreshing ? ActivityIndicator : null}
             ListHeaderComponentStyle={{ marginBottom: 10 }}
             ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
@@ -110,15 +115,18 @@ export namespace UIList {
         key?: Key | undefined;
         header?: string | null | undefined;
         footer?: string | null | undefined;
-        items?: readonly (UIList.Label | false | null | undefined)[];
+        items?: readonly (UIList.ItemInfo | false | null | undefined)[];
     }
     export interface Section {
         key?: Key | undefined;
         header?: string | null | undefined;
         footer?: string | null | undefined;
-        data: readonly (UIList.Label | ReactElement)[];
+        data: readonly (UIList.ItemInfo | ReactElement)[];
     }
     export function Section({ key, header, footer, items }: SectionProps): Section {
+        // TODO: add a FlatList-like api
+        // TODO: this is bad because index-based keys will end up being shifted when falsy elements are temporarily removed
+        console.log("sec", key)
         return { key, header, footer, data: (items ?? []).filter((x) => !!x) };
     }
 

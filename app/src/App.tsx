@@ -47,7 +47,7 @@ function App() {
     useEffect(() => Appearance.setColorScheme(theme.dark ? "dark" : "light"), [theme.dark]);
 
     return (
-        <ErrorBoundary>
+        // <ErrorBoundary>
             <ThemeContext.Provider
                 value={{
                     themePreference,
@@ -87,7 +87,7 @@ function App() {
                     </SafeAreaProvider>
                 </GestureHandlerRootView>
             </ThemeContext.Provider>
-        </ErrorBoundary>
+        // </ErrorBoundary>
     );
 }
 

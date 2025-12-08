@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { UIRadio } from "../../ui/input/UIRadio.tsx";
 import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
@@ -12,14 +13,13 @@ import {
     type MatchReportReturnData,
     MatchReportsDB,
 } from "../../database/ScoutMatchReports.ts";
-import { HistorySelectorModal } from "./HistorySelectorModal.tsx";
-import * as Bs from "../../ui/icons";
 import { exMemo } from "../../lib/util/react/memo.ts";
 import { Form } from "../../lib/forms";
 import { FormQuestion } from "../../forms/components/FormQuestion.tsx";
 import { UITextInput } from "../../ui/input/UITextInput.tsx";
 import { UIText } from "../../ui/UIText.tsx";
 import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import { SafeAreaInsetsContext, SafeAreaProvider } from "react-native-safe-area-context";
 
 export interface MatchReportViewerProps {
     ref?: React.Ref<MatchReportViewer>;
@@ -29,7 +29,7 @@ export interface MatchReportViewerProps {
 
     isOfflineForm: boolean;
     navigateToTeamViewer: () => void;
-    onEdit: (orig: MatchReportReturnData, edited: MatchReportReturnData) => Promise<boolean>;
+    onEdit?: (orig: MatchReportReturnData, edited: MatchReportReturnData) => Promise<boolean>;
 }
 export interface MatchReportViewer {
     present(): void;
@@ -121,48 +121,23 @@ export function MatchReportViewer({
 
     return (
         <>
-            <UISheetModal ref={modalRef} backdropPressBehavior="close" onDismiss={onDismiss} handleComponent={null}>
-                <HistorySelectorModal
-                    formHistory={formHistory}
-                    selectedHistoryId={selectedHistoryId}
-                    visible={historySelectorModalVisible}
-                    setVisible={setHistorySelectorModalVisible}
-                    onHistorySelect={(id: number | null) => {
-                        setHistorySelectorModalVisible(false);
-                        if (id == null) {
-                            // user dismissed the modal
-                            return;
-                        }
-                        setSelectedHistoryId(id);
-                        setFormData(formHistory.find((history) => history.historyId === id)!.data);
-                        // this is a very crude way of detecting if this is the first/current form
-                        // todo: should probably improve if/once a better method is devised
-                        if (formHistory.length && id === formHistory[0].historyId) {
-                            setHistoryButtonEnabled(false);
-                            setSelectedHistoryId(null);
-                        }
-                    }}
-                />
+            <UISheetModal
+                ref={modalRef}
+                backdropPressBehavior="close"
+                onDismiss={onDismiss}
+                handleComponent={null}
+                enablePanDownToClose
+            >
                 {!editing && (
                     <UISheet.Header
                         title={"Scout Report"}
                         left={
-                            !selectedHistoryId
-                                ? {
-                                      text: "Edit",
-                                      color: Color.parse(colors.primary.hex),
-                                      onPress: () => setEditing(true),
-                                  }
-                                : !editing && historyButtonVisible
-                                ? {
-                                      icon: Bs.ClockHistory,
-                                      color: Color.parse(historyButtonEnabled ? colors.fg.hex : colors.primary.hex),
-                                      onPress: () => {
-                                          setHistorySelectorModalVisible(true);
-                                          setHistoryButtonEnabled(true);
-                                      },
-                                  }
-                                : null
+                            !!onEdit &&
+                            !selectedHistoryId && {
+                                text: "Edit",
+                                color: Color.parse(colors.primary.hex),
+                                onPress: () => setEditing(true),
+                            }
                         }
                         right={{
                             text: "Done",
@@ -186,76 +161,94 @@ export function MatchReportViewer({
                         }}
                     />
                 )}
-                <ScrollView style={{ flex: 1, padding: 16 }}>
-                    <ReportMetadataView data={data} navigateToTeamViewer={navigateToTeamViewer} userName={userName} />
-
-                    {data.form.map((field, index) => (
-                        <View key={index}>
-                            {field.type === Form.ItemType.heading ? (
-                                <UIText style={s.sectionTitle}>{field.title}</UIText>
-                            ) : field.type === Form.ItemType.radio ||
-                              field.type === Form.ItemType.textbox ||
-                              field.type === Form.ItemType.checkbox ? (
-                                <View style={{ padding: 8 }}>
-                                    <FormQuestion title={field.question} required={field.required}>
-                                        {field.type === Form.ItemType.radio && (
-                                            <UIRadio
-                                                disabled={!editing}
-                                                options={field.options}
-                                                onInput={(value) => {}}
-                                                value={field.options[formData[index]]}
-                                            />
-                                        )}
-                                        {field.type === Form.ItemType.checkbox && (
-                                            <UICheckboxes
-                                                disabled={!editing}
-                                                options={field.options}
-                                                onInput={(value) => {}}
-                                                value={formData[index] ?? []}
-                                            />
-                                        )}
-                                        {field.type === Form.ItemType.textbox && (
-                                            <UITextInput
-                                                multiline={true}
-                                                disabled={!editing}
-                                                placeholder={"Type here"}
-                                                value={formData[index]}
-                                                onChangeText={(value) => {}}
-                                            />
-                                        )}
-                                    </FormQuestion>
-                                </View>
-                            ) : (
-                                <View
-                                    style={{
-                                        backgroundColor: index % 2 === 0 ? colors.bg1.hex : "transparent",
-                                        padding: 8,
-                                        borderRadius: 8,
-                                    }}
-                                >
-                                    <FormQuestion title={field.question} required={field.required} inline>
-                                        {formData[index] === null ? (
-                                            <UIText style={s.na}>N/A</UIText>
-                                        ) : (
-                                            <UIText
-                                                style={{
-                                                    color: colors.fg.hex,
-                                                    fontWeight: "bold",
-                                                    fontSize: 20,
-                                                    marginLeft: "auto",
-                                                    textAlign: "center",
-                                                    paddingHorizontal: 32,
-                                                }}
-                                            >
-                                                {formData[index] ?? ""}
-                                            </UIText>
-                                        )}
-                                    </FormQuestion>
-                                </View>
-                            )}
-                        </View>
-                    ))}
-                </ScrollView>
+                <SafeAreaProvider>
+                    <SafeAreaInsetsContext.Consumer
+                        children={(insets) => {
+                            console.log(insets);
+                            return (
+                                <FlatList
+                                    contentContainerStyle={{ padding: 16 }}
+                                    scrollIndicatorInsets={{ bottom: 34 }}
+                                    ListHeaderComponent={
+                                        <ReportMetadataView
+                                            data={data}
+                                            navigateToTeamViewer={navigateToTeamViewer}
+                                            userName={userName}
+                                        />
+                                    }
+                                    data={data.form}
+                                    renderItem={({ item, index }) => (
+                                        <View key={index}>
+                                            {item.type === Form.ItemType.heading ? (
+                                                <UIText style={s.sectionTitle}>{item.title}</UIText>
+                                            ) : item.type === Form.ItemType.radio ||
+                                              item.type === Form.ItemType.textbox ||
+                                              item.type === Form.ItemType.checkbox ? (
+                                                <View style={{ padding: 8 }}>
+                                                    <FormQuestion title={item.question} required={item.required}>
+                                                        {item.type === Form.ItemType.radio && (
+                                                            <UIRadio
+                                                                disabled={!editing}
+                                                                options={item.options}
+                                                                onInput={(value) => {}}
+                                                                value={item.options[formData[index]]}
+                                                            />
+                                                        )}
+                                                        {item.type === Form.ItemType.checkbox && (
+                                                            <UICheckboxes
+                                                                disabled={!editing}
+                                                                options={item.options}
+                                                                onInput={(value) => {}}
+                                                                value={formData[index] ?? []}
+                                                            />
+                                                        )}
+                                                        {item.type === Form.ItemType.textbox && (
+                                                            <UITextInput
+                                                                multiline={true}
+                                                                disabled={!editing}
+                                                                placeholder={"Type here"}
+                                                                value={formData[index]}
+                                                                onChangeText={(value) => {}}
+                                                            />
+                                                        )}
+                                                    </FormQuestion>
+                                                </View>
+                                            ) : (
+                                                <View
+                                                    style={{
+                                                        backgroundColor:
+                                                            index % 2 === 0 ? colors.bg1.hex : "transparent",
+                                                        padding: 8,
+                                                        borderRadius: 8,
+                                                    }}
+                                                >
+                                                    <FormQuestion title={item.question} required={item.required} inline>
+                                                        {formData[index] === null ? (
+                                                            <UIText style={s.na}>N/A</UIText>
+                                                        ) : (
+                                                            <UIText
+                                                                style={{
+                                                                    color: colors.fg.hex,
+                                                                    fontWeight: "bold",
+                                                                    fontSize: 20,
+                                                                    marginLeft: "auto",
+                                                                    textAlign: "center",
+                                                                    paddingHorizontal: 32,
+                                                                }}
+                                                            >
+                                                                {formData[index] ?? ""}
+                                                            </UIText>
+                                                        )}
+                                                    </FormQuestion>
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
+                                />
+                            );
+                        }}
+                    />
+                </SafeAreaProvider>
             </UISheetModal>
         </>
     );
