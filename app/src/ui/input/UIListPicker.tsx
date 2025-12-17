@@ -98,24 +98,22 @@ export function UIListPicker<K extends string | number = string | number>({
                         },
                     }}
                 />
-                <UIList bottomSheet={true}>
-                    {[
-                        UIList.Section({
-                            // TODO: use a flatlist-like interface for this
-                            items: options.map((key) => {
-                                const { name } = render(key);
-                                return UIList.Label({
-                                    key: key.toString(),
-                                    label: name,
-                                    icon: value === key ? Bs.CheckLg : true,
-                                    onPress: () => {
-                                        onChange?.(key);
-                                        scheduleClose();
-                                    },
-                                });
-                            }),
+                <UIList bottomSheet>
+                    {UIList.Section({
+                        // TODO: use a flatlist-like interface for this
+                        items: options.map((key) => {
+                            const { name } = render(key);
+                            return UIList.Label({
+                                key: key.toString(),
+                                label: name,
+                                icon: value === key ? Bs.CheckLg : true,
+                                onPress: () => {
+                                    onChange?.(key);
+                                    scheduleClose();
+                                },
+                            });
                         }),
-                    ]}
+                    })}
                 </UIList>
             </UISheetModal>
         </>

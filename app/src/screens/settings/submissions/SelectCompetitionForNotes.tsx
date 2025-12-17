@@ -33,19 +33,17 @@ export function SelectCompetitionForNotes({ navigation }: SettingsMenuScreenProp
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
                 <UIList loading={loading}>
-                    {[
-                        competitions.length > 0 &&
-                            UIList.Section({
-                                items: competitions.map((competition) =>
-                                    UIList.Label({
-                                        key: competition.id,
-                                        label: competition.name,
-                                        caret: true,
-                                        onPress: () => handleCompetitionSelect(competition),
-                                    })
-                                ),
-                            }),
-                    ]}
+                    {competitions.length > 0 &&
+                        UIList.Section({
+                            items: competitions.map((competition) =>
+                                UIList.Label({
+                                    key: competition.id,
+                                    label: competition.name,
+                                    caret: true,
+                                    onPress: () => handleCompetitionSelect(competition),
+                                })
+                            ),
+                        })}
                 </UIList>
             </SafeAreaView>
         </SafeAreaProvider>

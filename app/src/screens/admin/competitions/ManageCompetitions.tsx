@@ -49,24 +49,22 @@ export function ManageCompetitions() {
             </SafeAreaView>
 
             <UIList onRefresh={refreshCompetitions}>
-                {[
-                    UIList.Section({
-                        items: competitionList.map((comp) =>
-                            UIList.Label({
-                                key: comp.id.toString(),
-                                label: comp.name,
-                                onPress: () => {
-                                    editSheetRef.current?.present({
-                                        id: comp.id,
-                                        name: comp.name,
-                                        start: comp.startTime,
-                                        end: comp.endTime,
-                                    });
-                                },
-                            })
-                        ),
-                    }),
-                ]}
+                {UIList.Section({
+                    items: competitionList.map((comp) =>
+                        UIList.Label({
+                            key: comp.id.toString(),
+                            label: comp.name,
+                            onPress: () => {
+                                editSheetRef.current?.present({
+                                    id: comp.id,
+                                    name: comp.name,
+                                    start: comp.startTime,
+                                    end: comp.endTime,
+                                });
+                            },
+                        })
+                    ),
+                })}
             </UIList>
 
             <UIFab icon={Bs.Plus} onPress={() => void addSheetRef.current?.present()} />

@@ -44,25 +44,23 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
             </SafeAreaView>
 
             <UIList loading={loading} onRefresh={loadCompetitions}>
-                {[
-                    UIList.Section({
-                        items: competitionList.map((comp) =>
-                            UIList.Label({
-                                key: comp.id.toString(),
-                                label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
-                                onPress: () => {
-                                    if (comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.DISABLED) {
-                                        navigation.navigate("ScoutAssignments/Table", {
-                                            competition: comp.id,
-                                        });
-                                    } else {
-                                        sheetRef.current?.present(comp);
-                                    }
-                                },
-                            })
-                        ),
-                    }),
-                ]}
+                {UIList.Section({
+                    items: competitionList.map((comp) =>
+                        UIList.Label({
+                            key: comp.id.toString(),
+                            label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
+                            onPress: () => {
+                                if (comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.DISABLED) {
+                                    navigation.navigate("ScoutAssignments/Table", {
+                                        competition: comp.id,
+                                    });
+                                } else {
+                                    sheetRef.current?.present(comp);
+                                }
+                            },
+                        })
+                    ),
+                })}
             </UIList>
 
             <UISheetModal ref={sheetRef} handleComponent={null} children={EnableScoutAssignmentsModal} />

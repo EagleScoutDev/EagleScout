@@ -104,31 +104,29 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                         Choose a question to begin.
                     </UIText>
                 </View>
-                {
-                    formSections.map((section, i) => {
-                        const items: { item: Form.Question; i: number }[] = [];
-                        let currentIndex = section.start + 1; // Start after the heading
+                {formSections.map((section, i) => {
+                    const items: { item: Form.Question; i: number }[] = [];
+                    let currentIndex = section.start + 1; // Start after the heading
 
-                        for (const item of section.items) {
-                            if (item.type === Form.ItemType.number) {
-                                items.push({ item, i: currentIndex });
-                            }
-                            currentIndex++;
+                    for (const item of section.items) {
+                        if (item.type === Form.ItemType.number) {
+                            items.push({ item, i: currentIndex });
                         }
+                        currentIndex++;
+                    }
 
-                        return UIList.Section({
-                            key: i,
-                            header: section.title,
-                            items: items.map(({ item, i }) => {
-                                return UIList.Label({
-                                    key: i,
-                                    label: item.question,
-                                    onPress: () => onPress(i, item.question),
-                                });
-                            }),
-                        });
-                    }) as any
-                }
+                    return UIList.Section({
+                        key: i,
+                        header: section.title,
+                        items: items.map(({ item, i }) => {
+                            return UIList.Label({
+                                key: i,
+                                label: item.question,
+                                onPress: () => onPress(i, item.question),
+                            });
+                        }),
+                    });
+                })}
             </UIList>
         </SafeAreaProvider>
     );

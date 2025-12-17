@@ -58,7 +58,7 @@ export function UIList({
               .map((x, i) =>
                   isValidElement(x)
                       ? { data: [x], renderSectionHeader: () => null, renderSectionFooter: () => null }
-                      : { ...x, key: x.key === null || x.key ===undefined ? "#" + String(i) : "$" + String(x.key)}
+                      : { ...x, key: x.key === null || x.key === undefined ? "#" + String(i) : "$" + String(x.key) }
               );
     const lastSection = sections[sections.length - 1];
 
@@ -74,7 +74,7 @@ export function UIList({
                 onRefresh && !loading ? <RefreshControl refreshing={refreshing} onRefresh={doRefresh} /> : undefined
             }
             sections={sections}
-            keyExtractor={(x, i) => x.key === null || x.key === undefined ? "#"+String(i) : "$"+String(x.key)}
+            keyExtractor={(x, i) => (x.key === null || x.key === undefined ? "#" + String(i) : "$" + String(x.key))}
             ListHeaderComponent={loading && !refreshing ? ActivityIndicator : null}
             ListHeaderComponentStyle={{ marginBottom: 10 }}
             ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
@@ -126,7 +126,6 @@ export namespace UIList {
     export function Section({ key, header, footer, items }: SectionProps): Section {
         // TODO: add a FlatList-like api
         // TODO: this is bad because index-based keys will end up being shifted when falsy elements are temporarily removed
-        console.log("sec", key)
         return { key, header, footer, data: (items ?? []).filter((x) => !!x) };
     }
 
@@ -200,7 +199,6 @@ const getListStyles = (colors: Theme["colors"]) =>
             flex: 1,
         },
         listContents: {
-            flexGrow: 1,
             padding: 16,
         },
 

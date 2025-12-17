@@ -51,22 +51,20 @@ export function DebugAsyncStorage() {
         <SafeAreaView edges={{ bottom: "off", top: "off" }} style={{ width: "100%", height: "100%" }}>
             <Animated.View style={{ height: sheetPosition }}>
                 <UIList onRefresh={getAllKeys}>
-                    {[
-                        UIList.Section({
-                            items: keys?.map((key, i) =>
-                                UIList.Label({
-                                    key,
-                                    onPress: () => selectKey(key),
-                                    label: key,
-                                    body: () => (
-                                        <PressableOpacity onPress={() => deleteKey(key)}>
-                                            <Bs.Trash size={20} color={colors.danger.hex} />
-                                        </PressableOpacity>
-                                    ),
-                                })
-                            ),
-                        }),
-                    ]}
+                    {UIList.Section({
+                        items: keys?.map((key, i) =>
+                            UIList.Label({
+                                key,
+                                onPress: () => selectKey(key),
+                                label: key,
+                                body: () => (
+                                    <PressableOpacity onPress={() => deleteKey(key)}>
+                                        <Bs.Trash size={20} color={colors.danger.hex} />
+                                    </PressableOpacity>
+                                ),
+                            })
+                        ),
+                    })}
                 </UIList>
             </Animated.View>
 

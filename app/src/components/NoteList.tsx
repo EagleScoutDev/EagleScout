@@ -42,6 +42,7 @@ export function NoteList({ notes }: NoteListProps) {
 
             <FlatList
                 data={filteredNotes}
+                contentInsetAdjustmentBehavior={"automatic"}
                 contentContainerStyle={{ padding: 16, paddingTop: 8 }}
                 keyExtractor={(_, index) => index.toString()}
                 ItemSeparatorComponent={() => <View style={{ height: 8 }} />}

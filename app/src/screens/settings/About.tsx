@@ -11,25 +11,24 @@ export interface AboutProps extends SettingsMenuScreenProps<"About"> {}
 export function About({}: AboutProps) {
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView edges={["top", "left", "right"]}>
                 <TabHeader title={"About"} />
-                <UIList contentContainerStyle={{ paddingBottom: 24 }}>
-                    {[
-                        UIList.Section({
-                            items: [
-                                UIList.Label({
-                                    label: "Version",
-                                    body: () => (
-                                        <UIText size={16} level={1}>
-                                            {VERSION}
-                                        </UIText>
-                                    ),
-                                }),
-                            ],
-                        }),
-                    ]}
-                </UIList>
             </SafeAreaView>
+
+            <UIList>
+                {UIList.Section({
+                    items: [
+                        UIList.Label({
+                            label: "Version",
+                            body: () => (
+                                <UIText size={16} level={1}>
+                                    {VERSION}
+                                </UIText>
+                            ),
+                        }),
+                    ],
+                })}
+            </UIList>
         </SafeAreaProvider>
     );
 }

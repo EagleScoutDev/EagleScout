@@ -45,17 +45,15 @@ export function ExportToCSV() {
                     description={"Choose a competition to export the scout reports to a CSV file"}
                 />
                 <UIList loading={loading} onRefresh={refreshCompetitions}>
-                    {[
-                        UIList.Section({
-                            items: competitionList.map((comp) =>
-                                UIList.Label({
-                                    key: comp.id.toString(),
-                                    label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
-                                    onPress: () => modalRef.current?.present({ competition: comp }),
-                                })
-                            ),
-                        }),
-                    ]}
+                    {UIList.Section({
+                        items: competitionList.map((comp) =>
+                            UIList.Label({
+                                key: comp.id.toString(),
+                                label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
+                                onPress: () => modalRef.current?.present({ competition: comp }),
+                            })
+                        ),
+                    })}
                 </UIList>
             </View>
 

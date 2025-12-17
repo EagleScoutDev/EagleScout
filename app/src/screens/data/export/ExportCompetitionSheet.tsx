@@ -23,41 +23,39 @@ export function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
         <>
             <UISheet.Header title={competition.name} />
             <UIList>
-                {[
-                    UIList.Section({
-                        items: [
-                            UIList.Label({
-                                label: "Export Scout Reports",
-                                labelColor: Color.parse(colors.primary.hex),
-                                onPress: async () => {
-                                    const data = await exportScoutReportsToCsv(competition);
-                                    if (!data) return;
+                {UIList.Section({
+                    items: [
+                        UIList.Label({
+                            label: "Export Scout Reports",
+                            labelColor: Color.parse(colors.primary.hex),
+                            onPress: async () => {
+                                const data = await exportScoutReportsToCsv(competition);
+                                if (!data) return;
 
-                                    modal.dismiss();
-                                    await writeToFile(`${competition.name}.csv`, data);
-                                },
-                            }),
-                            UIList.Label({
-                                label: "Export Pit Scout Reports",
-                                labelColor: Color.parse(colors.primary.hex),
-                                onPress: async () => {
-                                    if (!competition.pitScoutFormId) {
-                                        await AsyncAlert.alert(
-                                            "No Pit Scout Form",
-                                            "This competition does not have a pit scout form"
-                                        );
-                                    }
+                                modal.dismiss();
+                                await writeToFile(`${competition.name}.csv`, data);
+                            },
+                        }),
+                        UIList.Label({
+                            label: "Export Pit Scout Reports",
+                            labelColor: Color.parse(colors.primary.hex),
+                            onPress: async () => {
+                                if (!competition.pitScoutFormId) {
+                                    await AsyncAlert.alert(
+                                        "No Pit Scout Form",
+                                        "This competition does not have a pit scout form"
+                                    );
+                                }
 
-                                    const data = await exportPitReportsToCsv(competition);
-                                    if (!data) return;
+                                const data = await exportPitReportsToCsv(competition);
+                                if (!data) return;
 
-                                    modal.dismiss();
-                                    await writeToFile(`${competition.name}.csv`, data);
-                                },
-                            }),
-                        ],
-                    }),
-                ]}
+                                modal.dismiss();
+                                await writeToFile(`${competition.name}.csv`, data);
+                            },
+                        }),
+                    ],
+                })}
             </UIList>
         </>
     );

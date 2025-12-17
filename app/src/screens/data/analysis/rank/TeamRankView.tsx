@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { DataMenuScreenProps } from "../../DataMain";
 import { MatchReportsDB } from "../../../../database/ScoutMatchReports";
 import { UIList } from "../../../../ui/UIList";
@@ -46,45 +45,49 @@ export function TeamRankView({ route }: TeamRankViewProps) {
 
     return (
         <SafeAreaProvider>
-            <View style={{ padding: 16, alignItems: "center" }}>
-                <UIText size={20} bold>
-                    {questionText}
-                </UIText>
-                {compName && (
-                    <UIText size={14} level={1} style={{ marginTop: 4 }}>
-                        {compName}
-                    </UIText>
-                )}
-            </View>
-            <View style={{ paddingHorizontal: 16, flexDirection: "row" }}>
-                <UIText size={16} bold>
-                    Team
-                </UIText>
-                <View style={{ flex: 1 }} />
-                <UIText size={16} bold>
-                    Average
-                </UIText>
-            </View>
-            {!processing && (
-                <UIList loading={processing}>
-                    {data &&
-                        UIList.Section({
-                            items: data.map(({ team, average }, i) =>
-                                UIList.Label({
-                                    key: team,
-                                    label: `${i + 1}. Team ${team}`,
-                                    body: () => <UIText size={16}>{average.toFixed(2)}</UIText>,
-                                })
-                            ),
-                        })}
+            {/*<SafeAreaView edges={["top", "left", "right"]}>*/}
+            {/*    <View style={{ padding: 16, alignItems: "center" }}>*/}
+            {/*        <UIText size={20} bold>*/}
+            {/*            {questionText}*/}
+            {/*        </UIText>*/}
+            {/*        {compName && (*/}
+            {/*            <UIText size={14} level={1} style={{ marginTop: 4 }}>*/}
+            {/*                {compName}*/}
+            {/*            </UIText>*/}
+            {/*        )}*/}
+            {/*    </View>*/}
+            {/*    <View style={{ paddingHorizontal: 16, flexDirection: "row" }}>*/}
+            {/*        <UIText size={16} bold>*/}
+            {/*            Team*/}
+            {/*        </UIText>*/}
+            {/*        <View style={{ flex: 1 }} />*/}
+            {/*        <UIText size={16} bold>*/}
+            {/*            Average*/}
+            {/*        </UIText>*/}
+            {/*    </View>*/}
+            {/*</SafeAreaView>*/}
+            <SafeAreaView style={{ flex: 1 }}>
+                {!processing && (
+                    <UIList loading={processing}>
+                        {data &&
+                            UIList.Section({
+                                items: data.map(({ team, average }, i) =>
+                                    UIList.Label({
+                                        key: team,
+                                        label: `${i + 1}. Team ${team}`,
+                                        body: () => <UIText size={16}>{average.toFixed(2)}</UIText>,
+                                    })
+                                ),
+                            })}
 
-                    {!data && (
-                        <View style={{ alignItems: "center" }}>
-                            <UIText size={16}>No data available.</UIText>
-                        </View>
-                    )}
-                </UIList>
-            )}
+                        {/*{!data && (*/}
+                        {/*    <View style={{ alignItems: "center" }}>*/}
+                        {/*        <UIText size={16}>No data available.</UIText>*/}
+                        {/*    </View>*/}
+                        {/*)}*/}
+                    </UIList>
+                )}
+            </SafeAreaView>
         </SafeAreaProvider>
     );
 }
