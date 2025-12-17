@@ -44,7 +44,7 @@ export namespace UIForm {
             key,
             body: () => (
                 <AutoTextInput
-                    style={{ padding: 8, fontSize: 16, flex: 1 }}
+                    style={{ padding: 8, fontSize: 16, flex: 1, color: colors.fg.hex }}
                     placeholder={label}
                     placeholderTextColor={colors.fg.level(1).hex}
                     value={value ?? undefined}
