@@ -115,16 +115,16 @@ export namespace Theme {
 
         dark: false,
         colors: {
-            primary: Color.hex("#3478f6"),
-            secondary: Color.hex("#6375ff"),
-            tertiary: Color.hex("#7ba9ff"),
+            primary: Color.hex("#377cfb"),
+            secondary: Color.hex("#7586ff"),
+            tertiary: Color.hex("#ced5fa"),
             danger: Color.hex("#f13d3d"),
 
             win: Color.hex("#008500"),
             loss: Color.hex("#f13d3d"),
 
             fg: Color.hex("#0b0b0b"),
-            placeholder: Color.hex("#1c1c1c"),
+            placeholder: Color.hex("#424242"),
             bg0: Color.hex("#ffffff", Color.hex("#0b0b0b")),
             bg1: Color.hex("#faf9f9", Color.hex("#0b0b0b")),
             bg2: Color.hex("#f2f2f2", Color.hex("#0b0b0b")),
@@ -139,19 +139,19 @@ export namespace Theme {
 
         dark: true,
         colors: {
-            primary: Color.hex("#3478f6"),
-            secondary: Color.hex("#6375ff"),
-            tertiary: Color.hex("#7ba9ff"),
+            primary: Color.hex("#377cfb"),
+            secondary: Color.hex("#555ebc"),
+            tertiary: Color.hex("#49556a"),
             danger: Color.hex("#f13d3d"),
 
             win: Color.hex("#008500"),
             loss: Color.hex("#f13d3d"),
 
-            fg: Color.hex("#ffffff"),
+            fg: Color.hex("#e1e1e1"),
             placeholder: Color.hex("#656565"),
-            bg0: Color.hex("#0c0c0c", Color.hex("#ffffff")),
-            bg1: Color.hex("#121212", Color.hex("#ffffff")),
-            bg2: Color.hex("#171717", Color.hex("#ffffff")),
+            bg0: Color.hex("#0c0c0c", Color.hex("#e1e1e1")),
+            bg1: Color.hex("#121212", Color.hex("#e1e1e1")),
+            bg2: Color.hex("#171717", Color.hex("#e1e1e1")),
 
             border: Color.hex("#303030"),
             shadow: Color.hex("#3a3a3a"),
@@ -165,7 +165,7 @@ export namespace Theme {
         colors: {
             primary: Color.hex("#67564a"),
             secondary: Color.hex("#bd724a"),
-            tertiary: Color.hex("#e3a584"),
+            tertiary: Color.hex("#e8b688"),
             danger: Color.hex("#d65858"),
 
             win: Color.hex("#00a800"),
@@ -173,9 +173,9 @@ export namespace Theme {
 
             fg: Color.hex("#17110e"),
             placeholder: Color.hex("#3e3e3e"),
-            bg0: Color.hex("#fae0bf", Color.hex("#17110e")),
-            bg1: Color.hex("#f4cd9a", Color.hex("#17110e")),
-            bg2: Color.hex("#eac186", Color.hex("#17110e")),
+            bg0: Color.hex("#fae1c0", Color.hex("#17110e")),
+            bg1: Color.hex("#f8d6aa", Color.hex("#17110e")),
+            bg2: Color.hex("#ecca9e", Color.hex("#17110e")),
 
             border: Color.hex("#916f5b"),
             shadow: Color.hex("#000000"),
