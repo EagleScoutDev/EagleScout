@@ -31,10 +31,6 @@ export interface SimpleTeam {
 }
 
 export class TBA {
-    constructor() {
-        // TODO
-    }
-
     static async checkEventKey(key: string): Promise<boolean> {
         const { error } = await supabase.functions.invoke("fetch-tba-event", {
             body: { tbakey: key },

@@ -2,7 +2,7 @@ import { Color } from "../color";
 import { Appearance } from "react-native";
 import { type Theme as RNTheme } from "@react-navigation/native";
 
-// TODO: this is a hack because doing Appearance.getColorScheme(null) to bypass our own modifications doesn't seem to be working right now
+// FIXME: this is a hack because doing Appearance.getColorScheme(null) to bypass our own modifications doesn't seem to be working right now
 const SYSTEM_COLOR_SCHEME = Appearance.getColorScheme();
 
 export interface Theme {

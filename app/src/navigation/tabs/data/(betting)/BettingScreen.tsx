@@ -468,6 +468,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     </UIText>
                                 </Pressable>
                             </ImageBackground>
+                            {/* TODO: query scoutcoins properly (please don't use userProfile because that will be cached and account balance should never be cached) */}
                             <UIText>Your balance: {userProfile.scoutcoins}</UIText>
                         </View>
                         <View

@@ -7,7 +7,7 @@ export function AutoTextInput(props: Omit<RNTextInputProps, "ref">) {
     const bottomSheet = useBottomSheetInternal(true) !== null;
 
     return React.createElement(
-        bottomSheet ? BottomSheetTextInput : (RNGHTextInput as unknown as typeof TextInput), //< TODO: this unchecked cast is used for now because RNGH native wrappers don't play nice with exactOptionalPropertyTypes
+        bottomSheet ? BottomSheetTextInput : (RNGHTextInput as unknown as typeof TextInput), //< FIXME: this unchecked cast is used for now because RNGH native wrappers don't play nice with exactOptionalPropertyTypes
         props,
     );
 }
