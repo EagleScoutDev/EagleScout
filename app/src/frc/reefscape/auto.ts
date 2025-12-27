@@ -26,7 +26,7 @@ export type AutoState = Readonly<{
             ra: AutoPieceState,
             lc: AutoPieceState,
             cc: AutoPieceState,
-            rc: AutoPieceState
+            rc: AutoPieceState,
         ];
     };
 }>;
@@ -86,7 +86,7 @@ export namespace AutoAction {
 
     export function reduce(
         state: AutoState,
-        action: AutoAction | { type: "undo" } | { type: "stupid"; state: AutoState }
+        action: AutoAction | { type: "undo" } | { type: "stupid"; state: AutoState },
     ): AutoState {
         switch (action.type) {
             case "stupid":

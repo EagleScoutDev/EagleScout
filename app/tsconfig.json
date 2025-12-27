@@ -6,6 +6,9 @@
   "compilerOptions": {
     "lib": ["ES2023"],
     "typeRoots": ["./src/types"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,

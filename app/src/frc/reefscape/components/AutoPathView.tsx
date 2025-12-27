@@ -1,14 +1,13 @@
 import { Circle, G, Line, Path, Rect, Svg } from "react-native-svg";
 import { View } from "react-native";
-
 import { AutoAction, AutoActionType, type AutoPath } from "../auto";
-import { UIText } from "../../../ui/UIText";
-import { useTheme } from "../../../lib/contexts/ThemeContext.ts";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
 
 export function AutoPathView({ path }: { path: AutoPath }) {
-    "use memo";
+    const { colors } = useTheme();
+
     if (!path || path.length === 0) {
-        const { colors } = useTheme();
         return (
             <View
                 style={{
@@ -37,7 +36,7 @@ export function AutoPathView({ path }: { path: AutoPath }) {
         } else {
             autoPathSvgs.push(
                 <NodeToNodeLine nodeId1={prev.target - 1} nodeId2={node.target - 1} order={order} />,
-                <ActiveNode nodeId={node.target - 1} status={node.success ? "success" : "missed"} />
+                <ActiveNode nodeId={node.target - 1} status={node.success ? "success" : "missed"} />,
             );
             prev = node;
             order++;
@@ -108,7 +107,6 @@ const nodePositions = [
 ];
 
 function NodeToStartingLine({ nodeId }: { nodeId: number }) {
-    "use memo";
     return (
         <>
             <Line
@@ -125,7 +123,6 @@ function NodeToStartingLine({ nodeId }: { nodeId: number }) {
 }
 
 function NodeToNodeLine({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2: number; order: number }) {
-    "use memo";
     return (
         <Line
             x1={nodePositions[nodeId1].x}
@@ -139,7 +136,6 @@ function NodeToNodeLine({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2:
 }
 
 function DefaultNode({ nodeId }: { nodeId: number }) {
-    "use memo";
     return (
         <Circle
             cx={nodePositions[nodeId].x}
@@ -157,7 +153,6 @@ interface ActiveNodeProps {
     status: "success" | "missed";
 }
 function ActiveNode({ nodeId, status }: ActiveNodeProps) {
-    "use memo";
     return (
         <>
             <Circle cx={nodePositions[nodeId].x} cy={nodePositions[nodeId].y} r="12" fill="#637AF4" />

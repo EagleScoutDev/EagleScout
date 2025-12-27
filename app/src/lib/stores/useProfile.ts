@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ProfilesDB } from "../../database/Profiles";
+import { ProfilesDB } from "@/lib/database/Profiles";
 import type { Profile } from "../user/profile";
 
 export function useProfile() {

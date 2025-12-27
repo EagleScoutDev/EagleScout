@@ -1,9 +1,8 @@
 import { type PropsWithChildren, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-
-import { Statbotics } from "../lib/frc/statbotics";
-import { UIText } from "../ui/UIText";
-import { useTheme } from "../lib/contexts/ThemeContext.ts";
+import { Statbotics } from "@/lib/frc/statbotics";
+import { UIText } from "@/ui/components/UIText";
+import { useTheme } from "@/ui/context/ThemeContext";
 
 // Note: Statbotics is said to update their data every 6 hours from Blue Alliance.
 
@@ -17,7 +16,7 @@ function InfoCapsule({ title, value }: InfoCapsuleProps) {
             <UIText size={20} bold>
                 {value ?? "N/A"}
             </UIText>
-            <UIText size={12} level={1}>
+            <UIText size={12} placeholder>
                 {title}
             </UIText>
         </View>
@@ -32,8 +31,6 @@ export interface StatboticsSummaryProps {
     team: number;
 }
 export function StatboticsSummary({ team }: StatboticsSummaryProps) {
-    "use memo";
-
     const { colors } = useTheme();
 
     const [overall, setOverall] = useState<Statbotics.TeamYear | null>(null);
@@ -125,7 +122,7 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
                         </View>
                     )}
                 />
-                <UIText level={1}>Powered by Statbotics</UIText>
+                <UIText placeholder>Powered by Statbotics</UIText>
             </View>
         );
     }

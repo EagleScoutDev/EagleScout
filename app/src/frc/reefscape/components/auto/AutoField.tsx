@@ -1,13 +1,12 @@
 import { Pressable, View } from "react-native";
-import { UIText } from "../../../../ui/UIText";
 import Svg, { Path } from "react-native-svg";
-
-import * as Bs from "../../../../ui/icons";
-import { Color } from "../../../../lib/color";
 import type { AutoPieceState, AutoState } from "../../auto";
-import { Alliance, Orientation } from "../../../common/common";
+import { Alliance, Orientation } from "@/frc/common/common";
 import { ReefSextant } from "../../field";
-import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { Color } from "@/ui/lib/color";
+import { UIText } from "@/ui/components/UIText";
+import * as Bs from "@/ui/icons";
 
 export interface AutoFieldProps {
     orientation: Orientation;
@@ -17,8 +16,6 @@ export interface AutoFieldProps {
     state: AutoState["field"];
 }
 export function AutoField({ orientation, alliance, onReef, onPiece, state }: AutoFieldProps) {
-    "use memo";
-
     const leftSide = alliance === Orientation.getLeft(orientation);
 
     return (
@@ -103,7 +100,6 @@ interface PieceProps {
     onPress: () => void;
 }
 function Piece({ type, state, onPress }: PieceProps) {
-    "use memo";
     const { colors } = useTheme();
 
     const bg = type === "algae" ? Color.rgb(114, 209, 35) : Color.white;

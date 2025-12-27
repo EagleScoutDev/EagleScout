@@ -1,20 +1,18 @@
 import { View } from "react-native";
 import { useState } from "react";
-
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { ActionGrid } from "./ActionGrid";
-import { UISheet } from "../../../../ui/UISheet";
-import { Color } from "../../../../lib/color";
-import * as Bs from "../../../../ui/icons";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { UIButton, UIButtonSize, UIButtonStyle } from "../../../../ui/UIButton";
-import { Alliance, Orientation } from "../../../common/common";
 import { AutoActionType, type AutoDispatch, type AutoState } from "../../auto";
 import { ReefSextant } from "../../field";
 import { AutoField } from "./AutoField";
 import { ActionButton } from "./ActionButton";
 import { ActionRow } from "./ActionRow";
-import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UISheet } from "@/ui/components/UISheet";
+import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
+import * as Bs from "@/ui/icons";
+import { Alliance, type Orientation } from "@/frc/common/common";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 interface AutoModalProps {
     orientation: Orientation;
@@ -25,7 +23,6 @@ interface AutoModalProps {
 }
 
 export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalProps) {
-    "use memo";
     const { colors } = useTheme();
 
     const [reefSextant, setReefSextant] = useState<ReefSextant | null>(null);
@@ -39,7 +36,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
         <>
             <UISheet.Header
                 title={"Auto"}
-                right={{ color: Color.parse(colors.primary.hex), text: "Done", onPress: () => void modal.dismiss() }}
+                right={{ color: colors.primary, text: "Done", onPress: () => void modal.dismiss() }}
             />
             <View style={{ paddingHorizontal: 16, paddingBottom: 16, flex: 1 }}>
                 {levelChooserActive ? (
@@ -181,8 +178,6 @@ interface LevelChooserProps {
 }
 
 function LevelChooser({ reefSextant, onPress }: LevelChooserProps) {
-    "use memo";
-
     return (
         <ActionGrid
             title={`Reef ${ReefSextant.abbreviation(reefSextant)}`}

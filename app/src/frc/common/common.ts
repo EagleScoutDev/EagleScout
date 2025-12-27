@@ -1,4 +1,4 @@
-import { Color } from "../../lib/color";
+import { Color } from "@/ui/lib/color";
 
 export enum Alliance {
     red = "red",

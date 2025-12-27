@@ -1,13 +1,12 @@
 import { Alert, StyleSheet, TextInput, View } from "react-native";
-import { UIText } from "../../ui/UIText";
-import { UIModal } from "../../ui/UIModal";
-import { StandardButton } from "../../ui/StandardButton";
-
-import { supabase } from "../../lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
-import type { CompetitionReturnData } from "../../database/Competitions";
-import type { Setter } from "../../lib/util/react/types";
-import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import type { CompetitionReturnData } from "@/lib/database/Competitions";
+import type { Setter } from "@/lib/util/react/types";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIModal } from "@/ui/components/UIModal";
+import { UIText } from "@/ui/components/UIText";
+import { StandardButton } from "@/ui/StandardButton";
 
 export function Spacer() {
     return <View style={{ height: "2%" }} />;

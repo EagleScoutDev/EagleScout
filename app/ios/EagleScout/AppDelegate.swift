@@ -45,5 +45,5 @@ class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
 #else
     StallionModule.getBundleURL()
 #endif
-   }
+  }
 }

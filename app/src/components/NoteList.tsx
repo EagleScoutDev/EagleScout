@@ -1,15 +1,13 @@
 import { FlatList, TextInput, View } from "react-native";
 import { useState } from "react";
-import { type NoteWithMatch, type OfflineNote } from "../database/ScoutNotes";
-import { UIText } from "../ui/UIText.tsx";
-import { useTheme } from "../lib/contexts/ThemeContext.ts";
+import { type NoteWithMatch, type OfflineNote } from "@/lib/database/ScoutNotes";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
 
 export interface NoteListProps {
     notes: (NoteWithMatch | OfflineNote)[];
 }
 export function NoteList({ notes }: NoteListProps) {
-    "use memo";
-
     const { colors } = useTheme();
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,14 +18,14 @@ export function NoteList({ notes }: NoteListProps) {
                   (note) =>
                       note.match_number?.toString().includes(searchTerm) ||
                       note.team_number.toString().includes(searchTerm) ||
-                      note.content.toLowerCase().includes(searchTerm.toLowerCase())
+                      note.content.toLowerCase().includes(searchTerm.toLowerCase()),
               );
 
     return (
         <View style={{ flex: 1 }}>
             <TextInput
                 placeholder={"Search"}
-                placeholderTextColor={colors.fg.level(1).hex}
+                placeholderTextColor={colors.placeholder.hex}
                 onChangeText={(text) => setSearchTerm(text)}
                 style={{
                     borderWidth: 1,

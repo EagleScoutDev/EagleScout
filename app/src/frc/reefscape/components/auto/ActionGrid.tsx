@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
-import { UIText } from "../../../../ui/UIText";
-import { PressableOpacity } from "../../../../ui/components/PressableOpacity";
-import { useTheme } from "../../../../lib/contexts/ThemeContext.ts";
+import { PressableOpacity } from "@/components/PressableOpacity";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
 
 export interface ActionMenuProps<T> {
     title: string;
@@ -51,7 +51,7 @@ export function ActionGrid<T>({ title, options: rows, onPress }: ActionMenuProps
                                     style={role === "success" ? styles.button : styles.failButton}
                                     onPress={() => onPress(value, role === "success")}
                                 >
-                                    <UIText size={20} color={colors.primary.hex}>
+                                    <UIText size={20} color={colors.primary}>
                                         {text}
                                     </UIText>
                                 </PressableOpacity>

@@ -60,6 +60,19 @@ export namespace Form {
         lowLabel: string | null; // TODO: add this to the database schema
         highLabel: string | null; // TODO: add this to the database schema
     }
+    export namespace Item {
+        export function isQuestion(x: Form.Item): x is Form.Question {
+            switch (x.type) {
+                case Form.ItemType.heading:
+                    return false;
+                case Form.ItemType.radio:
+                case Form.ItemType.checkbox:
+                case Form.ItemType.textbox:
+                case Form.ItemType.number:
+                    return true;
+            }
+        }
+    }
 
     export interface Section {
         title: string;
@@ -122,7 +135,7 @@ export namespace Form {
                     case "number":
                         return Math.max(0, item.low ?? 0);
                 }
-            })
+            }),
         );
     }
     export function checkRequired(sections: Section[], data: Form.Data[]): Question | null {

@@ -1,6 +1,6 @@
 import { type StyleProp, type TextInputProps, type TextStyle } from "react-native";
 import { useState } from "react";
-import { AutoTextInput } from "./AutoTextInput";
+import { AutoTextInput } from "@/components/AutoTextInput";
 
 export interface NumberInputProps extends Omit<TextInputProps, "value" | `on${string}`> {
     float?: boolean;
@@ -13,7 +13,6 @@ export interface NumberInputProps extends Omit<TextInputProps, "value" | `on${st
     onInput?: ((value: number | null) => void | undefined | boolean) | null | undefined;
 }
 export function NumberInput({ value = null, float = false, min, max, onInput, ...passthrough }: NumberInputProps) {
-    "use memo";
     let [draft, setDraft] = useState<string>(value?.toString() ?? "");
 
     function updateValue(newDraft: string, blurred: boolean) {

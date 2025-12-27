@@ -1,8 +1,8 @@
-import { type CompetitionReturnData, CompetitionsDB } from "../../database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../../FormHelper";
+import { FormHelper } from "@/lib/FormHelper";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {
     const [online, setOnline] = useState<boolean>(false);
@@ -29,7 +29,7 @@ export function useCurrentCompetition(): { competition: CompetitionReturnData | 
     }
     useEffect(() => {
         void load();
-        
+
         return navigation.addListener("focus", () => load());
     }, []);
 

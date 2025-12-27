@@ -1,20 +1,18 @@
 export class CSVBuilder {
-    private header: string[] = [];
-    private rows: string[][] = [];
+    private csvHeader: string[] = [];
+    private csvRows: string[][] = [];
 
-    public constructor() {}
-
-    public addHeader(...header: string[]) {
-        this.header.push(...header);
+    public header(...header: string[]) {
+        this.csvHeader.push(...header);
         return this;
     }
 
-    public addRow(...row: any[]) {
-        this.rows.push(row.map((cell) => cell.toString()));
+    public map<T>(data: T[], fn: (x: T, i: number) => any[]) {
+        this.csvRows.push(data.map((x, i) => String(fn(x, i))));
         return this;
     }
 
     public build() {
-        return [this.header.join(","), ...this.rows.map((row) => row.join(","))].join("\n");
+        return this.csvHeader.join(",") + "\n" + this.csvRows.map((row) => row.join(",")).join("\n");
     }
 }

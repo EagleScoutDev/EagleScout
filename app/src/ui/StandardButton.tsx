@@ -1,5 +1,5 @@
 import { ActivityIndicator, type DimensionValue, StyleSheet, TouchableOpacity } from "react-native";
-import { UIText } from "../ui/UIText";
+import { UIText } from "./components/UIText";
 
 export interface StandardButtonProps {
     textColor?: string;
@@ -19,7 +19,6 @@ export function StandardButton({
     isLoading = false,
     disabled = false,
 }: StandardButtonProps) {
-    "use memo";
     const baseButtonStyle = {
         backgroundColor: color,
         padding: 10,

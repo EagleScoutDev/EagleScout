@@ -1,15 +1,14 @@
 import { View } from "react-native";
-import { UIText } from "../ui/UIText";
+import { UIText } from "./components/UIText";
 import { StandardButton } from "./StandardButton";
+import { useTheme } from "./context/ThemeContext";
 import * as Bs from "./icons";
-import { useTheme } from "../lib/contexts/ThemeContext.ts";
 
 export interface NoInternetProps {
     onRefresh: () => void;
 }
 
 export function NoInternet({ onRefresh }: NoInternetProps) {
-    "use memo";
     const { colors } = useTheme();
 
     return (

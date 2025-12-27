@@ -14,21 +14,21 @@ export namespace AsyncAlert {
         title?: string,
         message?: string,
         buttons?: B,
-        options?: AsyncAlertOptions
+        options?: AsyncAlertOptions,
     ): Promise<keyof B | null> =>
         new Promise((resolve) => {
             Alert.alert(
-                <string>title,
+                title as string,
                 message,
                 buttons === undefined
-                    ? [{ label: "OK", onPress: () => resolve(null) }]
+                    ? [{ text: "OK", onPress: () => resolve(null) }]
                     : Array.isArray(buttons)
-                    ? buttons.map((b, i) => ({ ...b, onPress: () => resolve(<keyof B>i) }))
-                    : Object.entries(buttons).map(([k, b]) => ({ ...b, onPress: () => resolve(<keyof B>k) })),
+                      ? buttons.map((b, i) => ({ ...b, onPress: () => resolve(i as keyof B) }))
+                      : Object.entries(buttons).map(([k, b]) => ({ ...b, onPress: () => resolve(k as keyof B) })),
                 {
                     ...options,
                     onDismiss: () => resolve(null),
-                }
+                },
             );
         });
 }

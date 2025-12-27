@@ -1,4 +1,7 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const path = require("node:path");
+
+const projectRoot = __dirname;
 
 /**
  * Metro configuration
@@ -9,6 +12,9 @@ const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 const config = {
     resolver: {
         unstable_enablePackageExports: true,
+    },
+    alias: {
+        "@": path.resolve(projectRoot, "src"),
     }
 };
 

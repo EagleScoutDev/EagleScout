@@ -3,8 +3,6 @@ import { View } from "react-native";
 
 export interface ActionRowProps extends PropsWithChildren {}
 export function ActionRow({ children }: ActionRowProps) {
-    "use memo";
-
     return (
         <View
             style={{

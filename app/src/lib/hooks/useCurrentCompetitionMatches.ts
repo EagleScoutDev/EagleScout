@@ -1,8 +1,8 @@
-import { type TBAMatch, TBAMatches } from "../../database/TBAMatches";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FormHelper } from "../../FormHelper";
-import { CompetitionsDB } from "../../database/Competitions";
+import { type TBAMatch, TBAMatches } from "@/lib/database/TBAMatches";
+import { FormHelper } from "@/lib/FormHelper";
+import { CompetitionsDB } from "@/lib/database/Competitions";
 import { useCallback, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useCurrentCompetitionMatches() {
     const [competitionId, setCompetitionId] = useState<number>(-1);

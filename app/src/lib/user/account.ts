@@ -61,10 +61,10 @@ export namespace Accounts {
                 status: user.user_metadata.requested_deletion
                     ? AccountStatus.Deleted
                     : !uattr.org_id // FIXME: 0 shouldn't be cast to false here
-                    ? AccountStatus.Onboarding
-                    : !uattr.scouter
-                    ? AccountStatus.Approval
-                    : AccountStatus.Approved,
+                      ? AccountStatus.Onboarding
+                      : !uattr.scouter
+                        ? AccountStatus.Approval
+                        : AccountStatus.Approved,
             };
         }
     }

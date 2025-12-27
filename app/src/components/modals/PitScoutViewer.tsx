@@ -1,14 +1,12 @@
 import { FlatList, Image, Modal, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { UIText } from "../../ui/UIText";
-
 import { useEffect, useState } from "react";
-import { UIRadio } from "../../ui/input/UIRadio";
-import { UICheckboxes } from "../../ui/input/UICheckboxes";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { type PitReportReturnData, PitReportsDB } from "../../database/ScoutPitReports";
-import * as Bs from "../../ui/icons";
-import { Color } from "../../lib/color.ts";
-import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
+import * as Bs from "@/ui/icons";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
+import { UIRadio } from "@/ui/components/UIRadio";
+import { UICheckboxes } from "@/ui/components/UICheckboxes";
 
 interface PitScoutViewerProps {
     visible: boolean;
@@ -189,7 +187,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                             <UIText
                                                 size={15}
                                                 bold
-                                                color={Color.parse(colors.primary.hex)}
+                                                color={colors.primary}
                                                 style={{
                                                     flex: 1,
                                                     textAlign: field.type === "textbox" ? "left" : "center",
@@ -200,12 +198,7 @@ export function PitScoutViewer({ visible, setVisible, data }: PitScoutViewerProp
                                             </UIText>
                                         )}
                                         {(field.data == null || field.data === "") && (
-                                            <UIText
-                                                size={15}
-                                                bold
-                                                color={Color.parse(colors.danger.hex)}
-                                                style={styles.no_info}
-                                            >
+                                            <UIText size={15} bold color={colors.danger} style={styles.no_info}>
                                                 N/A
                                             </UIText>
                                         )}

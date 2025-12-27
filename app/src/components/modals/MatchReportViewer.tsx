@@ -1,25 +1,19 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { UIRadio } from "../../ui/input/UIRadio.tsx";
-import { UICheckboxes } from "../../ui/input/UICheckboxes.tsx";
-import { UISheetModal, type UISheetModal as UISheetModalType } from "../../ui/UISheetModal.tsx";
-import { UISheet } from "../../ui/UISheet.tsx";
-import { Color } from "../../lib/color.ts";
-import { supabase } from "../../lib/supabase.ts";
-import { type UserAttributeReturnData, UserAttributesDB } from "../../database/UserAttributes.ts";
-import {
-    type MatchReportHistory,
-    type MatchReportReturnData,
-    MatchReportsDB,
-} from "../../database/ScoutMatchReports.ts";
-import { exMemo } from "../../lib/util/react/memo.ts";
-import { Form } from "../../lib/forms";
-import { FormQuestion } from "../../forms/components/FormQuestion.tsx";
-import { UITextInput } from "../../ui/input/UITextInput.tsx";
-import { UIText } from "../../ui/UIText.tsx";
-import { useTheme } from "../../lib/contexts/ThemeContext.ts";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { Form } from "@/lib/forms";
 import { SafeAreaInsetsContext, SafeAreaProvider } from "react-native-safe-area-context";
+import { type MatchReportHistory, type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UISheetModal } from "@/ui/components/UISheetModal";
+import { type UserAttributeReturnData, UserAttributesDB } from "@/lib/database/UserAttributes";
+import { supabase } from "@/lib/supabase";
+import { UISheet } from "@/ui/components/UISheet";
+import { UICheckboxes } from "@/ui/components/UICheckboxes";
+import { UIText } from "@/ui/components/UIText";
+import { FormQuestion } from "@/components/FormQuestion";
+import { UIRadio } from "@/ui/components/UIRadio";
+import { UITextInput } from "@/ui/components/UITextInput";
 
 export interface MatchReportViewerProps {
     ref?: React.Ref<MatchReportViewer>;
@@ -43,12 +37,26 @@ export function MatchReportViewer({
     navigateToTeamViewer,
     onEdit,
 }: MatchReportViewerProps) {
-    "use memo";
-
     const { colors } = useTheme();
-    const s = getStyles(colors);
+    const s = StyleSheet.create({
+        sectionTitle: {
+            color: colors.fg.hex,
+            fontSize: 18,
+            textAlign: "center",
+            fontWeight: "bold",
+            marginTop: 32,
+            marginBottom: 8,
+        },
+        na: {
+            color: colors.danger.hex,
+            fontWeight: "bold",
+            flexWrap: "wrap",
+            fontSize: 15,
+            flex: 1,
+        },
+    });
 
-    const modalRef = useRef<UISheetModalType>(null);
+    const modalRef = useRef<UISheetModal>(null);
     const [userName, setUserName] = useState<null>(null);
     const formData = data.data;
 
@@ -63,29 +71,15 @@ export function MatchReportViewer({
 
     const [editing, setEditing] = useState(false);
 
-    const [historySelectorModalVisible, setHistorySelectorModalVisible] = useState(false);
-    const [historyButtonEnabled, setHistoryButtonEnabled] = useState(false);
-    const [historyButtonVisible, setHistoryButtonVisible] = useState(true);
-    const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(0);
-
     // this is the history of the form fetched from scout_edit_reports
-    const [formHistory, setFormHistory] = useState<MatchReportHistory[]>([]);
+    const [formHistory, setFormHistory] = useState<MatchReportHistory[] | null>(null);
 
-    const refreshHistory = useCallback(async () => {
-        setHistoryButtonVisible(false);
-        if (data && !isOfflineForm) {
-            const history = await MatchReportsDB.getReportHistory(data.reportId);
-            if (history.length !== 0) {
-                setHistoryButtonVisible(true);
-                setFormHistory(history);
-            }
-        }
-    }, [data, isOfflineForm]);
+    async function refreshHistory() {
+        setFormHistory(data && !isOfflineForm ? await MatchReportsDB.getReportHistory(data.reportId) : null);
+    }
 
     useEffect(() => {
-        (async () => {
-            await refreshHistory();
-        })();
+        refreshHistory();
     }, [data, isOfflineForm, refreshHistory]);
 
     const [authUserId, setAuthUserId] = useState<string | null>(null);
@@ -120,137 +114,133 @@ export function MatchReportViewer({
     const canEdit = authUserId === data.userId || (authUserAttributes && authUserAttributes.admin) || isOfflineForm;
 
     return (
-        <>
-            <UISheetModal
-                ref={modalRef}
-                backdropPressBehavior="close"
-                onDismiss={onDismiss}
-                handleComponent={null}
-                enablePanDownToClose
-            >
-                {!editing && (
-                    <UISheet.Header
-                        title={"Scout Report"}
-                        left={
-                            !!onEdit &&
-                            !selectedHistoryId && {
-                                text: "Edit",
-                                color: Color.parse(colors.primary.hex),
-                                onPress: () => setEditing(true),
-                            }
+        <UISheetModal
+            ref={modalRef}
+            backdropPressBehavior="close"
+            onDismiss={onDismiss}
+            handleComponent={null}
+            enablePanDownToClose
+        >
+            {!editing && (
+                <UISheet.Header
+                    title={"Scout Report"}
+                    left={
+                        !!onEdit && {
+                            text: "Edit",
+                            color: colors.primary,
+                            onPress: () => setEditing(true),
                         }
-                        right={{
-                            text: "Done",
-                            color: Color.parse(colors.primary.hex),
-                            onPress: () => modalRef.current?.dismiss(),
-                        }}
-                    />
-                )}
-                {editing && (
-                    <UISheet.Header
-                        title={"Scout Report"}
-                        left={{
-                            text: "Cancel",
-                            color: Color.parse(colors.danger.hex),
-                            onPress: () => setEditing(false),
-                        }}
-                        right={{
-                            text: "Save",
-                            color: Color.parse(colors.primary.hex),
-                            onPress: () => setEditing(false),
-                        }}
-                    />
-                )}
-                <SafeAreaProvider>
-                    <SafeAreaInsetsContext.Consumer
-                        children={(insets) => {
-                            console.log(insets);
-                            return (
-                                <FlatList
-                                    contentContainerStyle={{ padding: 16 }}
-                                    scrollIndicatorInsets={{ bottom: 34 }}
-                                    ListHeaderComponent={
-                                        <ReportMetadataView
-                                            data={data}
-                                            navigateToTeamViewer={navigateToTeamViewer}
-                                            userName={userName}
-                                        />
-                                    }
-                                    data={data.form}
-                                    renderItem={({ item, index }) => (
-                                        <View key={index}>
-                                            {item.type === Form.ItemType.heading ? (
-                                                <UIText style={s.sectionTitle}>{item.title}</UIText>
-                                            ) : item.type === Form.ItemType.radio ||
-                                              item.type === Form.ItemType.textbox ||
-                                              item.type === Form.ItemType.checkbox ? (
-                                                <View style={{ padding: 8 }}>
-                                                    <FormQuestion title={item.question} required={item.required}>
-                                                        {item.type === Form.ItemType.radio && (
-                                                            <UIRadio
-                                                                disabled={!editing}
-                                                                options={item.options}
-                                                                onInput={(value) => {}}
-                                                                value={item.options[formData[index]]}
-                                                            />
-                                                        )}
-                                                        {item.type === Form.ItemType.checkbox && (
-                                                            <UICheckboxes
-                                                                disabled={!editing}
-                                                                options={item.options}
-                                                                onInput={(value) => {}}
-                                                                value={formData[index] ?? []}
-                                                            />
-                                                        )}
-                                                        {item.type === Form.ItemType.textbox && (
-                                                            <UITextInput
-                                                                multiline={true}
-                                                                disabled={!editing}
-                                                                placeholder={"Type here"}
-                                                                value={formData[index]}
-                                                                onChangeText={(value) => {}}
-                                                            />
-                                                        )}
-                                                    </FormQuestion>
-                                                </View>
-                                            ) : (
-                                                <View
-                                                    style={{
-                                                        backgroundColor:
-                                                            index % 2 === 0 ? colors.bg1.hex : "transparent",
-                                                        padding: 8,
-                                                        borderRadius: 8,
-                                                    }}
-                                                >
-                                                    <FormQuestion title={item.question} required={item.required} inline>
-                                                        {formData[index] === null ? (
-                                                            <UIText style={s.na}>N/A</UIText>
-                                                        ) : (
-                                                            <UIText
-                                                                style={{
-                                                                    color: colors.fg.hex,
-                                                                    fontWeight: "bold",
-                                                                    fontSize: 20,
-                                                                    marginLeft: "auto",
-                                                                    textAlign: "center",
-                                                                    paddingHorizontal: 32,
-                                                                }}
-                                                            >
-                                                                {formData[index] ?? ""}
-                                                            </UIText>
-                                                        )}
-                                                    </FormQuestion>
-                                                </View>
-                                            )}
-                                        </View>
-                                    )}
-                                />
-                            );
-                        }}
-                    />
-                </SafeAreaProvider>
-            </UISheetModal>
-        </>
+                    }
+                    right={{
+                        text: "Done",
+                        color: colors.primary,
+                        onPress: () => modalRef.current?.dismiss(),
+                    }}
+                />
+            )}
+            {editing && (
+                <UISheet.Header
+                    title={"Scout Report"}
+                    left={{
+                        text: "Cancel",
+                        color: colors.danger,
+                        onPress: () => setEditing(false),
+                    }}
+                    right={{
+                        text: "Save",
+                        color: colors.primary,
+                        onPress: () => setEditing(false),
+                    }}
+                />
+            )}
+            <SafeAreaProvider>
+                <SafeAreaInsetsContext.Consumer
+                    children={(insets) => {
+                        console.log(insets);
+                        return (
+                            <FlatList
+                                contentContainerStyle={{ padding: 16 }}
+                                scrollIndicatorInsets={{ bottom: 34 }}
+                                ListHeaderComponent={
+                                    <ReportMetadataView
+                                        data={data}
+                                        navigateToTeamViewer={navigateToTeamViewer}
+                                        userName={userName}
+                                    />
+                                }
+                                data={data.form}
+                                renderItem={({ item, index }) => (
+                                    <View key={index}>
+                                        {item.type === Form.ItemType.heading ? (
+                                            <UIText style={s.sectionTitle}>{item.title}</UIText>
+                                        ) : item.type === Form.ItemType.radio ||
+                                          item.type === Form.ItemType.textbox ||
+                                          item.type === Form.ItemType.checkbox ? (
+                                            <View style={{ padding: 8 }}>
+                                                <FormQuestion title={item.question} required={item.required}>
+                                                    {item.type === Form.ItemType.radio && (
+                                                        <UIRadio
+                                                            disabled={!editing}
+                                                            options={item.options}
+                                                            onInput={(value) => {}}
+                                                            value={item.options[formData[index]]}
+                                                        />
+                                                    )}
+                                                    {item.type === Form.ItemType.checkbox && (
+                                                        <UICheckboxes
+                                                            disabled={!editing}
+                                                            options={item.options}
+                                                            onInput={(value) => {}}
+                                                            value={formData[index] ?? []}
+                                                        />
+                                                    )}
+                                                    {item.type === Form.ItemType.textbox && (
+                                                        <UITextInput
+                                                            multiline={true}
+                                                            disabled={!editing}
+                                                            placeholder={"Type here"}
+                                                            value={formData[index]}
+                                                            onChangeText={(value) => {}}
+                                                        />
+                                                    )}
+                                                </FormQuestion>
+                                            </View>
+                                        ) : (
+                                            <View
+                                                style={{
+                                                    backgroundColor: index % 2 === 0 ? colors.bg1.hex : "transparent",
+                                                    padding: 8,
+                                                    borderRadius: 8,
+                                                }}
+                                            >
+                                                <FormQuestion title={item.question} required={item.required} inline>
+                                                    {formData[index] === null ? (
+                                                        <UIText style={s.na}>N/A</UIText>
+                                                    ) : (
+                                                        <UIText
+                                                            style={{
+                                                                color: colors.fg.hex,
+                                                                fontWeight: "bold",
+                                                                fontSize: 20,
+                                                                marginLeft: "auto",
+                                                                textAlign: "center",
+                                                                paddingHorizontal: 32,
+                                                            }}
+                                                        >
+                                                            {formData[index] ?? ""}
+                                                        </UIText>
+                                                    )}
+                                                </FormQuestion>
+                                            </View>
+                                        )}
+                                    </View>
+                                )}
+                            />
+                        );
+                    }}
+                />
+            </SafeAreaProvider>
+        </UISheetModal>
     );
 }
 
@@ -263,8 +253,6 @@ function ReportMetadataView({
     userName: string | null;
     navigateToTeamViewer: () => void;
 }) {
-    "use memo";
-
     const { colors } = useTheme();
 
     return (
@@ -288,23 +276,3 @@ function ReportMetadataView({
         </View>
     );
 }
-
-const getStyles = exMemo((colors: Theme["colors"]) =>
-    StyleSheet.create({
-        sectionTitle: {
-            color: colors.fg.hex,
-            fontSize: 18,
-            textAlign: "center",
-            fontWeight: "bold",
-            marginTop: 32,
-            marginBottom: 8,
-        },
-        na: {
-            color: colors.danger.hex,
-            fontWeight: "bold",
-            flexWrap: "wrap",
-            fontSize: 15,
-            flex: 1,
-        },
-    })
-);
