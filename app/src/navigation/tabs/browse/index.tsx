@@ -2,18 +2,16 @@ import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-
 import { Platform } from "react-native";
 import { useStackThemeConfig } from "@/ui/lib/theme/native";
 
-import { BrowseTabMain } from "./BrowseTabMain";
 import { TeamSummary, type TeamSummaryParams } from "./(team)/TeamSummary";
 import { TeamReports, type TeamReportsParams } from "./(team)/TeamReports";
 import { TeamAutoPaths, type TeamAutoPathsParams } from "./(team)/TeamAutoPaths";
-import { SearchModal, type SearchModalParams } from "./SearchModal";
 import { CompareTeams, type CompareTeamsParams } from "./(team)/components/CompareTeams";
+import { BrowseTabMain } from "@/navigation/tabs/browse/BrowseTabMain";
 
 const Stack = createNativeStackNavigator<BrowseTabParamList>();
 export type BrowseTabScreenProps<K extends keyof BrowseTabParamList> = NativeStackScreenProps<BrowseTabParamList, K>;
 export type BrowseTabParamList = {
     Main: undefined;
-    SearchModal: SearchModalParams;
 
     TeamViewer: TeamSummaryParams;
     TeamReports: TeamReportsParams;
@@ -27,13 +25,6 @@ export function BrowseTab() {
             <Stack.Screen
                 name="Main"
                 component={BrowseTabMain}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name="SearchModal"
-                component={SearchModal}
                 options={{
                     headerShown: false,
                 }}

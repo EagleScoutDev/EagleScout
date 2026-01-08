@@ -52,8 +52,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "binoculars.fill" }
                             : focused
-                              ? require("bootstrap-icons/icons/binoculars-fill.svg")
-                              : require("bootstrap-icons/icons/binoculars.svg"),
+                            ? require("bootstrap-icons/icons/binoculars-fill.svg")
+                            : require("bootstrap-icons/icons/binoculars.svg"),
                 }}
             />
             <Tab.Screen
@@ -65,8 +65,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "magnifyingglass" }
                             : focused
-                              ? require("bootstrap-icons/icons/search-heart-fill.svg")
-                              : require("bootstrap-icons/icons/search.svg"),
+                            ? require("bootstrap-icons/icons/search-heart-fill.svg")
+                            : require("bootstrap-icons/icons/search.svg"),
                 }}
             />
             <Tab.Screen
@@ -78,8 +78,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "chart.bar.xaxis" }
                             : focused
-                              ? require("bootstrap-icons/icons/bar-chart-fill.svg")
-                              : require("bootstrap-icons/icons/bar-chart.svg"),
+                            ? require("bootstrap-icons/icons/bar-chart-fill.svg")
+                            : require("bootstrap-icons/icons/bar-chart.svg"),
                 }}
             />
             <Tab.Screen
@@ -91,8 +91,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "person.fill" }
                             : focused
-                              ? require("bootstrap-icons/icons/person-fill.svg")
-                              : require("bootstrap-icons/icons/person.svg"),
+                            ? require("bootstrap-icons/icons/person-fill.svg")
+                            : require("bootstrap-icons/icons/person.svg"),
                 }}
             />
         </Tab.Navigator>

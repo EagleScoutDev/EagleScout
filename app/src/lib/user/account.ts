@@ -60,7 +60,7 @@ export namespace Accounts {
                 role: uattr.admin ? AccountRole.Admin : uattr.scouter ? AccountRole.Scouter : AccountRole.Rejected,
                 status: user.user_metadata.requested_deletion
                     ? AccountStatus.Deleted
-                    : !uattr.org_id // FIXME: 0 shouldn't be cast to false here
+                    : !uattr.org_id // FIXME: if the organization id is 0, then this will become false
                       ? AccountStatus.Onboarding
                       : !uattr.scouter
                         ? AccountStatus.Approval

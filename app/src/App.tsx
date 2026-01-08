@@ -14,6 +14,11 @@ import { ThemeContext } from "@/ui/context/ThemeContext";
 import { Appearance } from "react-native";
 import { withStallion } from "react-native-stallion";
 import { RootNavigator } from "@/navigation";
+import { QueryClient } from "@tanstack/query-core";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Bruh } from "@/bruh.tsx";
+
+const queryClient = new QueryClient();
 
 function App() {
     const themePreference = useLocalStore((state) => state.theme) ?? ThemeOption.system;
@@ -26,6 +31,7 @@ function App() {
 
     return (
         // <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
             <ThemeContext.Provider
                 value={{
                     themePreference,
@@ -50,6 +56,7 @@ function App() {
                     </SafeAreaProvider>
                 </GestureHandlerRootView>
             </ThemeContext.Provider>
+        </QueryClientProvider>
         // </ErrorBoundary>
     );
 }

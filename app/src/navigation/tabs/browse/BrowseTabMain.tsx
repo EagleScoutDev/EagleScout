@@ -1,294 +1,366 @@
-import { Alert, FlatList, Modal, Pressable, TouchableOpacity, View } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, TextInput, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import { type SimpleTeam, TBA } from "@/lib/frc/tba/TBA";
-import { CompetitionChanger } from "@/navigation/tabs/browse/(team)/components/CompetitionChanger";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { NotesDB, type NoteWithMatch } from "@/lib/database/ScoutNotes";
-import { isTablet } from "@/lib/deviceType";
 import type { BrowseTabScreenProps } from "./index";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
-import { MatchReportViewer } from "@/components/modals/MatchReportViewer";
-import { NoteList } from "@/components/NoteList";
+import { UIText } from "@/ui/components/UIText";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { PressableOpacity } from "@/components/PressableOpacity";
+import { useNavigation } from "@react-navigation/native";
+import { UITabView } from "@/ui/components/UITabView";
+import { useQuery } from "@tanstack/react-query";
+import { CompetitionsDB } from "@/lib/database/Competitions";
+import { TBA } from "@/lib/frc/tba/TBA";
+import { UIListPicker } from "@/ui/components/UIListPicker";
+import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
+import { KeyboardController } from "react-native-keyboard-controller";
+import Animated from "react-native-reanimated";
+import { Alliance } from "@/frc/common/common.ts";
+import { UIGridLayout } from "@/ui/components/UIGridLayout";
 
 export interface BrowseTabMainProps extends BrowseTabScreenProps<"Main"> {}
 export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
     const { colors } = useTheme();
-    const [listOfTeams, setListOfTeams] = useState<SimpleTeam[]>([]);
 
-    const [competitionId, setCompetitionId] = useState<number>(-1); // default to 2023mttd
+    const { competition: currentCompetition } = useCurrentCompetition();
+    const [activeComp, setActiveComp] = useState<number | null>(null);
 
-    const [reportsByMatch, setReportsByMatch] = useState<Map<number, MatchReportReturnData[]>>(new Map());
-    const [notesByMatch, setNotesByMatch] = useState<Map<number, NoteWithMatch[]>>(new Map());
-
-    const [scoutViewerVisible, setScoutViewerVisible] = useState<boolean>(false);
-    const [currentReport, setCurrentReport] = useState<MatchReportReturnData>();
-    const [notesViewerVisible, setNotesViewerVisible] = useState<boolean>(false);
-    const [currentMatchNumber, setCurrentMatchNumber] = useState<number>(0);
-
-    // const [isScrolling, setIsScrolling] = useState<boolean>(false);
-
-    // used for hiding and showing header
-    const [prevScrollY, setPrevScrollY] = useState<number>(0);
-
-    // for searching
-    const [searchActive, setSearchActive] = useState<boolean>(false);
-
-    // indicates if competition data is still being fetched
-    const [fetchingData, setFetchingData] = useState<boolean>(false);
-
-    // used for animating the search bar hiding and showing
-    // useEffect(() => {
-    //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    // }, [isScrolling]);
-
-    const fetchData = useCallback(() => {
-        if (competitionId !== -1) {
-            setFetchingData(true);
-            MatchReportsDB.getReportsForCompetition(competitionId).then((reports) => {
-                // console.log('num reports found for id 8 is ' + reports.length);
-
-                // sort reports by match number
-                reports.sort((a, b) => {
-                    return a.matchNumber - b.matchNumber;
-                });
-
-                // create an object where key is match number and value is an array of reports
-                let temp: Map<number, MatchReportReturnData[]> = new Map();
-                reports.forEach((report) => {
-                    if (temp.has(report.matchNumber)) {
-                        temp.get(report.matchNumber)?.push(report);
-                    } else {
-                        temp.set(report.matchNumber, [report]);
-                    }
-                });
-
-                setReportsByMatch(temp);
-            });
-
-            NotesDB.getNotesForCompetition(competitionId).then((notes) => {
-                notes.sort((a, b) => {
-                    return a.match_number - b.match_number;
-                });
-
-                let temp: Map<number, NoteWithMatch[]> = new Map();
-                for (const note of notes) {
-                    if (temp.has(note.match_number)) {
-                        temp.get(note.match_number)?.push(note);
-                    } else {
-                        temp.set(note.match_number, [note]);
-                    }
-                }
-                setNotesByMatch(temp);
-            });
-
-            CompetitionsDB.getCompetitionTBAKey(competitionId).then((key) => {
-                TBA.getTeamsAtCompetition(key).then((teams) => {
-                    // sort teams by team number
-                    teams.sort((a, b) => {
-                        return a.team_number - b.team_number;
-                    });
-                    setListOfTeams(teams);
-                    setFetchingData(false);
-                });
-            });
-            // console.log(listOfTeams);
-        }
-    }, [competitionId]);
-
-    const navigateToTeamViewer = (team: SimpleTeam) => {
-        navigation.navigate("TeamViewer", {
-            team: team,
-            competitionId: competitionId,
-        });
-    };
-
-    // initial data fetch
     useEffect(() => {
-        fetchData();
-        navigation.addListener("focus", () => {
-            fetchData();
-        });
-    }, [fetchData, navigation]);
+        if (activeComp === null && currentCompetition !== null) {
+            setActiveComp(currentCompetition.id);
+        }
+    }, [currentCompetition]);
 
-    const navigateIntoReport = (report: MatchReportReturnData) => {
-        setScoutViewerVisible(true);
-        setCurrentReport(report);
-    };
+    const { data: competitions, isLoading: competitionsLoading } = useQuery({
+        queryKey: ["competitions"],
+        queryFn: async () =>
+            (await CompetitionsDB.getCompetitions()).sort((a, b) => b.startTime.valueOf() - a.startTime.valueOf()),
+        select: (comps) => new Map(comps.map((comp) => [comp.id, comp])),
+        throwOnError: true,
+    });
+
+    const [filterState, setFilterState] = useState<"team" | "match">("match");
+
+    const [query, setQuery] = useState<string | null>("");
+    const searching = query !== null;
+    const searchPlaceholder = {
+        team: 'Try "114" or "Eaglestrike"',
+        match: 'Try "10"',
+    }[filterState];
+
+    const searchboxRef = useRef<TextInput>(null);
+
+    useEffect(() => navigation.addListener("focus", () => setQuery(null)), []);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View>
+        <SafeAreaProvider>
+            <SafeAreaView edges={["top", "left", "right"]} style={{ backgroundColor: colors.bg2.hex }}>
                 <View
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: isTablet() ? "0%" : "2%",
+                        height: 56,
+                        paddingHorizontal: 4,
+                        backgroundColor: colors.bg2.hex,
+                        borderBottomWidth: 1,
+                        borderColor: colors.border.hex,
                     }}
                 >
-                    <CompetitionChanger
-                        currentCompId={competitionId}
-                        setCurrentCompId={setCompetitionId}
-                        loading={fetchingData}
-                    />
-                    {!fetchingData && (
-                        <Pressable
-                            style={{
-                                paddingHorizontal: "8%",
-                                paddingVertical: "4%",
-                                // backgroundColor: colors.bg1.hex,
-                            }}
-                            onPress={() => {
-                                navigation.navigate("SearchModal", {
-                                    teams: listOfTeams,
-                                    reportsByMatch: reportsByMatch,
-                                    competitionId: competitionId,
-                                });
-                            }}
-                        >
-                            <Bs.Search size="20" fill={colors.fg.hex} />
-                        </Pressable>
-                    )}
+                    <Animated.View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            height: "100%",
+                            overflow: "hidden",
+                            transitionProperty: "flex",
+                            transitionDuration: 200,
+                            flex: searching ? 0 : 1,
+                        }}
+                    >
+                        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+                            {competitionsLoading || competitions === undefined ? (
+                                <ActivityIndicator size="small" color={colors.fg.hex} />
+                            ) : (
+                                <UIListPicker
+                                    title="Select Competition"
+                                    options={Array.from(competitions.keys())}
+                                    render={(id) => {
+                                        const comp = competitions.get(id);
+                                        return { name: comp?.name ?? "Unknown" };
+                                    }}
+                                    value={activeComp}
+                                    onChange={setActiveComp}
+                                    Display={({ value: id, present }) => (
+                                        <PressableOpacity
+                                            style={{ flexDirection: "row", alignItems: "center" }}
+                                            onPress={present}
+                                        >
+                                            <UIText size={16}>
+                                                {id === null ? "" : competitions.get(id)?.name ?? "Unknown Competition"}
+                                            </UIText>
+                                            <View style={{ flex: 1 }} />
+                                            <Bs.ChevronDown size={18} color={colors.fg.hex} />
+                                        </PressableOpacity>
+                                    )}
+                                />
+                            )}
+                        </View>
+                    </Animated.View>
+
+                    <PressableOpacity
+                        style={{ padding: 16 }}
+                        onPress={() => {
+                            if (!searching) {
+                                setQuery("");
+                                searchboxRef.current?.focus();
+                            }
+                        }}
+                    >
+                        <Bs.Search
+                            size={searching ? 20 : 24}
+                            fill={searching ? colors.placeholder.hex : colors.fg.hex}
+                        />
+                    </PressableOpacity>
+
+                    <Animated.View
+                        style={{
+                            flexDirection: "row",
+                            height: "100%",
+                            overflow: "hidden",
+                            transitionProperty: "flex",
+                            transitionDuration: 200,
+                            flex: searching ? 1 : 0,
+                        }}
+                    >
+                        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+                            <TextInput
+                                ref={searchboxRef}
+                                style={{ color: colors.fg.hex, fontSize: 16, flex: 1 }}
+                                onChangeText={setQuery}
+                                value={query ?? ""}
+                                placeholderTextColor={colors.placeholder.hex}
+                                placeholder={searchPlaceholder}
+                                onEndEditing={(e) => {
+                                    if (e.nativeEvent.text === "") setQuery(null);
+                                }}
+                            />
+                            <PressableOpacity
+                                style={{ padding: 16 }}
+                                onPress={() => {
+                                    setQuery(null);
+                                    KeyboardController.dismiss();
+                                }}
+                            >
+                                <Bs.XLg size={24} color={colors.fg.hex} />
+                            </PressableOpacity>
+                        </View>
+                    </Animated.View>
                 </View>
-                <View
-                    style={{
-                        height: 1,
-                        width: "100%",
-                        backgroundColor: colors.border.hex,
-                    }}
+            </SafeAreaView>
+
+            {/* FIXME: removing this wrapper View bricks activityindicators???  */}
+            <View style={{ height: "100%" }}>
+                <UITabView
+                    keyboardDismissMode={"none"}
+                    currentKey={filterState}
+                    onTabChange={setFilterState}
+                    tabs={[
+                        {
+                            key: "team",
+                            title: "Team",
+                            component: () => <TeamList query={query} competitionId={activeComp} />,
+                        },
+                        {
+                            key: "match",
+                            title: "Match",
+                            component: () => <MatchList query={query} competitionId={activeComp} />,
+                        },
+                    ]}
                 />
             </View>
-            {reportsByMatch.size === 0 && (
-                <View
+        </SafeAreaProvider>
+    );
+}
+
+interface TeamListProps {
+    query: string | null;
+    competitionId: number | null;
+}
+function TeamList({ query, competitionId }: TeamListProps) {
+    const navigation = useNavigation();
+    const { colors } = useTheme();
+    const [refreshing, setRefreshing] = useState(false);
+
+    const {
+        data: teams,
+        isLoading,
+        refetch,
+    } = useQuery({
+        queryKey: ["tba", "teamsAtCompetition", { competitionId }],
+        queryFn: async () =>
+            (await TBA.getTeamsAtCompetition(await CompetitionsDB.getCompetitionTBAKey(competitionId!))).sort(
+                (a, b) => a.team_number - b.team_number
+            ),
+        throwOnError: true,
+        enabled: competitionId !== null,
+    });
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await refetch();
+        setRefreshing(false);
+    };
+
+    if (competitionId === null || isLoading || teams === undefined) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color={colors.fg.hex} />
+            </View>
+        );
+    }
+
+    const displayTeams =
+        query === null
+            ? teams
+            : teams.filter(
+                  ({ team_number, nickname }) =>
+                      team_number.toString().includes(query) || nickname.toLowerCase().includes(query.toLowerCase())
+              );
+
+    return (
+        <FlatList
+            data={displayTeams}
+            keyExtractor={(team) => team.team_number.toString()}
+            contentInsetAdjustmentBehavior={"automatic"}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.fg.hex} />}
+            renderItem={({ item: team }) => (
+                <Pressable
+                    onPress={() => {
+                        navigation.navigate("HomeTabs", {
+                            screen: "Browse",
+                            params: {
+                                screen: "TeamViewer",
+                                params: {
+                                    team,
+                                    competitionId,
+                                },
+                            },
+                        });
+                    }}
                     style={{
-                        flex: 1,
-                        justifyContent: "center",
+                        flexDirection: "row",
                         alignItems: "center",
+                        height: 48,
+                        paddingHorizontal: 16,
+                        borderBottomWidth: 1,
+                        borderBottomColor: colors.border.hex,
                     }}
                 >
-                    <UIText size={20} style={{ textAlign: "center" }}>
-                        No reports found
+                    <UIText size={16} style={{ flex: 1 }}>
+                        {team.team_number}
                     </UIText>
-                    <UIText size={18} placeholder style={{ textAlign: "center", marginTop: 20 }}>
-                        Select a competition above to get started
+                    <UIText size={16} style={{ flex: 5 }}>
+                        {team.nickname}
                     </UIText>
-                </View>
+                    <Bs.ChevronRight size={18} fill={colors.fg.hex} style={{ flex: 1 }} />
+                </Pressable>
             )}
-            <FlatList
-                data={Array.from(reportsByMatch.keys()).reverse()}
-                keyExtractor={(item) => item.toString()}
-                renderItem={({ item }) => {
-                    return (
-                        <View>
-                            <View
-                                style={{
-                                    minWidth: "100%",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    marginVertical: "3%",
-                                }}
-                            >
-                                <UIText size={18} bold placeholder style={{ marginHorizontal: "4%" }}>
-                                    {item}
-                                </UIText>
-                                <View
-                                    style={{
-                                        height: 2,
-                                        backgroundColor: colors.border.hex,
-                                        flex: 1,
-                                    }}
-                                />
-                                <TouchableOpacity
-                                    style={{
-                                        backgroundColor: colors.bg1.hex,
-                                        padding: "3%",
-                                        borderRadius: 99,
-                                        marginRight: "4%",
-                                    }}
+        />
+    );
+}
+
+interface MatchListProps {
+    query: string | null;
+    competitionId: number | null;
+}
+function MatchList({ query, competitionId }: MatchListProps) {
+    const { colors } = useTheme();
+    const [refreshing, setRefreshing] = useState(false);
+
+    const {
+        data: matches,
+        isLoading,
+        refetch,
+    } = useQuery({
+        queryKey: ["matchReports", { competitionId }],
+        queryFn: () => MatchReportsDB.getReportsForCompetition(competitionId!),
+        throwOnError: true,
+        enabled: competitionId !== null,
+        select: (reports) => {
+            const matches = new Map<number, { id: number; reports: MatchReportReturnData[] }>();
+            for (let report of reports) {
+                if (matches.has(report.matchNumber)) {
+                    matches.get(report.matchNumber)?.reports.push(report);
+                } else {
+                    matches.set(report.matchNumber, { id: report.matchNumber, reports: [report] });
+                }
+            }
+            return Array.from(matches.values());
+        },
+    });
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await refetch();
+        setRefreshing(false);
+    };
+
+    if (competitionId === null || isLoading || matches === undefined) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color={colors.fg.hex} />
+            </View>
+        );
+    }
+
+    const displayMatches = query === null ? matches : matches.filter(({ id }) => id.toString().includes(query));
+
+    return (
+        <FlatList
+            contentContainerStyle={{
+                padding: 16,
+            }}
+            data={displayMatches}
+            keyExtractor={(matchId) => matchId.toString()}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.fg.hex} />}
+            renderItem={({ item: { id, reports } }) => {
+                return (
+                    <View style={{ marginBottom: 16, maxWidth: 400 }}>
+                        <UIText
+                            style={{
+                                color: colors.fg.hex,
+                                fontWeight: "bold",
+                                fontSize: 18,
+                                marginBottom: 8,
+                            }}
+                        >
+                            Match {id}
+                        </UIText>
+                        <UIGridLayout columns={3} gap={8}>
+                            {reports.map((report, i) => (
+                                <Pressable
+                                    key={i}
                                     onPress={() => {
-                                        setNotesViewerVisible(true);
-                                        setCurrentMatchNumber(item);
+                                        throw new Error("bruh");
+                                    }}
+                                    style={{
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: Alliance.getColor(i < 3 ? Alliance.red : Alliance.blue).hex, // TODO: store alliance color in each match report instead of guessing by index
+                                        padding: 16,
+                                        borderRadius: 10,
                                     }}
                                 >
-                                    <Bs.StickyFill size="16" fill={colors.primary.fg.hex} />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={{
-                                    // make it like a 3x2 grid
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                }}
-                            >
-                                {reportsByMatch.get(item)?.map((report, index) => {
-                                    return (
-                                        <Pressable
-                                            key={report.reportId}
-                                            onPress={() => {
-                                                navigateIntoReport(report);
-                                            }}
-                                            style={{
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                                // borderWidth: 1,
-                                                backgroundColor: index < 3 ? "red" : "dodgerblue",
-                                                // shadowColor: colors.bg1.hex,
-                                                // shadowOffset: {width: 0, height: 2},
-                                                // shadowOpacity: 0.25,
-                                                // shadowRadius: 4,
-                                                // elevation: 5,
-                                                borderColor: colors.fg.hex,
-
-                                                margin: "2%",
-                                                padding: "6%",
-                                                borderRadius: 10,
-                                                minWidth: "25%",
-                                                // backgroundColor: colors.bg1.hex,
-                                            }}
-                                        >
-                                            <UIText bold style={{ textAlign: "center", flex: 1 }}>
-                                                {report.teamNumber}
-                                            </UIText>
-                                        </Pressable>
-                                    );
-                                })}
-                            </View>
-                        </View>
-                    );
-                }}
-            />
-            {scoutViewerVisible && currentReport && (
-                <MatchReportViewer
-                    onDismiss={() => setScoutViewerVisible(false)}
-                    data={currentReport}
-                    isOfflineForm={false}
-                    navigateToTeamViewer={() => {
-                        if (currentReport) {
-                            let team = listOfTeams.find((team) => team.team_number === currentReport.teamNumber);
-                            if (team) {
-                                setScoutViewerVisible(false);
-                                navigateToTeamViewer(team);
-                            } else {
-                                Alert.alert("Error: Team not found", "Report likely inputted with wrong team number.");
-                            }
-                        }
-                    }}
-                />
-            )}
-            {notesViewerVisible && (
-                <Modal visible={notesViewerVisible} animationType="slide">
-                    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg0.hex }}>
-                        <NoteList
-                            notes={notesByMatch.get(currentMatchNumber) ?? []}
-                            onClose={() => setNotesViewerVisible(false)}
-                        />
-                    </SafeAreaView>
-                </Modal>
-            )}
-        </SafeAreaView>
+                                    <UIText bold style={{ textAlign: "center" }}>
+                                        {report.teamNumber}
+                                    </UIText>
+                                </Pressable>
+                            ))}
+                        </UIGridLayout>
+                    </View>
+                );
+            }}
+        />
     );
 }

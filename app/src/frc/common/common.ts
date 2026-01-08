@@ -9,7 +9,7 @@ export namespace Alliance {
         return x === Alliance.red ? Alliance.blue : Alliance.red;
     }
 
-    // TODO: put this with the rest of the theme stuff
+    // TODO: make this configurable per-theme and consumed everywhere
     export function getColor(x: Alliance): Color {
         return x === Alliance.red ? Color.rgb(255, 0, 0) : Color.rgb(0, 0, 255);
     }

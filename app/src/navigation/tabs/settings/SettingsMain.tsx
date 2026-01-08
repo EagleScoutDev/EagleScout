@@ -153,7 +153,7 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                                     initialFirstName: profile ? profile.firstName : "",
                                     initialLastName: profile ? profile.lastName : "",
                                 });
-                            },
+                            }
                         }),
                         UIList.Label({
                             icon: Bs.Asterisk,

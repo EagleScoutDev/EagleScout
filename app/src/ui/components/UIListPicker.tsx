@@ -18,7 +18,7 @@ export interface UIListPickerProps<K extends string | number = string | number> 
     value?: K | null;
     onChange?: ((x: K) => void) | null | undefined;
 
-    Display?: ReactNode | React.FC<{ value: K | null }>;
+    Display?: ReactNode | React.FC<{ value: K | null; present: () => void }>;
 }
 export interface UIListPicker<K extends string | number = string | number> {
     present(): void;
@@ -60,9 +60,9 @@ export function UIListPicker<K extends string | number = string | number>({
     return (
         <>
             {typeof Display === "function" ? (
-                <Display value={value} />
+                <Display value={value} present={() => sheetRef.current?.present()} />
             ) : (
-                (Display ?? (
+                Display ?? (
                     <PressableOpacity
                         style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
                         onPress={() => sheetRef.current?.present()}
@@ -74,7 +74,7 @@ export function UIListPicker<K extends string | number = string | number>({
                             <Bs.ChevronExpand fill={"gray"} size={20} />
                         </View>
                     </PressableOpacity>
-                ))
+                )
             )}
 
             <UISheetModal
