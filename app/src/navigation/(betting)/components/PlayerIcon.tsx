@@ -1,6 +1,6 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { UIText } from "@/ui/components/UIText";
-import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText.tsx";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
 
 export interface PlayerIconProps {
     emoji: string;

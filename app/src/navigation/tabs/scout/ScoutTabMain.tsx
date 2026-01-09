@@ -4,9 +4,12 @@ import * as Bs from "@/ui/icons";
 import { UpcomingRoundsView } from "@/navigation/tabs/scout/components/UpcomingRoundsView";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
+import { useNavigation } from "@react-navigation/native";
 
 export interface ScoutTabMainProps extends ScoutMenuScreenProps<"Main"> {}
 export function ScoutTabMain({ navigation }: ScoutTabMainProps) {
+    const rootNavigation = useNavigation();
+
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
@@ -49,19 +52,7 @@ export function ScoutTabMain({ navigation }: ScoutTabMainProps) {
                                 label: "Match Betting",
                                 caret: true,
                                 onPress: () => {
-                                    navigation.getParent()?.reset({
-                                        index: 1,
-                                        routes: [
-                                            { name: "Home", params: { screen: "Dashboard" } },
-                                            {
-                                                name: "Data",
-                                                state: {
-                                                    index: 1,
-                                                    routes: [{ name: "Home" }, { name: "MatchBetting" }],
-                                                },
-                                            },
-                                        ],
-                                    });
+                                    rootNavigation.push("MatchBetting");
                                 },
                             }),
                         ],

@@ -2,19 +2,19 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Image, ImageBackground, Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { supabase } from "@/lib/supabase";
-import { UserAttributesDB } from "@/lib/database/UserAttributes";
+import { supabase } from "@/lib/supabase.ts";
+import { UserAttributesDB } from "@/lib/database/UserAttributes.ts";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { MatchBets } from "@/lib/database/MatchBets";
-import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet";
-import { ProfilesDB } from "@/lib/database/Profiles";
+import { MatchBets } from "@/lib/database/MatchBets.ts";
+import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet.tsx";
+import { ProfilesDB } from "@/lib/database/Profiles.ts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { Profile } from "@/lib/user/profile";
+import type { Profile } from "@/lib/user/profile.ts";
 import * as Bs from "@/ui/icons";
-import type { DataTabScreenProps } from "@/navigation/tabs/data";
 import Slider from "@react-native-community/slider";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { UIText } from "@/ui/components/UIText";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
+import { UIText } from "@/ui/components/UIText.tsx";
+import type { RootStackScreenProps } from "@/navigation";
 
 interface Player {
     id: string;
@@ -27,7 +27,7 @@ interface Player {
 export interface BettingScreenParams {
     matchNumber: number;
 }
-export interface BettingScreenProps extends DataTabScreenProps<"MatchBetting/BettingScreen"> {}
+export interface BettingScreenProps extends RootStackScreenProps<"MatchBetting/BettingScreen"> {}
 export function BettingScreen({ route }: BettingScreenProps) {
     const { matchNumber } = route.params;
     const insets = useSafeAreaInsets();
@@ -122,7 +122,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 };
                             }
                             return player;
-                        }),
+                        })
                     );
                 })
                 .subscribe(async (status) => {
@@ -314,7 +314,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     }}
                                 >
                                     <Image
-                                        source={require("../../../../assets/images/dozerblue.png")}
+                                        source={require("../../assets/images/dozerblue.png")}
                                         style={{
                                             width: "100%",
                                             height: null,
@@ -335,7 +335,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     }}
                                 >
                                     <Image
-                                        source={require("../../../../assets/images/dozerred.png")}
+                                        source={require("../../assets/images/dozerred.png")}
                                         style={{
                                             width: "100%",
                                             height: null,
@@ -396,13 +396,13 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                             userProfile.id,
                                             matchNumber,
                                             selectedAlliance!,
-                                            Number(currentBet),
+                                            Number(currentBet)
                                         );
                                     } else {
                                         await MatchBets.updateMatchBet(
                                             userProfile.id,
                                             matchNumber,
-                                            Number(currentBet) + betAmount,
+                                            Number(currentBet) + betAmount
                                         );
                                     }
                                 }}
@@ -429,7 +429,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                             }}
                         >
                             <ImageBackground
-                                source={require("../../../../assets/images/betGradient.png")}
+                                source={require("../../assets/images/betGradient.png")}
                                 style={{
                                     width: "100%",
                                     borderRadius: 10,

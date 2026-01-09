@@ -1,6 +1,6 @@
-import { BettingInfoStep } from "./BettingInfoStep";
+import { BettingInfoStep } from "./BettingInfoStep.tsx";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { PlayerIcon } from "./PlayerIcon";
+import { PlayerIcon } from "./PlayerIcon.tsx";
 
 export function WaitForPlayersStep() {
     return (

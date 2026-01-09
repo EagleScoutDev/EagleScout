@@ -3,7 +3,7 @@ import { useStackThemeConfig } from "@/ui/lib/theme/native";
 
 import { ManageCompetitions } from "./(admin)/competitions/ManageCompetitions";
 import { ManageUsers } from "./(admin)/ManageUsers";
-import { ManageBets } from "./(betting)/admin/ManageBets";
+import { ManageBets } from "@/navigation/tabs/data/(admin)/ManageBets.tsx";
 import { ScoutcoinLedger } from "./(scoutcoin)/ScoutcoinLedger";
 import { ScoutcoinLeaderboard } from "./(scoutcoin)/ScoutcoinLeaderboard";
 import { ScoutcoinShop } from "./(scoutcoin)/shop/ScoutcoinShop";
@@ -17,8 +17,6 @@ import {
     type ScoutAssignmentsSpreadsheetParams,
 } from "./(admin)/assignments/ScoutAssignmentsSpreadsheet";
 import { ScoutAssignmentsMain } from "./(admin)/assignments/ScoutAssignmentsMain";
-import { BettingScreen, type BettingScreenParams } from "./(betting)/BettingScreen";
-import { MatchBetting } from "./(betting)/MatchBetting";
 import { PicklistCreator, type PicklistCreatorParams } from "./(picklist)/PicklistCreator";
 import { Picklists } from "./(picklist)/Picklists";
 import { TeamRankMenu } from "./(rank)/TeamRankMenu";
@@ -43,8 +41,6 @@ export type DataTabParamList = {
     MatchPredictor: undefined;
     ExportCSV: undefined;
 
-    MatchBetting: undefined;
-    "MatchBetting/BettingScreen": BettingScreenParams;
     ScoutcoinLeaderboard: undefined;
     ScoutcoinLedger: undefined;
     ScoutcoinShop: undefined;
@@ -120,11 +116,6 @@ export function DataTab() {
                     title: "Export to CSV",
                 }}
             />
-
-            <Stack.Group screenOptions={{ title: "Match Betting" }}>
-                <Stack.Screen name="MatchBetting" component={MatchBetting} />
-                <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
-            </Stack.Group>
 
             {/* Scoutcoin */}
             <Stack.Screen

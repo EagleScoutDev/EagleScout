@@ -1,7 +1,7 @@
-import { BettingInfoStep } from "./BettingInfoStep";
+import { BettingInfoStep } from "./BettingInfoStep.tsx";
 import { Image, Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useTheme } from "@/ui/context/ThemeContext";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
 
 export function SelectAllianceStep() {
     const { colors } = useTheme();
@@ -18,7 +18,7 @@ export function SelectAllianceStep() {
                     }}
                 >
                     <Image
-                        source={require("../../../../../assets/images/dozerblue.png")}
+                        source={require("../../../assets/images/dozerblue.png")}
                         style={{
                             width: "100%",
                             height: null,
@@ -36,7 +36,7 @@ export function SelectAllianceStep() {
                     }}
                 >
                     <Image
-                        source={require("../../../../../assets/images/dozerred.png")}
+                        source={require("../../../assets/images/dozerred.png")}
                         style={{
                             width: "100%",
                             height: null,

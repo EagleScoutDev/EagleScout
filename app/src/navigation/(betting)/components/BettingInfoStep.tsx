@@ -2,9 +2,9 @@ import { useCallback, useMemo } from "react";
 import { BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { StandardButton } from "@/ui/StandardButton";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { UIText } from "@/ui/components/UIText";
+import { StandardButton } from "@/ui/StandardButton.tsx";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
+import { UIText } from "@/ui/components/UIText.tsx";
 import type { Theme } from "@/ui/lib/theme";
 
 export const BettingInfoStep = ({

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
-import { type MatchBet, MatchBets } from "@/lib/database/MatchBets";
-import { supabase } from "@/lib/supabase";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { UIText } from "@/ui/components/UIText";
-import { Color } from "@/ui/lib/color";
+import { type MatchBet, MatchBets } from "@/lib/database/MatchBets.ts";
+import { supabase } from "@/lib/supabase.ts";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
+import { UIText } from "@/ui/components/UIText.tsx";
+import { Color } from "@/ui/lib/color.ts";
 
 const BetCard = ({
     matchNumber,
