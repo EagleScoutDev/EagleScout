@@ -6,14 +6,19 @@ import { OnboardingFlow, type OnboardingParamList } from "@/navigation/onboardin
 import { BettingScreen, type BettingScreenParams } from "@/navigation/(betting)/BettingScreen.tsx";
 import { MatchBetting } from "@/navigation/(betting)/MatchBetting.tsx";
 import { useStackThemeConfig } from "@/ui/lib/theme/native.ts";
+import { EditCompetition, type EditCompetitionScreenParams } from "@/navigation/(modals)/EditCompetition.tsx";
+import { AddCompetition, type AddCompetitionScreenParams } from "@/navigation/(modals)/AddCompetition.tsx";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, K>;
 export type RootStackParamList = {
     HomeTabs: NavigatorScreenParams<HomeTabsParamList>;
+    Onboarding: NavigatorScreenParams<OnboardingParamList>;
+
     MatchBetting: undefined;
     "MatchBetting/BettingScreen": BettingScreenParams;
-    Onboarding: NavigatorScreenParams<OnboardingParamList>;
+    EditCompetition: EditCompetitionScreenParams;
+    AddCompetition: AddCompetitionScreenParams;
 };
 
 declare global {
@@ -33,13 +38,6 @@ export function RootNavigator() {
         >
             <RootStack.Screen name="HomeTabs" component={HomeTabs} />
 
-            <RootStack.Group
-                screenOptions={{ title: "Match Betting", headerShown: true }}
-            >
-                <RootStack.Screen name="MatchBetting" component={MatchBetting} />
-                <RootStack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
-            </RootStack.Group>
-
             <RootStack.Screen
                 name="Onboarding"
                 component={OnboardingFlow}
@@ -47,6 +45,28 @@ export function RootNavigator() {
                     animation: "ios_from_right",
                 }}
             />
+
+            <RootStack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
+                <RootStack.Screen name="MatchBetting" component={MatchBetting} />
+                <RootStack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
+            </RootStack.Group>
+
+            <RootStack.Group screenOptions={{ presentation: "formSheet" }}>
+                <RootStack.Screen
+                    name={"EditCompetition"}
+                    component={EditCompetition}
+                    options={{
+                        title: "Edit Competition",
+                    }}
+                />
+                <RootStack.Screen
+                    name={"AddCompetition"}
+                    component={AddCompetition}
+                    options={{
+                        title: "New Competition",
+                    }}
+                />
+            </RootStack.Group>
         </RootStack.Navigator>
     );
 }

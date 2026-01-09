@@ -50,7 +50,7 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                     title: "Home",
                     tabBarIcon: ({ focused }) =>
                         Platform.OS === "ios"
-                            ? { sfSymbol: "binoculars.fill" }
+                        ? { sfSymbol: "binoculars.fill" }
                             : focused
                             ? require("bootstrap-icons/icons/binoculars-fill.svg")
                             : require("bootstrap-icons/icons/binoculars.svg"),

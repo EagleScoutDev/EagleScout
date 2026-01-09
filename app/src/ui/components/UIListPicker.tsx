@@ -95,7 +95,7 @@ export function UIListPicker<K extends string | number = string | number>({
                         },
                     }}
                 />
-                <UIList bottomSheet>
+                <UIList>
                     {UIList.Section({
                         // TODO: use a flatlist-like interface for this
                         items: options.map((key) => {

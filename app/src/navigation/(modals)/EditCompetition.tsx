@@ -1,10 +1,9 @@
 import { Alert } from "react-native";
-
-import React, { useImperativeHandle, useRef, useState } from "react";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { UISheetModal } from "@/ui/components/UISheetModal";
-import { UISheet } from "@/ui/components/UISheet";
-import { UIForm } from "@/ui/components/UIForm";
+import React, { useEffect, useState } from "react";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
+import { UIForm } from "@/ui/components/UIForm.tsx";
+import type { RootStackScreenProps } from "@/navigation";
+import { useFocusEffect } from "@react-navigation/native";
 
 export interface CompetitionPatch {
     id: number;
@@ -13,17 +12,17 @@ export interface CompetitionPatch {
     end: Date;
 }
 
-export interface EditCompetitionModalProps {
-    ref?: React.Ref<EditCompetitionModal>;
+export interface EditCompetitionScreenParams {
+    data: CompetitionPatch;
     onSubmit: (comp: CompetitionPatch) => void;
     onDelete: (comp: CompetitionPatch) => void;
 }
-export interface EditCompetitionModal extends UISheetModal<CompetitionPatch> {}
-export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitionModalProps) {
+export function EditCompetition({ navigation, route }: RootStackScreenProps<"EditCompetition">) {
     "use no memo";
     // FIXME: Enable memoization when react compiler stops
     //        complaining about passing refs to UIList.Line
 
+    const { data, onSubmit, onDelete } = route.params;
     const { colors } = useTheme();
 
     const [id, setId] = useState<number>(0);
@@ -31,7 +30,13 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
 
-    const sheetRef = useRef<UISheetModal>(null);
+    useFocusEffect(() => {
+        if (data === undefined) return;
+        setId(data.id);
+        setName(data.name);
+        setStart(new Date(data.start)); //< TODO: get rid of the new Date()
+        setEnd(new Date(data.end));
+    });
 
     function trySubmit() {
         if (start >= end) return Alert.alert("Error", "Start time must be before end time.");
@@ -54,38 +59,47 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
                     style: "destructive",
                     onPress: () => onDelete({ id, name, start, end }),
                 },
-            ],
+            ]
         );
     }
 
-    useImperativeHandle(
-        ref,
-        () => ({
-            ...sheetRef.current!,
-            present(data) {
-                if (data === undefined) return;
-                setId(data.id);
-                setName(data.name);
-                setStart(new Date(data.start)); //< TODO: get rid of the new Date()
-                setEnd(new Date(data.end));
-                sheetRef.current?.present();
-            },
-        }),
-        [sheetRef.current],
-    );
+    useEffect(() => {
+        navigation.setOptions({
+            headerShown: true,
+            unstable_headerLeftItems: () => [
+                {
+                    type: "button",
+                    label: "Done",
+                    labelStyle: { color: colors.danger },
+                    icon: { type: "sfSymbol", name: "xmark" },
+                    variant: "plain",
+                },
+            ],
+            unstable_headerRightItems: () => [
+                {
+                    type: "button",
+                    label: "Done",
+                    labelStyle: { color: colors.primary },
+                    icon: { type: "sfSymbol", name: "checkmark" },
+                    tintColor: "red",
+                    variant: "done",
+                },
+            ],
+        });
+    });
 
     return (
-        <UISheetModal ref={sheetRef} handleComponent={null}>
-            <UISheet.Header
-                left={{
-                    color: colors.danger,
-                    text: "Cancel",
-                    onPress: () => sheetRef.current?.dismiss(),
-                }}
-                right={{ color: colors.primary, text: "Done", onPress: trySubmit }}
-                title={"Edit Competition"}
-            />
-            <UIForm bottomSheet={true}>
+        <>
+            {/*<UISheet.Header*/}
+            {/*    left={{*/}
+            {/*        color: colors.danger,*/}
+            {/*        text: "Cancel",*/}
+            {/*        onPress: () => sheetRef.current?.dismiss(),*/}
+            {/*    }}*/}
+            {/*    right={{ color: colors.primary, text: "Done", onPress: trySubmit }}*/}
+            {/*    title={"Edit Competition"}*/}
+            {/*/>*/}
+            <UIForm>
                 {[
                     UIForm.Section({
                         items: [
@@ -126,6 +140,6 @@ export function EditCompetitionModal({ ref, onSubmit, onDelete }: EditCompetitio
                     }),
                 ]}
             </UIForm>
-        </UISheetModal>
+        </>
     );
 }

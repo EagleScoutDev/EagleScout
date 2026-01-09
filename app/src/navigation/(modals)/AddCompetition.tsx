@@ -1,11 +1,10 @@
-import { Alert, Keyboard } from "react-native";
+import { Alert, Keyboard, Platform } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { supabase } from "@/lib/supabase";
-import { TBA } from "@/lib/frc/tba/TBA";
-import type { UISheetModal } from "@/ui/components/UISheetModal";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { UIForm } from "@/ui/components/UIForm";
+import { supabase } from "@/lib/supabase.ts";
+import { TBA } from "@/lib/frc/tba/TBA.ts";
+import { useTheme } from "@/ui/context/ThemeContext.ts";
+import { UIForm } from "@/ui/components/UIForm.tsx";
+import type { RootStackScreenProps } from "@/navigation";
 import { UISheet } from "@/ui/components/UISheet";
 
 export interface CompetitionData {
@@ -17,13 +16,13 @@ export interface CompetitionData {
     pitForm: number;
 }
 
-export interface AddCompetitionModalProps {
+export interface AddCompetitionScreenParams {
     onSubmit: (competitionData: CompetitionData) => void | Promise<void>;
 }
-export interface AddCompetitionModal extends UISheetModal {}
-export function AddCompetitionModal({ onSubmit }: AddCompetitionModalProps) {
+export function AddCompetition({ navigation, route }: RootStackScreenProps<"AddCompetition">) {
+    const { onSubmit } = route.params;
+
     const { colors } = useTheme();
-    const modal = useBottomSheetModal();
 
     const [name, setName] = useState("");
     const [start, setStart] = useState(new Date());
@@ -84,25 +83,62 @@ export function AddCompetitionModal({ onSubmit }: AddCompetitionModalProps) {
         });
     }
 
-    return (
-        <>
-            <UISheet.Header
-                left={{
-                    color: colors.danger,
-                    text: "Cancel",
-                    onPress: () => void modal.dismiss(),
-                }}
-                right={{
-                    color: colors.primary,
-                    text: "Done",
+    useEffect(() => {
+        navigation.setOptions({
+            headerShown: true,
+            unstable_headerLeftItems: () => [
+                {
+                    type: "button",
+                    label: "Done",
+                    labelStyle: { color: colors.danger.hex },
+                    icon: { type: "sfSymbol", name: "xmark" },
+                    variant: "plain",
+                    onPress: () => void navigation.pop(),
+                },
+            ],
+            unstable_headerRightItems: () => [
+                {
+                    type: "button",
+                    label: "Done",
+                    labelStyle: { color: colors.primary.hex },
+                    icon: { type: "sfSymbol", name: "checkmark" },
+                    tintColor: colors.primary.hex,
+                    variant: "done",
                     onPress: () => {
                         Keyboard.dismiss();
                         return trySubmit();
                     },
-                }}
-                title={"New Competition"}
-            />
-            <UIForm bottomSheet={true}>
+                },
+                // TODO: show this while the promise returned by onPress is processing
+                // {
+                //     type: "custom",
+                //     element: <ActivityIndicator />,
+                // },
+            ],
+        });
+    }, [navigation]);
+
+    return (
+        <>
+            {Platform.OS !== "ios" && (
+                <UISheet.Header
+                    left={{
+                        color: colors.danger,
+                        text: "Cancel",
+                        onPress: () => void navigation.pop(),
+                    }}
+                    right={{
+                        color: colors.primary,
+                        text: "Done",
+                        onPress: () => {
+                            Keyboard.dismiss();
+                            return trySubmit();
+                        },
+                    }}
+                    title={"New Competition"}
+                />
+            )}
+            <UIForm>
                 {[
                     UIForm.Section({
                         items: [

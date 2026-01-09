@@ -1,7 +1,7 @@
 import { UIButton, type UIButtonProps, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
 import { UIText } from "@/ui/components/UIText";
 import { View } from "react-native";
-import BottomSheet, { BottomSheetHandle, type BottomSheetProps, useBottomSheet } from "@gorhom/bottom-sheet";
+import BottomSheet, { type BottomSheetProps } from "@gorhom/bottom-sheet";
 import { ThreeCenterLayout } from "@/ui/components/layout/ThreeCenterLayout";
 import { useTheme } from "@/ui/context/ThemeContext";
 
@@ -34,19 +34,17 @@ export function UISheet(props: UISheetProps) {
 
 export namespace UISheet {
     export interface HeaderProps {
-        handle?: boolean;
+        // handle?: boolean;
 
         title?: string | null | undefined;
         left?: UIButtonProps | false | null | undefined;
         right?: UIButtonProps | false | null | undefined;
     }
-    export function Header({ handle = false, title, left, right }: HeaderProps) {
-        const sheet = useBottomSheet();
-
+    export function Header({ title, left, right }: HeaderProps) {
         return (
-            <View style={{ padding: 8, paddingTop: 0 }}>
-                <View style={{ height: 8 }}>{handle && <BottomSheetHandle {...sheet} />}</View>
-                <View style={{ marginTop: handle ? 4 : 0 }}>
+            <View style={{ padding: 8 }}>
+                {/*<View style={{ height: 8 }}>{handle && <BottomSheetHandle {...sheet} />}</View>*/}
+                <View style={{ marginTop: 0 }}>
                     <ThreeCenterLayout>
                         <UIButton size={UIButtonSize.md} style={UIButtonStyle.text} {...(left || {})} />
 

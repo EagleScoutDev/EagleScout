@@ -35,7 +35,7 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                     },
                 }}
             />
-            <UIForm bottomSheet>
+            <UIForm>
                 {UIForm.Section({
                     items: [
                         UIList.Label({

@@ -5,10 +5,12 @@ import {
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
-import type { ReactNode, Ref } from "react";
+import { type ReactNode, type Ref, useImperativeHandle, useState } from "react";
 import { useModalSafeArea } from "@/ui/context/ModalSafeArea";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
+import { Modal } from "react-native";
+import { Arrays } from "@/lib/util/Arrays.ts";
 
 export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
     ref?: Ref<BottomSheetModal<T>>;
@@ -28,6 +30,8 @@ export function UISheetModal<T = any>({
     const maxHeight = frame.height - insets.top;
     const gap = 16;
 
+    const [visible, setVisible] = useState(false);
+
     function wrap(children: ReactNode) {
         return (
             <BottomSheetView style={{ height: "100%" }}>
@@ -39,7 +43,12 @@ export function UISheetModal<T = any>({
             </BottomSheetView>
         );
     }
-    //
+
+    // useImperativeHandle(props.ref, () => ({
+    //     present() {
+    //         setVisible(true);
+    //     },
+    // }));
 
     return (
         <BottomSheetModal

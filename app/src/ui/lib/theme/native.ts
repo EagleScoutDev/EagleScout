@@ -1,6 +1,7 @@
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import type { MaterialTopTabNavigationOptions } from "@react-navigation/material-top-tabs";
 import { useTheme } from "@/ui/context/ThemeContext";
+import { Platform } from "react-native";
 
 export function useStackThemeConfig(): Readonly<NativeStackNavigationOptions> {
     const { colors } = useTheme();
@@ -15,6 +16,9 @@ export function useStackThemeConfig(): Readonly<NativeStackNavigationOptions> {
         },
         headerBackTitle: "Back",
         headerBackButtonDisplayMode: "minimal",
+
+        sheetCornerRadius: Platform.OS === "ios" ? undefined : 24,
+        sheetShouldOverflowTopInset: false, //< FIXME: react-native-screens seems to forget about this when the bundle is reloaded??
     };
 }
 
