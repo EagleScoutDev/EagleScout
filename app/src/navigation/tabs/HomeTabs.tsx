@@ -61,6 +61,7 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                 component={BrowseTab}
                 options={{
                     title: "Browse",
+                    role: "search",
                     tabBarIcon: ({ focused }) =>
                         Platform.OS === "ios"
                             ? { sfSymbol: "magnifyingglass" }

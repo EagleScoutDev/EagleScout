@@ -26,7 +26,7 @@ export function BrowseTab() {
                 name="Main"
                 component={BrowseTabMain}
                 options={{
-                    headerShown: false,
+                    headerTitle: "",
                 }}
             />
 

@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, TextInput, View } from "react-native";
+import { ActivityIndicator, FlatList, Platform, Pressable, RefreshControl, TextInput, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import type { BrowseTabScreenProps } from "./index";
@@ -7,20 +7,22 @@ import * as Bs from "@/ui/icons";
 import { UIText } from "@/ui/components/UIText";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { PressableOpacity } from "@/components/PressableOpacity";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { UITabView } from "@/ui/components/UITabView";
 import { useQuery } from "@tanstack/react-query";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { TBA } from "@/lib/frc/tba/TBA";
-import { UIListPicker } from "@/ui/components/UIListPicker";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
-import { KeyboardController } from "react-native-keyboard-controller";
-import Animated from "react-native-reanimated";
 import { Alliance } from "@/frc/common/common.ts";
 import { UIGridLayout } from "@/ui/components/UIGridLayout";
+import type { SearchBarCommands } from "react-native-screens";
+import { PlatformPressable } from "@react-navigation/elements";
+import { UIListPicker } from "@/ui/components/UIListPicker.tsx";
+import { KeyboardController } from "react-native-keyboard-controller";
 
 export interface BrowseTabMainProps extends BrowseTabScreenProps<"Main"> {}
 export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
+    "use memo";
     const { colors } = useTheme();
 
     const { competition: currentCompetition } = useCurrentCompetition();
@@ -49,114 +51,128 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
         match: 'Try "10"',
     }[filterState];
 
-    const searchboxRef = useRef<TextInput>(null);
+    const iosSearchRef = useRef<SearchBarCommands>(null);
+    const searchRef = useRef<TextInput>(null);
 
-    useEffect(() => navigation.addListener("focus", () => setQuery(null)), []);
+    function focusSearch() {
+        if (Platform.OS === "ios") iosSearchRef.current?.focus();
+        else searchRef.current?.focus();
+
+        setQuery("");
+    }
+
+    useFocusEffect(() => {
+        setQuery(null);
+        // HACK: schedule this for after the ref is filled
+        if (Platform.OS === "ios") setTimeout(() => focusSearch(), 0);
+    });
+
+    const competitionSelector =
+        competitionsLoading || competitions === undefined ? (
+            <ActivityIndicator size="small" color={colors.fg.hex} />
+        ) : (
+            <UIListPicker
+                title="Select Competition"
+                options={Array.from(competitions.keys())}
+                render={(id) => ({ name: competitions.get(id)?.name ?? "Unknown" })}
+                value={activeComp}
+                onChange={setActiveComp}
+                Display={({ value: id, present }) => (
+                    <PlatformPressable
+                        style={{ flexShrink: 1, flexDirection: "row", alignItems: "center", padding: 8, gap: 8 }}
+                        onPress={present}
+                    >
+                        <UIText size={16} ellipsizeMode={"middle"}>
+                            {id === null ? "" : competitions.get(id)?.name ?? "Unknown Competition"}
+                        </UIText>
+                        {Platform.OS !== "ios" && <View style={{ flex: 1 }} />}
+                        <Bs.ChevronDown size={18} color={colors.fg.hex} />
+                    </PlatformPressable>
+                )}
+            />
+        );
+
+    useEffect(() => {
+        if (Platform.OS === "ios") {
+            navigation.setOptions({
+                headerLeft: () => competitionSelector,
+                headerTitle: "",
+                headerSearchBarOptions: {
+                    ref: iosSearchRef,
+                    onCancelButtonPress: () => navigation.goBack(),
+                    hideNavigationBar: false,
+                    placeholder: searchPlaceholder,
+                    onChangeText: (e) => setQuery(e.nativeEvent.text),
+                    autoFocus: true,
+                },
+            });
+        } else {
+            navigation.setOptions({
+                headerShown: false,
+            });
+        }
+    }, [navigation, competitionsLoading, competitions, iosSearchRef, competitionSelector, searchPlaceholder]);
 
     return (
         <SafeAreaProvider>
             <SafeAreaView edges={["top", "left", "right"]} style={{ backgroundColor: colors.bg2.hex }}>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        height: 56,
-                        paddingHorizontal: 4,
-                        backgroundColor: colors.bg2.hex,
-                        borderBottomWidth: 1,
-                        borderColor: colors.border.hex,
-                    }}
-                >
-                    <Animated.View
+                {Platform.OS == "android" && (
+                    <View
                         style={{
                             flexDirection: "row",
                             alignItems: "center",
-                            height: "100%",
-                            overflow: "hidden",
-                            transitionProperty: "flex",
-                            transitionDuration: 200,
-                            flex: searching ? 0 : 1,
+                            width: "100%",
+                            height: 56,
+                            paddingHorizontal: 4,
+                            backgroundColor: colors.bg2.hex,
+                            borderBottomWidth: 1,
+                            borderColor: colors.border.hex,
                         }}
                     >
-                        <View style={{ flex: 1, paddingHorizontal: 16 }}>
-                            {competitionsLoading || competitions === undefined ? (
-                                <ActivityIndicator size="small" color={colors.fg.hex} />
-                            ) : (
-                                <UIListPicker
-                                    title="Select Competition"
-                                    options={Array.from(competitions.keys())}
-                                    render={(id) => {
-                                        const comp = competitions.get(id);
-                                        return { name: comp?.name ?? "Unknown" };
+                        {searching ? (
+                            <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+                                <View style={{ paddingLeft: 16, paddingRight: 8 }}>
+                                    <Bs.Search size={20} fill={colors.placeholder.hex} />
+                                </View>
+
+                                <TextInput
+                                    ref={searchRef}
+                                    style={{ color: colors.fg.hex, fontSize: 16, flex: 1 }}
+                                    onChangeText={setQuery}
+                                    value={query ?? ""}
+                                    placeholderTextColor={colors.placeholder.hex}
+                                    placeholder={searchPlaceholder}
+                                    onEndEditing={(e) => {
+                                        if (e.nativeEvent.text === "") setQuery(null);
                                     }}
-                                    value={activeComp}
-                                    onChange={setActiveComp}
-                                    Display={({ value: id, present }) => (
-                                        <PressableOpacity
-                                            style={{ flexDirection: "row", alignItems: "center" }}
-                                            onPress={present}
-                                        >
-                                            <UIText size={16}>
-                                                {id === null ? "" : competitions.get(id)?.name ?? "Unknown Competition"}
-                                            </UIText>
-                                            <View style={{ flex: 1 }} />
-                                            <Bs.ChevronDown size={18} color={colors.fg.hex} />
-                                        </PressableOpacity>
-                                    )}
                                 />
-                            )}
-                        </View>
-                    </Animated.View>
+                            </View>
+                        ) : (
+                            <View style={{ flex: 1, flexDirection: "row", alignItems: "center", paddingLeft: 8 }}>
+                                {competitionSelector}
+                            </View>
+                        )}
 
-                    <PressableOpacity
-                        style={{ padding: 16 }}
-                        onPress={() => {
-                            if (!searching) {
-                                setQuery("");
-                                searchboxRef.current?.focus();
-                            }
-                        }}
-                    >
-                        <Bs.Search
-                            size={searching ? 20 : 24}
-                            fill={searching ? colors.placeholder.hex : colors.fg.hex}
-                        />
-                    </PressableOpacity>
-
-                    <Animated.View
-                        style={{
-                            flexDirection: "row",
-                            height: "100%",
-                            overflow: "hidden",
-                            transitionProperty: "flex",
-                            transitionDuration: 200,
-                            flex: searching ? 1 : 0,
-                        }}
-                    >
-                        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-                            <TextInput
-                                ref={searchboxRef}
-                                style={{ color: colors.fg.hex, fontSize: 16, flex: 1 }}
-                                onChangeText={setQuery}
-                                value={query ?? ""}
-                                placeholderTextColor={colors.placeholder.hex}
-                                placeholder={searchPlaceholder}
-                                onEndEditing={(e) => {
-                                    if (e.nativeEvent.text === "") setQuery(null);
-                                }}
-                            />
-                            <PressableOpacity
-                                style={{ padding: 16 }}
-                                onPress={() => {
+                        <PressableOpacity
+                            style={{ padding: 16 }}
+                            onPress={() => {
+                                if (searching) {
                                     setQuery(null);
                                     KeyboardController.dismiss();
-                                }}
-                            >
+                                } else {
+                                    setQuery("");
+                                    searchRef.current?.focus();
+                                }
+                            }}
+                        >
+                            {searching ? (
                                 <Bs.XLg size={24} color={colors.fg.hex} />
-                            </PressableOpacity>
-                        </View>
-                    </Animated.View>
-                </View>
+                            ) : (
+                                <Bs.Search size={24} fill={colors.fg.hex} />
+                            )}
+                        </PressableOpacity>
+                    </View>
+                )}
             </SafeAreaView>
 
             {/* FIXME: removing this wrapper View bricks activityindicators???  */}
