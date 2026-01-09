@@ -16,7 +16,6 @@ import { withStallion } from "react-native-stallion";
 import { RootNavigator } from "@/navigation";
 import { QueryClient } from "@tanstack/query-core";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Bruh } from "@/bruh.tsx";
 
 const queryClient = new QueryClient();
 
