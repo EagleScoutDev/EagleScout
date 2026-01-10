@@ -5,8 +5,8 @@ import { type ReactNode, type Ref, useImperativeHandle, useRef } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
-import { UISheet } from "@/ui/components/UISheet";
 import { UIList } from "@/ui/components/UIList";
+import { KeyboardController } from "react-native-keyboard-controller";
 
 export interface UIListPickerProps<K extends string | number = string | number> {
     ref?: Ref<UIListPicker<K>>;
@@ -45,12 +45,17 @@ export function UIListPicker<K extends string | number = string | number>({
     const closeTimeout = useRef<NodeJS.Timeout | null>(null);
     function scheduleClose() {
         if (closeTimeout.current !== null) clearTimeout(closeTimeout.current);
-        closeTimeout.current = setTimeout(() => sheetRef.current?.close(), 350);
+        closeTimeout.current = setTimeout(() => sheetRef.current?.dismiss(), 350);
+    }
+
+    function present() {
+        sheetRef.current?.present();
+        KeyboardController.dismiss();
     }
 
     useImperativeHandle(ref, () => ({
         present() {
-            sheetRef.current?.present();
+            present();
         },
         dismiss() {
             sheetRef.current?.dismiss();
@@ -60,12 +65,12 @@ export function UIListPicker<K extends string | number = string | number>({
     return (
         <>
             {typeof Display === "function" ? (
-                <Display value={value} present={() => sheetRef.current?.present()} />
+                <Display value={value} present={() => present()} />
             ) : (
-                Display ?? (
+                (Display ?? (
                     <PressableOpacity
                         style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-                        onPress={() => sheetRef.current?.present()}
+                        onPress={() => present()}
                     >
                         <UIText size={16} placeholder style={{ marginRight: 4, flexShrink: 1 }} numberOfLines={1}>
                             {value === null ? "None" : render(value).name}
@@ -74,26 +79,23 @@ export function UIListPicker<K extends string | number = string | number>({
                             <Bs.ChevronExpand fill={"gray"} size={20} />
                         </View>
                     </PressableOpacity>
-                )
+                ))
             )}
 
-            <UISheetModal
-                ref={sheetRef}
-                stackBehavior={"push"}
-                enablePanDownToClose
-                handleComponent={null}
-                onDismiss={() => {}}
-            >
-                <UISheet.Header
+            <UISheetModal ref={sheetRef}>
+                <UISheetModal.Header
                     handle
                     title={title ?? "Select an option"}
-                    right={{
-                        text: "Done",
-                        color: colors.primary,
-                        onPress: () => {
-                            sheetRef.current?.dismiss();
+                    right={[
+                        {
+                            text: "Done",
+                            icon: "clock",
+                            color: colors.primary,
+                            onPress: () => {
+                                sheetRef.current?.dismiss();
+                            },
                         },
-                    }}
+                    ]}
                 />
                 <UIList>
                     {UIList.Section({

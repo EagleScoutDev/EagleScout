@@ -15,6 +15,8 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
     const [loading, setLoading] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
 
+    const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
+
     const sheetRef = useRef<EnableScoutAssignmentsModal>(null);
 
     async function loadCompetitions() {
@@ -56,7 +58,7 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
                                         competition: comp.id,
                                     });
                                 } else {
-                                    sheetRef.current?.present(comp);
+                                    sheetRef.current?.present({ competition: comp });
                                 }
                             },
                         }),
@@ -64,7 +66,7 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
                 })}
             </UIList>
 
-            <UISheetModal ref={sheetRef} handleComponent={null} children={EnableScoutAssignmentsModal} />
+            <EnableScoutAssignmentsModal ref={sheetRef} />
         </SafeAreaProvider>
     );
 }

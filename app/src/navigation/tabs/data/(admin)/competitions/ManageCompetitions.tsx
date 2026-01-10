@@ -1,16 +1,16 @@
-import { Alert } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import * as Bs from "@/ui/icons";
-import { EditCompetition } from "../../../../(modals)/EditCompetition.tsx";
 import { supabase } from "@/lib/supabase";
 import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 import { UIFab } from "@/ui/components/UIFab";
-import { useNavigation } from "@react-navigation/native";
-import { AsyncAlert } from "@/lib/util/react/AsyncAlert.ts";
+import { EditCompetitionModal } from "@/navigation/(modals)/EditCompetitionModal";
+import { AddCompetitionModal } from "@/navigation/(modals)/AddCompetitionModal";
+import { Alert } from "react-native";
+import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 
 export function ManageCompetitions() {
     "use no memo";
@@ -19,8 +19,6 @@ export function ManageCompetitions() {
 
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
-
-    const rootNavigation = useNavigation();
 
     async function refreshCompetitions() {
         try {
@@ -35,6 +33,9 @@ export function ManageCompetitions() {
         }
     }
     useEffect(() => void refreshCompetitions(), []);
+
+    const editSheetRef = useRef<EditCompetitionModal>(null);
+    const addSheetRef = useRef<AddCompetitionModal>(null);
 
     if (internetError) {
         return <NoInternet onRefresh={() => refreshCompetitions()} />;
@@ -53,79 +54,61 @@ export function ManageCompetitions() {
                             key: comp.id.toString(),
                             label: comp.name,
                             onPress: () => {
-                                rootNavigation.push("EditCompetition", {
-                                    params: {
+                                editSheetRef.current?.present({
+                                    competition: {
                                         id: comp.id,
                                         name: comp.name,
                                         start: comp.startTime,
                                         end: comp.endTime,
-                                        async onSubmit(comp) {
-                                            const { error } = await supabase
-                                                .from("competitions")
-                                                .update({
-                                                    name: comp.name,
-                                                    start_time: comp.start,
-                                                    end_time: comp.end,
-                                                })
-                                                .eq("id", comp.id);
-                                            if (error !== null) {
-                                                console.error(error);
-                                                Alert.alert("Error", "An error occurred, please try again later.");
-                                            } else {
-                                                rootNavigation.pop();
-                                            }
+                                    },
+                                    onSubmit: async (compPatch) => {
+                                        const { error } = await supabase
+                                            .from("competitions")
+                                            .update({
+                                                name: compPatch.name,
+                                                start_time: compPatch.start,
+                                                end_time: compPatch.end,
+                                            })
+                                            .eq("id", compPatch.id);
+                                        if (error !== null) {
+                                            console.error(error);
+                                            Alert.alert("Error", "An error occurred, please try again later.");
+                                        } else {
+                                            editSheetRef.current?.dismiss();
+                                        }
 
-                                            void refreshCompetitions();
-                                        },
-                                        async onDelete(comp) {
-                                            const { error } = await supabase
-                                                .from("competitions")
-                                                .delete()
-                                                .eq("id", comp.id);
-                                            if (error !== null) {
-                                                console.error(error);
-                                                Alert.alert("Error", "An error occurred, please try again later.");
-                                            } else {
-                                                rootNavigation.pop();
-                                            }
+                                        void refreshCompetitions();
+                                    },
+                                    onDelete: async (compPatch) => {
+                                        const { error } = await supabase
+                                            .from("competitions")
+                                            .delete()
+                                            .eq("id", compPatch.id);
+                                        if (error !== null) {
+                                            console.error(error);
+                                            Alert.alert("Error", "An error occurred, please try again later.");
+                                        } else {
+                                            editSheetRef.current?.dismiss();
+                                        }
 
-                                            void refreshCompetitions();
-                                        },
+                                        void refreshCompetitions();
                                     },
                                 });
                             },
-                        })
+                        }),
                     ),
                 })}
             </UIList>
 
             <UIFab
                 icon={Bs.Plus}
-                onPress={() => {
-                    rootNavigation.push("AddCompetition", {
-                        params: {
-                            async onSubmit(comp) {
-                                const { error } = await supabase.from("competitions").insert({
-                                    name: comp.name,
-                                    start_time: comp.start,
-                                    end_time: comp.end,
-                                    form_id: comp.matchForm,
-                                    pit_scout_form_id: comp.pitForm,
-                                    tba_event_id: comp.tbaEventId,
-                                });
-                                if (error !== null) {
-                                    console.error(error);
-                                    await AsyncAlert.alert("Error", "An error occurred, please try again later.");
-                                } else {
-                                    rootNavigation.pop();
-                                }
-
-                                void refreshCompetitions();
-                            },
-                        },
-                    });
-                }}
+                onPress={() =>
+                    addSheetRef.current?.present()
+                }
             />
+
+            <AddCompetitionModal ref={addSheetRef} />
+            <EditCompetitionModal ref={editSheetRef} />
         </SafeAreaProvider>
     );
 }

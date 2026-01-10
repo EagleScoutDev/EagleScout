@@ -1,15 +1,22 @@
-import { type NavigatorScreenParams } from "@react-navigation/native";
+import { type NavigatorScreenParams, useNavigation } from "@react-navigation/native";
 import { HomeTabs, type HomeTabsParamList } from "@/navigation/tabs/HomeTabs";
 import * as React from "react";
-import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+    createNativeStackNavigator,
+    type NativeStackNavigationProp,
+    type NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { OnboardingFlow, type OnboardingParamList } from "@/navigation/onboarding";
-import { BettingScreen, type BettingScreenParams } from "@/navigation/(betting)/BettingScreen.tsx";
-import { MatchBetting } from "@/navigation/(betting)/MatchBetting.tsx";
-import { useStackThemeConfig } from "@/ui/lib/theme/native.ts";
-import { EditCompetition, type EditCompetitionScreenParams } from "@/navigation/(modals)/EditCompetition.tsx";
-import { AddCompetition, type AddCompetitionScreenParams } from "@/navigation/(modals)/AddCompetition.tsx";
+import { BettingScreen, type BettingScreenParams } from "@/navigation/(betting)/BettingScreen";
+import { MatchBetting } from "@/navigation/(betting)/MatchBetting";
+import { useStackThemeConfig } from "@/ui/lib/theme/native";
+import { TeamSummary, type TeamSummaryParams } from "@/navigation/(recon)/TeamSummary";
+import { Platform } from "react-native";
+import { TeamAutoPaths, type TeamAutoPathsParams } from "@/navigation/(recon)/TeamAutoPaths";
+import { TeamReports, type TeamReportsParams } from "@/navigation/(recon)/TeamReports";
+import { type TeamComparisonParams, TeamComparison } from "@/navigation/(recon)/TeamComparison";
 
-const RootStack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, K>;
 export type RootStackParamList = {
     HomeTabs: NavigatorScreenParams<HomeTabsParamList>;
@@ -17,8 +24,11 @@ export type RootStackParamList = {
 
     MatchBetting: undefined;
     "MatchBetting/BettingScreen": BettingScreenParams;
-    EditCompetition: EditCompetitionScreenParams;
-    AddCompetition: AddCompetitionScreenParams;
+
+    TeamSummary: TeamSummaryParams;
+    TeamReports: TeamReportsParams;
+    TeamAutoPaths: TeamAutoPathsParams;
+    TeamComparison: TeamComparisonParams;
 };
 
 declare global {
@@ -27,18 +37,22 @@ declare global {
     }
 }
 
+export function useRootNavigation() {
+    return useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+}
+
 export function RootNavigator() {
     return (
-        <RootStack.Navigator
+        <Stack.Navigator
             initialRouteName="Onboarding"
             screenOptions={{
                 headerShown: false,
                 ...useStackThemeConfig(),
             }}
         >
-            <RootStack.Screen name="HomeTabs" component={HomeTabs} />
+            <Stack.Screen name="HomeTabs" component={HomeTabs} />
 
-            <RootStack.Screen
+            <Stack.Screen
                 name="Onboarding"
                 component={OnboardingFlow}
                 options={{
@@ -46,27 +60,32 @@ export function RootNavigator() {
                 }}
             />
 
-            <RootStack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
-                <RootStack.Screen name="MatchBetting" component={MatchBetting} />
-                <RootStack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
-            </RootStack.Group>
+            <Stack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
+                <Stack.Screen name="MatchBetting" component={MatchBetting} />
+                <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
 
-            <RootStack.Group screenOptions={{ presentation: "formSheet" }}>
-                <RootStack.Screen
-                    name={"EditCompetition"}
-                    component={EditCompetition}
-                    options={{
-                        title: "Edit Competition",
-                    }}
-                />
-                <RootStack.Screen
-                    name={"AddCompetition"}
-                    component={AddCompetition}
-                    options={{
-                        title: "New Competition",
-                    }}
-                />
-            </RootStack.Group>
-        </RootStack.Navigator>
+            </Stack.Group>
+
+            <Stack.Group
+                screenOptions={{
+                    headerShown: true,
+                    headerTitle: "",
+                    ...(Platform.OS === "ios" ? { headerTransparent: true, headerStyle: {} } : {}),
+                }}
+            >
+                <Stack.Screen name="TeamSummary" component={TeamSummary} />
+                <Stack.Screen name="TeamAutoPaths" component={TeamAutoPaths} />
+                <Stack.Screen name="TeamComparison" component={TeamComparison} />
+            </Stack.Group>
+
+            <Stack.Screen
+                name="TeamReports"
+                component={TeamReports}
+                options={({ route: { params } }) => ({
+                    title: `Scouting for Team ${params.team_number}`,
+                    headerBackButtonDisplayMode: "minimal",
+                })}
+            />
+        </Stack.Navigator>
     );
 }

@@ -25,6 +25,7 @@ export enum AccountStatus {
     Deleted = "deleted",
 }
 export interface Account {
+    id: string;
     org_id: number;
     status: AccountStatus;
     role: AccountRole;
@@ -57,6 +58,7 @@ export namespace Accounts {
 
             return {
                 ...uattr,
+                id: user.id,
                 role: uattr.admin ? AccountRole.Admin : uattr.scouter ? AccountRole.Scouter : AccountRole.Rejected,
                 status: user.user_metadata.requested_deletion
                     ? AccountStatus.Deleted

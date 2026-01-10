@@ -30,7 +30,7 @@ export function MatchPredictor() {
     // modal for choosing questions
     const [formulaCreatorActive, setFormulaCreatorActive] = useState<boolean>(false);
     const [chosenQuestionIndices, setChosenQuestionIndices] = useState<number[]>([]);
-    const questionPickerRef = useRef<UISheetModal>(null);
+    const questionPickerRef = useRef<FormQuestionPicker>(null);
 
     const [predictionConfidence, setPredictionConfidence] = useState<PredictionConfidence>(
         PredictionConfidence.UNDEFINED,
@@ -331,18 +331,20 @@ export function MatchPredictor() {
     if (chosenQuestionIndices.length === 0 && currForm !== undefined) {
         return (
             <View>
-                <Pressable onPress={() => setFormulaCreatorActive(true)}>
+                <Pressable
+                    onPress={() =>
+                        questionPickerRef.current?.present({
+                            form: currForm,
+                            value: chosenQuestionIndices,
+                            setValue: setChosenQuestionIndices,
+                            onSubmit: () => questionPickerRef.current?.dismiss(),
+                        })
+                    }
+                >
                     <UIText style={styles.question_prompt}>Choose your questions</UIText>
                 </Pressable>
 
-                <UISheetModal ref={questionPickerRef} handleComponent={null} enablePanDownToClose>
-                    <FormQuestionPicker
-                        form={currForm}
-                        value={chosenQuestionIndices}
-                        setValue={setChosenQuestionIndices}
-                        onSubmit={() => questionPickerRef.current?.dismiss()}
-                    />
-                </UISheetModal>
+                <FormQuestionPicker ref={questionPickerRef} />
             </View>
         );
     }
@@ -368,19 +370,21 @@ export function MatchPredictor() {
                 >
                     <UIText style={styles.small_question_prompt}>{compName}</UIText>
                 </Pressable>
-                <Pressable onPress={() => setFormulaCreatorActive(true)}>
+                <Pressable
+                    onPress={() =>
+                        questionPickerRef.current?.present({
+                            form: currForm,
+                            value: chosenQuestionIndices,
+                            setValue: setChosenQuestionIndices,
+                            onSubmit: () => questionPickerRef.current?.dismiss(),
+                        })
+                    }
+                >
                     <UIText style={styles.small_question_prompt}>Change Questions</UIText>
                 </Pressable>
             </View>
 
-            <UISheetModal ref={questionPickerRef} handleComponent={null} enablePanDownToClose>
-                <FormQuestionPicker
-                    form={currForm}
-                    value={chosenQuestionIndices}
-                    setValue={setChosenQuestionIndices}
-                    onSubmit={() => questionPickerRef.current?.dismiss()}
-                />
-            </UISheetModal>
+            <FormQuestionPicker ref={questionPickerRef} />
 
             <View style={styles.match_input_container}>
                 <UIText style={styles.match_label}>Match</UIText>

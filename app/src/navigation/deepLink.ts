@@ -1,8 +1,8 @@
-import { useNavigation } from "@react-navigation/native";
 import { supabase } from "@/lib/supabase";
+import { useRootNavigation } from "@/navigation/index.tsx";
 
 export async function useDeepLink({ url }: { url: string | null }) {
-    const nav = useNavigation();
+    const nav = useRootNavigation();
 
     if (url === null) return;
 
@@ -11,7 +11,7 @@ export async function useDeepLink({ url }: { url: string | null }) {
         url
             .split("#")[1]
             .split("&")
-            .map((kv) => kv.split("=")),
+            .map((kv) => kv.split("="))
     );
 
     switch (route) {

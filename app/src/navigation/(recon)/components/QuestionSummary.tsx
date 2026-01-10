@@ -367,12 +367,12 @@ export function QuestionSummary({
             {item.type === "textbox" && (
                 <View>
                     {data
-                        .map((datum) => {
+                        .map((datum, i) => {
                             if (datum.data === "") {
                                 return null;
                             }
                             return (
-                                <View style={styles.comment_container}>
+                                <View key={i} style={styles.comment_container}>
                                     <UIText style={styles.comment_match_number}>Match {datum.match}</UIText>
                                     <UIText style={styles.comment_text}>
                                         {datum.data.replace(/(\r\n|\n|\r)/gm, "")}

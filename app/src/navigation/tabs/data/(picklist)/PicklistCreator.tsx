@@ -11,7 +11,10 @@ import {
     UIManager,
     View,
 } from "react-native";
-import DraggableFlatList, { type RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
+import DraggableFlatList, {
+    type RenderItemParams,
+    ScaleDecorator,
+} from "react-native-draggable-flatlist";
 import { TeamAddingModal } from "./TeamAddingModal";
 import { TagsModal } from "./TagsModal";
 import { TagColorChangeModal } from "./TagColorChangeModal";
@@ -19,18 +22,23 @@ import { DoNotPickModal } from "./DoNotPickModal";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { CompetitionsDB } from "@/lib/database/Competitions";
-import { PicklistsDB, type PicklistStructure, type PicklistTeam, type SimpleTeam } from "@/lib/database/Picklists";
+import {
+    PicklistsDB,
+    type PicklistStructure,
+    type PicklistTeam,
+    type SimpleTeam,
+} from "@/lib/database/Picklists";
 import { ProfilesDB } from "@/lib/database/Profiles";
 import { TagsDB, type TagStructure } from "@/lib/database/Tags";
 import * as Bs from "@/ui/icons";
 import type { Setter } from "@/lib/util/react/types";
 import type { DataTabScreenProps } from "../index";
-import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { TBA } from "@/lib/frc/tba/TBA";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
 import { UITextInput } from "@/ui/components/UITextInput";
+import { useRootNavigation } from "@/navigation";
 
 export interface PicklistCreatorParams {
     picklist_id: number;
@@ -40,7 +48,7 @@ export interface PicklistCreatorProps extends DataTabScreenProps<"Picklists/Crea
 export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     "use no memo"; // TODO: fix this
     const { colors } = useTheme();
-    const rootNavigation = useNavigation();
+    const rootNavigation = useRootNavigation();
 
     const [name, setName] = useState<string | undefined>(undefined);
     const [creatorName, setCreatorName] = useState<string>("");
@@ -80,7 +88,9 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     const [allTags, setAllTags] = useState<TagStructure[]>([]);
     const [filteredTags, setFilteredTags] = useState<Set<number>>(new Set());
     const [tagColorChangeModalVisible, setTagColorChangeModalVisible] = useState(false);
-    const [selectedTagForColorChange, setSelectedTagForColorChange] = useState<TagStructure | undefined>(undefined);
+    const [selectedTagForColorChange, setSelectedTagForColorChange] = useState<
+        TagStructure | undefined
+    >(undefined);
 
     useEffect(() => {
         console.log("picklist_id: ", picklist_id);
@@ -254,21 +264,29 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         }
 
         const additional_message = presetPicklist
-            ? ' This will overwrite the picklist "' + presetPicklist.name + '" by ' + creatorName + "."
+            ? ' This will overwrite the picklist "' +
+              presetPicklist.name +
+              '" by ' +
+              creatorName +
+              "."
             : "";
-        Alert.alert("Upload Picklist", "Are you sure you want to upload this picklist?" + additional_message, [
-            {
-                label: "Cancel",
-                style: "cancel",
-            },
-            {
-                label: "Upload",
-                onPress: () => {
-                    savePicklistToDB();
-                    navigation.navigate("Manager");
+        Alert.alert(
+            "Upload Picklist",
+            "Are you sure you want to upload this picklist?" + additional_message,
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
                 },
-            },
-        ]);
+                {
+                    text: "Upload",
+                    onPress: () => {
+                        savePicklistToDB();
+                        navigation.navigate("Manager");
+                    },
+                },
+            ],
+        );
     };
 
     const addTeam = (team: number) => {
@@ -442,7 +460,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                             alignItems: "center",
                         }}
                     >
-                        <BouncyCheckbox isChecked={false} disabled={true} fillColor={colors.primary.hex} />
+                        <BouncyCheckbox isChecked={false} disabled fillColor={colors.primary.hex} />
                         <UIText placeholder>{teams_list.indexOf(item) + 1}</UIText>
                         <UIText size={18} style={{ flex: 1, marginLeft: "5%" }}>
                             {item.team_number}
@@ -689,7 +707,10 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                           textDecorationStyle: "solid",
                                                       }
                                                     : item.dnp
-                                                      ? { ...styles.team_number_displayed, color: colors.danger }
+                                                      ? {
+                                                            ...styles.team_number_displayed,
+                                                            color: colors.danger,
+                                                        }
                                                       : styles.team_number_displayed
                                             }
                                         >
@@ -767,17 +788,9 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                         <Pressable
                                             style={{ paddingHorizontal: "4%", flex: 0 }}
                                             onPress={() => {
-                                                rootNavigation.navigate("App", {
-                                                    screen: "Search",
-                                                    params: {
-                                                        screen: "TeamViewer",
-                                                        params: {
-                                                            team: tbaSimpleTeams.find(
-                                                                (team) => team.team_number === item.team_number,
-                                                            )!,
-                                                            competitionId: currentCompID,
-                                                        },
-                                                    },
+                                                rootNavigation.push("TeamSummary", {
+                                                    teamId: item.team_number,
+                                                    competitionId: currentCompID,
                                                 });
                                             }}
                                         >
@@ -791,11 +804,11 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                     "Are you sure you want to remove this team from the picklist?",
                                                     [
                                                         {
-                                                            label: "Cancel",
+                                                            text: "Cancel",
                                                             style: "cancel",
                                                         },
                                                         {
-                                                            label: "Remove",
+                                                            text: "Remove",
                                                             onPress: () => {
                                                                 removeTeam(item.team_number);
                                                                 setSelectedTeamWithAnimation(null);

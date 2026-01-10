@@ -1,39 +1,43 @@
 import { FlatList, View } from "react-native";
 import type { Setter } from "@/lib/util/react/types";
-import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Form } from "@/lib/forms";
 import { UISheet } from "@/ui/components/UISheet";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UICheckbox } from "@/ui/components/UICheckbox";
+import { UISheetModal } from "@/ui/components/UISheetModal";
 
-export interface FormQuestionPickerProps {
+export interface FormQuestionPickerParams {
     form: Form.Structure | null | undefined;
-
     value: number[];
     setValue: Setter<number[]>;
     onSubmit: (value: number[]) => void;
 }
-export function FormQuestionPicker({ form, value, setValue, onSubmit }: FormQuestionPickerProps) {
+export interface FormQuestionPicker extends UISheetModal<FormQuestionPickerParams> {}
+export const FormQuestionPicker = UISheetModal.HOC<FormQuestionPickerParams>(function FormQuestionPicker({
+    ref,
+    data: { form, value, setValue, onSubmit },
+}) {
     const { colors } = useTheme();
-    const modal = useBottomSheetModal();
 
     return (
         <>
             <UISheet.Header
-                left={{
-                    text: "Close",
-                    color: colors.danger,
-                    onPress: () => void modal.dismiss(),
-                }}
+                left={[
+                    {
+                        text: "Close",
+                        color: colors.danger,
+                        onPress: () => void ref.current?.dismiss(),
+                    },
+                ]}
                 title="Choose Questions"
-                right={
+                right={[
                     value.length > 0 && {
                         text: "Save",
                         color: colors.primary,
                         onPress: () => onSubmit(value),
-                    }
-                }
+                    },
+                ]}
             />
             <FlatList
                 style={{ padding: 16, flex: 1 }}
@@ -67,4 +71,4 @@ export function FormQuestionPicker({ form, value, setValue, onSubmit }: FormQues
             />
         </>
     );
-}
+});

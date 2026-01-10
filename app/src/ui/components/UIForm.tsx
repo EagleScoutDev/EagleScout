@@ -123,6 +123,7 @@ export namespace UIForm {
         label: string;
 
         title?: string;
+        loading?: boolean; //> TODO: implement this
         options: K[];
         render: (key: K) => { name: string };
 

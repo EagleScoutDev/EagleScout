@@ -2,22 +2,20 @@ import { ActivityIndicator, Dimensions, Pressable, ScrollView, StyleSheet, View 
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { isTablet } from "@/lib/deviceType";
-import { QuestionSummary } from "./QuestionSummary";
 import { LineChart } from "react-native-chart-kit";
-import { CompetitionRank } from "./CompetitionRank";
 import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import type { BrowseTabScreenProps } from "../../index";
-import type { SimpleTeam } from "@/lib/frc/tba/TBA.ts";
+import type { SimpleTeam } from "@/lib/frc/tba/TBA";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UIModal } from "@/ui/components/UIModal";
+import type { RootStackScreenProps } from "@/navigation";
 
-export interface CompareTeamsParams {
+export interface TeamComparisonParams {
     team: SimpleTeam;
     compId: number;
 }
-export interface CompareTeamsProps extends BrowseTabScreenProps<"CompareTeams"> {}
-export function CompareTeams({ route }: CompareTeamsProps) {
+export interface TeamComparisonProps extends RootStackScreenProps<"TeamComparison"> {}
+export function TeamComparison({ route }: TeamComparisonProps) {
     const { team, compId } = route.params;
     const { colors, dark } = useTheme();
     const [secondTeam, setSecondTeam] = useState<number | null>(null);

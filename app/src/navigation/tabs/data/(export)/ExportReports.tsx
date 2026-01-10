@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { type Ref, useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { NoInternet } from "@/ui/NoInternet";
@@ -20,7 +20,7 @@ export function ExportReports() {
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const modalRef = useRef<UISheetModal<{ competition: CompetitionReturnData }>>(null);
+    const modalRef = useRef<ExportCompetitionSheet>(null);
 
     async function refreshCompetitions() {
         setLoading(true);
@@ -61,30 +61,26 @@ export function ExportReports() {
                 </UIList>
             </View>
 
-            <UISheetModal
-                ref={modalRef}
-                enablePanDownToClose
-                backdropPressBehavior={"close"}
-                handleComponent={null}
-                children={ExportCompetitionSheet}
-            />
+            <ExportCompetitionSheet ref={modalRef} />
         </>
     );
 }
 
-interface ExportCompetitionSheetProps {
-    data?: { competition: CompetitionReturnData };
+interface ExportCompetitionSheetParams {
+    competition: CompetitionReturnData;
 }
-function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
+interface ExportCompetitionSheet extends UISheetModal<ExportCompetitionSheetParams> {}
+const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(function ExportCompetitionSheet({
+    ref,
+    data: { competition },
+}) {
     const { colors } = useTheme();
-
-    const modal = useBottomSheetModal();
 
     async function exportMatchReports() {
         const data = await exportScoutReportsToCsv(competition);
         if (!data) return;
 
-        modal.dismiss();
+        ref.current?.dismiss();
         await writeToFile(`${competition.name}.csv`, data);
     }
     async function exportPitReports() {
@@ -95,13 +91,10 @@ function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
         const data = await exportPitReportsToCsv(competition);
         if (!data) return;
 
-        modal.dismiss();
+        ref.current?.dismiss();
         await writeToFile(`${competition.name}.csv`, data);
     }
 
-    if (data === undefined) return <></>;
-
-    const { competition } = data;
     return (
         <>
             <UISheet.Header title={competition.name} />
@@ -123,4 +116,4 @@ function ExportCompetitionSheet({ data }: ExportCompetitionSheetProps) {
             </UIList>
         </>
     );
-}
+});

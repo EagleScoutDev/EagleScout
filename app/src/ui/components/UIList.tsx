@@ -14,7 +14,7 @@ export interface UIListProps {
     contentContainerStyle?: StyleProp<ViewStyle>;
 
     loading?: boolean;
-    onRefresh?: (() => Promise<void>) | undefined | null;
+    onRefresh?: (() => Promise<any>) | undefined | null;
     minRefreshMs?: number;
 
     children?: Arrays.ReadonlyRecursive<UIList.Section | ReactElement | false | null | undefined>;

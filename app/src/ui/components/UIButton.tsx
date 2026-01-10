@@ -25,7 +25,7 @@ export interface UIButtonProps {
     buttonStyle?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
 
-    icon?: Icon;
+    icon?: Icon | undefined;
     text?: string; // TODO: merge this into the children prop
     loading?: boolean;
     disabled?: boolean;

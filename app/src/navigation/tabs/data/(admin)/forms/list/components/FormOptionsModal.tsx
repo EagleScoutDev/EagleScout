@@ -1,39 +1,35 @@
 import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
 import { UISheet } from "@/ui/components/UISheet";
-import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { useTheme } from "@/ui/context/ThemeContext";
 import { UIForm } from "@/ui/components/UIForm";
 import { UIList } from "@/ui/components/UIList";
 import { Alert } from "react-native";
+import { UISheetModal } from "@/ui/components/UISheetModal";
+import { useTheme } from "@/ui/context/ThemeContext";
 
-export interface FormOptionsModalProps {
-    data?: { form: FormReturnData };
+export interface FormOptionsModalParams {
+    form: FormReturnData;
 }
-export function FormOptionsSheet({ data }: FormOptionsModalProps) {
+export interface FormOptionsModal extends UISheetModal<FormOptionsModalParams> {}
+export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(function FormOptionsModalContent({
+    ref,
+    data: { form },
+}) {
     const { colors } = useTheme();
-    const modal = useBottomSheetModal();
-
-    if (!data) return <></>;
-    const { form } = data;
 
     return (
         <>
-            <UISheet.Header
+            <UISheetModal.Header
                 title={"Form Options"}
-                left={{
-                    text: "Cancel",
-                    color: colors.danger,
-                    onPress: () => {
-                        modal.dismiss();
+                left={[{ role: "cancel", onPress: () => ref.current?.dismiss() }]}
+                right={[
+                    {
+                        role: "done",
+                        onPress: () => {
+                            // TODO: implement this
+                            ref.current?.dismiss();
+                        },
                     },
-                }}
-                right={{
-                    text: "Done",
-                    color: colors.primary,
-                    onPress: () => {
-                        modal.dismiss();
-                    },
-                }}
+                ]}
             />
             <UIForm>
                 {UIForm.Section({
@@ -45,13 +41,13 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                 })}
                 {UIForm.Section({
                     items: [
-                        UIForm.Button({
-                            label: "View Questions",
-                            color: colors.primary,
-                            onPress: () => {
-                                // TODO: implement this
-                            },
-                        }),
+                        // UIForm.Button({
+                        //     label: "View Questions",
+                        //     color: colors.primary,
+                        //     onPress: () => {
+                        //         // TODO: implement this
+                        //     },
+                        // }),
                         UIForm.Button({
                             label: "Delete",
                             color: colors.danger,
@@ -61,7 +57,7 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
                                         console.error(e);
                                         Alert.alert("Error", "Failed to delete form.");
                                     })
-                                    .finally(() => modal.dismiss());
+                                    .finally(() => ref.current?.dismiss());
                             },
                         }),
                     ],
@@ -69,4 +65,4 @@ export function FormOptionsSheet({ data }: FormOptionsModalProps) {
             </UIForm>
         </>
     );
-}
+});

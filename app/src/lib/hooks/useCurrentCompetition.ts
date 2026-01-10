@@ -1,14 +1,14 @@
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import { useEffect, useState } from "react";
 import { FormHelper } from "@/lib/FormHelper";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRootNavigation } from "@/navigation";
 
 export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {
     const [online, setOnline] = useState<boolean>(false);
     const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
 
-    const navigation = useNavigation();
+    const navigation = useRootNavigation();
 
     async function load() {
         try {

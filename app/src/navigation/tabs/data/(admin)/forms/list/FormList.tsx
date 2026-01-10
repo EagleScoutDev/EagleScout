@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "@/navigation/tabs/data";
-import { FormOptionsSheet } from "./components/FormOptionsSheet";
+import { FormOptionsModal } from "./components/FormOptionsModal";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { TabHeader } from "@/ui/components/TabHeader";
@@ -14,7 +14,7 @@ export function FormList({ navigation }: FormListProps) {
     "use no memo"; // TODO: fix this
 
     const [formList, setFormList] = useState<FormReturnData[]>([]);
-    const optionsSheetRef = useRef<UISheetModal<{ form: FormReturnData }>>(null);
+    const optionsSheetRef = useRef<FormOptionsModal>(null);
 
     async function fetchForms() {
         const forms = await FormsDB.getAllForms();
@@ -56,13 +56,7 @@ export function FormList({ navigation }: FormListProps) {
                 }
             />
 
-            <UISheetModal
-                ref={optionsSheetRef}
-                enablePanDownToClose={true}
-                handleComponent={null}
-                backdropPressBehavior={"close"}
-                children={FormOptionsSheet}
-            />
+            <FormOptionsModal ref={optionsSheetRef} />
         </SafeAreaProvider>
     );
 }

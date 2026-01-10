@@ -7,7 +7,7 @@ import * as Bs from "@/ui/icons";
 import { UIText } from "@/ui/components/UIText";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { PressableOpacity } from "@/components/PressableOpacity";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { UITabView } from "@/ui/components/UITabView";
 import { useQuery } from "@tanstack/react-query";
 import { CompetitionsDB } from "@/lib/database/Competitions";
@@ -19,6 +19,8 @@ import type { SearchBarCommands } from "react-native-screens";
 import { PlatformPressable } from "@react-navigation/elements";
 import { UIListPicker } from "@/ui/components/UIListPicker.tsx";
 import { KeyboardController } from "react-native-keyboard-controller";
+import { useRootNavigation } from "@/navigation";
+import { MatchReportModal } from "@/navigation/(modals)/MatchReportModal.tsx";
 
 export interface BrowseTabMainProps extends BrowseTabScreenProps<"Main"> {}
 export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
@@ -37,7 +39,9 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
     const { data: competitions, isLoading: competitionsLoading } = useQuery({
         queryKey: ["competitions"],
         queryFn: async () =>
-            (await CompetitionsDB.getCompetitions()).sort((a, b) => b.startTime.valueOf() - a.startTime.valueOf()),
+            (await CompetitionsDB.getCompetitions()).sort(
+                (a, b) => b.startTime.valueOf() - a.startTime.valueOf()
+            ),
         select: (comps) => new Map(comps.map((comp) => [comp.id, comp])),
         throwOnError: true,
     });
@@ -79,7 +83,13 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                 onChange={setActiveComp}
                 Display={({ value: id, present }) => (
                     <PlatformPressable
-                        style={{ flexShrink: 1, flexDirection: "row", alignItems: "center", padding: 8, gap: 8 }}
+                        style={{
+                            flexShrink: 1,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: 8,
+                            gap: 8,
+                        }}
                         onPress={present}
                     >
                         <UIText size={16} ellipsizeMode={"middle"}>
@@ -99,7 +109,7 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                 headerTitle: "",
                 headerSearchBarOptions: {
                     ref: iosSearchRef,
-                    onCancelButtonPress: () => navigation.goBack(),
+                    // onCancelButtonPress: () => navigation.goBack(),
                     hideNavigationBar: false,
                     placeholder: searchPlaceholder,
                     onChangeText: (e) => setQuery(e.nativeEvent.text),
@@ -111,11 +121,21 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                 headerShown: false,
             });
         }
-    }, [navigation, competitionsLoading, competitions, iosSearchRef, competitionSelector, searchPlaceholder]);
+    }, [
+        navigation,
+        competitionsLoading,
+        competitions,
+        iosSearchRef,
+        competitionSelector,
+        searchPlaceholder,
+    ]);
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView edges={["top", "left", "right"]} style={{ backgroundColor: colors.bg2.hex }}>
+            <SafeAreaView
+                edges={["top", "left", "right"]}
+                style={{ backgroundColor: colors.bg2.hex }}
+            >
                 {Platform.OS == "android" && (
                     <View
                         style={{
@@ -148,7 +168,14 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                                 />
                             </View>
                         ) : (
-                            <View style={{ flex: 1, flexDirection: "row", alignItems: "center", paddingLeft: 8 }}>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingLeft: 8,
+                                }}
+                            >
                                 {competitionSelector}
                             </View>
                         )}
@@ -204,7 +231,7 @@ interface TeamListProps {
     competitionId: number | null;
 }
 function TeamList({ query, competitionId }: TeamListProps) {
-    const navigation = useNavigation();
+    const rootNavigation = useRootNavigation();
     const { colors } = useTheme();
     const [refreshing, setRefreshing] = useState(false);
 
@@ -215,9 +242,11 @@ function TeamList({ query, competitionId }: TeamListProps) {
     } = useQuery({
         queryKey: ["tba", "teamsAtCompetition", { competitionId }],
         queryFn: async () =>
-            (await TBA.getTeamsAtCompetition(await CompetitionsDB.getCompetitionTBAKey(competitionId!))).sort(
-                (a, b) => a.team_number - b.team_number
-            ),
+            (
+                await TBA.getTeamsAtCompetition(
+                    await CompetitionsDB.getCompetitionTBAKey(competitionId!)
+                )
+            ).sort((a, b) => a.team_number - b.team_number),
         throwOnError: true,
         enabled: competitionId !== null,
     });
@@ -241,7 +270,8 @@ function TeamList({ query, competitionId }: TeamListProps) {
             ? teams
             : teams.filter(
                   ({ team_number, nickname }) =>
-                      team_number.toString().includes(query) || nickname.toLowerCase().includes(query.toLowerCase())
+                      team_number.toString().includes(query) ||
+                      nickname.toLowerCase().includes(query.toLowerCase())
               );
 
     return (
@@ -249,19 +279,19 @@ function TeamList({ query, competitionId }: TeamListProps) {
             data={displayTeams}
             keyExtractor={(team) => team.team_number.toString()}
             contentInsetAdjustmentBehavior={"automatic"}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.fg.hex} />}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor={colors.fg.hex}
+                />
+            }
             renderItem={({ item: team }) => (
                 <Pressable
                     onPress={() => {
-                        navigation.navigate("HomeTabs", {
-                            screen: "Browse",
-                            params: {
-                                screen: "TeamViewer",
-                                params: {
-                                    team,
-                                    competitionId,
-                                },
-                            },
+                        rootNavigation.push("TeamSummary", {
+                            teamId: team.team_number,
+                            competitionId,
                         });
                     }}
                     style={{
@@ -293,6 +323,8 @@ interface MatchListProps {
 function MatchList({ query, competitionId }: MatchListProps) {
     const { colors } = useTheme();
     const [refreshing, setRefreshing] = useState(false);
+
+    const matchReportModalRef = useRef<MatchReportModal>(null);
 
     const {
         data: matches,
@@ -330,53 +362,68 @@ function MatchList({ query, competitionId }: MatchListProps) {
         );
     }
 
-    const displayMatches = query === null ? matches : matches.filter(({ id }) => id.toString().includes(query));
+    const displayMatches =
+        query === null ? matches : matches.filter(({ id }) => id.toString().includes(query));
 
     return (
-        <FlatList
-            contentContainerStyle={{
-                padding: 16,
-            }}
-            data={displayMatches}
-            keyExtractor={(matchId) => matchId.toString()}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.fg.hex} />}
-            renderItem={({ item: { id, reports } }) => {
-                return (
-                    <View style={{ marginBottom: 16, maxWidth: 400 }}>
-                        <UIText
-                            style={{
-                                color: colors.fg.hex,
-                                fontWeight: "bold",
-                                fontSize: 18,
-                                marginBottom: 8,
-                            }}
-                        >
-                            Match {id}
-                        </UIText>
-                        <UIGridLayout columns={3} gap={8}>
-                            {reports.map((report, i) => (
-                                <Pressable
-                                    key={i}
-                                    onPress={() => {
-                                        throw new Error("bruh");
-                                    }}
-                                    style={{
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        backgroundColor: Alliance.getColor(i < 3 ? Alliance.red : Alliance.blue).hex, // TODO: store alliance color in each match report instead of guessing by index
-                                        padding: 16,
-                                        borderRadius: 10,
-                                    }}
-                                >
-                                    <UIText bold style={{ textAlign: "center" }}>
-                                        {report.teamNumber}
-                                    </UIText>
-                                </Pressable>
-                            ))}
-                        </UIGridLayout>
-                    </View>
-                );
-            }}
-        />
+        <>
+            <FlatList
+                contentContainerStyle={{
+                    padding: 16,
+                }}
+                data={displayMatches}
+                keyExtractor={(matchId) => matchId.toString()}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor={colors.fg.hex}
+                    />
+                }
+                renderItem={({ item: { id, reports } }) => {
+                    return (
+                        <View style={{ marginBottom: 16, maxWidth: 400 }}>
+                            <UIText
+                                style={{
+                                    color: colors.fg.hex,
+                                    fontWeight: "bold",
+                                    fontSize: 18,
+                                    marginBottom: 8,
+                                }}
+                            >
+                                Match {id}
+                            </UIText>
+                            <UIGridLayout columns={3} gap={8}>
+                                {reports.map((report, i) => (
+                                    <Pressable
+                                        key={i}
+                                        onPress={() => {
+                                            matchReportModalRef.current?.present({
+                                                isOfflineForm: false,
+                                                report,
+                                            });
+                                        }}
+                                        style={{
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            backgroundColor: Alliance.getColor(
+                                                i < 3 ? Alliance.red : Alliance.blue
+                                            ).hex, // TODO: store alliance color in each match report instead of guessing by index
+                                            padding: 16,
+                                            borderRadius: 10,
+                                        }}
+                                    >
+                                        <UIText bold style={{ textAlign: "center" }}>
+                                            {report.teamNumber}
+                                        </UIText>
+                                    </Pressable>
+                                ))}
+                            </UIGridLayout>
+                        </View>
+                    );
+                }}
+            />
+            <MatchReportModal ref={matchReportModalRef} />
+        </>
     );
 }

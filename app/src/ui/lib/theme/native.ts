@@ -7,6 +7,7 @@ export function useStackThemeConfig(): Readonly<NativeStackNavigationOptions> {
     const { colors } = useTheme();
 
     return {
+        headerLargeTitleEnabled: false,
         headerStyle: {
             backgroundColor: colors.bg2.hex,
         },

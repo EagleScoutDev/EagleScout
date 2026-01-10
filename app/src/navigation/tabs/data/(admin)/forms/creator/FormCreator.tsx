@@ -128,7 +128,7 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
                     </BottomSheetView>
                 </UISheet>
 
-                <UISheetModal ref={editSheetRef} handleComponent={null} keyboardBehavior={"extend"}>
+                <UISheetModal ref={editSheetRef}>
                     <UISheet.Header
                         left={{
                             text: "Cancel",

@@ -118,7 +118,7 @@ export function CombinedGraph({
                                             .sort((a, b) => a.matchNumber - b.matchNumber)
                                             .map((report) => report.data[index]),
                                         color: () =>
-                                            questionToColor.get(form!.formStructure[index].question) ??
+                                            questionToColor.get(form.formStructure[index].question) ??
                                             "rgba(0, 0, 0, 1.0)",
                                         strokeWidth: 4, // optional
                                     };

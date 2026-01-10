@@ -1,7 +1,7 @@
 import { type PitReportReturnData } from "@/lib/database/ScoutPitReports";
 import { FlatList, TouchableOpacity, View } from "react-native";
-import { PitScoutViewer } from "./modals/PitScoutViewer";
-import { useState } from "react";
+import { PitReportModal } from "@/navigation/(modals)/PitReportModal";
+import { useRef, useState } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 
@@ -13,7 +13,9 @@ export interface PitReportListProps {
 export function PitReportList({ reports, isOffline }: PitReportListProps) {
     const { colors } = useTheme();
     const [chosenReport, setChosenReport] = useState<PitReportReturnData | null>(null);
-    const [modalVisible, setModalVisible] = useState(false);
+
+    const sheetRef = useRef<PitReportModal>(null);
+
     if (!reports || reports.length === 0) {
         return (
             <View
@@ -84,7 +86,7 @@ export function PitReportList({ reports, isOffline }: PitReportListProps) {
                     <TouchableOpacity
                         onPress={() => {
                             setChosenReport(item);
-                            setModalVisible(true);
+                            sheetRef.current?.present();
                         }}
                         style={{
                             display: "flex",
@@ -119,9 +121,7 @@ export function PitReportList({ reports, isOffline }: PitReportListProps) {
                     </TouchableOpacity>
                 )}
             />
-            {chosenReport !== null && (
-                <PitScoutViewer visible={modalVisible} setVisible={setModalVisible} data={chosenReport} />
-            )}
+            {chosenReport !== null && <PitReportModal ref={sheetRef} data={chosenReport} />}
         </View>
     );
 }

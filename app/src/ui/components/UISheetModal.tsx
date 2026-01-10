@@ -1,70 +1,51 @@
+import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
-    BottomSheetBackdrop,
-    BottomSheetModal,
-    type BottomSheetModalProps,
-    BottomSheetView,
-} from "@gorhom/bottom-sheet";
-import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/src/components/bottomSheetBackdrop/types";
-import { type ReactNode, type Ref, useImperativeHandle, useState } from "react";
+    type FC,
+    type ReactNode,
+    type Ref,
+    type RefObject,
+    useImperativeHandle,
+    useRef,
+} from "react";
 import { useModalSafeArea } from "@/ui/context/ModalSafeArea";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { Modal } from "react-native";
-import { Arrays } from "@/lib/util/Arrays.ts";
+import { UISheet } from "@/ui/components/UISheet";
 
-export interface UISheetModalProps<T = any> extends BottomSheetModalProps<T> {
-    ref?: Ref<BottomSheetModal<T>>;
-    backdropPressBehavior?: BackdropPressBehavior;
+export interface UISheetModal<T = any> {
+    present(data?: T | undefined): void;
+    dismiss(): void;
 }
-export interface UISheetModal<T = any> extends BottomSheetModal<T> {}
-export function UISheetModal<T = any>({
-    backdropPressBehavior = "none",
-    children,
-    style,
-    backgroundStyle,
-    ...props
-}: UISheetModalProps<T>) {
+
+export interface UISheetModalProps<T = any> {
+    ref?: Ref<UISheetModal<T>>;
+    children?: ReactNode | ((data: T) => ReactNode);
+}
+export function UISheetModal<T = any>({ ref, children }: UISheetModalProps<T>) {
     const { colors } = useTheme();
 
     const { frame, insets } = useModalSafeArea();
     const maxHeight = frame.height - insets.top;
-    const gap = 16;
-
-    const [visible, setVisible] = useState(false);
-
-    function wrap(children: ReactNode) {
-        return (
-            <BottomSheetView style={{ height: "100%" }}>
-                <SafeAreaProvider>
-                    {/*<SafeAreaView edges={{ bottom: "additive", left: "additive", right: "additive" }} style={{ flex: 1 }}>*/}
-                    {children}
-                    {/*</SafeAreaView>*/}
-                </SafeAreaProvider>
-            </BottomSheetView>
-        );
-    }
-
-    // useImperativeHandle(props.ref, () => ({
-    //     present() {
-    //         setVisible(true);
-    //     },
-    // }));
+    const gap = 0;
 
     return (
         <BottomSheetModal
-            enablePanDownToClose={false}
+            ref={ref}
+            enablePanDownToClose
             enableDynamicSizing={false}
+            handleComponent={null}
             snapPoints={[maxHeight - gap]}
+            stackBehavior={"push"}
+            keyboardBehavior={"extend"}
             backdropComponent={(props) => (
                 <BottomSheetBackdrop
                     {...props}
                     disappearsOnIndex={-1}
                     appearsOnIndex={0}
-                    pressBehavior={backdropPressBehavior}
+                    pressBehavior={"close"}
                     style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
                 />
             )}
-            {...props}
             style={[
                 {
                     boxShadow: [
@@ -79,16 +60,31 @@ export function UISheetModal<T = any>({
                     borderRadius: 24,
                     flex: 1,
                 },
-                style,
             ]}
-            backgroundStyle={[{ backgroundColor: colors.bg0.hex, borderRadius: 24 }, backgroundStyle]}
+            backgroundStyle={{ backgroundColor: colors.bg0.hex, borderRadius: 24 }}
         >
-            {typeof children === "function"
-                ? (props) => {
-                      const res = children(props);
-                      return res instanceof Promise ? res.then(wrap) : wrap(res);
-                  }
-                : wrap(children)}
+            {typeof children === "function" ? (
+                ({ data }) => <SafeAreaProvider>{data && children(data)}</SafeAreaProvider>
+            ) : (
+                <SafeAreaProvider>{children}</SafeAreaProvider>
+            )}
         </BottomSheetModal>
     );
+}
+
+export namespace UISheetModal {
+    export const Header = UISheet.Header;
+
+    export function HOC<T>(Inner: FC<{ ref: RefObject<UISheetModal<T> | null>; data: T }>) {
+        return function UISheetModalHOC({ ref }: { ref?: Ref<UISheetModal<T>> | undefined }) {
+            const innerRef = useRef<UISheetModal<T>>(null);
+            useImperativeHandle(ref, () => innerRef.current ?? { present() {}, dismiss() {} });
+
+            return (
+                <UISheetModal ref={innerRef}>
+                    {(data) => <Inner ref={innerRef} data={data} />}
+                </UISheetModal>
+            );
+        };
+    }
 }
