@@ -20,13 +20,14 @@ export const BettingInfoStep = ({
     isFinalScreen: boolean;
     children: React.ReactNode;
 }) => {
+    "use no memo"; // TODO: fix this
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const { navigate } = useNavigation();
     const { dismiss } = useBottomSheetModal();
 
     const handleNavigatePress = useCallback(() => {
-        requestAnimationFrame(() => navigate(nextScreen as never));
+        requestAnimationFrame(() => navigate(nextScreen as never)); // TODO: bro what
     }, []);
 
     return (

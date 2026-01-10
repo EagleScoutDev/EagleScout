@@ -38,6 +38,7 @@ export interface PicklistCreatorParams {
 }
 export interface PicklistCreatorProps extends DataTabScreenProps<"Picklists/Create"> {}
 export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
+    "use no memo"; // TODO: fix this
     const { colors } = useTheme();
     const rootNavigation = useNavigation();
 

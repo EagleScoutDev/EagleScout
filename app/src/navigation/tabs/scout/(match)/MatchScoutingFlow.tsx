@@ -38,6 +38,7 @@ export type MatchScoutingParamList = {
 };
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
+    "use no memo"; // TODO: fix this
     const themeScreenOptions = useMaterialTopTabThemeConfig();
 
     const { competition, online } = useCurrentCompetition();

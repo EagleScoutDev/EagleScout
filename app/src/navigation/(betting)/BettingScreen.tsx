@@ -29,6 +29,7 @@ export interface BettingScreenParams {
 }
 export interface BettingScreenProps extends RootStackScreenProps<"MatchBetting/BettingScreen"> {}
 export function BettingScreen({ route }: BettingScreenProps) {
+    "use no memo"; // TODO: review this
     const { matchNumber } = route.params;
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();

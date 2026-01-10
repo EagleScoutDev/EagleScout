@@ -20,7 +20,7 @@ module.exports = function(api) {
             }],
             ["babel-plugin-react-compiler", {
                 target: "19",
-                compilationMode: prod ? "infer" : "annotation",
+                compilationMode: "infer",
                 panicThreshold: "all_errors"
             }],
         ],

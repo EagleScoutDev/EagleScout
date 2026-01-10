@@ -36,6 +36,7 @@ export function QuestionSummary({
     only_average = false,
     show_question = true,
 }: Props) {
+    "use no memo"; // TODO: fix this
     const { colors } = useTheme();
 
     // holds the response from the OpenAI API

@@ -11,6 +11,8 @@ import { UIFab } from "@/ui/components/UIFab";
 
 export interface FormListProps extends DataTabScreenProps<"Forms"> {}
 export function FormList({ navigation }: FormListProps) {
+    "use no memo"; // TODO: fix this
+
     const [formList, setFormList] = useState<FormReturnData[]>([]);
     const optionsSheetRef = useRef<UISheetModal<{ form: FormReturnData }>>(null);
 

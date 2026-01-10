@@ -14,6 +14,7 @@ export interface ScoutAssignmentsSpreadsheetParams {
 }
 export interface ScoutAssignmentsSpreadsheetProps extends DataTabScreenProps<"ScoutAssignments/Table"> {}
 export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadsheetProps) {
+    "use no memo"; // TODO: review this
     const { competition } = route.params;
     const [matchesGrouped, setMatchesGrouped] = useState([]);
     const [scoutAssignmentModalVisible, setScoutAssignmentModalVisible] = useState(false);

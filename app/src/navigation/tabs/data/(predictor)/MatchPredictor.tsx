@@ -177,7 +177,7 @@ export function MatchPredictor() {
             return;
         }
 
-        let winner = blue_data?.probability > red_data?.probability ? Alliance.blue : Alliance.red;
+        let winner = blue_data.probability > red_data.probability ? Alliance.blue : Alliance.red;
 
         setCalculatedMeanStdev({
             blueMean: blue_data?.mean || 0,

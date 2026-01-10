@@ -27,6 +27,7 @@ export function TeamSummary({
     },
     navigation,
 }: TeamSummaryProps) {
+    "use no memo"; // TODO: fix this
     const [form, setForm] = useState<FormReturnData | null>(null);
     useEffect(() => {
         CompetitionsDB.getCompetitionById(competitionId).then(({ formId }) => {

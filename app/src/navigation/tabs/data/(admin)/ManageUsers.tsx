@@ -35,9 +35,6 @@ export function ManageUsers() {
     const [sort, setSort] = useState("All");
     const [sortedUsers, setSortedUsers] = useState<User[]>([]);
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
 
     const handleSort = (sortType) => {
         setSort(sortType);
@@ -74,6 +71,9 @@ export function ManageUsers() {
         setUsers(users);
         setSortedUsers(users);
     };
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
     async function updateApproveStatus(user, b) {
         const { error } = await supabase.from("user_attributes").update({ scouter: b }).eq("id", user.id);
