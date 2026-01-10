@@ -2,7 +2,7 @@ import { type TBAMatch, TBAMatches } from "@/lib/database/TBAMatches";
 import { FormHelper } from "@/lib/FormHelper";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { useCallback, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 
 export function useCurrentCompetitionMatches() {
     const [competitionId, setCompetitionId] = useState<number>(-1);

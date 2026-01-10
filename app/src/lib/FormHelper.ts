@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import { BackgroundFetchManager } from "@/lib/BackgroundFetchManager";
 import type { OfflineNote } from "@/lib/database/ScoutNotes";
 import { type MatchReportReturnData } from "@/lib/database/ScoutMatchReports";

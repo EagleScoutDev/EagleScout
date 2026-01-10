@@ -1,5 +1,5 @@
 import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
-import { launchCamera } from "react-native-image-picker";
+import { launchCameraAsync } from "expo-image-picker";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
@@ -63,7 +63,7 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
                     return (
                         <Pressable
                             onPress={() => {
-                                launchCamera({
+                                launchCameraAsync({
                                     mediaTypes: ["images"],
                                     quality: 1,
                                 }).then((x) => {

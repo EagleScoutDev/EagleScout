@@ -12,7 +12,7 @@ import { UISheet } from "@/ui/components/UISheet";
 import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
 import * as Bs from "@/ui/icons";
 import { Alliance, type Orientation } from "@/frc/common/common";
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import * as Haptics from "expo-haptics";
 
 interface AutoModalProps {
     orientation: Orientation;
@@ -43,7 +43,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                     <LevelChooser
                         reefSextant={reefSextant}
                         onPress={([level, success]) => {
-                            ReactNativeHapticFeedback.trigger("impactLight");
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             dispatch({
                                 type: AutoActionType.Reef,
                                 target: reefSextant,
@@ -61,7 +61,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                             [{ text: "Missed", role: "fail", value: false }],
                         ]}
                         onPress={(success: boolean) => {
-                            ReactNativeHapticFeedback.trigger("impactLight");
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             dispatch({
                                 type: AutoActionType.Intake,
                                 target: gamePiece,
@@ -100,13 +100,13 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                                 alliance={alliance}
                                 state={state.field}
                                 onReef={(sextant: ReefSextant) => {
-                                    ReactNativeHapticFeedback.trigger("impactLight");
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                     setReefSextant(sextant);
                                 }}
                                 onPiece={(piece: number) => {
                                     if (state.field.pieces[piece] !== undefined) return;
 
-                                    ReactNativeHapticFeedback.trigger("impactLight");
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                     setGamePiece(piece);
                                 }}
                             />
@@ -118,7 +118,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                                 role={"fail"}
                                 value={state.stats.miss_net}
                                 onPress={() => {
-                                    ReactNativeHapticFeedback.trigger("impactLight");
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                     dispatch({
                                         type: AutoActionType.Net,
                                         success: false,
@@ -130,7 +130,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                                 role={"success"}
                                 value={state.stats.score_net}
                                 onPress={() => {
-                                    ReactNativeHapticFeedback.trigger("impactLight");
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                     dispatch({
                                         type: AutoActionType.Net,
                                         success: true,
@@ -145,7 +145,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                                 role={"fail"}
                                 value={state.stats.miss_processor}
                                 onPress={() => {
-                                    ReactNativeHapticFeedback.trigger("impactLight");
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                     dispatch({
                                         type: AutoActionType.Processor,
                                         success: false,
@@ -157,7 +157,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                                 role={"success"}
                                 value={state.stats.score_processor}
                                 onPress={() => {
-                                    ReactNativeHapticFeedback.trigger("impactLight");
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                     dispatch({
                                         type: AutoActionType.Processor,
                                         success: true,

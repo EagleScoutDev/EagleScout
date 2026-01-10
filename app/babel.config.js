@@ -1,28 +1,17 @@
-const prod = process.env.APP_ENV !== "development";
-
-module.exports = function(api) {
+module.exports = function (api) {
     api.cache(true);
     return {
-        presets: ["module:@react-native/babel-preset"],
+        presets: ["babel-preset-expo"],
         plugins: [
-            ["module-resolver", {
-                root: ["./"],
-                alias: {
-                    "@": "./src",
+            [
+                "module-resolver",
+                {
+                    root: ["./"],
+                    alias: {
+                        "@": "./src",
+                    },
                 },
-            }],
-            ["react-native-worklets/plugin", {
-
-            }],
-            ["module:react-native-dotenv", {
-                safeMode: true,
-                envName: "APP_ENV",
-            }],
-            ["babel-plugin-react-compiler", {
-                target: "19",
-                compilationMode: "infer",
-                panicThreshold: "all_errors"
-            }],
+            ],
         ],
     };
 };

@@ -8,7 +8,7 @@ import type { NavigationProp } from "@react-navigation/native";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 
 export interface UpcomingRoundsViewProps {
     navigation: NavigationProp<ScoutMenuParamList, "Main">;

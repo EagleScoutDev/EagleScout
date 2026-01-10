@@ -3,7 +3,7 @@ import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
 import { useProfile } from "@/lib/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";

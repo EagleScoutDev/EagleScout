@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import { useEffect, useReducer, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
 import { CompetitionsDB } from "@/lib/database/Competitions";

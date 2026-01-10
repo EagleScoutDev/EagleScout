@@ -1,7 +1,7 @@
 import { ScrollView, View } from "react-native";
 import * as Bs from "@/ui/icons";
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import Animated, { useSharedValue } from "react-native-reanimated";
@@ -10,7 +10,7 @@ import { PressableOpacity } from "@/components/PressableOpacity";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
-import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "expo-clipboard";
 
 export function DebugAsyncStorage() {
     const [keys, setKeys] = useState<readonly string[]>([]);

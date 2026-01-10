@@ -20,7 +20,7 @@ import { TagsModal } from "./TagsModal";
 import { TagColorChangeModal } from "./TagColorChangeModal";
 import { DoNotPickModal } from "./DoNotPickModal";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import * as Haptics from "expo-haptics";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import {
     PicklistsDB,
@@ -692,7 +692,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                             fillColor={colors.primary.hex}
                                             onPress={() => {
                                                 addOrRemoveTeamLiveMode(item);
-                                                ReactNativeHapticFeedback.trigger("notificationSuccess");
+                                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                                             }}
                                         />
                                         <UIText placeholder>{teams_list.indexOf(item) + 1}</UIText>

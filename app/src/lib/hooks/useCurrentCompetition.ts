@@ -1,7 +1,7 @@
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import { useEffect, useState } from "react";
 import { FormHelper } from "@/lib/FormHelper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import { useRootNavigation } from "@/navigation";
 
 export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {

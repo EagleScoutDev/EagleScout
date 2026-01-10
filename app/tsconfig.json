@@ -1,18 +1,18 @@
 {
-  "extends": "@react-native/typescript-config",
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "**/Pods"],
-
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "lib": ["ES2023"],
-    "typeRoots": ["./src/types"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    "strict": true,
+    "moduleResolution": "bundler",
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
-    "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler"
-  }
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

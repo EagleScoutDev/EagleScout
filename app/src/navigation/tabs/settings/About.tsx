@@ -5,8 +5,7 @@ import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 import { useEffect, useState } from "react";
 import { useStallionModal } from "react-native-stallion";
-
-const VERSION = "7.7.2";
+import Application from "expo-application/src/ExpoApplication";
 
 export interface AboutProps extends SettingsTabScreenProps<"About"> {}
 export function About({ navigation }: AboutProps) {
@@ -32,7 +31,7 @@ export function About({ navigation }: AboutProps) {
                             label: "Version",
                             body: () => (
                                 <UIText size={16} placeholder>
-                                    {VERSION}
+                                    {Application.nativeApplicationVersion}
                                 </UIText>
                             ),
                             onPress: () => {

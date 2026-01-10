@@ -1,3 +1,4 @@
+import * as SplashScreen from "expo-splash-screen";
 import * as React from "react";
 import { useEffect } from "react";
 import { useLocalStore } from "@/lib/stores/local";
@@ -13,10 +14,12 @@ import { ThemedNavigationContainer } from "@/ui/ThemedNavigationContainer";
 import { ThemeContext } from "@/ui/context/ThemeContext";
 import { Appearance } from "react-native";
 import { withStallion } from "react-native-stallion";
+import * as SystemUI from "expo-system-ui";
 import { RootNavigator } from "@/navigation";
 import { QueryClient } from "@tanstack/query-core";
 import { QueryClientProvider } from "@tanstack/react-query";
 
+SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 function App() {
@@ -26,6 +29,7 @@ function App() {
 
     useEffect(() => {
         Appearance.setColorScheme(theme.dark ? "dark" : "light");
+        SystemUI.setBackgroundColorAsync(theme.colors.bg0.hex);
     }, [theme]);
 
     return (
@@ -41,7 +45,7 @@ function App() {
                 <GestureHandlerRootView>
                     <SafeAreaProvider>
                         <KeyboardProvider>
-                            <ThemedNavigationContainer>
+                            <ThemedNavigationContainer onReady={() => SplashScreen.hideAsync()}>
                                 <HeaderButtonsProvider stackType={"native"}>
                                     <ModalSafeAreaProvider>
                                         <BottomSheetModalProvider>

@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { type SettingsTabScreenProps } from "../index";

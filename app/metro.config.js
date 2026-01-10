@@ -1,21 +1,14 @@
-const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
-const path = require("node:path");
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require("expo/metro-config");
+const path = require("path");
 
 const projectRoot = __dirname;
 
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
-const config = {
-    resolver: {
-        unstable_enablePackageExports: true,
-    },
-    alias: {
-        "@": path.resolve(projectRoot, "src"),
-    }
+/** @type {import('expo/metro-config').MetroConfig} */
+const config = getDefaultConfig(projectRoot);
+config.resolver.alias = {
+    ...config.resolver.alias,
+    "@": path.resolve(projectRoot, "src"),
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = config;

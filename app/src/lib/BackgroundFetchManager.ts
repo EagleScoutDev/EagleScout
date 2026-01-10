@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import BackgroundFetch from "react-native-background-fetch";
 import { PitReportsDB } from "@/lib/database/ScoutPitReports.ts";
 

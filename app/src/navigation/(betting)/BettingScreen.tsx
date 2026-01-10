@@ -8,7 +8,7 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { MatchBets } from "@/lib/database/MatchBets.ts";
 import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet.tsx";
 import { ProfilesDB } from "@/lib/database/Profiles.ts";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "expo-sqlite/kv-store";
 import type { Profile } from "@/lib/user/profile.ts";
 import * as Bs from "@/ui/icons";
 import Slider from "@react-native-community/slider";

@@ -4,7 +4,7 @@ import { exMemo } from "@/lib/util/react/memo";
 import { PressableOpacity } from "@/components/PressableOpacity";
 import * as Bs from "@/ui/icons";
 import type { Theme } from "@/ui/lib/theme";
-import * as ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import * as Haptics from "expo-haptics";
 import { useTheme } from "@/ui/context/ThemeContext";
 
 export interface StepperProps {
@@ -39,7 +39,7 @@ export function UIStepper({ value, onInput }: StepperProps) {
             <PressableOpacity
                 style={[styles.button, { backgroundColor: colors.primary.hex }]}
                 onPress={() => {
-                    ReactNativeHapticFeedback.trigger("impactLight");
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     onInput && onInput(value + 1);
                 }}
             >

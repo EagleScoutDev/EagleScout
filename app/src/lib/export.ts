@@ -2,8 +2,8 @@ import { Alert } from "react-native";
 import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import type { CompetitionReturnData } from "@/lib/database/Competitions";
 import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
-import Share from "react-native-share";
-import RNFS from "react-native-fs";
+import Sharing from "expo-sharing";
+import FS, { Paths } from "expo-file-system";
 import { CSVBuilder } from "@/lib/csv";
 import { Form } from "@/lib/forms";
 
@@ -83,22 +83,21 @@ export async function exportPitReportsToCsv(comp: CompetitionReturnData) {
 }
 
 export async function writeToFile(name: string, content: string) {
-    let path = RNFS.CachesDirectoryPath + `/${name}`;
+    let f = new FS.File(Paths.cache, name);
     try {
-        await RNFS.writeFile(path, content, "utf8");
+        f.create();
         try {
-            await Share.open({
-                url: `file://${path}`,
-            });
+            f.write(content);
+            await Sharing.shareAsync(f.uri);
             try {
-                await RNFS.unlink(path);
+                f.delete();
                 console.log("Deleted file");
             } catch (err) {
                 console.error("Error deleting file: " + err);
             }
         } catch {
             try {
-                await RNFS.unlink(path);
+                f.delete();
                 console.log("Deleted file");
             } catch (err) {
                 console.error("Error deleting file: " + err);
@@ -107,7 +106,7 @@ export async function writeToFile(name: string, content: string) {
     } catch (err) {
         Alert.alert(
             "Error",
-            "An error occurred while writing the export file. Please make sure the app has the necessary permissions.",
+            "An error occurred while writing the export file. Please make sure the app has the necessary permissions."
         );
         console.log(err);
     }
