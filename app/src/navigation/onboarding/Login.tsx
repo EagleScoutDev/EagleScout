@@ -22,7 +22,7 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.background}>
-                {error !== "" && (
+                {error !== null && (
                     <View style={styles.error}>
                         <UIText style={styles.error_text}>{error}</UIText>
                     </View>
@@ -72,7 +72,7 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
                     <PressableOpacity
                         style={styles.link_container}
                         onPress={() => {
-                            navigation.navigate("Login");
+                            navigation.navigate("ResetPassword");
                             setUsername("");
                             setPassword("");
                         }}

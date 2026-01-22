@@ -1,14 +1,6 @@
 import { useState } from "react";
-import {
-    Alert,
-    Keyboard,
-    SafeAreaView,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-} from "react-native";
-
+import { Alert, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { supabase } from "@/lib/supabase";
 import { type OnboardingScreenProps } from ".";

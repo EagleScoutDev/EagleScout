@@ -1,13 +1,6 @@
-import {
-    Alert,
-    Keyboard,
-    SafeAreaView,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-} from "react-native";
+import { Alert, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { useMemo, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { supabase } from "@/lib/supabase";
 import type { OnboardingScreenProps } from "@/navigation/onboarding/index";
@@ -69,7 +62,7 @@ export function Signup({ navigation }: SignupProps) {
 
                         <StandardButton
                             text="Register"
-                            textColor={formComplete ? "dimgray" : colors.primary.hex}
+                            textColor={!formComplete ? "dimgray" : colors.primary.hex}
                             disabled={!formComplete}
                             onPress={async () => {
                                 if (password !== confirmPassword) {
