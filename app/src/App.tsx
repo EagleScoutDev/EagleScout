@@ -16,7 +16,6 @@ import { withStallion } from "react-native-stallion";
 import { RootNavigator } from "@/navigation";
 import { QueryClient } from "@tanstack/query-core";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { PortalProvider } from "@gorhom/portal";
 
 const queryClient = new QueryClient();
 
@@ -31,34 +30,32 @@ function App() {
 
     return (
         // <ErrorBoundary>
-        <PortalProvider>
-            <QueryClientProvider client={queryClient}>
-                <ThemeContext.Provider
-                    value={{
-                        themePreference,
-                        setThemePreference,
-                        theme,
-                    }}
-                >
-                    <GestureHandlerRootView>
-                        <SafeAreaProvider>
-                            <KeyboardProvider>
-                                <ThemedNavigationContainer>
-                                    <HeaderButtonsProvider stackType={"native"}>
-                                        <ModalSafeAreaProvider>
-                                            <BottomSheetModalProvider>
-                                                <RootNavigator />
-                                            </BottomSheetModalProvider>
-                                        </ModalSafeAreaProvider>
-                                    </HeaderButtonsProvider>
-                                    <Toast />
-                                </ThemedNavigationContainer>
-                            </KeyboardProvider>
-                        </SafeAreaProvider>
-                    </GestureHandlerRootView>
-                </ThemeContext.Provider>
-            </QueryClientProvider>
-        </PortalProvider>
+        <QueryClientProvider client={queryClient}>
+            <ThemeContext.Provider
+                value={{
+                    themePreference,
+                    setThemePreference,
+                    theme,
+                }}
+            >
+                <GestureHandlerRootView>
+                    <SafeAreaProvider>
+                        <KeyboardProvider>
+                            <ThemedNavigationContainer>
+                                <HeaderButtonsProvider stackType={"native"}>
+                                    <ModalSafeAreaProvider>
+                                        <BottomSheetModalProvider>
+                                            <RootNavigator />
+                                        </BottomSheetModalProvider>
+                                    </ModalSafeAreaProvider>
+                                </HeaderButtonsProvider>
+                                <Toast />
+                            </ThemedNavigationContainer>
+                        </KeyboardProvider>
+                    </SafeAreaProvider>
+                </GestureHandlerRootView>
+            </ThemeContext.Provider>
+        </QueryClientProvider>
         // </ErrorBoundary>
     );
 }
