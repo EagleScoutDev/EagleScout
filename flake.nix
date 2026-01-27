@@ -24,6 +24,7 @@
               watchman
               nodejs_22
               jdk17_headless
+              cocoapods
             ]
           );
 
