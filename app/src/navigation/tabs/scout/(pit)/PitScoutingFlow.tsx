@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
 import { TeamInformation } from "../components/TeamInformation";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { PitReportsDB, type PitReportWithoutId } from "@/lib/database/ScoutPitReports";
@@ -13,26 +12,17 @@ import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { Arrays } from "@/lib/util/Arrays";
 import { PitScoutingImageList } from "./PitScoutingImageList";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useMaterialTopTabThemeConfig } from "@/ui/lib/theme/native";
 import { FormView } from "@/components/FormView";
 import { UIText } from "@/ui/components/UIText";
-
-const Tab = createMaterialTopTabNavigator();
-export type PitFlowScreenProps<K extends keyof PitFlowParamList> = MaterialTopTabScreenProps<PitFlowParamList, K>;
-export type PitFlowParamList = {
-    Match: undefined;
-    [k: `Form/${string}`]: undefined;
-    Images: undefined;
-};
+import { UITabView } from "@/ui/components/UITabView.tsx";
 
 export interface PitFlowProps extends ScoutMenuScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
-    const themeScreenOptions = useMaterialTopTabThemeConfig();
-
     const { competition, online } = useCurrentCompetition();
     const formStructure = competition?.pitScoutFormStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
+
+    const [currentTab, setCurrentTab] = useState("Match");
 
     const [images, setImages] = useState<string[]>(["plus"]);
     const [team, setTeam] = useState<number | null>(null);
@@ -61,7 +51,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         if (missing) {
             Alert.alert(
                 "Required Question: " + missing.question + " not filled out",
-                "Please fill out all questions denoted with an asterisk",
+                "Please fill out all questions denoted with an asterisk"
             );
             return;
         }
@@ -77,7 +67,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         if (!internetResponse) {
             await FormHelper.savePitFormOffline(
                 data,
-                images.filter((item) => item !== "plus"),
+                images.filter((item) => item !== "plus")
             );
             reset();
 
@@ -90,7 +80,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
             try {
                 await PitReportsDB.createOnlinePitScoutReport(
                     data,
-                    images.filter((item) => item !== "plus"),
+                    images.filter((item) => item !== "plus")
                 );
                 reset();
 
@@ -111,68 +101,60 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
 
-                {!online && <UIText>To check for competitions, please connect to the internet.</UIText>}
+                {!online && (
+                    <UIText>To check for competitions, please connect to the internet.</UIText>
+                )}
             </View>
         );
     }
 
-    return (
-        <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-                <Tab.Navigator screenOptions={themeScreenOptions}>
-                    <Tab.Screen
-                        name={"Match"}
-                        options={{
-                            title: "Match",
+    const tabs = [
+        {
+            key: "Match",
+            title: "Match",
+            component: () => (
+                <ScoutingFlowTab
+                    title={competition ? `${competition.name}` : "Pit Scouting"}
+                    buttonText={"Next"}
+                    onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
+                >
+                    <TeamInformation team={team} setTeam={setTeam} />
+                </ScoutingFlowTab>
+            ),
+        },
+        ...formSections.map(({ title, items }, i) => {
+            const isLast = i === formSections.length - 1;
+
+            return {
+                key: `Form/${title}`,
+                title,
+                component: () => (
+                    <ScoutingFlowTab
+                        buttonText={"Next"}
+                        title={title}
+                        onNext={() => {
+                            setCurrentTab(isLast ? "Images" : `Form/${formSections[i + 1].title}`);
                         }}
-                        children={({ navigation }) => (
-                            <ScoutingFlowTab
-                                title={competition ? `${competition.name}` : "Pit Scouting"}
-                                buttonText={"Next"}
-                                onNext={() => navigation.navigate({ screen: `Form/${formSections[0].title}` })}
-                            >
-                                <TeamInformation team={team} setTeam={setTeam} />
-                            </ScoutingFlowTab>
-                        )}
-                    />
-                    {formSections?.map((section, i) => (
-                        <Tab.Screen
-                            key={section.title}
-                            name={`Form/${section.title}`}
-                            options={{
-                                title: section.title,
-                            }}
-                            children={({ navigation }) => (
-                                <ScoutingFlowTab
-                                    buttonText={"Next"}
-                                    title={section.title}
-                                    onNext={() => {
-                                        navigation.navigate({
-                                            screen:
-                                                i === formSections.length - 1
-                                                    ? "Images"
-                                                    : `Form/${formSections[i + 1].title}`,
-                                        });
-                                    }}
-                                >
-                                    <FormView
-                                        items={section.items}
-                                        data={sectionData[i]}
-                                        onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                                    />
-                                </ScoutingFlowTab>
-                            )}
+                    >
+                        <FormView
+                            items={items}
+                            data={sectionData[i]}
+                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
                         />
-                    ))}
-                    <Tab.Screen name={"Images"}>
-                        {() => (
-                            <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
-                                <PitScoutingImageList images={images} setImages={setImages} />
-                            </ScoutingFlowTab>
-                        )}
-                    </Tab.Screen>
-                </Tab.Navigator>
-            </SafeAreaView>
-        </SafeAreaProvider>
-    );
+                    </ScoutingFlowTab>
+                ),
+            };
+        }),
+        {
+            key: "Images",
+            title: "Images",
+            component: () => (
+                <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
+                    <PitScoutingImageList images={images} setImages={setImages} />
+                </ScoutingFlowTab>
+            ),
+        },
+    ];
+
+    return <UITabView currentKey={currentTab} onTabChange={setCurrentTab} tabs={tabs} />;
 }

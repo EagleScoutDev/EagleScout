@@ -12,34 +12,22 @@ import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { ScoutingFlowTab } from "../components/ScoutingFlowTab";
 import { MatchInformation } from "../components/MatchInformation";
-import { createMaterialTopTabNavigator, type MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
 import { FormView } from "@/components/FormView";
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
 import * as Reefscape from "@/frc/reefscape";
 import { AutoAction, AutoState } from "@/frc/reefscape";
 import { produce } from "immer";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useMaterialTopTabThemeConfig } from "@/ui/lib/theme/native";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
 import { HeaderTimer } from "@/navigation/tabs/scout/components/HeaderTimer";
+import { UITabView } from "@/ui/components/UITabView";
 
 export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
-const Tab = createMaterialTopTabNavigator<MatchScoutingParamList>();
-export type MatchScoutingScreenProps<K extends keyof MatchScoutingParamList> = MaterialTopTabScreenProps<
-    MatchScoutingParamList,
-    K
->;
-export type MatchScoutingParamList = {
-    Setup: undefined;
-    [k: `Form/${string}`]: undefined;
-};
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use no memo"; // TODO: fix this
-    const themeScreenOptions = useMaterialTopTabThemeConfig();
 
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
@@ -49,8 +37,8 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
 
     const formStructure = competition?.form ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
-    const autoSection = formSections?.find((s) => s.title === "Auto");
 
+    const [currentTab, setCurrentTab] = useState("Setup");
     const [sectionData, setSectionData] = useState<Form.Data[]>([]);
 
     const [orientation, setOrientation] = useState<Orientation>(Orientation.leftRed);
@@ -58,7 +46,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
 
     const [autoState, autoReducer] = useReducer(AutoAction.reduce, AutoState());
 
-    const confetti = useRef<Confetti>(null);
+    const useConfetti = useRef<Confetti>(null);
     const autoModalRef = useRef<UISheetModal>(null);
     const timerRef = useRef<HeaderTimer>(null);
 
@@ -85,7 +73,10 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                     let item = items[i];
                     if (typeof item.link_to !== "string") continue;
 
-                    if (draft.stats[item.link_to] !== (draft.stats[item.link_to] = sectionData[si][i])) {
+                    if (
+                        draft.stats[item.link_to] !==
+                        (draft.stats[item.link_to] = sectionData[si][i])
+                    ) {
                         changed = true;
                     }
                 }
@@ -137,7 +128,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (missing) {
             Alert.alert(
                 "Required Question: " + missing.question + " not filled out",
-                "Please fill out all questions denoted with an asterisk",
+                "Please fill out all questions denoted with an asterisk"
             );
             return;
         }
@@ -153,7 +144,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             competitionName: competition.name,
         };
 
-        console.log("a");
         const internetResponse = await CompetitionsDB.getCurrentCompetition()
             .then(() => true)
             .catch(() => false);
@@ -174,7 +164,11 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             const currentAssignments = await AsyncStorage.getItem("scout-assignments");
             if (currentAssignments !== null) {
                 const newAssignments = JSON.parse(currentAssignments).filter(
-                    (a) => !(a.matchNumber === match && (a.team === null || a.team.substring(3) === team)),
+                    (a) =>
+                        !(
+                            a.matchNumber === match &&
+                            (a.team === null || a.team.substring(3) === team)
+                        )
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
@@ -188,7 +182,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 });
                 reset();
 
-                confetti.current?.startConfetti();
+                useConfetti.current?.startConfetti();
             } catch (error) {
                 console.error(error);
                 Alert.alert("Error", "There was an error submitting your scouting report.");
@@ -203,102 +197,93 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
 
-                {!online && <UIText>To check for competitions, please connect to the internet.</UIText>}
+                {!online && (
+                    <UIText>To check for competitions, please connect to the internet.</UIText>
+                )}
             </View>
         );
     }
 
+    const tabs = [
+        {
+            key: "Setup",
+            title: "Setup",
+            component: () => (
+                <ScoutingFlowTab
+                    title={competition ? `${competition.name}` : "Match Report"}
+                    buttonText={"Next"}
+                    onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
+                >
+                    <MatchInformation
+                        match={match} setMatch={setMatch}
+                        team={team} setTeam={setTeam}
+                        orientation={orientation} setOrientation={setOrientation}
+                        alliance={alliance} setAlliance={setAlliance}
+                        teamsForMatch={teamsForMatch}
+                    />
+                </ScoutingFlowTab>
+            ),
+        },
+        ...formSections.map(({ title, items }, i) => {
+            const isLast = i === formSections.length - 1;
+
+            return {
+                key: `Form/${title}`,
+                title,
+                component: () => (
+                    <ScoutingFlowTab
+                        title={title}
+                        buttonText={isLast ? "Submit" : "Next"}
+                        onNext={
+                            isLast
+                                ? submitForm
+                                : () => setCurrentTab(`Form/${formSections[i + 1].title}`)
+                        }
+                    >
+                        <FormView
+                            items={items}
+                            data={sectionData[i]}
+                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
+                        />
+                    </ScoutingFlowTab>
+                ),
+            };
+        }),
+    ];
+
     return (
-        <SafeAreaProvider>
+        <>
             <View
                 style={{
-                    ...StyleSheet.absoluteFillObject,
+                    ...StyleSheet.absoluteFill,
                     zIndex: 114,
                     pointerEvents: "none",
                     width: "100%",
                     height: "100%",
                 }}
             >
-                <Confetti ref={confetti} timeout={10} duration={3000} />
+                <Confetti ref={useConfetti} timeout={10} duration={3000} />
             </View>
 
-            <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-                <Tab.Navigator screenOptions={themeScreenOptions}>
-                    <Tab.Screen name={"Setup"}>
-                        {({ navigation }) => (
-                            <ScoutingFlowTab
-                                title={competition ? `${competition.name}` : "Match Report"}
-                                buttonText={"Next"}
-                                onNext={() => navigation.navigate(`Form/${formSections[0].title}`)}
-                            >
-                                <MatchInformation
-                                    match={match}
-                                    setMatch={setMatch}
-                                    team={team}
-                                    setTeam={setTeam}
-                                    teamsForMatch={teamsForMatch}
-                                    orientation={orientation}
-                                    setOrientation={setOrientation}
-                                    alliance={alliance}
-                                    setAlliance={setAlliance}
-                                />
-                            </ScoutingFlowTab>
-                        )}
-                    </Tab.Screen>
-                    {formSections?.map(({ title, items }, i) => {
-                        const isLast = i === formSections.length - 1;
+            <UITabView
+                currentKey={currentTab}
+                onTabChange={(tab) => {
+                    setCurrentTab(tab);
+                    if (tab.includes("Auto")) {
+                        autoModalRef.current?.present();
+                    }
+                }}
+                tabs={tabs}
+            />
 
-                        return (
-                            <Tab.Screen
-                                key={title}
-                                name={`Form/${title}`}
-                                options={{
-                                    title: title,
-                                }}
-                                listeners={{
-                                    tabPress: () => {
-                                        if (title === "Auto") autoModalRef.current?.present();
-                                    },
-                                }}
-                            >
-                                {({ navigation }) => (
-                                    <ScoutingFlowTab
-                                        title={title}
-                                        buttonText={isLast ? "Submit" : "Next"}
-                                        onNext={
-                                            isLast
-                                                ? submitForm
-                                                : () => navigation.navigate(`Form/${formSections[i + 1].title}`)
-                                        }
-                                    >
-                                        <FormView
-                                            items={items}
-                                            data={sectionData[i]}
-                                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                                        />
-                                    </ScoutingFlowTab>
-                                )}
-                            </Tab.Screen>
-                        );
-                    })}
-                </Tab.Navigator>
-            </SafeAreaView>
-
-            {autoSection && (
-                <UISheetModal
-                    ref={autoModalRef}
-                    enablePanDownToClose
-                    handleComponent={null}
-                    onDismiss={() => autoModalRef.current?.dismiss()}
-                >
-                    <Reefscape.AutoModal
-                        orientation={orientation}
-                        alliance={alliance}
-                        state={autoState}
-                        dispatch={autoReducer}
-                    />
-                </UISheetModal>
-            )}
-        </SafeAreaProvider>
+            <UISheetModal ref={autoModalRef}>
+                <Reefscape.AutoModal
+                    orientation={orientation}
+                    alliance={alliance}
+                    state={autoState}
+                    dispatch={autoReducer}
+                />
+            </UISheetModal>
+        </>
     );
 }
