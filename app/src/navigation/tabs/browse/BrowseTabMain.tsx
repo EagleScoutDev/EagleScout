@@ -106,7 +106,7 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                                 : (competitions.get(id)?.name ?? "Unknown Competition")}
                         </UIText>
                         {Platform.OS !== "ios" && <View style={{ flex: 1 }} />}
-                        <Bs.ChevronDown size={18} color={colors.fg.hex} />
+                        <Bs.ChevronDown size={18} fill={colors.fg.hex} />
                     </PlatformPressable>
                 )}
             />
@@ -203,7 +203,7 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                             }}
                         >
                             {searching ? (
-                                <Bs.XLg size={24} color={colors.fg.hex} />
+                                <Bs.XLg size={24} fill={colors.fg.hex} />
                             ) : (
                                 <Bs.Search size={24} fill={colors.fg.hex} />
                             )}
