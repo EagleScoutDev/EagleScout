@@ -32,12 +32,16 @@ export function UIList({
     const styles = getListStyles(colors);
     const renderSectionHeader = ({ section: { header } }: { section: UIList.Section }) => (
         <View style={styles.sectionHeader}>
-            {typeof header === "string" && <UIText style={styles.sectionHeaderText}>{header}</UIText>}
+            {typeof header === "string" && (
+                <UIText style={styles.sectionHeaderText}>{header}</UIText>
+            )}
         </View>
     );
     const renderSectionFooter = ({ section }: { section: UIList.Section }) => (
         <View style={[styles.sectionFooter, section === lastSection && styles.lastSectionFooter]}>
-            {typeof section.footer === "string" && <UIText style={styles.sectionFooterText}>{section.footer}</UIText>}
+            {typeof section.footer === "string" && (
+                <UIText style={styles.sectionFooterText}>{section.footer}</UIText>
+            )}
         </View>
     );
 
@@ -47,7 +51,11 @@ export function UIList({
 
         setRefreshing(true);
         if (minRefreshMs <= 0) await onRefresh();
-        else await Promise.all([onRefresh(), new Promise((resolve) => setTimeout(resolve, minRefreshMs))]);
+        else
+            await Promise.all([
+                onRefresh(),
+                new Promise((resolve) => setTimeout(resolve, minRefreshMs)),
+            ]);
         setRefreshing(false);
     }
 
@@ -57,8 +65,18 @@ export function UIList({
               .filter((x) => !!x)
               .map((x, i) =>
                   isValidElement(x)
-                      ? { data: [x], renderSectionHeader: () => null, renderSectionFooter: () => null }
-                      : { ...x, key: x.key === null || x.key === undefined ? "#" + String(i) : "$" + String(x.key) },
+                      ? {
+                            data: [x],
+                            renderSectionHeader: () => null,
+                            renderSectionFooter: () => null,
+                        }
+                      : {
+                            ...x,
+                            key:
+                                x.key === null || x.key === undefined
+                                    ? "#" + String(i)
+                                    : "$" + String(x.key),
+                        },
               );
     const lastSection = sections[sections.length - 1];
 
@@ -71,10 +89,14 @@ export function UIList({
             extraData={[styles]}
             contentContainerStyle={[styles.listContents, contentContainerStyle]}
             refreshControl={
-                onRefresh && !loading ? <RefreshControl refreshing={refreshing} onRefresh={doRefresh} /> : undefined
+                onRefresh && !loading ? (
+                    <RefreshControl refreshing={refreshing} onRefresh={doRefresh} />
+                ) : undefined
             }
             sections={sections}
-            keyExtractor={(x, i) => (x.key === null || x.key === undefined ? "#" + String(i) : "$" + String(x.key))}
+            keyExtractor={(x, i) =>
+                x.key === null || x.key === undefined ? "#" + String(i) : "$" + String(x.key)
+            }
             ListHeaderComponent={loading && !refreshing ? ActivityIndicator : null}
             ListHeaderComponentStyle={{ marginBottom: 10 }}
             ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
@@ -178,7 +200,12 @@ function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps
                         </View>
                     )}
                     {label !== undefined && (
-                        <UIText size={16} color={labelColor} style={labelStyles.text} numberOfLines={1}>
+                        <UIText
+                            size={16}
+                            color={labelColor}
+                            style={labelStyles.text}
+                            numberOfLines={1}
+                        >
                             {label}
                         </UIText>
                     )}
@@ -186,7 +213,7 @@ function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps
             )}
             <View style={labelStyles.body}>
                 {body?.()}
-                {caret && <Bs.ChevronRight size="16" color={colors.placeholder.hex} />}
+                {caret && <Bs.ChevronRight size="16" fill={colors.fg.hex} />}
             </View>
         </>
     );
