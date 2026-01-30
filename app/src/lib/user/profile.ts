@@ -4,4 +4,5 @@ export interface Profile {
     lastName: string;
     name: string;
     emoji: string;
+    scoutcoins: number;
 }

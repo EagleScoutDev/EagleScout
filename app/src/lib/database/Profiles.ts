@@ -16,6 +16,7 @@ export class ProfilesDB {
                     firstName: data[0].first_name,
                     lastName: data[0].last_name,
                     emoji: data[0].emoji,
+                    scoutcoins: data[0].scoutcoins,
                 };
             }
         }

@@ -13,7 +13,13 @@ interface LeaderboardUser {
     scoutcoins: number;
 }
 
-export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: LeaderboardUser; onClose: () => void }) {
+export function SendScoutcoinModal({
+    targetUser,
+    onClose,
+}: {
+    targetUser: LeaderboardUser;
+    onClose: () => void;
+}) {
     const [amount, setAmount] = useState("");
     const [description, setDescription] = useState("");
     const [sending, setSending] = useState(false);
@@ -106,6 +112,7 @@ export function SendScoutcoinModal({ targetUser, onClose }: { targetUser: Leader
             color: colors.fg.hex,
         },
     });
+    console.log(profile);
 
     return (
         <Modal animationType="slide" transparent={true} visible={true} onRequestClose={onClose}>
