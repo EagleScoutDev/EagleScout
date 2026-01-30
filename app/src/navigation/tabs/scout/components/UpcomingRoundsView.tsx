@@ -1,0 +1,148 @@
+import { RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScoutAssignmentsConfig } from "@/lib/database/Competitions";
+import { ScoutAssignments } from "@/lib/database/ScoutAssignments";
+import type { ScoutMenuParamList } from "../index";
+import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
+import type { NavigationProp } from "@react-navigation/native";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
+import * as Bs from "@/ui/icons";
+import AsyncStorage from "expo-sqlite/kv-store";
+
+export interface UpcomingRoundsViewProps {
+    navigation: NavigationProp<ScoutMenuParamList, "Main">;
+}
+export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
+    const { colors } = useTheme();
+
+    const { competition, online } = useCurrentCompetition();
+
+    const [upcomingRounds, setUpcomingRounds] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [teamBased, setTeamBased] = useState(false);
+
+    const positionText = ["R1", "R2", "R3", "B1", "B2", "B3"];
+
+    async function getUpcomingRounds() {
+        setRefreshing(true);
+
+        let scoutAssignments = null;
+        if (competition !== null) {
+            const scoutAssignmentsOffline = await AsyncStorage.getItem("scout-assignments");
+            if (scoutAssignmentsOffline != null) {
+                scoutAssignments = JSON.parse(scoutAssignmentsOffline);
+            } else if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED) {
+                setTeamBased(true);
+                scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
+                    competition.id,
+                );
+            } else if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.POSITION_BASED) {
+                setTeamBased(false);
+                scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
+                    competition.id,
+                );
+            } else {
+                scoutAssignments = [];
+            }
+            await AsyncStorage.setItem("scout-assignments", JSON.stringify(scoutAssignments));
+        }
+        if (scoutAssignments !== null) {
+            scoutAssignments.sort((a, b) => {
+                return a.matchNumber - b.matchNumber;
+            });
+        }
+        setUpcomingRounds(scoutAssignments ?? []);
+        setRefreshing(false);
+    }
+    useEffect(() => {
+        navigation.addListener("focus", () => void getUpcomingRounds());
+    }, [navigation]);
+
+    if (competition === null) {
+        return null;
+    }
+
+    if (!online) {
+        return <UIText>Connect to the internet to fetch upcoming rounds.</UIText>;
+    }
+
+    const nRounds = upcomingRounds.length;
+
+    return (
+        <View>
+            <View
+                style={{
+                    backgroundColor: colors.bg1.hex,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: colors.border.hex,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: "100%",
+                    paddingHorizontal: 12,
+                    paddingVertical: 12,
+                }}
+            >
+                {nRounds === 0 && <Bs.CheckCircle size={48} fill={colors.primary.hex} />}
+
+                <UIText size={18} style={{ marginLeft: 12, flex: 1 }}>
+                    You have {nRounds === 0 ? "no" : nRounds} round
+                    {nRounds !== 1 ? "s" : ""} left to scout today.
+                </UIText>
+            </View>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}>
+                {upcomingRounds.map((round, index) => (
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: colors.bg1.hex,
+                            padding: 10,
+                            borderRadius: 10,
+                            marginBottom: 10,
+                            borderWidth: 1,
+                            borderColor: colors.border.hex,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            flex: 1,
+                        }}
+                        onPress={() => {
+                            navigation.navigate("Match", {
+                                match: round.matchNumber,
+                                team: teamBased ? teamFormatter(round.team) : null,
+                            });
+                        }}
+                    >
+                        <View
+                            style={{
+                                // backgroundColor: 'red',
+                                padding: "2%",
+                                paddingTop: "0%",
+                            }}
+                        >
+                            <UIText size={16} bold>
+                                Match: {round.matchNumber}
+                            </UIText>
+                            <View style={{ height: "20%" }} />
+                            {teamBased ? (
+                                <UIText size={16} bold>
+                                    Team: {teamFormatter(round.team)}
+                                </UIText>
+                            ) : (
+                                <UIText size={16} bold>
+                                    Position: {positionText[round.position]}
+                                </UIText>
+                            )}
+                        </View>
+                        <View>
+                            <Bs.ChevronRight
+                                size="20"
+                                color={"gray"}
+                                style={{ position: "absolute", right: 20, top: 20 }}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </View>
+    );
+}

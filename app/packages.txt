@@ -1,5 +1,0 @@
-This file describes installation steps for packages that have extra steps to install. This file acts as a reference for questions like "Why was this installed?" or "Why was this config file modified for a package?"
-
-React Navigation:
-- React Navigation has extra installation steps: https://reactnavigation.org/docs/getting-started/
-- @react-navigation/drawer has a few extra installation steps: https://reactnavigation.org/docs/drawer-navigator/

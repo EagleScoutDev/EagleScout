@@ -1,4 +1,4 @@
-name: Build iOS App Debug
+name: Build iOS Debug
 
 on:
   push:
@@ -14,12 +14,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'  # Use the Node.js version you need
+          node-version: '22'
 
       - name: Install dependencies
         run: |

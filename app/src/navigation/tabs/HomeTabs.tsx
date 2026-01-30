@@ -1,0 +1,113 @@
+import { type NavigatorScreenParams } from "@react-navigation/native";
+import { useEffect } from "react";
+import { useUserStore } from "@/lib/stores/user";
+import { useTheme } from "@/ui/context/ThemeContext";
+
+import type { RootStackScreenProps } from "@/navigation";
+import { type ScoutMenuParamList, ScoutTab } from "./scout";
+import { BrowseTab, type BrowseTabParamList } from "./browse";
+import { SettingsTab, type SettingsTabParamList } from "./settings";
+import { DataTab, type DataTabParamList } from "./data";
+import { type BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+    BarChart,
+    BarChartFill,
+    House,
+    HouseFill,
+    Person,
+    PersonFill,
+    Search,
+    SearchHeartFill,
+} from "@/ui/icons";
+import { Platform } from "react-native";
+
+const Tab = createBottomTabNavigator<HomeTabsParamList>();
+export type HomeTabProps<K extends keyof HomeTabsParamList> = BottomTabScreenProps<
+    HomeTabsParamList,
+    K
+>;
+export type HomeTabsParamList = {
+    Home: NavigatorScreenParams<ScoutMenuParamList>;
+    Browse: NavigatorScreenParams<BrowseTabParamList>;
+    Data: NavigatorScreenParams<DataTabParamList>;
+    Settings: NavigatorScreenParams<SettingsTabParamList>;
+};
+
+export interface HomeTabsProps extends RootStackScreenProps<"HomeTabs"> {}
+export function HomeTabs({ navigation }: HomeTabsProps) {
+    const { colors } = useTheme();
+    const account = useUserStore((state) => state.account);
+
+    useEffect(() => {
+        if (account === null) {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "Onboarding", params: { state: undefined } }],
+            });
+        }
+    }, [account, navigation]);
+
+    return (
+        <Tab.Navigator
+            screenOptions={{
+                tabBarStyle: Platform.OS === "ios" ? {} : { backgroundColor: colors.bg2.hex },
+                tabBarActiveTintColor: Platform.OS === "ios" ? colors.primary.hex : colors.fg.hex,
+                tabBarInactiveTintColor: colors.fg.hex,
+                headerShown: false,
+            }}
+        >
+            <Tab.Screen
+                name="Home"
+                component={ScoutTab}
+                options={{
+                    title: "Home",
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <HouseFill size={size} fill={color} />
+                        ) : (
+                            <House size={size} fill={color} />
+                        ),
+                }}
+            />
+            <Tab.Screen
+                name="Browse"
+                component={BrowseTab}
+                options={{
+                    title: "Browse",
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <SearchHeartFill size={size} fill={color} />
+                        ) : (
+                            <Search size={size} fill={color} />
+                        ),
+                }}
+            />
+            <Tab.Screen
+                name="Data"
+                component={DataTab}
+                options={{
+                    title: "Data",
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <BarChartFill size={size} fill={color} />
+                        ) : (
+                            <BarChart size={size} fill={color} />
+                        ),
+                }}
+            />
+            <Tab.Screen
+                name="Settings"
+                component={SettingsTab}
+                options={{
+                    title: "Profile",
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <PersonFill size={size} fill={color} />
+                        ) : (
+                            <Person size={size} fill={color} />
+                        ),
+                }}
+            />
+        </Tab.Navigator>
+    );
+}

@@ -1,0 +1,2145 @@
+openapi: 3.1.0
+info:
+  title: Statbotics API V3
+  description: |
+    Statbotics API V3 provides comprehensive FRC (FIRST Robotics Competition) data including
+    team information, match results, event data, and EPA (Elo Performance Analysis) metrics.
+
+    The API supports queries for all FRC years from 2002 onwards. Note that each FRC year has
+    different game parameters, so the team_year and related endpoints include year-specific
+    paths (e.g., `/v3/team_year/{team}/2023`, `/v3/team_year/{team}/2024`).
+
+    **Note:** This OpenAPI schema was AI-generated. Please verify accuracy against the actual API implementation.
+  version: "3.0.0"
+  contact:
+    name: Statbotics
+    url: https://www.statbotics.io
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.statbotics.io/v3
+    description: Production API
+  - url: http://localhost:8000/v3
+    description: Local Development Server
+
+tags:
+  - name: Year
+    description: FRC year data and statistics
+  - name: Team
+    description: Team information and historical data
+  - name: TeamYear
+    description: Team performance for specific competition years
+  - name: Event
+    description: Event information and results
+  - name: TeamEvent
+    description: Team performance at specific events
+  - name: Match
+    description: Individual match data and results
+  - name: TeamMatch
+    description: Team performance in individual matches
+
+paths:
+  /:
+    get:
+      summary: API root
+      operationId: readRoot
+      tags:
+        - Root
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+
+  # ============================================================================
+  # YEAR ENDPOINTS
+  # ============================================================================
+
+  /year/{year}:
+    get:
+      summary: Query a single year
+      description: Returns a single Year object with game parameters and statistics for the specified year
+      operationId: readYear
+      tags:
+        - Year
+      parameters:
+        - name: year
+          in: path
+          required: true
+          description: Four-digit year (e.g., 2023, 2024)
+          schema:
+            type: integer
+            minimum: 2002
+            maximum: 2025
+      responses:
+        "200":
+          description: Year object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Year"
+        "404":
+          description: Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /years:
+    get:
+      summary: Query multiple years
+      description: |
+        Returns a list of Year objects since 2002. Supports filtering and sorting.
+        Returns up to 1000 results at a time.
+      operationId: readYears
+      tags:
+        - Year
+      parameters:
+        - name: metric
+          in: query
+          description: Column name to sort by
+          schema:
+            type: string
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of Year objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Year"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  # ============================================================================
+  # TEAM ENDPOINTS
+  # ============================================================================
+
+  /team/{team}:
+    get:
+      summary: Query a single team
+      description: Returns a single Team object with all-time statistics
+      operationId: readTeam
+      tags:
+        - Team
+      parameters:
+        - name: team
+          in: path
+          required: true
+          description: Team number (no prefix, e.g., 5511)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: Team object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "404":
+          description: Team not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /teams:
+    get:
+      summary: Query multiple teams
+      description: |
+        Returns a list of Team objects with all-time statistics.
+        Returns up to 1000 results at a time.
+      operationId: readTeams
+      tags:
+        - Team
+      parameters:
+        - $ref: "#/components/parameters/CountryQuery"
+        - $ref: "#/components/parameters/StateQuery"
+        - $ref: "#/components/parameters/DistrictQuery"
+        - $ref: "#/components/parameters/ActiveQuery"
+        - $ref: "#/components/parameters/MetricQuery"
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of Team objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  # ============================================================================
+  # TEAM YEAR ENDPOINTS (Year-specific paths)
+  # ============================================================================
+
+  /team_year/{team}/2002:
+    get:
+      summary: Query team performance for 2002
+      description: Returns Team Year object for 2002 with EPA and statistics
+      operationId: readTeamYear2002
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          description: Team number (no prefix, e.g., 5511)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2003:
+    get:
+      summary: Query team performance for 2003
+      operationId: readTeamYear2003
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2004:
+    get:
+      summary: Query team performance for 2004
+      operationId: readTeamYear2004
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2005:
+    get:
+      summary: Query team performance for 2005
+      operationId: readTeamYear2005
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2006:
+    get:
+      summary: Query team performance for 2006
+      operationId: readTeamYear2006
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2007:
+    get:
+      summary: Query team performance for 2007
+      operationId: readTeamYear2007
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2008:
+    get:
+      summary: Query team performance for 2008
+      operationId: readTeamYear2008
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2009:
+    get:
+      summary: Query team performance for 2009
+      operationId: readTeamYear2009
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2010:
+    get:
+      summary: Query team performance for 2010
+      operationId: readTeamYear2010
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2011:
+    get:
+      summary: Query team performance for 2011
+      operationId: readTeamYear2011
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2012:
+    get:
+      summary: Query team performance for 2012
+      operationId: readTeamYear2012
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2013:
+    get:
+      summary: Query team performance for 2013
+      operationId: readTeamYear2013
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2014:
+    get:
+      summary: Query team performance for 2014
+      operationId: readTeamYear2014
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2015:
+    get:
+      summary: Query team performance for 2015
+      operationId: readTeamYear2015
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2016:
+    get:
+      summary: Query team performance for 2016
+      description: |
+        2016 introduces EPA breakdowns by component (e.g., auto_epa, teleop_epa, etc.)
+      operationId: readTeamYear2016
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2017:
+    get:
+      summary: Query team performance for 2017
+      operationId: readTeamYear2017
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2018:
+    get:
+      summary: Query team performance for 2018
+      operationId: readTeamYear2018
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2019:
+    get:
+      summary: Query team performance for 2019
+      operationId: readTeamYear2019
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2020:
+    get:
+      summary: Query team performance for 2020
+      operationId: readTeamYear2020
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2021:
+    get:
+      summary: Query team performance for 2021
+      operationId: readTeamYear2021
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2022:
+    get:
+      summary: Query team performance for 2022
+      operationId: readTeamYear2022
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2023:
+    get:
+      summary: Query team performance for 2023
+      description: |
+        2023 was the Charged Up game. Includes EPA breakdowns for auto, teleop, endgame,
+        and game-specific components.
+      operationId: readTeamYear2023
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_year/{team}/2024:
+    get:
+      summary: Query team performance for 2024
+      description: |
+        2024 was the Crescendo game. Includes EPA breakdowns for auto, teleop, endgame,
+        ranking points, and game-specific components.
+      operationId: readTeamYear2024
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+
+  /team_year/{team}/2025:
+    get:
+      summary: Query team performance for 2025
+      description: |
+        2025 is the Reefscape game. Includes EPA breakdowns for auto, teleop, endgame,
+        ranking points, and game-specific components.
+      operationId: readTeamYear2025
+      tags:
+        - TeamYear
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+      responses:
+        "200":
+          description: TeamYear object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamYear"
+        "404":
+          description: Team Year not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_years:
+    get:
+      summary: Query multiple team years
+      description: |
+        Returns a list of TeamYear objects with EPA and statistics.
+        Returns up to 1000 results at a time.
+      operationId: readTeamYears
+      tags:
+        - TeamYear
+      parameters:
+        - $ref: "#/components/parameters/TeamQuery"
+        - $ref: "#/components/parameters/YearQuery"
+        - $ref: "#/components/parameters/CountryQuery"
+        - $ref: "#/components/parameters/StateQuery"
+        - $ref: "#/components/parameters/DistrictQuery"
+        - $ref: "#/components/parameters/MetricQuery"
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of TeamYear objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamYear"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  # ============================================================================
+  # EVENT ENDPOINTS (Year-specific paths)
+  # ============================================================================
+
+  /event/{event_key}:
+    get:
+      summary: Query a single event
+      description: Returns a single Event object with EPA statistics
+      operationId: readEvent
+      tags:
+        - Event
+      parameters:
+        - name: event_key
+          in: path
+          required: true
+          description: Event key (e.g., `2024ncwak`, `2023mihat`)
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Event object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Event not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /events:
+    get:
+      summary: Query multiple events
+      description: |
+        Returns a list of Event objects. Returns up to 1000 results at a time.
+      operationId: readEvents
+      tags:
+        - Event
+      parameters:
+        - $ref: "#/components/parameters/YearQuery"
+        - $ref: "#/components/parameters/CountryQuery"
+        - $ref: "#/components/parameters/StateQuery"
+        - $ref: "#/components/parameters/DistrictQuery"
+        - name: type
+          in: query
+          description: Event type
+          schema:
+            type: string
+            enum:
+              - regional
+              - district
+              - district_cmp
+              - cmp_division
+              - cmp_finals
+        - $ref: "#/components/parameters/WeekQuery"
+        - $ref: "#/components/parameters/MetricQuery"
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of Event objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  # ============================================================================
+  # TEAM EVENT ENDPOINTS
+  # ============================================================================
+
+  /team_event/{team}/{event_key}:
+    get:
+      summary: Query a single team's performance at an event
+      description: Returns a single TeamEvent object with EPA statistics
+      operationId: readTeamEvent
+      tags:
+        - TeamEvent
+      parameters:
+        - name: team
+          in: path
+          required: true
+          description: Team number (no prefix, e.g., 5511)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+        - name: event_key
+          in: path
+          required: true
+          description: Event key (e.g., `2024ncwak`)
+          schema:
+            type: string
+      responses:
+        "200":
+          description: TeamEvent object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamEvent"
+        "404":
+          description: Team Event not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_events:
+    get:
+      summary: Query multiple team event entries
+      description: |
+        Returns a list of TeamEvent objects. Returns up to 1000 results at a time.
+      operationId: readTeamEvents
+      tags:
+        - TeamEvent
+      parameters:
+        - $ref: "#/components/parameters/TeamQuery"
+        - $ref: "#/components/parameters/YearQuery"
+        - $ref: "#/components/parameters/EventQuery"
+        - $ref: "#/components/parameters/CountryQuery"
+        - $ref: "#/components/parameters/StateQuery"
+        - $ref: "#/components/parameters/DistrictQuery"
+        - name: type
+          in: query
+          description: Event type
+          schema:
+            type: string
+            enum:
+              - regional
+              - district
+              - district_cmp
+              - cmp_division
+              - cmp_finals
+        - $ref: "#/components/parameters/WeekQuery"
+        - $ref: "#/components/parameters/MetricQuery"
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of TeamEvent objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamEvent"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  # ============================================================================
+  # MATCH ENDPOINTS
+  # ============================================================================
+
+  /match/{match_key}:
+    get:
+      summary: Query a single match
+      description: Returns a single Match object with scores and EPA predictions
+      operationId: readMatch
+      tags:
+        - Match
+      parameters:
+        - name: match_key
+          in: path
+          required: true
+          description: Match key (e.g., `2024ncwak_f1m1`, `2024ncwak_qm1`)
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Match object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Match not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /matches:
+    get:
+      summary: Query multiple matches
+      description: |
+        Returns a list of Match objects. Returns up to 1000 results at a time.
+      operationId: readMatches
+      tags:
+        - Match
+      parameters:
+        - $ref: "#/components/parameters/TeamQuery"
+        - $ref: "#/components/parameters/YearQuery"
+        - $ref: "#/components/parameters/EventQuery"
+        - $ref: "#/components/parameters/WeekQuery"
+        - name: elim
+          in: query
+          description: Whether the match is an elimination match
+          schema:
+            type: boolean
+        - $ref: "#/components/parameters/MetricQuery"
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of Match objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  # ============================================================================
+  # TEAM MATCH ENDPOINTS
+  # ============================================================================
+
+  /team_match/{team}/{match_key}:
+    get:
+      summary: Query a single team's performance in a match
+      description: Returns a single TeamMatch object with team-specific match data
+      operationId: readTeamMatch
+      tags:
+        - TeamMatch
+      parameters:
+        - name: team
+          in: path
+          required: true
+          description: Team number (no prefix, e.g., 5511)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99999
+        - name: match_key
+          in: path
+          required: true
+          description: Match key (e.g., `2024ncwak_f1m1`)
+          schema:
+            type: string
+      responses:
+        "200":
+          description: TeamMatch object retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamMatch"
+        "404":
+          description: Team Match not found
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+  /team_matches:
+    get:
+      summary: Query multiple team match entries
+      description: |
+        Returns a list of TeamMatch objects. Returns up to 1000 results at a time.
+      operationId: readTeamMatches
+      tags:
+        - TeamMatch
+      parameters:
+        - $ref: "#/components/parameters/TeamQuery"
+        - $ref: "#/components/parameters/YearQuery"
+        - $ref: "#/components/parameters/EventQuery"
+        - $ref: "#/components/parameters/WeekQuery"
+        - name: match
+          in: query
+          description: Match key (e.g., `2024ncwak_f1m1`)
+          schema:
+            type: string
+        - name: elim
+          in: query
+          description: Whether the match is an elimination match
+          schema:
+            type: boolean
+        - $ref: "#/components/parameters/MetricQuery"
+        - $ref: "#/components/parameters/AscendingQuery"
+        - $ref: "#/components/parameters/LimitQuery"
+        - $ref: "#/components/parameters/OffsetQuery"
+      responses:
+        "200":
+          description: List of TeamMatch objects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamMatch"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+
+components:
+  parameters:
+    TeamQuery:
+      name: team
+      in: query
+      description: Team number (no prefix, e.g., 5511)
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 99999
+
+    YearQuery:
+      name: year
+      in: query
+      description: Four-digit year (e.g., 2023, 2024). Valid from 2002 onwards.
+      schema:
+        type: integer
+        minimum: 2002
+        maximum: 2025
+
+    CountryQuery:
+      name: country
+      in: query
+      description: Capitalized country name (e.g., `USA`, `Canada`)
+      schema:
+        type: string
+
+    StateQuery:
+      name: state
+      in: query
+      description: Two-letter state code (e.g., `NC`, `CA`, `TX`)
+      schema:
+        type: string
+
+    DistrictQuery:
+      name: district
+      in: query
+      description: District code
+      schema:
+        type: string
+        enum:
+          - fma
+          - fnc
+          - fsc
+          - fit
+          - fin
+          - fim
+          - ne
+          - chs
+          - ont
+          - pnw
+          - pch
+          - isr
+
+    ActiveQuery:
+      name: active
+      in: query
+      description: Whether the team has played in the last year
+      schema:
+        type: boolean
+
+    EventQuery:
+      name: event
+      in: query
+      description: Event key (e.g., `2024ncwak`)
+      schema:
+        type: string
+
+    WeekQuery:
+      name: week
+      in: query
+      description: Week of competition (0-8, where 8 is Championship)
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 8
+
+    MetricQuery:
+      name: metric
+      in: query
+      description: Column name to sort by
+      schema:
+        type: string
+
+    AscendingQuery:
+      name: ascending
+      in: query
+      description: Sort in ascending order (default is descending)
+      schema:
+        type: boolean
+
+    LimitQuery:
+      name: limit
+      in: query
+      description: Maximum number of results to return (1-1000, default 1000)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+
+    OffsetQuery:
+      name: offset
+      in: query
+      description: Offset from first result
+      schema:
+        type: integer
+        minimum: 0
+
+  schemas:
+    Record:
+      type: object
+      description: Win/loss/tie record and winrate
+      properties:
+        wins:
+          type: integer
+          description: Number of wins
+        losses:
+          type: integer
+          description: Number of losses
+        ties:
+          type: integer
+          description: Number of ties
+        count:
+          type: integer
+          description: Total number of matches
+        winrate:
+          type: number
+          format: float
+          description: Win rate (0.0-1.0)
+      required:
+        - wins
+        - losses
+        - ties
+        - count
+        - winrate
+
+    EPAStats:
+      type: object
+      description: EPA (Elo Performance Analysis) statistics
+      properties:
+        start:
+          type: number
+          format: float
+          nullable: true
+          description: EPA at season start
+        pre_champs:
+          type: number
+          format: float
+          nullable: true
+          description: EPA before championships
+        max:
+          type: number
+          format: float
+          nullable: true
+          description: Peak EPA during season
+
+    PercentileRank:
+      type: object
+      description: Ranking information with percentile
+      properties:
+        rank:
+          type: integer
+          nullable: true
+          description: Absolute rank position
+        percentile:
+          type: number
+          format: float
+          nullable: true
+          description: Percentile ranking (0.0-1.0)
+        team_count:
+          type: integer
+          nullable: true
+          description: Total number of teams ranked
+
+    EPARanks:
+      type: object
+      description: EPA rankings by region
+      properties:
+        total:
+          $ref: "#/components/schemas/PercentileRank"
+          description: Global EPA ranking
+        country:
+          $ref: "#/components/schemas/PercentileRank"
+          description: Country EPA ranking
+        state:
+          $ref: "#/components/schemas/PercentileRank"
+          description: State EPA ranking
+        district:
+          $ref: "#/components/schemas/PercentileRank"
+          description: District EPA ranking
+
+    Year:
+      type: object
+      description: FRC year with game parameters and statistics
+      properties:
+        year:
+          type: integer
+          description: Four-digit year
+        score_mean:
+          type: number
+          format: float
+          description: Mean match score
+        score_sd:
+          type: number
+          format: float
+          description: Standard deviation of match scores
+        foul_mean:
+          type: number
+          format: float
+          description: Mean fouls per match
+        no_foul_mean:
+          type: number
+          format: float
+          description: Mean score without fouls
+        auto_mean:
+          type: number
+          format: float
+          description: Mean autonomous points per match
+        teleop_mean:
+          type: number
+          format: float
+          description: Mean teleoperated points per match
+        endgame_mean:
+          type: number
+          format: float
+          description: Mean endgame points per match
+        rp_1_mean:
+          type: number
+          format: float
+          description: Mean ranking point 1 value
+        rp_2_mean:
+          type: number
+          format: float
+          description: Mean ranking point 2 value
+        rp_3_mean:
+          type: number
+          format: float
+          description: Mean ranking point 3 value (2025+)
+        tiebreaker_mean:
+          type: number
+          format: float
+          description: Mean tiebreaker points
+        comp_1_mean:
+          type: number
+          format: float
+          description: Mean game-specific component 1
+        comp_2_mean:
+          type: number
+          format: float
+          description: Mean game-specific component 2
+        epa_99p:
+          type: number
+          format: float
+          nullable: true
+          description: 99th percentile EPA
+        epa_90p:
+          type: number
+          format: float
+          nullable: true
+          description: 90th percentile EPA
+        epa_75p:
+          type: number
+          format: float
+          nullable: true
+          description: 75th percentile EPA
+        epa_25p:
+          type: number
+          format: float
+          nullable: true
+          description: 25th percentile EPA
+      required:
+        - year
+        - score_mean
+        - score_sd
+
+    Team:
+      type: object
+      description: FRC team information with all-time statistics
+      properties:
+        team:
+          type: integer
+          description: Team number
+        name:
+          type: string
+          description: Team name
+        country:
+          type: string
+          nullable: true
+          description: Country where team is located
+        state:
+          type: string
+          nullable: true
+          description: State where team is located (US teams)
+        district:
+          type: string
+          nullable: true
+          description: District code if applicable
+        rookie_year:
+          type: integer
+          nullable: true
+          description: Year team first competed
+        active:
+          type: boolean
+          description: Whether team competed in last year
+        record:
+          $ref: "#/components/schemas/Record"
+          description: All-time record
+        norm_epa:
+          type: object
+          description: Normalized EPA statistics
+          properties:
+            current:
+              type: number
+              format: float
+              nullable: true
+            recent:
+              type: number
+              format: float
+              nullable: true
+            mean:
+              type: number
+              format: float
+              nullable: true
+            max:
+              type: number
+              format: float
+              nullable: true
+      required:
+        - team
+        - name
+        - active
+        - record
+
+    TeamYear:
+      type: object
+      description: Team's performance in a specific FRC year
+      properties:
+        team:
+          type: integer
+          description: Team number
+        year:
+          type: integer
+          description: Competition year
+        name:
+          type: string
+          description: Team name
+        country:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        district:
+          type: string
+          nullable: true
+        rookie_year:
+          type: integer
+          nullable: true
+        epa:
+          type: object
+          description: Detailed EPA breakdown for the year
+          properties:
+            total_points:
+              type: object
+              properties:
+                mean:
+                  type: number
+                  format: float
+                  description: Mean EPA
+                sd:
+                  type: number
+                  format: float
+                  description: Standard deviation
+            unitless:
+              type: number
+              format: float
+              description: Unitless EPA
+            norm:
+              type: number
+              format: float
+              nullable: true
+              description: Normalized EPA
+            conf:
+              type: array
+              items:
+                type: number
+                format: float
+              description: 95% confidence interval [lower, upper]
+            breakdown:
+              type: object
+              description: |
+                EPA broken down by game components. Available for 2016+.
+                Includes auto_epa, teleop_epa, endgame_epa, and game-specific components.
+              additionalProperties:
+                type: number
+                format: float
+                nullable: true
+            stats:
+              $ref: "#/components/schemas/EPAStats"
+            ranks:
+              $ref: "#/components/schemas/EPARanks"
+        record:
+          $ref: "#/components/schemas/Record"
+        district_points:
+          type: integer
+          nullable: true
+        district_rank:
+          type: integer
+          nullable: true
+        competing:
+          type: object
+          nullable: true
+          description: Available for current year only
+          properties:
+            this_week:
+              type: boolean
+            next_event_key:
+              type: string
+              nullable: true
+            next_event_name:
+              type: string
+              nullable: true
+            next_event_week:
+              type: integer
+              nullable: true
+      required:
+        - team
+        - year
+        - name
+        - epa
+        - record
+
+    Event:
+      type: object
+      description: FRC competition event
+      properties:
+        key:
+          type: string
+          description: Event key (e.g., `2024ncwak`)
+        year:
+          type: integer
+          description: Year the event occurred
+        name:
+          type: string
+          description: Event name
+        time:
+          type: integer
+          description: Unix timestamp
+        country:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        district:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+          format: date
+          description: Event start date (YYYY-MM-DD)
+        end_date:
+          type: string
+          format: date
+          description: Event end date (YYYY-MM-DD)
+        type:
+          type: string
+          enum:
+            - regional
+            - district
+            - district_cmp
+            - cmp_division
+            - cmp_finals
+        week:
+          type: integer
+          description: Week number in season
+        video:
+          type: string
+          nullable: true
+          description: Link to livestream
+        status:
+          type: string
+          enum:
+            - Upcoming
+            - Ongoing
+            - Completed
+        status_str:
+          type: string
+          description: Human-readable status string
+        num_teams:
+          type: integer
+          description: Number of teams competing
+        current_match:
+          type: integer
+          nullable: true
+          description: Current/last match number (-1 for upcoming)
+        qual_matches:
+          type: integer
+          nullable: true
+          description: Total number of qualification matches
+        epa:
+          type: object
+          description: EPA statistics for event
+          properties:
+            max:
+              type: number
+              format: float
+              nullable: true
+            top_8:
+              type: number
+              format: float
+              nullable: true
+            top_24:
+              type: number
+              format: float
+              nullable: true
+            mean:
+              type: number
+              format: float
+              nullable: true
+            sd:
+              type: number
+              format: float
+              nullable: true
+        metrics:
+          type: object
+          description: Model performance metrics
+          properties:
+            win_prob:
+              type: object
+              properties:
+                count:
+                  type: integer
+                conf:
+                  type: number
+                  format: float
+                  nullable: true
+                acc:
+                  type: number
+                  format: float
+                  nullable: true
+                mse:
+                  type: number
+                  format: float
+                  nullable: true
+            score_pred:
+              type: object
+              properties:
+                count:
+                  type: integer
+                rmse:
+                  type: number
+                  format: float
+                  nullable: true
+      required:
+        - key
+        - year
+        - name
+        - time
+        - type
+        - week
+        - status
+
+    TeamEvent:
+      type: object
+      description: A team's performance at a specific event
+      properties:
+        team:
+          type: integer
+        year:
+          type: integer
+        event_key:
+          type: string
+        name:
+          type: string
+        event_name:
+          type: string
+        event_week:
+          type: integer
+        epa:
+          type: object
+          properties:
+            total_points:
+              type: object
+              properties:
+                mean:
+                  type: number
+                  format: float
+                sd:
+                  type: number
+                  format: float
+            breakdown:
+              type: object
+              additionalProperties:
+                type: number
+                format: float
+                nullable: true
+        record:
+          $ref: "#/components/schemas/Record"
+        ranking:
+          type: object
+          nullable: true
+          properties:
+            rank:
+              type: integer
+            rp:
+              type: integer
+      required:
+        - team
+        - year
+        - event_key
+        - name
+        - epa
+        - record
+
+    MatchAlliance:
+      type: object
+      description: Alliance data for a match
+      properties:
+        team_1:
+          type: integer
+        team_2:
+          type: integer
+        team_3:
+          type: integer
+          nullable: true
+        dqs:
+          type: string
+          description: Comma-separated list of disqualified team numbers
+        surrogates:
+          type: string
+          description: Comma-separated list of surrogate team numbers
+        score:
+          type: integer
+          nullable: true
+        auto:
+          type: integer
+          nullable: true
+        teleop:
+          type: integer
+          nullable: true
+        endgame:
+          type: integer
+          nullable: true
+        no_foul:
+          type: integer
+          nullable: true
+        foul:
+          type: integer
+          nullable: true
+        rp_1:
+          type: boolean
+          nullable: true
+        rp_2:
+          type: boolean
+          nullable: true
+        rp_3:
+          type: boolean
+          nullable: true
+          description: Only for 2025+
+        tiebreaker:
+          type: integer
+          nullable: true
+        components:
+          type: object
+          description: Game-specific component scores
+          additionalProperties:
+            type: number
+            format: float
+            nullable: true
+        epa_pred:
+          type: object
+          description: EPA predictions
+          properties:
+            win_prob:
+              type: number
+              format: float
+              nullable: true
+            score:
+              type: number
+              format: float
+              nullable: true
+            rp_1:
+              type: number
+              format: float
+              nullable: true
+            rp_2:
+              type: number
+              format: float
+              nullable: true
+            rp_3:
+              type: number
+              format: float
+              nullable: true
+
+    Match:
+      type: object
+      description: A single FRC match with scores and results
+      properties:
+        key:
+          type: string
+          description: Match key
+        year:
+          type: integer
+        event_key:
+          type: string
+        week:
+          type: integer
+        comp_level:
+          type: string
+          enum:
+            - qm
+            - ef
+            - qf
+            - sf
+            - f
+          description: Competition level
+        set_number:
+          type: integer
+        match_number:
+          type: integer
+        elim:
+          type: boolean
+          description: Whether this is an elimination match
+        time:
+          type: integer
+          nullable: true
+          description: Unix timestamp
+        predicted_time:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          enum:
+            - Scheduled
+            - Unstarted
+            - In Progress
+            - Completed
+        video:
+          type: string
+          nullable: true
+        red:
+          $ref: "#/components/schemas/MatchAlliance"
+        blue:
+          $ref: "#/components/schemas/MatchAlliance"
+        winner:
+          type: string
+          nullable: true
+          enum:
+            - Red
+            - Blue
+            - Tie
+      required:
+        - key
+        - year
+        - event_key
+        - week
+        - comp_level
+        - set_number
+        - match_number
+        - elim
+        - status
+        - red
+        - blue
+
+    TeamMatch:
+      type: object
+      description: A team's performance in a specific match
+      properties:
+        team:
+          type: integer
+        year:
+          type: integer
+        event_key:
+          type: string
+        match_key:
+          type: string
+        alliance:
+          type: string
+          enum:
+            - Red
+            - Blue
+        team_match_number:
+          type: integer
+          description: Alliance-relative match number (1, 2, or 3)
+        surrogacy:
+          type: string
+          description: Whether team was a surrogate or substitute
+          nullable: true
+        dq:
+          type: boolean
+          description: Whether team was disqualified
+        epa:
+          type: object
+          description: EPA statistics
+          properties:
+            total_points:
+              type: object
+              properties:
+                mean:
+                  type: number
+                  format: float
+        record:
+          $ref: "#/components/schemas/Record"
+      required:
+        - team
+        - year
+        - event_key
+        - match_key
+        - alliance
+
+    Error:
+      type: object
+      description: Error response
+      properties:
+        detail:
+          type: string
+          description: Error message
+      required:
+        - detail
+
+    ValidationError:
+      type: object
+      description: Validation error for invalid request parameters
+      properties:
+        loc:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: integer
+          description: Location of the error (field path)
+        msg:
+          type: string
+          description: Error message
+        type:
+          type: string
+          description: Error type
+      required:
+        - loc
+        - msg
+        - type
+
+    HTTPValidationError:
+      type: object
+      description: HTTP validation error response
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationError"
+          description: List of validation errors
+      required:
+        - detail
