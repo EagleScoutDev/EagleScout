@@ -1,4 +1,12 @@
-import { ActivityIndicator, FlatList, Platform, Pressable, RefreshControl, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    Platform,
+    Pressable,
+    RefreshControl,
+    TextInput,
+    View,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import type { BrowseTabScreenProps } from "./index";
@@ -40,7 +48,7 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
         queryKey: ["competitions"],
         queryFn: async () =>
             (await CompetitionsDB.getCompetitions()).sort(
-                (a, b) => b.startTime.valueOf() - a.startTime.valueOf()
+                (a, b) => b.startTime.valueOf() - a.startTime.valueOf(),
             ),
         select: (comps) => new Map(comps.map((comp) => [comp.id, comp])),
         throwOnError: true,
@@ -68,7 +76,7 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
     useFocusEffect(() => {
         setQuery(null);
         // HACK: schedule this for after the ref is filled
-        if (Platform.OS === "ios") setTimeout(() => focusSearch(), 0);
+        // if (Platform.OS === "ios") setTimeout(() => focusSearch(), 0);
     });
 
     const competitionSelector =
@@ -93,7 +101,9 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
                         onPress={present}
                     >
                         <UIText size={16} ellipsizeMode={"middle"}>
-                            {id === null ? "" : competitions.get(id)?.name ?? "Unknown Competition"}
+                            {id === null
+                                ? ""
+                                : (competitions.get(id)?.name ?? "Unknown Competition")}
                         </UIText>
                         {Platform.OS !== "ios" && <View style={{ flex: 1 }} />}
                         <Bs.ChevronDown size={18} color={colors.fg.hex} />
@@ -244,7 +254,7 @@ function TeamList({ query, competitionId }: TeamListProps) {
         queryFn: async () =>
             (
                 await TBA.getTeamsAtCompetition(
-                    await CompetitionsDB.getCompetitionTBAKey(competitionId!)
+                    await CompetitionsDB.getCompetitionTBAKey(competitionId!),
                 )
             ).sort((a, b) => a.team_number - b.team_number),
         throwOnError: true,
@@ -271,7 +281,7 @@ function TeamList({ query, competitionId }: TeamListProps) {
             : teams.filter(
                   ({ team_number, nickname }) =>
                       team_number.toString().includes(query) ||
-                      nickname.toLowerCase().includes(query.toLowerCase())
+                      nickname.toLowerCase().includes(query.toLowerCase()),
               );
 
     return (
@@ -407,7 +417,7 @@ function MatchList({ query, competitionId }: MatchListProps) {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             backgroundColor: Alliance.getColor(
-                                                i < 3 ? Alliance.red : Alliance.blue
+                                                i < 3 ? Alliance.red : Alliance.blue,
                                             ).hex, // TODO: store alliance color in each match report instead of guessing by index
                                             padding: 16,
                                             borderRadius: 10,
