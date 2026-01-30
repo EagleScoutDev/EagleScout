@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import * as Bs from "@/ui/icons";
 import type { Setter } from "@/lib/util/react/types";
 import { Alliance, Orientation } from "@/frc/common/common";
+import { useTheme } from "@/ui/context/ThemeContext";
 
 export interface OrientationChooserProps {
     orientation: Orientation;
@@ -10,6 +11,7 @@ export interface OrientationChooserProps {
     setAlliance: Setter<Alliance>;
 }
 export function OrientationChooser({ orientation, setOrientation, alliance, setAlliance }: OrientationChooserProps) {
+    const {colors} = useTheme();
     const leftAlliance = Orientation.getLeft(orientation);
     const rightAlliance = Alliance.toggle(leftAlliance);
 
@@ -19,16 +21,16 @@ export function OrientationChooser({ orientation, setOrientation, alliance, setA
                 style={[styles.side, { backgroundColor: Alliance.getColor(leftAlliance).hex }]}
                 onPress={() => setAlliance(leftAlliance)}
             >
-                {alliance === leftAlliance ? <Bs.CheckLg size="24" fill="white" /> : null}
+                {alliance === leftAlliance ? <Bs.CheckLg size="24" fill={colors.fg.hex} /> : null}
             </Pressable>
             <Pressable style={styles.center} onPress={() => setOrientation(Orientation.toggle(orientation))}>
-                <Bs.ArrowLeftRight size="24" fill="black" />
+                <Bs.ArrowLeftRight size="24" fill={colors.fg.hex} />
             </Pressable>
             <Pressable
                 style={[styles.side, { backgroundColor: Alliance.getColor(rightAlliance).hex }]}
                 onPress={() => setAlliance(Alliance.toggle(leftAlliance))}
             >
-                {alliance === rightAlliance ? <Bs.CheckLg size="24" fill="white" /> : null}
+                {alliance === rightAlliance ? <Bs.CheckLg size="24" fill={colors.fg.hex} /> : null}
             </Pressable>
         </View>
     );
