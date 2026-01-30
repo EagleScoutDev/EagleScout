@@ -119,7 +119,6 @@ const getTOC = exMemo(
             shown: true,
             label: "Scoutcoin",
             items: [
-                { text: "Match Betting", icon: Bs.CashCoin, caret: true, route: "MatchBetting" },
                 { text: "Leaderboard", icon: Bs.Award, caret: true, route: "ScoutcoinLeaderboard" },
                 { text: "Ledger", icon: Bs.Newspaper, caret: true, route: "ScoutcoinLedger" },
                 { text: "Shop", icon: Bs.Cart, caret: true, route: "ScoutcoinShop" },
