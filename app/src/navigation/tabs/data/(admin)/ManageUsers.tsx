@@ -7,7 +7,15 @@ import type { User } from "@/lib/user/user";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 
-function SortOption({ onPress, title, isActive }: { onPress: () => void; title: string; isActive: boolean }) {
+function SortOption({
+    onPress,
+    title,
+    isActive,
+}: {
+    onPress: () => void;
+    title: string;
+    isActive: boolean;
+}) {
     const { colors } = useTheme();
     return (
         <TouchableOpacity
@@ -35,8 +43,8 @@ export function ManageUsers() {
     const [sort, setSort] = useState("All");
     const [sortedUsers, setSortedUsers] = useState<User[]>([]);
 
-
     const handleSort = (sortType) => {
+        console.log(users);
         setSort(sortType);
         if (sortType === "All") {
             setSortedUsers(users);
@@ -53,8 +61,19 @@ export function ManageUsers() {
     const fetchUsers = async () => {
         const { data: users, error } = await supabase.rpc("get_user_profiles_with_email");
         users.forEach((user) => {
-            user.name = (user.first_name || "UNKNOWN_FIRSTNAME") + " " + (user.last_name || "UNKNOWN_LASTNAME");
+            user.name =
+                (user.first_name || "UNKNOWN_FIRSTNAME") +
+                " " +
+                (user.last_name || "UNKNOWN_LASTNAME");
+            user.account = {
+                role: user.admin
+                    ? AccountRole.Admin
+                    : user.scouter
+                      ? AccountRole.Scouter
+                      : AccountRole.Rejected,
+            };
         });
+        console.log(users);
         if (error) {
             console.error(error);
         }
@@ -76,7 +95,10 @@ export function ManageUsers() {
     }, []);
 
     async function updateApproveStatus(user, b) {
-        const { error } = await supabase.from("user_attributes").update({ scouter: b }).eq("id", user.id);
+        const { error } = await supabase
+            .from("user_attributes")
+            .update({ scouter: b })
+            .eq("id", user.id);
         if (error) {
             console.error(error);
             Alert.alert("Error updating user status", JSON.stringify(error));
@@ -86,7 +108,10 @@ export function ManageUsers() {
     }
 
     async function updateAdminStatus(user, b) {
-        const { error } = await supabase.from("user_attributes").update({ admin: b }).eq("id", user.id);
+        const { error } = await supabase
+            .from("user_attributes")
+            .update({ admin: b })
+            .eq("id", user.id);
         if (error) {
             console.error(error);
             Alert.alert("Error updating user status", JSON.stringify(error));
@@ -277,7 +302,9 @@ export function ManageUsers() {
                             handlePress(user, "admin");
                         }
                     }}
-                    style={user.scouter ? (user.admin ? styles.option : styles.chosen) : styles.option}
+                    style={
+                        user.scouter ? (user.admin ? styles.option : styles.chosen) : styles.option
+                    }
                 >
                     Scouter
                 </UIText>
@@ -297,10 +324,13 @@ export function ManageUsers() {
 
     return (
         <View style={{ flex: 1 }}>
-            <View
-                style={{
-                    flexDirection: "row",
+            <ScrollView
+                contentContainerStyle={{
                     justifyContent: "space-around",
+                }}
+                horizontal
+                style={{
+                    flexGrow: 0,
                 }}
             >
                 <SortOption
@@ -331,7 +361,7 @@ export function ManageUsers() {
                     }}
                     isActive={sort === "Captain"}
                 />
-            </View>
+            </ScrollView>
             <ScrollView style={{ flex: 1 }}>
                 <View
                     style={{
