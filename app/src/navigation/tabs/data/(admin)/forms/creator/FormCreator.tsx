@@ -41,12 +41,17 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
     const editSheetRef = useRef<BottomSheetModal>(null);
     const [editDraft, setEditDraft] = useState<Form.Item | null>(null);
     const [editIndex, setEditIndex] = useState<number | null>(null);
+    const [editKey, setEditKey] = useState<keyof typeof ITEM_MAP | null>(null);
     const isNewItem = editIndex === items.length;
 
     usePreventRemove(dirty, ({ data }) => {
         Alert.alert("Unsaved changes", "Are you sure you want to leave? Your work will be lost!", [
             { text: "Stay", style: "cancel", isPreferred: true, onPress: () => {} },
-            { text: "Leave", style: "destructive", onPress: () => navigation.dispatch(data.action) },
+            {
+                text: "Leave",
+                style: "destructive",
+                onPress: () => navigation.dispatch(data.action),
+            },
         ]);
     });
 
@@ -87,7 +92,12 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
                     onDragEnd={({ data }) => setItems(data)}
                     ListHeaderComponent={
                         <Pressable style={styles.item}>
-                            <FormInfoCard title={title} setTitle={setTitle} isPit={isPit} setIsPit={setIsPit} />
+                            <FormInfoCard
+                                title={title}
+                                setTitle={setTitle}
+                                isPit={isPit}
+                                setIsPit={setIsPit}
+                            />
                         </Pressable>
                     }
                     data={items}
@@ -113,7 +123,13 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
                         );
                     }}
                 />
-                <UISheet enableDynamicSizing>
+                <UISheet
+                    enableDynamicSizing
+                    enablePanDownToClose={false}
+                    enableContentPanningGesture={false}
+                    enableHandlePanningGesture={false}
+                    enableOverDrag={false}
+                >
                     <BottomSheetView>
                         <SafeAreaView style={{ flex: 1 }}>
                             <FormItemPalette
@@ -121,6 +137,7 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
                                 onPress={(key) => {
                                     setEditDraft(ITEM_MAP[key].draft());
                                     setEditIndex(items.length);
+                                    setEditKey(key);
                                     editSheetRef.current?.present();
                                 }}
                             />
@@ -130,31 +147,36 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
 
                 <UISheetModal ref={editSheetRef}>
                     <UISheet.Header
-                        left={{
-                            text: "Cancel",
-                            color: colors.danger,
-                            onPress: () => {
-                                Keyboard.dismiss();
-                                editSheetRef.current?.dismiss();
-                            },
-                        }}
-                        right={{
-                            text: "Done",
-                            color: colors.primary,
-                            onPress: () => {
-                                Keyboard.dismiss();
-                                const item = finishDraft(editDraft!);
-                                if (typeof item === "string") {
-                                    Alert.alert("Error", item);
-                                } else {
-                                    setItems(Arrays.set(items, editIndex!, item));
-                                    setDirty(true);
+                        left={[
+                            {
+                                text: "Cancel",
+                                color: colors.danger,
+                                onPress: () => {
+                                    Keyboard.dismiss();
                                     editSheetRef.current?.dismiss();
-                                    setEditDraft(null);
-                                    setEditIndex(null);
-                                }
+                                },
                             },
-                        }}
+                        ]}
+                        right={[
+                            {
+                                text: "Done",
+                                color: colors.primary,
+                                onPress: () => {
+                                    Keyboard.dismiss();
+                                    const item = finishDraft(editDraft!);
+                                    if (typeof item === "string") {
+                                        Alert.alert("Error", item);
+                                    } else {
+                                        setItems(Arrays.set(items, editIndex!, item));
+                                        setDirty(true);
+                                        editSheetRef.current?.dismiss();
+                                        setEditDraft(null);
+                                        setEditIndex(null);
+                                    }
+                                },
+                            },
+                        ]}
+                        title={`${isNewItem ? "New" : "Edit"} ${editKey ? ITEM_MAP[editKey].name : 'Item'}`}
                     />
                     {editDraft !== null && (
                         <FormItemOptions
@@ -275,9 +297,8 @@ export const ITEMS = [
         }),
     },
 ] as const;
-export const ITEM_MAP: { readonly [T in (typeof ITEMS)[number] as T["key"]]: T } = Object.fromEntries(
-    ITEMS.map((x) => [x.key, x]),
-) as any;
+export const ITEM_MAP: { readonly [T in (typeof ITEMS)[number] as T["key"]]: T } =
+    Object.fromEntries(ITEMS.map((x) => [x.key, x])) as any;
 
 function finishDraft(item: Form.Item): string | Form.Item {
     if (item.type === ItemType.heading) {
@@ -300,7 +321,8 @@ function finishDraft(item: Form.Item): string | Form.Item {
                 lowLabel: item.lowLabel?.trim() || null,
                 highLabel: item.highLabel?.trim() || null,
             };
-            if (item.low > item.high) return "Slider minimum value cannot be greater than the maximum.";
+            if (item.low > item.high)
+                return "Slider minimum value cannot be greater than the maximum.";
             return item;
         } else {
             return item;

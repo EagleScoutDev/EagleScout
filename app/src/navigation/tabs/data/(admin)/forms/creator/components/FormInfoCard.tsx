@@ -57,6 +57,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
             borderColor: colors.border.hex,
             borderStyle: "dotted",
             marginBottom: 10,
+            color: colors.fg.hex,
         },
         // description: {
         //     fontSize: 16,
