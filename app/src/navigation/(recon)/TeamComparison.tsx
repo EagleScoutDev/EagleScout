@@ -9,6 +9,8 @@ import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UIModal } from "@/ui/components/UIModal";
 import type { RootStackScreenProps } from "@/navigation";
+import { CompetitionRank } from "./components/CompetitionRank";
+import { QuestionSummary } from "@/navigation/(recon)/components/QuestionSummary";
 
 export interface TeamComparisonParams {
     team: SimpleTeam;
