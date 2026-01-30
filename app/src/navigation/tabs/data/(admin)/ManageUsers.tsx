@@ -44,7 +44,6 @@ export function ManageUsers() {
     const [sortedUsers, setSortedUsers] = useState<User[]>([]);
 
     const handleSort = (sortType) => {
-        console.log(users);
         setSort(sortType);
         if (sortType === "All") {
             setSortedUsers(users);
@@ -73,7 +72,6 @@ export function ManageUsers() {
                       : AccountRole.Rejected,
             };
         });
-        console.log(users);
         if (error) {
             console.error(error);
         }
@@ -139,12 +137,12 @@ export function ManageUsers() {
                     "Are you sure you want to unapprove this user? This will remove their access from creating and viewing scouting reports.",
                     [
                         {
-                            label: "Cancel",
+                            text: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            label: "OK",
+                            text: "OK",
                             onPress: async () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 if (user.admin) {
@@ -174,12 +172,12 @@ export function ManageUsers() {
                     "Are you sure you want to approve this user?",
                     [
                         {
-                            label: "Cancel",
+                            text: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            label: "OK",
+                            text: "OK",
                             onPress: () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 updateApproveStatus(user, true).then(successAlert);
@@ -196,12 +194,12 @@ export function ManageUsers() {
                     "Are you sure you want to remove this user as admin?",
                     [
                         {
-                            label: "Cancel",
+                            text: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            label: "OK",
+                            text: "OK",
                             onPress: async () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 const res = await supabase.auth.getUser();
@@ -225,12 +223,12 @@ export function ManageUsers() {
                     "Are you sure you want to make this user an admin?",
                     [
                         {
-                            label: "Cancel",
+                            text: "Cancel",
                             onPress: () => {},
                             style: "cancel",
                         },
                         {
-                            label: "OK",
+                            text: "OK",
                             onPress: () => {
                                 // call the function updateAdminStatus and pass in the user and true
                                 updateAdminStatus(user, true);
