@@ -25,9 +25,14 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
             if (!competition) {
                 return;
             }
-            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id);
+            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
+                team_number,
+                competition.id,
+            );
             setAutoPaths(
-                reports.map((report) => report.autoPath).filter((autoPath) => autoPath) as Reefscape.AutoPath[],
+                reports
+                    .map((report) => report.autoPath)
+                    .filter((autoPath) => autoPath) as Reefscape.AutoPath[],
             );
         });
     }, [team_number]);
@@ -35,16 +40,6 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
-                <UIText
-                    style={{
-                        fontWeight: "bold",
-                        fontSize: 25,
-                        paddingLeft: "5%",
-                        color: colors.fg.hex,
-                    }}
-                >
-                    Auto Paths for Team {team_number}
-                </UIText>
                 <View
                     style={{
                         flex: 1,
@@ -53,7 +48,9 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
                         gap: 10,
                     }}
                 >
-                    <UIText>{autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ""}</UIText>
+                    <UIText>
+                        {autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ""}
+                    </UIText>
                     {autoPaths ? (
                         <Reefscape.AutoPathView path={autoPaths[currentIndex]!} />
                     ) : (

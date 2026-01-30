@@ -11,7 +11,6 @@ import { BettingScreen, type BettingScreenParams } from "@/navigation/(betting)/
 import { MatchBetting } from "@/navigation/(betting)/MatchBetting";
 import { useStackThemeConfig } from "@/ui/lib/theme/native";
 import { TeamSummary, type TeamSummaryParams } from "@/navigation/(recon)/TeamSummary";
-import { Platform } from "react-native";
 import { TeamAutoPaths, type TeamAutoPathsParams } from "@/navigation/(recon)/TeamAutoPaths";
 import { TeamReports, type TeamReportsParams } from "@/navigation/(recon)/TeamReports";
 import { TeamComparison, type TeamComparisonParams } from "@/navigation/(recon)/TeamComparison";
@@ -70,28 +69,44 @@ export function RootNavigator() {
                     <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
                 </Stack.Group>
 
+                <Stack.Screen
+                    name="TeamSummary"
+                    component={TeamSummary}
+                    options={{
+                        headerBackButtonDisplayMode: "minimal",
+                        headerShown: true,
+                        headerTransparent: true,
+                        headerTitle: "",
+                        headerStyle: {},
+                    }}
+                />
+
                 <Stack.Group
                     screenOptions={{
                         headerShown: true,
-                        headerTitle: "",
-                        ...(Platform.OS === "ios"
-                            ? { headerTransparent: true, headerStyle: {} }
-                            : {}),
+                        headerBackButtonDisplayMode: "minimal",
                     }}
                 >
-                    <Stack.Screen name="TeamSummary" component={TeamSummary} />
-                    <Stack.Screen name="TeamAutoPaths" component={TeamAutoPaths} />
-                    <Stack.Screen name="TeamComparison" component={TeamComparison} />
+                    <Stack.Screen
+                        name="TeamAutoPaths"
+                        component={TeamAutoPaths}
+                        options={({ route: { params } }) => ({
+                            title: `Auto Paths for Team ${params.team_number}`,
+                        })}
+                    />
+                    <Stack.Screen
+                        name="TeamComparison"
+                        component={TeamComparison}
+                        options={{ title: "Compare Teams" }}
+                    />
+                    <Stack.Screen
+                        name="TeamReports"
+                        component={TeamReports}
+                        options={({ route: { params } }) => ({
+                            title: `Reports for Team ${params.team_number}`,
+                        })}
+                    />
                 </Stack.Group>
-
-                <Stack.Screen
-                    name="TeamReports"
-                    component={TeamReports}
-                    options={({ route: { params } }) => ({
-                        title: `Scouting for Team ${params.team_number}`,
-                        headerBackButtonDisplayMode: "minimal",
-                    })}
-                />
             </Stack.Navigator>
         </SafeAreaProvider>
     );

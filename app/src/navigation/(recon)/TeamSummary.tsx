@@ -12,7 +12,7 @@ import { FormsDB } from "@/lib/database/Forms";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { type SimpleTeam, TBA } from "@/lib/frc/tba/TBA";
 
 export interface TeamSummaryParams {

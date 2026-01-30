@@ -6,8 +6,6 @@ import { NotesDB, type NoteWithMatch } from "@/lib/database/ScoutNotes";
 import { NoteList } from "@/components/NoteList";
 import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
 import { PitReportList } from "@/components/PitReportList";
-import type { BrowseTabScreenProps } from "../index";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 const Tab = createMaterialTopTabNavigator<ReportsForTeamParamList>();
@@ -35,39 +33,43 @@ export function TeamReports({
         CompetitionsDB.getCompetitionById(competitionId).then((competition) => {
             if (!competition) return;
 
-            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(setScoutReports);
-            PitReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(setPitResponses);
+            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(
+                setScoutReports,
+            );
+            PitReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(
+                setPitResponses,
+            );
             NotesDB.getNotesForTeamAtCompetition(team_number, competition.id).then(setNotes);
         });
     }, [competitionId, team_number]);
 
     return (
-        <SafeAreaProvider>
-            <Tab.Navigator>
-                <Tab.Screen
-                    name="Match"
-                    options={{
-                        title: "Matches",
-                    }}
-                    children={() => <MatchReportList reports={scoutReports ?? []} reportsAreOffline={false} />}
-                />
+        <Tab.Navigator>
+            <Tab.Screen
+                name="Match"
+                options={{
+                    title: "Matches",
+                }}
+                children={() => (
+                    <MatchReportList reports={scoutReports ?? []} reportsAreOffline={false} />
+                )}
+            />
 
-                <Tab.Screen
-                    name="Note"
-                    options={{
-                        title: "Notes",
-                    }}
-                    children={() => <NoteList notes={notes} />}
-                />
+            <Tab.Screen
+                name="Note"
+                options={{
+                    title: "Notes",
+                }}
+                children={() => <NoteList notes={notes} />}
+            />
 
-                <Tab.Screen
-                    name="Pit"
-                    options={{
-                        title: "Pit Reports",
-                    }}
-                    children={() => <PitReportList reports={pitResponses} isOffline={false} />}
-                />
-            </Tab.Navigator>
-        </SafeAreaProvider>
+            <Tab.Screen
+                name="Pit"
+                options={{
+                    title: "Pit Reports",
+                }}
+                children={() => <PitReportList reports={pitResponses} isOffline={false} />}
+            />
+        </Tab.Navigator>
     );
 }
