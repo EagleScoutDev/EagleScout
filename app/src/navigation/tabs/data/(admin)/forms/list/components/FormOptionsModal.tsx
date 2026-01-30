@@ -1,5 +1,4 @@
 import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
-import { UISheet } from "@/ui/components/UISheet";
 import { UIForm } from "@/ui/components/UIForm";
 import { UIList } from "@/ui/components/UIList";
 import { Alert } from "react-native";
@@ -10,59 +9,58 @@ export interface FormOptionsModalParams {
     form: FormReturnData;
 }
 export interface FormOptionsModal extends UISheetModal<FormOptionsModalParams> {}
-export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(function FormOptionsModalContent({
-    ref,
-    data: { form },
-}) {
-    const { colors } = useTheme();
+export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
+    function FormOptionsModalContent({ ref, data: { form } }) {
+        const { colors } = useTheme();
 
-    return (
-        <>
-            <UISheetModal.Header
-                title={"Form Options"}
-                left={[{ role: "cancel", onPress: () => ref.current?.dismiss() }]}
-                right={[
-                    {
-                        role: "done",
-                        onPress: () => {
-                            // TODO: implement this
-                            ref.current?.dismiss();
-                        },
-                    },
-                ]}
-            />
-            <UIForm>
-                {UIForm.Section({
-                    items: [
-                        UIList.Label({
-                            label: form.name,
-                        }),
-                    ],
-                })}
-                {UIForm.Section({
-                    items: [
-                        // UIForm.Button({
-                        //     label: "View Questions",
-                        //     color: colors.primary,
-                        //     onPress: () => {
-                        //         // TODO: implement this
-                        //     },
-                        // }),
-                        UIForm.Button({
-                            label: "Delete",
-                            color: colors.danger,
+        return (
+            <>
+                <UISheetModal.Header
+                    title={"Form Options"}
+                    left={[{ role: "cancel", onPress: () => ref.current?.dismiss() }]}
+                    right={[
+                        {
+                            role: "done",
                             onPress: () => {
-                                FormsDB.deleteForm(form)
-                                    .catch((e) => {
-                                        console.error(e);
-                                        Alert.alert("Error", "Failed to delete form.");
-                                    })
-                                    .finally(() => ref.current?.dismiss());
+                                // TODO: implement this
+                                ref.current?.dismiss();
                             },
-                        }),
-                    ],
-                })}
-            </UIForm>
-        </>
-    );
-});
+                        },
+                    ]}
+                />
+                <UIForm>
+                    {UIForm.Section({
+                        items: [
+                            UIList.Label({
+                                label: form.name,
+                            }),
+                        ],
+                    })}
+                    {UIForm.Section({
+                        items: [
+                            // UIForm.Button({
+                            //     label: "View Questions",
+                            //     color: colors.primary,
+                            //     onPress: () => {
+                            //         // TODO: implement this
+                            //     },
+                            // }),
+                            UIForm.Button({
+                                label: "Delete",
+                                color: colors.danger,
+                                onPress: () => {
+                                    FormsDB.deleteForm(form)
+                                        .catch((e) => {
+                                            console.error(e);
+                                            Alert.alert("Error", "Failed to delete form.");
+                                        })
+                                        .finally(() => ref.current?.dismiss());
+                                },
+                            }),
+                        ],
+                    })}
+                </UIForm>
+            </>
+        );
+    },
+);

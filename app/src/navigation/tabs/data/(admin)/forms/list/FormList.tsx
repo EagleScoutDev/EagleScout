@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "@/navigation/tabs/data";
 import { FormOptionsModal } from "./components/FormOptionsModal";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { UISheetModal } from "@/ui/components/UISheetModal";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 import { UIFab } from "@/ui/components/UIFab";
+import { useFocusEffect } from "@react-navigation/native";
 
 export interface FormListProps extends DataTabScreenProps<"Forms"> {}
 export function FormList({ navigation }: FormListProps) {
@@ -21,11 +21,9 @@ export function FormList({ navigation }: FormListProps) {
         setFormList(forms);
     }
 
-    useEffect(() => {
-        return navigation.addListener("focus", () => {
-            fetchForms();
-        });
-    }, [navigation]);
+    useFocusEffect(() => {
+        fetchForms();
+    });
 
     return (
         <SafeAreaProvider>
