@@ -10,7 +10,6 @@ import { UIFab } from "@/ui/components/UIFab";
 import { EditCompetitionModal } from "@/navigation/(modals)/EditCompetitionModal";
 import { AddCompetitionModal } from "@/navigation/(modals)/AddCompetitionModal";
 import { Alert } from "react-native";
-import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 
 export function ManageCompetitions() {
     "use no memo";
@@ -72,7 +71,10 @@ export function ManageCompetitions() {
                                             .eq("id", compPatch.id);
                                         if (error !== null) {
                                             console.error(error);
-                                            Alert.alert("Error", "An error occurred, please try again later.");
+                                            Alert.alert(
+                                                "Error",
+                                                "An error occurred, please try again later.",
+                                            );
                                         } else {
                                             editSheetRef.current?.dismiss();
                                         }
@@ -86,7 +88,10 @@ export function ManageCompetitions() {
                                             .eq("id", compPatch.id);
                                         if (error !== null) {
                                             console.error(error);
-                                            Alert.alert("Error", "An error occurred, please try again later.");
+                                            Alert.alert(
+                                                "Error",
+                                                "An error occurred, please try again later.",
+                                            );
                                         } else {
                                             editSheetRef.current?.dismiss();
                                         }
@@ -100,12 +105,7 @@ export function ManageCompetitions() {
                 })}
             </UIList>
 
-            <UIFab
-                icon={Bs.Plus}
-                onPress={() =>
-                    addSheetRef.current?.present()
-                }
-            />
+            <UIFab icon={Bs.Plus} onPress={() => addSheetRef.current?.present({})} />
 
             <AddCompetitionModal ref={addSheetRef} />
             <EditCompetitionModal ref={editSheetRef} />
