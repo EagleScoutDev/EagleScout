@@ -14,10 +14,14 @@ import { TeamSummary, type TeamSummaryParams } from "@/navigation/(recon)/TeamSu
 import { Platform } from "react-native";
 import { TeamAutoPaths, type TeamAutoPathsParams } from "@/navigation/(recon)/TeamAutoPaths";
 import { TeamReports, type TeamReportsParams } from "@/navigation/(recon)/TeamReports";
-import { type TeamComparisonParams, TeamComparison } from "@/navigation/(recon)/TeamComparison";
+import { TeamComparison, type TeamComparisonParams } from "@/navigation/(recon)/TeamComparison";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, K>;
+export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<
+    RootStackParamList,
+    K
+>;
 export type RootStackParamList = {
     HomeTabs: NavigatorScreenParams<HomeTabsParamList>;
     Onboarding: NavigatorScreenParams<OnboardingParamList>;
@@ -38,54 +42,57 @@ declare global {
 }
 
 export function useRootNavigation() {
-    return useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+    return useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 }
 
 export function RootNavigator() {
     return (
-        <Stack.Navigator
-            initialRouteName="Onboarding"
-            screenOptions={{
-                headerShown: false,
-                ...useStackThemeConfig(),
-            }}
-        >
-            <Stack.Screen name="HomeTabs" component={HomeTabs} />
-
-            <Stack.Screen
-                name="Onboarding"
-                component={OnboardingFlow}
-                options={{
-                    animation: "ios_from_right",
-                }}
-            />
-
-            <Stack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
-                <Stack.Screen name="MatchBetting" component={MatchBetting} />
-                <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
-
-            </Stack.Group>
-
-            <Stack.Group
+        <SafeAreaProvider>
+            <Stack.Navigator
+                initialRouteName="Onboarding"
                 screenOptions={{
-                    headerShown: true,
-                    headerTitle: "",
-                    ...(Platform.OS === "ios" ? { headerTransparent: true, headerStyle: {} } : {}),
+                    headerShown: false,
+                    ...useStackThemeConfig(),
                 }}
             >
-                <Stack.Screen name="TeamSummary" component={TeamSummary} />
-                <Stack.Screen name="TeamAutoPaths" component={TeamAutoPaths} />
-                <Stack.Screen name="TeamComparison" component={TeamComparison} />
-            </Stack.Group>
+                <Stack.Screen name="HomeTabs" component={HomeTabs} />
 
-            <Stack.Screen
-                name="TeamReports"
-                component={TeamReports}
-                options={({ route: { params } }) => ({
-                    title: `Scouting for Team ${params.team_number}`,
-                    headerBackButtonDisplayMode: "minimal",
-                })}
-            />
-        </Stack.Navigator>
+                <Stack.Screen
+                    name="Onboarding"
+                    component={OnboardingFlow}
+                    options={{
+                        animation: "ios_from_right",
+                    }}
+                />
+
+                <Stack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
+                    <Stack.Screen name="MatchBetting" component={MatchBetting} />
+                    <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
+                </Stack.Group>
+
+                <Stack.Group
+                    screenOptions={{
+                        headerShown: true,
+                        headerTitle: "",
+                        ...(Platform.OS === "ios"
+                            ? { headerTransparent: true, headerStyle: {} }
+                            : {}),
+                    }}
+                >
+                    <Stack.Screen name="TeamSummary" component={TeamSummary} />
+                    <Stack.Screen name="TeamAutoPaths" component={TeamAutoPaths} />
+                    <Stack.Screen name="TeamComparison" component={TeamComparison} />
+                </Stack.Group>
+
+                <Stack.Screen
+                    name="TeamReports"
+                    component={TeamReports}
+                    options={({ route: { params } }) => ({
+                        title: `Scouting for Team ${params.team_number}`,
+                        headerBackButtonDisplayMode: "minimal",
+                    })}
+                />
+            </Stack.Navigator>
+        </SafeAreaProvider>
     );
 }

@@ -1,11 +1,6 @@
-import {
-    createNativeBottomTabNavigator,
-    type NativeBottomTabScreenProps,
-} from "@bottom-tabs/react-navigation";
 import { type NavigatorScreenParams } from "@react-navigation/native";
 import { useEffect } from "react";
 import { useUserStore } from "@/lib/stores/user";
-import { Platform } from "react-native";
 import { useTheme } from "@/ui/context/ThemeContext";
 
 import type { RootStackScreenProps } from "@/navigation";
@@ -13,9 +8,21 @@ import { type ScoutMenuParamList, ScoutTab } from "./scout";
 import { BrowseTab, type BrowseTabParamList } from "./browse";
 import { SettingsTab, type SettingsTabParamList } from "./settings";
 import { DataTab, type DataTabParamList } from "./data";
+import { type BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+    BarChart,
+    BarChartFill,
+    House,
+    HouseFill,
+    Person,
+    PersonFill,
+    Search,
+    SearchHeartFill,
+} from "@/ui/icons";
+import { Platform } from "react-native";
 
-const Tab = createNativeBottomTabNavigator<HomeTabsParamList>();
-export type HomeTabProps<K extends keyof HomeTabsParamList> = NativeBottomTabScreenProps<
+const Tab = createBottomTabNavigator<HomeTabsParamList>();
+export type HomeTabProps<K extends keyof HomeTabsParamList> = BottomTabScreenProps<
     HomeTabsParamList,
     K
 >;
@@ -42,24 +49,24 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
 
     return (
         <Tab.Navigator
-            labeled
-            translucent
-            tabBarStyle={Platform.OS === "ios" ? {} : { backgroundColor: colors.bg2.hex }}
-            tabBarActiveTintColor={Platform.OS === "ios" ? colors.primary.hex : colors.fg.hex}
-            tabBarInactiveTintColor={colors.fg.hex}
-            activeIndicatorColor={colors.tertiary.hex} //< Android only
+            screenOptions={{
+                tabBarStyle: Platform.OS === "ios" ? {} : { backgroundColor: colors.bg2.hex },
+                tabBarActiveTintColor: Platform.OS === "ios" ? colors.primary.hex : colors.fg.hex,
+                tabBarInactiveTintColor: colors.fg.hex,
+                headerShown: false,
+            }}
         >
             <Tab.Screen
                 name="Home"
                 component={ScoutTab}
                 options={{
                     title: "Home",
-                    tabBarIcon: ({ focused }) =>
-                        Platform.OS === "ios"
-                            ? { sfSymbol: "house" }
-                            : focused
-                              ? require("bootstrap-icons/icons/house-fill.svg")
-                              : require("bootstrap-icons/icons/house.svg"),
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <HouseFill size={size} fill={color} />
+                        ) : (
+                            <House size={size} fill={color} />
+                        ),
                 }}
             />
             <Tab.Screen
@@ -67,13 +74,12 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                 component={BrowseTab}
                 options={{
                     title: "Browse",
-                    role: "search",
-                    tabBarIcon: ({ focused }) =>
-                        Platform.OS === "ios"
-                            ? { sfSymbol: "magnifyingglass" }
-                            : focused
-                              ? require("bootstrap-icons/icons/search-heart-fill.svg")
-                              : require("bootstrap-icons/icons/search.svg"),
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <SearchHeartFill size={size} fill={color} />
+                        ) : (
+                            <Search size={size} fill={color} />
+                        ),
                 }}
             />
             <Tab.Screen
@@ -81,12 +87,12 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                 component={DataTab}
                 options={{
                     title: "Data",
-                    tabBarIcon: ({ focused }) =>
-                        Platform.OS === "ios"
-                            ? { sfSymbol: "chart.bar.xaxis" }
-                            : focused
-                              ? require("bootstrap-icons/icons/bar-chart-fill.svg")
-                              : require("bootstrap-icons/icons/bar-chart.svg"),
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <BarChartFill size={size} fill={color} />
+                        ) : (
+                            <BarChart size={size} fill={color} />
+                        ),
                 }}
             />
             <Tab.Screen
@@ -94,12 +100,12 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                 component={SettingsTab}
                 options={{
                     title: "Profile",
-                    tabBarIcon: ({ focused }) =>
-                        Platform.OS === "ios"
-                            ? { sfSymbol: "person.fill" }
-                            : focused
-                              ? require("bootstrap-icons/icons/person-fill.svg")
-                              : require("bootstrap-icons/icons/person.svg"),
+                    tabBarIcon: ({ focused, color, size }) =>
+                        focused ? (
+                            <PersonFill size={size} fill={color} />
+                        ) : (
+                            <Person size={size} fill={color} />
+                        ),
                 }}
             />
         </Tab.Navigator>
