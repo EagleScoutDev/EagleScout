@@ -22,7 +22,7 @@ export function FormQuestion({
     return (
         <View style={inline ? { flex: 1, flexDirection: "row", alignItems: "center" } : undefined}>
             <View style={{ flexDirection: "row" }}>
-                {icon && icon({ size: 18, color: colors.primary.hex, style: { marginRight: 10 } })}
+                {icon && icon({ size: 18, fill: colors.primary.hex, style: { marginRight: 10 } })}
                 <UIText size={16} bold style={{ textAlign: "left" }}>
                     {title}
                     {required && <UIText color={colors.danger}>*</UIText>}

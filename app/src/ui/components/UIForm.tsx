@@ -61,12 +61,20 @@ export namespace UIForm {
         onChange?: ((value: number | null) => void | undefined | boolean) | undefined;
     }
     export function NumberInput({ key, label, value, onChange }: NumberInputProps) {
+        const { colors } = useTheme();
+
         return Item({
             key,
             label: label,
             body: () => (
                 <RNNumberInput
-                    style={{ height: "100%", fontSize: 16, flex: 1, textAlign: "right" }}
+                    style={{
+                        height: "100%",
+                        fontSize: 16,
+                        flex: 1,
+                        textAlign: "right",
+                        color: colors.fg.hex,
+                    }}
                     value={value}
                     onInput={onChange}
                 />
@@ -83,7 +91,14 @@ export namespace UIForm {
         value?: Date | undefined;
         onChange?: ((value: Date) => void) | undefined;
     }
-    export function DateTime({ key, label, date = true, time = true, value, onChange }: DateTimeProps) {
+    export function DateTime({
+        key,
+        label,
+        date = true,
+        time = true,
+        value,
+        onChange,
+    }: DateTimeProps) {
         // FIXME: fold into value prop once React Compiler implements
         //        "Support destructuring of context variables"
         let v = value ?? new Date();
@@ -94,7 +109,9 @@ export namespace UIForm {
                 label: label,
                 body: () => (
                     <RNDateTimePicker
-                        mode={date && time ? "datetime" : date ? "date" : time ? "time" : "datetime"}
+                        mode={
+                            date && time ? "datetime" : date ? "date" : time ? "time" : "datetime"
+                        }
                         value={v}
                         onChange={(_, x) => {
                             if (x === undefined) return;
@@ -113,7 +130,13 @@ export namespace UIForm {
         value: T | null;
         onChange?: (value: T) => void;
     }
-    export function Select<T extends string = string>({ key, label, options, value, onChange }: SelectProps<T>) {
+    export function Select<T extends string = string>({
+        key,
+        label,
+        options,
+        value,
+        onChange,
+    }: SelectProps<T>) {
         // TODO: implement this
         throw new Error("Not implemented");
     }
@@ -146,7 +169,13 @@ export namespace UIForm {
             key,
             label: label,
             body: () => (
-                <UIListPicker<K> value={value} onChange={onChange} title={title} options={options} render={render} />
+                <UIListPicker<K>
+                    value={value}
+                    onChange={onChange}
+                    title={title}
+                    options={options}
+                    render={render}
+                />
             ),
         });
     }
