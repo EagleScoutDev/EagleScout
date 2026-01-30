@@ -84,7 +84,10 @@ export class NotesDB {
         matchNumber: number,
         competitionId: number,
     ): Promise<void> {
-        let { exists: matchExists, id: matchId } = await this.checkIfMatchExists(matchNumber, competitionId);
+        let { exists: matchExists, id: matchId } = await this.checkIfMatchExists(
+            matchNumber,
+            competitionId,
+        );
 
         if (!matchExists) {
             matchId = await this.createMatch(matchNumber, competitionId);
@@ -120,7 +123,9 @@ export class NotesDB {
         // TODO: query is including values where the competition_id is wrong
         const { data, error } = await supabase
             .from("notes")
-            .select("*, matches!inner( number, competition_id, competitions!inner(name) ), profiles(name)")
+            .select(
+                "*, matches!inner( number, competition_id, competitions!inner(name) ), profiles(name)",
+            )
             .eq("matches.competition_id", competitionId);
         if (error) {
             console.log(error);
@@ -142,7 +147,10 @@ export class NotesDB {
 
     static async getNotesForTeam(teamNumber: number): Promise<Note[]> {
         const res: Note[] = [];
-        const { data, error } = await supabase.from("notes").select("*, profiles(name)").eq("team_number", teamNumber);
+        const { data, error } = await supabase
+            .from("notes")
+            .select("*, profiles(name)")
+            .eq("team_number", teamNumber);
         if (error) {
             throw error;
         } else {
@@ -161,9 +169,15 @@ export class NotesDB {
         return res;
     }
 
-    static async getNotesForTeamAtCompetition(teamNumber: number, competitionId: number): Promise<NoteWithMatch[]> {
+    static async getNotesForTeamAtCompetition(
+        teamNumber: number,
+        competitionId: number,
+    ): Promise<NoteWithMatch[]> {
         const res: NoteWithMatch[] = [];
-        const { data: compIds } = await supabase.from("matches").select("id").eq("competition_id", competitionId);
+        const { data: compIds } = await supabase
+            .from("matches")
+            .select("id")
+            .eq("competition_id", competitionId);
         if (!compIds) {
             return [];
         }
@@ -173,7 +187,11 @@ export class NotesDB {
             .from("notes")
             .select("*, matches(number), profiles(name)")
             .eq("team_number", teamNumber)
-            .filter("match_id", "in", `(${compIds.map((match: { id: number }) => match.id).join(",")})`);
+            .filter(
+                "match_id",
+                "in",
+                `(${compIds.map((match: { id: number }) => match.id).join(",")})`,
+            );
         if (error) {
             throw error;
         } else {
@@ -193,7 +211,7 @@ export class NotesDB {
         return res;
     }
 
-    static async getNotesForSelf(): Promise<NoteWithMatch[]> {
+    static async getNotesForSelf(competitionId: number): Promise<NoteWithMatch[]> {
         const {
             data: { user },
         } = await supabase.auth.getUser();
@@ -204,7 +222,8 @@ export class NotesDB {
         const { data, error } = await supabase
             .from("notes")
             .select("*, matches(number, competitions(name))")
-            .eq("created_by", user.id);
+            .eq("created_by", user.id)
+            .eq("matches.competition_id", competitionId);
         if (error) {
             throw error;
         } else {
@@ -225,7 +244,10 @@ export class NotesDB {
     }
 
     static async createOfflineNote(note: OfflineNote): Promise<void> {
-        let { exists: matchExists, id: matchId } = await this.checkIfMatchExists(note.match_number, note.comp_id);
+        let { exists: matchExists, id: matchId } = await this.checkIfMatchExists(
+            note.match_number,
+            note.comp_id,
+        );
 
         if (!matchExists) {
             matchId = await this.createMatch(note.match_number, note.comp_id);

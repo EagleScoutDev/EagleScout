@@ -27,7 +27,7 @@ export function SubmittedNotes({ route }: SettingsTabScreenProps<"Scout/ViewNote
 
     async function refresh() {
         setOfflineNotes(await FormHelper.getOfflineNotes());
-        setOnlineNotes(await NotesDB.getNotesForCompetition(competitionId));
+        setOnlineNotes(await NotesDB.getNotesForSelf(competitionId));
     }
     useEffect(() => void refresh(), [competitionId]);
 
@@ -36,7 +36,10 @@ export function SubmittedNotes({ route }: SettingsTabScreenProps<"Scout/ViewNote
             .then(() => true)
             .catch(() => false);
         if (!internetResponse) {
-            await AsyncAlert.alert("No internet connection", "Please connect to the internet to push offline reports");
+            await AsyncAlert.alert(
+                "No internet connection",
+                "Please connect to the internet to push offline reports",
+            );
             return;
         }
 
@@ -77,7 +80,9 @@ export function SubmittedNotes({ route }: SettingsTabScreenProps<"Scout/ViewNote
                                             <UIText size={20} bold>
                                                 No offline notes!
                                             </UIText>
-                                            <UIText size={15}>Great job keeping your data up-to-date.</UIText>
+                                            <UIText size={15}>
+                                                Great job keeping your data up-to-date.
+                                            </UIText>
                                         </View>
                                     </UICard>
                                 ) : (

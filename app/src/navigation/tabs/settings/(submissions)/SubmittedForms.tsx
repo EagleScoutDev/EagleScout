@@ -31,7 +31,7 @@ export function SubmittedForms({ route }: SettingsTabScreenProps<"Scout/ViewRepo
 
     async function refresh() {
         setOfflineReports(await FormHelper.getOfflineForms());
-        setReports(await MatchReportsDB.getReportsForCompetition(competitionId));
+        setReports(await MatchReportsDB.getReportsForSelf(competitionId));
     }
     useEffect(() => void refresh(), [competitionId]);
 

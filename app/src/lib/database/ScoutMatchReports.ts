@@ -65,7 +65,7 @@ export class MatchReportsDB {
         }));
     }
 
-    static async getReportsForSelf(): Promise<MatchReportReturnData[]> {
+    static async getReportsForSelf(competitionId: number): Promise<MatchReportReturnData[]> {
         const {
             data: { user },
         } = await supabase.auth.getUser();
@@ -77,7 +77,8 @@ export class MatchReportsDB {
             .select(
                 "*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )",
             )
-            .eq("user_id", user.id);
+            .eq("user_id", user.id)
+            .eq("matches.competition_id", competitionId);
         if (error) throw error;
 
         return data.map((x) => ({
