@@ -1,4 +1,7 @@
-import { createNativeBottomTabNavigator, type NativeBottomTabScreenProps } from "@bottom-tabs/react-navigation";
+import {
+    createNativeBottomTabNavigator,
+    type NativeBottomTabScreenProps,
+} from "@bottom-tabs/react-navigation";
 import { type NavigatorScreenParams } from "@react-navigation/native";
 import { useEffect } from "react";
 import { useUserStore } from "@/lib/stores/user";
@@ -12,7 +15,10 @@ import { SettingsTab, type SettingsTabParamList } from "./settings";
 import { DataTab, type DataTabParamList } from "./data";
 
 const Tab = createNativeBottomTabNavigator<HomeTabsParamList>();
-export type HomeTabProps<K extends keyof HomeTabsParamList> = NativeBottomTabScreenProps<HomeTabsParamList, K>;
+export type HomeTabProps<K extends keyof HomeTabsParamList> = NativeBottomTabScreenProps<
+    HomeTabsParamList,
+    K
+>;
 export type HomeTabsParamList = {
     Home: NavigatorScreenParams<ScoutMenuParamList>;
     Browse: NavigatorScreenParams<BrowseTabParamList>;
@@ -50,10 +56,10 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                     title: "Home",
                     tabBarIcon: ({ focused }) =>
                         Platform.OS === "ios"
-                        ? { sfSymbol: "binoculars.fill" }
+                            ? { sfSymbol: "house" }
                             : focused
-                            ? require("bootstrap-icons/icons/binoculars-fill.svg")
-                            : require("bootstrap-icons/icons/binoculars.svg"),
+                              ? require("bootstrap-icons/icons/house-fill.svg")
+                              : require("bootstrap-icons/icons/house.svg"),
                 }}
             />
             <Tab.Screen
@@ -66,8 +72,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "magnifyingglass" }
                             : focused
-                            ? require("bootstrap-icons/icons/search-heart-fill.svg")
-                            : require("bootstrap-icons/icons/search.svg"),
+                              ? require("bootstrap-icons/icons/search-heart-fill.svg")
+                              : require("bootstrap-icons/icons/search.svg"),
                 }}
             />
             <Tab.Screen
@@ -79,8 +85,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "chart.bar.xaxis" }
                             : focused
-                            ? require("bootstrap-icons/icons/bar-chart-fill.svg")
-                            : require("bootstrap-icons/icons/bar-chart.svg"),
+                              ? require("bootstrap-icons/icons/bar-chart-fill.svg")
+                              : require("bootstrap-icons/icons/bar-chart.svg"),
                 }}
             />
             <Tab.Screen
@@ -92,8 +98,8 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
                         Platform.OS === "ios"
                             ? { sfSymbol: "person.fill" }
                             : focused
-                            ? require("bootstrap-icons/icons/person-fill.svg")
-                            : require("bootstrap-icons/icons/person.svg"),
+                              ? require("bootstrap-icons/icons/person-fill.svg")
+                              : require("bootstrap-icons/icons/person.svg"),
                 }}
             />
         </Tab.Navigator>
