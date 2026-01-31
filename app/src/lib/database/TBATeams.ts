@@ -15,6 +15,7 @@ export class TBATeams {
                 console.error(response.error);
                 return [];
             }
+            console.log(response.data)
             TBATeams.TEAM_CACHE = response.data.map((team: any) => {
                 return {
                     number: team.number,
@@ -26,9 +27,28 @@ export class TBATeams {
     }
 
     static async searchTeams(query: string): Promise<TBATeam[]> {
-        const teams = await TBATeams.fetchAllTeams();
-        return teams.filter(
-            (team) => team.name.toLowerCase().includes(query.toLowerCase()) || team.number.toString().includes(query),
-        );
+        // const teams = await TBATeams.fetchAllTeams();
+        // console.log("hahahahahhahahahahaahahahahahhahahahahaahahahahahhahahahahaahahahahahhahahahahaahahahahahhahahahahaahahahahahhahahahahaahahahahahhahahahahaahahahahahhahahahahaa")
+        // console.log(teams);
+        // return teams.filter(
+        //     (team) => team.name.toLowerCase().includes(query.toLowerCase()) || team.number.toString().includes(query),
+        // );
+            let response;
+            if (isNaN(Number(query))){
+                response = await supabase.from("tba_teams").select("*").ilike("name",`%${query}%`);}
+            else{
+                response = await supabase.from("tba_teams").select("*").eq("number", Number(query));
+            }
+            if (response.error) {
+                console.error(response.error);
+                return [];
+            }
+            return response.data.map((team: any) => {
+                return {
+                    number: team.number,
+                    name: team.name,
+                };
+            });;
+
     }
 }
