@@ -1,14 +1,27 @@
 import React, { useState } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { SceneMap, TabBar, type TabDescriptor, TabView, type TabViewProps } from "react-native-tab-view";
+import {
+    SceneMap,
+    TabBar,
+    type TabDescriptor,
+    TabView,
+    type TabViewProps,
+} from "react-native-tab-view";
 
-export interface UITabViewProps<T extends string>
-    extends Pick<TabViewProps<any>, "keyboardDismissMode" | "swipeEnabled"> {
+export interface UITabViewProps<T extends string> extends Pick<
+    TabViewProps<any>,
+    "keyboardDismissMode" | "swipeEnabled"
+> {
     currentKey?: T;
     onTabChange?: (tab: T) => void;
     tabs: { key: T; title: string; component: React.ComponentType }[];
 }
-export function UITabView<T extends string>({ currentKey, onTabChange, tabs, ...props }: UITabViewProps<T>) {
+export function UITabView<T extends string>({
+    currentKey,
+    onTabChange,
+    tabs,
+    ...props
+}: UITabViewProps<T>) {
     const { colors } = useTheme();
 
     const [internalIndex, setInternalIndex] = useState(0);
@@ -33,7 +46,9 @@ export function UITabView<T extends string>({ currentKey, onTabChange, tabs, ...
                 index: currentKey !== undefined ? indices.get(currentKey)! : internalIndex,
                 routes: tabs,
             }}
-            renderScene={SceneMap(Object.fromEntries(tabs.map(({ key, component }) => [key, component])))}
+            renderScene={SceneMap(
+                Object.fromEntries(tabs.map(({ key, component }) => [key, component])),
+            )}
             renderTabBar={(props) => (
                 <TabBar
                     {...props}

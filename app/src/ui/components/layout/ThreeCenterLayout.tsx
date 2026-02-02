@@ -48,7 +48,10 @@ export function ThreeCenterLayout({ gap = 16, children }: ThreeCenterLayoutProps
                     alignItems: "center",
                 }}
             >
-                <Animated.View style={{ marginHorizontal: centerMargin }} onLayout={updateCenterLayout}>
+                <Animated.View
+                    style={{ marginHorizontal: centerMargin }}
+                    onLayout={updateCenterLayout}
+                >
                     {children[1]}
                 </Animated.View>
             </View>

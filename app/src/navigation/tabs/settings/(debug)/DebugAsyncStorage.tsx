@@ -47,7 +47,10 @@ export function DebugAsyncStorage() {
     }
 
     return (
-        <SafeAreaView edges={{ bottom: "off", top: "off" }} style={{ width: "100%", height: "100%" }}>
+        <SafeAreaView
+            edges={{ bottom: "off", top: "off" }}
+            style={{ width: "100%", height: "100%" }}
+        >
             <Animated.View style={{ height: sheetPosition }}>
                 <UIList onRefresh={getAllKeys}>
                     {UIList.Section({
@@ -90,7 +93,9 @@ export function DebugAsyncStorage() {
                 enableDynamicSizing={false}
             >
                 <View style={{ flex: 1, padding: 8 }}>
-                    <View style={{ padding: 8, borderBottomWidth: 1, borderColor: colors.border.hex }}>
+                    <View
+                        style={{ padding: 8, borderBottomWidth: 1, borderColor: colors.border.hex }}
+                    >
                         <UIText
                             size={16}
                             style={{ fontFamily: "monospace" }}

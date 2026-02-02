@@ -28,7 +28,10 @@ export interface PicklistTeam {
 
 export class PicklistsDB {
     static async getPicklists(competition_id: any): Promise<PicklistStructure[]> {
-        const { data, error } = await supabase.from("picklist").select("*").eq("competition_id", competition_id);
+        const { data, error } = await supabase
+            .from("picklist")
+            .select("*")
+            .eq("competition_id", competition_id);
         if (error) {
             throw error;
         } else {
@@ -46,7 +49,10 @@ export class PicklistsDB {
     }
 
     static async deletePicklist(picklist_id: any) {
-        const { data, error, count } = await supabase.from("picklist").delete().eq("id", picklist_id);
+        const { data, error, count } = await supabase
+            .from("picklist")
+            .delete()
+            .eq("id", picklist_id);
         if (error) {
             throw error;
         } else {
@@ -82,7 +88,10 @@ export class PicklistsDB {
     static async updatePicklist(id: number, new_teams: PicklistTeam[]) {
         console.log("updating picklist, id using is:", id);
         console.log("new teams list: ", new_teams);
-        const { data, error } = await supabase.from("picklist").update({ teams: new_teams }).eq("id", id);
+        const { data, error } = await supabase
+            .from("picklist")
+            .update({ teams: new_teams })
+            .eq("id", id);
         if (error) {
             console.log("Picklist not updated, error");
             throw error;

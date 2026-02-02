@@ -58,13 +58,18 @@ export function LoginForm({ navigation, onSubmit, error }: LoginProps) {
                             style={{
                                 ...styles.input,
                                 borderColor:
-                                    error === "auth/internal-error" || error === "auth/wrong-password" ? "red" : "gray",
+                                    error === "auth/internal-error" ||
+                                    error === "auth/wrong-password"
+                                        ? "red"
+                                        : "gray",
                             }}
                             secureTextEntry={true}
                         />
                         <StandardButton
                             text={"Log In"}
-                            textColor={username === "" || password === "" ? "dimgray" : colors.primary.hex}
+                            textColor={
+                                username === "" || password === "" ? "dimgray" : colors.primary.hex
+                            }
                             disabled={username === "" || password === ""}
                             onPress={() => onSubmit(username, password)}
                         />

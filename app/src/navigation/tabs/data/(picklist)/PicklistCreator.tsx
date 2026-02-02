@@ -172,10 +172,16 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         gap: 10,
                     }}
                 >
-                    {presetPicklist && syncing && <ActivityIndicator size="small" color={colors.primary.hex} />}
+                    {presetPicklist && syncing && (
+                        <ActivityIndicator size="small" color={colors.primary.hex} />
+                    )}
                     {presetPicklist && !syncing && (
                         <Pressable onPress={() => fetchPicklist()}>
-                            <Bs.ArrowClockwise size="30" fill="gray" style={{ marginRight: "5%" }} />
+                            <Bs.ArrowClockwise
+                                size="30"
+                                fill="gray"
+                                style={{ marginRight: "5%" }}
+                            />
                         </Pressable>
                     )}
                     {!presetPicklist && (
@@ -184,7 +190,10 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         </Pressable>
                     )}
                     <Pressable onPress={() => setDraggingActive((prev) => !prev)}>
-                        <Bs.PencilSquare size="24" fill={dragging_active ? colors.primary.hex : "dimgray"} />
+                        <Bs.PencilSquare
+                            size="24"
+                            fill={dragging_active ? colors.primary.hex : "dimgray"}
+                        />
                     </Pressable>
                 </View>
             ),
@@ -540,7 +549,10 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                     }}
                     style={styles.modal_activation_button_container}
                 >
-                    <Bs.ExclamationTriangle size="16" fill={teams_list.some((a) => a.dnp) ? "red" : "gray"} />
+                    <Bs.ExclamationTriangle
+                        size="16"
+                        fill={teams_list.some((a) => a.dnp) ? "red" : "gray"}
+                    />
                 </Pressable>
             </View>
             <View
@@ -571,7 +583,9 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 }
                             }}
                             style={{
-                                backgroundColor: filteredTags.has(tag) ? getTagFromTagId(tag)?.color : colors.bg1.hex,
+                                backgroundColor: filteredTags.has(tag)
+                                    ? getTagFromTagId(tag)?.color
+                                    : colors.bg1.hex,
                                 paddingHorizontal: "4%",
                                 paddingVertical: "2%",
                                 margin: 4,
@@ -590,7 +604,8 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                     fontWeight: filteredTags.has(tag) ? "bold" : "normal",
                                 }}
                             >
-                                {allTags.find((t) => Number.parseInt(t.id ?? "", 10) === tag)?.name ?? "Unknown"}
+                                {allTags.find((t) => Number.parseInt(t.id ?? "", 10) === tag)
+                                    ?.name ?? "Unknown"}
                             </UIText>
                         </Pressable>
                     );
@@ -652,7 +667,8 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                     data={teams_list.filter(
                         (t) =>
                             filteredTags.size === 0 ||
-                            filteredTags.size === t.tags.filter((tag) => filteredTags.has(tag)).length,
+                            filteredTags.size ===
+                                t.tags.filter((tag) => filteredTags.has(tag)).length,
                     )}
                     renderItem={({ item }) => {
                         return (
@@ -688,11 +704,15 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                     >
                                         <BouncyCheckbox
                                             isChecked={removed_teams.includes(item)}
-                                            disabled={item !== selectedTeam && selectedTeam !== null}
+                                            disabled={
+                                                item !== selectedTeam && selectedTeam !== null
+                                            }
                                             fillColor={colors.primary.hex}
                                             onPress={() => {
                                                 addOrRemoveTeamLiveMode(item);
-                                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                                                Haptics.notificationAsync(
+                                                    Haptics.NotificationFeedbackType.Success,
+                                                );
                                             }}
                                         />
                                         <UIText placeholder>{teams_list.indexOf(item) + 1}</UIText>
@@ -731,11 +751,16 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                         <View
                                                             style={{
                                                                 borderRadius: 10,
-                                                                backgroundColor: getTagFromTagId(tag)?.color,
+                                                                backgroundColor:
+                                                                    getTagFromTagId(tag)?.color,
                                                                 width: 14,
                                                                 height: 14,
                                                                 margin: "2%",
-                                                                opacity: removed_teams.includes(item) ? 0.4 : 1,
+                                                                opacity: removed_teams.includes(
+                                                                    item,
+                                                                )
+                                                                    ? 0.4
+                                                                    : 1,
                                                             }}
                                                         />
                                                     );
@@ -783,7 +808,10 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                             style={{ paddingHorizontal: "4%", flex: 0 }}
                                             onPress={() => addToDNP(item)}
                                         >
-                                            <Bs.ExclamationTriangle size="24" fill={item.dnp ? "red" : "gray"} />
+                                            <Bs.ExclamationTriangle
+                                                size="24"
+                                                fill={item.dnp ? "red" : "gray"}
+                                            />
                                         </Pressable>
                                         <Pressable
                                             style={{ paddingHorizontal: "4%", flex: 0 }}

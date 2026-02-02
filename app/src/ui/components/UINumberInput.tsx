@@ -8,7 +8,9 @@ export interface UINumberInputProps extends NumberInputProps {}
 export function UINumberInput({ style, ...passthrough }: UINumberInputProps) {
     const { colors } = useTheme();
     const styles = getStyles(colors);
-    return <NumberInput placeholderTextColor={"gray"} {...passthrough} style={[styles.main, style]} />;
+    return (
+        <NumberInput placeholderTextColor={"gray"} {...passthrough} style={[styles.main, style]} />
+    );
 }
 
 const getStyles = exMemo((colors: Theme["colors"]) =>

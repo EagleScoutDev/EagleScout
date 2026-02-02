@@ -128,7 +128,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (missing) {
             Alert.alert(
                 "Required Question: " + missing.question + " not filled out",
-                "Please fill out all questions denoted with an asterisk"
+                "Please fill out all questions denoted with an asterisk",
             );
             return;
         }
@@ -168,7 +168,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         !(
                             a.matchNumber === match &&
                             (a.team === null || a.team.substring(3) === team)
-                        )
+                        ),
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
@@ -215,10 +215,14 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                     onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
                 >
                     <MatchInformation
-                        match={match} setMatch={setMatch}
-                        team={team} setTeam={setTeam}
-                        orientation={orientation} setOrientation={setOrientation}
-                        alliance={alliance} setAlliance={setAlliance}
+                        match={match}
+                        setMatch={setMatch}
+                        team={team}
+                        setTeam={setTeam}
+                        orientation={orientation}
+                        setOrientation={setOrientation}
+                        alliance={alliance}
+                        setAlliance={setAlliance}
                         teamsForMatch={teamsForMatch}
                     />
                 </ScoutingFlowTab>

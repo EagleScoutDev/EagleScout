@@ -1,5 +1,11 @@
 import React, { type ReactNode, type Ref, useImperativeHandle, useState } from "react";
-import { Modal, type StyleProp, TouchableWithoutFeedback, View, type ViewStyle } from "react-native";
+import {
+    Modal,
+    type StyleProp,
+    TouchableWithoutFeedback,
+    View,
+    type ViewStyle,
+} from "react-native";
 import { useFloating } from "@floating-ui/react-native";
 import type { MiddlewareState, Placement } from "@floating-ui/core";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -20,8 +26,19 @@ export interface UIMenu<T = unknown> {
     present(data: T): void;
     dismiss(): void;
 }
-export function UIMenu<T = unknown>({ ref, onClose, placement, content: Content, children, style }: UIMenuProps<T>) {
-    const [align, direction, justify] = placement.split("-") as [UIMenu.Align, UIMenu.Direction, UIMenu.Justify];
+export function UIMenu<T = unknown>({
+    ref,
+    onClose,
+    placement,
+    content: Content,
+    children,
+    style,
+}: UIMenuProps<T>) {
+    const [align, direction, justify] = placement.split("-") as [
+        UIMenu.Align,
+        UIMenu.Direction,
+        UIMenu.Justify,
+    ];
 
     const { colors } = useTheme();
     const { refs, floatingStyles, x, y } = useFloating({
@@ -99,7 +116,9 @@ export function UIMenu<T = unknown>({ ref, onClose, placement, content: Content,
                                     style,
                                 ]}
                             >
-                                {typeof Content === "function" ? data && <Content data={data} /> : Content}
+                                {typeof Content === "function"
+                                    ? data && <Content data={data} />
+                                    : Content}
                             </View>
                         </TouchableWithoutFeedback>
                     </View>

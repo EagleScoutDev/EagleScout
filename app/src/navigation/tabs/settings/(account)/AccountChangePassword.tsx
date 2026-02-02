@@ -8,7 +8,6 @@ import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton"
 
 export interface AccountChangePasswordProps extends SettingsTabScreenProps<"Account/ChangePassword"> {}
 export function AccountChangePassword({ navigation }: AccountChangePasswordProps) {
-
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -44,11 +43,16 @@ export function AccountChangePassword({ navigation }: AccountChangePasswordProps
                                 return Alert.alert("Error", "Passwords do not match");
                             }
 
-                            const { error } = await supabase.auth.updateUser({ password: newPassword });
+                            const { error } = await supabase.auth.updateUser({
+                                password: newPassword,
+                            });
                             if (error) {
                                 console.log(error);
                                 if (error.code === "same_password") {
-                                    Alert.alert("Error", "Your entered password was the same as the current one.");
+                                    Alert.alert(
+                                        "Error",
+                                        "Your entered password was the same as the current one.",
+                                    );
                                 } else {
                                     Alert.alert("Error", "An error occurred, please try again.");
                                 }

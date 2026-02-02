@@ -8,7 +8,13 @@ export interface TeamInformationProps {
 export function TeamInformation({ team, setTeam }: TeamInformationProps) {
     return (
         <UICard title={"Team Information"}>
-            <UICard.NumberInput label={"Team Number"} placeholder="000" max={999} value={team} onInput={setTeam} />
+            <UICard.NumberInput
+                label={"Team Number"}
+                placeholder="000"
+                max={999}
+                value={team}
+                onInput={setTeam}
+            />
         </UICard>
     );
 }

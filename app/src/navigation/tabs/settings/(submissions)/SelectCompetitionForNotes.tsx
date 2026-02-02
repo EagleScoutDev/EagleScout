@@ -5,7 +5,9 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { SettingsTabScreenProps } from "../index";
 import { UIList } from "@/ui/components/UIList";
 
-export function SelectCompetitionForNotes({ navigation }: SettingsTabScreenProps<"Scout/SelectCompetitionForNotes">) {
+export function SelectCompetitionForNotes({
+    navigation,
+}: SettingsTabScreenProps<"Scout/SelectCompetitionForNotes">) {
     const [competitions, setCompetitions] = useState<CompetitionReturnData[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -26,7 +28,10 @@ export function SelectCompetitionForNotes({ navigation }: SettingsTabScreenProps
     }, []);
 
     const handleCompetitionSelect = (competition: CompetitionReturnData) => {
-        navigation.navigate("Scout/ViewNotes", { competitionId: competition.id, competitionName: competition.name });
+        navigation.navigate("Scout/ViewNotes", {
+            competitionId: competition.id,
+            competitionName: competition.name,
+        });
     };
 
     return (

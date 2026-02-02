@@ -14,7 +14,7 @@ import { Arrays } from "@/lib/util/Arrays";
 import { PitScoutingImageList } from "./PitScoutingImageList";
 import { FormView } from "@/components/FormView";
 import { UIText } from "@/ui/components/UIText";
-import { UITabView } from "@/ui/components/UITabView.tsx";
+import { UITabView } from "@/ui/components/UITabView";
 
 export interface PitFlowProps extends ScoutMenuScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
@@ -51,7 +51,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         if (missing) {
             Alert.alert(
                 "Required Question: " + missing.question + " not filled out",
-                "Please fill out all questions denoted with an asterisk"
+                "Please fill out all questions denoted with an asterisk",
             );
             return;
         }
@@ -67,7 +67,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         if (!internetResponse) {
             await FormHelper.savePitFormOffline(
                 data,
-                images.filter((item) => item !== "plus")
+                images.filter((item) => item !== "plus"),
             );
             reset();
 
@@ -80,7 +80,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
             try {
                 await PitReportsDB.createOnlinePitScoutReport(
                     data,
-                    images.filter((item) => item !== "plus")
+                    images.filter((item) => item !== "plus"),
                 );
                 reset();
 

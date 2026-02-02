@@ -43,9 +43,13 @@ export class PitReportsDB {
                 : base64Image;
             const res = decode(base64Str);
 
-            const { error } = await bucket.upload(`${orgId}/${teamId}/pit_images/${reportId}/${i}.jpg`, res, {
-                contentType: "image/jpg",
-            });
+            const { error } = await bucket.upload(
+                `${orgId}/${teamId}/pit_images/${reportId}/${i}.jpg`,
+                res,
+                {
+                    contentType: "image/jpg",
+                },
+            );
             if (error) {
                 throw error;
             }
@@ -104,7 +108,10 @@ export class PitReportsDB {
      * @param teamId
      * @param competitionId
      */
-    static async getReportsForTeamAtCompetition(teamId: number, competitionId: number): Promise<PitReportReturnData[]> {
+    static async getReportsForTeamAtCompetition(
+        teamId: number,
+        competitionId: number,
+    ): Promise<PitReportReturnData[]> {
         const { data, error } = await supabase
             .from("pit_scout_reports")
             .select(
@@ -136,7 +143,9 @@ export class PitReportsDB {
     static async getImagesForReport(teamId: number, reportId: number) {
         const orgId = (await UserAttributesDB.getCurrentUserAttribute()).organization_id;
         const bucket = supabase.storage.from("organizations");
-        const { data: images, error } = await bucket.list(`${orgId}/${teamId}/pit_images/${reportId}`);
+        const { data: images, error } = await bucket.list(
+            `${orgId}/${teamId}/pit_images/${reportId}`,
+        );
         if (error) {
             throw error;
         }
@@ -161,7 +170,9 @@ export class PitReportsDB {
 
     static async getImageUrlsForReport(orgId: number, teamId: number, reportId: number) {
         const bucket = supabase.storage.from("organizations");
-        const { data: images, error } = await bucket.list(`${orgId}/${teamId}/pit_images/${reportId}`);
+        const { data: images, error } = await bucket.list(
+            `${orgId}/${teamId}/pit_images/${reportId}`,
+        );
         if (error) {
             throw error;
         }

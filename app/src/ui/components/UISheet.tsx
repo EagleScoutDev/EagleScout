@@ -68,8 +68,8 @@ export namespace UISheet {
             item.icon === undefined
                 ? undefined
                 : typeof item.icon === "string"
-                ? item.icon
-                : item.icon[Platform.OS];
+                  ? item.icon
+                  : item.icon[Platform.OS];
 
         switch (item.role) {
             case "done":

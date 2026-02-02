@@ -42,14 +42,16 @@ export function CombinedGraph({
 
     useEffect(() => {
         if (modalActive) {
-            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competitionId).then((reports) => {
-                setRelevantReports(reports);
-                CompetitionsDB.getCompetitionById(competitionId).then((comp) => {
-                    FormsDB.getForm(comp.formId).then((form) => {
-                        setForm(form);
+            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competitionId).then(
+                (reports) => {
+                    setRelevantReports(reports);
+                    CompetitionsDB.getCompetitionById(competitionId).then((comp) => {
+                        FormsDB.getForm(comp.formId).then((form) => {
+                            setForm(form);
+                        });
                     });
-                });
-            });
+                },
+            );
         }
     }, [team_number, competitionId, modalActive]);
 
@@ -111,15 +113,18 @@ export function CombinedGraph({
                         </View>
                         <LineChart
                             data={{
-                                labels: relevantReports.map((report) => report.matchNumber.toString(10)),
+                                labels: relevantReports.map((report) =>
+                                    report.matchNumber.toString(10),
+                                ),
                                 datasets: questionIndices.map((index) => {
                                     return {
                                         data: relevantReports
                                             .sort((a, b) => a.matchNumber - b.matchNumber)
                                             .map((report) => report.data[index]),
                                         color: () =>
-                                            questionToColor.get(form.formStructure[index].question) ??
-                                            "rgba(0, 0, 0, 1.0)",
+                                            questionToColor.get(
+                                                form.formStructure[index].question,
+                                            ) ?? "rgba(0, 0, 0, 1.0)",
                                         strokeWidth: 4, // optional
                                     };
                                 }),

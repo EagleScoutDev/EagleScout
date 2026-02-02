@@ -72,7 +72,12 @@ export function UIListPicker<K extends string | number = string | number>({
                         style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
                         onPress={() => present()}
                     >
-                        <UIText size={16} placeholder style={{ marginRight: 4, flexShrink: 1 }} numberOfLines={1}>
+                        <UIText
+                            size={16}
+                            placeholder
+                            style={{ marginRight: 4, flexShrink: 1 }}
+                            numberOfLines={1}
+                        >
                             {value === null ? "None" : render(value).name}
                         </UIText>
                         <View style={{ width: 20, height: 20 }}>

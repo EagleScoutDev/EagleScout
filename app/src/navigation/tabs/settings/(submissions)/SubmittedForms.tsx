@@ -21,7 +21,6 @@ type SubmittedFormsParamList = {
 };
 
 export function SubmittedForms({ route }: SettingsTabScreenProps<"Scout/ViewReports">) {
-
     const { competitionId } = route.params;
 
     const themeScreenOptions = useMaterialTopTabThemeConfig();
@@ -40,7 +39,10 @@ export function SubmittedForms({ route }: SettingsTabScreenProps<"Scout/ViewRepo
             .then(() => true)
             .catch(() => false);
         if (!internetResponse) {
-            await AsyncAlert.alert("No internet connection", "Please connect to the internet to push offline reports");
+            await AsyncAlert.alert(
+                "No internet connection",
+                "Please connect to the internet to push offline reports",
+            );
             return;
         }
 
@@ -88,14 +90,19 @@ export function SubmittedForms({ route }: SettingsTabScreenProps<"Scout/ViewRepo
                                             <UIText size={20} bold>
                                                 No offline reports!
                                             </UIText>
-                                            <UIText size={15}>Great job keeping your data up-to-date.</UIText>
+                                            <UIText size={15}>
+                                                Great job keeping your data up-to-date.
+                                            </UIText>
                                         </View>
                                     </UICard>
                                 )}
                             </View>
 
                             {offlineReports.length > 0 && (
-                                <MatchReportList reports={offlineReports} reportsAreOffline={true} />
+                                <MatchReportList
+                                    reports={offlineReports}
+                                    reportsAreOffline={true}
+                                />
                             )}
                         </View>
                     )}

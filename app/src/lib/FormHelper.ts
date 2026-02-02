@@ -29,7 +29,10 @@ export class FormHelper {
     static async saveFormOffline(dataToSubmit: any) {
         dataToSubmit.createdAt = new Date();
 
-        await AsyncStorage.setItem("form-" + dataToSubmit.createdAt.getUTCMilliseconds(), JSON.stringify(dataToSubmit));
+        await AsyncStorage.setItem(
+            "form-" + dataToSubmit.createdAt.getUTCMilliseconds(),
+            JSON.stringify(dataToSubmit),
+        );
     }
 
     /**
@@ -46,7 +49,10 @@ export class FormHelper {
             JSON.stringify(dataToSubmit),
         );
         for (let i = 0; i < images.length; i++) {
-            await AsyncStorage.setItem(`pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`, images[i]);
+            await AsyncStorage.setItem(
+                `pit-form-image-${dataToSubmit.createdAt.getUTCMilliseconds()}-${i}`,
+                images[i],
+            );
         }
     }
 

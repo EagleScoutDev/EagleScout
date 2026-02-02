@@ -6,5 +6,5 @@ export const ICON_MAP = {
     xmark: Bs.XLg,
     checkmark: Bs.CheckLg,
     "square.and.pencil": Bs.PencilSquare,
-    "clock": Bs.ClockHistory
+    clock: Bs.ClockHistory,
 };

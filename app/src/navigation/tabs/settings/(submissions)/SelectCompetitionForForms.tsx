@@ -28,7 +28,10 @@ export function SelectCompetitionForForms({
     }, []);
 
     const handleCompetitionSelect = (competition: CompetitionReturnData) => {
-        navigation.navigate("Scout/ViewReports", { competitionId: competition.id, competitionName: competition.name });
+        navigation.navigate("Scout/ViewReports", {
+            competitionId: competition.id,
+            competitionName: competition.name,
+        });
     };
 
     return (

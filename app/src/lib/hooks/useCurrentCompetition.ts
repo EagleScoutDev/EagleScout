@@ -4,7 +4,10 @@ import { FormHelper } from "@/lib/FormHelper";
 import AsyncStorage from "expo-sqlite/kv-store";
 import { useRootNavigation } from "@/navigation";
 
-export function useCurrentCompetition(): { competition: CompetitionReturnData | null; online: boolean } {
+export function useCurrentCompetition(): {
+    competition: CompetitionReturnData | null;
+    online: boolean;
+} {
     const [online, setOnline] = useState<boolean>(false);
     const [competition, setCompetition] = useState<CompetitionReturnData | null>(null);
 
@@ -16,12 +19,17 @@ export function useCurrentCompetition(): { competition: CompetitionReturnData | 
 
             setOnline(true);
             if (competition !== null) {
-                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(competition));
+                await AsyncStorage.setItem(
+                    FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+                    JSON.stringify(competition),
+                );
             }
         } catch (e) {
             setOnline(false);
 
-            const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+            const storedComp = await FormHelper.readAsyncStorage(
+                FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+            );
             if (storedComp !== null) {
                 setCompetition(JSON.parse(storedComp));
             }

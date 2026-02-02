@@ -24,7 +24,11 @@ function InfoCapsule({ title, value }: InfoCapsuleProps) {
 }
 
 function InfoRow({ children }: PropsWithChildren) {
-    return <View style={{ flexDirection: "row", justifyContent: "space-around", paddingVertical: 4 }}>{children}</View>;
+    return (
+        <View style={{ flexDirection: "row", justifyContent: "space-around", paddingVertical: 4 }}>
+            {children}
+        </View>
+    );
 }
 
 export interface StatboticsSummaryProps {
@@ -93,9 +97,18 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
                             Overall Statistics
                         </UIText>
                         <InfoRow>
-                            <InfoCapsule title="Auto EPA" value={overall.epa.breakdown.auto_points} />
-                            <InfoCapsule title="Teleop EPA" value={overall.epa.breakdown.teleop_points} />
-                            <InfoCapsule title="Endgame EPA" value={overall.epa.breakdown.endgame_points} />
+                            <InfoCapsule
+                                title="Auto EPA"
+                                value={overall.epa.breakdown.auto_points}
+                            />
+                            <InfoCapsule
+                                title="Teleop EPA"
+                                value={overall.epa.breakdown.teleop_points}
+                            />
+                            <InfoCapsule
+                                title="Endgame EPA"
+                                value={overall.epa.breakdown.endgame_points}
+                            />
                         </InfoRow>
                     </>
                 )}
@@ -114,9 +127,18 @@ export function StatboticsSummary({ team }: StatboticsSummaryProps) {
                             <UIText style={{ fontWeight: "500" }}>{item.event_name}</UIText>
                             {item.epa.breakdown && (
                                 <InfoRow>
-                                    <InfoCapsule title="Auto EPA" value={item.epa.breakdown.auto_points} />
-                                    <InfoCapsule title="Teleop EPA" value={item.epa.breakdown.teleop_points} />
-                                    <InfoCapsule title="Endgame EPA" value={item.epa.breakdown.endgame_points} />
+                                    <InfoCapsule
+                                        title="Auto EPA"
+                                        value={item.epa.breakdown.auto_points}
+                                    />
+                                    <InfoCapsule
+                                        title="Teleop EPA"
+                                        value={item.epa.breakdown.teleop_points}
+                                    />
+                                    <InfoCapsule
+                                        title="Endgame EPA"
+                                        value={item.epa.breakdown.endgame_points}
+                                    />
                                 </InfoRow>
                             )}
                         </View>

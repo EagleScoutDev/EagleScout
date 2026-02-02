@@ -1,9 +1,12 @@
-import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+    createNativeStackNavigator,
+    type NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { useStackThemeConfig } from "@/ui/lib/theme/native";
 
 import { ManageCompetitions } from "./(admin)/competitions/ManageCompetitions";
 import { ManageUsers } from "./(admin)/ManageUsers";
-import { ManageBets } from "@/navigation/tabs/data/(admin)/ManageBets.tsx";
+import { ManageBets } from "@/navigation/tabs/data/(admin)/ManageBets";
 import { ScoutcoinLedger } from "./(scoutcoin)/ScoutcoinLedger";
 import { ScoutcoinLeaderboard } from "./(scoutcoin)/ScoutcoinLeaderboard";
 import { ScoutcoinShop } from "./(scoutcoin)/shop/ScoutcoinShop";
@@ -24,7 +27,10 @@ import { TeamRankView } from "./(rank)/TeamRankView";
 import { DataTabMain } from "./DataTabMain";
 
 const Stack = createNativeStackNavigator<DataTabParamList>();
-export type DataTabScreenProps<K extends keyof DataTabParamList> = NativeStackScreenProps<DataTabParamList, K>;
+export type DataTabScreenProps<K extends keyof DataTabParamList> = NativeStackScreenProps<
+    DataTabParamList,
+    K
+>;
 export type DataTabParamList = {
     Main: undefined;
 
@@ -163,7 +169,10 @@ export function DataTab() {
                 </Stack.Group>
                 <Stack.Group screenOptions={{ title: "Scout Assignments" }}>
                     <Stack.Screen name="ScoutAssignments" component={ScoutAssignmentsMain} />
-                    <Stack.Screen name="ScoutAssignments/Table" component={ScoutAssignmentsSpreadsheet} />
+                    <Stack.Screen
+                        name="ScoutAssignments/Table"
+                        component={ScoutAssignmentsSpreadsheet}
+                    />
                 </Stack.Group>
                 <Stack.Screen
                     name="ManageMatchBets"

@@ -41,7 +41,12 @@ export function AutoField({ orientation, alliance, onReef, onPiece, state }: Aut
                 }}
             >
                 {([1, 2, 3] as const).map((id) => (
-                    <Piece key={id} type={"algae"} state={state.pieces[id]} onPress={() => onPiece(id)} />
+                    <Piece
+                        key={id}
+                        type={"algae"}
+                        state={state.pieces[id]}
+                        onPress={() => onPiece(id)}
+                    />
                 ))}
             </View>
             <View
@@ -55,7 +60,12 @@ export function AutoField({ orientation, alliance, onReef, onPiece, state }: Aut
                 }}
             >
                 {([4, 5, 6] as const).map((id) => (
-                    <Piece key={id} type={"Coral"} state={state.pieces[id]} onPress={() => onPiece(id)} />
+                    <Piece
+                        key={id}
+                        type={"Coral"}
+                        state={state.pieces[id]}
+                        onPress={() => onPiece(id)}
+                    />
                 ))}
             </View>
             <Svg

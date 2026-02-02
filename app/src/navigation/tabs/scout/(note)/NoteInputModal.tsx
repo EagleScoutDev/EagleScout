@@ -21,7 +21,9 @@ export function NoteInputModal({
 }: NoteInputModalProps) {
     const height = useHeaderHeight();
     const [localContent, setLocalContent] = useState<string>("");
-    const [currentTeam, setCurrentTeam] = useState<number>(Number(Object.keys(noteContents)[0]) || 0);
+    const [currentTeam, setCurrentTeam] = useState<number>(
+        Number(Object.keys(noteContents)[0]) || 0,
+    );
     const { colors } = useTheme();
     return (
         <Modal
@@ -50,7 +52,9 @@ export function NoteInputModal({
                             setCurrentTeam(team);
                             setLocalContent(noteContents[team]);
                         }}
-                        completed={Object.keys(noteContents).map((key) => noteContents[parseInt(key)].length > 0)}
+                        completed={Object.keys(noteContents).map(
+                            (key) => noteContents[parseInt(key)].length > 0,
+                        )}
                     />
                     <View
                         style={{

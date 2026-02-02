@@ -42,7 +42,10 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
 
     const onSubmit = () => {
         if (nRounds < nShiftRounds) {
-            Alert.alert("Error", "Number of rounds must be greater than or equal to number of rounds in a shift");
+            Alert.alert(
+                "Error",
+                "Number of rounds must be greater than or equal to number of rounds in a shift",
+            );
             return;
         }
         const selectedUsers = users.filter((user, idx) => usersChecked[idx]);
@@ -123,7 +126,12 @@ export function AutoAssignModal({ visible, setVisible, compId }: AutoAssignModal
                         text={"Cancel"}
                         width={"40%"}
                     />
-                    <StandardButton color={"#29a329"} onPress={() => onSubmit()} text={"Submit"} width={"40%"} />
+                    <StandardButton
+                        color={"#29a329"}
+                        onPress={() => onSubmit()}
+                        text={"Submit"}
+                        width={"40%"}
+                    />
                 </View>
             </UIModal>
         </>

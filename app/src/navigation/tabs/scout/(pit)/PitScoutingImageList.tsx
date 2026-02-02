@@ -1,8 +1,9 @@
-import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { launchCameraAsync } from "expo-image-picker";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
+import { Image } from "expo-image";
 
 export interface PitScoutingImageListProps {
     images: string[];

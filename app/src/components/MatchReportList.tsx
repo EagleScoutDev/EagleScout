@@ -1,5 +1,5 @@
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import type { MatchReportReturnData } from "@/lib/database/ScoutMatchReports.ts";
+import type { MatchReportReturnData } from "@/lib/database/ScoutMatchReports";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { PressableOpacity } from "@/components/PressableOpacity";

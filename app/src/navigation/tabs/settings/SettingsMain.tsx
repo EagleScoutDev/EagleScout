@@ -126,7 +126,13 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                                                 </UIText>
                                                 <UIText>{AccountRole.getName(account.role)}</UIText>
                                             </View>
-                                            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                    gap: 6,
+                                                }}
+                                            >
                                                 <Bs.Coin size={24} fill={colors.fg.hex} />
                                                 <UIText size={18}>{scoutcoins}</UIText>
                                             </View>
@@ -153,7 +159,7 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                                     initialFirstName: profile ? profile.firstName : "",
                                     initialLastName: profile ? profile.lastName : "",
                                 });
-                            }
+                            },
                         }),
                         UIList.Label({
                             icon: Bs.Asterisk,

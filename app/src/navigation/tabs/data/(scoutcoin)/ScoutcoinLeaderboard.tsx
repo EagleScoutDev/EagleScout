@@ -133,7 +133,9 @@ export function ScoutcoinLeaderboard() {
                                     user,
                                     place: index + 1,
                                 }))
-                                .filter(({ user }) => user.name.toLowerCase().includes(text.toLowerCase())),
+                                .filter(({ user }) =>
+                                    user.name.toLowerCase().includes(text.toLowerCase()),
+                                ),
                         );
                     }}
                     style={styles.filterText}
@@ -154,7 +156,10 @@ export function ScoutcoinLeaderboard() {
                 keyExtractor={(item) => item.user.id}
             />
             {sendingScoutcoinUser && (
-                <SendScoutcoinModal targetUser={sendingScoutcoinUser} onClose={() => setSendingScoutcoinUser(null)} />
+                <SendScoutcoinModal
+                    targetUser={sendingScoutcoinUser}
+                    onClose={() => setSendingScoutcoinUser(null)}
+                />
             )}
         </View>
     );

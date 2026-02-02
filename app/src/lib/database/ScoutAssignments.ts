@@ -44,7 +44,9 @@ interface ScoutAssignmentPositionBasedCurrentUser {
 }
 
 export class ScoutAssignments {
-    static async getScoutAssignmentsForCompetitionTeamBased(compId: number): Promise<ScoutAssignmentTeamBased[]> {
+    static async getScoutAssignmentsForCompetitionTeamBased(
+        compId: number,
+    ): Promise<ScoutAssignmentTeamBased[]> {
         const { data, error } = await supabase
             .from("scout_assignments_team_based")
             .select("*, tba_matches(team, match)")
@@ -250,7 +252,10 @@ export class ScoutAssignments {
             throw error2;
         }
         res = res.filter((assignment) => {
-            return data2.find((report) => report.matches.number === assignment.matchNumber) === undefined;
+            return (
+                data2.find((report) => report.matches.number === assignment.matchNumber) ===
+                undefined
+            );
         });
         return res;
     }

@@ -15,7 +15,16 @@ export interface UISliderProps {
     onInput?: undefined | ((x: number) => void);
     disabled?: boolean | undefined;
 }
-export function UISlider({ min, max, step = 1, value, onInput, disabled = false, minLabel, maxLabel }: UISliderProps) {
+export function UISlider({
+    min,
+    max,
+    step = 1,
+    value,
+    onInput,
+    disabled = false,
+    minLabel,
+    maxLabel,
+}: UISliderProps) {
     const { colors } = useTheme();
 
     const [draft, setDraft] = useState<number>(value);

@@ -29,22 +29,34 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     plugins: [
         "expo-font",
         "expo-sqlite",
-        "react-native-bottom-tabs",
-        ["./plugins/stallion.ts", {
-            projectId: process.env.EXPO_PUBLIC_STALLION_ID,
-            appToken: process.env.EXPO_PUBLIC_STALLION_APP_TOKEN,
-        }],
-        ["expo-asset", {
-            assets: ["src/assets/"]
-        }],
-        ["expo-image-picker", {
-            photosPermission: "Upload media for scouting.",
-            cameraPermission: "Collect media for scouting.",
-            microphonePermission: false,
-        }],
-        ["expo-splash-screen", {
-            backgroundColor: "#ffffff",
-            image: "src/assets/images/splash-icon.png",
-        }],
+        "@react-native-community/datetimepicker",
+        [
+            "./plugins/stallion.ts",
+            {
+                projectId: process.env.EXPO_PUBLIC_STALLION_ID,
+                appToken: process.env.EXPO_PUBLIC_STALLION_APP_TOKEN,
+            },
+        ],
+        [
+            "expo-asset",
+            {
+                assets: ["src/assets/"],
+            },
+        ],
+        [
+            "expo-image-picker",
+            {
+                photosPermission: "Upload media for scouting.",
+                cameraPermission: "Collect media for scouting.",
+                microphonePermission: false,
+            },
+        ],
+        [
+            "expo-splash-screen",
+            {
+                backgroundColor: "#ffffff",
+                image: "src/assets/images/splash-icon.png",
+            },
+        ],
     ],
 });

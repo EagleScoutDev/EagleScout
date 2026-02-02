@@ -1,12 +1,15 @@
 import { EnableScoutAssignmentsModal } from "@/components/modals/EnableScoutAssignmentsModal";
 import { useEffect, useRef, useState } from "react";
-import { type CompetitionReturnData, CompetitionsDB, ScoutAssignmentsConfig } from "@/lib/database/Competitions";
+import {
+    type CompetitionReturnData,
+    CompetitionsDB,
+    ScoutAssignmentsConfig,
+} from "@/lib/database/Competitions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { DataTabScreenProps } from "@/navigation/tabs/data";
 import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
-import { UISheetModal } from "@/ui/components/UISheetModal";
 
 export interface ScoutAssignmentsMainProps extends DataTabScreenProps<"ScoutAssignments"> {}
 export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) {
@@ -53,7 +56,9 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
                             key: comp.id.toString(),
                             label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
                             onPress: () => {
-                                if (comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.DISABLED) {
+                                if (
+                                    comp.scoutAssignmentsConfig === ScoutAssignmentsConfig.DISABLED
+                                ) {
                                     navigation.navigate("ScoutAssignments/Table", {
                                         competition: comp.id,
                                     });

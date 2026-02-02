@@ -268,7 +268,8 @@ export function QuestionSummary({
                                                 index_of_item === indexOfGreatestValue
                                                     ? colors.primary.hex
                                                     : colors.bg1.hex,
-                                            paddingVertical: index_of_item === indexOfGreatestValue ? "2%" : 0,
+                                            paddingVertical:
+                                                index_of_item === indexOfGreatestValue ? "2%" : 0,
                                         }}
                                     >
                                         <UIText
@@ -281,7 +282,9 @@ export function QuestionSummary({
                                             }}
                                         >
                                             {(
-                                                (data.filter((datum) => datum.data === index_of_item).length /
+                                                (data.filter(
+                                                    (datum) => datum.data === index_of_item,
+                                                ).length /
                                                     data.length) *
                                                 100
                                             ).toFixed(2)}
@@ -293,7 +296,9 @@ export function QuestionSummary({
                             </View>
                         );
                     })}
-                    <UIText style={styles.multiple_option_response_count}>{data.length} total responses</UIText>
+                    <UIText style={styles.multiple_option_response_count}>
+                        {data.length} total responses
+                    </UIText>
                 </Pressable>
             )}
             {item.type === "checkboxes" && (
@@ -307,8 +312,11 @@ export function QuestionSummary({
                                         style={{
                                             ...styles.multiple_option_percentage_container,
                                             backgroundColor:
-                                                index === valueOfMostOccurrences ? colors.primary.hex : colors.bg1.hex,
-                                            paddingVertical: index === valueOfMostOccurrences ? "2%" : 0,
+                                                index === valueOfMostOccurrences
+                                                    ? colors.primary.hex
+                                                    : colors.bg1.hex,
+                                            paddingVertical:
+                                                index === valueOfMostOccurrences ? "2%" : 0,
                                         }}
                                     >
                                         <UIText
@@ -320,7 +328,11 @@ export function QuestionSummary({
                                                         : colors.fg.hex,
                                             }}
                                         >
-                                            {((frequencies.get(label)! / data.length) * 100).toFixed(2)}%
+                                            {(
+                                                (frequencies.get(label)! / data.length) *
+                                                100
+                                            ).toFixed(2)}
+                                            %
                                         </UIText>
                                     </View>
                                 </View>
@@ -328,7 +340,9 @@ export function QuestionSummary({
                             </View>
                         );
                     })}
-                    <UIText style={styles.multiple_option_response_count}>{data.length} total responses</UIText>
+                    <UIText style={styles.multiple_option_response_count}>
+                        {data.length} total responses
+                    </UIText>
                 </View>
             )}
             {item.type === "number" && (
@@ -342,17 +356,23 @@ export function QuestionSummary({
                 >
                     <View style={styles.statistic_container}>
                         <UIText style={styles.statistic_label}>AVG</UIText>
-                        <UIText style={styles.statistic}>{stats ? stats.average.toFixed(2) : "loading..."}</UIText>
+                        <UIText style={styles.statistic}>
+                            {stats ? stats.average.toFixed(2) : "loading..."}
+                        </UIText>
                     </View>
                     {!only_average && (
                         <>
                             <View style={styles.statistic_container}>
                                 <UIText style={styles.statistic_label}>MIN</UIText>
-                                <UIText style={styles.statistic}>{stats ? stats.min : "loading..."}</UIText>
+                                <UIText style={styles.statistic}>
+                                    {stats ? stats.min : "loading..."}
+                                </UIText>
                             </View>
                             <View style={styles.statistic_container}>
                                 <UIText style={styles.statistic_label}>MAX</UIText>
-                                <UIText style={styles.statistic}>{stats ? stats.max : "loading..."}</UIText>
+                                <UIText style={styles.statistic}>
+                                    {stats ? stats.max : "loading..."}
+                                </UIText>
                             </View>
                         </>
                     )}
@@ -373,7 +393,9 @@ export function QuestionSummary({
                             }
                             return (
                                 <View key={i} style={styles.comment_container}>
-                                    <UIText style={styles.comment_match_number}>Match {datum.match}</UIText>
+                                    <UIText style={styles.comment_match_number}>
+                                        Match {datum.match}
+                                    </UIText>
                                     <UIText style={styles.comment_text}>
                                         {datum.data.replace(/(\r\n|\n|\r)/gm, "")}
                                     </UIText>
@@ -384,7 +406,12 @@ export function QuestionSummary({
                 </View>
             )}
 
-            <DataGraph item={item} modalActive={modalActive} setModalActive={setModalActive} data={data} />
+            <DataGraph
+                item={item}
+                modalActive={modalActive}
+                setModalActive={setModalActive}
+                data={data}
+            />
         </View>
     );
 }

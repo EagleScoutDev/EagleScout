@@ -8,7 +8,11 @@ export interface PredictionConfidenceTagProps {
     setModal: (boolean: SetStateAction<boolean>) => void;
     tagOnly?: boolean;
 }
-export function PredictionConfidenceTag({ confidence, setModal, tagOnly = false }: PredictionConfidenceTagProps) {
+export function PredictionConfidenceTag({
+    confidence,
+    setModal,
+    tagOnly = false,
+}: PredictionConfidenceTagProps) {
     const getConfidenceText = (c: PredictionConfidence) => {
         switch (c) {
             case PredictionConfidence.LOW:

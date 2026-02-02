@@ -13,7 +13,6 @@ export interface AccountEditProfileParams {
 }
 export interface AccountEditProfileProps extends SettingsTabScreenProps<"Account/EditProfile"> {}
 export function AccountEditProfile({ navigation, route }: AccountEditProfileProps) {
-
     const { initialFirstName, initialLastName } = route.params;
     const [firstName, setFirstName] = useState(initialFirstName);
     const [lastName, setLastName] = useState(initialLastName);

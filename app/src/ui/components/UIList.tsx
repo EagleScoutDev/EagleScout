@@ -1,5 +1,18 @@
-import { ActivityIndicator, RefreshControl, SectionList, type StyleProp, View, type ViewStyle } from "react-native";
-import React, { isValidElement, type Key, type ReactElement, type ReactNode, useState } from "react";
+import {
+    ActivityIndicator,
+    RefreshControl,
+    SectionList,
+    type StyleProp,
+    View,
+    type ViewStyle,
+} from "react-native";
+import React, {
+    isValidElement,
+    type Key,
+    type ReactElement,
+    type ReactNode,
+    useState,
+} from "react";
 import * as Bs from "@/ui/icons";
 import { type Icon } from "@/ui/icons";
 import { BottomSheetSectionList } from "@gorhom/bottom-sheet";

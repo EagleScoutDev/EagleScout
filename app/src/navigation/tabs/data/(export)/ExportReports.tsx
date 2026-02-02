@@ -1,12 +1,11 @@
 import { View } from "react-native";
-import React, { type Ref, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { UISheet } from "@/ui/components/UISheet";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "@/lib/export";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
@@ -70,50 +69,52 @@ interface ExportCompetitionSheetParams {
     competition: CompetitionReturnData;
 }
 interface ExportCompetitionSheet extends UISheetModal<ExportCompetitionSheetParams> {}
-const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(function ExportCompetitionSheet({
-    ref,
-    data: { competition },
-}) {
-    const { colors } = useTheme();
+const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(
+    function ExportCompetitionSheet({ ref, data: { competition } }) {
+        const { colors } = useTheme();
 
-    async function exportMatchReports() {
-        const data = await exportScoutReportsToCsv(competition);
-        if (!data) return;
+        async function exportMatchReports() {
+            const data = await exportScoutReportsToCsv(competition);
+            if (!data) return;
 
-        ref.current?.dismiss();
-        await writeToFile(`${competition.name}.csv`, data);
-    }
-    async function exportPitReports() {
-        if (!competition.pitScoutFormId) {
-            await AsyncAlert.alert("No Pit Scout Form", "This competition does not have a pit scout form");
+            ref.current?.dismiss();
+            await writeToFile(`${competition.name}.csv`, data);
+        }
+        async function exportPitReports() {
+            if (!competition.pitScoutFormId) {
+                await AsyncAlert.alert(
+                    "No Pit Scout Form",
+                    "This competition does not have a pit scout form",
+                );
+            }
+
+            const data = await exportPitReportsToCsv(competition);
+            if (!data) return;
+
+            ref.current?.dismiss();
+            await writeToFile(`${competition.name}.csv`, data);
         }
 
-        const data = await exportPitReportsToCsv(competition);
-        if (!data) return;
-
-        ref.current?.dismiss();
-        await writeToFile(`${competition.name}.csv`, data);
-    }
-
-    return (
-        <>
-            <UISheet.Header title={competition.name} />
-            <UIList>
-                {UIList.Section({
-                    items: [
-                        UIList.Label({
-                            label: "Export Scout Reports",
-                            labelColor: colors.primary,
-                            onPress: exportMatchReports,
-                        }),
-                        UIList.Label({
-                            label: "Export Pit Scout Reports",
-                            labelColor: colors.primary,
-                            onPress: exportPitReports,
-                        }),
-                    ],
-                })}
-            </UIList>
-        </>
-    );
-});
+        return (
+            <>
+                <UISheet.Header title={competition.name} />
+                <UIList>
+                    {UIList.Section({
+                        items: [
+                            UIList.Label({
+                                label: "Export Scout Reports",
+                                labelColor: colors.primary,
+                                onPress: exportMatchReports,
+                            }),
+                            UIList.Label({
+                                label: "Export Pit Scout Reports",
+                                labelColor: colors.primary,
+                                onPress: exportPitReports,
+                            }),
+                        ],
+                    })}
+                </UIList>
+            </>
+        );
+    },
+);

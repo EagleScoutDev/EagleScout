@@ -17,7 +17,10 @@ export function NoteScreen() {
     const [match, setMatch] = useState<number | null>(null);
     const [matchNumberValid, setMatchNumberValid] = useState<boolean>(false);
 
-    const [alliances, setAlliances] = useState<{ red: number[]; blue: number[] }>({ red: [], blue: [] });
+    const [alliances, setAlliances] = useState<{ red: number[]; blue: number[] }>({
+        red: [],
+        blue: [],
+    });
     const [selectedAlliance, setSelectedAlliance] = useState<Alliance>(Alliance.red);
 
     const [noteContents, setNoteContents] = useState<Record<string, string>>({});
@@ -45,7 +48,9 @@ export function NoteScreen() {
     useEffect(() => {
         if (selectedAlliance === null) return;
 
-        const newNoteContents = Object.fromEntries(alliances[selectedAlliance].map((team) => [team, ""]));
+        const newNoteContents = Object.fromEntries(
+            alliances[selectedAlliance].map((team) => [team, ""]),
+        );
         setNoteContents(newNoteContents);
     }, [alliances, selectedAlliance]);
 
@@ -65,7 +70,14 @@ export function NoteScreen() {
                 continue;
             }
             if (internetResponse) {
-                promises.push(NotesDB.createNote(noteContents[team], Number(team), Number(match), competitionId));
+                promises.push(
+                    NotesDB.createNote(
+                        noteContents[team],
+                        Number(team),
+                        Number(match),
+                        competitionId,
+                    ),
+                );
             } else {
                 promises.push(
                     FormHelper.saveNoteOffline({

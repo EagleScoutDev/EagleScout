@@ -34,14 +34,18 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                 scoutAssignments = JSON.parse(scoutAssignmentsOffline);
             } else if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED) {
                 setTeamBased(true);
-                scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
-                    competition.id,
-                );
-            } else if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.POSITION_BASED) {
+                scoutAssignments =
+                    await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
+                        competition.id,
+                    );
+            } else if (
+                competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.POSITION_BASED
+            ) {
                 setTeamBased(false);
-                scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
-                    competition.id,
-                );
+                scoutAssignments =
+                    await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
+                        competition.id,
+                    );
             } else {
                 scoutAssignments = [];
             }
@@ -91,7 +95,11 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                     {nRounds !== 1 ? "s" : ""} left to scout today.
                 </UIText>
             </View>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />
+                }
+            >
                 {upcomingRounds.map((round, index) => (
                     <TouchableOpacity
                         style={{

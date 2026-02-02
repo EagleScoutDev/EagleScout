@@ -10,7 +10,13 @@ export interface StandardModalProps extends PropsWithChildren {
     onDismiss?: () => void;
     backdropPressBehavior: "none" | "dismiss";
 }
-export function UIModal({ visible, title, onDismiss, backdropPressBehavior, children }: StandardModalProps) {
+export function UIModal({
+    visible,
+    title,
+    onDismiss,
+    backdropPressBehavior,
+    children,
+}: StandardModalProps) {
     const { colors } = useTheme();
 
     return (

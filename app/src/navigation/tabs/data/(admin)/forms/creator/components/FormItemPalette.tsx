@@ -8,7 +8,10 @@ export interface FormItemToolbarProps<T extends string = string> {
     items: readonly { readonly key: T; readonly icon: Icon; readonly name: string }[];
     onPress: (key: T) => void;
 }
-export function FormItemPalette<T extends string = string>({ items, onPress }: FormItemToolbarProps<T>) {
+export function FormItemPalette<T extends string = string>({
+    items,
+    onPress,
+}: FormItemToolbarProps<T>) {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
         toolbar: {

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import {
+    Alert,
+    Keyboard,
+    SafeAreaView,
+    TextInput,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 import { styles } from "../styles";
 import { supabase } from "@/lib/supabase";
 import type { OnboardingScreenProps } from "..";
@@ -43,7 +50,9 @@ export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
                     </View>
                     <StandardButton
                         text={"Next"}
-                        textColor={firstName === "" || lastName === "" ? "dimgray" : colors.primary.hex}
+                        textColor={
+                            firstName === "" || lastName === "" ? "dimgray" : colors.primary.hex
+                        }
                         disabled={firstName === "" || lastName === ""}
                         onPress={async () => {
                             const {

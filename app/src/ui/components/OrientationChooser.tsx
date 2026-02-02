@@ -10,8 +10,13 @@ export interface OrientationChooserProps {
     alliance: Alliance;
     setAlliance: Setter<Alliance>;
 }
-export function OrientationChooser({ orientation, setOrientation, alliance, setAlliance }: OrientationChooserProps) {
-    const {colors} = useTheme();
+export function OrientationChooser({
+    orientation,
+    setOrientation,
+    alliance,
+    setAlliance,
+}: OrientationChooserProps) {
+    const { colors } = useTheme();
     const leftAlliance = Orientation.getLeft(orientation);
     const rightAlliance = Alliance.toggle(leftAlliance);
 
@@ -23,7 +28,10 @@ export function OrientationChooser({ orientation, setOrientation, alliance, setA
             >
                 {alliance === leftAlliance ? <Bs.CheckLg size="24" fill={colors.fg.hex} /> : null}
             </Pressable>
-            <Pressable style={styles.center} onPress={() => setOrientation(Orientation.toggle(orientation))}>
+            <Pressable
+                style={styles.center}
+                onPress={() => setOrientation(Orientation.toggle(orientation))}
+            >
                 <Bs.ArrowLeftRight size="24" fill={colors.fg.hex} />
             </Pressable>
             <Pressable

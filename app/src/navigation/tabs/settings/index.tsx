@@ -1,4 +1,7 @@
-import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+    createNativeStackNavigator,
+    type NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { useStackThemeConfig } from "@/ui/lib/theme/native";
 
 import type { HomeTabProps } from "../HomeTabs";

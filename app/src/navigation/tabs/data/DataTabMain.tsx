@@ -21,7 +21,9 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
     const user = useUserStore((state) => state.account);
     const toc = getTOC({ admin: user?.role === AccountRole.Admin });
 
-    const [internetStatus, setInternetStatus] = useState<InternetStatus>(InternetStatus.NOT_ATTEMPTED);
+    const [internetStatus, setInternetStatus] = useState<InternetStatus>(
+        InternetStatus.NOT_ATTEMPTED,
+    );
     const offline = internetStatus !== InternetStatus.CONNECTED;
 
     function testConnection() {
@@ -110,8 +112,18 @@ const getTOC = exMemo(
             items: [
                 { text: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
                 { text: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
-                { text: "Weighted Team Rank", icon: Bs.Sliders, caret: true, route: "WeightedTeamRank" },
-                { text: "Match Predictor", icon: Bs.Hourglass, caret: true, route: "MatchPredictor" },
+                {
+                    text: "Weighted Team Rank",
+                    icon: Bs.Sliders,
+                    caret: true,
+                    route: "WeightedTeamRank",
+                },
+                {
+                    text: "Match Predictor",
+                    icon: Bs.Hourglass,
+                    caret: true,
+                    route: "MatchPredictor",
+                },
                 { text: "Export to CSV", icon: Bs.Upload, caret: true, route: "ExportCSV" },
             ],
         },
@@ -128,10 +140,20 @@ const getTOC = exMemo(
             shown: admin,
             label: "Administrative",
             items: [
-                { text: "Competitions", icon: Bs.TrophyFill, caret: true, route: "ManageCompetitions" },
+                {
+                    text: "Competitions",
+                    icon: Bs.TrophyFill,
+                    caret: true,
+                    route: "ManageCompetitions",
+                },
                 { text: "Users", icon: Bs.PeopleFill, caret: true, route: "ManageUsers" },
                 { text: "Forms", icon: Bs.ClipboardData, caret: true, route: "Forms" },
-                { text: "Scout Assignments", icon: Bs.CalendarThree, caret: true, route: "ScoutAssignments" },
+                {
+                    text: "Scout Assignments",
+                    icon: Bs.CalendarThree,
+                    caret: true,
+                    route: "ScoutAssignments",
+                },
                 { text: "Match Bets", icon: Bs.CashCoin, caret: true, route: "ManageMatchBets" },
             ],
         },

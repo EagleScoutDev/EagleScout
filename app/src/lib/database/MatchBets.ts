@@ -102,7 +102,11 @@ export class MatchBets {
         }
     }
 
-    static async updateMatchBet(user_id: string, match_number: number, amount: number): Promise<void> {
+    static async updateMatchBet(
+        user_id: string,
+        match_number: number,
+        amount: number,
+    ): Promise<void> {
         const activeCompId = await CompetitionsDB.getCurrentCompetition();
         let { exists, id } = await this.checkIfMatchExists(match_number, activeCompId!.id);
         if (!exists) {
@@ -127,7 +131,9 @@ export class MatchBets {
     }
 
     static async getMatchBets(): Promise<MatchBet[]> {
-        const { data, error } = await supabase.from("match_bets").select("*, matches!inner(number)");
+        const { data, error } = await supabase
+            .from("match_bets")
+            .select("*, matches!inner(number)");
         if (error) {
             throw error;
         } else {
@@ -171,7 +177,10 @@ export class MatchBets {
         }));
     }
 
-    static async getMatchBetForUser(user_id: string, match_number: number): Promise<MatchBet | null> {
+    static async getMatchBetForUser(
+        user_id: string,
+        match_number: number,
+    ): Promise<MatchBet | null> {
         const activeCompId = await CompetitionsDB.getCurrentCompetition();
         let { exists, id } = await this.checkIfMatchExists(match_number, activeCompId!.id);
         if (!exists) {
@@ -204,7 +213,10 @@ export class MatchBets {
         if (!exists) {
             return false;
         }
-        const { data, error } = await supabase.from("match_bets_results").select("id").eq("match_id", id);
+        const { data, error } = await supabase
+            .from("match_bets_results")
+            .select("id")
+            .eq("match_id", id);
         if (error) {
             throw error;
         }

@@ -50,7 +50,9 @@ export function MatchInformation({
                 value={team}
                 onInput={setTeam}
                 error={
-                    team !== null && !teamsForMatch.includes(team) ? `Warning: Team ${team} is not in this match` : null
+                    team !== null && !teamsForMatch.includes(team)
+                        ? `Warning: Team ${team} is not in this match`
+                        : null
                 }
             />
             <UICard.OrientationChooser

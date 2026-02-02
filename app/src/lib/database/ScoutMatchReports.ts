@@ -120,7 +120,10 @@ export class MatchReportsDB {
         }));
     }
 
-    static async getReportsForTeamAtCompetition(team: number, compId: number): Promise<MatchReportReturnData[]> {
+    static async getReportsForTeamAtCompetition(
+        team: number,
+        compId: number,
+    ): Promise<MatchReportReturnData[]> {
         const { data, error } = await supabase
             .from("scout_reports")
             .select(

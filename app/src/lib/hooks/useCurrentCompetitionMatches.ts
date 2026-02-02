@@ -22,10 +22,15 @@ export function useCurrentCompetitionMatches() {
         if (dbRequestWorked) {
             if (dbMatches != null) {
                 matches = dbMatches;
-                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_MATCHES_KEY, JSON.stringify(dbMatches));
+                await AsyncStorage.setItem(
+                    FormHelper.ASYNCSTORAGE_MATCHES_KEY,
+                    JSON.stringify(dbMatches),
+                );
             }
         } else {
-            const storedMatches = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_MATCHES_KEY);
+            const storedMatches = await FormHelper.readAsyncStorage(
+                FormHelper.ASYNCSTORAGE_MATCHES_KEY,
+            );
             if (storedMatches != null) {
                 matches = JSON.parse(storedMatches);
             }
@@ -49,10 +54,15 @@ export function useCurrentCompetitionMatches() {
         if (dbRequestWorked) {
             if (dbCompetition != null) {
                 comp = dbCompetition;
-                await AsyncStorage.setItem(FormHelper.ASYNCSTORAGE_COMPETITION_KEY, JSON.stringify(dbCompetition));
+                await AsyncStorage.setItem(
+                    FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+                    JSON.stringify(dbCompetition),
+                );
             }
         } else {
-            const storedComp = await FormHelper.readAsyncStorage(FormHelper.ASYNCSTORAGE_COMPETITION_KEY);
+            const storedComp = await FormHelper.readAsyncStorage(
+                FormHelper.ASYNCSTORAGE_COMPETITION_KEY,
+            );
             if (storedComp != null) {
                 comp = JSON.parse(storedComp);
             }
@@ -81,7 +91,7 @@ export function useCurrentCompetitionMatches() {
                 .map((match) => match.replace(/[A-Za-z]/g, " "))
                 .map((match) => Number(match));
         },
-        [matches]
+        [matches],
     );
 
     return { matches, competitionId, getTeamsForMatch };

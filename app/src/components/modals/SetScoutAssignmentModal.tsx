@@ -7,6 +7,7 @@ import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
 import { StandardButton } from "@/ui/StandardButton";
+import { UIListPicker } from "@/ui/components/UIListPicker";
 
 export function Spacer() {
     return <View style={{ height: "2%" }} />;
@@ -56,7 +57,10 @@ export function SetScoutAssignmentModal({
         let namesArray = nameArg.split(" ");
         namesArray = namesArray.filter((element) => element !== "");
         const result = "'" + namesArray.join("' & '") + "'";
-        const { data, error } = await supabase.from("profiles").select("id, name").textSearch("name", result);
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("id, name")
+            .textSearch("name", result);
         if (error) {
             console.error(error);
         } else {
@@ -141,7 +145,9 @@ export function SetScoutAssignmentModal({
                 };
             }
             return supabase.from(getTableName()).upsert(vals, {
-                onConflict: teamBased ? "competition_id, match_id" : "competition_id, match_number, robot_position",
+                onConflict: teamBased
+                    ? "competition_id, match_id"
+                    : "competition_id, match_number, robot_position",
             });
         });
         const upsertResults = await Promise.all(upsertPromises);
@@ -158,7 +164,10 @@ export function SetScoutAssignmentModal({
 
     const deleteScoutAssignment = async () => {
         const deletePromises = matches.map((match) => {
-            return supabase.from(getTableName()).delete().match({ competition_id: competition.id, match_id: match.id });
+            return supabase
+                .from(getTableName())
+                .delete()
+                .match({ competition_id: competition.id, match_id: match.id });
         });
         const deleteResults = await Promise.all(deletePromises);
         for (const result of deleteResults) {
@@ -221,17 +230,15 @@ export function SetScoutAssignmentModal({
                             marginTop: 10,
                         }}
                     >
-                        <UISelect
-                            setSelected={setUserId}
-                            options={names.map((f) => ({
-                                key: f.id,
-                                name: f.name,
-                            }))}
-                            searchEnabled={false}
-                            searchPlaceholder={"Search for a user..."}
-                            placeholder={"Select a user..."}
-                            notFoundText={"No users found"}
-                            maxHeight={100}
+                        <UIListPicker
+                            value={userId}
+                            onChange={setUserId}
+                            title={"Select a user..."}
+                            options={names.map((f) => f.id)}
+                            render={(id) => {
+                                const user = names.find((f) => f.id === id);
+                                return { name: user?.name || "" };
+                            }}
                         />
                     </View>
 

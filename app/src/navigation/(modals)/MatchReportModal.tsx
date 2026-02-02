@@ -200,7 +200,7 @@ export const MatchReportModal = UISheetModal.HOC<MatchReportModalParams>(
                 />
             </>
         );
-    }
+    },
 );
 
 function ReportMetadataView({

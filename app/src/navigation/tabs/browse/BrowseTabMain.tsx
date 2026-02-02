@@ -21,14 +21,14 @@ import { useQuery } from "@tanstack/react-query";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { TBA } from "@/lib/frc/tba/TBA";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
-import { Alliance } from "@/frc/common/common.ts";
+import { Alliance } from "@/frc/common/common";
 import { UIGridLayout } from "@/ui/components/UIGridLayout";
 import type { SearchBarCommands } from "react-native-screens";
 import { PlatformPressable } from "@react-navigation/elements";
-import { UIListPicker } from "@/ui/components/UIListPicker.tsx";
+import { UIListPicker } from "@/ui/components/UIListPicker";
 import { KeyboardController } from "react-native-keyboard-controller";
 import { useRootNavigation } from "@/navigation";
-import { MatchReportModal } from "@/navigation/(modals)/MatchReportModal.tsx";
+import { MatchReportModal } from "@/navigation/(modals)/MatchReportModal";
 
 export interface BrowseTabMainProps extends BrowseTabScreenProps<"Main"> {}
 export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
