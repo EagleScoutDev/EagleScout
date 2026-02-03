@@ -19,7 +19,6 @@ import {
     Search,
     SearchHeartFill,
 } from "@/ui/icons";
-import { Platform } from "react-native";
 
 const Tab = createBottomTabNavigator<HomeTabsParamList>();
 export type HomeTabProps<K extends keyof HomeTabsParamList> = BottomTabScreenProps<
@@ -50,10 +49,10 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
     return (
         <Tab.Navigator
             screenOptions={{
-                tabBarStyle: Platform.OS === "ios" ? {} : { backgroundColor: colors.bg2.hex },
-                tabBarActiveTintColor: Platform.OS === "ios" ? colors.primary.hex : colors.fg.hex,
+                tabBarActiveTintColor: colors.primary.hex,
                 tabBarInactiveTintColor: colors.fg.hex,
                 headerShown: false,
+                animation: "fade"
             }}
         >
             <Tab.Screen
