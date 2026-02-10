@@ -3,6 +3,7 @@ import * as Bs from "@/ui/icons";
 import type { Setter } from "@/lib/util/react/types";
 import { Alliance, Orientation } from "@/frc/common/common";
 import { useTheme } from "@/ui/context/ThemeContext";
+import {UIText} from "@/ui/components/UIText";
 
 export interface OrientationChooserProps {
     orientation: Orientation;
@@ -36,6 +37,76 @@ export function OrientationChooser({ orientation, setOrientation, alliance, setA
     );
 }
 
+export const ColorChooser = ({
+                                 selectedColor,
+                                 setSelectedColor,
+                             }: {
+    selectedColor: string;
+    setSelectedColor: (color: string) => void;
+}) => {
+    const {colors} = useTheme();
+    return (
+        <View
+            style={{
+                padding: '5%',
+                borderRadius: 10,
+                justifyContent: 'center',
+            }}>
+            <UIText
+                size={20}
+                bold
+                style={{
+                    textAlign: 'center',
+                    paddingBottom: '3%',
+                }}>
+                Select Team
+            </UIText>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginVertical: '1%',
+                    width: '80%',
+                    alignSelf: 'center',
+                }}>
+                <Pressable
+                    style={{
+                        backgroundColor: 'blue',
+                        paddingVertical: '3%',
+                        borderTopLeftRadius: 10,
+                        borderBottomLeftRadius: 10,
+                        flex: 3,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: 43,
+                    }}
+                    onPress={() => {
+                        setSelectedColor('blue');
+                    }}>
+                    {selectedColor === 'blue' ?<Bs.CheckLg size="24" fill={colors.fg.hex} /> : null}
+                </Pressable>
+                {/*<View style={{flex: 1, backgroundColor: colors.text}} />*/}
+                <Pressable
+                    style={{
+                        backgroundColor: 'red',
+                        paddingVertical: '3%',
+                        borderTopRightRadius: 10,
+                        borderBottomRightRadius: 10,
+                        flex: 3,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: 43,
+                    }}
+                    onPress={() => {
+                        setSelectedColor('red');
+                    }}>
+                    {selectedColor === 'red' ? <Bs.CheckLg size="24" fill={colors.fg.hex} /> : null}
+                </Pressable>
+            </View>
+        </View>
+    );
+};
+
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
@@ -54,3 +125,4 @@ const styles = StyleSheet.create({
         width: "20%",
     },
 });
+

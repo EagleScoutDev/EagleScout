@@ -145,7 +145,7 @@ export function BrowseTabMain({ navigation }: BrowseTabMainProps) {
             <SafeAreaView
                 edges={["top", "left", "right"]}
                 style={{ backgroundColor: colors.bg2.hex }}
-            >
+            >3
                 {Platform.OS == "android" && (
                     <View
                         style={{

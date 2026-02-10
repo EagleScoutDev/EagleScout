@@ -84,5 +84,15 @@ export function useCurrentCompetitionMatches() {
         [matches]
     );
 
-    return { matches, competitionId, getTeamsForMatch };
+    const getTeamsForMatchDetailed = useCallback(
+        (matchNumber: number) => {
+            return matches
+                .filter(match => match.compLevel === 'qm')
+                .filter(match => match.match === matchNumber);
+            // .filter(match => match.alliance === alliance);
+        },
+        [matches],
+    );
+
+    return { matches, competitionId, getTeamsForMatch, getTeamsForMatchDetailed };
 }

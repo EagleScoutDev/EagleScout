@@ -4,7 +4,6 @@ import { InternetStatus } from "@/lib/InternetStatus";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { useUserStore } from "@/lib/stores/user";
 import { AccountRole } from "@/lib/user/account";
-import type { Icon } from "@/ui/icons";
 import * as Bs from "@/ui/icons";
 import type { DataTabParamList, DataTabScreenProps } from "./index";
 import { exMemo } from "@/lib/util/react/memo";
@@ -111,6 +110,7 @@ const getTOC = exMemo(
                 { text: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
                 { text: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
                 { text: "Weighted Team Rank", icon: Bs.Sliders, caret: true, route: "WeightedTeamRank" },
+                { text: "Match Overview", icon: Bs.Binoculars, caret: true, route: "MatchOverviewSelector"},
                 { text: "Match Predictor", icon: Bs.Hourglass, caret: true, route: "MatchPredictor" },
                 { text: "Export to CSV", icon: Bs.Upload, caret: true, route: "ExportCSV" },
             ],

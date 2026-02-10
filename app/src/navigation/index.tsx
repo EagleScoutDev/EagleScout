@@ -15,6 +15,7 @@ import { TeamAutoPaths, type TeamAutoPathsParams } from "@/navigation/(recon)/Te
 import { TeamReports, type TeamReportsParams } from "@/navigation/(recon)/TeamReports";
 import { TeamComparison, type TeamComparisonParams } from "@/navigation/(recon)/TeamComparison";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import {MatchOverview, type MatchOverviewParams} from "@/navigation/tabs/data/MatchOverviews/MatchOverview";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -32,6 +33,7 @@ export type RootStackParamList = {
     TeamReports: TeamReportsParams;
     TeamAutoPaths: TeamAutoPathsParams;
     TeamComparison: TeamComparisonParams;
+    MatchOverview: MatchOverviewParams;
 };
 
 declare global {
@@ -72,6 +74,17 @@ export function RootNavigator() {
                 <Stack.Screen
                     name="TeamSummary"
                     component={TeamSummary}
+                    options={{
+                        headerBackButtonDisplayMode: "minimal",
+                        headerShown: true,
+                        headerTransparent: true,
+                        headerTitle: "",
+                        headerStyle: {},
+                    }}
+                />
+                <Stack.Screen
+                    name="MatchOverview"
+                    component={MatchOverview}
                     options={{
                         headerBackButtonDisplayMode: "minimal",
                         headerShown: true,
