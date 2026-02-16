@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import * as Bs from "@/ui/icons";
 import { PressableOpacity } from "@/components/PressableOpacity";
-import { type ReactNode, type Ref, useImperativeHandle, useRef } from "react";
+import { type FC, type ReactNode, type Ref, useImperativeHandle, useRef } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
@@ -12,13 +12,13 @@ export interface UIListPickerProps<K extends string | number = string | number> 
     ref?: Ref<UIListPicker<K>>;
     title?: string;
     options: K[];
-    render: (key: K) => { name: string };
     searchable?: boolean;
 
     value?: K | null;
     onChange?: ((x: K) => void) | null | undefined;
 
-    Display?: ReactNode | React.FC<{ value: K | null; present: () => void }>;
+    render: (key: K) => { name: string };
+    Display?: ReactNode | FC<{ value: K | null; present: () => void, render: (key: K) => { name: string } }>;
 }
 export interface UIListPicker<K extends string | number = string | number> {
     present(): void;
@@ -65,7 +65,7 @@ export function UIListPicker<K extends string | number = string | number>({
     return (
         <>
             {typeof Display === "function" ? (
-                <Display value={value} present={() => present()} />
+                <Display value={value} present={() => present()} render={render} />
             ) : (
                 (Display ?? (
                     <PressableOpacity
@@ -89,7 +89,6 @@ export function UIListPicker<K extends string | number = string | number>({
 
             <UISheetModal ref={sheetRef}>
                 <UISheetModal.Header
-                    handle
                     title={title ?? "Select an option"}
                     right={[
                         {
