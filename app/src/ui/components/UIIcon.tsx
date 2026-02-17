@@ -7,4 +7,5 @@ export const ICON_MAP = {
     checkmark: Bs.CheckLg,
     "square.and.pencil": Bs.PencilSquare,
     clock: Bs.ClockHistory,
+    undo: Bs.ArrowCounterclockwise,
 };
