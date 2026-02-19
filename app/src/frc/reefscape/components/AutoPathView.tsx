@@ -33,16 +33,18 @@ export function AutoPathView({ path }: { path: AutoPath }) {
 
         if (prev === undefined) {
             autoPathSvgs.push(
-                <NodeToStartingLine nodeId={path.find(isDisplayedAction)!.target - 1} />,
+                <NodeToStartingLine key="start" nodeId={node.target - 1} />,
             );
         } else {
             autoPathSvgs.push(
                 <NodeToNodeLine
+                    key={`line-${order}`}
                     nodeId1={prev.target - 1}
                     nodeId2={node.target - 1}
                     order={order}
                 />,
                 <ActiveNode
+                    key={`node-${order}`}
                     nodeId={node.target - 1}
                     status={node.success ? "success" : "missed"}
                 />,
@@ -89,7 +91,7 @@ export function AutoPathView({ path }: { path: AutoPath }) {
                 <Rect x="38" y="160" width="11" height="11" fill="#677EF5" />
                 <Rect x="28" y="206" width="30" height="31" fill="#3A3A3A" />
                 {new Array(12).fill(0).map((_, i) => (
-                    <DefaultNode nodeId={i} />
+                    <DefaultNode key={i} nodeId={i} />
                 ))}
                 {autoPathSvgs}
             </Svg>
