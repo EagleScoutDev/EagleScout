@@ -4,13 +4,14 @@
   "main": "index.tsx",
   "private": true,
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && npm run codegen",
     "start": "expo start",
     "prebuild": "expo prebuild --clean",
     "android": "npm run prebuild && expo run:android",
     "ios": "npm run prebuild && expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "codegen": "./scripts/codegen.sh"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -79,6 +80,7 @@
     "@types/react-native-confetti": "^0.1.4",
     "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9.39.2",
+    "openapi-typescript": "^7.13.0",
     "patch-package": "^8.0.1",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",

@@ -1,6 +1,5 @@
 import _svg, { Circle as _circle, Path as _path, Rect as _rect, type SvgProps } from "react-native-svg";
 import type { JSX } from "react";
-
 export type Icon = (props: IconProps) => JSX.Element;
 export interface IconProps extends SvgProps {
     size?: string | number | undefined;
