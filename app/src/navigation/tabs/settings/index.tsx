@@ -103,7 +103,7 @@ export function SettingsTab({}: SettingsTabProps) {
             />
 
             <Stack.Screen
-                name="Debug"
+                name="Debug/Main"
                 component={DebugMain}
                 options={{
                     title: "Debug",

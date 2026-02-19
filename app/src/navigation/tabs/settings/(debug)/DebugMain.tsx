@@ -4,7 +4,7 @@ import * as Bs from "@/ui/icons";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 
-export interface DebugMainProps extends SettingsTabScreenProps<"Debug"> {}
+export interface DebugMainProps extends SettingsTabScreenProps<"Debug/Main"> {}
 export function DebugMain({ navigation }: DebugMainProps) {
     return (
         <SafeAreaProvider>
