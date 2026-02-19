@@ -4,7 +4,7 @@ import { useUserStore } from "@/lib/stores/user";
 import { useTheme } from "@/ui/context/ThemeContext";
 
 import type { RootStackScreenProps } from "@/navigation";
-import { type ScoutMenuParamList, ScoutTab } from "./scout";
+import { ScoutTab } from "./scout";
 import { BrowseTab, type BrowseTabParamList } from "./browse";
 import { SettingsTab, type SettingsTabParamList } from "./settings";
 import { DataTab, type DataTabParamList } from "./data";
@@ -26,7 +26,7 @@ export type HomeTabProps<K extends keyof HomeTabsParamList> = BottomTabScreenPro
     K
 >;
 export type HomeTabsParamList = {
-    Home: NavigatorScreenParams<ScoutMenuParamList>;
+    Home: undefined;
     Browse: NavigatorScreenParams<BrowseTabParamList>;
     Data: NavigatorScreenParams<DataTabParamList>;
     Settings: NavigatorScreenParams<SettingsTabParamList>;

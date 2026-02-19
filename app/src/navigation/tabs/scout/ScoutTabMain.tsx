@@ -1,21 +1,19 @@
-import type { ScoutMenuScreenProps } from "./index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as Bs from "@/ui/icons";
-import { UpcomingRoundsView } from "@/navigation/tabs/scout/components/UpcomingRoundsView";
+import { UpcomingRoundsView } from "./UpcomingRoundsView";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
-import { useNavigation } from "@react-navigation/native";
+import { useRootNavigation } from "@/navigation";
 
-export interface ScoutTabMainProps extends ScoutMenuScreenProps<"Main"> {}
-export function ScoutTabMain({ navigation }: ScoutTabMainProps) {
-    const rootNavigation = useNavigation();
+export function ScoutTabMain() {
+    const rootNavigation = useRootNavigation();
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
                 <TabHeader title={"Home"} />
                 <UIList>
-                    <UpcomingRoundsView navigation={navigation} />
+                    <UpcomingRoundsView />
                     {UIList.Section({
                         header: "Scouting",
                         items: [
@@ -24,7 +22,7 @@ export function ScoutTabMain({ navigation }: ScoutTabMainProps) {
                                 label: "Match Scouting",
                                 caret: true,
                                 onPress: () => {
-                                    navigation.navigate("Match");
+                                    rootNavigation.navigate("Match");
                                 },
                             }),
                             UIList.Label({
@@ -32,7 +30,7 @@ export function ScoutTabMain({ navigation }: ScoutTabMainProps) {
                                 label: "Pit Scouting",
                                 caret: true,
                                 onPress: () => {
-                                    navigation.navigate("Pit");
+                                    rootNavigation.navigate("Pit");
                                 },
                             }),
                             UIList.Label({
@@ -40,7 +38,7 @@ export function ScoutTabMain({ navigation }: ScoutTabMainProps) {
                                 label: "New Note",
                                 caret: true,
                                 onPress: () => {
-                                    navigation.navigate("Note");
+                                    rootNavigation.navigate("Note");
                                 },
                             }),
                         ],

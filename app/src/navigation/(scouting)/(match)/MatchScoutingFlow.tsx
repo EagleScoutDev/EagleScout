@@ -6,12 +6,12 @@ import { CompetitionsDB } from "@/lib/database/Competitions";
 import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
-import type { ScoutMenuScreenProps } from "../index";
+import type { RootStackScreenProps } from "@/navigation";
 import { Form } from "@/lib/forms";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
-import { ScoutingFlowTab } from "../components/ScoutingFlowTab";
-import { MatchInformation } from "../components/MatchInformation";
+import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
+import { MatchInformation } from "@/navigation/(scouting)/components/MatchInformation";
 import { FormView } from "@/components/FormView";
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
@@ -20,10 +20,10 @@ import { AutoAction, AutoState } from "@/frc/reefscape";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
-import { HeaderTimer } from "@/navigation/tabs/scout/components/HeaderTimer";
+import { HeaderTimer } from "@/navigation/(scouting)/components/HeaderTimer";
 import { UITabView } from "@/ui/components/UITabView";
 
-export interface MatchScoutingFlowProps extends ScoutMenuScreenProps<"Match"> {}
+export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use no memo";
@@ -73,12 +73,10 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
 
         if (match === null || match > 400) {
             await AsyncAlert.alert("Invalid Match Number", "Please enter a valid match number");
-            navigation.navigate("Match");
             return;
         }
         if (team === null) {
             await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
-            navigation.navigate("Match");
             return;
         }
 
@@ -122,10 +120,10 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             const currentAssignments = await AsyncStorage.getItem("scout-assignments");
             if (currentAssignments !== null) {
                 const newAssignments = JSON.parse(currentAssignments).filter(
-                    (a) =>
+                    (a: { matchNumber: number; team: string | null; }) =>
                         !(
                             a.matchNumber === match &&
-                            (a.team === null || a.team.substring(3) === team)
+                            (a.team === null || parseInt(a.team.substring(3)) === team)
                         ),
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
@@ -147,7 +145,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             }
         }
 
-        navigation.navigate("Match");
+        navigation.goBack();
     }
 
     if (competition === null) {

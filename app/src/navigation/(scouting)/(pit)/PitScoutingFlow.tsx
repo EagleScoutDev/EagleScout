@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { TeamInformation } from "../components/TeamInformation";
+import { TeamInformation } from "@/navigation/(scouting)/components/TeamInformation";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { PitReportsDB, type PitReportWithoutId } from "@/lib/database/ScoutPitReports";
 import { FormHelper } from "@/lib/FormHelper";
-import type { ScoutMenuScreenProps } from "../index";
-import { ScoutingFlowTab } from "../components/ScoutingFlowTab";
+import type { RootStackScreenProps } from "@/navigation";
+import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { Form } from "@/lib/forms";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
@@ -16,7 +16,7 @@ import { FormView } from "@/components/FormView";
 import { UIText } from "@/ui/components/UIText";
 import { UITabView } from "@/ui/components/UITabView";
 
-export interface PitFlowProps extends ScoutMenuScreenProps<"Pit"> {}
+export interface PitFlowProps extends RootStackScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
     const { competition, online } = useCurrentCompetition();
     const formStructure = competition?.pitScoutFormStructure ?? null;
@@ -28,13 +28,13 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
     const [team, setTeam] = useState<number | null>(null);
     const [sectionData, setSectionData] = useState<any[]>([]);
 
+    function resetResponses() {
+        setSectionData(formSections === null ? [] : Form.initialize(formSections));
+    }
     function reset() {
         setTeam(null);
         setImages(["plus"]);
         resetResponses();
-    }
-    function resetResponses() {
-        setSectionData(formSections === null ? [] : Form.initialize(formSections));
     }
     useEffect(() => void resetResponses(), [formStructure]);
 
@@ -43,7 +43,6 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
 
         if (team === null) {
             await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
-            navigation.navigate("Match");
             return;
         }
 
