@@ -72,6 +72,10 @@ export namespace Form {
                     return true;
             }
         }
+        export function assertQuestion(x: Form.Item): Form.Question   {
+            if(!isQuestion(x)) throw new Error("Assertion failed: not a form question");
+            return x;
+        }
     }
 
     export interface Section {

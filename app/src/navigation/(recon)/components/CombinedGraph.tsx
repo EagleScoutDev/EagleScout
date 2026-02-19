@@ -8,6 +8,7 @@ import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
+import { Form } from "@/lib/forms";
 
 export interface CombinedGraphProps {
     modalActive: boolean;
@@ -44,7 +45,7 @@ export function CombinedGraph({
         if (modalActive) {
             MatchReportsDB.getReportsForTeamAtCompetition(team_number, competitionId).then(
                 (reports) => {
-                    setRelevantReports(reports);
+                    setRelevantReports(reports.sort((a, b) => a.matchNumber - b.matchNumber));
                     CompetitionsDB.getCompetitionById(competitionId).then((comp) => {
                         FormsDB.getForm(comp.formId).then((form) => {
                             setForm(form);
@@ -58,12 +59,12 @@ export function CombinedGraph({
     useEffect(() => {
         if (form !== undefined) {
             const newMap = new Map<string, string>();
-            questionIndices.forEach((index) => {
-                newMap.set(
-                    form.formStructure[index].question,
-                    `rgba(${(index * 100) % 255}, ${(index * 50) % 255}, ${(index * 25) % 255}, 1.0)`,
-                );
-            });
+            for(let index of questionIndices) {
+                const item = form.formStructure[index]
+                if(Form.Item.isQuestion(item)) {
+                    newMap.set(item.question, `rgba(${(index * 100) % 255}, ${(index * 50) % 255}, ${(index * 25) % 255}, 1.0)`);
+                }
+            }
             setQuestionToColor(newMap);
         }
     }, [questionIndices, form]);
@@ -116,18 +117,14 @@ export function CombinedGraph({
                                 labels: relevantReports.map((report) =>
                                     report.matchNumber.toString(10),
                                 ),
-                                datasets: questionIndices.map((index) => {
-                                    return {
-                                        data: relevantReports
-                                            .sort((a, b) => a.matchNumber - b.matchNumber)
-                                            .map((report) => report.data[index]),
-                                        color: () =>
-                                            questionToColor.get(
-                                                form.formStructure[index].question,
-                                            ) ?? "rgba(0, 0, 0, 1.0)",
-                                        strokeWidth: 4, // optional
-                                    };
-                                }),
+                                datasets: questionIndices.map((index) => ({
+                                    data: relevantReports.map((report) => report.data[index]),
+                                    color: () =>
+                                        questionToColor.get(
+                                            Form.Item.assertQuestion(form.formStructure[index]).question,
+                                        ) ?? "rgba(0, 0, 0, 1.0)",
+                                    strokeWidth: 4, // optional
+                                })),
                             }}
                             width={Dimensions.get("window").width * 0.85} // from react-native
                             height={Dimensions.get("window").height / 4}
