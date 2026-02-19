@@ -108,53 +108,49 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         );
     }
 
-    const tabs = [
-        {
-            key: "Match",
-            title: "Match",
-            component: () => (
+    return <>
+        <UITabView currentKey={currentTab} onTabChange={setCurrentTab}>
+            <UITabView.Tab tabKey="Match" title="Match">
                 <ScoutingFlowTab
-                    title={competition ? `${competition.name}` : "Pit Scouting"}
+                    title={competition.name}
                     buttonText={"Next"}
                     onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
                 >
                     <TeamInformation team={team} setTeam={setTeam} />
                 </ScoutingFlowTab>
-            ),
-        },
-        ...formSections.map(({ title, items }, i) => {
-            const isLast = i === formSections.length - 1;
+            </UITabView.Tab>
 
-            return {
-                key: `Form/${title}`,
-                title,
-                component: () => (
-                    <ScoutingFlowTab
-                        buttonText={"Next"}
-                        title={title}
-                        onNext={() => {
-                            setCurrentTab(isLast ? "Images" : `Form/${formSections[i + 1].title}`);
-                        }}
-                    >
-                        <FormView
-                            items={items}
-                            data={sectionData[i]}
-                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                        />
-                    </ScoutingFlowTab>
-                ),
-            };
-        }),
-        {
-            key: "Images",
-            title: "Images",
-            component: () => (
+            {formSections.map(({ title, items }, i) => {
+                const isLast = i === formSections.length - 1;
+
+                return (
+                    <UITabView.Tab key={`Form/${title}`} tabKey={`Form/${title}`} title={title}>
+                        <ScoutingFlowTab
+                            buttonText={"Next"}
+                            title={title}
+                            onNext={() => {
+                                setCurrentTab(
+                                    isLast ? "Images" : `Form/${formSections[i + 1].title}`,
+                                );
+                            }}
+                        >
+                            <FormView
+                                items={items}
+                                data={sectionData[i]}
+                                onInput={(data) =>
+                                    setSectionData(Arrays.set(sectionData, i, data))
+                                }
+                            />
+                        </ScoutingFlowTab>
+                    </UITabView.Tab>
+                );
+            })}
+
+            <UITabView.Tab tabKey="Images" title="Images">
                 <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
                     <PitScoutingImageList images={images} setImages={setImages} />
                 </ScoutingFlowTab>
-            ),
-        },
-    ];
-
-    return <UITabView currentKey={currentTab} onTabChange={setCurrentTab} tabs={tabs} />;
+            </UITabView.Tab>
+        </UITabView>
+    </>;
 }

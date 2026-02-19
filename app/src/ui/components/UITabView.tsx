@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useMemo, useState, useRef, type ReactElement, type ReactNode, Children } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
 import {
-    SceneMap,
+    type SceneRendererProps,
     TabBar,
     type TabDescriptor,
     TabView,
@@ -14,18 +14,24 @@ export interface UITabViewProps<T extends string> extends Pick<
 > {
     currentKey?: T;
     onTabChange?: (tab: T) => void;
-    tabs: { key: T; title: string; component: React.ComponentType }[];
+    children: Arrays.ReadonlyRecursive<UITabView.TabProps>;
 }
+
 export function UITabView<T extends string>({
     currentKey,
     onTabChange,
-    tabs,
+    children,
     ...props
 }: UITabViewProps<T>) {
     const { colors } = useTheme();
 
-    const [internalIndex, setInternalIndex] = useState(0);
-    const indices = new Map(tabs.map(({ key }, i) => [key, i]));
+    const childrenArray = Children.toArray(children) as ReactElement<UITabView.TabProps>[];
+    const routes = childrenArray.map(({ props }) => ({
+        key: props.tabKey as T,
+        title: props.title,
+    }));
+
+    const content = new Map<T, ReactNode>(childrenArray.map(({ props }) => [props.tabKey as T, props.children]));
 
     const extraOptions: TabDescriptor<any> = {
         sceneStyle: {
@@ -38,17 +44,20 @@ export function UITabView<T extends string>({
         },
     };
 
+    const _index = routes.findIndex((r) => r.key === currentKey);
+    const index = _index !== -1 ? _index : 0;
+
     return (
         <TabView
+            lazy
+            lazyPreloadDistance={0}
             swipeEnabled={false}
             {...props}
             navigationState={{
-                index: currentKey !== undefined ? indices.get(currentKey)! : internalIndex,
-                routes: tabs,
+                index,
+                routes,
             }}
-            renderScene={SceneMap(
-                Object.fromEntries(tabs.map(({ key, component }) => [key, component])),
-            )}
+            renderScene={({ route }) => content.get(route.key)}
             renderTabBar={(props) => (
                 <TabBar
                     {...props}
@@ -56,11 +65,20 @@ export function UITabView<T extends string>({
                     indicatorStyle={{ backgroundColor: colors.primary.hex }}
                 />
             )}
-            onIndexChange={(to) => {
-                if (currentKey === undefined) setInternalIndex(to);
-                onTabChange?.(tabs[to].key);
-            }}
-            options={Object.fromEntries(tabs.map(({ key }) => [key, extraOptions]))}
+            onIndexChange={(to) => onTabChange?.(routes[to].key)}
+            options={Object.fromEntries(routes.map(({ key }) => [key, extraOptions]))}
         />
     );
+}
+
+export namespace UITabView {
+    export interface TabProps {
+        tabKey: string;
+        title: string;
+        children: ReactNode;
+    }
+
+    export function Tab({ children }: TabProps) {
+        return <>{children}</>;
+    }
 }
