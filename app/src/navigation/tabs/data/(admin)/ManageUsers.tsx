@@ -1,246 +1,183 @@
-import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useMemo, useState } from "react";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { supabase } from "@/lib/supabase";
 import { AccountRole } from "@/lib/user/account";
-import type { User } from "@/lib/user/user";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
-
-function SortOption({
-    onPress,
-    title,
-    isActive,
-}: {
-    onPress: () => void;
-    title: string;
-    isActive: boolean;
-}) {
-    const { colors } = useTheme();
-    return (
-        <TouchableOpacity
-            onPress={() => {
-                onPress();
-            }}
-            style={{
-                backgroundColor: isActive ? colors.primary.hex : colors.bg1.hex,
-                padding: 12,
-                paddingHorizontal: 20,
-                borderRadius: 25,
-                margin: 10,
-                borderWidth: 1,
-                borderColor: colors.border.hex,
-            }}
-        >
-            <UIText color={isActive ? colors.primary.fg : colors.fg}>{title}</UIText>
-        </TouchableOpacity>
-    );
-}
+import { UIChip } from "@/ui/components/UIChip";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+import type { UserProfileWithName } from "@/lib/queries/users";
+import { userMutations } from "@/lib/mutations/users";
 
 export function ManageUsers() {
-    const [users, setUsers] = useState<User[]>([]);
+    type SortType = "All" | "Rejected" | "Captain" | "Scouter";
+
     const { colors } = useTheme();
-    const [sort, setSort] = useState("All");
-    const [sortedUsers, setSortedUsers] = useState<User[]>([]);
+    const [sort, setSort] = useState<SortType>("All");
 
-    const handleSort = (sortType) => {
-        setSort(sortType);
-        if (sortType === "All") {
-            setSortedUsers(users);
-            fetchUsers();
-        } else if (sortType === "Rejected") {
-            setSortedUsers(users.filter((user) => user.account.role === AccountRole.Rejected));
-        } else if (sortType === "Captain") {
-            setSortedUsers(users.filter((user) => user.account.role === AccountRole.Admin));
-        } else if (sortType === "Scouter") {
-            setSortedUsers(users.filter((user) => user.account.role === AccountRole.Scouter));
-        }
-    };
+    const { data: users = [] } = useQuery(queries.users.all);
 
-    const fetchUsers = async () => {
-        const { data: users, error } = await supabase.rpc("get_user_profiles_with_email");
-        users.forEach((user) => {
-            user.name =
-                (user.first_name || "UNKNOWN_FIRSTNAME") +
-                " " +
-                (user.last_name || "UNKNOWN_LASTNAME");
-            user.account = {
-                role: user.admin
-                    ? AccountRole.Admin
-                    : user.scouter
-                      ? AccountRole.Scouter
-                      : AccountRole.Rejected,
-            };
-        });
-        if (error) {
+    const sortedUsers = useMemo(() => {
+        if (sort === "All") return users;
+        if (sort === "Rejected")
+            return users.filter((user) => user.account.role === AccountRole.Rejected);
+        if (sort === "Captain")
+            return users.filter((user) => user.account.role === AccountRole.Admin);
+        if (sort === "Scouter")
+            return users.filter((user) => user.account.role === AccountRole.Scouter);
+        return users;
+    }, [users, sort]);
+
+    const updateApproveStatus = useMutation({
+        ...userMutations.updateApproveStatus,
+        onError: (error) => {
             console.error(error);
-        }
-        // sort users by name
-        users.sort((a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        });
-        setUsers(users);
-        setSortedUsers(users);
-    };
-    useEffect(() => {
-        fetchUsers();
-    }, []);
-
-    async function updateApproveStatus(user, b) {
-        const { error } = await supabase
-            .from("user_attributes")
-            .update({ scouter: b })
-            .eq("id", user.id);
-        if (error) {
+            Alert.alert("Error updating user status");
+        },
+    });
+    const updateAdminStatus = useMutation({
+        ...userMutations.updateAdminStatus,
+        onError: (error) => {
             console.error(error);
-            Alert.alert("Error updating user status", JSON.stringify(error));
-        } else {
-            fetchUsers();
-        }
-    }
+            Alert.alert("Error updating user status");
+        },
+    });
 
-    async function updateAdminStatus(user, b) {
-        const { error } = await supabase
-            .from("user_attributes")
-            .update({ admin: b })
-            .eq("id", user.id);
-        if (error) {
-            console.error(error);
-            Alert.alert("Error updating user status", JSON.stringify(error));
-        } else {
-            fetchUsers();
-        }
-    }
-
-    // cleanup after any database changes
-    const successAlert = () => {
+    function successAlert() {
         Toast.show({
             type: "success",
             text1: "User status updated!",
             visibilityTime: 3000,
         });
-    };
+    }
 
-    // create a constant handlePress that takes in a user and a string
-    const handlePress = (user, changeType) => {
-        // if the string is 'edit'
-        if (changeType === "approved") {
-            if (user.scouter) {
-                Alert.alert(
-                    "Unapprove " + user.name + "?",
-                    "Are you sure you want to unapprove this user? This will remove their access from creating and viewing scouting reports.",
-                    [
-                        {
-                            text: "Cancel",
-                            onPress: () => {},
-                            style: "cancel",
-                        },
-                        {
-                            text: "OK",
-                            onPress: async () => {
-                                // call the function updateAdminStatus and pass in the user and true
-                                if (user.admin) {
-                                    const res = await supabase.auth.getUser();
-                                    const currentUser = res.data.user;
-                                    if (user.id === currentUser.id) {
-                                        Alert.alert(
-                                            "Cannot unapprove yourself",
-                                            "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
-                                        );
-                                    } else {
-                                        updateApproveStatus(user, false);
-                                        updateAdminStatus(user, false).then(successAlert);
-                                    }
-                                } else {
-                                    updateApproveStatus(user, false);
-                                    updateAdminStatus(user, false).then(successAlert);
-                                }
-                            },
-                        },
-                    ],
-                    { cancelable: false },
-                );
-            } else {
-                Alert.alert(
-                    "Approve " + user.name + "?",
-                    "Are you sure you want to approve this user?",
-                    [
-                        {
-                            text: "Cancel",
-                            onPress: () => {},
-                            style: "cancel",
-                        },
-                        {
-                            text: "OK",
-                            onPress: () => {
-                                // call the function updateAdminStatus and pass in the user and true
-                                updateApproveStatus(user, true).then(successAlert);
-                            },
-                        },
-                    ],
-                    { cancelable: false },
-                );
-            }
-        } else if (changeType === "admin") {
-            if (user.admin) {
-                Alert.alert(
-                    "Remove " + user.name + " as admin?",
-                    "Are you sure you want to remove this user as admin?",
-                    [
-                        {
-                            text: "Cancel",
-                            onPress: () => {},
-                            style: "cancel",
-                        },
-                        {
-                            text: "OK",
-                            onPress: async () => {
-                                // call the function updateAdminStatus and pass in the user and true
+    function toggleApproved(user: UserProfileWithName) {
+        if (user.scouter) {
+            Alert.alert(
+                "Unapprove " + user.name + "?",
+                "Are you sure you want to unapprove this user? This will remove their access from creating and viewing scouting reports.",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                    },
+                    {
+                        text: "OK",
+                        async onPress() {
+                            if (user.admin) {
                                 const res = await supabase.auth.getUser();
                                 const currentUser = res.data.user;
-                                if (user.id === currentUser.id) {
+                                if (currentUser && user.id === currentUser.id) {
                                     Alert.alert(
                                         "Cannot unapprove yourself",
                                         "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
                                     );
-                                } else {
-                                    updateAdminStatus(user, false).then(successAlert);
+                                    return;
                                 }
-                            },
+                            }
+
+                            await updateApproveStatus.mutateAsync({
+                                userId: user.id,
+                                approved: false,
+                            });
+                            await updateAdminStatus.mutateAsync({
+                                userId: user.id,
+                                isAdmin: false,
+                            });
+                            successAlert();
                         },
-                    ],
-                    { cancelable: false },
-                );
-            } else {
-                Alert.alert(
-                    "Make " + user.name + " an admin?",
-                    "Are you sure you want to make this user an admin?",
-                    [
-                        {
-                            text: "Cancel",
-                            onPress: () => {},
-                            style: "cancel",
+                    },
+                ],
+                { cancelable: false },
+            );
+        } else {
+            Alert.alert(
+                "Approve " + user.name + "?",
+                "Are you sure you want to approve this user?",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                    },
+                    {
+                        text: "OK",
+                        async onPress() {
+                            await updateApproveStatus.mutateAsync({
+                                userId: user.id,
+                                approved: true,
+                            });
+                            successAlert();
                         },
-                        {
-                            text: "OK",
-                            onPress: () => {
-                                // call the function updateAdminStatus and pass in the user and true
-                                updateAdminStatus(user, true);
-                                updateApproveStatus(user, true).then(successAlert);
-                            },
-                        },
-                    ],
-                    { cancelable: false },
-                );
-            }
+                    },
+                ],
+                { cancelable: false },
+            );
         }
-    };
+    }
+    function toggleAdmin(user: UserProfileWithName) {
+        if (user.admin) {
+            Alert.alert(
+                "Remove " + user.name + " as admin?",
+                "Are you sure you want to remove this user as admin?",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                    },
+                    {
+                        text: "OK",
+                        async onPress() {
+                            const res = await supabase.auth.getUser();
+                            const currentUser = res.data.user;
+                            if (currentUser && user.id === currentUser.id) {
+                                Alert.alert(
+                                    "Cannot unapprove yourself",
+                                    "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
+                                );
+                            } else {
+                                await updateAdminStatus.mutateAsync({
+                                    userId: user.id,
+                                    isAdmin: false,
+                                });
+                                successAlert();
+                            }
+                        },
+                    },
+                ],
+                { cancelable: false },
+            );
+        } else {
+            Alert.alert(
+                "Make " + user.name + " an admin?",
+                "Are you sure you want to make this user an admin?",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                    },
+                    {
+                        text: "OK",
+                        async onPress() {
+                            await updateAdminStatus.mutateAsync({ userId: user.id, isAdmin: true });
+                            await updateApproveStatus.mutateAsync({
+                                userId: user.id,
+                                approved: true,
+                            });
+                            successAlert();
+                        },
+                    },
+                ],
+                { cancelable: false },
+            );
+        }
+    }
 
     const styles = StyleSheet.create({
         option: {
@@ -269,129 +206,93 @@ export function ManageUsers() {
         },
     });
 
-    const picker = (user) => {
-        return (
-            <View
-                style={{
-                    flexDirection: "row",
-                    backgroundColor: colors.bg1.hex,
-                    justifyContent: "space-around",
-                    padding: 5,
-
-                    margin: 5,
-                    borderRadius: 10,
-                }}
-            >
-                <UIText
-                    style={user.scouter ? styles.option : styles.chosenRejected}
-                    onPress={() => {
-                        if (user.scouter) {
-                            handlePress(user, "approved");
-                        }
-                    }}
-                >
-                    Rejected
-                </UIText>
-                <UIText
-                    onPress={() => {
-                        if (!user.scouter) {
-                            handlePress(user, "approved");
-                        } else if (user.admin) {
-                            handlePress(user, "admin");
-                        }
-                    }}
-                    style={
-                        user.scouter ? (user.admin ? styles.option : styles.chosen) : styles.option
-                    }
-                >
-                    Scouter
-                </UIText>
-                <UIText
-                    style={user.admin ? styles.chosen : styles.option}
-                    onPress={() => {
-                        if (!user.admin) {
-                            handlePress(user, "admin");
-                        }
-                    }}
-                >
-                    Captain
-                </UIText>
-            </View>
-        );
-    };
-
     return (
-        <View style={{ flex: 1 }}>
-            <ScrollView
-                contentContainerStyle={{
-                    justifyContent: "space-around",
-                }}
-                horizontal
-                style={{
-                    flexGrow: 0,
-                }}
-            >
-                <SortOption
-                    title="All"
-                    onPress={() => {
-                        handleSort("All");
-                    }}
-                    isActive={sort === "All"}
+        <SafeAreaProvider>
+            <View style={{ paddingTop: 8 }}>
+                <UIChip.RadioRow
+                    options={[
+                        { key: "All", label: "All" },
+                        { key: "Rejected", label: "Rejected" },
+                        { key: "Scouter", label: "Scouter" },
+                        { key: "Captain", label: "Captain" },
+                    ]}
+                    value={sort}
+                    onChange={setSort}
                 />
-                <SortOption
-                    title={"Rejected"}
-                    onPress={() => {
-                        handleSort("Rejected");
-                    }}
-                    isActive={sort === "Rejected"}
-                />
-                <SortOption
-                    title="Scouter"
-                    onPress={() => {
-                        handleSort("Scouter");
-                    }}
-                    isActive={sort === "Scouter"}
-                />
-                <SortOption
-                    title="Captain"
-                    onPress={() => {
-                        handleSort("Captain");
-                    }}
-                    isActive={sort === "Captain"}
-                />
-            </ScrollView>
-            <ScrollView style={{ flex: 1 }}>
-                <View
-                    style={{
-                        flexDirection: "column",
-                        justifyContent: "space-around",
-                        padding: 10,
-                        flex: 1,
-                    }}
-                >
-                    {sortedUsers.map((user) => (
+            </View>
+            <FlatList
+                data={sortedUsers}
+                keyExtractor={(user) => user.email}
+                contentInsetAdjustmentBehavior={"automatic"}
+                contentContainerStyle={{ padding: 16, paddingTop: 8, gap: 16 }}
+                renderItem={({ item: user }) => (
+                    <View
+                        style={{
+                            backgroundColor: colors.bg1.hex,
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            borderColor: colors.border.hex,
+                            paddingTop: 16,
+                            paddingLeft: 16,
+                            paddingBottom: 8,
+                        }}
+                    >
+                        <UIText size={20} bold>
+                            {user.name}
+                        </UIText>
+                        <UIText>{user.email}</UIText>
+
                         <View
                             style={{
-                                flexDirection: "column",
+                                flexDirection: "row",
                                 backgroundColor: colors.bg1.hex,
-                                paddingTop: 15,
-                                paddingLeft: 15,
-                                margin: 5,
+                                justifyContent: "space-around",
                                 borderRadius: 10,
-                                borderWidth: 2,
-                                borderColor: colors.border.hex,
+                                marginTop: 8,
                             }}
-                            key={user.email}
                         >
-                            <UIText size={20} bold>
-                                {user.name}
+                            <UIText
+                                style={user.scouter ? styles.option : styles.chosenRejected}
+                                onPress={() => {
+                                    if (user.scouter) {
+                                        toggleApproved(user);
+                                    }
+                                }}
+                            >
+                                Rejected
                             </UIText>
-                            <UIText>{user.email}</UIText>
-                            {picker(user)}
+                            <UIText
+                                onPress={() => {
+                                    if (!user.scouter) {
+                                        toggleApproved(user);
+                                    } else if (user.admin) {
+                                        toggleAdmin(user);
+                                    }
+                                }}
+                                style={
+                                    user.scouter
+                                        ? user.admin
+                                            ? styles.option
+                                            : styles.chosen
+                                        : styles.option
+                                }
+                            >
+                                Scouter
+                            </UIText>
+                            <UIText
+                                style={user.admin ? styles.chosen : styles.option}
+                                onPress={() => {
+                                    if (!user.admin) {
+                                        toggleAdmin(user);
+                                    }
+                                }}
+                            >
+                                Captain
+                            </UIText>
                         </View>
-                    ))}
-                </View>
-            </ScrollView>
-        </View>
+                    </View>
+                )}
+            />
+        </SafeAreaProvider>
     );
 }
