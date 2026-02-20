@@ -4,10 +4,8 @@ import { InternetStatus } from "@/lib/InternetStatus";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { useUserStore } from "@/lib/stores/user";
 import { AccountRole } from "@/lib/user/account";
-import type { Icon } from "@/ui/icons";
 import * as Bs from "@/ui/icons";
-import type { DataTabParamList, DataTabScreenProps } from "./index";
-import { exMemo } from "@/lib/util/react/memo";
+import type { DataTabScreenProps } from "./index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { TabHeader } from "@/ui/components/TabHeader";
@@ -19,7 +17,6 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
     const { colors } = useTheme();
 
     const user = useUserStore((state) => state.account);
-    const toc = getTOC({ admin: user?.role === AccountRole.Admin });
 
     const [internetStatus, setInternetStatus] = useState<InternetStatus>(
         InternetStatus.NOT_ATTEMPTED,
@@ -69,93 +66,109 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
 
             {/* TODO: for some reason this ScrollView gets covered by the bottom tab bar instead of shrinking?? */}
             <UIList>
-                {toc.map(
-                    ({ label, shown, items }) =>
-                        shown &&
-                        UIList.Section({
-                            key: label,
-                            header: label,
-                            items: items.map(({ text, icon, caret, route }, i) =>
-                                UIList.Label({
-                                    key: i,
-                                    label: text,
-                                    caret,
-                                    icon,
-                                    disabled: offline,
-                                    onPress: () => navigation.navigate(route),
-                                }),
-                            ),
-                        }),
+                <UIList.Section title="Data Analysis">
+                    <UIList.Label
+                        icon={Bs.List}
+                        label="Picklist"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("Picklists")}
+                    />
+                    <UIList.Label
+                        icon={Bs.ArrowDownUp}
+                        label="Team Rank"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("TeamRank")}
+                    />
+                    <UIList.Label
+                        icon={Bs.Sliders}
+                        label="Weighted Team Rank"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("WeightedTeamRank")}
+                    />
+                    <UIList.Label
+                        icon={Bs.Hourglass}
+                        label="Match Predictor"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("MatchPredictor")}
+                    />
+                    <UIList.Label
+                        icon={Bs.Upload}
+                        label="Export to CSV"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("ExportCSV")}
+                    />
+                </UIList.Section>
+
+                <UIList.Section title="Scoutcoin">
+                    <UIList.Label
+                        icon={Bs.Award}
+                        label="Leaderboard"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("ScoutcoinLeaderboard")}
+                    />
+                    <UIList.Label
+                        icon={Bs.Newspaper}
+                        label="Ledger"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("ScoutcoinLedger")}
+                    />
+                    <UIList.Label
+                        icon={Bs.Cart}
+                        label="Shop"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("ScoutcoinShop")}
+                    />
+                </UIList.Section>
+
+                {user?.role === AccountRole.Admin && (
+                    <UIList.Section title="Administrative">
+                        <UIList.Label
+                            icon={Bs.TrophyFill}
+                            label="Competitions"
+                            caret
+                            disabled={offline}
+                            onPress={() => navigation.navigate("ManageCompetitions")}
+                        />
+                        <UIList.Label
+                            icon={Bs.PeopleFill}
+                            label="Users"
+                            caret
+                            disabled={offline}
+                            onPress={() => navigation.navigate("ManageUsers")}
+                        />
+                        <UIList.Label
+                            icon={Bs.ClipboardData}
+                            label="Forms"
+                            caret
+                            disabled={offline}
+                            onPress={() => navigation.navigate("Forms")}
+                        />
+                        <UIList.Label
+                            icon={Bs.CalendarThree}
+                            label="Scout Assignments"
+                            caret
+                            disabled={offline}
+                            onPress={() => navigation.navigate("ScoutAssignments")}
+                        />
+                        <UIList.Label
+                            icon={Bs.CashCoin}
+                            label="Match Bets"
+                            caret
+                            disabled={offline}
+                            onPress={() => navigation.navigate("ManageMatchBets")}
+                        />
+                    </UIList.Section>
                 )}
             </UIList>
         </SafeAreaProvider>
     );
 }
 
-type TOC = {
-    label: string;
-    shown: boolean;
-    items: {
-        text: string;
-        icon: Icon;
-        caret: boolean;
-        route: {
-            [K in keyof DataTabParamList]: undefined extends DataTabParamList[K] ? K : never;
-        }[keyof DataTabParamList];
-    }[];
-}[];
-const getTOC = exMemo(
-    ({ admin }: { admin: boolean }): TOC => [
-        {
-            shown: true,
-            label: "Data Analysis",
-            items: [
-                { text: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
-                { text: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
-                {
-                    text: "Weighted Team Rank",
-                    icon: Bs.Sliders,
-                    caret: true,
-                    route: "WeightedTeamRank",
-                },
-                {
-                    text: "Match Predictor",
-                    icon: Bs.Hourglass,
-                    caret: true,
-                    route: "MatchPredictor",
-                },
-                { text: "Export to CSV", icon: Bs.Upload, caret: true, route: "ExportCSV" },
-            ],
-        },
-        {
-            shown: true,
-            label: "Scoutcoin",
-            items: [
-                { text: "Leaderboard", icon: Bs.Award, caret: true, route: "ScoutcoinLeaderboard" },
-                { text: "Ledger", icon: Bs.Newspaper, caret: true, route: "ScoutcoinLedger" },
-                { text: "Shop", icon: Bs.Cart, caret: true, route: "ScoutcoinShop" },
-            ],
-        },
-        {
-            shown: admin,
-            label: "Administrative",
-            items: [
-                {
-                    text: "Competitions",
-                    icon: Bs.TrophyFill,
-                    caret: true,
-                    route: "ManageCompetitions",
-                },
-                { text: "Users", icon: Bs.PeopleFill, caret: true, route: "ManageUsers" },
-                { text: "Forms", icon: Bs.ClipboardData, caret: true, route: "Forms" },
-                {
-                    text: "Scout Assignments",
-                    icon: Bs.CalendarThree,
-                    caret: true,
-                    route: "ScoutAssignments",
-                },
-                { text: "Match Bets", icon: Bs.CashCoin, caret: true, route: "ManageMatchBets" },
-            ],
-        },
-    ],
-);

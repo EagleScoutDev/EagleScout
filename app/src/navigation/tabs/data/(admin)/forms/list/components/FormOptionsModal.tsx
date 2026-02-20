@@ -29,36 +29,32 @@ export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
                     ]}
                 />
                 <UIForm>
-                    {UIForm.Section({
-                        items: [
-                            UIList.Label({
-                                label: form.name,
-                            }),
-                        ],
-                    })}
-                    {UIForm.Section({
-                        items: [
-                            // UIForm.Button({
-                            //     label: "View Questions",
-                            //     color: colors.primary,
-                            //     onPress: () => {
-                            //         // TODO: implement this
-                            //     },
-                            // }),
-                            UIForm.Button({
-                                label: "Delete",
-                                color: colors.danger,
-                                onPress: () => {
-                                    FormsDB.deleteForm(form)
-                                        .catch((e) => {
-                                            console.error(e);
-                                            Alert.alert("Error", "Failed to delete form.");
-                                        })
-                                        .finally(() => ref.current?.dismiss());
-                                },
-                            }),
-                        ],
-                    })}
+                    <UIForm.Section>
+                        <UIList.Label
+                            label={form.name}
+                        />
+                    </UIForm.Section>
+                    <UIForm.Section>
+                        {/* UIForm.Button({
+                            label: "View Questions",
+                            color: colors.primary,
+                            onPress: () => {
+                                // TODO: implement this
+                            },
+                        }), */}
+                        <UIForm.Button
+                            label="Delete"
+                            color={colors.danger}
+                            onPress={() => {
+                                FormsDB.deleteForm(form)
+                                    .catch((e) => {
+                                        console.error(e);
+                                        Alert.alert("Error", "Failed to delete form.");
+                                    })
+                                    .finally(() => ref.current?.dismiss());
+                            }}
+                        />
+                    </UIForm.Section>
                 </UIForm>
             </>
         );

@@ -43,22 +43,18 @@ export const EnableScoutAssignmentsModal = UISheetModal.HOC<EnableScoutAssignmen
                     ]}
                 />
                 <UIForm>
-                    {[
-                        UIForm.Section({
-                            items: [
-                                UIForm.Select({
-                                    label: "Scheme",
-                                    multi: false,
-                                    options: [
-                                        { key: "team_based", name: "Team Based" },
-                                        { key: "position_based", name: "Position Based" },
-                                    ],
-                                    value: config,
-                                    onChange: setConfig,
-                                }),
-                            ],
-                        }),
-                    ]}
+                    <UIForm.Section>
+                        <UIForm.Select
+                            label="Scheme"
+                            multi={false}
+                            options={[
+                                { key: "team_based", name: "Team Based" },
+                                { key: "position_based", name: "Position Based" },
+                            ]}
+                            value={config}
+                            onChange={setConfig}
+                        />
+                    </UIForm.Section>
                 </UIForm>
             </>
         );

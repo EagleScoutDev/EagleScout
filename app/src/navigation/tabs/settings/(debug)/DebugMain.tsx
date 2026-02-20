@@ -13,19 +13,17 @@ export function DebugMain({ navigation }: DebugMainProps) {
             </SafeAreaView>
 
             <UIList>
-                {UIList.Section({
-                    items: [
-                        UIList.Label({
-                            icon: Bs.Database,
-                            label: "AsyncStorage",
-                            caret: true,
-                            disabled: false,
-                            onPress: () => {
-                                navigation.navigate("Debug/AsyncStorage");
-                            },
-                        }),
-                    ],
-                })}
+                <UIList.Section>
+                    <UIList.Label
+                        icon={Bs.Database}
+                        label="AsyncStorage"
+                        caret
+                        disabled={false}
+                        onPress={() => {
+                            navigation.navigate("Debug/AsyncStorage");
+                        }}
+                    />
+                </UIList.Section>
             </UIList>
         </SafeAreaProvider>
     );

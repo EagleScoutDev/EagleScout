@@ -69,45 +69,37 @@ export const EditCompetitionModal = UISheetModal.HOC<EditCompetitionModalParams>
                     right={[{ role: "done", onPress: () => (Keyboard.dismiss(), trySubmit()) }]}
                 />
                 <UIForm bottomSheet>
-                    {[
-                        UIForm.Section({
-                            items: [
-                                UIForm.TextInput({
-                                    label: "Name",
-                                    value: name,
-                                    onChange: setName,
-                                }),
-                            ],
-                        }),
-                        UIForm.Section({
-                            items: [
-                                UIForm.DateTime({
-                                    label: "Start",
-                                    date: true,
-                                    time: true,
-                                    value: start,
-                                    onChange: setStart,
-                                }),
-                                UIForm.DateTime({
-                                    label: "End",
-                                    date: true,
-                                    time: true,
-                                    value: end,
-                                    onChange: setEnd,
-                                }),
-                            ],
-                        }),
+                    <UIForm.Section>
+                        <UIForm.TextInput
+                            label="Name"
+                            value={name}
+                            onChange={setName}
+                        />
+                    </UIForm.Section>
+                    <UIForm.Section>
+                        <UIForm.DateTime
+                            label="Start"
+                            date={true}
+                            time={true}
+                            value={start}
+                            onChange={setStart}
+                        />
+                        <UIForm.DateTime
+                            label="End"
+                            date={true}
+                            time={true}
+                            value={end}
+                            onChange={setEnd}
+                        />
+                    </UIForm.Section>
 
-                        UIForm.Section({
-                            items: [
-                                UIForm.Button({
-                                    label: "Delete Competition",
-                                    color: colors.danger,
-                                    onPress: tryDelete,
-                                }),
-                            ],
-                        }),
-                    ]}
+                    <UIForm.Section>
+                        <UIForm.Button
+                            label="Delete Competition"
+                            color={colors.danger}
+                            onPress={tryDelete}
+                        />
+                    </UIForm.Section>
                 </UIForm>
             </>
         );

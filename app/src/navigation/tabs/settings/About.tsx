@@ -25,24 +25,22 @@ export function About({ navigation }: AboutProps) {
             </SafeAreaView>
 
             <UIList>
-                {UIList.Section({
-                    items: [
-                        UIList.Label({
-                            label: "Version",
-                            body: () => (
-                                <UIText size={16} placeholder>
-                                    {Application.nativeApplicationVersion}
-                                </UIText>
-                            ),
-                            onPress: () => {
-                                if (stallionCountdown <= 0) {
-                                    setStallionCountdown(4);
-                                    stallionModal.showModal();
-                                } else setStallionCountdown(stallionCountdown - 1);
-                            },
-                        }),
-                    ],
-                })}
+                <UIList.Section>
+                    <UIList.Label
+                        label="Version"
+                        body={() => (
+                            <UIText size={16} placeholder>
+                                {Application.nativeApplicationVersion}
+                            </UIText>
+                        )}
+                        onPress={() => {
+                            if (stallionCountdown <= 0) {
+                                setStallionCountdown(4);
+                                stallionModal.showModal();
+                            } else setStallionCountdown(stallionCountdown - 1);
+                        }}
+                    />
+                </UIList.Section>
             </UIList>
         </SafeAreaProvider>
     );

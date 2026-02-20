@@ -75,61 +75,58 @@ export function TeamSummary({
                     <CompetitionRank team_number={team.team_number} />
                 </View>
 
-                {UIList.Section({
-                    header: "Team Stats",
-                    items: [
-                        UIList.Label({
-                            label: "See all scouting reports and notes",
-                            onPress: () => {
-                                navigation.navigate("TeamReports", {
-                                    team_number: team.team_number,
-                                    competitionId: competitionId,
-                                });
-                            },
-                            caret: true,
-                            disabled: false,
-                            icon: Bs.ClipboardData,
-                        }),
-                        UIList.Label({
-                            label: "See auto paths",
-                            onPress: () => {
-                                navigation.navigate("TeamAutoPaths", {
-                                    team_number: team.team_number,
-                                    competitionId: competitionId,
-                                });
-                            },
-                            caret: true,
-                            disabled: form === undefined,
-                            icon: Bs.SignMergeRight,
-                        }),
-                        UIList.Label({
-                            label: "Create Performance Graph",
-                            onPress: () => {
-                                graphCreationModalRef.current?.present({
-                                    form: form!.formStructure,
-                                    onSubmit: () => setGraphActive(true),
-                                    value: chosenQuestionIndices,
-                                    setValue: setChosenQuestionIndices,
-                                });
-                            },
-                            caret: false,
-                            disabled: form === undefined,
-                            icon: Bs.GraphUp,
-                        }),
-                        UIList.Label({
-                            label: "Compare to another team",
-                            onPress: () => {
-                                navigation.navigate("TeamComparison", {
-                                    team: team,
-                                    compId: competitionId,
-                                });
-                            },
-                            caret: true,
-                            disabled: false,
-                            icon: Bs.PlusSlashMinus,
-                        }),
-                    ],
-                })}
+                <UIList.Section title="Team Stats">
+                    <UIList.Label
+                        label="See all scouting reports and notes"
+                        onPress={() => {
+                            navigation.navigate("TeamReports", {
+                                team_number: team.team_number,
+                                competitionId: competitionId,
+                            });
+                        }}
+                        caret
+                        disabled={false}
+                        icon={Bs.ClipboardData}
+                    />
+                    <UIList.Label
+                        label="See auto paths"
+                        onPress={() => {
+                            navigation.navigate("TeamAutoPaths", {
+                                team_number: team.team_number,
+                                competitionId: competitionId,
+                            });
+                        }}
+                        caret
+                        disabled={form === undefined}
+                        icon={Bs.SignMergeRight}
+                    />
+                    <UIList.Label
+                        label="Create Performance Graph"
+                        onPress={() => {
+                            graphCreationModalRef.current?.present({
+                                form: form!.formStructure,
+                                onSubmit: () => setGraphActive(true),
+                                value: chosenQuestionIndices,
+                                setValue: setChosenQuestionIndices,
+                            });
+                        }}
+                        caret={false}
+                        disabled={form === undefined}
+                        icon={Bs.GraphUp}
+                    />
+                    <UIList.Label
+                        label="Compare to another team"
+                        onPress={() => {
+                            navigation.navigate("TeamComparison", {
+                                team: team,
+                                compId: competitionId,
+                            });
+                        }}
+                        caret
+                        disabled={false}
+                        icon={Bs.PlusSlashMinus}
+                    />
+                </UIList.Section>
 
                 <StatboticsSummary team={team.team_number} />
                 <TeamReportSummary team_number={team.team_number} competitionId={competitionId} />

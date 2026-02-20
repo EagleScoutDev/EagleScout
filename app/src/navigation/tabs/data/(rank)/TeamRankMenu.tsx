@@ -6,6 +6,7 @@ import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Compe
 import { Form } from "@/lib/forms";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
+import { UISectionList } from "@/ui/components/UISectionList";
 
 interface Question {
     question: string;
@@ -70,21 +71,20 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                             Please choose which competition you would like to view data for.
                         </UIText>
                     </View>
-                    {UIList.Section({
-                        header: "Competitions",
-                        items: fullCompetitionsList.map((item, i) =>
-                            UIList.Label({
-                                key: i,
-                                label: item.name,
-                                onPress: () => {
+                    <UIList.Section>
+                        {fullCompetitionsList.map((item, i) => (
+                            <UIList.Label
+                                key={i}
+                                label={item.name}
+                                onPress={() => {
                                     setNoActiveCompetition(false);
                                     setCurrForm(item.form as Form.Structure);
                                     setCompID(item.id);
                                     setCompName(item.name);
-                                },
-                            }),
-                        ),
-                    })}
+                                }}
+                            />
+                        ))}
+                    </UIList.Section>
                 </UIList>
             </SafeAreaProvider>
         );
@@ -114,17 +114,17 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                         currentIndex++;
                     }
 
-                    return UIList.Section({
-                        key: i,
-                        header: section.title,
-                        items: items.map(({ item, i }) => {
-                            return UIList.Label({
-                                key: i,
-                                label: item.question,
-                                onPress: () => onPress(i, item.question),
-                            });
-                        }),
-                    });
+                    return (
+                        <UIList.Section key={i} title={section.title}>
+                            {items.map(({ item, i }) => (
+                                <UIList.Label
+                                    key={i}
+                                    label={item.question}
+                                    onPress={() => onPress(i, item.question)}
+                                />
+                            ))}
+                        </UIList.Section>
+                    );
                 })}
             </UIList>
         </SafeAreaProvider>

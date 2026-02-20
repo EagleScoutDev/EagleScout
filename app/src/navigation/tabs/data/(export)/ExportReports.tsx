@@ -48,15 +48,15 @@ export function ExportReports() {
                     description={"Choose a competition to export the scout reports to a CSV file"}
                 />
                 <UIList loading={loading} onRefresh={refreshCompetitions}>
-                    {UIList.Section({
-                        items: competitionList.map((comp) =>
-                            UIList.Label({
-                                key: comp.id.toString(),
-                                label: `${comp.name} (${new Date(comp.startTime).getFullYear()})`,
-                                onPress: () => modalRef.current?.present({ competition: comp }),
-                            }),
-                        ),
-                    })}
+                    <UIList.Section>
+                        {competitionList.map((comp) => (
+                            <UIList.Label
+                                key={comp.id.toString()}
+                                label={`${comp.name} (${new Date(comp.startTime).getFullYear()})`}
+                                onPress={() => modalRef.current?.present({ competition: comp })}
+                            />
+                        ))}
+                    </UIList.Section>
                 </UIList>
             </View>
 
@@ -99,20 +99,18 @@ const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(
             <>
                 <UISheet.Header title={competition.name} />
                 <UIList>
-                    {UIList.Section({
-                        items: [
-                            UIList.Label({
-                                label: "Export Scout Reports",
-                                labelColor: colors.primary,
-                                onPress: exportMatchReports,
-                            }),
-                            UIList.Label({
-                                label: "Export Pit Scout Reports",
-                                labelColor: colors.primary,
-                                onPress: exportPitReports,
-                            }),
-                        ],
-                    })}
+                    <UIList.Section>
+                        <UIList.Label
+                            label="Export Scout Reports"
+                            labelColor={colors.primary}
+                            onPress={exportMatchReports}
+                        />
+                        <UIList.Label
+                            label="Export Pit Scout Reports"
+                            labelColor={colors.primary}
+                            onPress={exportPitReports}
+                        />
+                    </UIList.Section>
                 </UIList>
             </>
         );

@@ -1,36 +1,20 @@
-import {
-    ActivityIndicator,
-    RefreshControl,
-    SectionList,
-    type StyleProp,
-    View,
-    type ViewStyle,
-} from "react-native";
-import React, {
-    isValidElement,
-    type Key,
-    type ReactElement,
-    type ReactNode,
-    useState,
-} from "react";
+import { ScrollView, type StyleProp, View, type ViewStyle, ActivityIndicator, RefreshControl } from "react-native";
+import React, { Children, type PropsWithChildren, type ReactNode, useState } from "react";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import * as Bs from "@/ui/icons";
 import { type Icon } from "@/ui/icons";
-import { BottomSheetSectionList } from "@gorhom/bottom-sheet";
 import { Color } from "@/ui/lib/color";
 import type { Theme } from "@/ui/lib/theme";
 import { UIText } from "@/ui/components/UIText";
-import { PressableOpacity } from "@/components/PressableOpacity";
-import { Arrays } from "@/lib/util/Arrays";
 import { useTheme } from "@/ui/context/ThemeContext";
+import { PressableOpacity } from "@/components/PressableOpacity";
 
-export interface UIListProps {
+export interface UIListProps extends PropsWithChildren {
     contentContainerStyle?: StyleProp<ViewStyle>;
-
     loading?: boolean;
     onRefresh?: (() => Promise<any>) | undefined | null;
     minRefreshMs?: number;
 
-    children?: Arrays.ReadonlyRecursive<UIList.Section | ReactElement | false | null | undefined>;
     bottomSheet?: boolean; //< TODO: find an alternative to this
 }
 export function UIList({
@@ -43,20 +27,6 @@ export function UIList({
 }: UIListProps) {
     const { colors } = useTheme();
     const styles = getListStyles(colors);
-    const renderSectionHeader = ({ section: { header } }: { section: UIList.Section }) => (
-        <View style={styles.sectionHeader}>
-            {typeof header === "string" && (
-                <UIText style={styles.sectionHeaderText}>{header}</UIText>
-            )}
-        </View>
-    );
-    const renderSectionFooter = ({ section }: { section: UIList.Section }) => (
-        <View style={[styles.sectionFooter, section === lastSection && styles.lastSectionFooter]}>
-            {typeof section.footer === "string" && (
-                <UIText style={styles.sectionFooterText}>{section.footer}</UIText>
-            )}
-        </View>
-    );
 
     const [refreshing, setRefreshing] = useState(false);
     async function doRefresh() {
@@ -72,112 +42,79 @@ export function UIList({
         setRefreshing(false);
     }
 
-    const sections = !children
-        ? []
-        : (Array.isArray(children) ? children.flat() : [children])
-              .filter((x) => !!x)
-              .map((x, i) =>
-                  isValidElement(x)
-                      ? {
-                            data: [x],
-                            renderSectionHeader: () => null,
-                            renderSectionFooter: () => null,
-                        }
-                      : {
-                            ...x,
-                            key:
-                                x.key === null || x.key === undefined
-                                    ? "#" + String(i)
-                                    : "$" + String(x.key),
-                        },
-              );
-    const lastSection = sections[sections.length - 1];
-
-    const SectionListImpl = bottomSheet ? BottomSheetSectionList : SectionList;
+    const ScrollViewImpl = bottomSheet ? BottomSheetScrollView : ScrollView;
     return (
-        <SectionListImpl
-            style={styles.list}
-            scrollToOverflowEnabled={true}
-            contentInsetAdjustmentBehavior={"automatic"}
-            extraData={[styles]}
-            contentContainerStyle={[styles.listContents, contentContainerStyle]}
-            refreshControl={
-                onRefresh && !loading ? (
-                    <RefreshControl refreshing={refreshing} onRefresh={doRefresh} />
-                ) : undefined
-            }
-            sections={sections}
-            keyExtractor={(x, i) =>
-                x.key === null || x.key === undefined ? "#" + String(i) : "$" + String(x.key)
-            }
-            ListHeaderComponent={loading && !refreshing ? ActivityIndicator : null}
-            ListHeaderComponentStyle={{ marginBottom: 10 }}
-            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-            renderSectionHeader={renderSectionHeader}
-            stickySectionHeadersEnabled={false}
-            renderSectionFooter={renderSectionFooter}
-            renderItem={({ section, item, index: i }) => {
-                if (isValidElement(item)) return item;
-
-                const { disabled, onPress, onLongPress, render } = item;
-                const first = i === 0;
-                const last = i === section.data.length - 1;
-
-                const content = (
-                    <View
-                        style={[styles.item, first && styles.firstItem, last && styles.lastItem]}
-                        children={render()}
-                    />
-                );
-
-                return onPress || onLongPress ? (
-                    <PressableOpacity
-                        disabled={disabled}
-                        onPress={onPress}
-                        onLongPress={onLongPress}
-                        children={content}
-                    />
-                ) : (
-                    <View children={content} />
-                );
-            }}
-        />
+        <>
+            {loading && !refreshing && <ActivityIndicator style={{ marginTop: 10 }} />}
+            <ScrollViewImpl
+                style={styles.list}
+                contentContainerStyle={[styles.listContents, contentContainerStyle]}
+                contentInsetAdjustmentBehavior={"automatic"}
+                scrollToOverflowEnabled={true}
+                refreshControl={
+                    onRefresh && !loading ? (
+                        <RefreshControl refreshing={refreshing} onRefresh={doRefresh} />
+                    ) : undefined
+                }
+            >
+                {children}
+            </ScrollViewImpl>
+        </>
     );
 }
 
 export namespace UIList {
-    export interface SectionProps {
-        key?: Key | undefined;
-        header?: string | null | undefined;
-        footer?: string | null | undefined;
-        items?: readonly (UIList.ItemInfo | false | null | undefined)[];
-    }
-    export interface Section {
-        key?: Key | undefined;
-        header?: string | null | undefined;
-        footer?: string | null | undefined;
-        data: readonly (UIList.ItemInfo | ReactElement)[];
-    }
-    export function Section({ key, header, footer, items }: SectionProps): Section {
-        // TODO: add a FlatList-like api
-        // TODO: this is bad because index-based keys will end up being shifted when falsy elements are temporarily removed
-        return { key, header, footer, data: (items ?? []).filter((x) => !!x) };
+    export interface SectionProps extends PropsWithChildren {
+        title?: string;
+        footer?: string;
     }
 
-    export interface ItemInfo {
-        key?: Key | undefined;
+    export function Section({ title, footer, children }: SectionProps) {
+        const { colors } = useTheme();
+        const styles = getSectionStyles(colors);
 
-        render: () => ReactNode;
+        const childArray = Children.toArray(children);
+        const itemCount = childArray.length;
 
-        disabled?: boolean;
-        onPress?: (() => void) | undefined | null;
-        onLongPress?: (() => void) | undefined | null;
+        return (
+            <View style={styles.section}>
+                {title && (
+                    <View style={styles.sectionHeader}>
+                        <UIText style={styles.sectionHeaderText}>{title}</UIText>
+                    </View>
+                )}
+                <View>
+                    {childArray.map((child, index) => {
+                        const first = index === 0;
+                        const last = index === itemCount - 1;
+
+                        return (
+                            <React.Fragment key={React.isValidElement(child) ? child.key : index}>
+                                <View
+                                    style={[
+                                        styles.item,
+                                        first && styles.firstItem,
+                                        last && styles.lastItem,
+                                    ]}
+                                >
+                                    {child}
+                                </View>
+                                {!last && <View style={styles.itemSeparator} />}
+                            </React.Fragment>
+                        );
+                    })}
+                </View>
+                {footer && (
+                    <View style={styles.sectionFooter}>
+                        <UIText style={styles.sectionFooterText}>{footer}</UIText>
+                    </View>
+                )}
+            </View>
+        );
     }
 
     export interface LabelProps {
-        key?: Key | undefined;
-
-        icon?: Icon | true;
+        icon?: Icon;
         label?: string;
         labelColor?: Color;
         body?: () => ReactNode;
@@ -187,60 +124,98 @@ export namespace UIList {
         onPress?: (() => void) | undefined | null;
         onLongPress?: (() => void) | undefined | null;
     }
-    /**
-     * List item with an icon, label, body, and caret.
-     */
-    export interface Label extends ItemInfo {}
-    export function Label({ key, ...props }: LabelProps): ItemInfo {
-        return {
-            key,
-            ...props,
-            render: () => <RenderLabel {...props} />,
-        };
+
+    export function Label({
+        icon,
+        label,
+        labelColor,
+        body,
+        caret,
+        disabled,
+        onPress,
+        onLongPress,
+    }: LabelProps) {
+        const { colors } = useTheme();
+
+        const content = (
+            <>
+                {(icon !== undefined || label !== undefined) && (
+                    <View style={[labelStyles.label, { flex: 1 }]}>
+                        {icon && (
+                            <View style={labelStyles.icon}>
+                                {icon({ size: 18, fill: colors.primary.hex })}
+                            </View>
+                        )}
+                        {label !== undefined && (
+                            <UIText
+                                size={16}
+                                color={labelColor}
+                                style={labelStyles.text}
+                                numberOfLines={1}
+                            >
+                                {label}
+                            </UIText>
+                        )}
+                    </View>
+                )}
+                <View style={labelStyles.body}>
+                    {body?.()}
+                    {caret && <Bs.ChevronRight size="16" fill={colors.fg.hex} />}
+                </View>
+            </>
+        );
+
+        if (onPress || onLongPress) {
+            return (
+                <PressableOpacity
+                    disabled={disabled}
+                    onPress={onPress}
+                    onLongPress={onLongPress}
+                    style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                    }}
+                >
+                    {content}
+                </PressableOpacity>
+            );
+        }
+
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                }}
+            >
+                {content}
+            </View>
+        );
     }
 }
 
-function RenderLabel({ icon, label, labelColor, body, caret }: UIList.LabelProps) {
-    const { colors } = useTheme();
-
-    return (
-        <>
-            {(icon !== undefined || label !== undefined) && (
-                <View style={labelStyles.label}>
-                    {icon && (
-                        <View style={labelStyles.icon}>
-                            {icon === true ? null : icon({ size: 18, fill: colors.primary.hex })}
-                        </View>
-                    )}
-                    {label !== undefined && (
-                        <UIText
-                            size={16}
-                            color={labelColor}
-                            style={labelStyles.text}
-                            numberOfLines={1}
-                        >
-                            {label}
-                        </UIText>
-                    )}
-                </View>
-            )}
-            <View style={labelStyles.body}>
-                {body?.()}
-                {caret && <Bs.ChevronRight size="16" fill={colors.fg.hex} />}
-            </View>
-        </>
-    );
-}
-
-const getListStyles = (colors: Theme["colors"]) =>
+const getListStyles = (_colors: Theme["colors"]) =>
     ({
         list: {
             flex: 1,
         },
         listContents: {
             padding: 16,
+            gap: 16,
         },
+    }) as const;
 
+const getSectionStyles = (colors: Theme["colors"]) =>
+    ({
+        section: {
+            marginBottom: 8,
+        },
         sectionHeader: {
             marginBottom: 5,
         },
@@ -253,22 +228,16 @@ const getListStyles = (colors: Theme["colors"]) =>
         },
         sectionFooter: {
             marginTop: 3,
-            marginBottom: 24,
-        },
-        lastSectionFooter: {
-            marginBottom: 0,
         },
         sectionFooterText: {
             color: colors.fg.hex,
             opacity: 0.6,
             fontSize: 12,
         },
-
         itemSeparator: {
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border.hex,
+            height: 1,
+            backgroundColor: colors.border.hex,
         },
-
         item: {
             minHeight: 48,
             backgroundColor: colors.bg1.hex,
@@ -280,9 +249,6 @@ const getListStyles = (colors: Theme["colors"]) =>
             flexDirection: "row",
             alignItems: "center",
             gap: 16,
-
-            paddingHorizontal: 12,
-            paddingVertical: 8,
         },
         firstItem: {
             borderTopWidth: 1,
@@ -310,12 +276,11 @@ const labelStyles = {
         justifyContent: "center",
     },
     text: {
-        flexShrink: 1,
+        flex: 1,
     },
     body: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
-        flex: 1,
     },
 } as const;

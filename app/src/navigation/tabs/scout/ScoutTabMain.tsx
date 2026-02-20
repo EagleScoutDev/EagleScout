@@ -14,47 +14,42 @@ export function ScoutTabMain() {
                 <TabHeader title={"Home"} />
                 <UIList>
                     <UpcomingRoundsView />
-                    {UIList.Section({
-                        header: "Scouting",
-                        items: [
-                            UIList.Label({
-                                icon: Bs.JournalPlus,
-                                label: "Match Scouting",
-                                caret: true,
-                                onPress: () => {
-                                    rootNavigation.navigate("Match");
-                                },
-                            }),
-                            UIList.Label({
-                                icon: Bs.Tag,
-                                label: "Pit Scouting",
-                                caret: true,
-                                onPress: () => {
-                                    rootNavigation.navigate("Pit");
-                                },
-                            }),
-                            UIList.Label({
-                                icon: Bs.Sticky,
-                                label: "New Note",
-                                caret: true,
-                                onPress: () => {
-                                    rootNavigation.navigate("Note");
-                                },
-                            }),
-                        ],
-                    })}
-                    {UIList.Section({
-                        items: [
-                            UIList.Label({
-                                icon: Bs.CashCoin,
-                                label: "Match Betting",
-                                caret: true,
-                                onPress: () => {
-                                    rootNavigation.push("MatchBetting");
-                                },
-                            }),
-                        ],
-                    })}
+                    <UIList.Section title="Scouting">
+                        <UIList.Label
+                            icon={Bs.JournalPlus}
+                            label="Match Scouting"
+                            caret
+                            onPress={() => {
+                                rootNavigation.navigate("Match");
+                            }}
+                        />
+                        <UIList.Label
+                            icon={Bs.Tag}
+                            label="Pit Scouting"
+                            caret
+                            onPress={() => {
+                                rootNavigation.navigate("Pit");
+                            }}
+                        />
+                        <UIList.Label
+                            icon={Bs.Sticky}
+                            label="New Note"
+                            caret
+                            onPress={() => {
+                                rootNavigation.navigate("Note");
+                            }}
+                        />
+                    </UIList.Section>
+                    <UIList.Section>
+                        <UIList.Label
+                            icon={Bs.CashCoin}
+                            label="Match Betting"
+                            caret
+                            onPress={() => {
+                                rootNavigation.push("MatchBetting");
+                            }}
+                        />
+                    </UIList.Section>
                 </UIList>
             </SafeAreaView>
         </SafeAreaProvider>

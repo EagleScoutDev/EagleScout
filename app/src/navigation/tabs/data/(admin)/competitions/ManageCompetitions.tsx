@@ -47,12 +47,12 @@ export function ManageCompetitions() {
             </SafeAreaView>
 
             <UIList onRefresh={refreshCompetitions}>
-                {UIList.Section({
-                    items: competitionList.map((comp) =>
-                        UIList.Label({
-                            key: comp.id.toString(),
-                            label: comp.name,
-                            onPress: () => {
+                <UIList.Section>
+                    {competitionList.map((comp) => (
+                        <UIList.Label
+                            key={comp.id.toString()}
+                            label={comp.name}
+                            onPress={() => {
                                 editSheetRef.current?.present({
                                     competition: {
                                         id: comp.id,
@@ -99,10 +99,10 @@ export function ManageCompetitions() {
                                         void refreshCompetitions();
                                     },
                                 });
-                            },
-                        }),
-                    ),
-                })}
+                            }}
+                        />
+                    ))}
+                </UIList.Section>
             </UIList>
 
             <UIFab icon={Bs.Plus} onPress={() => addSheetRef.current?.present({})} />

@@ -112,65 +112,55 @@ export const AddCompetitionModal = UISheetModal.HOC<AddCompetitionModalParams>(
                     right={[{ role: "done", onPress: onSubmit }]}
                 />
                 <UIForm>
-                    {[
-                        UIForm.Section({
-                            items: [
-                                UIForm.TextInput({
-                                    label: "Name",
-                                    value: name,
-                                    onChange: setName,
-                                }),
-                            ],
-                        }),
-                        UIForm.Section({
-                            items: [
-                                UIForm.DateTime({
-                                    label: "Start",
-                                    date: true,
-                                    time: true,
-                                    value: start,
-                                    onChange: setStart,
-                                }),
-                                UIForm.DateTime({
-                                    label: "End",
-                                    date: true,
-                                    time: true,
-                                    value: end,
-                                    onChange: setEnd,
-                                }),
-                            ],
-                        }),
+                    <UIForm.Section>
+                        <UIForm.TextInput
+                            label="Name"
+                            value={name}
+                            onChange={setName}
+                        />
+                    </UIForm.Section>
+                    <UIForm.Section>
+                        <UIForm.DateTime
+                            label="Start"
+                            date={true}
+                            time={true}
+                            value={start}
+                            onChange={setStart}
+                        />
+                        <UIForm.DateTime
+                            label="End"
+                            date={true}
+                            time={true}
+                            value={end}
+                            onChange={setEnd}
+                        />
+                    </UIForm.Section>
 
-                        UIForm.Section({
-                            items: [
-                                UIForm.TextInput({
-                                    label: "The event's The Blue Alliance key",
-                                    value: tbaKey,
-                                    onChange: setTbaKey,
-                                }),
-                            ],
-                        }),
-                        UIForm.Section({
-                            items: [
-                                UIForm.ListPicker({
-                                    label: "Match Scouting Form",
-                                    loading: formsLoading,
-                                    options: matchFormIds ?? [],
-                                    render: (id) => forms?.get(id)!,
-                                    value: matchForm,
-                                    onChange: (value) => setMatchForm(value),
-                                }),
-                                UIForm.ListPicker({
-                                    label: "Pit Scouting Form",
-                                    loading: formsLoading,
-                                    options: pitFormIds ?? [],
-                                    render: (id) => forms?.get(id)!,
-                                    value: pitForm,
-                                    onChange: (value) => setPitForm(value),
-                                }),
-                            ],
-                        }),
-                    ]}
+                    <UIForm.Section>
+                        <UIForm.TextInput
+                            label="The event's The Blue Alliance key"
+                            value={tbaKey}
+                            onChange={setTbaKey}
+                        />
+                    </UIForm.Section>
+                    <UIForm.Section>
+                        <UIForm.ListPicker
+                            label="Match Scouting Form"
+                            loading={formsLoading}
+                            options={matchFormIds ?? []}
+                            render={(id) => forms?.get(id)!}
+                            value={matchForm}
+                            onChange={(value) => setMatchForm(value)}
+                        />
+                        <UIForm.ListPicker
+                            label="Pit Scouting Form"
+                            loading={formsLoading}
+                            options={pitFormIds ?? []}
+                            render={(id) => forms?.get(id)!}
+                            value={pitForm}
+                            onChange={(value) => setPitForm(value)}
+                        />
+                    </UIForm.Section>
                 </UIForm>
             </>
         );

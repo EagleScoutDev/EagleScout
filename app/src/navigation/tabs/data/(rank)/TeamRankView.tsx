@@ -48,16 +48,17 @@ export function TeamRankView({ route }: TeamRankViewProps) {
             <SafeAreaView style={{ flex: 1 }}>
                 {!processing && (
                     <UIList loading={processing}>
-                        {data &&
-                            UIList.Section({
-                                items: data.map(({ team, average }, i) =>
-                                    UIList.Label({
-                                        key: team,
-                                        label: `${i + 1}. Team ${team}`,
-                                        body: () => <UIText size={16}>{average.toFixed(2)}</UIText>,
-                                    }),
-                                ),
-                            })}
+                        {data && (
+                            <UIList.Section>
+                                {data.map(({ team, average }, i) => (
+                                    <UIList.Label
+                                        key={team}
+                                        label={`${i + 1}. Team ${team}`}
+                                        body={() => <UIText size={16}>{average.toFixed(2)}</UIText>}
+                                    />
+                                ))}
+                            </UIList.Section>
+                        )}
 
                         {/*{!data && (*/}
                         {/*    <View style={{ alignItems: "center" }}>*/}

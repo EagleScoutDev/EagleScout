@@ -32,17 +32,17 @@ export function FormList({ navigation }: FormListProps) {
             </SafeAreaView>
 
             <UIList onRefresh={fetchForms}>
-                {UIList.Section({
-                    items: formList.map((form) =>
-                        UIList.Label({
-                            key: form.id.toString(),
-                            label: form.name,
-                            onPress: () => {
+                <UIList.Section>
+                    {formList.map((form) => (
+                        <UIList.Label
+                            key={form.id.toString()}
+                            label={form.name}
+                            onPress={() => {
                                 optionsSheetRef.current?.present({ form });
-                            },
-                        }),
-                    ),
-                })}
+                            }}
+                        />
+                    ))}
+                </UIList.Section>
             </UIList>
 
             <UIFab

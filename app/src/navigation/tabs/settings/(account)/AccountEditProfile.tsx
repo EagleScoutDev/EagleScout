@@ -22,21 +22,18 @@ export function AccountEditProfile({ navigation, route }: AccountEditProfileProp
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, paddingBottom: 20 }}>
                 <UIForm>
-                    {UIForm.Section({
-                        header: "Name",
-                        items: [
-                            UIForm.TextInput({
-                                label: "First Name",
-                                value: firstName,
-                                onChange: setFirstName,
-                            }),
-                            UIForm.TextInput({
-                                label: "Last Name",
-                                value: lastName,
-                                onChange: setLastName,
-                            }),
-                        ],
-                    })}
+                    <UIForm.Section title="Name">
+                        <UIForm.TextInput
+                            label="First Name"
+                            value={firstName}
+                            onChange={setFirstName}
+                        />
+                        <UIForm.TextInput
+                            label="Last Name"
+                            value={lastName}
+                            onChange={setLastName}
+                        />
+                    </UIForm.Section>
                     <UIButton
                         loading={loading}
                         text={"Save"}

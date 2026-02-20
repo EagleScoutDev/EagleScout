@@ -15,22 +15,20 @@ export function AccountChangePassword({ navigation }: AccountChangePasswordProps
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
                 <UIForm>
-                    {UIForm.Section({
-                        items: [
-                            UIForm.TextInput({
-                                label: "New Password",
-                                secure: true,
-                                value: newPassword,
-                                onChange: (x) => setNewPassword(x.trim()),
-                            }),
-                            UIForm.TextInput({
-                                label: "Confirm New Password",
-                                secure: true,
-                                value: confirmPassword,
-                                onChange: setConfirmPassword,
-                            }),
-                        ],
-                    })}
+                    <UIForm.Section>
+                        <UIForm.TextInput
+                            label="New Password"
+                            secure
+                            value={newPassword}
+                            onChange={(x) => setNewPassword(x.trim())}
+                        />
+                        <UIForm.TextInput
+                            label="Confirm New Password"
+                            secure
+                            value={confirmPassword}
+                            onChange={setConfirmPassword}
+                        />
+                    </UIForm.Section>
                     <UIButton
                         text={"Save"}
                         style={UIButtonStyle.fill}
