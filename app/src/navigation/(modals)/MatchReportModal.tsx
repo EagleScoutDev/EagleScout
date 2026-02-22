@@ -6,12 +6,8 @@ import React from "react";
 import { supabase } from "@/lib/supabase";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { Form } from "@/lib/forms";
-import { FormQuestion } from "@/components/FormQuestion";
-import { UIRadio } from "@/ui/components/UIRadio";
-import { UICheckboxes } from "@/ui/components/UICheckboxes";
 import { useQuery } from "@tanstack/react-query";
-import { UITextInput } from "@/ui/components/UITextInput";
+import { FormDataView } from "@/navigation/(modals)/components/FormDataView";
 import { useRootNavigation } from "@/navigation";
 
 export interface MatchReportModalParams {
@@ -23,25 +19,6 @@ export interface MatchReportModal extends UISheetModal<MatchReportModalParams> {
 export const MatchReportModal = UISheetModal.HOC<MatchReportModalParams>(
     function MatchReportModalContent({ ref, data: { report, isOfflineForm } }) {
         "use memo";
-
-        const { colors } = useTheme();
-        const s = StyleSheet.create({
-            sectionTitle: {
-                color: colors.fg.hex,
-                fontSize: 18,
-                textAlign: "center",
-                fontWeight: "bold",
-                marginTop: 32,
-                marginBottom: 8,
-            },
-            na: {
-                color: colors.danger.hex,
-                fontWeight: "bold",
-                flexWrap: "wrap",
-                fontSize: 15,
-                flex: 1,
-            },
-        });
 
         // TODO: editing and history
         // const account = useUserStore((state) => state.account);
@@ -98,105 +75,11 @@ export const MatchReportModal = UISheetModal.HOC<MatchReportModalParams>(
                         },
                     ]}
                 />
-                <BottomSheetFlatList
-                    contentContainerStyle={{ padding: 16 }}
-                    contentInsetAdjustmentBehavior={"automatic"}
+                <FormDataView
+                    FlatList={BottomSheetFlatList}
+                    form={report.form}
+                    data={report.data}
                     ListHeaderComponent={<ReportMetadataView data={report} userName={authorName} />}
-                    data={report.form}
-                    keyExtractor={(_, index) => String(index)}
-                    renderItem={({ item, index }) => {
-                        const value = report.data[index];
-
-                        switch (item.type) {
-                            case Form.ItemType.heading:
-                                return (
-                                    <View>
-                                        <UIText style={s.sectionTitle}>{item.title}</UIText>
-                                    </View>
-                                );
-
-                            case Form.ItemType.radio:
-                                return (
-                                    <View style={{ padding: 8 }}>
-                                        <FormQuestion
-                                            title={item.question}
-                                            required={item.required}
-                                        >
-                                            <UIRadio
-                                                disabled
-                                                options={item.options}
-                                                value={item.options[value]}
-                                            />
-                                        </FormQuestion>
-                                    </View>
-                                );
-                            case Form.ItemType.checkbox:
-                                return (
-                                    <View style={{ padding: 8 }}>
-                                        <FormQuestion
-                                            title={item.question}
-                                            required={item.required}
-                                        >
-                                            <UICheckboxes
-                                                disabled
-                                                options={item.options}
-                                                value={value ?? []}
-                                            />
-                                        </FormQuestion>
-                                    </View>
-                                );
-                            case Form.ItemType.textbox:
-                                return (
-                                    <View style={{ padding: 8 }}>
-                                        <FormQuestion
-                                            title={item.question}
-                                            required={item.required}
-                                        >
-                                            <UITextInput
-                                                multiline
-                                                disabled
-                                                placeholder={"Type here"}
-                                                value={report.data[index]}
-                                            />
-                                        </FormQuestion>
-                                    </View>
-                                );
-                            case Form.ItemType.number:
-                                return (
-                                    <View
-                                        style={{
-                                            backgroundColor:
-                                                index % 2 === 0 ? colors.bg1.hex : "transparent",
-                                            padding: 8,
-                                            borderRadius: 8,
-                                        }}
-                                    >
-                                        <FormQuestion
-                                            inline
-                                            title={item.question}
-                                            required={item.required}
-                                        >
-                                            {value === null ? (
-                                                <UIText style={s.na}>N/A</UIText>
-                                            ) : (
-                                                <UIText
-                                                    style={{
-                                                        color: colors.fg.hex,
-                                                        fontWeight: "bold",
-                                                        fontSize: 20,
-                                                        marginLeft: "auto",
-                                                        textAlign: "center",
-                                                        paddingHorizontal: 32,
-                                                    }}
-                                                >
-                                                    {value ?? ""}
-                                                </UIText>
-                                            )}
-                                        </FormQuestion>
-                                    </View>
-                                );
-                        }
-                    }}
                 />
             </>
         );
