@@ -18,7 +18,7 @@ export interface UISectionListSection<TItem = any> {
     data: readonly TItem[];
 }
 
-export interface UISectionListProps<TItem = any, TSection extends UISectionListSection<TItem> = any> {
+export interface UISectionListProps<TItem = unknown, TSection extends UISectionListSection<TItem> = UISectionListSection<TItem>> {
     contentContainerStyle?: StyleProp<ViewStyle>;
     sections: TSection[];
     renderItem: (item: TItem, index: number, section: TSection) => ReactNode;
@@ -31,7 +31,7 @@ export interface UISectionListProps<TItem = any, TSection extends UISectionListS
     bottomSheet?: boolean;
 }
 
-export function UISectionList<T = any>({
+export function UISectionList<T = unknown>({
     contentContainerStyle,
     sections,
     renderItem,
@@ -80,7 +80,7 @@ export function UISectionList<T = any>({
             ListHeaderComponentStyle={{ marginBottom: 10 }}
             ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
             renderSectionHeader={({ section }) => {
-                const title = section["title"] ?? renderHeader?.(section);
+                const title = section.title ?? renderHeader?.(section);
 
                 if (typeof title !== "string") return null;
                 return (
@@ -90,7 +90,9 @@ export function UISectionList<T = any>({
                 );
             }}
             renderSectionFooter={({ section }) => {
-                if (!section.footer) return null;
+                const footer = section.footer ?? renderFooter?.(section);
+
+                if (typeof footer !== "string") return null;
                 return (
                     <View
                         style={[
@@ -109,7 +111,7 @@ export function UISectionList<T = any>({
 
                 return (
                     <View style={[styles.item, first && styles.firstItem, last && styles.lastItem]}>
-                        {renderItem({ item: item as T, index: i, section })}
+                        {renderItem(item, i, section)}
                     </View>
                 );
             }}
