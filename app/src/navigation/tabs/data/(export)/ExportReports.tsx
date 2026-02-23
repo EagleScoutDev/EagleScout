@@ -50,7 +50,7 @@ export function ExportReports() {
                 <UIList loading={loading} onRefresh={refreshCompetitions}>
                     <UIList.Section>
                         {competitionList.map((comp) => (
-                            <UIList.Label
+                            <UIList.Row
                                 key={comp.id.toString()}
                                 label={`${comp.name} (${new Date(comp.startTime).getFullYear()})`}
                                 onPress={() => modalRef.current?.present({ competition: comp })}
@@ -100,12 +100,12 @@ const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(
                 <UISheet.Header title={competition.name} />
                 <UIList>
                     <UIList.Section>
-                        <UIList.Label
+                        <UIList.Row
                             label="Export Scout Reports"
                             labelColor={colors.primary}
                             onPress={exportMatchReports}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             label="Export Pit Scout Reports"
                             labelColor={colors.primary}
                             onPress={exportPitReports}

@@ -34,7 +34,7 @@ export function FormList({ navigation }: FormListProps) {
             <UIList onRefresh={fetchForms}>
                 <UIList.Section>
                     {formList.map((form) => (
-                        <UIList.Label
+                        <UIList.Row
                             key={form.id.toString()}
                             label={form.name}
                             onPress={() => {

@@ -76,7 +76,7 @@ export function TeamSummary({
                 </View>
 
                 <UIList.Section title="Team Stats">
-                    <UIList.Label
+                    <UIList.Row
                         label="See all scouting reports and notes"
                         onPress={() => {
                             navigation.navigate("TeamReports", {
@@ -88,7 +88,7 @@ export function TeamSummary({
                         disabled={false}
                         icon={Bs.ClipboardData}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         label="See auto paths"
                         onPress={() => {
                             navigation.navigate("TeamAutoPaths", {
@@ -100,7 +100,7 @@ export function TeamSummary({
                         disabled={form === undefined}
                         icon={Bs.SignMergeRight}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         label="Create Performance Graph"
                         onPress={() => {
                             graphCreationModalRef.current?.present({
@@ -114,7 +114,7 @@ export function TeamSummary({
                         disabled={form === undefined}
                         icon={Bs.GraphUp}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         label="Compare to another team"
                         onPress={() => {
                             navigation.navigate("TeamComparison", {

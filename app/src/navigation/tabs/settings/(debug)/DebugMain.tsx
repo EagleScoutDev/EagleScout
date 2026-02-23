@@ -14,7 +14,7 @@ export function DebugMain({ navigation }: DebugMainProps) {
 
             <UIList>
                 <UIList.Section>
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Database}
                         label="AsyncStorage"
                         caret

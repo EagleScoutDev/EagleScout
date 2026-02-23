@@ -73,7 +73,7 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                     </View>
                     <UIList.Section>
                         {fullCompetitionsList.map((item, i) => (
-                            <UIList.Label
+                            <UIList.Row
                                 key={i}
                                 label={item.name}
                                 onPress={() => {
@@ -117,7 +117,7 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                     return (
                         <UIList.Section key={i} title={section.title}>
                             {items.map(({ item, i }) => (
-                                <UIList.Label
+                                <UIList.Row
                                     key={i}
                                     label={item.question}
                                     onPress={() => onPress(i, item.question)}

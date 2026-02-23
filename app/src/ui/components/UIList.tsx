@@ -113,7 +113,7 @@ export namespace UIList {
         );
     }
 
-    export interface LabelProps {
+    export interface RowProps {
         icon?: Icon;
         label?: string;
         labelColor?: Color;
@@ -125,7 +125,7 @@ export namespace UIList {
         onLongPress?: (() => void) | undefined | null;
     }
 
-    export function Label({
+    export function Row({
         icon,
         label,
         labelColor,
@@ -134,7 +134,7 @@ export namespace UIList {
         disabled,
         onPress,
         onLongPress,
-    }: LabelProps) {
+    }: RowProps) {
         const { colors } = useTheme();
 
         const content = (

@@ -51,7 +51,7 @@ export function TeamRankView({ route }: TeamRankViewProps) {
                         {data && (
                             <UIList.Section>
                                 {data.map(({ team, average }, i) => (
-                                    <UIList.Label
+                                    <UIList.Row
                                         key={team}
                                         label={`${i + 1}. Team ${team}`}
                                         body={() => <UIText size={16}>{average.toFixed(2)}</UIText>}

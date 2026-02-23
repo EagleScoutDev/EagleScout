@@ -67,35 +67,35 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
             {/* TODO: for some reason this ScrollView gets covered by the bottom tab bar instead of shrinking?? */}
             <UIList>
                 <UIList.Section title="Data Analysis">
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.List}
                         label="Picklist"
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("Picklists")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.ArrowDownUp}
                         label="Team Rank"
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("TeamRank")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Sliders}
                         label="Weighted Team Rank"
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("WeightedTeamRank")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Hourglass}
                         label="Match Predictor"
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("MatchPredictor")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Upload}
                         label="Export to CSV"
                         caret
@@ -105,21 +105,21 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
                 </UIList.Section>
 
                 <UIList.Section title="Scoutcoin">
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Award}
                         label="Leaderboard"
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("ScoutcoinLeaderboard")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Newspaper}
                         label="Ledger"
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("ScoutcoinLedger")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Cart}
                         label="Shop"
                         caret
@@ -130,35 +130,35 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
 
                 {user?.role === AccountRole.Admin && (
                     <UIList.Section title="Administrative">
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.TrophyFill}
                             label="Competitions"
                             caret
                             disabled={offline}
                             onPress={() => navigation.navigate("ManageCompetitions")}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.PeopleFill}
                             label="Users"
                             caret
                             disabled={offline}
                             onPress={() => navigation.navigate("ManageUsers")}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.ClipboardData}
                             label="Forms"
                             caret
                             disabled={offline}
                             onPress={() => navigation.navigate("Forms")}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.CalendarThree}
                             label="Scout Assignments"
                             caret
                             disabled={offline}
                             onPress={() => navigation.navigate("ScoutAssignments")}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.CashCoin}
                             label="Match Bets"
                             caret

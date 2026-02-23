@@ -22,9 +22,9 @@ export namespace UIForm {
         return <UIList.Section {...props} />
     }
 
-    export interface ItemProps extends UIList.LabelProps {}
+    export interface ItemProps extends UIList.RowProps {}
     export function Item(props: ItemProps) {
-        return <UIList.Label {...props} />
+        return <UIList.Row {...props} />
     }
 
     export interface TextInputProps {

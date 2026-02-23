@@ -49,7 +49,7 @@ export function ManageCompetitions() {
             <UIList onRefresh={refreshCompetitions}>
                 <UIList.Section>
                     {competitionList.map((comp) => (
-                        <UIList.Label
+                        <UIList.Row
                             key={comp.id.toString()}
                             label={comp.name}
                             onPress={() => {

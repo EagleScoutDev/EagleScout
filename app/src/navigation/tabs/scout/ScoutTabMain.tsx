@@ -15,7 +15,7 @@ export function ScoutTabMain() {
                 <UIList>
                     <UpcomingRoundsView />
                     <UIList.Section title="Scouting">
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.JournalPlus}
                             label="Match Scouting"
                             caret
@@ -23,7 +23,7 @@ export function ScoutTabMain() {
                                 rootNavigation.navigate("Match");
                             }}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.Tag}
                             label="Pit Scouting"
                             caret
@@ -31,7 +31,7 @@ export function ScoutTabMain() {
                                 rootNavigation.navigate("Pit");
                             }}
                         />
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.Sticky}
                             label="New Note"
                             caret
@@ -41,7 +41,7 @@ export function ScoutTabMain() {
                         />
                     </UIList.Section>
                     <UIList.Section>
-                        <UIList.Label
+                        <UIList.Row
                             icon={Bs.CashCoin}
                             label="Match Betting"
                             caret

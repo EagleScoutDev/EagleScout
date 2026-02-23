@@ -52,7 +52,7 @@ export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) 
             <UIList loading={loading} onRefresh={loadCompetitions}>
                 <UIList.Section>
                     {competitionList.map((comp) => (
-                        <UIList.Label
+                        <UIList.Row
                             key={comp.id.toString()}
                             label={`${comp.name} (${new Date(comp.startTime).getFullYear()})`}
                             onPress={() => {

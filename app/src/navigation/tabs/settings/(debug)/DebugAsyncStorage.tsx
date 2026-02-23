@@ -55,7 +55,7 @@ export function DebugAsyncStorage() {
                 <UIList onRefresh={getAllKeys}>
                     <UIList.Section>
                         {keys?.map((key) => (
-                            <UIList.Label
+                            <UIList.Row
                                 key={key}
                                 onPress={() => selectKey(key)}
                                 label={key}

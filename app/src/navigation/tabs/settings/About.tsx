@@ -26,7 +26,7 @@ export function About({ navigation }: AboutProps) {
 
             <UIList>
                 <UIList.Section>
-                    <UIList.Label
+                    <UIList.Row
                         label="Version"
                         body={() => (
                             <UIText size={16} placeholder>

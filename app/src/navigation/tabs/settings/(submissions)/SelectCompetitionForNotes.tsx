@@ -41,7 +41,7 @@ export function SelectCompetitionForNotes({
                     {competitions.length > 0 && (
                         <UIList.Section>
                             {competitions.map((competition) => (
-                                <UIList.Label
+                                <UIList.Row
                                     key={competition.id}
                                     label={competition.name}
                                     caret

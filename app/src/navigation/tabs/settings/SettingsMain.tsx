@@ -91,41 +91,41 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                 </UIList.Section>
 
                 <UIList.Section title={"Account"}>
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Asterisk}
                         label={"Change Password"}
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("Account/ChangePassword")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Ban}
                         label={"Request Account Deletion"}
                         caret
                         disabled={offline}
                         onPress={() => navigation.navigate("Account/Delete")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.QuestionCircle}
                         label={"Contact Support"}
                         onPress={() => {
                             Linking.openURL("https://forms.gle/vbLEhyouNgUShhDp9");
                         }}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.BoxArrowRight}
                         label={"Sign Out"}
                         onPress={attemptSignOut}
                     />
                 </UIList.Section>
                 <UIList.Section title={"Submissions"}>
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.JournalBookmarkFill}
                         label={"View Your Reports"}
                         caret
                         onPress={() => navigation.navigate("Scout/SelectCompetitionForReports")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Sticky}
                         label={"View Your Notes"}
                         caret
@@ -133,13 +133,13 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                     />
                 </UIList.Section>
                 <UIList.Section title={"Other"}>
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.Bug}
                         label={"Debug"}
                         caret
                         onPress={() => navigation.navigate("Debug/Main")}
                     />
-                    <UIList.Label
+                    <UIList.Row
                         icon={Bs.QuestionCircle}
                         label={"About"}
                         caret

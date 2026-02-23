@@ -30,7 +30,7 @@ export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
                 />
                 <UIForm>
                     <UIForm.Section>
-                        <UIList.Label
+                        <UIList.Row
                             label={form.name}
                         />
                     </UIForm.Section>

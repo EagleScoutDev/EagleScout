@@ -106,7 +106,7 @@ export function UIListPicker<K extends string | number = string | number>({
                         {options.map((key) => {
                             const { name } = render(key);
                             return (
-                                <UIList.Label
+                                <UIList.Row
                                     key={key.toString()}
                                     label={name}
                                     icon={value === key ? Bs.CheckLg : undefined}
