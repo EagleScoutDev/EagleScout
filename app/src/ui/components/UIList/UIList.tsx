@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import React, {
     Children,
     createContext,
@@ -37,7 +37,7 @@ export function UIList({
     const { colors } = useTheme();
     const styles = getListStyles(colors);
 
-    const refreshable = onRefresh && !loading;
+    const refreshable = !!onRefresh;
     const [refreshing, setRefreshing] = useState(false);
     async function doRefresh() {
         if (!onRefresh) return;
@@ -53,26 +53,56 @@ export function UIList({
     }
 
     const ScrollViewImpl = bottomSheet ? BottomSheetScrollView : ScrollView;
+
     return (
         <UIListContext.Provider value={{ styles }}>
             <ScrollViewImpl
-                style={styles.list}
-                contentContainerStyle={styles.listContents}
-                contentInsetAdjustmentBehavior={"automatic"}
                 scrollToOverflowEnabled={true}
+                contentInsetAdjustmentBehavior={"automatic"}
                 refreshControl={
-                    onRefresh && !loading ? (
+                    refreshable && !loading ? (
                         <RefreshControl refreshing={refreshing} onRefresh={doRefresh} />
                     ) : undefined
                 }
+                style={styles.list}
+                contentContainerStyle={styles.listContents}
             >
-                {children}
+                {loading ? (
+                    <View style={styles.spinnerContainer}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : (
+                    Children.map(children, (child, index) => (
+                        <React.Fragment key={index}>
+                            {child}
+                            {index < Children.toArray(children).length - 1 && (
+                                <View style={styles.sectionSeparator} />
+                            )}
+                        </React.Fragment>
+                    ))
+                )}
             </ScrollViewImpl>
         </UIListContext.Provider>
     );
 }
 
 export namespace UIList {
+    export interface CardProps extends SectionProps, ItemProps {}
+    export function Card({ children, ...props }: CardProps) {
+        return (
+            <Section {...props}>
+                <Item>{children}</Item>
+            </Section>
+        );
+    }
+
+    export interface ItemProps extends PropsWithChildren {}
+    export function Item({ children }: ItemProps) {
+        const { styles } = useContext(UIListContext);
+
+        return <View style={styles.itemInner}>{children}</View>;
+    }
+
     export interface SectionProps extends PropsWithChildren {
         title?: string;
         footer?: string;
@@ -119,12 +149,12 @@ export namespace UIList {
     }
 
     export interface RowProps {
-        icon?: Icon;
-        label?: string;
-        labelColor?: Color;
-        body?: () => ReactNode;
-        caret?: boolean;
-        disabled?: boolean;
+        icon?: Icon | undefined;
+        label?: string | undefined;
+        labelColor?: Color | undefined;
+        body?: () => ReactNode | undefined;
+        caret?: boolean | undefined;
+        disabled?: boolean | undefined;
 
         onPress?: (() => void) | undefined | null;
         onLongPress?: (() => void) | undefined | null;
@@ -143,17 +173,11 @@ export namespace UIList {
 
         const content = (
             <>
-                {(icon !== undefined || label !== undefined) && (
-                    <View style={styles.row}>
-                        {icon && (
-                            <View style={styles.rowIconContainer}>{icon(styles.rowIcon)}</View>
-                        )}
-                        {label !== undefined && (
-                            <UIText {...styles.rowText} color={labelColor}>
-                                {label}
-                            </UIText>
-                        )}
-                    </View>
+                {icon && <View style={styles.rowIconContainer}>{icon(styles.rowIcon)}</View>}
+                {label !== undefined && (
+                    <UIText {...styles.rowText} color={labelColor}>
+                        {label}
+                    </UIText>
                 )}
                 <View style={styles.rowBody}>
                     {body?.()}
@@ -168,31 +192,11 @@ export namespace UIList {
                     disabled={disabled}
                     onPress={onPress}
                     onLongPress={onLongPress}
-                    style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingHorizontal: 12,
-                        paddingVertical: 8,
-                    }}
+                    style={styles.row}
                 >
                     {content}
                 </PressableOpacity>
             );
-        }
-
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                }}
-            >
-                {content}
-            </View>
-        );
+        } else return <View style={styles.row}>{content}</View>;
     }
 }

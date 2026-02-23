@@ -1,5 +1,5 @@
 import { ActivityIndicator, RefreshControl, SectionList, View } from "react-native";
-import React, { type Key, type ReactNode, useState } from "react";
+import React, { type Key, useState } from "react";
 import { BottomSheetSectionList } from "@gorhom/bottom-sheet";
 import { UIText } from "@/ui/components/UIText";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -18,7 +18,7 @@ export interface UISectionListProps<
 > {
     sections: TSection[];
     keyExtractor: (item: TItem, index: number) => Key;
-    renderItem: (item: TItem, index: number, section: TSection) => ReactNode;
+    renderItem: (item: TItem, index: number, section: TSection) => UIList.RowProps;
     renderHeader?: (section: TSection) => string | null | undefined;
     renderFooter?: (section: TSection) => string | null | undefined;
 
@@ -41,9 +41,8 @@ export function UISectionList<T = unknown>({
 }: UISectionListProps<T>) {
     const { colors } = useTheme();
     const styles = getListStyles(colors);
-    const lastSection = sections[sections.length - 1];
 
-    const refreshable = onRefresh && !loading;
+    const refreshable = !!onRefresh;
     const [refreshing, setRefreshing] = useState(false);
     async function doRefresh() {
         if (!onRefresh) return;
@@ -57,24 +56,35 @@ export function UISectionList<T = unknown>({
             ]);
         setRefreshing(false);
     }
-    const refreshControl = refreshable ? (
-        <RefreshControl refreshing={refreshing} onRefresh={doRefresh} />
-    ) : undefined;
+
 
     const SectionListImpl = bottomSheet ? BottomSheetSectionList : SectionList;
+
     return (
         <SectionListImpl
             scrollToOverflowEnabled={true}
             contentInsetAdjustmentBehavior={"automatic"}
+            refreshControl={refreshable ? (
+                <RefreshControl refreshing={refreshing} onRefresh={doRefresh} />
+            ) : undefined}
+
             extraData={[styles, renderItem]}
-            refreshControl={refreshControl}
-            sections={sections}
+            sections={loading ? [] : sections}
             keyExtractor={(x, i) => String(keyExtractor(x, i))}
+
             style={styles.list}
             contentContainerStyle={styles.listContents}
             ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+            SectionSeparatorComponent={() => <View style={styles.sectionSeparator} />}
+            ListEmptyComponent={
+                loading ? (
+                    <View style={styles.spinnerContainer}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : undefined
+            }
             renderSectionHeader={({ section }) => {
-                const title = section.title ?? renderHeader?.(section);
+                const title = renderHeader?.(section) ?? section.title;
 
                 if (typeof title !== "string") return null;
                 return (
@@ -84,12 +94,12 @@ export function UISectionList<T = unknown>({
                 );
             }}
             renderSectionFooter={({ section }) => {
-                const footer = section.footer ?? renderFooter?.(section);
+                const footer = renderFooter?.(section) ?? section.footer;
 
                 if (typeof footer !== "string") return null;
                 return (
                     <View style={styles.sectionFooter}>
-                        <UIText style={styles.sectionFooterText}>{section.footer}</UIText>
+                        <UIText style={styles.sectionFooterText}>{footer}</UIText>
                     </View>
                 );
             }}
@@ -100,7 +110,7 @@ export function UISectionList<T = unknown>({
 
                 return (
                     <View style={[styles.item, first && styles.firstItem, last && styles.lastItem]}>
-                        {renderItem(item, i, section)}
+                        <UIList.Row {...renderItem(item, i, section)} />
                     </View>
                 );
             }}

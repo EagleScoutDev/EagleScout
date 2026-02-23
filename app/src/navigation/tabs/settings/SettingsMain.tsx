@@ -86,9 +86,9 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
             </SafeAreaView>
 
             <UIList>
-                <UIList.Section>
+                <UIList.Card>
                     <AccountCard account={account} profile={profile} />
-                </UIList.Section>
+                </UIList.Card>
 
                 <UIList.Section title={"Account"}>
                     <UIList.Row

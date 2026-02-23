@@ -14,12 +14,14 @@ export interface UIListStyles {
     sectionHeaderText: StyleProp<TextStyle>;
     sectionFooter: StyleProp<ViewStyle>;
     sectionFooterText: StyleProp<TextStyle>;
+    sectionSeparator: StyleProp<ViewStyle>;
 
     itemSeparator: StyleProp<ViewStyle>;
 
     item: StyleProp<ViewStyle>;
     firstItem: StyleProp<ViewStyle>;
     lastItem: StyleProp<ViewStyle>;
+    itemInner: StyleProp<ViewStyle>;
 
     row: StyleProp<ViewStyle>;
     rowIconContainer: StyleProp<ViewStyle>;
@@ -58,6 +60,7 @@ export const getListStyles = (colors: Theme["colors"]): UIListStyles => ({
         opacity: 0.6,
         fontSize: 12,
     },
+    sectionSeparator: { height: 24 },
 
     itemSeparator: {
         borderBottomWidth: 1,
@@ -72,12 +75,6 @@ export const getListStyles = (colors: Theme["colors"]): UIListStyles => ({
         borderColor: colors.border.hex,
 
         width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 16,
-
-        paddingHorizontal: 12,
-        paddingVertical: 8,
     },
     firstItem: {
         borderTopWidth: 1,
@@ -89,10 +86,16 @@ export const getListStyles = (colors: Theme["colors"]): UIListStyles => ({
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
     },
+    itemInner: {
+        padding: 12,
+    },
 
     row: {
+        flex: 1,
         flexDirection: "row",
         alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 8,
         gap: 8,
     },
     rowIconContainer: {
@@ -109,5 +112,5 @@ export const getListStyles = (colors: Theme["colors"]): UIListStyles => ({
         alignItems: "center",
         justifyContent: "flex-end",
     },
-    rowCaret: { size: 16, fill: colors.primary.hex },
+    rowCaret: { size: 16, fill: colors.placeholder.hex },
 });

@@ -5,7 +5,7 @@ import { type FC, type ReactNode, type Ref, useImperativeHandle, useRef } from "
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
-import { UIList } from "@/ui/components/UIList";
+import { UISectionList } from "@/ui/components/UIList";
 import { KeyboardController } from "react-native-keyboard-controller";
 
 export interface UIListPickerProps<K extends string | number = string | number> {
@@ -18,7 +18,9 @@ export interface UIListPickerProps<K extends string | number = string | number> 
     onChange?: ((x: K) => void) | null | undefined;
 
     render: (key: K) => { name: string };
-    Display?: ReactNode | FC<{ value: K | null; present: () => void, render: (key: K) => { name: string } }>;
+    Display?:
+        | ReactNode
+        | FC<{ value: K | null; present: () => void; render: (key: K) => { name: string } }>;
 }
 export interface UIListPicker<K extends string | number = string | number> {
     present(): void;
@@ -101,24 +103,21 @@ export function UIListPicker<K extends string | number = string | number>({
                         },
                     ]}
                 />
-                <UIList>
-                    <UIList.Section>
-                        {options.map((key) => {
-                            const { name } = render(key);
-                            return (
-                                <UIList.Row
-                                    key={key.toString()}
-                                    label={name}
-                                    icon={value === key ? Bs.CheckLg : undefined}
-                                    onPress={() => {
-                                        onChange?.(key);
-                                        scheduleClose();
-                                    }}
-                                />
-                            );
-                        })}
-                    </UIList.Section>
-                </UIList>
+                <UISectionList
+                    sections={[{ data: options }]}
+                    keyExtractor={(key) => key.toString()}
+                    renderItem={(key) => {
+                        const { name } = render(key);
+                        return {
+                            label: name,
+                            icon: value === key ? Bs.CheckLg : undefined,
+                            onPress: () => {
+                                onChange?.(key);
+                                scheduleClose();
+                            },
+                        };
+                    }}
+                />
             </UISheetModal>
         </>
     );
