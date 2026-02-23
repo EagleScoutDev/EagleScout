@@ -18,7 +18,7 @@ export function useStackThemeConfig(): Readonly<NativeStackNavigationOptions> {
         headerBackTitle: "Back",
         headerBackButtonDisplayMode: "minimal",
 
-        sheetCornerRadius: Platform.OS === "ios" ? undefined : 24,
+        sheetCornerRadius: Platform.OS === "ios" ? undefined as never : 24,
         sheetShouldOverflowTopInset: false, //< FIXME: react-native-screens seems to forget about this when the bundle is reloaded??
     };
 }

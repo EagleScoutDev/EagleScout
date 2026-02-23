@@ -6,7 +6,6 @@ import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Compe
 import { Form } from "@/lib/forms";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
-import { UISectionList } from "@/ui/components/UISectionList";
 
 interface Question {
     question: string;

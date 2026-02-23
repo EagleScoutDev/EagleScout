@@ -1,12 +1,8 @@
-import { useMemo, useState, useRef, type ReactElement, type ReactNode, Children } from "react";
+import { Children, type ReactElement, type ReactNode } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
-import {
-    type SceneRendererProps,
-    TabBar,
-    type TabDescriptor,
-    TabView,
-    type TabViewProps,
-} from "react-native-tab-view";
+import { TabBar, type TabDescriptor, TabView, type TabViewProps } from "react-native-tab-view";
+import { Arrays } from "@/lib/util/Arrays";
+import Tab = UITabView.Tab;
 
 export interface UITabViewProps<T extends string> extends Pick<
     TabViewProps<any>,
@@ -14,7 +10,7 @@ export interface UITabViewProps<T extends string> extends Pick<
 > {
     currentKey?: T;
     onTabChange?: (tab: T) => void;
-    children: Arrays.ReadonlyRecursive<UITabView.TabProps>;
+    children: Arrays.ReadonlyRecursive<ReactElement<UITabView.TabProps, typeof Tab>>;
 }
 
 export function UITabView<T extends string>({
@@ -25,13 +21,18 @@ export function UITabView<T extends string>({
 }: UITabViewProps<T>) {
     const { colors } = useTheme();
 
-    const childrenArray = Children.toArray(children) as ReactElement<UITabView.TabProps>[];
+    const childrenArray = Children.toArray(children) as ReactElement<
+        UITabView.TabProps,
+        typeof Tab
+    >[];
     const routes = childrenArray.map(({ props }) => ({
         key: props.tabKey as T,
         title: props.title,
     }));
 
-    const content = new Map<T, ReactNode>(childrenArray.map(({ props }) => [props.tabKey as T, props.children]));
+    const content = new Map<T, ReactNode>(
+        childrenArray.map(({ props }) => [props.tabKey as T, props.children]),
+    );
 
     const extraOptions: TabDescriptor<any> = {
         sceneStyle: {
@@ -78,7 +79,7 @@ export namespace UITabView {
         children: ReactNode;
     }
 
-    export function Tab({ children }: TabProps) {
+    export function Tab({ children }: TabProps): ReactElement<TabProps, typeof Tab> {
         return <>{children}</>;
     }
 }

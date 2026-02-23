@@ -7,6 +7,7 @@ import { NoteList } from "@/components/NoteList";
 import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
 import { PitReportList } from "@/components/PitReportList";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import type { RootStackScreenProps } from "@/navigation";
 
 const Tab = createMaterialTopTabNavigator<ReportsForTeamParamList>();
 type ReportsForTeamParamList = {
@@ -19,7 +20,7 @@ export interface TeamReportsParams {
     team_number: number;
     competitionId: number;
 }
-export interface TeamReportsProps extends BrowseTabScreenProps<"TeamReports"> {}
+export interface TeamReportsProps extends RootStackScreenProps<"TeamReports"> {}
 export function TeamReports({
     route: {
         params: { team_number, competitionId },

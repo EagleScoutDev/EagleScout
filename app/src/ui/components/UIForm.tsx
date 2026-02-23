@@ -34,7 +34,7 @@ export namespace UIForm {
         value?: string | null | undefined;
         onChange?: ((value: string) => void) | null | undefined;
     }
-    export function TextInput({ label, secure = false, value, onChange }: TextInputProps): JSX.Element {
+    export function TextInput({ label, secure = false, value, onChange }: TextInputProps) {
         const { colors } = useTheme();
 
         return (
@@ -59,7 +59,7 @@ export namespace UIForm {
         value: number | null;
         onChange?: ((value: number | null) => void | undefined | boolean) | undefined;
     }
-    export function NumberInput({ label, value, onChange }: NumberInputProps): JSX.Element {
+    export function NumberInput({ label, value, onChange }: NumberInputProps) {
         const { colors } = useTheme();
 
         return (
@@ -156,7 +156,7 @@ export namespace UIForm {
         render,
         value,
         onChange,
-    }: ListPickerProps<K>): JSX.Element {
+    }: ListPickerProps<K>) {
         "use no memo";
         // FIXME: Try reenabling memoization
 
@@ -182,7 +182,7 @@ export namespace UIForm {
         value: boolean;
         onChange?: ((value: boolean) => void) | undefined;
     }
-    export function Switch({ label, value, onChange }: SwitchProps): JSX.Element {
+    export function Switch({ label, value, onChange }: SwitchProps) {
         return (
             <Item
                 label={label}
@@ -198,7 +198,7 @@ export namespace UIForm {
         onPress?: () => void | undefined;
         onLongPress?: () => void | undefined;
     }
-    export function Button({ label, color, onPress, onLongPress }: ButtonProps): JSX.Element {
+    export function Button({ label, color, onPress, onLongPress }: ButtonProps) {
         return (
             <Item
                 onPress={onPress}
