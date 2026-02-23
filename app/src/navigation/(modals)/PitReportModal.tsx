@@ -26,7 +26,7 @@ export const PitReportModal = UISheetModal.HOC<PitReportModalParams>(
         return (
             <>
                 <UISheetModal.Header
-                    title={"Match Report"}
+                    title={"Pit Report"}
                     right={[
                         {
                             role: "done",
