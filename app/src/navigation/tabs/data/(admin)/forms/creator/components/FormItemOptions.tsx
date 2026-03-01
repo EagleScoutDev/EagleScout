@@ -3,6 +3,7 @@ import { Arrays } from "@/lib/util/Arrays";
 import { UIForm } from "@/ui/components/UIForm";
 import { useTheme } from "@/ui/context/ThemeContext";
 import ItemType = Form.ItemType;
+import InputType = Form.InputType;
 
 export interface FormItemBuilderProps {
     value: Form.Item;
@@ -75,7 +76,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                     }),
 
                 value.type === ItemType.number &&
-                    !value.slider &&
+                    value.inputType === InputType.stepper &&
                     UIForm.Section({
                         items: [
                             UIForm.NumberInput({
@@ -98,7 +99,7 @@ export function FormItemOptions({ value, isNewItem, onChange, onDelete }: FormIt
                             }),
                         ],
                     }),
-                ...(value.type === ItemType.number && value.slider
+                ...(value.type === ItemType.number && value.inputType === InputType.slider
                     ? [
                           UIForm.Section({
                               items: [

@@ -14,6 +14,11 @@ export namespace Form {
         textbox = "textbox",
         number = "number",
     }
+    export enum InputType{
+        stepper = "stepper",
+        slider = "slider",
+        seconds = "seconds",
+    }
 
     interface BaseItem {
         type: ItemType;
@@ -30,7 +35,7 @@ export namespace Form {
         question: string;
         required: boolean;
     }
-    export type Question = Radio | Checkboxes | Textbox | Number | Slider;
+    export type Question = Radio | Checkboxes | Textbox | Number | Slider | Seconds;
 
     export interface Radio extends BaseQuestion {
         type: ItemType.radio;
@@ -46,14 +51,21 @@ export namespace Form {
     }
     export interface Number extends BaseQuestion {
         type: ItemType.number;
-        slider: false;
+        inputType: InputType.stepper;
+        low: number | null;
+        high: number | null;
+        step: number;
+    }
+    export interface Seconds extends BaseQuestion {
+        type: ItemType.number;
+        inputType: InputType.seconds;
         low: number | null;
         high: number | null;
         step: number;
     }
     export interface Slider extends BaseQuestion {
         type: ItemType.number;
-        slider: true;
+        inputType: InputType.slider;
         low: number;
         high: number;
         step: number;

@@ -284,9 +284,10 @@ export function MatchOverview ({route: {
                             <Pressable
                                 key={team.key}
                                 onPress={() => {
-                                    navigation.navigate('TeamViewer', {
-                                        team: team,
-                                        competitionId: competitionId,
+                                    console.log("pressed");
+                                    rootNavigation.push("MatchOverview", {
+                                        matchNumber: Number(matchNumber),
+                                        alliance: selectedAlliance
                                     });
                                 }}>
                                 <View
