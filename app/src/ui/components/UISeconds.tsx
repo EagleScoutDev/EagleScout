@@ -30,7 +30,7 @@ export function UISeconds({ value, onInput, disabled = false }: UISecondsProps) 
         if (!holding) return;
 
         const update = setInterval(() => {
-            setDisplayValue((baseRef.current + (Date.now() - startHolding.current))/1000);
+            setDisplayValue((baseRef.current + (Date.now() - startHolding.current)/1000));
         }, 50);
 
         return () => clearInterval(update);
@@ -55,7 +55,7 @@ export function UISeconds({ value, onInput, disabled = false }: UISecondsProps) 
                     if (disabled) return;
                     setHolding(false);
 
-                    onInput?.((value + (Date.now() - startHolding.current))/1000);
+                    onInput?.((value + (Date.now() - startHolding.current)/1000));
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
                 }}
             >
