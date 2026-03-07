@@ -25,12 +25,10 @@ export type AutoState = Readonly<{
     field: {
         readonly pieces: [
             _: undefined,
-            la: AutoPieceState,
-            ca: AutoPieceState,
-            ra: AutoPieceState,
-            lc: AutoPieceState,
-            cc: AutoPieceState,
-            rc: AutoPieceState,
+            human: AutoPieceState,
+            square: AutoPieceState,
+            mid: AutoPieceState,
+            alliance: AutoPieceState,
         ];
     };
 }>;
@@ -57,7 +55,7 @@ export function AutoState(): AutoState {
             climbL3: 0,
         },
         field: {
-            pieces: [undefined, null, null, null, null, null, null],
+            pieces: [undefined, null, null, null, null],
         },
     };
 }
@@ -68,6 +66,9 @@ export enum AutoActionType {
     Obstacle,
     Climb
 }
+
+const MIDDLE_INTAKE_TARGET = 5;
+const ALLIANCE_INTAKE_TARGET = 6;
 
 export type AutoPath = (AutoAction & { order: number })[]; // TODO: get rid of this extra property
 export type AutoAction = AutoAction.Intake | AutoAction.Obstacle | AutoAction.Score | AutoAction.Climb ;
@@ -80,7 +81,6 @@ export namespace AutoAction {
     export interface Obstacle {
         type: AutoActionType.Obstacle;
         target: number;
-        success: boolean;
     }
     export interface Score {
         type: AutoActionType.Score;
@@ -114,8 +114,16 @@ export namespace AutoAction {
 
             case AutoActionType.Obstacle:
                 return produce(state, (draft) => {
+                    const previousAction = draft.path[draft.path.length - 1];
                     draft.path.push({ ...action, order: draft.order });
-
+                    draft.order++;
+                    draft.path.push({
+                        type: AutoActionType.Intake,
+                        target: previousAction?.type === AutoActionType.Intake &&
+                        previousAction.target === MIDDLE_INTAKE_TARGET ? ALLIANCE_INTAKE_TARGET : MIDDLE_INTAKE_TARGET,
+                        success: true,
+                        order: draft.order,
+                    });
                     draft.order++;
                 });
 
@@ -139,6 +147,9 @@ export namespace AutoAction {
 
                     switch (action.type) {
                         case AutoActionType.Obstacle:
+                            draft.field.pieces[action.target] = null;
+                            break;
+                        case AutoActionType.Intake:
                             draft.field.pieces[action.target] = null;
                             break;
                         case AutoActionType.Climb:

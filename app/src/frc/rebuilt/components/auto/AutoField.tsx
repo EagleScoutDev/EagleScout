@@ -1,22 +1,25 @@
-import { Pressable, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
-import type { AutoPieceState, AutoState } from "../../auto";
-import { Alliance, Orientation } from "@/frc/common/common";
-import { ReefSextant } from "../../field";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { Color } from "@/ui/lib/color";
-import { UIText } from "@/ui/components/UIText";
+import {Pressable, View} from "react-native";
+import Svg, {Path} from "react-native-svg";
+import type {AutoPieceState, AutoState} from "../../auto";
+import {Alliance, Orientation} from "@/frc/common/common";
+import {Obstacles} from "../../field";
+import {useTheme} from "@/ui/context/ThemeContext";
+import {Color} from "@/ui/lib/color";
+import {UIText} from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
 
 export interface AutoFieldProps {
     orientation: Orientation;
     alliance: Alliance;
-    onReef: (sextant: ReefSextant) => void;
-    onPiece: (piece: number) => void;
+    onObstacle: (obstacle: Obstacles) => void;
+    onIntake: (piece: number) => void;
     state: AutoState["field"];
 }
-export function AutoField({ orientation, alliance, onReef, onPiece, state }: AutoFieldProps) {
+export function AutoField({ orientation, alliance, onObstacle, onIntake, state }: AutoFieldProps) {
     const leftSide = alliance === Orientation.getLeft(orientation);
+    const colour1 = (alliance === Alliance.blue ? "#0b6fdf" : "#e43737")
+    const colour2 = (alliance === Alliance.blue ? "#0664cc" : "#cf1d1d")
+
 
     return (
         <View
@@ -40,9 +43,22 @@ export function AutoField({ orientation, alliance, onReef, onPiece, state }: Aut
                     gap: 16,
                 }}
             >
-                {([1, 2, 3] as const).map((id) => (
-                    <Piece key={id} type={"algae"} state={state.pieces[id]} onPress={() => onPiece(id)} />
-                ))}
+                <Svg width="133" height="428" viewBox="0 0 133 428" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <Path fill="#fff" d="M0 0h133v428H0z"/>
+                    <Path fill="#d9d9d9" stroke="#000" d="M32.449 178.122h71.992v71.992H32.449z"/>
+                    <Path d="m92.579 214.324-12.2 21.13-24.399.001-12.199-21.131 12.2-21.129 24.399-.001z" stroke="#000"
+                          strokeWidth="6"/>
+                    <Path d="m99.662 214.088-15.623 27.06H52.792l-15.623-27.06 15.624-27.06 31.246-.001z"
+                          stroke="#fb4949" strokeWidth="6"/>
+                    <Path fill={colour1} stroke="#000" d="M38.99 250.51h60.731v91.596H38.99z" onPress={()=>onObstacle(Obstacles.B1)}/>
+                    <Path fill={colour2} fillOpacity=".9" stroke="#000" d="M38.99 250.51h31.923v91.596H38.99z" onPress={()=>onObstacle(Obstacles.B1)}/>
+                    <Path fill={colour1} stroke="#000" d="M38.99 85.894h60.731v91.596H38.99z" onPress={()=>onObstacle(Obstacles.B2)}/>
+                    <Path fill={colour2} fillOpacity=".9" stroke="#000" d="M38.99 85.894h31.923v91.596H38.99z" onPress={()=>onObstacle(Obstacles.B2)}/>
+                    <Path stroke="#000" d="M38.99 343.106h60.731V427.5H38.99z"/>
+                    <Path stroke={colour1} strokeWidth="5" d="M70.827 343.635v83.336"/>
+                    <Path stroke="#000" d="M38.99.5h60.731v84.394H38.99z"/>
+                    <Path stroke={colour1} strokeWidth="5" d="M70.827 1.029v83.336"/>
+                </Svg>
             </View>
             <View
                 style={{
@@ -54,42 +70,10 @@ export function AutoField({ orientation, alliance, onReef, onPiece, state }: Aut
                     gap: 16,
                 }}
             >
-                {([4, 5, 6] as const).map((id) => (
-                    <Piece key={id} type={"Coral"} state={state.pieces[id]} onPress={() => onPiece(id)} />
+                {([1, 2] as const).map((id) => (
+                    <Piece key={id} type={"Coral"} state={state.pieces[id]} onPress={() => onIntake(id)}/>
                 ))}
             </View>
-            <Svg
-                style={{ flexShrink: 1 }}
-                width="220"
-                height="200"
-                viewBox="0 0 310 283"
-                fill={alliance === Alliance.blue ? "#0b6fdf" : "#e43737"}
-            >
-                <Path
-                    d="M164 113c-4 8-16 8-20 0L89 19c-5-8 1-18 10-18h110c9 0 15 10 10 18l-55 94Z"
-                    onPress={() => onReef(ReefSextant.GH)}
-                />
-                <Path
-                    d="M188 134c-9 0-15-10-10-18l54-94c5-8 17-8 21 0l55 94c4 8-1 18-11 18H188Z"
-                    onPress={() => onReef(ReefSextant.EF)}
-                />
-                <Path
-                    d="M178 163c-5-8 1-18 10-18h109c10 0 15 10 11 18l-55 95c-4 8-16 8-21 0l-54-95Z"
-                    onPress={() => onReef(ReefSextant.CD)}
-                />
-                <Path
-                    d="M144 170c4-8 16-8 20 0l55 94c4 8-1 18-11 18H99c-9 0-15-10-10-18l55-94Z"
-                    onPress={() => onReef(ReefSextant.AB)}
-                />
-                <Path
-                    d="M122 146c9 0 15 10 11 18l-55 94c-5 8-16 8-21 0L3 164c-5-8 1-18 10-18h109Z"
-                    onPress={() => onReef(ReefSextant.KL)}
-                />
-                <Path
-                    d="M132 116c4 8-1 18-11 18H12c-9 0-15-10-10-18l54-94c5-8 17-8 21 0l55 94Z"
-                    onPress={() => onReef(ReefSextant.IJ)}
-                />
-            </Svg>
         </View>
     );
 }
@@ -112,7 +96,7 @@ function Piece({ type, state, onPress }: PieceProps) {
                 borderWidth: 1,
                 width: 50,
                 height: 50,
-                borderRadius: 25,
+                borderRadius: 5,
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 1,

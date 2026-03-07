@@ -26,13 +26,14 @@ export function AutoPathView({ path }: { path: AutoPath }) {
 
     const autoPathSvgs = [];
 
-    let prev: AutoAction.Obstacle | AutoAction.Climb | undefined = undefined;
+    let prev: AutoAction.Intake | AutoAction.Obstacle | AutoAction.Climb | undefined = undefined;
     let order = 0;
     for (const node of path) {
-        if (!isDisplayedAction(node)) return;
+        if (!isDisplayedAction(node)) continue;
 
         if (prev === undefined) {
-            autoPathSvgs.push(<NodeToStartingLine nodeId={path.find(isDisplayedAction)!.target - 1} />);
+            autoPathSvgs.push(<NodeToStartingLine nodeId={node.target - 1} />);
+            prev = node;
         } else {
             autoPathSvgs.push(
                 <NodeToNodeLine nodeId1={prev.target - 1} nodeId2={node.target - 1} order={order} />,
@@ -54,20 +55,20 @@ export function AutoPathView({ path }: { path: AutoPath }) {
         >
             <Svg width="357" height="315" viewBox="0 0 513 448" fill="none">
                 <Rect width="513" height="448" fill="#0F1216" />
-                <Rect x="14" y="17" width="58" height="186" stroke="#677EF5" stroke-width="6" />
-                <Rect x="14" y="240" width="58" height="186" stroke="#FB4949" stroke-width="6" />
+                <Rect x="14" y="17" width="58" height="186" stroke="#677EF5" strokeWidth="6" />
+                <Rect x="14" y="240" width="58" height="186" stroke="#FB4949" strokeWidth="6" />
                 <Path
                     d="M219.905 195.232L268 167.464L316.095 195.232V250.768L268 278.536L219.905 250.768V195.232Z"
                     stroke="#3A3A3A"
-                    stroke-width="6"
+                    strokeWidth="6"
                 />
-                <Path d="M6 432H414.5L501.5 367.5V77L414.5 13.5H6" stroke="#3A3A3A" stroke-width="6" />
+                <Path d="M6 432H414.5L501.5 367.5V77L414.5 13.5H6" stroke="#3A3A3A" strokeWidth="6" />
                 <Path
                     d="M206.847 187.482L267.5 152.464L328.153 187.482V257.518L267.5 292.536L206.847 257.518V187.482Z"
                     stroke="#FB4949"
-                    stroke-width="6"
+                    strokeWidth="6"
                 />
-                <Line x1="106" y1="14" x2="106" y2="432" stroke="#3A3A3A" stroke-width="6" />
+                <Line x1="106" y1="14" x2="106" y2="432" stroke="#3A3A3A" strokeWidth="6" />
                 <Rect x="38" y="271" width="11" height="11" fill="#FB4949" />
                 <Rect x="38" y="327" width="11" height="11" fill="#FB4949" />
                 <Rect x="38" y="383" width="11" height="11" fill="#FB4949" />
@@ -76,7 +77,7 @@ export function AutoPathView({ path }: { path: AutoPath }) {
                 <Rect x="38" y="160" width="11" height="11" fill="#677EF5" />
                 <Rect x="28" y="206" width="30" height="31" fill="#3A3A3A" />
                 {new Array(12).fill(0).map((_, i) => (
-                    <DefaultNode nodeId={i} />
+                    <DefaultNode key={i} nodeId={i} />
                 ))}
                 {autoPathSvgs}
             </Svg>
@@ -84,8 +85,12 @@ export function AutoPathView({ path }: { path: AutoPath }) {
     );
 }
 
-function isDisplayedAction(action: AutoAction): action is AutoAction.Intake | AutoAction.Reef {
-    return action.type === AutoActionType.Intake || action.type === AutoActionType.Reef;
+function isDisplayedAction(action: AutoAction): action is AutoAction.Intake | AutoAction.Obstacle | AutoAction.Climb {
+    return (
+        action.type === AutoActionType.Intake ||
+        action.type === AutoActionType.Obstacle ||
+        action.type === AutoActionType.Climb
+    );
 }
 
 const nodePositions = [

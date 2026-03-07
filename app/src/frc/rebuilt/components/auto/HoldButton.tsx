@@ -75,18 +75,19 @@ const getStyles = (colors: Theme["colors"]) =>
         button: {
             alignItems: "center",
             justifyContent: "center",
+            aspectRatio: 2/3,
             borderRadius: 8,
             height: 200,
             flex: 1,
         },
         number: {
-            fontSize: 80,
+            fontSize: 50,
             fontWeight: "bold",
             textAlign: "center",
             color: colors.fg.hex,
         },
         text: {
-            fontSize: 100,
+            fontSize: 40,
             fontWeight: "bold",
             textAlign: "center",
             color: colors.fg.hex,

@@ -1,26 +1,20 @@
-export enum ReefSextant {
-    AB = 11,
-    CD = 9,
-    EF = 12,
-    GH = 7,
-    IJ = 8,
-    KL = 10,
+export enum Obstacles {
+    B1 = 1,
+    B2 = 2,
+    T1 = 3,
+    T2 = 4,
 }
-export namespace ReefSextant {
-    export function abbreviation(sx: ReefSextant) {
+export namespace Obstacles {
+    export function abbreviation(sx: Obstacles) {
         switch (sx) {
-            case ReefSextant.AB:
-                return "AB";
-            case ReefSextant.CD:
-                return "CD";
-            case ReefSextant.EF:
-                return "EF";
-            case ReefSextant.GH:
-                return "GH";
-            case ReefSextant.IJ:
-                return "IJ";
-            case ReefSextant.KL:
-                return "KL";
+            case Obstacles.B1:
+                return "B1";
+            case Obstacles.B2:
+                return "B2";
+            case Obstacles.T1:
+                return "T1";
+            case Obstacles.T2:
+                return "T2";
         }
     }
 }
