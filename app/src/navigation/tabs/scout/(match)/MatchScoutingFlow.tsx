@@ -15,8 +15,8 @@ import { MatchInformation } from "../components/MatchInformation";
 import { FormView } from "@/components/FormView";
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
-import * as Reefscape from "@/frc/reefscape";
-import { AutoAction, AutoState } from "@/frc/reefscape";
+import * as Rebuilt from "@/frc/rebuilt";
+import { AutoAction, AutoState } from "@/frc/rebuilt";
 import { produce } from "immer";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
@@ -277,7 +277,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             />
 
             <UISheetModal ref={autoModalRef}>
-                <Reefscape.AutoModal
+                <Rebuilt.AutoModal
                     orientation={orientation}
                     alliance={alliance}
                     state={autoState}

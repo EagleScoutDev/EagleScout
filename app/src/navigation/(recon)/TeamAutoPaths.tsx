@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import type { BrowseTabScreenProps } from "../index";
-import * as Reefscape from "@/frc/reefscape";
+import * as Rebuilt from "@/frc/rebuilt";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
@@ -17,7 +17,7 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
     const { team_number, competitionId } = route.params;
     const { colors } = useTheme();
 
-    const [autoPaths, setAutoPaths] = useState<Reefscape.AutoPath[] | undefined>();
+    const [autoPaths, setAutoPaths] = useState<Rebuilt.AutoPath[] | undefined>();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     useEffect(() => {
@@ -29,10 +29,11 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
                 team_number,
                 competition.id,
             );
+            if (!reports){return;}
             setAutoPaths(
                 reports
                     .map((report) => report.autoPath)
-                    .filter((autoPath) => autoPath) as Reefscape.AutoPath[],
+                    .filter((autoPath) => autoPath) as Rebuilt.AutoPath[],
             );
         });
     }, [team_number]);
@@ -52,7 +53,7 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
                         {autoPaths ? `Path ${currentIndex + 1} of ${autoPaths.length}` : ""}
                     </UIText>
                     {autoPaths ? (
-                        <Reefscape.AutoPathView path={autoPaths[currentIndex]!} />
+                        <Rebuilt.AutoPathView path={autoPaths[currentIndex]!} />
                     ) : (
                         <UIText size={25}>No auto paths found</UIText>
                     )}

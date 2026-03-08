@@ -65,7 +65,6 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                         alliance={alliance}
                         state={state.field}
                         onObstacle={(obstacle: Obstacles) => {
-                            if (state.field.pieces[obstacle] !== undefined) return;
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             dispatch({
                                 type: AutoActionType.Obstacle,
@@ -73,7 +72,7 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                             });
                         }}
                         onIntake={(piece: number) => {
-                            if (state.field.pieces[piece] !== undefined) return;
+                            if (state.field.pieces[piece] !== null) return;
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             dispatch({
                                 type: AutoActionType.Intake,

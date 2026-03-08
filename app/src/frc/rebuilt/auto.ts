@@ -67,8 +67,8 @@ export enum AutoActionType {
     Climb
 }
 
-const MIDDLE_INTAKE_TARGET = 5;
-const ALLIANCE_INTAKE_TARGET = 6;
+const MIDDLE_INTAKE_TARGET = 3;
+const ALLIANCE_INTAKE_TARGET = 4;
 
 export type AutoPath = (AutoAction & { order: number })[]; // TODO: get rid of this extra property
 export type AutoAction = AutoAction.Intake | AutoAction.Obstacle | AutoAction.Score | AutoAction.Climb ;
@@ -119,8 +119,11 @@ export namespace AutoAction {
                     draft.order++;
                     draft.path.push({
                         type: AutoActionType.Intake,
-                        target: previousAction?.type === AutoActionType.Intake &&
-                        previousAction.target === MIDDLE_INTAKE_TARGET ? ALLIANCE_INTAKE_TARGET : MIDDLE_INTAKE_TARGET,
+                        target:
+                            previousAction?.type === AutoActionType.Intake &&
+                            previousAction.target === MIDDLE_INTAKE_TARGET
+                                ? ALLIANCE_INTAKE_TARGET
+                                : MIDDLE_INTAKE_TARGET,
                         success: true,
                         order: draft.order,
                     });

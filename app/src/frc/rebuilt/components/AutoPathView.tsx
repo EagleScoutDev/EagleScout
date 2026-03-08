@@ -1,8 +1,8 @@
-import { Circle, G, Line, Path, Rect, Svg } from "react-native-svg";
-import { View } from "react-native";
-import { AutoAction, AutoActionType, type AutoPath } from "../auto";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { UIText } from "@/ui/components/UIText";
+import {Circle, G, Line, Path, Rect, Svg} from "react-native-svg";
+import {View} from "react-native";
+import {AutoAction, AutoActionType, type AutoPath} from "../auto";
+import {useTheme} from "@/ui/context/ThemeContext";
+import {UIText} from "@/ui/components/UIText";
 
 export function AutoPathView({ path }: { path: AutoPath }) {
     const { colors } = useTheme();
@@ -24,7 +24,8 @@ export function AutoPathView({ path }: { path: AutoPath }) {
         );
     }
 
-    const autoPathSvgs = [];
+    const autoPathLines = [];
+    const autoPathNodes = [];
 
     let prev: AutoAction.Intake | AutoAction.Obstacle | AutoAction.Climb | undefined = undefined;
     let order = 0;
@@ -32,12 +33,31 @@ export function AutoPathView({ path }: { path: AutoPath }) {
         if (!isDisplayedAction(node)) continue;
 
         if (prev === undefined) {
-            autoPathSvgs.push(<NodeToStartingLine nodeId={node.target - 1} />);
+            autoPathLines.push(<NodeToStartingLine key={`start-line-${order}`} nodeId={node.target - 1} />);
+            autoPathNodes.push(<StartMarker key={`start-marker-${order}`} />);
+            autoPathNodes.push(
+                <ActiveNode
+                    key={`node-${order}`}
+                    nodeId={node.target - 1}
+                    status={node.type === AutoActionType.Obstacle ? "success" : node.success ? "success" : "missed"}
+                />,
+            );
             prev = node;
         } else {
-            autoPathSvgs.push(
-                <NodeToNodeLine nodeId1={prev.target - 1} nodeId2={node.target - 1} order={order} />,
-                <ActiveNode nodeId={node.target - 1} status={node.success ? "success" : "missed"} />,
+            autoPathLines.push(
+                <NodeToNodeLine
+                    key={`line-${order}`}
+                    nodeId1={prev.target - 1}
+                    nodeId2={node.target - 1}
+                    order={order}
+                />,
+            );
+            autoPathNodes.push(
+                <ActiveNode
+                    key={`node-${order}`}
+                    nodeId={node.target - 1}
+                    status={node.type === AutoActionType.Obstacle ? "success" : node.success ? "success" : "missed"}
+                />,
             );
             prev = node;
             order++;
@@ -53,34 +73,41 @@ export function AutoPathView({ path }: { path: AutoPath }) {
                 borderRadius: 10,
             }}
         >
-            <Svg width="357" height="315" viewBox="0 0 513 448" fill="none">
-                <Rect width="513" height="448" fill="#0F1216" />
-                <Rect x="14" y="17" width="58" height="186" stroke="#677EF5" strokeWidth="6" />
-                <Rect x="14" y="240" width="58" height="186" stroke="#FB4949" strokeWidth="6" />
-                <Path
-                    d="M219.905 195.232L268 167.464L316.095 195.232V250.768L268 278.536L219.905 250.768V195.232Z"
-                    stroke="#3A3A3A"
-                    strokeWidth="6"
-                />
-                <Path d="M6 432H414.5L501.5 367.5V77L414.5 13.5H6" stroke="#3A3A3A" strokeWidth="6" />
-                <Path
-                    d="M206.847 187.482L267.5 152.464L328.153 187.482V257.518L267.5 292.536L206.847 257.518V187.482Z"
-                    stroke="#FB4949"
-                    strokeWidth="6"
-                />
-                <Line x1="106" y1="14" x2="106" y2="432" stroke="#3A3A3A" strokeWidth="6" />
-                <Rect x="38" y="271" width="11" height="11" fill="#FB4949" />
-                <Rect x="38" y="327" width="11" height="11" fill="#FB4949" />
-                <Rect x="38" y="383" width="11" height="11" fill="#FB4949" />
-                <Rect x="38" y="48" width="11" height="11" fill="#677EF5" />
-                <Rect x="38" y="104" width="11" height="11" fill="#677EF5" />
-                <Rect x="38" y="160" width="11" height="11" fill="#677EF5" />
-                <Rect x="28" y="206" width="30" height="31" fill="#3A3A3A" />
-                {new Array(12).fill(0).map((_, i) => (
-                    <DefaultNode key={i} nodeId={i} />
+            <Svg width="512" height="428" viewBox="0 0 512 428" fill="none">
+                <G clip-path="url(#clip0_2004_2)">
+                    <Rect width="512" height="428" fill="white"/>
+                    <Rect x="442" y="297" width="65" height="65" stroke="#FB4949" stroke-width="2"/>
+                    <Path d="M497 20H506V57.5V60.5V95H497V20Z" fill="#D9D9D9"/>
+                    <Path d="M430 148H506V183V185.8V218H430V148Z" fill="#D9D9D9"/>
+                    <Line x1="0.996825" y1="3.59796" x2="511.996" y2="3" stroke="black" stroke-width="6"/>
+                    <Line x1="1" y1="425" x2="508" y2="425" stroke="black" stroke-width="6"/>
+                    <Line x1="509" y1="87" x2="509" y2="335" stroke="white" stroke-width="6"/>
+                    <Line x1="509" y1="428" x2="509" y2="6" stroke="black" stroke-width="6"/>
+                    <Line x1="438.5" y1="154" x2="438.5" y2="211" stroke="#FB4949" stroke-width="3"/>
+                    <Rect x="155.142" y="179.142" width="69.9459" height="69.9459" fill="#D9D9D9" stroke="black"/>
+                    <Path
+                        d="M213.474 214.315L201.666 234.768L178.047 234.769L166.239 214.315L178.048 193.862L201.665 193.861L213.474 214.315Z"
+                        stroke="black" stroke-width="6"/>
+                    <Path
+                        d="M220.36 214.086L205.224 240.303L174.949 240.304L159.813 214.085L174.949 187.868L205.223 187.868L220.36 214.086Z"
+                        stroke="#FB4949" stroke-width="6"/>
+                    <Rect x="161.5" y="249.5" width="59" height="89" fill="#FB4949" stroke="black"/>
+                    <Rect x="161.5" y="249.5" width="31" height="89" fill="#FF3434" fill-opacity="0.9" stroke="black"/>
+                    <Rect x="161.5" y="89.5" width="59" height="89" fill="#FB4949" stroke="black"/>
+                    <Rect x="161.5" y="89.5" width="31" height="89" fill="#FF3434" fill-opacity="0.9" stroke="black"/>
+                    <Rect x="161.5" y="339.5" width="59" height="82" stroke="black"/>
+                    <Line x1="192.5" y1="340" x2="192.5" y2="421" stroke="#FB4949" stroke-width="5"/>
+                    <Rect x="161.5" y="6.5" width="59" height="82" stroke="black"/>
+                    <Line x1="192.5" y1="7" x2="192.5" y2="88" stroke="#FB4949" stroke-width="5"/>
+                </G>
+                <Rect x="0.5" y="0.5" width="511" height="427" stroke="black"/>
+                {autoPathLines}
+                {new Array(8).fill(0).map((_, i) => (
+                    <DefaultNode key={i} nodeId={i}/>
                 ))}
-                {autoPathSvgs}
+                {autoPathNodes}
             </Svg>
+
         </View>
     );
 }
@@ -88,46 +115,48 @@ export function AutoPathView({ path }: { path: AutoPath }) {
 function isDisplayedAction(action: AutoAction): action is AutoAction.Intake | AutoAction.Obstacle | AutoAction.Climb {
     return (
         action.type === AutoActionType.Intake ||
-        action.type === AutoActionType.Obstacle ||
-        action.type === AutoActionType.Climb
+        action.type === AutoActionType.Obstacle
+        // ||
+        // action.type === AutoActionType.Climb
     );
 }
 
 const nodePositions = [
     // Game pieces
-    { x: 439, y: 318 },
-    { x: 439, y: 223 },
-    { x: 439, y: 125 },
-    { x: 439, y: 318 },
-    { x: 439, y: 223 },
-    { x: 439, y: 125 },
 
-    // Scoring on field
-    { x: 200, y: 225 },
-    { x: 232, y: 163 },
-    { x: 340, y: 225 },
-    { x: 308, y: 287 },
-    { x: 308, y: 163 },
-    { x: 232, y: 287 },
+    {x: 439, y: 20}, //hp
+    {x: 439, y: 325}, //box
+    {x: 100, y: 217}, //mid
+    {x: 280, y: 217}, //alliance
+    {x: 192, y: 130}, //b1
+    {x: 192, y: 300}, //b2
+    {x: 192, y: 45}, //t1
+    {x: 192, y: 380}, //t2
+
 ];
 
-function NodeToStartingLine({ nodeId }: { nodeId: number }) {
+function NodeToStartingLine({nodeId}: { nodeId: number }) {
+    const [x,y] = [350,217]
     return (
         <>
             <Line
                 x1={nodePositions[nodeId].x}
                 y1={nodePositions[nodeId].y}
-                x2="105"
-                y2="224"
+                x2={x}
+                y2={y}
                 stroke="hsl(230,85%,30%)"
                 strokeWidth="7"
             />
-            <Circle cx="105" cy="224" r="12" fill="#637AF4" />
         </>
     );
 }
 
-function NodeToNodeLine({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2: number; order: number }) {
+function StartMarker() {
+    const [x, y] = [350, 217];
+    return <Circle cx={x} cy={y} r="12" fill="#637AF4" />;
+}
+
+function NodeToNodeLine({nodeId1, nodeId2, order}: { nodeId1: number; nodeId2: number; order: number }) {
     return (
         <Line
             x1={nodePositions[nodeId1].x}
@@ -140,7 +169,7 @@ function NodeToNodeLine({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2:
     );
 }
 
-function DefaultNode({ nodeId }: { nodeId: number }) {
+function DefaultNode({nodeId}: { nodeId: number }) {
     return (
         <Circle
             cx={nodePositions[nodeId].x}
@@ -157,7 +186,8 @@ interface ActiveNodeProps {
     nodeId: number;
     status: "success" | "missed";
 }
-function ActiveNode({ nodeId, status }: ActiveNodeProps) {
+
+function ActiveNode({nodeId, status}: ActiveNodeProps) {
     return (
         <>
             <Circle cx={nodePositions[nodeId].x} cy={nodePositions[nodeId].y} r="12" fill="#637AF4" />

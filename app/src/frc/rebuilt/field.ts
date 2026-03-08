@@ -1,8 +1,8 @@
 export enum Obstacles {
-    B1 = 1,
-    B2 = 2,
-    T1 = 3,
-    T2 = 4,
+    B1 = 5,
+    B2 = 6,
+    T1 = 7,
+    T2 = 8,
 }
 export namespace Obstacles {
     export function abbreviation(sx: Obstacles) {
