@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "postinstall": "patch-package && npm run codegen",
+    "test": "jest",
     "start": "expo start",
     "prebuild": "expo prebuild --clean",
     "android": "npm run prebuild && expo run:android",

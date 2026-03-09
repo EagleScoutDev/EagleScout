@@ -8,6 +8,8 @@ on:
 jobs:
   build_aab:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
 
     steps:
       - name: Checkout repository
@@ -18,7 +20,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -31,7 +32,7 @@ jobs:
 
       - name: Generate Android native project
         working-directory: app
-        run: npx expo prebuild --platform android --non-interactive
+        run: CI=1 npx expo prebuild --platform android
 
       - name: Decode and save the keystore file
         working-directory: app/android/app
@@ -55,6 +56,8 @@ jobs:
 
   build_apk:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
 
     steps:
       - name: Checkout repository
@@ -65,7 +68,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -78,7 +80,7 @@ jobs:
 
       - name: Generate Android native project
         working-directory: app
-        run: npx expo prebuild --platform android --non-interactive
+        run: CI=1 npx expo prebuild --platform android
 
       - name: Decode and save the keystore file
         working-directory: app/android/app
