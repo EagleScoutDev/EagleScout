@@ -1,4 +1,5 @@
-import { ConfigPlugin, withAppDelegate, withInfoPlist, withMainApplication, withStringsXml } from "expo/config-plugins";
+import type { ConfigPlugin } from "expo/config-plugins";
+import { withAppDelegate, withInfoPlist, withMainApplication, withStringsXml } from "expo/config-plugins";
 
 interface StallionPluginOptions {
     projectId: string;
@@ -16,17 +17,26 @@ const withStallion: ConfigPlugin<StallionPluginOptions> = (config, options) => {
             throw new Error(`Expected ${config.modResults.path} language to be swift`);
         }
 
-        config.modResults.contents =
-            "import react_native_stallion\n" +
-            config.modResults.contents.replace(
-                'Bundle.main.url(forResource: "main", withExtension: "jsbundle")',
-                "StallionModule.getBundleURL()",
-            );
+        let contents = config.modResults.contents;
+        if (!contents.includes("import react_native_stallion")) {
+            contents = `import react_native_stallion\n${contents}`;
+        }
+        contents = contents.replace(
+            'Bundle.main.url(forResource: "main", withExtension: "jsbundle")',
+            "StallionModule.getBundleURL()",
+        );
+
+        config.modResults.contents = contents;
         return config;
     });
 
     config = withStringsXml(config, (config) => {
-        config.modResults.resources.string?.push(
+        const strings = config.modResults.resources.string ?? [];
+        config.modResults.resources.string = strings.filter(
+            (entry) => entry.$.name !== "StallionProjectId" && entry.$.name !== "StallionAppToken",
+        );
+
+        config.modResults.resources.string.push(
             {
                 $: { name: "StallionProjectId", translatable: "false" },
                 _: options.projectId,
@@ -43,12 +53,22 @@ const withStallion: ConfigPlugin<StallionPluginOptions> = (config, options) => {
             throw new Error(`Expected ${config.modResults.path} language to be kotlin`);
         }
 
-        config.modResults.contents = config.modResults.contents
-            .replace(/(?<=package.*\n)/, "\nimport com.stallion.Stallion")
-            .replace(
+        const stallionImport = "import com.stallion.Stallion";
+        const stallionBundleLine =
+            "override fun getJSBundleFile(): String? = Stallion.getJSBundleFile(applicationContext)";
+
+        let contents = config.modResults.contents;
+        if (!contents.includes(stallionImport)) {
+            contents = contents.replace(/(?<=package.*\n)/, `\n${stallionImport}`);
+        }
+        if (!contents.includes(stallionBundleLine)) {
+            contents = contents.replace(
                 /(?<=override val isNewArchEnabled: Boolean = BuildConfig\.IS_NEW_ARCHITECTURE_ENABLED)/,
-                "\n\n          override fun getJSBundleFile(): String? = Stallion.getJSBundleFile(applicationContext)",
+                `\n\n          ${stallionBundleLine}`,
             );
+        }
+
+        config.modResults.contents = contents;
         return config;
     });
 
