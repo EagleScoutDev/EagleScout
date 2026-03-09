@@ -27,7 +27,6 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
     const { colors } = useTheme();
 
     const [obstacle, setObstacle] = useState<Obstacles | null>(null);
-    const levelChooserActive = obstacle !== null;
 
     const modal = useBottomSheetModal();
     return (
@@ -115,28 +114,3 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
         </>
     );
 }
-//
-// interface LevelChooserProps {
-//     reefSextant: Obstacles;
-//     onPress: (value: [level: 0 | 1 | 2, success: boolean]) => void;
-// }
-//
-// function LevelChooser({ reefSextant, onPress }: LevelChooserProps) {
-//     return (
-//         <ActionGrid
-//             title={`Reef ${Obstacles.abbreviation(reefSextant)}`}
-//             options={[
-//                 [
-//                     { text: "Climb L3", role: "success", value: [2, true] },
-//                 ],
-//                 [
-//                     { text: "Climb L2", role: "success", value: [1, true] },
-//                 ],
-//                 [
-//                     { text: "Climb L1", role: "success", value: [0, true] },
-//                 ],
-//             ]}
-//             onPress={onPress}
-//         />
-//     );
-// }

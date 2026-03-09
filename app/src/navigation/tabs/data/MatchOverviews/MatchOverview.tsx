@@ -1,35 +1,27 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {SimpleTeam} from '../../lib/TBAUtils';
 import {
-    FlatList,
-    Pressable, SafeAreaView,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
     View,
 } from 'react-native';
-import {useCurrentCompetitionMatches} from '../../../../lib/hooks/useCurrentCompetitionMatches';
-import {CompetitionsDB} from '../../../../lib/database/Competitions';
+import {useCurrentCompetitionMatches} from '@/lib/hooks/useCurrentCompetitionMatches';
+import {CompetitionsDB} from '@/lib/database/Competitions';
 import {useTheme} from '@react-navigation/native';
 import {MatchReportsDB
-} from '../../../../lib/database/ScoutMatchReports';
+} from '@/lib/database/ScoutMatchReports';
 import AllianceSummaryCard from './AllianceSummaryCard';
-import {type RootStackScreenProps, useRootNavigation} from "@/navigation";
-import type {TeamSummaryProps} from "@/navigation/(recon)/TeamSummary";
+import {type RootStackScreenProps} from "@/navigation";
+import type {SimpleTeam} from "@/lib/frc/tba/TBA";
 
 export interface MatchOverviewParams{
     matchNumber: number;
     alliance: string;
 }
-export interface MatchOverviewProps extends RootStackScreenProps<"MatchOverview"> {
+export interface MatchOverviewProps extends RootStackScreenProps<"MatchOverview"> {}
 
-}
-
-export function MatchOverview ({route: {
-                                       params: {matchNumber, alliance},
-                                   },
-                                   navigation,
-                               }: MatchOverviewProps) {
+export function MatchOverview ({route: {params: {matchNumber, alliance}}, navigation}: MatchOverviewProps) {
     const {colors} = useTheme();
     const styles = StyleSheet.create({
         text: {
@@ -71,20 +63,19 @@ export function MatchOverview ({route: {
     const [teamCleaned, setTeamCleaned] = useState<any[][]>([]);
 
     const teamsInMatch = useMemo(() => {
-        const sus = matches
+        return matches
             .filter(match => match.compLevel === 'qm')
             .filter(match => match.match === matchNumber)
             .filter(match => match.alliance === alliance)
             .map(match => match.team.replace('frc', ''))
-            .map(match => match.replace(/[A-Za-z]/g, ' '))
-            .map(match => Number(match));
-        return sus.map(
-            sus =>
+            .map(team => team.replace(/[A-Za-z]/g, ' '))
+            .map(team => Number(team))
+            .map(teamNumber =>
                 ({
-                    key: `frc${sus}`,
-                    team_number: sus,
-                    nickname: `Team ${sus}`,
-                    name: `FRC Team ${sus}`,
+                    key: `frc${teamNumber}`,
+                    team_number: teamNumber,
+                    nickname: `Team ${teamNumber}`,
+                    name: `FRC Team ${teamNumber}`,
                     city: 'Unknown',
                     state_prov: 'Unknown',
                     country: 'Unknown',
@@ -175,9 +166,16 @@ export function MatchOverview ({route: {
     // for every THING in formstructure
     // get the average of each of the THINGS in the sub arrays
     // and put them into a new array of data STFUFF
-    if (teamsInMatch.length === 0) {
+    if (!competitionId) {
         return (
-            <View>
+            <View style={{paddingTop:70}}>
+                <Text style={styles.titleText}>Invalid Match</Text>
+                <Text style={styles.text}>There is no competition happening currently.</Text>
+            </View>
+        );}
+    else if (teamsInMatch.length === 0) {
+        return (
+            <View style={{paddingTop:70}}>
                 <Text style={styles.titleText}>Not a valid match</Text>
                 <Text style={styles.text}>This match doesn&#39;t have teams in it</Text>
             </View>
@@ -312,5 +310,6 @@ export function MatchOverview ({route: {
     //tba stuff here -> get alliance, get teams
     //call supabase to get numbers
     //have buttons to navigate between teams.
-};
+}
+
 export default MatchOverview;

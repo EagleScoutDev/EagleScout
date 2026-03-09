@@ -11,7 +11,6 @@ import { useTheme } from "@/ui/context/ThemeContext";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIText } from "@/ui/components/UIText";
 import { UIList } from "@/ui/components/UIList";
-import { exMemo } from "@/lib/util/react/memo";
 
 export interface DataTabMainProps extends DataTabScreenProps<"Main"> {}
 export function DataTabMain({ navigation }: DataTabMainProps) {
@@ -97,6 +96,13 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
                         onPress={() => navigation.navigate("MatchPredictor")}
                     />
                     <UIList.Row
+                        icon={Bs.Binoculars}
+                        label="Match Overview"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("MatchOverviewSelector")}
+                    />
+                    <UIList.Row
                         icon={Bs.Upload}
                         label="Export to CSV"
                         caret
@@ -172,52 +178,3 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
         </SafeAreaProvider>
     );
 }
-
-type TOC = {
-    label: string;
-    shown: boolean;
-    items: {
-        text: string;
-        icon: Icon;
-        caret: boolean;
-        route: {
-            [K in keyof DataTabParamList]: undefined extends DataTabParamList[K] ? K : never;
-        }[keyof DataTabParamList];
-    }[];
-}[];
-const getTOC = exMemo(
-    ({ admin }: { admin: boolean }): TOC => [
-        {
-            shown: true,
-            label: "Data Analysis",
-            items: [
-                { text: "Picklist", icon: Bs.List, caret: true, route: "Picklists" },
-                { text: "Team Rank", icon: Bs.ArrowDownUp, caret: true, route: "TeamRank" },
-                { text: "Weighted Team Rank", icon: Bs.Sliders, caret: true, route: "WeightedTeamRank" },
-                { text: "Match Overview", icon: Bs.Binoculars, caret: true, route: "MatchOverviewSelector"},
-                { text: "Match Predictor", icon: Bs.Hourglass, caret: true, route: "MatchPredictor" },
-                { text: "Export to CSV", icon: Bs.Upload, caret: true, route: "ExportCSV" },
-            ],
-        },
-        {
-            shown: true,
-            label: "Scoutcoin",
-            items: [
-                { text: "Leaderboard", icon: Bs.Award, caret: true, route: "ScoutcoinLeaderboard" },
-                { text: "Ledger", icon: Bs.Newspaper, caret: true, route: "ScoutcoinLedger" },
-                { text: "Shop", icon: Bs.Cart, caret: true, route: "ScoutcoinShop" },
-            ],
-        },
-        {
-            shown: admin,
-            label: "Administrative",
-            items: [
-                { text: "Competitions", icon: Bs.TrophyFill, caret: true, route: "ManageCompetitions" },
-                { text: "Users", icon: Bs.PeopleFill, caret: true, route: "ManageUsers" },
-                { text: "Forms", icon: Bs.ClipboardData, caret: true, route: "Forms" },
-                { text: "Scout Assignments", icon: Bs.CalendarThree, caret: true, route: "ScoutAssignments" },
-                { text: "Match Bets", icon: Bs.CashCoin, caret: true, route: "ManageMatchBets" },
-            ],
-        },
-    ],
-);

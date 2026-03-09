@@ -17,7 +17,6 @@ import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
 import * as Rebuilt from "@/frc/rebuilt";
 import { AutoAction, AutoState } from "@/frc/rebuilt";
-import { produce } from "immer";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
@@ -68,6 +67,12 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             headerRight: () => <HeaderTimer ref={timerRef} />,
         });
     }, [navigation]);
+
+    useEffect(() => {
+        if (currentTab.includes("Auto")) {
+            autoModalRef.current?.present();
+        }
+    }, [currentTab]);
 
     async function submitForm() {
         if (competition === null || formStructure === null) return;
@@ -178,9 +183,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             currentKey={currentTab}
             onTabChange={(tab) => {
                 setCurrentTab(tab);
-                if (tab.includes("Auto")) {
-                    autoModalRef.current?.present();
-                }
             }}
         >
             <UITabView.Tab tabKey="Setup" title="Setup">
