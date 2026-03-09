@@ -33,13 +33,6 @@ export function FormItem<T extends Form.Item>({ item, value, onInput }: FormComp
             ) : item.type === ItemType.textbox ? (
                 <UITextInput multiline={true} placeholder={"Type here"} value={value} onChangeText={onInput} />
             ) : item.type === ItemType.number && item.inputType === InputType.slider ? (
-                <UITextInput
-                    multiline={true}
-                    placeholder={"Type here"}
-                    value={value}
-                    onChangeText={onInput}
-                />
-            ) : item.type === ItemType.number && item.inputType === InputType.slider ? (
                 <UISlider
                     min={item.low}
                     max={item.high}
@@ -51,7 +44,7 @@ export function FormItem<T extends Form.Item>({ item, value, onInput }: FormComp
                 />
             ) : item.type === ItemType.number && item.inputType === InputType.seconds ? (
                 <UISeconds value={value ?? 0} onInput={onInput} />
-            ) : item.type === ItemType.number ? (
+            ) : item.type === ItemType.number && item.inputType === InputType.stepper ? (
                 <UIStepper value={value ?? 0} onInput={onInput} />
             ) : item.type === ItemType.checkbox ? (
                 <UICheckboxes options={item.options} value={value} onInput={onInput} />

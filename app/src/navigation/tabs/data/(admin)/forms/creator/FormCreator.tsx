@@ -261,7 +261,7 @@ export const ITEMS = [
         key: "number",
         icon: Bs.OneTwoThree,
         name: "Number",
-        draft: (): Form.Number => ({
+        draft: (): Form.Stepper => ({
             type: Form.ItemType.number,
             question: "",
             required: false,

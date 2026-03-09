@@ -35,7 +35,7 @@ export namespace Form {
         question: string;
         required: boolean;
     }
-    export type Question = Radio | Checkboxes | Textbox | Number | Slider | Seconds;
+    export type Question = Radio | Checkboxes | Textbox | Stepper | Slider | Seconds;
 
     export interface Radio extends BaseQuestion {
         type: ItemType.radio;
@@ -49,26 +49,22 @@ export namespace Form {
     export interface Textbox extends BaseQuestion {
         type: ItemType.textbox;
     }
-    export interface Number extends BaseQuestion {
+
+    export interface BaseNumberQuestion extends BaseQuestion {
         type: ItemType.number;
+        inputType: InputType;
+        low: number | null;
+        high: number | null;
+        step: number;
+    }
+    export interface Stepper extends BaseNumberQuestion {
         inputType: InputType.stepper;
-        low: number | null;
-        high: number | null;
-        step: number;
     }
-    export interface Seconds extends BaseQuestion {
-        type: ItemType.number;
+    export interface Seconds extends BaseNumberQuestion {
         inputType: InputType.seconds;
-        low: number | null;
-        high: number | null;
-        step: number;
     }
-    export interface Slider extends BaseQuestion {
-        type: ItemType.number;
+    export interface Slider extends BaseNumberQuestion {
         inputType: InputType.slider;
-        low: number;
-        high: number;
-        step: number;
         lowLabel: string | null; // TODO: add this to the database schema
         highLabel: string | null; // TODO: add this to the database schema
     }
