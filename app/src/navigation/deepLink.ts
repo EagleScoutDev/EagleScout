@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { useRootNavigation } from "@/navigation/index.tsx";
+import { useRootNavigation } from "@/navigation/index";
 
 export async function useDeepLink({ url }: { url: string | null }) {
     const nav = useRootNavigation();

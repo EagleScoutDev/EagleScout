@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+    createNativeStackNavigator,
+    type NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { AccountStatus } from "@/lib/user/account";
 import { useUserStore } from "@/lib/stores/user";
 import type { RootStackScreenProps } from "@/navigation";
@@ -14,7 +17,10 @@ import { EnterUserInfo } from "./steps/EnterUserInfo";
 import { SelectTeam } from "./steps/SelectTeam";
 
 const Stack = createNativeStackNavigator<OnboardingParamList>();
-export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<OnboardingParamList, K>;
+export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<
+    OnboardingParamList,
+    K
+>;
 export type OnboardingParamList = {
     Entrypoint: undefined;
 
@@ -58,7 +64,9 @@ export function OnboardingFlow({ navigation }: OnboardingFlowProps) {
                 navigation.navigate("Onboarding", { screen: "EnterUserInfo" });
                 break;
             case AccountStatus.Approval:
-                setError("Your account has not been approved yet.\nPlease contact a admin for approval.");
+                setError(
+                    "Your account has not been approved yet.\nPlease contact a admin for approval.",
+                );
                 navigation.replace("Onboarding", { screen: "Entrypoint" });
                 break;
             case AccountStatus.Approved:

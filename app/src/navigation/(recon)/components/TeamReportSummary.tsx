@@ -8,7 +8,13 @@ import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 
-export function TeamReportSummary({ team_number, competitionId }: { team_number: number; competitionId: number }) {
+export function TeamReportSummary({
+    team_number,
+    competitionId,
+}: {
+    team_number: number;
+    competitionId: number;
+}) {
     const { colors } = useTheme();
     const [formStructure, setFormStructure] = useState<object[] | null>(null);
     const [responses, setResponses] = useState<MatchReportReturnData[] | null>(null);
@@ -20,11 +26,13 @@ export function TeamReportSummary({ team_number, competitionId }: { team_number:
             if (!competition) {
                 return;
             }
-            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then((reports) => {
-                setResponses(reports);
-                console.log("scout reports for team " + team_number + " : " + reports);
-                console.log("no reports? " + (reports.length === 0));
-            });
+            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(
+                (reports) => {
+                    setResponses(reports);
+                    console.log("scout reports for team " + team_number + " : " + reports);
+                    console.log("no reports? " + (reports.length === 0));
+                },
+            );
             setFormStructure(competition.form);
         });
     }, [competitionId, team_number]);

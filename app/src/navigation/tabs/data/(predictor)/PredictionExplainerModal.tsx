@@ -54,7 +54,11 @@ export function PredictionExplainerModal({ visible, setVisible }: PredictionExpl
                     </UIText>
                     {Array.from(explanations).map(([confidence, explanation]) => (
                         <View style={styles.explanation_row} key={confidence}>
-                            <PredictionConfidenceTag confidence={confidence} setModal={() => {}} tagOnly={true} />
+                            <PredictionConfidenceTag
+                                confidence={confidence}
+                                setModal={() => {}}
+                                tagOnly={true}
+                            />
                             <UIText style={styles.explanation_text}>{explanation}</UIText>
                         </View>
                     ))}

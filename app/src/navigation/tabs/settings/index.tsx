@@ -1,4 +1,7 @@
-import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+    createNativeStackNavigator,
+    type NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { useStackThemeConfig } from "@/ui/lib/theme/native";
 
 import type { HomeTabProps } from "../HomeTabs";
@@ -100,7 +103,7 @@ export function SettingsTab({}: SettingsTabProps) {
             />
 
             <Stack.Screen
-                name="Debug"
+                name="Debug/Main"
                 component={DebugMain}
                 options={{
                     title: "Debug",

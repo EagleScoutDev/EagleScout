@@ -2,18 +2,15 @@ import { RefreshControl, ScrollView, TouchableOpacity, View } from "react-native
 import { useEffect, useState } from "react";
 import { ScoutAssignmentsConfig } from "@/lib/database/Competitions";
 import { ScoutAssignments } from "@/lib/database/ScoutAssignments";
-import type { ScoutMenuParamList } from "../index";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
-import type { NavigationProp } from "@react-navigation/native";
+import { useRootNavigation } from "@/navigation";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
 import AsyncStorage from "expo-sqlite/kv-store";
 
-export interface UpcomingRoundsViewProps {
-    navigation: NavigationProp<ScoutMenuParamList, "Main">;
-}
-export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
+export function UpcomingRoundsView() {
+    const navigation = useRootNavigation();
     const { colors } = useTheme();
 
     const { competition, online } = useCurrentCompetition();
@@ -23,6 +20,14 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
     const [teamBased, setTeamBased] = useState(false);
 
     const positionText = ["R1", "R2", "R3", "B1", "B2", "B3"];
+
+    const teamFormatter = (team: string) => {
+        if (team.substring(0, 3) === "frc") {
+            return team.substring(3);
+        } else {
+            return team;
+        }
+    };
 
     async function getUpcomingRounds() {
         setRefreshing(true);
@@ -34,14 +39,18 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                 scoutAssignments = JSON.parse(scoutAssignmentsOffline);
             } else if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED) {
                 setTeamBased(true);
-                scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
-                    competition.id,
-                );
-            } else if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.POSITION_BASED) {
+                scoutAssignments =
+                    await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBasedCurrentUser(
+                        competition.id,
+                    );
+            } else if (
+                competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.POSITION_BASED
+            ) {
                 setTeamBased(false);
-                scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
-                    competition.id,
-                );
+                scoutAssignments =
+                    await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBasedCurrentUser(
+                        competition.id,
+                    );
             } else {
                 scoutAssignments = [];
             }
@@ -56,7 +65,9 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
         setRefreshing(false);
     }
     useEffect(() => {
-        navigation.addListener("focus", () => void getUpcomingRounds());
+        void getUpcomingRounds();
+        const unsubscribe = navigation.addListener("focus", () => void getUpcomingRounds());
+        return unsubscribe;
     }, [navigation]);
 
     if (competition === null) {
@@ -91,7 +102,11 @@ export function UpcomingRoundsView({ navigation }: UpcomingRoundsViewProps) {
                     {nRounds !== 1 ? "s" : ""} left to scout today.
                 </UIText>
             </View>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />}>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={getUpcomingRounds} />
+                }
+            >
                 {upcomingRounds.map((round, index) => (
                     <TouchableOpacity
                         style={{

@@ -49,7 +49,12 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         required={true}
                         onInput={setReason}
                         value={reason}
-                        options={["Graduating from team", "Leaving team", "Concerns over data usage", "Other"]}
+                        options={[
+                            "Graduating from team",
+                            "Leaving team",
+                            "Concerns over data usage",
+                            "Other",
+                        ]}
                     />
                 </View>
                 <UIText>Please enter your account password to confirm deletion.</UIText>
@@ -63,10 +68,15 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                     />
                     <UIText
                         placeholder
-                        style={{ alignSelf: "center", textAlign: "center", marginTop: -5, marginBottom: 10 }}
+                        style={{
+                            alignSelf: "center",
+                            textAlign: "center",
+                            marginTop: -5,
+                            marginBottom: 10,
+                        }}
                     >
-                        Notice: If your password is inputted incorrectly, your account will not be deleted and you will
-                        be signed out!
+                        Notice: If your password is inputted incorrectly, your account will not be
+                        deleted and you will be signed out!
                     </UIText>
                 </View>
             </View>
@@ -86,15 +96,17 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         {
                             text: "Delete",
                             onPress: async () => {
-                                const { data: userData, error: getUserError } = await supabase.auth.getUser();
+                                const { data: userData, error: getUserError } =
+                                    await supabase.auth.getUser();
                                 if (getUserError) {
                                     Alert.alert("Error getting user", getUserError.message);
                                     return;
                                 }
-                                const { data, error: authError } = await supabase.auth.signInWithPassword({
-                                    email: userData.user?.email || "",
-                                    password: password,
-                                });
+                                const { data, error: authError } =
+                                    await supabase.auth.signInWithPassword({
+                                        email: userData.user?.email || "",
+                                        password: password,
+                                    });
                                 if (authError) {
                                     if (authError.status === 400) {
                                         Alert.alert(
@@ -121,7 +133,9 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                                         }),
                                     )
                                     .then(() => logout())
-                                    .finally(() => Alert.alert("Success", "Account delete requested."));
+                                    .finally(() =>
+                                        Alert.alert("Success", "Account delete requested."),
+                                    );
                             },
                         },
                     ]);

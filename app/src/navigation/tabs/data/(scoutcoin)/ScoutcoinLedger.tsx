@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { ScoutcoinLedger as ScoutcoinLedgerDB, type ScoutcoinLedgerItem } from "@/lib/database/ScoutcoinLedger";
+import {
+    ScoutcoinLedger as ScoutcoinLedgerDB,
+    type ScoutcoinLedgerItem,
+} from "@/lib/database/ScoutcoinLedger";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UITextInput } from "@/ui/components/UITextInput";
 import { UIText } from "@/ui/components/UIText";
@@ -21,7 +24,9 @@ export function ScoutcoinLedger() {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const [scoutcoinLedger, setScoutcoinLedger] = useState<ScoutcoinLedgerItem[]>([]);
-    const [filteredScoutcoinLedger, setFilteredScoutcoinLedger] = useState<ScoutcoinLedgerItem[]>([]);
+    const [filteredScoutcoinLedger, setFilteredScoutcoinLedger] = useState<ScoutcoinLedgerItem[]>(
+        [],
+    );
     useEffect(() => {
         ScoutcoinLedgerDB.getLogs().then((logs) => {
             setScoutcoinLedger(logs);
@@ -39,8 +44,12 @@ export function ScoutcoinLedger() {
                             scoutcoinLedger.filter(
                                 (ledger) =>
                                     ledger.description.toLowerCase().includes(text.toLowerCase()) ||
-                                    ledger.src_user_name?.toLowerCase().includes(text.toLowerCase()) ||
-                                    ledger.dest_user_name?.toLowerCase().includes(text.toLowerCase()),
+                                    ledger.src_user_name
+                                        ?.toLowerCase()
+                                        .includes(text.toLowerCase()) ||
+                                    ledger.dest_user_name
+                                        ?.toLowerCase()
+                                        .includes(text.toLowerCase()),
                             ),
                         );
                     }}
@@ -71,15 +80,20 @@ export function ScoutcoinLedger() {
                                 </>
                             ) : item.description.match(boughtRegex) ? (
                                 <UIText>
-                                    <UIText color={theme.colors.loss}>Bought by</UIText> {item.src_user_name}
+                                    <UIText color={theme.colors.loss}>Bought by</UIText>{" "}
+                                    {item.src_user_name}
                                 </UIText>
                             ) : (
                                 <>
                                     <UIText>
                                         <UIText color={theme.colors.win}>Sent by</UIText>{" "}
-                                        {item.amount_change < 0 ? item.src_user_name : item.dest_user_name}{" "}
+                                        {item.amount_change < 0
+                                            ? item.src_user_name
+                                            : item.dest_user_name}{" "}
                                         <UIText color={theme.colors.loss}>to</UIText>{" "}
-                                        {item.amount_change < 0 ? item.dest_user_name : item.src_user_name}
+                                        {item.amount_change < 0
+                                            ? item.dest_user_name
+                                            : item.src_user_name}
                                     </UIText>
                                 </>
                             )}

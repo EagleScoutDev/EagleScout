@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { UserAttributesDB } from "@/lib/database/UserAttributes.ts";
-import { useTheme } from "@/ui/context/ThemeContext.ts";
-import { UIText } from "@/ui/components/UIText.tsx";
-import { UICard } from "@/ui/components/UICard.tsx";
-import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton.tsx";
+import { UserAttributesDB } from "@/lib/database/UserAttributes";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
+import { UICard } from "@/ui/components/UICard";
+import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
 import type { RootStackScreenProps } from "@/navigation";
 
 export interface MatchBettingProps extends RootStackScreenProps<"MatchBetting"> {}

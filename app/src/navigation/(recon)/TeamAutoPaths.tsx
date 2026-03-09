@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import type { BrowseTabScreenProps } from "../index";
 import * as Rebuilt from "@/frc/rebuilt";
+import type { RootStackScreenProps } from "../index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
@@ -12,7 +12,7 @@ export interface TeamAutoPathsParams {
     team_number: number;
     competitionId: number;
 }
-export interface TeamAutoPathsProps extends BrowseTabScreenProps<"AutoPaths"> {}
+export interface TeamAutoPathsProps extends RootStackScreenProps<"TeamAutoPaths"> {}
 export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
     const { team_number, competitionId } = route.params;
     const { colors } = useTheme();

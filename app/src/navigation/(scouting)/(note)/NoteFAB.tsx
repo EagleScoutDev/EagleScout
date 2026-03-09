@@ -40,7 +40,13 @@ export function NoteFAB({ onSubmitPress, isLoading, contentPresent }: NoteFABPro
                 {isLoading ? (
                     <ActivityIndicator size="small" color="#ffffff" />
                 ) : (
-                    <>{contentPresent ? <Bs.CloudUpload size="24" fill="white" /> : <Bs.X size="24" fill="white" />}</>
+                    <>
+                        {contentPresent ? (
+                            <Bs.CloudUpload size="24" fill="white" />
+                        ) : (
+                            <Bs.X size="24" fill="white" />
+                        )}
+                    </>
                 )}
             </TouchableOpacity>
         </View>

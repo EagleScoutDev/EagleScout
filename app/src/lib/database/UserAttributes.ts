@@ -42,7 +42,11 @@ export class UserAttributesDB {
         return this.getUserAttribute(user.id);
     }
 
-    static async setUserAttributes(userId: number, scouter: boolean, admin: boolean): Promise<void> {
+    static async setUserAttributes(
+        userId: number,
+        scouter: boolean,
+        admin: boolean,
+    ): Promise<void> {
         const { data, error } = await supabase
             .from("user_attributes")
             .update({

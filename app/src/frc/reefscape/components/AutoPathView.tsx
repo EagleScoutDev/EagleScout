@@ -32,11 +32,22 @@ export function AutoPathView({ path }: { path: AutoPath }) {
         if (!isDisplayedAction(node)) return;
 
         if (prev === undefined) {
-            autoPathSvgs.push(<NodeToStartingLine nodeId={path.find(isDisplayedAction)!.target - 1} />);
+            autoPathSvgs.push(
+                <NodeToStartingLine key="start" nodeId={node.target - 1} />,
+            );
         } else {
             autoPathSvgs.push(
-                <NodeToNodeLine nodeId1={prev.target - 1} nodeId2={node.target - 1} order={order} />,
-                <ActiveNode nodeId={node.target - 1} status={node.success ? "success" : "missed"} />,
+                <NodeToNodeLine
+                    key={`line-${order}`}
+                    nodeId1={prev.target - 1}
+                    nodeId2={node.target - 1}
+                    order={order}
+                />,
+                <ActiveNode
+                    key={`node-${order}`}
+                    nodeId={node.target - 1}
+                    status={node.success ? "success" : "missed"}
+                />,
             );
             prev = node;
             order++;
@@ -61,7 +72,11 @@ export function AutoPathView({ path }: { path: AutoPath }) {
                     stroke="#3A3A3A"
                     stroke-width="6"
                 />
-                <Path d="M6 432H414.5L501.5 367.5V77L414.5 13.5H6" stroke="#3A3A3A" stroke-width="6" />
+                <Path
+                    d="M6 432H414.5L501.5 367.5V77L414.5 13.5H6"
+                    stroke="#3A3A3A"
+                    stroke-width="6"
+                />
                 <Path
                     d="M206.847 187.482L267.5 152.464L328.153 187.482V257.518L267.5 292.536L206.847 257.518V187.482Z"
                     stroke="#FB4949"
@@ -76,7 +91,7 @@ export function AutoPathView({ path }: { path: AutoPath }) {
                 <Rect x="38" y="160" width="11" height="11" fill="#677EF5" />
                 <Rect x="28" y="206" width="30" height="31" fill="#3A3A3A" />
                 {new Array(12).fill(0).map((_, i) => (
-                    <DefaultNode nodeId={i} />
+                    <DefaultNode key={i} nodeId={i} />
                 ))}
                 {autoPathSvgs}
             </Svg>
@@ -122,7 +137,15 @@ function NodeToStartingLine({ nodeId }: { nodeId: number }) {
     );
 }
 
-function NodeToNodeLine({ nodeId1, nodeId2, order }: { nodeId1: number; nodeId2: number; order: number }) {
+function NodeToNodeLine({
+    nodeId1,
+    nodeId2,
+    order,
+}: {
+    nodeId1: number;
+    nodeId2: number;
+    order: number;
+}) {
     return (
         <Line
             x1={nodePositions[nodeId1].x}
@@ -155,7 +178,12 @@ interface ActiveNodeProps {
 function ActiveNode({ nodeId, status }: ActiveNodeProps) {
     return (
         <>
-            <Circle cx={nodePositions[nodeId].x} cy={nodePositions[nodeId].y} r="12" fill="#637AF4" />
+            <Circle
+                cx={nodePositions[nodeId].x}
+                cy={nodePositions[nodeId].y}
+                r="12"
+                fill="#637AF4"
+            />
             <G x={nodePositions[nodeId].x} y={nodePositions[nodeId].y}>
                 {status === "success" && (
                     <>

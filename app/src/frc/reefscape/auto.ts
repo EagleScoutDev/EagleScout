@@ -62,7 +62,11 @@ export enum AutoActionType {
 }
 
 export type AutoPath = (AutoAction & { order: number })[]; // TODO: get rid of this extra property
-export type AutoAction = AutoAction.Intake | AutoAction.Reef | AutoAction.Processor | AutoAction.Net;
+export type AutoAction =
+    | AutoAction.Intake
+    | AutoAction.Reef
+    | AutoAction.Processor
+    | AutoAction.Net;
 export namespace AutoAction {
     export interface Intake {
         type: AutoActionType.Intake;
@@ -105,7 +109,8 @@ export namespace AutoAction {
             case AutoActionType.Reef:
                 return produce(state, (draft) => {
                     draft.path.push({ ...action, order: draft.order });
-                    if (action.success) draft.stats[`score_coral_l${([1, 2, 3, 4] as const)[action.level]}`] += 1;
+                    if (action.success)
+                        draft.stats[`score_coral_l${([1, 2, 3, 4] as const)[action.level]}`] += 1;
                     else draft.stats.miss_coral += 1;
                     draft.order++;
                 });
@@ -138,7 +143,9 @@ export namespace AutoAction {
                             break;
                         case AutoActionType.Reef:
                             if (action.success)
-                                draft.stats[`score_coral_l${([1, 2, 3, 4] as const)[action.level]}`] -= 1;
+                                draft.stats[
+                                    `score_coral_l${([1, 2, 3, 4] as const)[action.level]}`
+                                ] -= 1;
                             else draft.stats.miss_coral -= 1;
                             break;
                         case AutoActionType.Processor:

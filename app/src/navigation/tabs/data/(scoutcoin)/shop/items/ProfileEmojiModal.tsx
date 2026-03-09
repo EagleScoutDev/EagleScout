@@ -24,19 +24,32 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
     }
 
     return (
-        <UIModal visible onClose={onClose} backdropPressBehavior={"none"} title={"Select New Emoji"}>
-            <TouchableOpacity style={styles.emojiContainer} onPress={() => setEmojiModalVisible(true)}>
+        <UIModal
+            visible
+            onClose={onClose}
+            backdropPressBehavior={"none"}
+            title={"Select New Emoji"}
+        >
+            <TouchableOpacity
+                style={styles.emojiContainer}
+                onPress={() => setEmojiModalVisible(true)}
+            >
                 <UIText style={styles.emoji}>{profile?.emoji}</UIText>
             </TouchableOpacity>
             <EmojiPicker
                 onEmojiSelected={async (e) => {
                     onClose();
-                    const { error } = await supabase.from("profiles").update({ emoji: e.emoji }).eq("id", profile?.id);
+                    const { error } = await supabase
+                        .from("profiles")
+                        .update({ emoji: e.emoji })
+                        .eq("id", profile?.id);
                     if (error) {
                         console.error(error);
                         Alert.alert("Error updating your profile");
                     }
-                    const currentUserObj = JSON.parse((await AsyncStorage.getItem("user")) as string);
+                    const currentUserObj = JSON.parse(
+                        (await AsyncStorage.getItem("user")) as string,
+                    );
                     await AsyncStorage.setItem(
                         "user",
                         JSON.stringify({

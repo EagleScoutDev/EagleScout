@@ -1,5 +1,11 @@
 import { type PropsWithChildren, useState } from "react";
-import { ActivityIndicator, type StyleProp, type TextStyle, View, type ViewStyle } from "react-native";
+import {
+    ActivityIndicator,
+    type StyleProp,
+    type TextStyle,
+    View,
+    type ViewStyle,
+} from "react-native";
 import { Color } from "@/ui/lib/color";
 import { PressableOpacity } from "@/components/PressableOpacity";
 import type { Icon } from "@/ui/icons";
@@ -84,12 +90,20 @@ export function UIButton({
                 />
             )}
             {/* When the spinner is visible, only hide the body so proper dimensions are kept */}
-            <View style={{ flexDirection: "row", alignItems: "center", opacity: loading || processing ? 0 : 1 }}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    opacity: loading || processing ? 0 : 1,
+                }}
+            >
                 {children ?? (
                     <>
                         {icon && icon({ ...sizeStyles.icon, fill: fg })}
                         {typeof text === "string" && (
-                            <UIText style={[sizeStyles.text, { color: fg }, textStyle]}>{text}</UIText>
+                            <UIText style={[sizeStyles.text, { color: fg }, textStyle]}>
+                                {text}
+                            </UIText>
                         )}
                     </>
                 )}

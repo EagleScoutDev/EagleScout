@@ -17,18 +17,29 @@ export interface IconProps extends SvgProps {
     size?: string | number | undefined;
 }
 
-${fs.readdirSync(iconsLoc).map((f) => {
-    const name = NUMBERS.reduce((a, rep, i) => a.replaceAll(i.toString(), rep), path.basename(f).split(".")[0].split("-").map(x => x[0].toUpperCase() + x.slice(1).toLowerCase()).join(""));
+${fs
+    .readdirSync(iconsLoc)
+    .map((f) => {
+        const name = NUMBERS.reduce(
+            (a, rep, i) => a.replaceAll(i.toString(), rep),
+            path
+                .basename(f)
+                .split(".")[0]
+                .split("-")
+                .map((x) => x[0].toUpperCase() + x.slice(1).toLowerCase())
+                .join(""),
+        );
 
-    return `export const ${name}=(props:IconProps)=>${fs
-        .readFileSync(path.join(iconsLoc, f))
-        .toString()
-        .replaceAll("\n", "")
-        .replaceAll(/<(\/?)/g, "<$1_")
-        .replaceAll(/ (xmlns|class)=".*?"/g, "")
-        .replaceAll(/ (width|height)=".*?"/g, " $1={props.size??16}")
-        .replaceAll(/>\s*</g, "><")
-        .replaceAll(' fill="currentColor"', "")
-        .replaceAll('viewBox="0 0 16 16"', 'viewBox="0 0 16 16" {...props}')};`;
-}).join("\n")}`,
+        return `export const ${name}=(props:IconProps)=>${fs
+            .readFileSync(path.join(iconsLoc, f))
+            .toString()
+            .replaceAll("\n", "")
+            .replaceAll(/<(\/?)/g, "<$1_")
+            .replaceAll(/ (xmlns|class)=".*?"/g, "")
+            .replaceAll(/ (width|height)=".*?"/g, " $1={props.size??16}")
+            .replaceAll(/>\s*</g, "><")
+            .replaceAll(' fill="currentColor"', "")
+            .replaceAll('viewBox="0 0 16 16"', 'viewBox="0 0 16 16" {...props}')};`;
+    })
+    .join("\n")}`,
 );

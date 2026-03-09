@@ -4,7 +4,7 @@ import { useUserStore } from "@/lib/stores/user";
 import { useTheme } from "@/ui/context/ThemeContext";
 
 import type { RootStackScreenProps } from "@/navigation";
-import { type ScoutMenuParamList, ScoutTab } from "./scout";
+import { ScoutTab } from "./scout";
 import { BrowseTab, type BrowseTabParamList } from "./browse";
 import { SettingsTab, type SettingsTabParamList } from "./settings";
 import { DataTab, type DataTabParamList } from "./data";
@@ -19,7 +19,6 @@ import {
     Search,
     SearchHeartFill,
 } from "@/ui/icons";
-import { Platform } from "react-native";
 
 const Tab = createBottomTabNavigator<HomeTabsParamList>();
 export type HomeTabProps<K extends keyof HomeTabsParamList> = BottomTabScreenProps<
@@ -27,7 +26,7 @@ export type HomeTabProps<K extends keyof HomeTabsParamList> = BottomTabScreenPro
     K
 >;
 export type HomeTabsParamList = {
-    Home: NavigatorScreenParams<ScoutMenuParamList>;
+    Home: undefined;
     Browse: NavigatorScreenParams<BrowseTabParamList>;
     Data: NavigatorScreenParams<DataTabParamList>;
     Settings: NavigatorScreenParams<SettingsTabParamList>;
@@ -50,10 +49,10 @@ export function HomeTabs({ navigation }: HomeTabsProps) {
     return (
         <Tab.Navigator
             screenOptions={{
-                tabBarStyle: Platform.OS === "ios" ? {} : { backgroundColor: colors.bg2.hex },
-                tabBarActiveTintColor: Platform.OS === "ios" ? colors.primary.hex : colors.fg.hex,
+                tabBarActiveTintColor: colors.primary.hex,
                 tabBarInactiveTintColor: colors.fg.hex,
                 headerShown: false,
+                animation: "fade"
             }}
         >
             <Tab.Screen

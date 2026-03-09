@@ -32,7 +32,9 @@ export function NoInternet({ onRefresh }: NoInternetProps) {
                 <UIText size={25} bold style={{ textAlign: "center" }}>
                     No Internet Connection
                 </UIText>
-                <UIText style={{ textAlign: "center" }}>Press the button below to try again.</UIText>
+                <UIText style={{ textAlign: "center" }}>
+                    Press the button below to try again.
+                </UIText>
                 <StandardButton text={"Refresh"} color={"red"} onPress={() => onRefresh()} />
             </View>
         </View>

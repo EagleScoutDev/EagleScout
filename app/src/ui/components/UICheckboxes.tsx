@@ -7,11 +7,17 @@ export interface UICheckboxesProps<T> {
     value: T[];
     onInput?: undefined | ((x: T[]) => void);
 }
-export function UICheckboxes<T extends string>({ options, disabled = false, value, onInput }: UICheckboxesProps<T>) {
+export function UICheckboxes<T extends string>({
+    options,
+    disabled = false,
+    value,
+    onInput,
+}: UICheckboxesProps<T>) {
     return (
         <View style={{ gap: 8 }}>
             {options.map((item, index) => {
-                const [key, label]: [T, string] = typeof item === "string" ? [item, item] : [item.key, item.label];
+                const [key, label]: [T, string] =
+                    typeof item === "string" ? [item, item] : [item.key, item.label];
                 const checked = value.includes(key);
 
                 return (

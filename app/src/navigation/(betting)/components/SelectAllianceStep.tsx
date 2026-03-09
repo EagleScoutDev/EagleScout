@@ -1,12 +1,18 @@
-import { BettingInfoStep } from "./BettingInfoStep.tsx";
-import { Image, Pressable } from "react-native";
+import { BettingInfoStep } from "./BettingInfoStep";
+import { Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useTheme } from "@/ui/context/ThemeContext.ts";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { Image } from "expo-image";
 
 export function SelectAllianceStep() {
     const { colors } = useTheme();
     return (
-        <BettingInfoStep index={1} title="FormSelect an alliance" nextScreen="SelectAmount" isFinalScreen={true}>
+        <BettingInfoStep
+            index={1}
+            title="FormSelect an alliance"
+            nextScreen="SelectAmount"
+            isFinalScreen={true}
+        >
             <BottomSheetView style={{ flexDirection: "row", gap: 20, width: "100%" }}>
                 <Pressable
                     style={{

@@ -1,4 +1,13 @@
-import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, TextInput, View } from "react-native";
+import {
+    Alert,
+    FlatList,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Pressable,
+    TextInput,
+    View,
+} from "react-native";
 import { useEffect, useState } from "react";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 import type { PicklistTeam } from "@/lib/database/Picklists";
@@ -75,7 +84,9 @@ export function TagsModal({
         // print type of tag id
         console.log("tag id type: ", typeof item.id);
         if (selectedTags.includes(Number.parseInt(item.id ?? "", 10))) {
-            setSelectedTags(selectedTags.filter((tag_id) => tag_id !== Number.parseInt(item.id ?? "", 10)));
+            setSelectedTags(
+                selectedTags.filter((tag_id) => tag_id !== Number.parseInt(item.id ?? "", 10)),
+            );
             removeTag(selected_team!, Number.parseInt(item.id ?? "", 10));
         } else {
             setSelectedTags([...selectedTags, Number.parseInt(item.id ?? "", 10)]);
@@ -99,7 +110,12 @@ export function TagsModal({
     }, [visible]);
 
     return (
-        <Modal onRequestClose={() => setVisible(false)} transparent={true} animationType={"fade"} visible={visible}>
+        <Modal
+            onRequestClose={() => setVisible(false)}
+            transparent={true}
+            animationType={"fade"}
+            visible={visible}
+        >
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{
@@ -128,10 +144,15 @@ export function TagsModal({
                         }}
                     >
                         <UIText size={20} bold style={{ flex: 1 }}>
-                            {selected_team !== null ? "Tags for Team " + selected_team.team_number : "Tags"}
+                            {selected_team !== null
+                                ? "Tags for Team " + selected_team.team_number
+                                : "Tags"}
                         </UIText>
                         {selected_team === null && (
-                            <Pressable onPress={() => setDeletionActive((prev) => !prev)} style={{ flex: 0.2 }}>
+                            <Pressable
+                                onPress={() => setDeletionActive((prev) => !prev)}
+                                style={{ flex: 0.2 }}
+                            >
                                 <UIText
                                     style={{
                                         color: deletionActive ? colors.primary.hex : colors.fg.hex,
@@ -161,9 +182,9 @@ export function TagsModal({
                                 >
                                     {selected_team !== null && (
                                         <View style={{ flex: 0.1 }}>
-                                            {selectedTags.includes(Number.parseInt(item.id ?? "", 10)) && (
-                                                <Bs.CheckLg size="16" fill="currentColor" />
-                                            )}
+                                            {selectedTags.includes(
+                                                Number.parseInt(item.id ?? "", 10),
+                                            ) && <Bs.CheckLg size="16" fill="currentColor" />}
                                         </View>
                                     )}
                                     <Pressable
@@ -180,7 +201,9 @@ export function TagsModal({
                                             borderWidth: 1,
                                             borderColor:
                                                 selected_team !== null
-                                                    ? selectedTags.includes(Number.parseInt(item.id ?? "", 10))
+                                                    ? selectedTags.includes(
+                                                          Number.parseInt(item.id ?? "", 10),
+                                                      )
                                                         ? colors.primary.hex
                                                         : colors.border.hex
                                                     : colors.border.hex,
@@ -220,9 +243,16 @@ export function TagsModal({
                                         </View>
                                         {selectedTag?.id === item.id && (
                                             <ColorPicker
-                                                value={item.color === "" || !item.color ? "#FF0000" : item.color}
+                                                value={
+                                                    item.color === "" || !item.color
+                                                        ? "#FF0000"
+                                                        : item.color
+                                                }
                                                 onComplete={onSelectColor}
-                                                style={{ marginHorizontal: "4%", paddingVertical: "4%" }}
+                                                style={{
+                                                    marginHorizontal: "4%",
+                                                    paddingVertical: "4%",
+                                                }}
                                             >
                                                 <HueSlider />
                                             </ColorPicker>

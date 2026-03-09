@@ -18,7 +18,13 @@ export interface UIOptionalRadioProps<T extends string> extends UIBaseRadioProps
 }
 export type UIRadioProps<T extends string> = UIOptionalRadioProps<T> | UIRequiredRadioProps<T>;
 
-export function UIRadio<T extends string>({ options, value, required, disabled = false, onInput }: UIRadioProps<T>) {
+export function UIRadio<T extends string>({
+    options,
+    value,
+    required,
+    disabled = false,
+    onInput,
+}: UIRadioProps<T>) {
     const { colors } = useTheme();
 
     return (

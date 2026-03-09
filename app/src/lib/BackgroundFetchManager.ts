@@ -1,6 +1,6 @@
 import AsyncStorage from "expo-sqlite/kv-store";
 import BackgroundFetch from "react-native-background-fetch";
-import { PitReportsDB } from "@/lib/database/ScoutPitReports.ts";
+import { PitReportsDB } from "@/lib/database/ScoutPitReports";
 
 export class BackgroundFetchManager {
     static syncActive = false;
@@ -11,14 +11,14 @@ export class BackgroundFetchManager {
     static async syncReports(taskId?: string) {
         const allOffline = await AsyncStorage.getAllKeys();
         const offReports = allOffline.filter(
-            (key) => key.startsWith("pit-form-") && !key.startsWith("pit-form-image-")
+            (key) => key.startsWith("pit-form-") && !key.startsWith("pit-form-image-"),
         );
         const formsFound = [];
         for (const report of offReports) {
             const data = JSON.parse((await AsyncStorage.getItem(report))!);
             const images = [];
             const imageKeys = allOffline.filter((key) =>
-                key.startsWith(`pit-form-image-${new Date(data.createdAt).getUTCMilliseconds()}`)
+                key.startsWith(`pit-form-image-${new Date(data.createdAt).getUTCMilliseconds()}`),
             );
             for (const imageKey of imageKeys) {
                 images.push((await AsyncStorage.getItem(imageKey))!);
@@ -49,7 +49,7 @@ export class BackgroundFetchManager {
             },
             (error) => {
                 console.log("[BackgroundFetch] timed out");
-            }
+            },
         );
         BackgroundFetchManager.syncActive = status === BackgroundFetch.STATUS_AVAILABLE;
         console.log("[BackgroundFetch] status: ", status);

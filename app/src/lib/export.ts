@@ -106,7 +106,7 @@ export async function writeToFile(name: string, content: string) {
     } catch (err) {
         Alert.alert(
             "Error",
-            "An error occurred while writing the export file. Please make sure the app has the necessary permissions."
+            "An error occurred while writing the export file. Please make sure the app has the necessary permissions.",
         );
         console.log(err);
     }

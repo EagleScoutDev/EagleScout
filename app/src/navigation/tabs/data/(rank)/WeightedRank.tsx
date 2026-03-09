@@ -217,7 +217,8 @@ export function WeightedRank() {
             >
                 <UIText size={24}>Weighted Rank</UIText>
 
-                {(status === WeightedRankStatus.PRESENTING_RANKINGS || originalWeights !== listOfWeights) && (
+                {(status === WeightedRankStatus.PRESENTING_RANKINGS ||
+                    originalWeights !== listOfWeights) && (
                     <Pressable
                         onPress={() => {
                             setListOfWeights(originalWeights);
@@ -274,7 +275,12 @@ export function WeightedRank() {
                         currForm.map((question, index) => {
                             if (question.type === "heading") {
                                 return (
-                                    <UIText size={20} bold style={{ marginVertical: "5%" }} key={index}>
+                                    <UIText
+                                        size={20}
+                                        bold
+                                        style={{ marginVertical: "5%" }}
+                                        key={index}
+                                    >
                                         {question.title}
                                     </UIText>
                                 );
@@ -295,7 +301,10 @@ export function WeightedRank() {
                                                 setListOfWeights(temp);
                                             }}
                                         >
-                                            <UIText size={16} placeholder={listOfWeights[index] === 0 ? 1 : 0}>
+                                            <UIText
+                                                size={16}
+                                                placeholder={listOfWeights[index] === 0 ? 1 : 0}
+                                            >
                                                 {question.question}
                                             </UIText>
                                         </Pressable>

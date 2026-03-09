@@ -24,7 +24,10 @@ export namespace AsyncAlert {
                     ? [{ text: "OK", onPress: () => resolve(null) }]
                     : Array.isArray(buttons)
                       ? buttons.map((b, i) => ({ ...b, onPress: () => resolve(i as keyof B) }))
-                      : Object.entries(buttons).map(([k, b]) => ({ ...b, onPress: () => resolve(k as keyof B) })),
+                      : Object.entries(buttons).map(([k, b]) => ({
+                            ...b,
+                            onPress: () => resolve(k as keyof B),
+                        })),
                 {
                     ...options,
                     onDismiss: () => resolve(null),

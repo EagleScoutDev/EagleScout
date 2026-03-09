@@ -69,7 +69,11 @@ export function TeamAddingModal({
                     >
                         <Bs.CheckTwoCircle
                             size="24"
-                            fill={teams_list.length === teamsAtCompetition.length ? "gray" : colors.primary.hex}
+                            fill={
+                                teams_list.length === teamsAtCompetition.length
+                                    ? "gray"
+                                    : colors.primary.hex
+                            }
                         />
                     </Pressable>
                     <UIText size={20} bold style={{ marginVertical: "2%" }}>
@@ -107,7 +111,9 @@ export function TeamAddingModal({
                                         fontSize: 20,
                                         textDecorationLine: "none",
                                     }}
-                                    isChecked={teams_list.some((team) => team.team_number === item.team_number)}
+                                    isChecked={teams_list.some(
+                                        (team) => team.team_number === item.team_number,
+                                    )}
                                     onPress={() => {
                                         addOrRemoveTeam(item);
                                     }}

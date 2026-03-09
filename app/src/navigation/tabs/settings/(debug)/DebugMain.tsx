@@ -4,7 +4,7 @@ import * as Bs from "@/ui/icons";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 
-export interface DebugMainProps extends SettingsTabScreenProps<"Debug"> {}
+export interface DebugMainProps extends SettingsTabScreenProps<"Debug/Main"> {}
 export function DebugMain({ navigation }: DebugMainProps) {
     return (
         <SafeAreaProvider>
@@ -13,19 +13,17 @@ export function DebugMain({ navigation }: DebugMainProps) {
             </SafeAreaView>
 
             <UIList>
-                {UIList.Section({
-                    items: [
-                        UIList.Label({
-                            icon: Bs.Database,
-                            label: "AsyncStorage",
-                            caret: true,
-                            disabled: false,
-                            onPress: () => {
-                                navigation.navigate("Debug/AsyncStorage");
-                            },
-                        }),
-                    ],
-                })}
+                <UIList.Section>
+                    <UIList.Row
+                        icon={Bs.Database}
+                        label="AsyncStorage"
+                        caret
+                        disabled={false}
+                        onPress={() => {
+                            navigation.navigate("Debug/AsyncStorage");
+                        }}
+                    />
+                </UIList.Section>
             </UIList>
         </SafeAreaProvider>
     );

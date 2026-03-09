@@ -14,6 +14,9 @@ import { TeamSummary, type TeamSummaryParams } from "@/navigation/(recon)/TeamSu
 import { TeamAutoPaths, type TeamAutoPathsParams } from "@/navigation/(recon)/TeamAutoPaths";
 import { TeamReports, type TeamReportsParams } from "@/navigation/(recon)/TeamReports";
 import { TeamComparison, type TeamComparisonParams } from "@/navigation/(recon)/TeamComparison";
+import { MatchScoutingFlow } from "@/navigation/(scouting)/(match)/MatchScoutingFlow";
+import { PitScoutingFlow } from "@/navigation/(scouting)/(pit)/PitScoutingFlow";
+import { NoteScreen } from "@/navigation/(scouting)/(note)/NoteFlow";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {MatchOverview, type MatchOverviewParams} from "@/navigation/tabs/data/MatchOverviews/MatchOverview";
 
@@ -34,6 +37,10 @@ export type RootStackParamList = {
     TeamAutoPaths: TeamAutoPathsParams;
     TeamComparison: TeamComparisonParams;
     MatchOverview: MatchOverviewParams;
+
+    Match: undefined;
+    Note: undefined;
+    Pit: undefined;
 };
 
 declare global {
@@ -118,6 +125,29 @@ export function RootNavigator() {
                         options={({ route: { params } }) => ({
                             title: `Reports for Team ${params.team_number}`,
                         })}
+                    />
+                </Stack.Group>
+
+                <Stack.Group
+                    screenOptions={{
+                        headerShown: true,
+                        headerBackButtonDisplayMode: "minimal",
+                    }}
+                >
+                    <Stack.Screen
+                        name="Match"
+                        component={MatchScoutingFlow}
+                        options={{ title: "Match Scouting" }}
+                    />
+                    <Stack.Screen
+                        name="Pit"
+                        component={PitScoutingFlow}
+                        options={{ title: "Pit Scouting" }}
+                    />
+                    <Stack.Screen
+                        name="Note"
+                        component={NoteScreen}
+                        options={{ title: "Note" }}
                     />
                 </Stack.Group>
             </Stack.Navigator>

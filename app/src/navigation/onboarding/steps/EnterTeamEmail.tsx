@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Alert, Keyboard, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import {
+    Alert,
+    Keyboard,
+    SafeAreaView,
+    TextInput,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 import { styles } from "../styles";
 import { supabase } from "@/lib/supabase";
 import { type OnboardingScreenProps } from "..";
@@ -72,7 +79,10 @@ export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
                             }
                             // todo: navigate to home screen, without requiring another login
                             navigation.navigate("Login");
-                            Alert.alert("Success!", "Please log in again to start using Eaglescout");
+                            Alert.alert(
+                                "Success!",
+                                "Please log in again to start using Eaglescout",
+                            );
                         }}
                     />
                 </View>

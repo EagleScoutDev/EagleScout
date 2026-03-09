@@ -26,10 +26,19 @@ export function FormItem<T extends Form.Item>({ item, value, onInput }: FormComp
                     options={item.options}
                     required={item.required}
                     value={item.options[value]}
-                    onInput={(value: string | null) => onInput?.(value === null ? null : item.options.indexOf(value))}
+                    onInput={(value: string | null) =>
+                        onInput?.(value === null ? null : item.options.indexOf(value))
+                    }
                 />
             ) : item.type === ItemType.textbox ? (
                 <UITextInput multiline={true} placeholder={"Type here"} value={value} onChangeText={onInput} />
+            ) : item.type === ItemType.number && item.inputType === InputType.slider ? (
+                <UITextInput
+                    multiline={true}
+                    placeholder={"Type here"}
+                    value={value}
+                    onChangeText={onInput}
+                />
             ) : item.type === ItemType.number && item.inputType === InputType.slider ? (
                 <UISlider
                     min={item.low}

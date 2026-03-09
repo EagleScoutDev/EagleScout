@@ -1,34 +1,8 @@
 import { supabase } from "../../supabase";
+import type { components } from "./schema.generated";
 
-export interface SimpleEvent {
-    key: string;
-    name: string;
-    event_code: string;
-    event_type: number;
-    rank: number | null;
-    district: {
-        abbreviation: string;
-        display_name: string;
-        key: string;
-        year: number;
-    };
-    city: string;
-    state_prov: string;
-    country: string;
-    start_date: string;
-    end_date: string;
-    year: number;
-}
-
-export interface SimpleTeam {
-    key: string;
-    team_number: number;
-    nickname: string;
-    name: string;
-    city: string;
-    state_prov: string;
-    country: string;
-}
+export type SimpleEvent = { rank: number | null } & components["schemas"]["Event_Simple"];
+export type SimpleTeam = components["schemas"]["Team_Simple"];
 
 export class TBA {
     static async checkEventKey(key: string): Promise<boolean> {

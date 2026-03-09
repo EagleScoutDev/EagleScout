@@ -28,24 +28,28 @@ export function SelectCompetitionForForms({
     }, []);
 
     const handleCompetitionSelect = (competition: CompetitionReturnData) => {
-        navigation.navigate("Scout/ViewReports", { competitionId: competition.id, competitionName: competition.name });
+        navigation.navigate("Scout/ViewReports", {
+            competitionId: competition.id,
+            competitionName: competition.name,
+        });
     };
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
                 <UIList loading={loading}>
-                    {competitions.length > 0 &&
-                        UIList.Section({
-                            items: competitions.map((competition) =>
-                                UIList.Label({
-                                    key: competition.id,
-                                    label: competition.name,
-                                    caret: true,
-                                    onPress: () => handleCompetitionSelect(competition),
-                                }),
-                            ),
-                        })}
+                    {competitions.length > 0 && (
+                        <UIList.Section>
+                            {competitions.map((competition) => (
+                                <UIList.Row
+                                    key={competition.id}
+                                    label={competition.name}
+                                    caret
+                                    onPress={() => handleCompetitionSelect(competition)}
+                                />
+                            ))}
+                        </UIList.Section>
+                    )}
                 </UIList>
             </SafeAreaView>
         </SafeAreaProvider>

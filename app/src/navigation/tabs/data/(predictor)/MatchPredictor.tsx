@@ -1,4 +1,12 @@
-import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    Keyboard,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import { type TBAMatch, TBAMatches } from "@/lib/database/TBAMatches";
@@ -10,7 +18,6 @@ import { PercentageWinBar } from "./PercentageWinBar";
 import { PredictionConfidenceTag } from "./PredictionConfidenceTag";
 import type { Form } from "@/lib/forms";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { UISheetModal } from "@/ui/components/UISheetModal";
 import { Alliance } from "@/frc/common/common";
 import { UIText } from "@/ui/components/UIText";
 import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
@@ -164,7 +171,11 @@ export function MatchPredictor() {
 
     const getMatchPrediction = async () => {
         setFindingReports(true);
-        let results = await TeamAggregation.getWinPrediction(teamsWithoutData, compId, chosenQuestionIndices);
+        let results = await TeamAggregation.getWinPrediction(
+            teamsWithoutData,
+            compId,
+            chosenQuestionIndices,
+        );
         setFindingReports(false);
         setDeterminingWinner(true);
 
@@ -427,14 +438,18 @@ export function MatchPredictor() {
                             ...styles.team_container,
                             borderWidth: 1,
                             borderColor: "dodgerblue",
-                            backgroundColor: winningAllianceColor === Alliance.blue ? "dodgerblue" : "none",
+                            backgroundColor:
+                                winningAllianceColor === Alliance.blue ? "dodgerblue" : "none",
                         }}
                     >
                         <UIText
                             size={20}
                             bold
                             style={{
-                                color: winningAllianceColor === Alliance.blue ? "white" : colors.fg.hex,
+                                color:
+                                    winningAllianceColor === Alliance.blue
+                                        ? "white"
+                                        : colors.fg.hex,
                                 marginBottom: 10,
                             }}
                         >
@@ -467,7 +482,8 @@ export function MatchPredictor() {
                             size={20}
                             bold
                             style={{
-                                color: winningAllianceColor === Alliance.red ? "white" : colors.fg.hex,
+                                color:
+                                    winningAllianceColor === Alliance.red ? "white" : colors.fg.hex,
                                 marginBottom: 10,
                             }}
                         >
@@ -499,7 +515,8 @@ export function MatchPredictor() {
                             Keyboard.dismiss();
                         }}
                         style={{
-                            backgroundColor: chosenQuestionIndices.length === 0 ? "gray" : colors.primary.hex,
+                            backgroundColor:
+                                chosenQuestionIndices.length === 0 ? "gray" : colors.primary.hex,
                             padding: 10,
                             borderRadius: 10,
                             marginHorizontal: "5%",
@@ -507,7 +524,9 @@ export function MatchPredictor() {
                             justifyContent: "center",
                         }}
                     >
-                        {(findingReports || determiningWinner) && <ActivityIndicator size={"small"} color={"black"} />}
+                        {(findingReports || determiningWinner) && (
+                            <ActivityIndicator size={"small"} color={"black"} />
+                        )}
                         <UIText
                             size={20}
                             bold
@@ -547,8 +566,12 @@ export function MatchPredictor() {
                                     Red Stdev: {calculatedMeanStdev.redStdev.toFixed(2)}
                                 </UIText>
                                 <View style={{ height: 20 }} />
-                                <UIText style={styles.data_point}>Blue Probability: {bluePercentage}%</UIText>
-                                <UIText style={styles.data_point}>Red Probability: {redPercentage}%</UIText>
+                                <UIText style={styles.data_point}>
+                                    Blue Probability: {bluePercentage}%
+                                </UIText>
+                                <UIText style={styles.data_point}>
+                                    Red Probability: {redPercentage}%
+                                </UIText>
                             </View>
                             <View style={{ flex: 1 }}>
                                 <View

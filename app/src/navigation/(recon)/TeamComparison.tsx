@@ -1,4 +1,11 @@
-import { ActivityIndicator, Dimensions, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+    ActivityIndicator,
+    Dimensions,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    View,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { isTablet } from "@/lib/deviceType";
@@ -26,8 +33,12 @@ export function TeamComparison({ route }: TeamComparisonProps) {
 
     const [formStructure, setFormStructure] = useState<object[] | null>(null);
 
-    const [firstTeamScoutData, setFirstTeamScoutData] = useState<MatchReportReturnData[] | null>([]);
-    const [secondTeamScoutData, setSecondTeamScoutData] = useState<MatchReportReturnData[] | null>([]);
+    const [firstTeamScoutData, setFirstTeamScoutData] = useState<MatchReportReturnData[] | null>(
+        [],
+    );
+    const [secondTeamScoutData, setSecondTeamScoutData] = useState<MatchReportReturnData[] | null>(
+        [],
+    );
 
     const [graphActive, setGraphActive] = useState(false);
     const [chosenQuestionIndex, setChosenQuestionIndex] = useState<number>(0);
@@ -51,9 +62,11 @@ export function TeamComparison({ route }: TeamComparisonProps) {
             if (!competition) {
                 return;
             }
-            MatchReportsDB.getReportsForTeamAtCompetition(team.team_number, competition.id).then((reports) => {
-                setFirstTeamScoutData(reports);
-            });
+            MatchReportsDB.getReportsForTeamAtCompetition(team.team_number, competition.id).then(
+                (reports) => {
+                    setFirstTeamScoutData(reports);
+                },
+            );
             setFormStructure(competition.form);
         });
     }, [compId, team]);
@@ -199,7 +212,9 @@ export function TeamComparison({ route }: TeamComparisonProps) {
                             return (
                                 <View key={index} style={styles.section_heading_container}>
                                     <UIText style={styles.section_heading}>{item.title}</UIText>
-                                    <UIText style={styles.section_description}>{item.description}</UIText>
+                                    <UIText style={styles.section_description}>
+                                        {item.description}
+                                    </UIText>
                                 </View>
                             );
                         }
@@ -237,22 +252,24 @@ export function TeamComparison({ route }: TeamComparisonProps) {
                                         show_question={false}
                                         only_average={!isTablet()}
                                     />
-                                    {secondTeam && secondTeamScoutData && secondTeamScoutData.length > 0 && (
-                                        <QuestionSummary
-                                            item={item}
-                                            index={index}
-                                            data={secondTeamScoutData.map((response) => {
-                                                return {
-                                                    data: response.data[index],
-                                                    match: response.matchNumber,
-                                                };
-                                            })}
-                                            generate_ai_summary={false}
-                                            graph_disabled={true}
-                                            show_question={false}
-                                            only_average={!isTablet()}
-                                        />
-                                    )}
+                                    {secondTeam &&
+                                        secondTeamScoutData &&
+                                        secondTeamScoutData.length > 0 && (
+                                            <QuestionSummary
+                                                item={item}
+                                                index={index}
+                                                data={secondTeamScoutData.map((response) => {
+                                                    return {
+                                                        data: response.data[index],
+                                                        match: response.matchNumber,
+                                                    };
+                                                })}
+                                                generate_ai_summary={false}
+                                                graph_disabled={true}
+                                                show_question={false}
+                                                only_average={!isTablet()}
+                                            />
+                                        )}
                                 </View>
                             </Pressable>
                         );
@@ -309,13 +326,17 @@ export function TeamComparison({ route }: TeamComparisonProps) {
                     formStructure[chosenQuestionIndex].options.length > 0 && (
                         <>
                             <UIText style={{ textAlign: "center" }}>Graph Interpretation</UIText>
-                            {formStructure[chosenQuestionIndex].options?.map((option: string, index: number) => {
-                                return (
-                                    <UIText style={{ textAlign: "center" }}>
-                                        {index + " - " + formStructure[chosenQuestionIndex].options![index]}
-                                    </UIText>
-                                );
-                            })}
+                            {formStructure[chosenQuestionIndex].options?.map(
+                                (option: string, index: number) => {
+                                    return (
+                                        <UIText style={{ textAlign: "center" }}>
+                                            {index +
+                                                " - " +
+                                                formStructure[chosenQuestionIndex].options![index]}
+                                        </UIText>
+                                    );
+                                },
+                            )}
                         </>
                     )}
             </UIModal>

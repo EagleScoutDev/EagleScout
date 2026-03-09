@@ -1,19 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { supabase } from "@/lib/supabase.ts";
-import { UserAttributesDB } from "@/lib/database/UserAttributes.ts";
+import { supabase } from "@/lib/supabase";
+import { UserAttributesDB } from "@/lib/database/UserAttributes";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { MatchBets } from "@/lib/database/MatchBets.ts";
-import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet.tsx";
-import { ProfilesDB } from "@/lib/database/Profiles.ts";
+import { Image, ImageBackground } from "expo-image";
+import { MatchBets } from "@/lib/database/MatchBets";
+import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet";
+import { ProfilesDB } from "@/lib/database/Profiles";
 import AsyncStorage from "expo-sqlite/kv-store";
-import type { Profile } from "@/lib/user/profile.ts";
+import type { Profile } from "@/lib/user/profile";
 import * as Bs from "@/ui/icons";
 import Slider from "@react-native-community/slider";
-import { useTheme } from "@/ui/context/ThemeContext.ts";
-import { UIText } from "@/ui/components/UIText.tsx";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { UIText } from "@/ui/components/UIText";
 import type { RootStackScreenProps } from "@/navigation";
 
 interface Player {
@@ -79,15 +80,19 @@ export function BettingScreen({ route }: BettingScreenProps) {
                 .on("presence", { event: "sync" }, () => {
                     const newState = channel.presenceState();
                     console.log("sync", newState);
-                    const newPlayers = Object.entries(newState).map(([key, [value]]: [string, any]) => ({
-                        id: key,
-                        name: value.user_name,
-                        emoji: value.user_emoji,
-                        betAmount: value.bet_amount,
-                        betAlliance: value.bet_alliance,
-                    }));
+                    const newPlayers = Object.entries(newState).map(
+                        ([key, [value]]: [string, any]) => ({
+                            id: key,
+                            name: value.user_name,
+                            emoji: value.user_emoji,
+                            betAmount: value.bet_amount,
+                            betAlliance: value.bet_alliance,
+                        }),
+                    );
                     for (const player of existingData) {
-                        const existingPlayer = existingData.find((p) => p.user_id === player.user_id);
+                        const existingPlayer = existingData.find(
+                            (p) => p.user_id === player.user_id,
+                        );
                         if (!newPlayers.find((p) => p.id === player.user_id)) {
                             newPlayers.push({
                                 id: player.user_id,
@@ -123,7 +128,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 };
                             }
                             return player;
-                        })
+                        }),
                     );
                 })
                 .subscribe(async (status) => {
@@ -260,7 +265,10 @@ export function BettingScreen({ route }: BettingScreenProps) {
                             players
                                 .filter((p: Player) => p.id !== userProfile.id)
                                 .map((player: Player) => (
-                                    <View style={{ flexDirection: "column", alignItems: "center" }} key={player.id}>
+                                    <View
+                                        style={{ flexDirection: "column", alignItems: "center" }}
+                                        key={player.id}
+                                    >
                                         <UIText
                                             style={{
                                                 color: colors.fg.hex,
@@ -280,7 +288,9 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         </UIText>
                                         <UIText
                                             style={{
-                                                color: player.betAlliance ? player.betAlliance : colors.fg.hex,
+                                                color: player.betAlliance
+                                                    ? player.betAlliance
+                                                    : colors.fg.hex,
                                                 fontSize: 18,
                                                 fontWeight: "bold",
                                             }}
@@ -291,7 +301,9 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 ))}
                         {!players ||
                             (players.length < 2 && (
-                                <UIText style={{ color: colors.fg.hex, fontSize: 18 }}>Waiting for players...</UIText>
+                                <UIText style={{ color: colors.fg.hex, fontSize: 18 }}>
+                                    Waiting for players...
+                                </UIText>
                             ))}
                     </View>
 
@@ -397,13 +409,13 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                             userProfile.id,
                                             matchNumber,
                                             selectedAlliance!,
-                                            Number(currentBet)
+                                            Number(currentBet),
                                         );
                                     } else {
                                         await MatchBets.updateMatchBet(
                                             userProfile.id,
                                             matchNumber,
-                                            Number(currentBet) + betAmount
+                                            Number(currentBet) + betAmount,
                                         );
                                     }
                                 }}
@@ -447,12 +459,18 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         alignSelf: "flex-start",
                                         width: "100%",
                                         opacity:
-                                            selectedAlliance && userProfile.scoutcoins > 0 && players.length >= 2
+                                            selectedAlliance &&
+                                            userProfile.scoutcoins > 0 &&
+                                            players.length >= 2
                                                 ? 0.5
                                                 : 1,
                                     }}
                                     onPress={() => {
-                                        if (userProfile.scoutcoins < 0 || !selectedAlliance || players.length < 2) {
+                                        if (
+                                            userProfile.scoutcoins < 0 ||
+                                            !selectedAlliance ||
+                                            players.length < 2
+                                        ) {
                                             return;
                                         }
                                         setBetActive(true);

@@ -40,7 +40,10 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
 
     return (
         <UIModal visible onDismiss={() => onClose(false)} backdropPressBehavior={"dismiss"}>
-            <PressableOpacity onPress={() => onClose(false)} style={{ position: "absolute", top: 16, right: 16 }}>
+            <PressableOpacity
+                onPress={() => onClose(false)}
+                style={{ position: "absolute", top: 16, right: 16 }}
+            >
                 <Bs.X size={32} fill={"gray"} />
             </PressableOpacity>
 

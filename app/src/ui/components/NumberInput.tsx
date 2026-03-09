@@ -12,14 +12,22 @@ export interface NumberInputProps extends Omit<TextInputProps, "value" | `on${st
     value: number | null;
     onInput?: ((value: number | null) => void | undefined | boolean) | null | undefined;
 }
-export function NumberInput({ value = null, float = false, min, max, onInput, ...passthrough }: NumberInputProps) {
+export function NumberInput({
+    value = null,
+    float = false,
+    min,
+    max,
+    onInput,
+    ...passthrough
+}: NumberInputProps) {
     let [draft, setDraft] = useState<string>(value?.toString() ?? "");
 
     function updateValue(newDraft: string, blurred: boolean) {
         setDraft(newDraft);
 
         newDraft = newDraft.trim();
-        const newValue: number | null = newDraft === "" ? null : float ? parseFloat(newDraft) : parseInt(newDraft);
+        const newValue: number | null =
+            newDraft === "" ? null : float ? parseFloat(newDraft) : parseInt(newDraft);
         let validValue: number | null = value;
 
         let valid: boolean = true;

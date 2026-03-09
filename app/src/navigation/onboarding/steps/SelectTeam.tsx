@@ -45,9 +45,12 @@ export function SelectTeam({ navigation }: SelectTeamProps) {
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 onPress={async () => {
-                                    const { data, error } = await supabase.rpc("register_user_with_organization", {
-                                        team_number: item.number,
-                                    });
+                                    const { data, error } = await supabase.rpc(
+                                        "register_user_with_organization",
+                                        {
+                                            team_number: item.number,
+                                        },
+                                    );
                                     if (error) {
                                         console.error(error);
                                         Alert.alert(

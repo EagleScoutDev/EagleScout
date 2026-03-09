@@ -47,10 +47,14 @@ export function DataGraph({ item, modalActive, setModalActive, data }: DataGraph
             <View>
                 <LineChart
                     data={{
-                        labels: data.sort((a, b) => a.match - b.match).map((datum) => String(datum.match)),
+                        labels: data
+                            .sort((a, b) => a.match - b.match)
+                            .map((datum) => String(datum.match)),
                         datasets: [
                             {
-                                data: data.sort((a, b) => a.match - b.match).map((datum) => datum.data),
+                                data: data
+                                    .sort((a, b) => a.match - b.match)
+                                    .map((datum) => datum.data),
                                 color: (opacity = 1) => colors.primary.hex,
                                 strokeWidth: 2, // optional
                             },
@@ -78,7 +82,9 @@ export function DataGraph({ item, modalActive, setModalActive, data }: DataGraph
                         <UIText style={{ textAlign: "center" }}>Graph Interpretation</UIText>
                         {item.options?.map((option: string, index: number) => {
                             return (
-                                <UIText style={{ textAlign: "center" }}>{index + " - " + item.options![index]}</UIText>
+                                <UIText style={{ textAlign: "center" }}>
+                                    {index + " - " + item.options![index]}
+                                </UIText>
                             );
                         })}
                     </>

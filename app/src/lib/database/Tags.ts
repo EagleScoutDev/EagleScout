@@ -10,7 +10,10 @@ export interface TagStructure {
 
 export class TagsDB {
     static async getTagsForPicklist(picklist_id: number): Promise<TagStructure[]> {
-        const { data, error } = await supabase.from("tags").select("*").eq("picklist_id", picklist_id);
+        const { data, error } = await supabase
+            .from("tags")
+            .select("*")
+            .eq("picklist_id", picklist_id);
         if (error) {
             throw error;
         } else {

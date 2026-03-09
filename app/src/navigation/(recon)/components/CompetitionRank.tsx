@@ -60,7 +60,8 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     return 0;
                 }
                 // else return the difference between the date and the start date or the end date, whichever is closer
-                return Math.abs(date.getTime() - startDate.getTime()) < Math.abs(date.getTime() - endDate.getTime())
+                return Math.abs(date.getTime() - startDate.getTime()) <
+                    Math.abs(date.getTime() - endDate.getTime())
                     ? Math.abs(date.getTime() - startDate.getTime())
                     : Math.abs(date.getTime() - endDate.getTime());
             };
@@ -69,7 +70,11 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
             let date = new Date();
             let diff = dateDiff(date, new Date(events[0].start_date), new Date(events[0].end_date));
             events.forEach((event) => {
-                const newDiff = dateDiff(date, new Date(event.start_date), new Date(event.end_date));
+                const newDiff = dateDiff(
+                    date,
+                    new Date(event.start_date),
+                    new Date(event.end_date),
+                );
                 if (newDiff < diff) {
                     closest = event;
                     diff = newDiff;
@@ -90,7 +95,9 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                     setAllCompetitions(sorted);
 
                     if (sorted.length > 0) {
-                        const filteredArray = sorted.filter((event) => event.rank != null && event.rank >= 0);
+                        const filteredArray = sorted.filter(
+                            (event) => event.rank != null && event.rank >= 0,
+                        );
 
                         let last_event;
                         if (filteredArray.length > 0) {
@@ -169,7 +176,13 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
                         )}
                     </UIText>
                     <UIText size={20} style={{ textAlign: "center" }}>
-                        {loading ? " " : <>{currentCompetition != null ? "at " + currentCompetition.name : " "}</>}
+                        {loading ? (
+                            " "
+                        ) : (
+                            <>
+                                {currentCompetition != null ? "at " + currentCompetition.name : " "}
+                            </>
+                        )}
                     </UIText>
                 </View>
 

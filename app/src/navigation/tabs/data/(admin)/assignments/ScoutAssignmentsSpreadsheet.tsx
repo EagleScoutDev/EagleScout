@@ -1,4 +1,11 @@
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { TBAMatches } from "@/lib/database/TBAMatches";
 import { SetScoutAssignmentModal } from "@/components/modals/SetScoutAssignmentModal";
@@ -51,19 +58,25 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
         (async () => {
             if (competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED) {
                 let matches = await TBAMatches.getMatchesForCompetition(competition.id);
-                let scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBased(
-                    competition.id,
-                );
+                let scoutAssignments =
+                    await ScoutAssignments.getScoutAssignmentsForCompetitionTeamBased(
+                        competition.id,
+                    );
 
                 matches = matches.filter((match) => match.compLevel === "qm");
                 const matchesGrouped = [];
                 let uniqueIndex = nextIdx;
                 matches.forEach((match) => {
-                    const matchingObject = matchesGrouped.find((obj) => obj.data[0].match === match.match);
+                    const matchingObject = matchesGrouped.find(
+                        (obj) => obj.data[0].match === match.match,
+                    );
                     let name = "";
                     let assignmentExists = false;
                     for (let i = 0; i < scoutAssignments.length; i++) {
-                        if (scoutAssignments[i].matchId === match.id && scoutAssignments[i].team === match.team) {
+                        if (
+                            scoutAssignments[i].matchId === match.id &&
+                            scoutAssignments[i].team === match.team
+                        ) {
                             name = scoutAssignments[i].userFullName;
                             assignmentExists = true;
                             break;
@@ -94,9 +107,10 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                 setMatchesGrouped(matchesGrouped);
             } else {
                 let matches = await TBAMatches.getMatchesForCompetition(competition.id);
-                let scoutAssignments = await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBased(
-                    competition.id,
-                );
+                let scoutAssignments =
+                    await ScoutAssignments.getScoutAssignmentsForCompetitionPositionBased(
+                        competition.id,
+                    );
 
                 matches = [];
                 for (let i = 1; i <= 100; i++) {
@@ -123,7 +137,9 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                 const matchesGrouped = [];
                 let uniqueIndex = nextIdx;
                 matches.forEach((match) => {
-                    const matchingObject = matchesGrouped.find((obj) => obj.data[0].match === match.match);
+                    const matchingObject = matchesGrouped.find(
+                        (obj) => obj.data[0].match === match.match,
+                    );
                     let name = "";
                     let assignmentExists = false;
                     for (let i = 0; i < scoutAssignments.length; i++) {
@@ -395,11 +411,14 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                                 >
                                     <View>
                                         <UIText style={styles.scoutAssignmentCode}>
-                                            {competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED
+                                            {competition.scoutAssignmentsConfig ===
+                                            ScoutAssignmentsConfig.TEAM_BASED
                                                 ? matches.data[elem].teamFormatted
                                                 : getPosition(matches.data[elem].position)}
                                         </UIText>
-                                        <UIText style={styles.scoutAssignmentName}>{matches.data[elem].name}</UIText>
+                                        <UIText style={styles.scoutAssignmentName}>
+                                            {matches.data[elem].name}
+                                        </UIText>
                                     </View>
                                 </TouchableOpacity>
                             ))}
@@ -428,11 +447,14 @@ export function ScoutAssignmentsSpreadsheet({ route }: ScoutAssignmentsSpreadshe
                                 >
                                     <View>
                                         <UIText style={styles.scoutAssignmentCode}>
-                                            {competition.scoutAssignmentsConfig === ScoutAssignmentsConfig.TEAM_BASED
+                                            {competition.scoutAssignmentsConfig ===
+                                            ScoutAssignmentsConfig.TEAM_BASED
                                                 ? matches.data[elem].teamFormatted
                                                 : getPosition(matches.data[elem].position)}
                                         </UIText>
-                                        <UIText style={styles.scoutAssignmentName}>{matches.data[elem].name}</UIText>
+                                        <UIText style={styles.scoutAssignmentName}>
+                                            {matches.data[elem].name}
+                                        </UIText>
                                     </View>
                                 </TouchableOpacity>
                             ))}

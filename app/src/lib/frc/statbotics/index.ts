@@ -36,7 +36,9 @@ export namespace Statbotics {
     const client = createClient<paths>({ baseUrl: BASE_URL });
 
     export async function getTeamYear(team: number): Promise<TeamYear | null> {
-        const { error, data } = await client.GET(`/team_year/{team}/${YEAR}`, { params: { path: { team } } });
+        const { error, data } = await client.GET(`/team_year/{team}/${YEAR}`, {
+            params: { path: { team } },
+        });
         if (error) {
             console.error(error);
             return null;
@@ -45,7 +47,9 @@ export namespace Statbotics {
     }
 
     export async function getTeamEvents(team: number): Promise<TeamEvent[] | null> {
-        const { error, data } = await client.GET(`/team_events`, { params: { query: { team, year: YEAR } } });
+        const { error, data } = await client.GET(`/team_events`, {
+            params: { query: { team, year: YEAR } },
+        });
         if (error) {
             console.error(error);
             return null;

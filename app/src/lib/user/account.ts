@@ -59,7 +59,11 @@ export namespace Accounts {
             return {
                 ...uattr,
                 id: user.id,
-                role: uattr.admin ? AccountRole.Admin : uattr.scouter ? AccountRole.Scouter : AccountRole.Rejected,
+                role: uattr.admin
+                    ? AccountRole.Admin
+                    : uattr.scouter
+                      ? AccountRole.Scouter
+                      : AccountRole.Rejected,
                 status: user.user_metadata.requested_deletion
                     ? AccountStatus.Deleted
                     : !uattr.org_id // FIXME: if the organization id is 0, then this will become false

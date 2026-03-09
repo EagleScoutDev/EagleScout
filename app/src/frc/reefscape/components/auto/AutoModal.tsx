@@ -9,8 +9,6 @@ import { ActionButton } from "./ActionButton";
 import { ActionRow } from "./ActionRow";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UISheet } from "@/ui/components/UISheet";
-import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
-import * as Bs from "@/ui/icons";
 import { Alliance, type Orientation } from "@/frc/common/common";
 import * as Haptics from "expo-haptics";
 
@@ -36,7 +34,8 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
         <>
             <UISheet.Header
                 title={"Auto"}
-                right={{ color: colors.primary, text: "Done", onPress: () => void modal.dismiss() }}
+                left={[{ color: colors.primary, text: "Undo", icon: "undo", onPress: () => dispatch({ type: "undo" }) }]}
+                right={[{ color: colors.primary, text: "Done", onPress: () => void modal.dismiss() }]}
             />
             <View style={{ paddingHorizontal: 16, paddingBottom: 16, flex: 1 }}>
                 {levelChooserActive ? (
@@ -72,17 +71,6 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                     />
                 ) : (
                     <>
-                        <View style={{ flexDirection: "row", marginBottom: 4 }}>
-                            <View style={{ flex: 1 }} />
-                            <UIButton
-                                style={UIButtonStyle.text}
-                                size={UIButtonSize.md}
-                                text={"Undo"}
-                                icon={Bs.ArrowCounterclockwise}
-                                onPress={() => dispatch({ type: "undo" })}
-                            />
-                        </View>
-
                         <View
                             style={{
                                 width: "100%",
