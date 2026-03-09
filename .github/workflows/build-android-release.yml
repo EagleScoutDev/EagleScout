@@ -29,6 +29,10 @@ jobs:
         working-directory: app
         run: npm i
 
+      - name: Generate Android native project
+        working-directory: app
+        run: npx expo prebuild --platform android --non-interactive
+
       - name: Decode and save the keystore file
         working-directory: app/android/app
         run: |
@@ -71,6 +75,10 @@ jobs:
       - name: Run npm install
         working-directory: app
         run: npm i
+
+      - name: Generate Android native project
+        working-directory: app
+        run: npx expo prebuild --platform android --non-interactive
 
       - name: Decode and save the keystore file
         working-directory: app/android/app

@@ -32,6 +32,10 @@ jobs:
         working-directory: app
         run: npm i
 
+      - name: Generate Android native project
+        working-directory: app
+        run: npx expo prebuild --platform android --non-interactive
+
       - name: Build AAB
         working-directory: app/android
         run: ./gradlew bundleDebug
@@ -64,6 +68,10 @@ jobs:
       - name: Run npm install
         working-directory: app
         run: npm i
+
+      - name: Generate Android native project
+        working-directory: app
+        run: npx expo prebuild --platform android --non-interactive
 
       - name: Build APK
         working-directory: app/android
