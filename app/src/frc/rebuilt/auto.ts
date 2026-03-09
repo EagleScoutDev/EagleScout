@@ -96,12 +96,9 @@ export namespace AutoAction {
 
     export function reduce(
         state: AutoState,
-        action: AutoAction | { type: "undo" } | { type: "stupid"; state: AutoState },
+        action: AutoAction | { type: "undo" },
     ): AutoState {
         switch (action.type) {
-            case "stupid":
-                return action.state;
-
             case AutoActionType.Intake:
                 return produce(state, (draft) => {
                     draft.path.push({ ...action, order: draft.order });
