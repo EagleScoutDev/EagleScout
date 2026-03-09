@@ -2,14 +2,22 @@ import type { ConfigPlugin } from "expo/config-plugins";
 import { withAppDelegate, withInfoPlist, withMainApplication, withStringsXml } from "expo/config-plugins";
 
 interface StallionPluginOptions {
-    projectId: string;
-    appToken: string;
+    projectId?: string;
+    appToken?: string;
 }
 
 const withStallion: ConfigPlugin<StallionPluginOptions> = (config, options) => {
+    const projectId = options?.projectId?.trim();
+    const appToken = options?.appToken?.trim();
+
+    // PR CI often runs without secrets; skip Stallion wiring in that case.
+    if (!projectId || !appToken) {
+        return config;
+    }
+
     config = withInfoPlist(config, (config) => {
-        config.modResults["StallionProjectId"] = options.projectId;
-        config.modResults["StallionAppToken"] = options.appToken;
+        config.modResults["StallionProjectId"] = projectId;
+        config.modResults["StallionAppToken"] = appToken;
         return config;
     });
     config = withAppDelegate(config, (config) => {
@@ -39,11 +47,11 @@ const withStallion: ConfigPlugin<StallionPluginOptions> = (config, options) => {
         config.modResults.resources.string.push(
             {
                 $: { name: "StallionProjectId", translatable: "false" },
-                _: options.projectId,
+                _: projectId,
             },
             {
                 $: { name: "StallionAppToken", translatable: "false" },
-                _: options.appToken,
+                _: appToken,
             },
         );
         return config;
