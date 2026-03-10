@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 // import {SimpleTeam, TBA} from '../../lib/TBAUtils';
 import {ColorChooser} from '../../../../../src/ui/components/OrientationChooser';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import {UIButton, UIButtonStyle, UIButtonSize} from "@/ui/components/UIButton";
 import {useRootNavigation} from "@/navigation";
 
@@ -32,7 +32,7 @@ const MatchOverviewSelector = () => {
             padding: '5%',
             fontSize: 30,
             fontWeight: 'bold',
-            color: 'colors.text',
+            color: colors.text,
             // marginVertical: 20,
         },
         button: {
@@ -48,7 +48,6 @@ const MatchOverviewSelector = () => {
 
     const [selectedAlliance, setSelectedAlliance] = useState<string>('Blue');
     const [matchNumber, setMatchNumber] = useState('');
-    const [fieldOrientation, setFieldOrientation] = useState('red');
     useEffect(() => {
         if (!matchNumber || Number(matchNumber) > 400) {
             return;

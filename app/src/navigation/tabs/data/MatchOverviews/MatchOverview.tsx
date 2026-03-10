@@ -13,6 +13,7 @@ import {MatchReportsDB
 } from '@/lib/database/ScoutMatchReports';
 import AllianceSummaryCard from './AllianceSummaryCard';
 import {type RootStackScreenProps} from "@/navigation";
+import {useRootNavigation} from "@/navigation";
 import type {SimpleTeam} from "@/lib/frc/tba/TBA";
 
 export interface MatchOverviewParams{
@@ -22,6 +23,7 @@ export interface MatchOverviewParams{
 export interface MatchOverviewProps extends RootStackScreenProps<"MatchOverview"> {}
 
 export function MatchOverview ({route: {params: {matchNumber, alliance}}, navigation}: MatchOverviewProps) {
+    const rootNavigation = useRootNavigation();
     const {colors} = useTheme();
     const styles = StyleSheet.create({
         text: {
@@ -212,10 +214,11 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                             <Pressable
                                 key={team.key}
                                 onPress={() => {
-                                    // navigation.navigate('TeamViewer', {
-                                    //     team: team,
-                                    //     competitionId: competitionId,
-                                    // });
+                                    console.log("pressed");
+                                    rootNavigation.push("TeamSummary", {
+                                        teamId: Number(team.team_number),
+                                        competitionId: competitionId
+                                    });
                                 }}>
                                 <View
                                     style={[
