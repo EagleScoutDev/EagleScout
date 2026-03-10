@@ -11,6 +11,7 @@ export function ActionRow({ children }: ActionRowProps) {
                 marginTop: 16,
                 gap: 16,
                 flex: 1,
+                width: "100%",
             }}
             children={children}
         />

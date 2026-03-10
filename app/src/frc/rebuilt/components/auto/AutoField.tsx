@@ -46,7 +46,7 @@ export function AutoField({ orientation, alliance, onObstacle, onIntake, state }
                     height="100%"
                     viewBox="0 0 133 428"
                     fill="none"
-                    style={{ transform: [{ rotate: leftSide ? "180deg" : "0deg" }] }}
+                    style={{ transform: [{ rotate: !leftSide ? "180deg" : "0deg" }] }}
                 >
                     <Path fill="#d9d9d9" stroke="#000" d="M32.449 178.122h71.992v71.992H32.449z"/>
                     <Path d="m92.579 214.324-12.2 21.13-24.399.001-12.199-21.131 12.2-21.129 24.399-.001z" stroke="#000"
@@ -75,7 +75,7 @@ export function AutoField({ orientation, alliance, onObstacle, onIntake, state }
             >
                 <Piece key={1} type={"HP"} state={state.pieces[1]} onPress={() => onIntake(1)}/>
                 <View style={{ flex: 1, width: "100%", alignItems: leftSide? "flex-start" : "flex-end", justifyContent: "center" }}>
-                    <View style={{ width: 84, height: 84, backgroundColor: "#000", borderRadius: 16 }} />
+                    <View style={{ width: 84, height: 84, backgroundColor: "#282828", borderRadius: 16 }} />
                 </View>
                 <View style={{ paddingBottom: 45 }}>
                     <Piece key={2} type={"GROUND"} state={state.pieces[2]} onPress={() => onIntake(2)}/>

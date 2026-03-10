@@ -83,19 +83,6 @@ export function AutoModal({ orientation, alliance, state, dispatch }: AutoModalP
                 </View>
 
                 <ActionRow>
-                    <ActionButton
-                        label={"Missed"}
-                        role={"fail"}
-                        value={state.stats.miss}
-                        onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            dispatch({
-                                type: AutoActionType.Score,
-                                success: false,
-                                amount: 1,
-                            });
-                        }}
-                    />
                     <HoldButton
                         label={"Scored"}
                         value={state.stats.score1}

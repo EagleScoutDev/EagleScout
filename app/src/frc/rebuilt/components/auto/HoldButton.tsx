@@ -41,7 +41,6 @@ export function HoldButton({ value, disabled = false, label, onInput}: UISeconds
     }, [holding]);
 
     return (
-        <View>
             <Pressable
                 disabled={disabled}
                 style={[
@@ -66,19 +65,19 @@ export function HoldButton({ value, disabled = false, label, onInput}: UISeconds
                 <UIText style={styles.text}>{label}</UIText>
                 <UIText style={styles.number}>{(displayValue).toFixed(3)}</UIText>
             </Pressable>
-        </View>
     );
 }
 
 const getStyles = (colors: Theme["colors"]) =>
     StyleSheet.create({
         button: {
+            backgroundColor: colors.primary.hex,
             alignItems: "center",
             justifyContent: "center",
-            aspectRatio: 2/3,
-            borderRadius: 8,
-            height: 200,
+            gap: 8,
+            padding: 16,
             flex: 1,
+            borderRadius: 10,
         },
         number: {
             fontSize: 50,
