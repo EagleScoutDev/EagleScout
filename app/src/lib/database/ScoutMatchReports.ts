@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import * as Reefscape from "@/frc/reefscape";
+import * as Rebuilt from "@/frc/rebuilt";
 import { Form } from "@/lib/forms";
 
 interface TimelineElement {
@@ -14,7 +14,7 @@ interface MatchReport {
     data: any[];
     competitionId: number;
     timelineData?: TimelineElement[];
-    autoPath?: Reefscape.AutoPath;
+    autoPath?: Rebuilt.AutoPath;
 }
 
 interface MatchReportWithDate extends MatchReport {

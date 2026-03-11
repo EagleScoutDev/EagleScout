@@ -46,7 +46,7 @@ export function MatchInformation({
             <UICard.NumberInput
                 label={"Team Number"}
                 placeholder="000"
-                max={999}
+                max={99999}
                 value={team}
                 onInput={setTeam}
                 error={

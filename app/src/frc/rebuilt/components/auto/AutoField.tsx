@@ -52,7 +52,7 @@ export function AutoField({ orientation, alliance, onObstacle, onIntake, state }
                     <Path d="m92.579 214.324-12.2 21.13-24.399.001-12.199-21.131 12.2-21.129 24.399-.001z" stroke="#000"
                           strokeWidth="6"/>
                     <Path d="m99.662 214.088-15.623 27.06H52.792l-15.623-27.06 15.624-27.06 31.246-.001z"
-                          stroke="#fb4949" strokeWidth="6"/>
+                          stroke={colour1} strokeWidth="6"/>
                     <Path fill={colour1} stroke="#000" d="M38.99 250.51h60.731v91.596H38.99z" onPress={() => onObstacle(Obstacles.B1)}/>
                     <Path fill={colour2} fillOpacity=".9" stroke="#000" d="M38.99 250.51h31.923v91.596H38.99z" onPress={() => onObstacle(Obstacles.B1)}/>
                     <Path fill={colour1} stroke="#000" d="M38.99 85.894h60.731v91.596H38.99z" onPress={() => onObstacle(Obstacles.B2)}/>
@@ -67,7 +67,7 @@ export function AutoField({ orientation, alliance, onObstacle, onIntake, state }
             <View
                 style={{
                     flex: 1,
-                    flexDirection: "column",
+                    flexDirection: !leftSide ? "column" : "column-reverse",
                     justifyContent: "flex-start",
                     alignItems: leftSide? "flex-start" : "flex-end",
                     height: "100%",

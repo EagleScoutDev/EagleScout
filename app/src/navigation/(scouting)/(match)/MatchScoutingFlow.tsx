@@ -12,21 +12,22 @@ import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { MatchInformation } from "@/navigation/(scouting)/components/MatchInformation";
-import { FormView } from "@/components/FormView";
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
 import * as Rebuilt from "@/frc/rebuilt";
 import { AutoAction, AutoState } from "@/frc/rebuilt";
+import { produce } from "immer";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
-import { HeaderTimer } from "@/navigation/(scouting)/components/HeaderTimer";
+import { HeaderTimer } from "../components/HeaderTimer";
 import { UITabView } from "@/ui/components/UITabView";
+import { FormView } from "@/components/FormView";
 
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
-    "use no memo";
+    "use no memo"; // TODO: fix this
 
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
@@ -38,29 +39,70 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
     const [currentTab, setCurrentTab] = useState("Setup");
+    const [sectionData, setSectionData] = useState<Form.Data[]>([]);
 
     const [orientation, setOrientation] = useState<Orientation>(Orientation.leftRed);
     const [alliance, setAlliance] = useState<Alliance>(Alliance.red);
 
     const [autoState, autoReducer] = useReducer(AutoAction.reduce, AutoState());
-    const [sectionData, setSectionData] = useState<Form.Data[]>([]);
 
-    const confettiRef = useRef<Confetti>(null);
+    const useConfetti = useRef<Confetti>(null);
     const autoModalRef = useRef<UISheetModal>(null);
     const timerRef = useRef<HeaderTimer>(null);
 
-    function resetResponses() {
-        setSectionData(formSections.length === 0 ? [] : Form.initialize(formSections));
-    }
     function reset() {
         setMatch(null);
         setTeam(null);
         resetResponses();
     }
+    function resetResponses() {
+        setSectionData(formSections === null ? [] : Form.initialize(formSections));
+    }
+    useEffect(() => void resetResponses(), [formStructure]);
+
+    // TODO: THIS IS AN EXTREMELY STUPID AND DANGEROUS HACK TO
+    //       COMPLY WITH THE OLD 2025 REEFSCAPE LINK SYSTEM!!!
+    //       PLEASE REMOVE THIS FOR 2026 REBUILT!!!!!!!!!!!!!!
+    //region Synchronize link data with form data
+    useEffect(() => {
+        let changed = false;
+        let x = produce(autoState, (draft) => {
+            for (let si = 0; si < formSections.length; si++) {
+                let items = formSections[si].items;
+                for (let i = 0; i < items.length; i++) {
+                    let item = items[i];
+                    if (typeof item.link_to !== "string") continue;
+
+                    if (
+                        draft.stats[item.link_to] !==
+                        (draft.stats[item.link_to] = sectionData[si][i])
+                    ) {
+                        changed = true;
+                    }
+                }
+            }
+        });
+        if (changed) autoReducer({ type: "stupid", state: x });
+    }, [sectionData]);
 
     useEffect(() => {
-        resetResponses();
-    }, [formStructure]);
+        let changed = false;
+        let x = produce(sectionData, (draft) => {
+            for (let si = 0; si < formSections.length; si++) {
+                let items = formSections[si].items;
+                for (let i = 0; i < items.length; i++) {
+                    let item = items[i];
+                    if (typeof item.link_to !== "string") continue;
+
+                    if (draft[si][i] !== (draft[si][i] = autoState.stats[item.link_to])) {
+                        changed = true;
+                    }
+                }
+            }
+        });
+        if (changed) setSectionData(x);
+    }, [autoState]);
+    //endregion
 
     useEffect(() => {
         navigation.setOptions({
@@ -79,10 +121,12 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
 
         if (match === null || match > 400) {
             await AsyncAlert.alert("Invalid Match Number", "Please enter a valid match number");
+            navigation.navigate("Match");
             return;
         }
         if (team === null) {
             await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
+            navigation.navigate("Match");
             return;
         }
 
@@ -90,7 +134,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (missing) {
             Alert.alert(
                 "Required Question: " + missing.question + " not filled out",
-                "Please fill out all questions denoted with an asterisk",
+                "Please fill out all questions denoted with an asterisk"
             );
             return;
         }
@@ -126,16 +170,17 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             const currentAssignments = await AsyncStorage.getItem("scout-assignments");
             if (currentAssignments !== null) {
                 const newAssignments = JSON.parse(currentAssignments).filter(
-                    (a: { matchNumber: number; team: string | null; }) =>
+                    (a) =>
                         !(
                             a.matchNumber === match &&
-                            (a.team === null || parseInt(a.team.substring(3)) === team)
-                        ),
+                            (a.team === null || a.team.substring(3) === team)
+                        )
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
         } else {
             try {
+                console.log(dataToSubmit);
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
                     type: "success",
@@ -144,14 +189,14 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 });
                 reset();
 
-                confettiRef.current?.startConfetti();
+                useConfetti.current?.startConfetti();
             } catch (error) {
                 console.error(error);
                 Alert.alert("Error", "There was an error submitting your scouting report.");
             }
         }
 
-        navigation.goBack();
+        navigation.navigate("Match");
     }
 
     if (competition === null) {
@@ -166,77 +211,94 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         );
     }
 
-    return <>
-        <View
-            style={{
-                ...StyleSheet.absoluteFillObject,
-                zIndex: 114,
-                pointerEvents: "none",
-                width: "100%",
-                height: "100%",
-            }}
-        >
-            <Confetti ref={confettiRef} timeout={10} duration={3000} />
-        </View>
-
-        <UITabView
-            currentKey={currentTab}
-            onTabChange={(tab) => {
-                setCurrentTab(tab);
-            }}
-        >
-            <UITabView.Tab tabKey="Setup" title="Setup">
+    const tabs = [
+        {
+            key: "Setup",
+            title: "Setup",
+            component: () => (
                 <ScoutingFlowTab
-                    title={competition.name}
+                    title={competition ? `${competition.name}` : "Match Report"}
                     buttonText={"Next"}
                     onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
                 >
                     <MatchInformation
-                        match={match}
-                        setMatch={setMatch}
-                        team={team}
-                        setTeam={setTeam}
-                        orientation={orientation}
-                        setOrientation={setOrientation}
-                        alliance={alliance}
-                        setAlliance={setAlliance}
+                        match={match} setMatch={setMatch}
+                        team={team} setTeam={setTeam}
+                        orientation={orientation} setOrientation={setOrientation}
+                        alliance={alliance} setAlliance={setAlliance}
                         teamsForMatch={teamsForMatch}
                     />
                 </ScoutingFlowTab>
-            </UITabView.Tab>
+            ),
+        },
+        ...formSections.map(({ title, items }, i) => {
+            const isLast = i === formSections.length - 1;
 
-            {formSections.map(({ title, items }, i) => {
-                const isLast = i === formSections.length - 1;
+            return {
+                key: `Form/${title}`,
+                title,
+                component: () => (
+                    <ScoutingFlowTab
+                        title={title}
+                        buttonText={isLast ? "Submit" : "Next"}
+                        onNext={
+                            isLast
+                                ? submitForm
+                                : () => setCurrentTab(`Form/${formSections[i + 1].title}`)
+                        }
+                    >
+                        <FormView
+                            items={items}
+                            data={sectionData[i]}
+                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
+                        />
+                    </ScoutingFlowTab>
+                ),
+            };
+        }),
+    ];
 
-                return (
-                    <UITabView.Tab key={`Form/${title}`} tabKey={`Form/${title}`} title={title}>
-                        <ScoutingFlowTab
-                            title={title}
-                            buttonText={isLast ? "Submit" : "Next"}
-                            onNext={
-                                isLast
-                                    ? submitForm
-                                    : () => setCurrentTab(`Form/${formSections[i + 1].title}`)
-                            }
-                        >
-                            <FormView
-                                items={items}
-                                data={sectionData[i]}
-                                onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                            />
-                        </ScoutingFlowTab>
-                    </UITabView.Tab>
-                );
-            })}
-        </UITabView>
+    return (
+        <>
+            <View
+                style={{
+                    ...StyleSheet.absoluteFill,
+                    zIndex: 114,
+                    pointerEvents: "none",
+                    width: "100%",
+                    height: "100%",
+                }}
+            >
+                <Confetti ref={useConfetti} timeout={10} duration={3000} />
+            </View>
 
-        <UISheetModal ref={autoModalRef}>
-            <Rebuilt.AutoModal
-                orientation={orientation}
-                alliance={alliance}
-                state={autoState}
-                dispatch={autoReducer}
-            />
-        </UISheetModal>
-    </>;
+            <UITabView
+                currentKey={currentTab}
+                onTabChange={(tab) => {
+                    setCurrentTab(tab);
+                    if (tab.includes("Auto")) {
+                        autoModalRef.current?.present();
+                    }
+                }}
+            >
+                {tabs.map((tab) => {
+                    return (
+                        <UITabView.Tab key={tab.key} tabKey={tab.key} title={tab.title}>
+                            {tab.component()}
+                        </UITabView.Tab>
+                    );
+                })}
+
+            </UITabView>
+
+            <UISheetModal ref={autoModalRef}>
+                <Rebuilt.AutoModal
+                    orientation={orientation}
+                    alliance={alliance}
+                    state={autoState}
+                    dispatch={autoReducer}
+                />
+            </UISheetModal>
+        </>
+    );
 }
