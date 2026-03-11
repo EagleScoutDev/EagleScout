@@ -77,7 +77,7 @@ export function AutoField({ orientation, alliance, onObstacle, onIntake, state }
                 <View style={{ flex: 1, width: "100%", alignItems: leftSide? "flex-start" : "flex-end", justifyContent: "center" }}>
                     <View style={{ width: 84, height: 84, backgroundColor: "#282828", borderRadius: 16 }} />
                 </View>
-                <View style={{ paddingBottom: 45 }}>
+                <View style={leftSide ? {paddingTop:45} : {paddingBottom: 45}}>
                     <Piece key={2} type={"GROUND"} state={state.pieces[2]} onPress={() => onIntake(2)}/>
                 </View>
             </View>
