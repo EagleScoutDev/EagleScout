@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { Form } from "@/lib/forms";
 
 export type LinkName =
     | "pickup_ground"
@@ -16,7 +17,7 @@ export type LinkName =
     | "missspecial2"
     | "climbL1"
     | "climbL2"
-    | "climbL3"
+    | "climbL3";
 export type AutoPieceState = { success: boolean; order: number } | null;
 export type AutoState = Readonly<{
     path: AutoPath;
@@ -64,14 +65,18 @@ export enum AutoActionType {
     Score,
     Intake,
     Obstacle,
-    Climb
+    Climb,
 }
 
 const MIDDLE_INTAKE_TARGET = 3;
 const ALLIANCE_INTAKE_TARGET = 4;
 
 export type AutoPath = (AutoAction & { order: number })[]; // TODO: get rid of this extra property
-export type AutoAction = AutoAction.Intake | AutoAction.Obstacle | AutoAction.Score | AutoAction.Climb ;
+export type AutoAction =
+    | AutoAction.Intake
+    | AutoAction.Obstacle
+    | AutoAction.Score
+    | AutoAction.Climb;
 export namespace AutoAction {
     export interface Intake {
         type: AutoActionType.Intake;
@@ -96,51 +101,95 @@ export namespace AutoAction {
 
     export function reduce(
         state: AutoState,
-        action: AutoAction | { type: "undo" },
-    ): AutoState {
+        action: AutoAction | { type: "undo" } | { type: "update_link"; linkName: LinkName; value: number },
+        formSections: Form.Section[],
+        formData: Form.Data[],
+    ): { state: AutoState; formData?: Form.Data[] } {
+        function modifyLinkedField(linkName: LinkName, delta: number): Form.Data[] {
+            return produce(formData, (draft) => {
+                for (let si = 0; si < formSections.length; si++) {
+                    const items = formSections[si].items;
+                    for (let i = 0; i < items.length; i++) {
+                        const item = items[i];
+                        if (item.link_to === linkName) {
+                            draft[si][i] = (draft[si][i] || 0) + delta;
+                        }
+                    }
+                }
+            });
+        }
+
         switch (action.type) {
+            case "update_link":
+                return {
+                    state: produce(state, (draft) => {
+                        draft.stats[action.linkName] = action.value;
+                    }),
+                };
             case AutoActionType.Intake:
-                return produce(state, (draft) => {
-                    draft.path.push({ ...action, order: draft.order });
-                    draft.field.pieces[action.target] = {
-                        success: action.success,
-                        order: draft.order,
-                    };
-                    draft.order++;
-                });
+                return {
+                    state: produce(state, (draft) => {
+                        draft.path.push({ ...action, order: draft.order });
+                        draft.field.pieces[action.target] = {
+                            success: action.success,
+                            order: draft.order,
+                        };
+                        draft.order++;
+                    }),
+                };
 
             case AutoActionType.Obstacle:
-                return produce(state, (draft) => {
-                    const previousAction = draft.path[draft.path.length - 1];
-                    draft.path.push({ ...action, order: draft.order });
-                    draft.order++;
-                    draft.path.push({
-                        type: AutoActionType.Intake,
-                        target:
-                            previousAction?.type === AutoActionType.Intake &&
-                            previousAction.target === MIDDLE_INTAKE_TARGET
-                                ? ALLIANCE_INTAKE_TARGET
-                                : MIDDLE_INTAKE_TARGET,
-                        success: true,
-                        order: draft.order,
-                    });
-                    draft.order++;
-                });
+                return {
+                    state: produce(state, (draft) => {
+                        const previousAction = draft.path[draft.path.length - 1];
+                        draft.path.push({ ...action, order: draft.order });
+                        draft.order++;
+                        draft.path.push({
+                            type: AutoActionType.Intake,
+                            target:
+                                previousAction?.type === AutoActionType.Intake &&
+                                previousAction.target === MIDDLE_INTAKE_TARGET
+                                    ? ALLIANCE_INTAKE_TARGET
+                                    : MIDDLE_INTAKE_TARGET,
+                            success: true,
+                            order: draft.order,
+                        });
+                        draft.order++;
+                    }),
+                };
 
             case AutoActionType.Climb:
-                return produce(state, (draft) => {
+                state = produce(state, (draft) => {
                     draft.path.push({ ...action, order: draft.order });
-                    if (action.success) draft.stats[`climbL${([1, 2, 3] as const)[action.level]}`] += 1;
+                    if (action.success)
+                        draft.stats[`climbL${([1, 2, 3] as const)[action.level]}`] += 1;
                     draft.order++;
                 });
+                if (action.success) {
+                    return {
+                        state,
+                        formData: modifyLinkedField(
+                            `climbL${([1, 2, 3] as const)[action.level]}` as LinkName,
+                            1,
+                        ),
+                    };
+                }
+                return { state };
             case AutoActionType.Score:
-                return produce(state, (draft) => {
+                const scoreState = produce(state, (draft) => {
                     if (action.success) draft.stats.score1 += action.amount;
                     else draft.stats.miss += action.amount;
                 });
+                const scoreFormData = modifyLinkedField(
+                    action.success ? "score1" : "miss",
+                    action.amount,
+                );
+                if (scoreFormData) return { state: scoreState, formData: scoreFormData };
+                return { state: scoreState };
 
             case "undo":
-                return produce(state, (draft) => {
+                const lastAction = state.path[state.path.length - 1];
+                state = produce(state, (draft) => {
                     const action = draft.path.pop()!;
                     if (action === undefined) return;
                     draft.order--;
@@ -157,16 +206,36 @@ export namespace AutoAction {
                                 draft.stats[`climbL${([1, 2, 3] as const)[action.level]}`] -= 1;
                             break;
                         case AutoActionType.Score:
-                            // if (action.success) draft.stats.score_processor -= 1;
-                            // else draft.stats.miss_processor -= 1;
-                            // TODO: Make an implementation that actually can undo discrete numbers instead of just "1"
+                            if (action.success) draft.stats.score1 -= action.amount;
+                            else draft.stats.miss -= action.amount;
                             break;
                     }
                 });
+
+                if (lastAction) {
+                    switch (lastAction.type) {
+                        case AutoActionType.Climb:
+                            if (lastAction.success) {
+                                const formData = modifyLinkedField(
+                                    `climbL${([1, 2, 3] as const)[lastAction.level]}` as LinkName,
+                                    -1,
+                                );
+                                return { state, formData };
+                            }
+                            break;
+                        case AutoActionType.Score:
+                            const formData = modifyLinkedField(
+                                lastAction.success ? "score1" : "miss",
+                                -lastAction.amount,
+                            );
+                            return { state, formData };
+                    }
+                }
+                return { state };
         }
     }
 }
 
 export interface AutoDispatch {
-    (action: AutoAction | { type: "undo" }): void;
+    (action: AutoAction | { type: "undo" } | { type: "update_link"; linkName: LinkName; value: number }): void;
 }

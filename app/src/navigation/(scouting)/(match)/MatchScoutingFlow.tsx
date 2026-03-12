@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, View } from "react-native";
 import AsyncStorage from "expo-sqlite/kv-store";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
@@ -15,8 +15,7 @@ import { MatchInformation } from "@/navigation/(scouting)/components/MatchInform
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
 import * as Rebuilt from "@/frc/rebuilt";
-import { AutoAction, AutoState } from "@/frc/rebuilt";
-import { produce } from "immer";
+import { AutoAction, AutoState, type LinkName } from "@/frc/rebuilt";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
@@ -27,7 +26,7 @@ import { FormView } from "@/components/FormView";
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
-    "use no memo"; // TODO: fix this
+    "use memo"; // TODO: fix this
 
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
@@ -44,7 +43,36 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     const [orientation, setOrientation] = useState<Orientation>(Orientation.leftRed);
     const [alliance, setAlliance] = useState<Alliance>(Alliance.red);
 
-    const [autoState, autoReducer] = useReducer(AutoAction.reduce, AutoState());
+    const [autoState, setAutoState] = useState<AutoState>(AutoState());
+    function autoReducer(
+        action:
+            | AutoAction
+            | { type: "undo" }
+            | { type: "update_link"; linkName: LinkName; value: number },
+    ) {
+        const result = AutoAction.reduce(autoState, action, formSections, sectionData);
+        setAutoState(result.state);
+        if (result.formData) {
+            setSectionData(result.formData);
+        }
+    }
+
+    function updateSectionData(sectionIndex: number, newData: Form.Data) {
+        const newSectionData = Arrays.set(sectionData, sectionIndex, newData);
+        setSectionData(newSectionData);
+
+        // Dispatch update_link actions for any linked fields that changed
+        const items = formSections[sectionIndex].items;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (typeof item.link_to === "string" && sectionData[sectionIndex]?.[i] !== newData[i]) {
+                const value = newData[i];
+                if (typeof value === "number") {
+                    autoReducer({ type: "update_link", linkName: item.link_to as LinkName, value });
+                }
+            }
+        }
+    }
 
     const useConfetti = useRef<Confetti>(null);
     const autoModalRef = useRef<UISheetModal>(null);
@@ -59,50 +87,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         setSectionData(formSections === null ? [] : Form.initialize(formSections));
     }
     useEffect(() => void resetResponses(), [formStructure]);
-
-    // TODO: THIS IS AN EXTREMELY STUPID AND DANGEROUS HACK TO
-    //       COMPLY WITH THE OLD 2026 REBUILT LINK SYSTEM!!!
-    //       PLEASE REMOVE THIS FOR 2027!!!!!!!!!!!!!!
-    //region Synchronize link data with form data
-    useEffect(() => {
-        let changed = false;
-        let x = produce(autoState, (draft) => {
-            for (let si = 0; si < formSections.length; si++) {
-                let items = formSections[si].items;
-                for (let i = 0; i < items.length; i++) {
-                    let item = items[i];
-                    if (typeof item.link_to !== "string") continue;
-
-                    if (
-                        draft.stats[item.link_to] !==
-                        (draft.stats[item.link_to] = sectionData[si][i])
-                    ) {
-                        changed = true;
-                    }
-                }
-            }
-        });
-        if (changed) autoReducer({ type: "stupid", state: x });
-    }, [sectionData]);
-
-    useEffect(() => {
-        let changed = false;
-        let x = produce(sectionData, (draft) => {
-            for (let si = 0; si < formSections.length; si++) {
-                let items = formSections[si].items;
-                for (let i = 0; i < items.length; i++) {
-                    let item = items[i];
-                    if (typeof item.link_to !== "string") continue;
-
-                    if (draft[si][i] !== (draft[si][i] = autoState.stats[item.link_to])) {
-                        changed = true;
-                    }
-                }
-            }
-        });
-        if (changed) setSectionData(x);
-    }, [autoState]);
-    //endregion
 
     useEffect(() => {
         navigation.setOptions({
@@ -134,7 +118,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (missing) {
             Alert.alert(
                 "Required Question: " + missing.question + " not filled out",
-                "Please fill out all questions denoted with an asterisk"
+                "Please fill out all questions denoted with an asterisk",
             );
             return;
         }
@@ -174,7 +158,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         !(
                             a.matchNumber === match &&
                             (a.team === null || a.team.substring(3) === team)
-                        )
+                        ),
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
@@ -222,10 +206,14 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                     onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
                 >
                     <MatchInformation
-                        match={match} setMatch={setMatch}
-                        team={team} setTeam={setTeam}
-                        orientation={orientation} setOrientation={setOrientation}
-                        alliance={alliance} setAlliance={setAlliance}
+                        match={match}
+                        setMatch={setMatch}
+                        team={team}
+                        setTeam={setTeam}
+                        orientation={orientation}
+                        setOrientation={setOrientation}
+                        alliance={alliance}
+                        setAlliance={setAlliance}
                         teamsForMatch={teamsForMatch}
                     />
                 </ScoutingFlowTab>
@@ -250,7 +238,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         <FormView
                             items={items}
                             data={sectionData[i]}
-                            onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
+                            onInput={(data) => updateSectionData(i, data)}
                         />
                     </ScoutingFlowTab>
                 ),
@@ -288,7 +276,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         </UITabView.Tab>
                     );
                 })}
-
             </UITabView>
 
             <UISheetModal ref={autoModalRef}>

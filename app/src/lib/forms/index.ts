@@ -1,3 +1,5 @@
+import type { LinkName } from "@/frc/rebuilt";
+
 export interface Form {
     formStructure: Form.Structure;
     pitScouting: boolean;
@@ -22,6 +24,7 @@ export namespace Form {
 
     interface BaseItem {
         type: ItemType;
+        link_to?: LinkName;
     }
     export type Item = Heading | Question;
 
