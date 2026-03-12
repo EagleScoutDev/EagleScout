@@ -36,10 +36,6 @@ export function UIListPicker<K extends string | number = string | number>({
     onChange,
     Display,
 }: UIListPickerProps<K>) {
-    "use no memo";
-    // FIXME: Enable memoization when react compiler stops
-    //        complaining about passing refs to UIList.Line
-
     const { colors } = useTheme();
 
     const sheetRef = useRef<UISheetModal>(null);

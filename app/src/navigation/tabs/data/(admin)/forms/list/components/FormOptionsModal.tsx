@@ -11,6 +11,7 @@ export interface FormOptionsModalParams {
 export interface FormOptionsModal extends UISheetModal<FormOptionsModalParams> {}
 export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
     function FormOptionsModalContent({ ref, data: { form } }) {
+        "use memo";
         const { colors } = useTheme();
 
         return (
@@ -18,21 +19,11 @@ export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
                 <UISheetModal.Header
                     title={"Form Options"}
                     left={[{ role: "cancel", onPress: () => ref.current?.dismiss() }]}
-                    right={[
-                        {
-                            role: "done",
-                            onPress: () => {
-                                // TODO: implement this
-                                ref.current?.dismiss();
-                            },
-                        },
-                    ]}
+                    right={[{ role: "done", onPress: () => ref.current?.dismiss() }]}
                 />
-                <UIForm>
+                <UIForm bottomSheet>
                     <UIForm.Section>
-                        <UIList.Row
-                            label={form.name}
-                        />
+                        <UIList.Row label={form.name} />
                     </UIForm.Section>
                     <UIForm.Section>
                         {/* UIForm.Button({

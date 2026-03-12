@@ -11,10 +11,6 @@ import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "@/l
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 
 export function ExportReports() {
-    "use no memo";
-    // FIXME: Enable memoization when react compiler stops
-    //        complaining about passing refs to UIList.Line
-
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
     const [loading, setLoading] = useState(false);

@@ -13,7 +13,6 @@ import { UIList } from "@/ui/components/UIList";
 
 export interface ScoutAssignmentsMainProps extends DataTabScreenProps<"ScoutAssignments"> {}
 export function ScoutAssignmentsMain({ navigation }: ScoutAssignmentsMainProps) {
-    "use no memo"; // TODO: fix this
     const [internetError, setInternetError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);

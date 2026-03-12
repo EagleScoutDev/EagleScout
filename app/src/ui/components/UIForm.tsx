@@ -157,9 +157,6 @@ export namespace UIForm {
         value,
         onChange,
     }: ListPickerProps<K>) {
-        "use no memo";
-        // FIXME: Try reenabling memoization
-
         return (
             <Item
                 label={label}
