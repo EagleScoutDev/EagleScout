@@ -61,8 +61,8 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     useEffect(() => void resetResponses(), [formStructure]);
 
     // TODO: THIS IS AN EXTREMELY STUPID AND DANGEROUS HACK TO
-    //       COMPLY WITH THE OLD 2025 REEFSCAPE LINK SYSTEM!!!
-    //       PLEASE REMOVE THIS FOR 2026 REBUILT!!!!!!!!!!!!!!
+    //       COMPLY WITH THE OLD 2026 REBUILT LINK SYSTEM!!!
+    //       PLEASE REMOVE THIS FOR 2027!!!!!!!!!!!!!!
     //region Synchronize link data with form data
     useEffect(() => {
         let changed = false;
