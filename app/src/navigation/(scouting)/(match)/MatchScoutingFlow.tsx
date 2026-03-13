@@ -26,7 +26,8 @@ import { FormView } from "@/components/FormView";
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
-    "use memo"; // TODO: fix this
+    "use no memo"; // TODO: fix this
+    const log = (...args: unknown[]) => console.log("[MatchScoutingFlow]", ...args);
 
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
@@ -95,10 +96,16 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     }, [navigation]);
 
     useEffect(() => {
-        if (currentTab.includes("Auto")) {
+        log("currentTab", currentTab);
+        if (!currentTab.startsWith("Form/")) return;
+        const index = Number.parseInt(currentTab.slice("Form/".length), 10);
+        if (Number.isNaN(index)) return;
+        const title = formSections[index]?.title ?? "";
+        if (title.includes("Auto")) {
+            log("presenting auto modal", { index, title });
             autoModalRef.current?.present();
         }
-    }, [currentTab]);
+    }, [currentTab, formSections]);
 
     async function submitForm() {
         if (competition === null || formStructure === null) return;
@@ -164,7 +171,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             }
         } else {
             try {
-                console.log(dataToSubmit);
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
                     type: "success",
@@ -179,7 +185,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 Alert.alert("Error", "There was an error submitting your scouting report.");
             }
         }
-
         navigation.navigate("Match");
     }
 
@@ -195,56 +200,9 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         );
     }
 
-    const tabs = [
-        {
-            key: "Setup",
-            title: "Setup",
-            component: () => (
-                <ScoutingFlowTab
-                    title={competition ? `${competition.name}` : "Match Report"}
-                    buttonText={"Next"}
-                    onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
-                >
-                    <MatchInformation
-                        match={match}
-                        setMatch={setMatch}
-                        team={team}
-                        setTeam={setTeam}
-                        orientation={orientation}
-                        setOrientation={setOrientation}
-                        alliance={alliance}
-                        setAlliance={setAlliance}
-                        teamsForMatch={teamsForMatch}
-                    />
-                </ScoutingFlowTab>
-            ),
-        },
-        ...formSections.map(({ title, items }, i) => {
-            const isLast = i === formSections.length - 1;
-
-            return {
-                key: `Form/${title}`,
-                title,
-                component: () => (
-                    <ScoutingFlowTab
-                        title={title}
-                        buttonText={isLast ? "Submit" : "Next"}
-                        onNext={
-                            isLast
-                                ? submitForm
-                                : () => setCurrentTab(`Form/${formSections[i + 1].title}`)
-                        }
-                    >
-                        <FormView
-                            items={items}
-                            data={sectionData[i]}
-                            onInput={(data) => updateSectionData(i, data)}
-                        />
-                    </ScoutingFlowTab>
-                ),
-            };
-        }),
-    ];
+    const hasFormSections = formSections.length > 0;
+    const firstFormTabKey = hasFormSections ? "Form/0" : null;
+    const formTabKey = (index: number) => `Form/${index}`;
 
     return (
         <>
@@ -263,16 +221,64 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             <UITabView
                 currentKey={currentTab}
                 onTabChange={(tab) => {
+                    log("tab change", { from: currentTab, to: tab });
                     setCurrentTab(tab);
-                    if (tab.includes("Auto")) {
-                        autoModalRef.current?.present();
-                    }
                 }}
             >
-                {tabs.map((tab) => {
+                <UITabView.Tab tabKey="Setup" title="Setup">
+                    <ScoutingFlowTab
+                        title={competition ? `${competition.name}` : "Match Report"}
+                        buttonText={hasFormSections ? "Next" : "Submit"}
+                        onNext={() => {
+                            if (firstFormTabKey) {
+                                log("setup next", { to: firstFormTabKey });
+                                setCurrentTab(firstFormTabKey);
+                            } else {
+                                log("setup submit (no form sections)");
+                                void submitForm();
+                            }
+                        }}
+                    >
+                        <MatchInformation
+                            match={match}
+                            setMatch={setMatch}
+                            team={team}
+                            setTeam={setTeam}
+                            orientation={orientation}
+                            setOrientation={setOrientation}
+                            alliance={alliance}
+                            setAlliance={setAlliance}
+                            teamsForMatch={teamsForMatch}
+                        />
+                    </ScoutingFlowTab>
+                </UITabView.Tab>
+
+                {formSections.map(({ title, items }, i) => {
+                    const isLast = i === formSections.length - 1;
+                    const data = sectionData[i] ?? Form.initialize([formSections[i]])[0];
+
                     return (
-                        <UITabView.Tab key={tab.key} tabKey={tab.key} title={tab.title}>
-                            {tab.component()}
+                        <UITabView.Tab key={formTabKey(i)} tabKey={formTabKey(i)} title={title}>
+                            <ScoutingFlowTab
+                                title={title}
+                                buttonText={isLast ? "Submit" : "Next"}
+                                onNext={
+                                    isLast
+                                        ? () => {
+                                              void submitForm();
+                                          }
+                                        : () => {
+                                              const next = formTabKey(i + 1);
+                                              setCurrentTab(next);
+                                          }
+                                }
+                            >
+                                <FormView
+                                    items={items}
+                                    data={data}
+                                    onInput={(newData) => updateSectionData(i, newData)}
+                                />
+                            </ScoutingFlowTab>
                         </UITabView.Tab>
                     );
                 })}

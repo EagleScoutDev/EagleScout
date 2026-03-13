@@ -12,9 +12,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     scheme: "eaglescout",
-    experiments: {
-        reactCompiler: true,
-    },
     ios: {
         supportsTablet: true,
         bundleIdentifier: "com.team114.eaglescout",
@@ -37,6 +34,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             {
                 projectId: process.env.EXPO_PUBLIC_STALLION_ID,
                 appToken: process.env.EXPO_PUBLIC_STALLION_APP_TOKEN,
+                // Force release builds to use bundled JS while debugging runtime issues.
+                enableBundleOverride: false,
             },
         ],
         [
