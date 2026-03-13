@@ -1,11 +1,12 @@
 import "tsx/cjs";
+import "dotenv/config";
 import type { ConfigContext } from "@expo/config";
 import type { ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
     name: "EagleScout",
     slug: "eaglescout",
-    version: "7.7.2",
+    version: "8.0.0",
     orientation: "portrait",
     icon: "src/assets/images/icon.png",
     userInterfaceStyle: "automatic",
@@ -16,7 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     ios: {
         supportsTablet: true,
-        bundleIdentifier: "com.team114.Eaglescout",
+        bundleIdentifier: "com.team114.eaglescout",
     },
     android: {
         adaptiveIcon: {
@@ -31,7 +32,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         "expo-sqlite",
         "@react-native-community/datetimepicker",
         [
-            "./plugins/stallion.ts",
+            // "./plugins/stallion.ts",
+            "expo-stallion-plugin",
             {
                 projectId: process.env.EXPO_PUBLIC_STALLION_ID,
                 appToken: process.env.EXPO_PUBLIC_STALLION_APP_TOKEN,

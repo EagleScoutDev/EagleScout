@@ -1,6 +1,6 @@
 {
   "name": "EagleScout",
-  "version": "7.7.2",
+  "version": "8.0.0",
   "main": "index.tsx",
   "private": true,
   "scripts": {
@@ -8,11 +8,14 @@
     "test": "jest",
     "start": "expo start",
     "prebuild": "expo prebuild --clean",
-    "android": "npm run prebuild && expo run:android",
-    "ios": "npm run prebuild && expo run:ios",
-    "web": "expo start --web",
+    "run:android": "npm run prebuild && expo run:android",
+    "run:ios": "npm run prebuild && expo run:ios",
     "lint": "expo lint",
-    "codegen": "./scripts/codegen.sh"
+    "codegen": "./scripts/codegen.sh",
+    "bundle": "npm run bundle:android && npm run bundle:ios",
+    "bundle:android": "npx expo export:embed --platform android --dev false --reset-cache --bundle-output ./dist/android/main.jsbundle --assets-dest ./dist/android --bytecode",
+    "bundle:ios": "npx expo export:embed --platform ios --dev false --reset-cache --bundle-output ./dist/ios/main.jsbundle --assets-dest ./dist/ios --bytecode",
+    "publish-bundle": "./scripts/publish-bundle.sh"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -47,6 +50,7 @@
     "expo-sharing": "~14.0.8",
     "expo-splash-screen": "~31.0.13",
     "expo-sqlite": "~16.0.10",
+    "expo-stallion-plugin": "^1.0.2",
     "expo-status-bar": "~3.0.9",
     "expo-system-ui": "~6.0.9",
     "expo-web-browser": "~15.0.10",
