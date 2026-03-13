@@ -1439,6 +1439,13 @@ export interface components {
             key: string;
             /** @description Year this district participated. */
             year: number;
+            /** @description The number of teams advancing to DCMP and CMP from this district, as specified in the FIRST manual. */
+            official_advancement_counts: {
+                /** @description Number of teams advancing to the District Championship. */
+                dcmp: number;
+                /** @description Number of teams advancing to the Championship. */
+                cmp: number;
+            };
         };
         DistrictInsightRegionData: {
             /** @description Map of year to number of active teams */
@@ -3095,6 +3102,8 @@ export interface components {
             next_match_key?: string | null;
             /** @description TBA match key for the last match the team played in at this event, or null. */
             last_match_key?: string | null;
+            /** @description The pit location for the team at this event, or null if not available. */
+            pit_location?: string | null;
         };
         Team_Event_Status_alliance: {
             /** @description Alliance name, may be null. */
