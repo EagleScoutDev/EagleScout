@@ -105,7 +105,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             log("presenting auto modal", { index, title });
             autoModalRef.current?.present();
         }
-    }, [currentTab, formSections]);
+    }, [currentTab]);
 
     async function submitForm() {
         if (competition === null || formStructure === null) return;
