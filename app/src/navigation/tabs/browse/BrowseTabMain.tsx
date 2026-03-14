@@ -205,7 +205,7 @@ function MatchList({ query, competitionId }: MatchListProps) {
     return (
         <>
             <FlatList
-                data={displayMatches}
+                data={displayMatches.sort((m1, m2) => m2.id - m1.id)}
                 keyExtractor={({ id }) => id.toString()}
                 refreshControl={
                     <RefreshControl

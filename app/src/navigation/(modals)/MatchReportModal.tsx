@@ -28,20 +28,6 @@ export const MatchReportModal = UISheetModal.HOC<MatchReportModalParams>(
         //     throwOnError: true,
         //     enabled: !isOfflineForm,
         // });
-        const { data: authorName } = useQuery({
-            queryKey: ["profiles", "username", report.userId],
-            async queryFn() {
-                const { error, data } = await supabase
-                    .from("profiles")
-                    .select("name")
-                    .eq("id", report.userId)
-                    .single();
-                if (error) throw error;
-
-                return data.name;
-            },
-            enabled: isOfflineForm,
-        });
 
         // TODO: editing and history
         // const [editing, setEditing] = useState(false);
@@ -79,7 +65,9 @@ export const MatchReportModal = UISheetModal.HOC<MatchReportModalParams>(
                     FlatList={BottomSheetFlatList}
                     form={report.form}
                     data={report.data}
-                    ListHeaderComponent={<ReportMetadataView data={report} userName={authorName} />}
+                    ListHeaderComponent={
+                        <ReportMetadataView data={report} userName={report.userName} />
+                    }
                 />
             </>
         );
@@ -91,7 +79,7 @@ function ReportMetadataView({
     userName,
 }: {
     data: MatchReportReturnData;
-    userName: string | null;
+    userName: string | undefined;
 }) {
     const navigation = useRootNavigation();
 

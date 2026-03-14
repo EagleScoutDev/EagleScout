@@ -17,11 +17,18 @@ export interface FormDataViewProps extends Pick<
     data: Form.Data;
 }
 
-export function FormDataView({ FlatList = RNFlatList, form, data }: FormDataViewProps) {
+export function FormDataView({
+    FlatList = RNFlatList,
+    form,
+    data,
+    ListHeaderComponent, ListFooterComponent,
+}: FormDataViewProps) {
     const { colors } = useTheme();
 
     return (
         <FlatList
+            ListHeaderComponent={ListHeaderComponent}
+            ListFooterComponent={ListFooterComponent}
             contentContainerStyle={{ padding: 16 }}
             contentInsetAdjustmentBehavior={"automatic"}
             data={form}
@@ -95,7 +102,7 @@ export function FormDataView({ FlatList = RNFlatList, form, data }: FormDataView
                                     borderRadius: 8,
                                 }}
                             >
-                                <FormQuestion inline title={item.question} required={item.required}>
+                                <FormQuestion title={item.question} required={item.required}>
                                     {value === null ? (
                                         <UIText
                                             style={{
@@ -114,7 +121,7 @@ export function FormDataView({ FlatList = RNFlatList, form, data }: FormDataView
                                                 color: colors.fg.hex,
                                                 fontWeight: "bold",
                                                 fontSize: 20,
-                                                marginLeft: "auto",
+                                                // marginLeft: "auto",
                                                 textAlign: "center",
                                                 paddingHorizontal: 32,
                                             }}
