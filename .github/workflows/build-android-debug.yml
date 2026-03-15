@@ -11,6 +11,8 @@ on:
 jobs:
   build_aab:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
 
     steps:
       - name: Checkout repository
@@ -21,7 +23,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -31,6 +32,10 @@ jobs:
       - name: Run npm install
         working-directory: app
         run: npm i
+
+      - name: Generate Android native project
+        working-directory: app
+        run: CI=1 npx expo prebuild --platform android
 
       - name: Build AAB
         working-directory: app/android
@@ -44,6 +49,8 @@ jobs:
 
   build_apk:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
 
     steps:
       - name: Checkout repository
@@ -54,7 +61,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -64,6 +70,10 @@ jobs:
       - name: Run npm install
         working-directory: app
         run: npm i
+
+      - name: Generate Android native project
+        working-directory: app
+        run: CI=1 npx expo prebuild --platform android
 
       - name: Build APK
         working-directory: app/android

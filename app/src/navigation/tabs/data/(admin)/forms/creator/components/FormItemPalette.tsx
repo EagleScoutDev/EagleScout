@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { useTheme } from "@/ui/context/ThemeContext";
 import type { Icon } from "@/ui/icons";
 import { UIButton, UIButtonStyle } from "@/ui/components/UIButton";
+import {useEffect, useRef} from "react";
 
 export interface FormItemToolbarProps<T extends string = string> {
     items: readonly { readonly key: T; readonly icon: Icon; readonly name: string }[];
@@ -25,9 +26,15 @@ export function FormItemPalette<T extends string = string>({
             borderRadius: 6,
         },
     });
+    const scrollViewRef = useRef<ScrollView>(null);
+
+    useEffect(() => {
+            scrollViewRef.current?.flashScrollIndicators();
+            return;
+    }, []);
 
     return (
-        <ScrollView key="toolbar" horizontal={true} contentContainerStyle={styles.toolbar}>
+        <ScrollView key="toolbar" horizontal={true} contentContainerStyle={styles.toolbar} persistentScrollbar={true} ref={scrollViewRef}>
             {items.map(({ key, icon, name }) => (
                 <UIButton
                     key={key}

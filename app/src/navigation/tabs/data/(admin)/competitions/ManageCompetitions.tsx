@@ -12,10 +12,6 @@ import { AddCompetitionModal } from "@/navigation/(modals)/AddCompetitionModal";
 import { Alert } from "react-native";
 
 export function ManageCompetitions() {
-    "use no memo";
-    // FIXME: Enable memoization when react compiler stops
-    //        complaining about passing refs to UIList.Line
-
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
 

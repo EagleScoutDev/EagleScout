@@ -26,8 +26,6 @@ export function TeamSummary({
     },
     navigation,
 }: TeamSummaryProps) {
-    "use no memo"; // TODO: fix this
-
     const { data: competition, refetch: refetchCompetition } = useQuery({
         queryKey: ["competitions", competitionId],
         queryFn: () => CompetitionsDB.getCompetitionById(competitionId),

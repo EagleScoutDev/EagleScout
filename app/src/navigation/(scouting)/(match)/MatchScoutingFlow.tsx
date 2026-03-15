@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, View } from "react-native";
 import AsyncStorage from "expo-sqlite/kv-store";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
 import { CompetitionsDB } from "@/lib/database/Competitions";
 import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
@@ -12,21 +12,21 @@ import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { MatchInformation } from "@/navigation/(scouting)/components/MatchInformation";
-import { FormView } from "@/components/FormView";
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
-import * as Reefscape from "@/frc/reefscape";
-import { AutoAction, AutoState } from "@/frc/reefscape";
+import * as Rebuilt from "@/frc/rebuilt";
+import { AutoAction, AutoState, type LinkName } from "@/frc/rebuilt";
 import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
-import { HeaderTimer } from "@/navigation/(scouting)/components/HeaderTimer";
+import { HeaderTimer } from "../components/HeaderTimer";
 import { UITabView } from "@/ui/components/UITabView";
+import { FormView } from "@/components/FormView";
 
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
-    "use no memo";
+    "use memo"; // TODO: fix this
 
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
@@ -38,29 +38,55 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
     const [currentTab, setCurrentTab] = useState("Setup");
+    const [sectionData, setSectionData] = useState<Form.Data[]>([]);
 
     const [orientation, setOrientation] = useState<Orientation>(Orientation.leftRed);
     const [alliance, setAlliance] = useState<Alliance>(Alliance.red);
 
-    const [autoState, autoReducer] = useReducer(AutoAction.reduce, AutoState());
-    const [sectionData, setSectionData] = useState<Form.Data[]>([]);
+    const [autoState, setAutoState] = useState<AutoState>(AutoState());
+    function autoReducer(
+        action:
+            | AutoAction
+            | { type: "undo" }
+            | { type: "update_link"; linkName: LinkName; value: number },
+    ) {
+        const result = AutoAction.reduce(autoState, action, formSections, sectionData);
+        setAutoState(result.state);
+        if (result.formData) {
+            setSectionData(result.formData);
+        }
+    }
 
-    const confettiRef = useRef<Confetti>(null);
+    function updateSectionData(sectionIndex: number, newData: Form.Data) {
+        const newSectionData = Arrays.set(sectionData, sectionIndex, newData);
+        setSectionData(newSectionData);
+
+        // Dispatch update_link actions for any linked fields that changed
+        const items = formSections[sectionIndex].items;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (typeof item.link_to === "string" && sectionData[sectionIndex]?.[i] !== newData[i]) {
+                const value = newData[i];
+                if (typeof value === "number") {
+                    autoReducer({ type: "update_link", linkName: item.link_to as LinkName, value });
+                }
+            }
+        }
+    }
+
+    const useConfetti = useRef<Confetti>(null);
     const autoModalRef = useRef<UISheetModal>(null);
     const timerRef = useRef<HeaderTimer>(null);
 
-    function resetResponses() {
-        setSectionData(formSections.length === 0 ? [] : Form.initialize(formSections));
-    }
     function reset() {
         setMatch(null);
         setTeam(null);
         resetResponses();
     }
-
-    useEffect(() => {
-        resetResponses();
-    }, [formStructure]);
+    function resetResponses() {
+        setSectionData(formSections === null ? [] : Form.initialize(formSections));
+    }
+    useEffect(() => void resetResponses(), [formStructure]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -68,15 +94,23 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         });
     }, [navigation]);
 
+    useEffect(() => {
+        if (currentTab.includes("Auto")) {
+            autoModalRef.current?.present();
+        }
+    }, [currentTab]);
+
     async function submitForm() {
         if (competition === null || formStructure === null) return;
 
         if (match === null || match > 400) {
             await AsyncAlert.alert("Invalid Match Number", "Please enter a valid match number");
+            navigation.navigate("Match");
             return;
         }
         if (team === null) {
             await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
+            navigation.navigate("Match");
             return;
         }
 
@@ -120,16 +154,17 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             const currentAssignments = await AsyncStorage.getItem("scout-assignments");
             if (currentAssignments !== null) {
                 const newAssignments = JSON.parse(currentAssignments).filter(
-                    (a: { matchNumber: number; team: string | null; }) =>
+                    (a) =>
                         !(
                             a.matchNumber === match &&
-                            (a.team === null || parseInt(a.team.substring(3)) === team)
+                            (a.team === null || a.team.substring(3) === team)
                         ),
                 );
                 await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
             }
         } else {
             try {
+                console.log(dataToSubmit);
                 await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
                 Toast.show({
                     type: "success",
@@ -138,14 +173,14 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                 });
                 reset();
 
-                confettiRef.current?.startConfetti();
+                useConfetti.current?.startConfetti();
             } catch (error) {
                 console.error(error);
                 Alert.alert("Error", "There was an error submitting your scouting report.");
             }
         }
 
-        navigation.goBack();
+        navigation.navigate("Match");
     }
 
     if (competition === null) {
@@ -160,31 +195,13 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         );
     }
 
-    return <>
-        <View
-            style={{
-                ...StyleSheet.absoluteFillObject,
-                zIndex: 114,
-                pointerEvents: "none",
-                width: "100%",
-                height: "100%",
-            }}
-        >
-            <Confetti ref={confettiRef} timeout={10} duration={3000} />
-        </View>
-
-        <UITabView
-            currentKey={currentTab}
-            onTabChange={(tab) => {
-                setCurrentTab(tab);
-                if (tab.includes("Auto")) {
-                    autoModalRef.current?.present();
-                }
-            }}
-        >
-            <UITabView.Tab tabKey="Setup" title="Setup">
+    const tabs = [
+        {
+            key: "Setup",
+            title: "Setup",
+            component: () => (
                 <ScoutingFlowTab
-                    title={competition.name}
+                    title={competition ? `${competition.name}` : "Match Report"}
                     buttonText={"Next"}
                     onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
                 >
@@ -200,40 +217,75 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         teamsForMatch={teamsForMatch}
                     />
                 </ScoutingFlowTab>
-            </UITabView.Tab>
+            ),
+        },
+        ...formSections.map(({ title, items }, i) => {
+            const isLast = i === formSections.length - 1;
 
-            {formSections.map(({ title, items }, i) => {
-                const isLast = i === formSections.length - 1;
+            return {
+                key: `Form/${title}`,
+                title,
+                component: () => (
+                    <ScoutingFlowTab
+                        title={title}
+                        buttonText={isLast ? "Submit" : "Next"}
+                        onNext={
+                            isLast
+                                ? submitForm
+                                : () => setCurrentTab(`Form/${formSections[i + 1].title}`)
+                        }
+                    >
+                        <FormView
+                            items={items}
+                            data={sectionData[i]}
+                            onInput={(data) => updateSectionData(i, data)}
+                        />
+                    </ScoutingFlowTab>
+                ),
+            };
+        }),
+    ];
 
-                return (
-                    <UITabView.Tab key={`Form/${title}`} tabKey={`Form/${title}`} title={title}>
-                        <ScoutingFlowTab
-                            title={title}
-                            buttonText={isLast ? "Submit" : "Next"}
-                            onNext={
-                                isLast
-                                    ? submitForm
-                                    : () => setCurrentTab(`Form/${formSections[i + 1].title}`)
-                            }
-                        >
-                            <FormView
-                                items={items}
-                                data={sectionData[i]}
-                                onInput={(data) => setSectionData(Arrays.set(sectionData, i, data))}
-                            />
-                        </ScoutingFlowTab>
-                    </UITabView.Tab>
-                );
-            })}
-        </UITabView>
+    return (
+        <>
+            <View
+                style={{
+                    ...StyleSheet.absoluteFill,
+                    zIndex: 114,
+                    pointerEvents: "none",
+                    width: "100%",
+                    height: "100%",
+                }}
+            >
+                <Confetti ref={useConfetti} timeout={10} duration={3000} />
+            </View>
 
-        <UISheetModal ref={autoModalRef}>
-            <Reefscape.AutoModal
-                orientation={orientation}
-                alliance={alliance}
-                state={autoState}
-                dispatch={autoReducer}
-            />
-        </UISheetModal>
-    </>;
+            <UITabView
+                currentKey={currentTab}
+                onTabChange={(tab) => {
+                    setCurrentTab(tab);
+                    if (tab.includes("Auto")) {
+                        autoModalRef.current?.present();
+                    }
+                }}
+            >
+                {tabs.map((tab) => {
+                    return (
+                        <UITabView.Tab key={tab.key} tabKey={tab.key} title={tab.title}>
+                            {tab.component()}
+                        </UITabView.Tab>
+                    );
+                })}
+            </UITabView>
+
+            <UISheetModal ref={autoModalRef}>
+                <Rebuilt.AutoModal
+                    orientation={orientation}
+                    alliance={alliance}
+                    state={autoState}
+                    dispatch={autoReducer}
+                />
+            </UISheetModal>
+        </>
+    );
 }

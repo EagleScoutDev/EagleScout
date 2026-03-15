@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
+          CI=1 npx expo prebuild --platform ios
           cd ios
           pod install
         working-directory: app

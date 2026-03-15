@@ -1,6 +1,6 @@
 import { UIList, type UIListProps } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
-import { Platform, Switch as RNSwitch } from "react-native";
+import { Platform, Switch as RNSwitch, View } from "react-native";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { NumberInput as RNNumberInput } from "@/ui/components/NumberInput";
 import { UIListPicker } from "@/ui/components/UIListPicker";
@@ -19,12 +19,12 @@ export function UIForm({ ...props }: UIFormProps) {
 export namespace UIForm {
     export interface SectionProps extends UIList.SectionProps {}
     export function Section(props: SectionProps) {
-        return <UIList.Section {...props} />
+        return <UIList.Section {...props} />;
     }
 
     export interface ItemProps extends UIList.RowProps {}
     export function Item(props: ItemProps) {
-        return <UIList.Row {...props} />
+        return <UIList.Row {...props} />;
     }
 
     export interface TextInputProps {
@@ -41,7 +41,7 @@ export namespace UIForm {
             <Item
                 body={() => (
                     <AutoTextInput
-                        style={{ padding: 8, fontSize: 16, flex: 1, color: colors.fg.hex }}
+                        style={{ fontSize: 16, flex: 1, color: colors.fg.hex }}
                         placeholder={label}
                         placeholderTextColor={colors.placeholder.hex}
                         value={value ?? undefined}
@@ -90,13 +90,7 @@ export namespace UIForm {
         value?: Date | undefined;
         onChange?: ((value: Date) => void) | undefined;
     }
-    export function DateTime({
-        label,
-        date = true,
-        time = true,
-        value,
-        onChange,
-    }: DateTimeProps) {
+    export function DateTime({ label, date = true, time = true, value, onChange }: DateTimeProps) {
         // FIXME: fold into value prop once React Compiler implements
         //        "Support destructuring of context variables"
         let v = value ?? new Date();
@@ -108,7 +102,13 @@ export namespace UIForm {
                     body={() => (
                         <RNDateTimePicker
                             mode={
-                                date && time ? "datetime" : date ? "date" : time ? "time" : "datetime"
+                                date && time
+                                    ? "datetime"
+                                    : date
+                                      ? "date"
+                                      : time
+                                        ? "time"
+                                        : "datetime"
                             }
                             value={v}
                             onChange={(_, x) => {
@@ -157,20 +157,25 @@ export namespace UIForm {
         value,
         onChange,
     }: ListPickerProps<K>) {
-        "use no memo";
-        // FIXME: Try reenabling memoization
-
         return (
             <Item
                 label={label}
                 body={() => (
-                    <UIListPicker<K>
-                        value={value}
-                        onChange={onChange}
-                        title={title}
-                        options={options}
-                        render={render}
-                    />
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            justifyContent: "flex-end",
+                        }}
+                    >
+                        <UIListPicker<K>
+                            value={value}
+                            onChange={onChange}
+                            title={title}
+                            options={options}
+                            render={render}
+                        />
+                    </View>
                 )}
             />
         );
@@ -184,10 +189,7 @@ export namespace UIForm {
     }
     export function Switch({ label, value, onChange }: SwitchProps) {
         return (
-            <Item
-                label={label}
-                body={() => <RNSwitch value={value} onValueChange={onChange} />}
-            />
+            <Item label={label} body={() => <RNSwitch value={value} onValueChange={onChange} />} />
         );
     }
 

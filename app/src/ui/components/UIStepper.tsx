@@ -56,7 +56,7 @@ const getStyles = exMemo((colors: Theme["colors"]) =>
             justifyContent: "center",
             borderRadius: 8,
             padding: 10,
-            height: 48,
+            height: 55,
             flex: 1,
         },
         number: {

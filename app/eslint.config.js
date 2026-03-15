@@ -9,5 +9,12 @@ module.exports = defineConfig([
         rules: {
             "react/no-children-prop": "off",
         },
+        settings: {
+            "import/resolver": {
+                typescript: {
+                    alwaysTryTypes: true,
+                },
+            },
+        },
     },
 ]);

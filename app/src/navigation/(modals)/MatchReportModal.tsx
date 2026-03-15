@@ -1,97 +1,56 @@
 import { type MatchReportReturnData } from "@/lib/database/ScoutMatchReports";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import { UIText } from "@/ui/components/UIText";
 import React from "react";
-import { supabase } from "@/lib/supabase";
-import { UISheetModal } from "@/ui/components/UISheetModal";
-import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { useQuery } from "@tanstack/react-query";
 import { FormDataView } from "@/navigation/(modals)/components/FormDataView";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
+import { type RootStackScreenProps } from "@/navigation";
+import { useStackToolbar } from "@/ui/lib/toolbar";
 
 export interface MatchReportModalParams {
     report: MatchReportReturnData;
 
     isOfflineForm: boolean;
 }
-export interface MatchReportModal extends UISheetModal<MatchReportModalParams> {}
-export const MatchReportModal = UISheetModal.HOC<MatchReportModalParams>(
-    function MatchReportModalContent({ ref, data: { report, isOfflineForm } }) {
-        "use memo";
+export interface MatchReportModalProps extends RootStackScreenProps<"MatchReportModal"> {}
+export function MatchReportModal({ navigation, route }: MatchReportModalProps) {
+    const { report, isOfflineForm } = route.params;
 
-        // TODO: editing and history
-        // const account = useUserStore((state) => state.account);
-        // const { data: history } = useQuery({
-        //     queryKey: ["matchReportHistory", report.reportId],
-        //     queryFn: () => MatchReportsDB.getReportHistory(report.reportId),
-        //     throwOnError: true,
-        //     enabled: !isOfflineForm,
-        // });
-        const { data: authorName } = useQuery({
-            queryKey: ["profiles", "username", report.userId],
-            async queryFn() {
-                const { error, data } = await supabase
-                    .from("profiles")
-                    .select("name")
-                    .eq("id", report.userId)
-                    .single();
-                if (error) throw error;
+    useStackToolbar(navigation, "infoSheet", {});
 
-                return data.name;
-            },
-            enabled: isOfflineForm,
-        });
+    // TODO: editing and history
+    // const account = useUserStore((state) => state.account);
+    // const { data: history } = useQuery({
+    //     queryKey: ["matchReportHistory", report.reportId],
+    //     queryFn: () => MatchReportsDB.getReportHistory(report.reportId),
+    //     throwOnError: true,
+    //     enabled: !isOfflineForm,
+    // });
 
-        // TODO: editing and history
-        // const [editing, setEditing] = useState(false);
-        // const canEdit = account && (
-        //     isOfflineForm
-        //     || account.id === report.userId
-        //     || account.role === AccountRole.Admin
-        // );
+    // TODO: editing and history
+    // const [editing, setEditing] = useState(false);
+    // const canEdit = account && (
+    //     isOfflineForm
+    //     || account.id === report.userId
+    //     || account.role === AccountRole.Admin
+    // );
 
-        return (
-            <>
-                <UISheetModal.Header
-                    title={"Match Report"}
-                    // TODO: editing and history
-                    // left={[
-                    //     {
-                    //         text: "Edit",
-                    //         icon: "square.and.pencil",
-                    //         onPress: () => setEditing(true),
-                    //     },
-                    //     {
-                    //         text: "History",
-                    //         icon: "clock",
-                    //         onPress: () => setEditing(true),
-                    //     },
-                    // ]}
-                    right={[
-                        {
-                            role: "done",
-                            onPress: () => ref.current?.dismiss(),
-                        },
-                    ]}
-                />
-                <FormDataView
-                    FlatList={BottomSheetFlatList}
-                    form={report.form}
-                    data={report.data}
-                    ListHeaderComponent={<ReportMetadataView data={report} userName={authorName} />}
-                />
-            </>
-        );
-    },
-);
+    return (
+        <FormDataView
+            FlatList={FlatList}
+            form={report.form}
+            data={report.data}
+            ListHeaderComponent={<ReportMetadataView data={report} userName={report.userName} />}
+        />
+    );
+}
 
 function ReportMetadataView({
     data,
     userName,
 }: {
     data: MatchReportReturnData;
-    userName: string | null;
+    userName: string | undefined;
 }) {
     const navigation = useRootNavigation();
 

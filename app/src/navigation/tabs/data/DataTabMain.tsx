@@ -96,6 +96,13 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
                         onPress={() => navigation.navigate("MatchPredictor")}
                     />
                     <UIList.Row
+                        icon={Bs.Binoculars}
+                        label="Match Overview"
+                        caret
+                        disabled={offline}
+                        onPress={() => navigation.navigate("MatchOverviewSelector")}
+                    />
+                    <UIList.Row
                         icon={Bs.Upload}
                         label="Export to CSV"
                         caret
@@ -171,4 +178,3 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
         </SafeAreaProvider>
     );
 }
-

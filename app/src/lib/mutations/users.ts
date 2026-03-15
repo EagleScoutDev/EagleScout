@@ -22,7 +22,7 @@ export const userMutations = {
 
             if (error) throw error;
         },
-        onSuccess(_data, _variables, { client }) {
+        onSuccess(_data, _variables, _onMutateResult, { client }) {
             client.invalidateQueries({ queryKey: ["users"] });
         },
     },
@@ -36,7 +36,7 @@ export const userMutations = {
 
             if (error) throw error;
         },
-        onSuccess(_data, _variables, { client }) {
+        onSuccess(_data, _variables, _onMutateResult, { client }) {
             client.invalidateQueries({ queryKey: ["users"] });
         },
     },

@@ -36,10 +36,6 @@ export function UIListPicker<K extends string | number = string | number>({
     onChange,
     Display,
 }: UIListPickerProps<K>) {
-    "use no memo";
-    // FIXME: Enable memoization when react compiler stops
-    //        complaining about passing refs to UIList.Line
-
     const { colors } = useTheme();
 
     const sheetRef = useRef<UISheetModal>(null);
@@ -71,18 +67,22 @@ export function UIListPicker<K extends string | number = string | number>({
             ) : (
                 (Display ?? (
                     <PressableOpacity
-                        style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                        }}
                         onPress={() => present()}
                     >
                         <UIText
                             size={16}
                             placeholder
-                            style={{ marginRight: 4, flexShrink: 1 }}
+                            style={{ flex: 1, justifyContent: "flex-end", textAlign: "right" }}
                             numberOfLines={1}
+                            ellipsizeMode="middle"
                         >
                             {value === null ? "None" : render(value).name}
                         </UIText>
-                        <View style={{ width: 20, height: 20 }}>
+                        <View style={{ width: 20, height: 20, flex: 0, paddingLeft: 2 }}>
                             <Bs.ChevronExpand fill={"gray"} size={20} />
                         </View>
                     </PressableOpacity>

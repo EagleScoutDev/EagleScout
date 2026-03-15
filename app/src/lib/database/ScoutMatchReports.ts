@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import * as Reefscape from "@/frc/reefscape";
+import * as Rebuilt from "@/frc/rebuilt";
 import { Form } from "@/lib/forms";
 
 interface TimelineElement {
@@ -14,7 +14,7 @@ interface MatchReport {
     data: any[];
     competitionId: number;
     timelineData?: TimelineElement[];
-    autoPath?: Reefscape.AutoPath;
+    autoPath?: Rebuilt.AutoPath;
 }
 
 interface MatchReportWithDate extends MatchReport {
@@ -75,7 +75,7 @@ export class MatchReportsDB {
         const { data, error } = await supabase
             .from("scout_reports")
             .select(
-                "*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )",
+                "*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )",
             )
             .eq("user_id", user.id)
             .eq("matches.competition_id", competitionId);
@@ -206,5 +206,46 @@ export class MatchReportsDB {
             data: x.data,
             name: x.name,
         }));
+    }
+    static async getAllianceReports(
+        teams: number[],
+        compId: number,
+    ): Promise<MatchReportReturnData[][]> {
+
+        const {data, error} = await supabase
+            .from('scout_reports')
+            .select(
+                '*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )',
+            )
+            .eq('matches.competition_id', compId)
+            .in('team', teams);
+        if (error) {
+            throw error;
+        } else {
+            const res: MatchReportReturnData[][] = [];
+            for (let i = 0; i < teams.length; i += 1) {
+                const teamData = data.filter(datum => datum.team === teams[i]);
+                const temp: MatchReportReturnData[] = [];
+                for (let j = 0; j < teamData.length; j += 1) {
+                    temp.push({
+                        reportId: teamData[j].id,
+                        matchNumber: teamData[j].matches.number,
+                        teamNumber: teamData[j].team,
+                        data: teamData[j].data,
+                        competitionId: teamData[j].matches.competition_id,
+                        form: teamData[j].matches.competitions.forms.form_structure,
+                        userId: teamData[j].user_id,
+                        createdAt: teamData[j].created_at,
+                        competitionName: teamData[j].matches.competitions.name,
+                        timelineData: teamData[j].timeline_data,
+                        autoPath: teamData[j].auto_path,
+                    });
+                }
+                // console.log("temp ",i,":",temp);
+                res.push(temp);
+            }
+            // console.log('res res AMONGUS', res);
+            return res;
+        }
     }
 }

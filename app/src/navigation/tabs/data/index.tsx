@@ -25,6 +25,7 @@ import { Picklists } from "./(picklist)/Picklists";
 import { TeamRankMenu } from "./(rank)/TeamRankMenu";
 import { TeamRankView } from "./(rank)/TeamRankView";
 import { DataTabMain } from "./DataTabMain";
+import MatchOverviewSelector from "@/navigation/tabs/data/MatchOverviews/MatchOverviewSelector";
 
 const Stack = createNativeStackNavigator<DataTabParamList>();
 export type DataTabScreenProps<K extends keyof DataTabParamList> = NativeStackScreenProps<
@@ -45,6 +46,7 @@ export type DataTabParamList = {
     };
     WeightedTeamRank: undefined;
     MatchPredictor: undefined;
+    MatchOverviewSelector: undefined;
     ExportCSV: undefined;
 
     ScoutcoinLeaderboard: undefined;
@@ -62,7 +64,7 @@ export type DataTabParamList = {
 
 export function DataTab() {
     return (
-        <Stack.Navigator screenOptions={useStackThemeConfig()}>
+        <Stack.Navigator screenOptions={useStackThemeConfig("screen")}>
             <Stack.Screen
                 name="Main"
                 component={DataTabMain}
@@ -106,6 +108,13 @@ export function DataTab() {
                 component={WeightedRank}
                 options={{
                     title: "Weighted Team Rank",
+                }}
+            />
+            <Stack.Screen
+                name="MatchOverviewSelector"
+                component={MatchOverviewSelector}
+                options={{
+                    title: "Match Overview",
                 }}
             />
             <Stack.Screen

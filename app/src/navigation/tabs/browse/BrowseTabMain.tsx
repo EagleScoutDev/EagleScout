@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { type MatchReportReturnData } from "@/lib/database/ScoutMatchReports";
 import type { BrowseTabScreenProps } from "./index";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -9,8 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { Alliance } from "@/frc/common/common";
 import { UIGridLayout } from "@/ui/components/UIGridLayout";
-import { useRootNavigation } from "@/navigation";
-import { MatchReportModal } from "@/navigation/(modals)/MatchReportModal";
+import { useRootNavigation } from "@/navigation/hooks";
 import { queries } from "@/lib/queries";
 import { Header } from "./components/Header";
 import { UIChip } from "@/ui/components/UIChip";
@@ -157,10 +156,9 @@ interface MatchListProps {
     competitionId: number | null;
 }
 function MatchList({ query, competitionId }: MatchListProps) {
+    const rootNavigation = useRootNavigation();
     const { colors } = useTheme();
     const [refreshing, setRefreshing] = useState(false);
-
-    const matchReportModalRef = useRef<MatchReportModal>(null);
 
     const {
         data: matches,
@@ -203,52 +201,49 @@ function MatchList({ query, competitionId }: MatchListProps) {
         : matches;
 
     return (
-        <>
-            <FlatList
-                data={displayMatches}
-                keyExtractor={({ id }) => id.toString()}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        tintColor={colors.fg.hex}
-                    />
-                }
-                renderItem={({ item: { id, reports } }) => (
-                    <View style={{ paddingHorizontal: 16, marginTop: 8, marginBottom: 8 }}>
-                        <UIText size={18} bold style={{ marginBottom: 4 }}>
-                            Match {id}
-                        </UIText>
-                        <UIGridLayout cols={3} gap={8}>
-                            {reports.map((report, i) => (
-                                <Pressable
-                                    key={i}
-                                    onPress={() => {
-                                        matchReportModalRef.current?.present({
-                                            isOfflineForm: false,
-                                            report,
-                                        });
-                                    }}
-                                    style={{
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        backgroundColor: Alliance.getColor(
-                                            i < 3 ? Alliance.red : Alliance.blue,
-                                        ).hex, // TODO: store alliance color in each match report instead of guessing by index
-                                        padding: 16,
-                                        borderRadius: 10,
-                                    }}
-                                >
-                                    <UIText bold style={{ textAlign: "center" }}>
-                                        {report.teamNumber}
-                                    </UIText>
-                                </Pressable>
-                            ))}
-                        </UIGridLayout>
-                    </View>
-                )}
-            />
-            <MatchReportModal ref={matchReportModalRef} />
-        </>
+        <FlatList
+            data={displayMatches.sort((m1, m2) => m2.id - m1.id)}
+            keyExtractor={({ id }) => id.toString()}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor={colors.fg.hex}
+                />
+            }
+            renderItem={({ item: { id, reports } }) => (
+                <View style={{ paddingHorizontal: 16, marginTop: 8, marginBottom: 8 }}>
+                    <UIText size={18} bold style={{ marginBottom: 4 }}>
+                        Match {id}
+                    </UIText>
+                    <UIGridLayout cols={3} gap={8}>
+                        {reports.map((report, i) => (
+                            <Pressable
+                                key={i}
+                                onPress={() => {
+                                    rootNavigation.navigate("MatchReportModal", {
+                                        isOfflineForm: false,
+                                        report,
+                                    });
+                                }}
+                                style={{
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    backgroundColor: Alliance.getColor(
+                                        i < 3 ? Alliance.red : Alliance.blue,
+                                    ).hex, // TODO: store alliance color in each match report instead of guessing by index
+                                    padding: 16,
+                                    borderRadius: 10,
+                                }}
+                            >
+                                <UIText bold style={{ textAlign: "center" }}>
+                                    {report.teamNumber}
+                                </UIText>
+                            </Pressable>
+                        ))}
+                    </UIGridLayout>
+                </View>
+            )}
+        />
     );
 }

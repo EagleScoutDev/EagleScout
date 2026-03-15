@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native-stack";
 import { AccountStatus } from "@/lib/user/account";
 import { useUserStore } from "@/lib/stores/user";
-import type { RootStackScreenProps } from "@/navigation";
+import type { RootStackParamList, RootStackScreenProps } from "@/navigation";
 
 import { EntrypointHome } from "./EntrypointHome";
 import { LoginForm } from "./Login";
@@ -15,6 +15,7 @@ import { Signup } from "./Signup";
 import { EnterTeamEmail } from "./steps/EnterTeamEmail";
 import { EnterUserInfo } from "./steps/EnterUserInfo";
 import { SelectTeam } from "./steps/SelectTeam";
+import { getFocusedRouteNameFromRoute, type RouteProp, useRoute } from "@react-navigation/core";
 
 const Stack = createNativeStackNavigator<OnboardingParamList>();
 export type OnboardingScreenProps<K extends keyof OnboardingParamList> = NativeStackScreenProps<
@@ -37,6 +38,7 @@ export type OnboardingParamList = {
 export interface OnboardingFlowProps extends RootStackScreenProps<"Onboarding"> {}
 export function OnboardingFlow({ navigation }: OnboardingFlowProps) {
     const [error, setError] = useState<string | null>(null);
+    const route = useRoute<RouteProp<RootStackParamList>>();
 
     const login = useUserStore((state) => state.login);
     const account = useUserStore((state) => state.account);
@@ -51,23 +53,32 @@ export function OnboardingFlow({ navigation }: OnboardingFlowProps) {
     }
 
     useEffect(() => {
+        const currentOnboardingScreen = getFocusedRouteNameFromRoute(route) ?? "Entrypoint";
         switch (account?.status) {
             case undefined:
-                navigation.navigate("Onboarding", { screen: "Entrypoint" });
+                if (currentOnboardingScreen !== "Entrypoint") {
+                    navigation.navigate("Onboarding", { screen: "Entrypoint" });
+                }
                 break;
             case AccountStatus.Deleted:
                 setError("Your account has been marked for deletion.");
-                navigation.replace("Onboarding", { screen: "Entrypoint" });
+                if (currentOnboardingScreen !== "Entrypoint") {
+                    navigation.replace("Onboarding", { screen: "Entrypoint" });
+                }
                 break;
             case AccountStatus.Onboarding:
                 setError("");
-                navigation.navigate("Onboarding", { screen: "EnterUserInfo" });
+                if (currentOnboardingScreen !== "EnterUserInfo") {
+                    navigation.navigate("Onboarding", { screen: "EnterUserInfo" });
+                }
                 break;
             case AccountStatus.Approval:
                 setError(
                     "Your account has not been approved yet.\nPlease contact a admin for approval.",
                 );
-                navigation.replace("Onboarding", { screen: "Entrypoint" });
+                if (currentOnboardingScreen !== "Entrypoint") {
+                    navigation.replace("Onboarding", { screen: "Entrypoint" });
+                }
                 break;
             case AccountStatus.Approved:
                 navigation.replace("HomeTabs", { state: undefined });

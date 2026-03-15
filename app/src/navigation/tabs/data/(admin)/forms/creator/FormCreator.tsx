@@ -22,6 +22,7 @@ import { UISheetModal } from "@/ui/components/UISheetModal";
 import * as Bs from "@/ui/icons";
 import type { Theme } from "@/ui/lib/theme";
 import ItemType = Form.ItemType;
+import InputType = Form.InputType;
 
 export interface FormCreatorParams {
     form: Form | null;
@@ -260,11 +261,11 @@ export const ITEMS = [
         key: "number",
         icon: Bs.OneTwoThree,
         name: "Number",
-        draft: (): Form.Number => ({
+        draft: (): Form.Stepper => ({
             type: Form.ItemType.number,
             question: "",
             required: false,
-            slider: false,
+            inputType: Form.InputType.stepper,
             low: null,
             high: null,
             step: 1,
@@ -278,11 +279,25 @@ export const ITEMS = [
             type: Form.ItemType.number,
             question: "",
             required: false,
-            slider: true,
+            inputType: Form.InputType.slider,
             lowLabel: null,
             highLabel: null,
             low: 0,
             high: 10,
+            step: 1,
+        }),
+    },
+    {
+        key: "seconds",
+        icon: Bs.Stopwatch,
+        name: "Seconds",
+        draft: (): Form.Seconds => ({
+            type: Form.ItemType.number,
+            question: "",
+            required: false,
+            inputType: Form.InputType.seconds,
+            low: null,
+            high: null,
             step: 1,
         }),
     },
@@ -315,7 +330,7 @@ function finishDraft(item: Form.Item): string | Form.Item {
         if (item.options.length === 0) return "At least one non-empty option is required.";
         return item;
     } else if (item.type === ItemType.number) {
-        if (item.slider) {
+        if (item.inputType === InputType.slider) {
             item = {
                 ...item,
                 lowLabel: item.lowLabel?.trim() || null,

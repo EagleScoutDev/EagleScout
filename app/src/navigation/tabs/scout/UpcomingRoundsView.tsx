@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ScoutAssignmentsConfig } from "@/lib/database/Competitions";
 import { ScoutAssignments } from "@/lib/database/ScoutAssignments";
 import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";

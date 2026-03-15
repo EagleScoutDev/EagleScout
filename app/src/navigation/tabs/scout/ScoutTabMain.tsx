@@ -3,7 +3,7 @@ import * as Bs from "@/ui/icons";
 import { UpcomingRoundsView } from "./UpcomingRoundsView";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 
 export function ScoutTabMain() {
     const rootNavigation = useRootNavigation();

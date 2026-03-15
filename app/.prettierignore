@@ -1,3 +1,5 @@
+dist/
+
 *.generated.ts
 *.generated.tsx
 *.generated.js

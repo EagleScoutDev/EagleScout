@@ -1,11 +1,10 @@
-import { type NavigatorScreenParams, useNavigation } from "@react-navigation/native";
-import { HomeTabs, type HomeTabsParamList } from "@/navigation/tabs/HomeTabs";
 import * as React from "react";
+import { type NavigatorScreenParams } from "@react-navigation/native";
 import {
     createNativeStackNavigator,
-    type NativeStackNavigationProp,
     type NativeStackScreenProps,
 } from "@react-navigation/native-stack";
+import { HomeTabs, type HomeTabsParamList } from "@/navigation/tabs/HomeTabs";
 import { OnboardingFlow, type OnboardingParamList } from "@/navigation/onboarding";
 import { BettingScreen, type BettingScreenParams } from "@/navigation/(betting)/BettingScreen";
 import { MatchBetting } from "@/navigation/(betting)/MatchBetting";
@@ -18,6 +17,14 @@ import { MatchScoutingFlow } from "@/navigation/(scouting)/(match)/MatchScouting
 import { PitScoutingFlow } from "@/navigation/(scouting)/(pit)/PitScoutingFlow";
 import { NoteScreen } from "@/navigation/(scouting)/(note)/NoteFlow";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+    MatchOverview,
+    type MatchOverviewParams,
+} from "@/navigation/tabs/data/MatchOverviews/MatchOverview";
+import {
+    MatchReportModal,
+    type MatchReportModalParams,
+} from "@/navigation/(modals)/MatchReportModal";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -35,20 +42,19 @@ export type RootStackParamList = {
     TeamReports: TeamReportsParams;
     TeamAutoPaths: TeamAutoPathsParams;
     TeamComparison: TeamComparisonParams;
+    MatchOverview: MatchOverviewParams;
 
     Match: undefined;
     Note: undefined;
     Pit: undefined;
+
+    MatchReportModal: MatchReportModalParams;
 };
 
 declare global {
     namespace ReactNavigation {
         interface RootParamList extends RootStackParamList {}
     }
-}
-
-export function useRootNavigation() {
-    return useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 }
 
 export function RootNavigator() {
@@ -58,42 +64,35 @@ export function RootNavigator() {
                 initialRouteName="Onboarding"
                 screenOptions={{
                     headerShown: false,
-                    ...useStackThemeConfig(),
                 }}
             >
-                <Stack.Screen name="HomeTabs" component={HomeTabs} />
+                <Stack.Group screenOptions={useStackThemeConfig("layer")}>
+                    <Stack.Screen name="HomeTabs" component={HomeTabs} />
 
-                <Stack.Screen
-                    name="Onboarding"
-                    component={OnboardingFlow}
-                    options={{
-                        animation: "ios_from_right",
-                    }}
-                />
+                    <Stack.Screen
+                        name="Onboarding"
+                        component={OnboardingFlow}
+                        options={{ animation: "ios_from_right" }}
+                    />
 
-                <Stack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
-                    <Stack.Screen name="MatchBetting" component={MatchBetting} />
-                    <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
+                    <Stack.Group screenOptions={{ title: "Match Betting", headerShown: true }}>
+                        <Stack.Screen name="MatchBetting" component={MatchBetting} />
+                        <Stack.Screen name="MatchBetting/BettingScreen" component={BettingScreen} />
+                    </Stack.Group>
                 </Stack.Group>
-
-                <Stack.Screen
-                    name="TeamSummary"
-                    component={TeamSummary}
-                    options={{
-                        headerBackButtonDisplayMode: "minimal",
-                        headerShown: true,
-                        headerTransparent: true,
-                        headerTitle: "",
-                        headerStyle: {},
-                    }}
-                />
-
-                <Stack.Group
-                    screenOptions={{
-                        headerShown: true,
-                        headerBackButtonDisplayMode: "minimal",
-                    }}
-                >
+                <Stack.Group screenOptions={useStackThemeConfig("infoPage")}>
+                    <Stack.Screen
+                        name="TeamSummary"
+                        component={TeamSummary}
+                        options={{ title: "Team Summary" }}
+                    />
+                    <Stack.Screen
+                        name="MatchOverview"
+                        component={MatchOverview}
+                        options={{ title: "Match Overview" }}
+                    />
+                </Stack.Group>
+                <Stack.Group screenOptions={useStackThemeConfig("screen")}>
                     <Stack.Screen
                         name="TeamAutoPaths"
                         component={TeamAutoPaths}
@@ -113,14 +112,7 @@ export function RootNavigator() {
                             title: `Reports for Team ${params.team_number}`,
                         })}
                     />
-                </Stack.Group>
 
-                <Stack.Group
-                    screenOptions={{
-                        headerShown: true,
-                        headerBackButtonDisplayMode: "minimal",
-                    }}
-                >
                     <Stack.Screen
                         name="Match"
                         component={MatchScoutingFlow}
@@ -131,10 +123,14 @@ export function RootNavigator() {
                         component={PitScoutingFlow}
                         options={{ title: "Pit Scouting" }}
                     />
+                    <Stack.Screen name="Note" component={NoteScreen} options={{ title: "Note" }} />
+                </Stack.Group>
+
+                <Stack.Group screenOptions={useStackThemeConfig("infoSheet")}>
                     <Stack.Screen
-                        name="Note"
-                        component={NoteScreen}
-                        options={{ title: "Note" }}
+                        name="MatchReportModal"
+                        component={MatchReportModal}
+                        options={{ title: "Match Report" }}
                     />
                 </Stack.Group>
             </Stack.Navigator>

@@ -106,11 +106,12 @@ export const getListStyles = (colors: Theme["colors"]): UIListStyles => ({
         justifyContent: "center",
     },
     rowIcon: { size: 18, fill: colors.primary.hex },
-    rowText: { size: 16, style: { flex: 1 }, numberOfLines: 1 },
+    rowText: { size: 16, numberOfLines: 1 },
     rowBody: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
+        flex: 1,
     },
     rowCaret: { size: 16, fill: colors.placeholder.hex },
 });

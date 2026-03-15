@@ -6,7 +6,7 @@ import { UIText } from "@/ui/components/UIText";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { FormDataView } from "@/navigation/(modals)/components/FormDataView";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 
 export interface PitReportModalParams {
     report: PitReportReturnData;

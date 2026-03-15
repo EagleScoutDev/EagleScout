@@ -1,3 +1,5 @@
+import type { LinkName } from "@/frc/rebuilt";
+
 export interface Form {
     formStructure: Form.Structure;
     pitScouting: boolean;
@@ -14,9 +16,15 @@ export namespace Form {
         textbox = "textbox",
         number = "number",
     }
+    export enum InputType{
+        stepper = "stepper",
+        slider = "slider",
+        seconds = "seconds",
+    }
 
     interface BaseItem {
         type: ItemType;
+        link_to?: LinkName;
     }
     export type Item = Heading | Question;
 
@@ -30,7 +38,7 @@ export namespace Form {
         question: string;
         required: boolean;
     }
-    export type Question = Radio | Checkboxes | Textbox | Number | Slider;
+    export type Question = Radio | Checkboxes | Textbox | Stepper | Slider | Seconds;
 
     export interface Radio extends BaseQuestion {
         type: ItemType.radio;
@@ -44,19 +52,22 @@ export namespace Form {
     export interface Textbox extends BaseQuestion {
         type: ItemType.textbox;
     }
-    export interface Number extends BaseQuestion {
+
+    export interface BaseNumberQuestion extends BaseQuestion {
         type: ItemType.number;
-        slider: false;
+        inputType: InputType;
         low: number | null;
         high: number | null;
         step: number;
     }
-    export interface Slider extends BaseQuestion {
-        type: ItemType.number;
-        slider: true;
-        low: number;
-        high: number;
-        step: number;
+    export interface Stepper extends BaseNumberQuestion {
+        inputType: InputType.stepper;
+    }
+    export interface Seconds extends BaseNumberQuestion {
+        inputType: InputType.seconds;
+    }
+    export interface Slider extends BaseNumberQuestion {
+        inputType: InputType.slider;
         lowLabel: string | null; // TODO: add this to the database schema
         highLabel: string | null; // TODO: add this to the database schema
     }
