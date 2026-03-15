@@ -39,19 +39,19 @@ export function FormDataView({
                 switch (item.type) {
                     case Form.ItemType.heading:
                         return (
-                            <View>
+                            <View style={{ marginBottom: 8 }}>
                                 <UIText
+                                    size={20}
+                                    bold
                                     style={{
-                                        color: colors.fg.hex,
-                                        fontSize: 18,
                                         textAlign: "center",
-                                        fontWeight: "bold",
                                         marginTop: 32,
-                                        marginBottom: 8,
+                                        marginBottom: 4,
                                     }}
                                 >
                                     {item.title}
                                 </UIText>
+                                <View style={{ height: 1, marginHorizontal: 16, backgroundColor: colors.border.hex }} />
                             </View>
                         );
 

@@ -1,12 +1,9 @@
 import { type MatchReportReturnData } from "@/lib/database/ScoutMatchReports";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { UIText } from "@/ui/components/UIText";
 import React from "react";
-import { supabase } from "@/lib/supabase";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { useQuery } from "@tanstack/react-query";
 import { FormDataView } from "@/navigation/(modals)/components/FormDataView";
 import { useRootNavigation } from "@/navigation/hooks";
 
