@@ -19,7 +19,6 @@ export interface AddCompetitionModalParams {}
 export interface AddCompetitionModal extends UISheetModal<AddCompetitionModalParams> {}
 export const AddCompetitionModal = UISheetModal.HOC<AddCompetitionModalParams>(
     function AddCompetitionModalContent({ ref }) {
-        "use memo";
         // TODO: set dismiss listener
 
         const queryClient = useQueryClient();

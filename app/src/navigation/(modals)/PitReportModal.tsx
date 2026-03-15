@@ -14,8 +14,6 @@ export interface PitReportModalParams {
 export interface PitReportModal extends UISheetModal<PitReportModalParams> {}
 export const PitReportModal = UISheetModal.HOC<PitReportModalParams>(
     function PitReportModalContent({ ref, data: { report } }) {
-        "use memo";
-
         const [images, setImages] = useState<string[]>([]);
         useEffect(() => {
             PitReportsDB.getImagesForReport(report.teamNumber, report.reportId).then((images) => {

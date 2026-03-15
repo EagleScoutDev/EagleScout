@@ -19,7 +19,6 @@ export interface EditCompetitionModalParams {
 export interface EditCompetitionModal extends UISheetModal<EditCompetitionModalParams> {}
 export const EditCompetitionModal = UISheetModal.HOC<EditCompetitionModalParams>(
     function EditCompetitionModalContent({ ref, data: { competition, onSubmit, onDelete } }) {
-        "use memo";
         // TODO: set navigation listener for beforeRemove
         const { colors } = useTheme();
 
