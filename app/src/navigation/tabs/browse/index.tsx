@@ -17,7 +17,7 @@ export type BrowseTabParamList = {
 
 export function BrowseTab() {
     return (
-        <Stack.Navigator initialRouteName={"Main"} screenOptions={useStackThemeConfig()}>
+        <Stack.Navigator initialRouteName={"Main"} screenOptions={useStackThemeConfig("screen")}>
             <Stack.Screen
                 name="Main"
                 component={BrowseTabMain}

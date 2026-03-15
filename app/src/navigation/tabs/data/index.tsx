@@ -64,7 +64,7 @@ export type DataTabParamList = {
 
 export function DataTab() {
     return (
-        <Stack.Navigator screenOptions={useStackThemeConfig()}>
+        <Stack.Navigator screenOptions={useStackThemeConfig("screen")}>
             <Stack.Screen
                 name="Main"
                 component={DataTabMain}

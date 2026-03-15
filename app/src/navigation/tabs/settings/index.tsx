@@ -40,7 +40,7 @@ export type SettingsTabParamList = {
 export interface SettingsTabProps extends HomeTabProps<"Settings"> {}
 export function SettingsTab({}: SettingsTabProps) {
     return (
-        <Stack.Navigator initialRouteName="Main" screenOptions={useStackThemeConfig()}>
+        <Stack.Navigator initialRouteName="Main" screenOptions={useStackThemeConfig("screen")}>
             <Stack.Screen
                 name="Main"
                 component={SettingsMain}
