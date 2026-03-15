@@ -10,7 +10,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     orientation: "portrait",
     icon: "src/assets/images/icon.png",
     userInterfaceStyle: "automatic",
-    newArchEnabled: true,
     scheme: "eaglescout",
     experiments: {
         reactCompiler: true,
@@ -29,6 +28,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     web: {},
     plugins: [
         "expo-font",
+        "expo-image",
+        "expo-sharing",
         "expo-sqlite",
         "@react-native-community/datetimepicker",
         [
