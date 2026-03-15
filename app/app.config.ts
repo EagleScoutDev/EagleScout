@@ -32,7 +32,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         "expo-sqlite",
         "@react-native-community/datetimepicker",
         [
-            // "./plugins/stallion.ts",
             "expo-stallion-plugin",
             {
                 projectId: process.env.STALLION_ID,
