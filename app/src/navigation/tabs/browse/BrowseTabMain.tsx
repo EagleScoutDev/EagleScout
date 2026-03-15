@@ -9,7 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { Alliance } from "@/frc/common/common";
 import { UIGridLayout } from "@/ui/components/UIGridLayout";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 import { MatchReportModal } from "@/navigation/(modals)/MatchReportModal";
 import { queries } from "@/lib/queries";
 import { Header } from "./components/Header";

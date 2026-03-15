@@ -11,7 +11,7 @@ import {
 import {ColorChooser} from '../../../../../src/ui/components/OrientationChooser';
 import {useTheme} from '@react-navigation/native';
 import {UIButton, UIButtonStyle, UIButtonSize} from "@/ui/components/UIButton";
-import {useRootNavigation} from "@/navigation";
+import {useRootNavigation} from "@/navigation/hooks";
 
 const MatchOverviewSelector = () => {
     const {colors} = useTheme();

@@ -1,11 +1,10 @@
-import { type NavigatorScreenParams, useNavigation } from "@react-navigation/native";
-import { HomeTabs, type HomeTabsParamList } from "@/navigation/tabs/HomeTabs";
 import * as React from "react";
+import { type NavigatorScreenParams } from "@react-navigation/native";
 import {
     createNativeStackNavigator,
-    type NativeStackNavigationProp,
     type NativeStackScreenProps,
 } from "@react-navigation/native-stack";
+import { HomeTabs, type HomeTabsParamList } from "@/navigation/tabs/HomeTabs";
 import { OnboardingFlow, type OnboardingParamList } from "@/navigation/onboarding";
 import { BettingScreen, type BettingScreenParams } from "@/navigation/(betting)/BettingScreen";
 import { MatchBetting } from "@/navigation/(betting)/MatchBetting";
@@ -18,7 +17,7 @@ import { MatchScoutingFlow } from "@/navigation/(scouting)/(match)/MatchScouting
 import { PitScoutingFlow } from "@/navigation/(scouting)/(pit)/PitScoutingFlow";
 import { NoteScreen } from "@/navigation/(scouting)/(note)/NoteFlow";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import {MatchOverview, type MatchOverviewParams} from "@/navigation/tabs/data/MatchOverviews/MatchOverview";
+import { MatchOverview, type MatchOverviewParams } from "@/navigation/tabs/data/MatchOverviews/MatchOverview";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -47,10 +46,6 @@ declare global {
     namespace ReactNavigation {
         interface RootParamList extends RootStackParamList {}
     }
-}
-
-export function useRootNavigation() {
-    return useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 }
 
 export function RootNavigator() {

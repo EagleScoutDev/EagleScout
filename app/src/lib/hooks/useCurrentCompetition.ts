@@ -2,7 +2,7 @@ import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Compe
 import { useEffect, useState } from "react";
 import { FormHelper } from "@/lib/FormHelper";
 import AsyncStorage from "expo-sqlite/kv-store";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 
 export function useCurrentCompetition(): {
     competition: CompetitionReturnData | null;

@@ -8,7 +8,7 @@ import { UISheetModal } from "@/ui/components/UISheetModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { FormDataView } from "@/navigation/(modals)/components/FormDataView";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 
 export interface MatchReportModalParams {
     report: MatchReportReturnData;

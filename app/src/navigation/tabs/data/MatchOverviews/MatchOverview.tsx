@@ -13,7 +13,7 @@ import {MatchReportsDB
 } from '@/lib/database/ScoutMatchReports';
 import AllianceSummaryCard from './AllianceSummaryCard';
 import {type RootStackScreenProps} from "@/navigation";
-import {useRootNavigation} from "@/navigation";
+import {useRootNavigation} from "@/navigation/hooks";
 import type {SimpleTeam} from "@/lib/frc/tba/TBA";
 
 export interface MatchOverviewParams{

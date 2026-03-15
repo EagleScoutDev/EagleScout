@@ -38,7 +38,7 @@ import { TBA } from "@/lib/frc/tba/TBA";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
 import { UITextInput } from "@/ui/components/UITextInput";
-import { useRootNavigation } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
 
 export interface PicklistCreatorParams {
     picklist_id: number;
