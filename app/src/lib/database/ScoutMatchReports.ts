@@ -75,7 +75,7 @@ export class MatchReportsDB {
         const { data, error } = await supabase
             .from("scout_reports")
             .select(
-                "*, matches( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )",
+                "*, matches!inner( number, competition_id, competitions(name, forms!competitions_form_id_fkey(form_structure)) )",
             )
             .eq("user_id", user.id)
             .eq("matches.competition_id", competitionId);
