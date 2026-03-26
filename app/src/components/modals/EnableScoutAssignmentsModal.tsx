@@ -11,7 +11,6 @@ export interface EnableScoutAssignmentsModalParams {
 export interface EnableScoutAssignmentsModal extends UISheetModal<EnableScoutAssignmentsModalParams> {}
 export const EnableScoutAssignmentsModal = UISheetModal.HOC<EnableScoutAssignmentsModalParams>(
     function EnableScoutAssignmentsModalContent({ ref, data: { competition } }) {
-        "use memo";
         const [config, setConfig] = useState<"team_based" | "position_based">("team_based");
 
         async function submit() {

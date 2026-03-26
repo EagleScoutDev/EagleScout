@@ -1,5 +1,3 @@
-import type { LinkName } from "@/frc/rebuilt";
-
 export interface Form {
     formStructure: Form.Structure;
     pitScouting: boolean;
@@ -53,8 +51,7 @@ export namespace Form {
     export interface Textbox extends BaseQuestion {
         type: ItemType.textbox;
     }
-
-    export interface BaseNumberQuestion extends BaseQuestion {
+    export interface Number extends BaseQuestion {
         type: ItemType.number;
         inputType: InputType;
         low: number | null;

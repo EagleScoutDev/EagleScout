@@ -34,9 +34,11 @@ export function HoldButton({ value, disabled = false, label, onInput}: UISeconds
 
     useEffect(() => {
         if (!holding) return;
+
         const update = setInterval(() => {
             setDisplayValue((baseRef.current + (Date.now() - startHolding.current)/1000));
         }, 50);
+
         return () => clearInterval(update);
     }, [holding]);
 
