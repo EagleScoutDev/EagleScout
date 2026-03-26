@@ -81,6 +81,8 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     function reset() {
         setMatch(null);
         setTeam(null);
+        setCurrentTab("Setup");
+        setAutoState(AutoState());
         resetResponses();
     }
     function resetResponses() {

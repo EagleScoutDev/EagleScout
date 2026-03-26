@@ -25,6 +25,8 @@ export function HoldButton({ value, disabled = false, label, onInput}: UISeconds
 
     const baseRef = useRef(value);
     const startHolding = useRef(0);
+    const lastPress = useRef(0);
+
 
     useEffect(() => {
         if (!holding) setDisplayValue(value);
@@ -32,11 +34,9 @@ export function HoldButton({ value, disabled = false, label, onInput}: UISeconds
 
     useEffect(() => {
         if (!holding) return;
-
         const update = setInterval(() => {
             setDisplayValue((baseRef.current + (Date.now() - startHolding.current)/1000));
         }, 50);
-
         return () => clearInterval(update);
     }, [holding]);
 
@@ -57,8 +57,12 @@ export function HoldButton({ value, disabled = false, label, onInput}: UISeconds
                 onPressOut={() => {
                     if (disabled) return;
                     setHolding(false);
-
+                    if(Date.now()-lastPress.current<300){
+                        onInput?.(0);
+                        return;
+                    }
                     onInput?.((value + (Date.now() - startHolding.current)/1000));
+                    lastPress.current = Date.now();
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
                 }}
             >

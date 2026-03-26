@@ -20,6 +20,7 @@ export namespace Form {
         stepper = "stepper",
         slider = "slider",
         seconds = "seconds",
+        multi = "multi",
     }
 
     interface BaseItem {
@@ -38,7 +39,7 @@ export namespace Form {
         question: string;
         required: boolean;
     }
-    export type Question = Radio | Checkboxes | Textbox | Stepper | Slider | Seconds;
+    export type Question = Radio | Checkboxes | Textbox | Stepper | Slider | Seconds | Multi;
 
     export interface Radio extends BaseQuestion {
         type: ItemType.radio;
@@ -65,6 +66,9 @@ export namespace Form {
     }
     export interface Seconds extends BaseNumberQuestion {
         inputType: InputType.seconds;
+    }
+    export interface Multi extends BaseNumberQuestion {
+        inputType: InputType.multi;
     }
     export interface Slider extends BaseNumberQuestion {
         inputType: InputType.slider;

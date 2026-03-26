@@ -302,6 +302,20 @@ export const ITEMS = [
         }),
     },
     {
+        key: "multi",
+        icon: Bs.Exposure,
+        name: "Multi",
+        draft: (): Form.Multi => ({
+            type: Form.ItemType.number,
+            question: "",
+            required: false,
+            inputType: Form.InputType.multi,
+            low: null,
+            high: null,
+            step: 1,
+        }),
+    },
+    {
         key: "textbox",
         icon: Bs.InputCursorText,
         name: "Short Answer",

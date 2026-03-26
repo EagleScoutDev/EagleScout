@@ -7,6 +7,8 @@ import { UISlider } from "@/ui/components/UISlider";
 import { UIStepper } from "@/ui/components/UIStepper";
 import { UICheckboxes } from "@/ui/components/UICheckboxes";
 import { UISeconds } from "@/ui/components/UISeconds";
+import { UIMulti } from "@/ui/components/UIMulti";
+
 
 import ItemType = Form.ItemType;
 import InputType = Form.InputType;
@@ -44,6 +46,8 @@ export function FormItem<T extends Form.Item>({ item, value, onInput }: FormComp
                 />
             ) : item.type === ItemType.number && item.inputType === InputType.seconds ? (
                 <UISeconds value={value ?? 0} onInput={onInput} />
+            ) : item.type === ItemType.number && item.inputType === InputType.multi ? (
+                <UIMulti value={value ?? 0} onInput={onInput} />
             ) : item.type === ItemType.number && item.inputType === InputType.stepper ? (
                 <UIStepper value={value ?? 0} onInput={onInput} />
             ) : item.type === ItemType.checkbox ? (
