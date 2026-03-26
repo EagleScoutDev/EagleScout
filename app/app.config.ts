@@ -6,7 +6,7 @@ import type { ExpoConfig } from "expo/config";
 export default ({ config }: ConfigContext): ExpoConfig => ({
     name: "EagleScout",
     slug: "eaglescout",
-    version: "8.0.0",
+    version: "8.0.1",
     orientation: "portrait",
     icon: "src/assets/images/icon.png",
     userInterfaceStyle: "automatic",
