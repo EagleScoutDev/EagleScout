@@ -26,6 +26,8 @@ import { FormView } from "@/components/FormView";
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
+    "use memo"; // TODO: fix this
+
     const { competition, online } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
     const [match, setMatch] = useState<number | null>(null);

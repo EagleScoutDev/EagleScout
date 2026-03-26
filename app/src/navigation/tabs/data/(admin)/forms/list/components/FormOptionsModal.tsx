@@ -11,6 +11,7 @@ export interface FormOptionsModalParams {
 export interface FormOptionsModal extends UISheetModal<FormOptionsModalParams> {}
 export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
     function FormOptionsModalContent({ ref, data: { form } }) {
+        "use memo";
         const { colors } = useTheme();
 
         return (

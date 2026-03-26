@@ -21,6 +21,7 @@ export function UISeconds({ value, onInput, disabled = false }: UISecondsProps) 
 
     const baseRef = useRef(value);
     const startHolding = useRef(0);
+    const lastPress = useRef(0);
 
     useEffect(() => {
         if (!holding) setDisplayValue(value);
@@ -54,8 +55,12 @@ export function UISeconds({ value, onInput, disabled = false }: UISecondsProps) 
                 onPressOut={() => {
                     if (disabled) return;
                     setHolding(false);
-
+                    if(Date.now()-lastPress.current<250){
+                        onInput?.(0);
+                        return;
+                    }
                     onInput?.((value + (Date.now() - startHolding.current)/1000));
+                    lastPress.current=Date.now();
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
                 }}
             >
