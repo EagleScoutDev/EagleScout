@@ -1,4 +1,10 @@
-import { Alert, KeyboardAvoidingView, View } from "react-native";
+import {
+    Alert,
+    Keyboard,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { NotesDB } from "@/lib/database/ScoutNotes";
 import { NoteInputModal } from "./NoteInputModal";
@@ -6,7 +12,7 @@ import { CompetitionsDB } from "@/lib/database/Competitions";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Alliance } from "@/frc/common/common";
 import { FormHelper } from "@/lib/FormHelper";
 import { UIText } from "@/ui/components/UIText";
@@ -16,6 +22,7 @@ import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton"
 export function NoteScreen() {
     const [match, setMatch] = useState<number | null>(null);
     const [matchNumberValid, setMatchNumberValid] = useState<boolean>(false);
+    const safe = useSafeAreaInsets();
 
     const [alliances, setAlliances] = useState<{ red: number[]; blue: number[] }>({
         red: [],
@@ -153,52 +160,62 @@ export function NoteScreen() {
                 <Confetti ref={setConfettiView} timeout={10} duration={3000} />
             </View>
 
-            <SafeAreaView style={{ flex: 1, padding: 16 }}>
-                <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
-                    <UICard title={"Information"}>
-                        <UICard.NumberInput
-                            label={"Match Number"}
-                            placeholder="000"
-                            max={999}
-                            value={match}
-                            onInput={setMatch}
-                            error={
-                                match === null
-                                    ? null
-                                    : match === 0
-                                      ? "Match number cannot be 0"
-                                      : match > 400
-                                        ? "Match number cannot be greater than 400"
-                                        : null
-                            }
-                        />
-                        <UICard.AllianceChooser
-                            label={"Alliance"}
-                            alliance={selectedAlliance}
-                            setAlliance={setSelectedAlliance}
-                        />
-                    </UICard>
+            <TouchableWithoutFeedback
+                onPress={Keyboard.dismiss}
+                accessible={false}
+                style={{ flex: 1 }}
+            >
+                <SafeAreaView style={{ flex: 1, padding: 16 }}>
+                    <KeyboardAvoidingView
+                        style={{ flex: 1 }}
+                        behavior="padding"
+                        keyboardVerticalOffset={2 * safe.top}
+                    >
+                        <UICard title={"Information"}>
+                            <UICard.NumberInput
+                                label={"Match Number"}
+                                placeholder="000"
+                                max={999}
+                                value={match}
+                                onInput={setMatch}
+                                error={
+                                    match === null
+                                        ? null
+                                        : match === 0
+                                          ? "Match number cannot be 0"
+                                          : match > 400
+                                            ? "Match number cannot be greater than 400"
+                                            : null
+                                }
+                            />
+                            <UICard.AllianceChooser
+                                label={"Alliance"}
+                                alliance={selectedAlliance}
+                                setAlliance={setSelectedAlliance}
+                            />
+                        </UICard>
 
-                    <View style={{ flex: 1 }} />
+                        <View style={{ flex: 1 }} />
 
-                    <UIButton
-                        style={UIButtonStyle.fill}
-                        size={UIButtonSize.xl}
-                        text={"Next"}
-                        onPress={() => {
-                            if (matchNumberValid) {
-                                setModalVisible(true);
-                            } else {
-                                Alert.alert(
-                                    "Match number invalid",
-                                    "Match number invalid. Please check if the match number you entered is correct.",
-                                );
-                            }
-                        }}
-                        disabled={match === null || selectedAlliance === null}
-                    />
-                </KeyboardAvoidingView>
-            </SafeAreaView>
+                        <UIButton
+                            style={UIButtonStyle.fill}
+                            size={UIButtonSize.xl}
+                            text={"Next"}
+                            onPress={() => {
+                                if (matchNumberValid) {
+                                    setModalVisible(true);
+                                } else {
+                                    Alert.alert(
+                                        "Match number invalid",
+                                        "Match number invalid. Please check if the match number you entered is correct.",
+                                    );
+                                }
+                            }}
+                            disabled={match === null || selectedAlliance === null}
+                        />
+                    </KeyboardAvoidingView>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
 
             {modalVisible && (
                 <NoteInputModal
