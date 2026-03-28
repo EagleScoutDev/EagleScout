@@ -12,37 +12,40 @@ export interface PitReportModalParams {
     report: PitReportReturnData;
 }
 export interface PitReportModal extends UISheetModal<PitReportModalParams> {}
-export const PitReportModal = UISheetModal.HOC<PitReportModalParams>(
-    function PitReportModalContent({ ref, data: { report } }) {
-        const [images, setImages] = useState<string[]>([]);
-        useEffect(() => {
-            PitReportsDB.getImagesForReport(report.teamNumber, report.reportId).then((images) => {
-                setImages(images);
-            });
-        }, [report]);
+export const PitReportModal = UISheetModal.HOC<PitReportModalParams>(function PitReportModalContent({
+    ref,
+    data: { report },
+}) {
+    const [images, setImages] = useState<string[]>([]);
+    useEffect(() => {
+        PitReportsDB.getImagesForReport(report.teamNumber, report.reportId).then((images) => {
+            setImages(images);
+        });
+    }, [report]);
 
-        return (
-            <>
-                <UISheetModal.Header
-                    title={"Pit Report"}
-                    right={[
-                        {
-                            role: "done",
-                            onPress: () => ref.current?.dismiss(),
-                        },
-                    ]}
-                />
-                <FormDataView
-                    FlatList={BottomSheetFlatList}
-                    form={report.formStructure}
-                    data={report.data}
-                    ListHeaderComponent={<ReportMetadataView data={report} userName={report.submittedName} />}
-                    ListFooterComponent={<ReportImagesView images={images} />}
-                />
-            </>
-        );
-    },
-);
+    return (
+        <>
+            <UISheetModal.Header
+                title={"Pit Report"}
+                right={[
+                    {
+                        role: "done",
+                        onPress: () => ref.current?.dismiss(),
+                    },
+                ]}
+            />
+            <FormDataView
+                FlatList={BottomSheetFlatList}
+                form={report.formStructure}
+                data={report.data}
+                ListHeaderComponent={
+                    <ReportMetadataView data={report} userName={report.submittedName} />
+                }
+                ListFooterComponent={<ReportImagesView images={images} />}
+            />
+        </>
+    );
+});
 
 function ReportMetadataView({
     data,
@@ -98,7 +101,7 @@ function ReportImagesView({ images }: { images: string[] }) {
                 data={images}
                 renderItem={({ item }) => (
                     <Image
-                        source={{ uri: item }}
+                        source={item}
                         style={{
                             width: 200,
                             height: 250,

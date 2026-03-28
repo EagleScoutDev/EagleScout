@@ -149,23 +149,14 @@ export class PitReportsDB {
         if (error) {
             throw error;
         }
-        console.log("images", images);
-        const resultingImages: string[] = [];
-        for (let i = 0; i < images.length; i++) {
-            const { data, error } = await bucket.download(
-                `${orgId}/${teamId}/pit_images/${reportId}/${images[i].name}`,
-            );
-            if (error) {
-                throw error;
-            }
-            const reader = new FileReader();
-            reader.readAsDataURL(data as Blob);
-            reader.onloadend = () => {
-                const base64data = reader.result;
-                resultingImages.push(base64data as string);
-            };
+        const { data: signedData, error: signedError } = await supabase.storage.from("organizations").createSignedUrls(
+            images.map((img) => `${orgId}/${teamId}/pit_images/${reportId}/${img.name}`),
+            60*5
+        );
+        if (signedError) {
+            throw signedError;
         }
-        return resultingImages;
+        return signedData?.map((url) => url.signedUrl);
     }
 
     static async getImageUrlsForReport(orgId: number, teamId: number, reportId: number) {

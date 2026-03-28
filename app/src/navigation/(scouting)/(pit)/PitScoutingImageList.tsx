@@ -2,7 +2,6 @@ import { Alert, FlatList, Pressable, StyleSheet, View } from "react-native";
 import {
     launchCameraAsync,
     requestCameraPermissionsAsync,
-    requestMediaLibraryPermissionsAsync,
 } from "expo-image-picker";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -69,7 +68,6 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
                     return (
                         <Pressable
                             onPress={async () => {
-                                console.log("launching camera");
                                 const permissionResult =
                                     await requestCameraPermissionsAsync();
                                 if (!permissionResult.granted) {
@@ -83,9 +81,15 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
                                 launchCameraAsync({
                                     mediaTypes: ["images"],
                                     quality: 1,
-                                }).then((x) => {
-                                    console.log(x);
-                                    setImages([...images, x.assets[0].uri]);
+                                }).then(async (x) => {
+                                    const result = await fetch(x.assets[0].uri);
+                                    const data = await result.blob();
+                                    const reader = new FileReader();
+                                    reader.onload = function () {
+                                        const dataUrl = reader.result;
+                                        setImages([...images, dataUrl]);
+                                    };
+                                    reader.readAsDataURL(data);
                                 });
                             }}
                         >

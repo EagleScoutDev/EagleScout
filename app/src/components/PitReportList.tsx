@@ -12,7 +12,6 @@ export interface PitReportListProps {
 
 export function PitReportList({ reports, isOffline }: PitReportListProps) {
     const { colors } = useTheme();
-    const [chosenReport, setChosenReport] = useState<PitReportReturnData | null>(null);
 
     const sheetRef = useRef<PitReportModal>(null);
 
@@ -36,6 +35,7 @@ export function PitReportList({ reports, isOffline }: PitReportListProps) {
             </View>
         );
     }
+
     return (
         <View
             style={{
@@ -85,8 +85,9 @@ export function PitReportList({ reports, isOffline }: PitReportListProps) {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         onPress={() => {
-                            setChosenReport(item);
-                            sheetRef.current?.present();
+                            sheetRef.current?.present({
+                                report: item,
+                            });
                         }}
                         style={{
                             display: "flex",
@@ -121,7 +122,7 @@ export function PitReportList({ reports, isOffline }: PitReportListProps) {
                     </TouchableOpacity>
                 )}
             />
-            {chosenReport !== null && <PitReportModal ref={sheetRef} data={chosenReport} />}
+            <PitReportModal ref={sheetRef} />
         </View>
     );
 }
