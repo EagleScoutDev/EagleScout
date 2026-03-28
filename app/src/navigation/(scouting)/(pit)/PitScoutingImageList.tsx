@@ -1,5 +1,9 @@
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
-import { launchCameraAsync } from "expo-image-picker";
+import { Alert, FlatList, Pressable, StyleSheet, View } from "react-native";
+import {
+    launchCameraAsync,
+    requestCameraPermissionsAsync,
+    requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
@@ -11,6 +15,7 @@ export interface PitScoutingImageListProps {
 }
 export function PitScoutingImageList({ images, setImages }: PitScoutingImageListProps) {
     const { colors } = useTheme();
+
     const styles = StyleSheet.create({
         image: {
             width: 200,
@@ -63,12 +68,24 @@ export function PitScoutingImageList({ images, setImages }: PitScoutingImageList
                 if (item === "plus") {
                     return (
                         <Pressable
-                            onPress={() => {
+                            onPress={async () => {
+                                console.log("launching camera");
+                                const permissionResult =
+                                    await requestCameraPermissionsAsync();
+                                if (!permissionResult.granted) {
+                                    Alert.alert(
+                                        "Permission required",
+                                        "Permission to access the media library is required.",
+                                    );
+                                    return;
+                                }
+
                                 launchCameraAsync({
                                     mediaTypes: ["images"],
                                     quality: 1,
                                 }).then((x) => {
                                     console.log(x);
+                                    setImages([...images, x.assets[0].uri]);
                                 });
                             }}
                         >
