@@ -11,7 +11,7 @@ export async function useDeepLink({ url }: { url: string | null }) {
         url
             .split("#")[1]
             .split("&")
-            .map((kv) => kv.split("="))
+            .map((kv) => kv.split("=")),
     );
 
     switch (route) {

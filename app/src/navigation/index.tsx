@@ -25,6 +25,8 @@ import {
     MatchReportModal,
     type MatchReportModalParams,
 } from "@/navigation/(modals)/MatchReportModal";
+import { useDeepLink } from "@/navigation/deepLink";
+import { useDeepLinking } from "@/lib/hooks/useDeepLinking";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export type RootStackScreenProps<K extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -58,6 +60,8 @@ declare global {
 }
 
 export function RootNavigator() {
+    const { url } = useDeepLinking();
+    useDeepLink({ url });
     return (
         <SafeAreaProvider>
             <Stack.Navigator
