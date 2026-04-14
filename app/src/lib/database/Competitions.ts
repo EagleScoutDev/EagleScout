@@ -9,16 +9,9 @@ interface Competition {
     pitScoutFormId: number;
 }
 
-export enum ScoutAssignmentsConfig {
-    DISABLED,
-    TEAM_BASED,
-    POSITION_BASED,
-}
-
 export interface CompetitionReturnData extends Competition {
     id: number;
     form: Form.Structure;
-    scoutAssignmentsConfig: ScoutAssignmentsConfig;
     pitScoutFormStructure: Form.Structure;
 }
 
@@ -29,14 +22,6 @@ export class CompetitionsDB {
             throw error;
         } else {
             return data.map((competition) => {
-                let scoutAssignmentsConfig: ScoutAssignmentsConfig;
-                if (competition.scout_assignments_config === "team_based") {
-                    scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
-                } else if (competition.scout_assignments_config === "position_based") {
-                    scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
-                } else {
-                    scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
-                }
                 return {
                     id: competition.competition_id,
                     name: competition.competition_name,
@@ -44,7 +29,6 @@ export class CompetitionsDB {
                     endTime: competition.end_time,
                     formId: competition.form_id,
                     form: competition.form_structure,
-                    scoutAssignmentsConfig: scoutAssignmentsConfig,
                     pitScoutFormId: competition.pit_scout_form_id,
                     pitScoutFormStructure: competition.pit_scout_form_structure,
                 };
@@ -60,14 +44,6 @@ export class CompetitionsDB {
             if (data.length === 0) {
                 return null;
             } else {
-                let scoutAssignmentsConfig: ScoutAssignmentsConfig;
-                if (data[0].scout_assignments_config === "team_based") {
-                    scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
-                } else if (data[0].scout_assignments_config === "position_based") {
-                    scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
-                } else {
-                    scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
-                }
                 return {
                     id: data[0].competition_id,
                     name: data[0].competition_name,
@@ -75,7 +51,6 @@ export class CompetitionsDB {
                     endTime: data[0].end_time,
                     formId: data[0].form_id,
                     form: data[0].form_structure,
-                    scoutAssignmentsConfig: scoutAssignmentsConfig,
                     pitScoutFormId: data[0].pit_scout_form_id,
                     pitScoutFormStructure: data[0].pit_scout_form_structure,
                 };
@@ -133,14 +108,6 @@ export class CompetitionsDB {
         if (error) {
             throw error;
         } else {
-            let scoutAssignmentsConfig: ScoutAssignmentsConfig;
-            if (data.scout_assignments_config === "team_based") {
-                scoutAssignmentsConfig = ScoutAssignmentsConfig.TEAM_BASED;
-            } else if (data.scout_assignments_config === "position_based") {
-                scoutAssignmentsConfig = ScoutAssignmentsConfig.POSITION_BASED;
-            } else {
-                scoutAssignmentsConfig = ScoutAssignmentsConfig.DISABLED;
-            }
             return {
                 id: data[0].competition_id,
                 name: data[0].competition_name,
@@ -148,7 +115,6 @@ export class CompetitionsDB {
                 endTime: data[0].end_time,
                 formId: data[0].form_id,
                 form: data[0].form_structure,
-                scoutAssignmentsConfig: scoutAssignmentsConfig,
                 pitScoutFormId: data[0].pit_scout_form_id,
                 pitScoutFormStructure: data[0].pit_scout_form_structure,
             };

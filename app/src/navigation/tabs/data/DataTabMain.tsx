@@ -159,13 +159,6 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
                             onPress={() => navigation.navigate("Forms")}
                         />
                         <UIList.Row
-                            icon={Bs.CalendarThree}
-                            label="Scout Assignments"
-                            caret
-                            disabled={offline}
-                            onPress={() => navigation.navigate("ScoutAssignments")}
-                        />
-                        <UIList.Row
                             icon={Bs.CashCoin}
                             label="Match Bets"
                             caret

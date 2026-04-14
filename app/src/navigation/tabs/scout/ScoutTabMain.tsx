@@ -1,6 +1,5 @@
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as Bs from "@/ui/icons";
-import { UpcomingRoundsView } from "./UpcomingRoundsView";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 import { useRootNavigation } from "@/navigation/hooks";
@@ -13,7 +12,6 @@ export function ScoutTabMain() {
             <SafeAreaView style={{ flex: 1 }}>
                 <TabHeader title={"Home"} />
                 <UIList>
-                    <UpcomingRoundsView />
                     <UIList.Section title="Scouting">
                         <UIList.Row
                             icon={Bs.JournalPlus}

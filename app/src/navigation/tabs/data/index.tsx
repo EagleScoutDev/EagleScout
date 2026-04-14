@@ -15,11 +15,6 @@ import { MatchPredictor } from "./(predictor)/MatchPredictor";
 import { ExportReports } from "./(export)/ExportReports";
 import { FormCreator, type FormCreatorParams } from "./(admin)/forms/creator/FormCreator";
 import { FormList } from "./(admin)/forms/list/FormList";
-import {
-    ScoutAssignmentsSpreadsheet,
-    type ScoutAssignmentsSpreadsheetParams,
-} from "./(admin)/assignments/ScoutAssignmentsSpreadsheet";
-import { ScoutAssignmentsMain } from "./(admin)/assignments/ScoutAssignmentsMain";
 import { PicklistCreator, type PicklistCreatorParams } from "./(picklist)/PicklistCreator";
 import { Picklists } from "./(picklist)/Picklists";
 import { TeamRankMenu } from "./(rank)/TeamRankMenu";
@@ -57,8 +52,6 @@ export type DataTabParamList = {
     ManageUsers: undefined;
     Forms: undefined;
     "Forms/Edit": FormCreatorParams;
-    ScoutAssignments: undefined;
-    "ScoutAssignments/Table": ScoutAssignmentsSpreadsheetParams;
     ManageMatchBets: undefined;
 };
 
@@ -175,13 +168,6 @@ export function DataTab() {
                     <Stack.Screen name="Forms" component={FormList} />
                     {/*<Stack.Screen name="Forms/View" component={FormViewer} />*/}
                     <Stack.Screen name="Forms/Edit" component={FormCreator} />
-                </Stack.Group>
-                <Stack.Group screenOptions={{ title: "Scout Assignments" }}>
-                    <Stack.Screen name="ScoutAssignments" component={ScoutAssignmentsMain} />
-                    <Stack.Screen
-                        name="ScoutAssignments/Table"
-                        component={ScoutAssignmentsSpreadsheet}
-                    />
                 </Stack.Group>
                 <Stack.Screen
                     name="ManageMatchBets"
