@@ -17,6 +17,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ios: {
         supportsTablet: true,
         bundleIdentifier: "com.team114.eaglescout",
+        config: {
+            usesNonExemptEncryption: false,
+        },
     },
     android: {
         adaptiveIcon: {
