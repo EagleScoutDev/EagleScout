@@ -9,18 +9,20 @@ import {
 import { useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
-import { supabase } from "@/lib/supabase";
 import type { OnboardingScreenProps } from "@/navigation/onboarding/index";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { UIText } from "@/ui/components/UIText";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { StandardButton } from "@/ui/StandardButton";
+import { useMutation } from "@tanstack/react-query";
+import { authMutations } from "@/lib/mutations/auth";
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {}
 export function Signup({ navigation }: SignupProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const { mutateAsync: signUp, isPending } = useMutation(authMutations.signUp);
 
     const formComplete = useMemo(
         () => email !== "" || password !== "" || confirmPassword !== "",
@@ -71,38 +73,32 @@ export function Signup({ navigation }: SignupProps) {
                             text="Register"
                             textColor={!formComplete ? "dimgray" : colors.primary.hex}
                             disabled={!formComplete}
+                            isLoading={isPending}
                             onPress={async () => {
                                 if (password !== confirmPassword) {
                                     Alert.alert(
                                         "Passwords do not match",
                                         "Please try again",
-                                        [
-                                            {
-                                                text: "OK",
-                                                onPress: () => console.log("OK Pressed"),
-                                            },
-                                        ],
+                                        [{ text: "OK" }],
                                         { cancelable: false },
                                     );
                                     return;
                                 }
 
-                                const { error } = await supabase.auth.signUp({
-                                    email: email,
-                                    password: password,
-                                    options: {
+                                try {
+                                    await signUp({
+                                        email,
+                                        password,
                                         emailRedirectTo: "eaglescout://confirm-signup",
-                                    },
-                                });
-                                if (error) {
-                                    console.error(error);
-                                    Alert.alert("Error signing up", error.toString());
-                                } else {
+                                    });
                                     Alert.alert(
                                         "Success!",
                                         "You received an email to confirm your account. Please follow the instructions in the email for next steps.",
                                     );
                                     navigation.navigate("Login");
+                                } catch (error: any) {
+                                    console.error(error);
+                                    Alert.alert("Error signing up", error.toString());
                                 }
                             }}
                         />

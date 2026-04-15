@@ -9,17 +9,19 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
-import { supabase } from "@/lib/supabase";
 import { type OnboardingScreenProps } from ".";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
+import { useMutation } from "@tanstack/react-query";
+import { authMutations } from "@/lib/mutations/auth";
 
 export interface ResetPasswordProps extends OnboardingScreenProps<"ResetPassword"> {}
 export function ResetPassword({ navigation }: ResetPasswordProps) {
     const { colors } = useTheme();
     const [email, setEmail] = useState("");
+    const { mutateAsync: resetPassword, isPending } = useMutation(authMutations.resetPassword);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -44,51 +46,18 @@ export function ResetPassword({ navigation }: ResetPasswordProps) {
                             text={"Reset Password"}
                             textColor={email === "" ? "dimgray" : colors.primary.hex}
                             disabled={email === ""}
+                            isLoading={isPending}
                             onPress={async () => {
                                 if (email === "") {
-                                    console.log("Email cannot be blank.");
-                                    Alert.alert(
-                                        "Email cannot be blank.",
-                                        "Please try again",
-                                        [
-                                            {
-                                                text: "OK",
-                                                onPress: () => console.log("OK Pressed"),
-                                            },
-                                        ],
-                                        { cancelable: false },
-                                    );
+                                    Alert.alert("Email cannot be blank.", "Please try again", [{ text: "OK" }], { cancelable: false });
                                     return;
                                 }
-                                const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                                    redirectTo: "eaglescout://forgot-password",
-                                });
-                                if (error) {
-                                    console.log("Error resetting password:", error);
-                                    Alert.alert(
-                                        "Error resetting password",
-                                        "Please try again",
-                                        [
-                                            {
-                                                text: "OK",
-                                                onPress: () => console.log("OK Pressed"),
-                                            },
-                                        ],
-                                        { cancelable: false },
-                                    );
-                                } else {
-                                    console.log("Password reset email sent");
-                                    Alert.alert(
-                                        "Password reset email sent",
-                                        "Please check your email",
-                                        [
-                                            {
-                                                text: "OK",
-                                                onPress: () => console.log("OK Pressed"),
-                                            },
-                                        ],
-                                        { cancelable: false },
-                                    );
+                                try {
+                                    await resetPassword({ email });
+                                    Alert.alert("Password reset email sent", "Please check your email", [{ text: "OK" }], { cancelable: false });
+                                } catch (error: any) {
+                                    console.error("Error resetting password:", error);
+                                    Alert.alert("Error resetting password", "Please try again", [{ text: "OK" }], { cancelable: false });
                                 }
                             }}
                         />

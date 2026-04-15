@@ -1,7 +1,8 @@
 import { Alert } from "react-native";
 import AsyncStorage from "expo-sqlite/kv-store";
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useMutation } from "@tanstack/react-query";
+import { profileMutations } from "@/lib/mutations/profiles";
 import { type SettingsTabScreenProps } from "../index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UIForm } from "@/ui/components/UIForm";
@@ -16,7 +17,9 @@ export function AccountEditProfile({ navigation, route }: AccountEditProfileProp
     const { initialFirstName, initialLastName } = route.params;
     const [firstName, setFirstName] = useState(initialFirstName);
     const [lastName, setLastName] = useState(initialLastName);
-    const [loading, setLoading] = useState(false);
+    const { mutate: updateProfile, isPending: loading } = useMutation(
+        profileMutations.updateProfile,
+    );
 
     return (
         <SafeAreaProvider>
@@ -40,38 +43,28 @@ export function AccountEditProfile({ navigation, route }: AccountEditProfileProp
                         style={UIButtonStyle.fill}
                         size={UIButtonSize.xl}
                         onPress={async () => {
-                            setLoading(true);
+                            updateProfile(
+                                { firstName, lastName },
+                                {
+                                    onSuccess: async () => {
+                                        await AsyncStorage.setItem(
+                                            "user",
+                                            JSON.stringify({
+                                                ...JSON.parse((await AsyncStorage.getItem("user"))!),
+                                                first_name: firstName,
+                                                last_name: lastName,
+                                            }),
+                                        );
 
-                            const {
-                                data: { user },
-                            } = await supabase.auth.getUser();
-                            if (user === null) {
-                                console.error("User does not exist");
-                                return Alert.alert("User does not exist");
-                            }
-
-                            let { error } = await supabase
-                                .from("profiles")
-                                .update({ first_name: firstName, last_name: lastName })
-                                .eq("id", user.id);
-                            if (error) {
-                                console.error(error);
-                                return Alert.alert("Error updating your profile");
-                            }
-
-                            await AsyncStorage.setItem(
-                                "user",
-                                JSON.stringify({
-                                    ...JSON.parse((await AsyncStorage.getItem("user"))!),
-                                    first_name: firstName,
-                                    lsat_name: lastName,
-                                }),
+                                        setFirstName("");
+                                        setLastName("");
+                                        navigation.pop();
+                                    },
+                                    onError: () => {
+                                        Alert.alert("Error updating your profile");
+                                    },
+                                },
                             );
-                            setLoading(false);
-
-                            setFirstName("");
-                            setLastName("");
-                            navigation.pop();
                         }}
                     />
                 </UIForm>

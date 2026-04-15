@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Alert, Modal, StyleSheet, TextInput, View } from "react-native";
-import { supabase } from "@/lib/supabase";
+import { useMutation } from "@tanstack/react-query";
+import { scoutcoinMutations } from "@/lib/mutations/scoutcoin";
 import { useProfile } from "@/lib/hooks/useProfile";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
@@ -22,44 +23,46 @@ export function SendScoutcoinModal({
 }) {
     const [amount, setAmount] = useState("");
     const [description, setDescription] = useState("");
-    const [sending, setSending] = useState(false);
     const { profile } = useProfile();
     const { colors } = useTheme();
+    const { mutate: sendScoutcoin, isPending: sending } = useMutation(scoutcoinMutations.send);
 
-    const sendScoutcoin = async () => {
+    const handleSend = () => {
         if (!profile) {
             return;
         }
-        setSending(true);
         if (description === "") {
             Alert.alert("Please enter a reason!");
-            setSending(false);
             return;
         }
         if (amount === "") {
             Alert.alert("Please enter an amount!");
-            setSending(false);
             return;
         }
-        if (parseInt(amount, 10) <= 0) {
+        const parsedAmount = parseInt(amount, 10);
+        if (parsedAmount <= 0) {
             Alert.alert("Please enter a positive amount!");
-            setSending(false);
             return;
         }
-        if (parseInt(amount, 10) > profile.scoutcoins) {
+        if (parsedAmount > profile.scoutcoins) {
             Alert.alert("You do not have enough scoutcoins!");
-            setSending(false);
             return;
         }
-        await supabase.functions.invoke("send-scoutcoin", {
-            body: JSON.stringify({
-                targetUserId: targetUser.id,
-                amount: parseInt(amount, 10),
-                description,
-            }),
-        });
-        setSending(false);
-        onClose();
+        sendScoutcoin(
+            {
+                recipientId: targetUser.id,
+                amount: parsedAmount,
+                reason: description,
+            },
+            {
+                onSuccess: () => {
+                    onClose();
+                },
+                onError: (error: any) => {
+                    Alert.alert("Error", error.message || "Failed to send scoutcoin");
+                },
+            },
+        );
     };
 
     const styles = StyleSheet.create({
@@ -154,8 +157,8 @@ export function SendScoutcoinModal({
                         <StandardButton
                             width="50%"
                             text="Send"
-                            onPress={sendScoutcoin}
-                            disabled={sending}
+                            onPress={handleSend}
+                            isLoading={sending}
                             color={colors.primary.hex}
                         />
                     </View>

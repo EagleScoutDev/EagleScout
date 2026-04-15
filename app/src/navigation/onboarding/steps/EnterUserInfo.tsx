@@ -8,18 +8,20 @@ import {
     View,
 } from "react-native";
 import { styles } from "../styles";
-import { supabase } from "@/lib/supabase";
 import type { OnboardingScreenProps } from "..";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
+import { useMutation } from "@tanstack/react-query";
+import { profileMutations } from "@/lib/mutations/profiles";
 
 interface EnterUserInfoProps extends OnboardingScreenProps<"EnterUserInfo"> {}
 export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const { colors } = useTheme();
+    const { mutateAsync: updateProfile, isPending } = useMutation(profileMutations.updateProfile);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -54,33 +56,18 @@ export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
                             firstName === "" || lastName === "" ? "dimgray" : colors.primary.hex
                         }
                         disabled={firstName === "" || lastName === ""}
+                        isLoading={isPending}
                         onPress={async () => {
-                            const {
-                                data: { user },
-                            } = await supabase.auth.getUser();
-                            if (!user) {
-                                console.error("No user found");
-                                Alert.alert(
-                                    "Error setting profile",
-                                    "Unable to set profile information. Please try logging in again.",
-                                );
-                                return;
-                            }
-                            const { error: profilesSetError } = await supabase
-                                .from("profiles")
-                                .update({
-                                    first_name: firstName,
-                                    last_name: lastName,
-                                })
-                                .eq("id", user.id);
-                            if (profilesSetError) {
-                                console.error(profilesSetError);
+                            try {
+                                await updateProfile({ firstName, lastName });
+                                navigation.navigate("SelectTeam");
+                            } catch (error: any) {
+                                console.error(error);
                                 Alert.alert(
                                     "Error setting profile",
                                     "Unable to set profile information. Please try logging in again.",
                                 );
                             }
-                            navigation.navigate("SelectTeam");
                         }}
                     />
                 </View>

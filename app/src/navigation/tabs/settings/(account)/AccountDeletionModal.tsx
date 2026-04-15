@@ -1,8 +1,9 @@
 import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { adminMutations } from "@/lib/mutations/admin";
 import { type SettingsTabScreenProps } from "../index";
 import { useUserStore } from "@/lib/stores/user";
-import { supabase } from "@/lib/supabase";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -14,8 +15,8 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
     const [password, setPassword] = useState("");
     const [reason, setReason] = useState("");
     const { colors } = useTheme();
-
     const logout = useUserStore((state) => state.logout);
+    const { mutate: requestDeletion, isPending } = useMutation(adminMutations.requestDeletion);
 
     const styles = StyleSheet.create({
         text_input: {
@@ -82,7 +83,7 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
             </View>
             <StandardButton
                 color={colors.danger.hex}
-                onPress={async () => {
+                onPress={() => {
                     Alert.alert("Are you sure?", "This action is irreversible.", [
                         {
                             text: "Cancel",
@@ -95,53 +96,34 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         },
                         {
                             text: "Delete",
-                            onPress: async () => {
-                                const { data: userData, error: getUserError } =
-                                    await supabase.auth.getUser();
-                                if (getUserError) {
-                                    Alert.alert("Error getting user", getUserError.message);
-                                    return;
-                                }
-                                const { data, error: authError } =
-                                    await supabase.auth.signInWithPassword({
-                                        email: userData.user?.email || "",
-                                        password: password,
-                                    });
-                                if (authError) {
-                                    if (authError.status === 400) {
-                                        Alert.alert(
-                                            "Error",
-                                            "Invalid password. Your account has not been deleted. Log in again to request deletion.",
-                                        );
-                                        await logout();
-                                        return;
-                                    }
-                                    Alert.alert("Error checking password", authError.name);
-                                    return;
-                                }
-                                await supabase.auth
-                                    .updateUser({
-                                        data: {
-                                            requested_deletion: true,
+                            onPress: () => {
+                                requestDeletion(
+                                    { password, reason },
+                                    {
+                                        onSuccess: async () => {
+                                            await logout();
+                                            Alert.alert("Success", "Account delete requested.");
                                         },
-                                    })
-                                    .then(() =>
-                                        supabase.from("deletion_requests").insert({
-                                            user_id: userData.user?.id,
-                                            reason: reason || "No reason given",
-                                            processed: false,
-                                        }),
-                                    )
-                                    .then(() => logout())
-                                    .finally(() =>
-                                        Alert.alert("Success", "Account delete requested."),
-                                    );
+                                        onError: async (error: any) => {
+                                            if (error.message === "Invalid password") {
+                                                Alert.alert(
+                                                    "Error",
+                                                    "Invalid password. Your account has not been deleted. Log in again to request deletion.",
+                                                );
+                                                await logout();
+                                            } else {
+                                                Alert.alert("Error", error.message || "Failed to delete account");
+                                            }
+                                        },
+                                    },
+                                );
                             },
                         },
                     ]);
                 }}
                 text={"Delete Account"}
                 width={"60%"}
+                isLoading={isPending}
             />
             <UIText placeholder style={{ alignSelf: "center", textAlign: "center", marginTop: 10 }}>
                 Account deletion requests may take up to 30 days to process.

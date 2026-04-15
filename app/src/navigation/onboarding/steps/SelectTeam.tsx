@@ -10,16 +10,20 @@ import {
     TouchableWithoutFeedback,
     View,
 } from "react-native";
+import { useMutation } from "@tanstack/react-query";
 import { styles as sharedStyles } from "../styles";
 import { type TBATeam, TBATeams } from "@/lib/database/TBATeams";
-import { supabase } from "@/lib/supabase";
 import type { OnboardingScreenProps } from "@/navigation/onboarding";
 import { UIText } from "@/ui/components/UIText";
+import { onboardingMutations } from "@/lib/mutations/onboarding";
+import { authMutations } from "@/lib/mutations/auth";
 
 export interface SelectTeamProps extends OnboardingScreenProps<"SelectTeam"> {}
 export function SelectTeam({ navigation }: SelectTeamProps) {
     const [team, setTeam] = useState("");
     const [queriedTeams, setQueriedTeams] = useState<TBATeam[]>([]);
+    const { mutate: registerTeam } = useMutation(onboardingMutations.registerUserWithOrganization);
+    const { mutateAsync: signOut } = useMutation(authMutations.signOut);
 
     useEffect(() => {
         (async () => {
@@ -44,31 +48,31 @@ export function SelectTeam({ navigation }: SelectTeamProps) {
                         data={queriedTeams}
                         renderItem={({ item }) => (
                             <TouchableOpacity
-                                onPress={async () => {
-                                    const { data, error } = await supabase.rpc(
-                                        "register_user_with_organization",
+                                onPress={() => {
+                                    registerTeam(
+                                        { teamNumber: item.number },
                                         {
-                                            team_number: item.number,
+                                            onSuccess: async (data) => {
+                                                if (data === "team-exists") {
+                                                    await signOut();
+                                                    Alert.alert(
+                                                        "Sign up complete!",
+                                                        "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
+                                                    );
+                                                    navigation.navigate("Login");
+                                                } else {
+                                                    navigation.navigate("EnterTeamEmail");
+                                                }
+                                            },
+                                            onError: (error: any) => {
+                                                console.error(error);
+                                                Alert.alert(
+                                                    "Error registering with team",
+                                                    "Unable to register you with the team provided. Please try again later.",
+                                                );
+                                            },
                                         },
                                     );
-                                    if (error) {
-                                        console.error(error);
-                                        Alert.alert(
-                                            "Error registering with team",
-                                            "Unable to register you with the team provided. Please try again later.",
-                                        );
-                                    } else {
-                                        if (data === "team-exists") {
-                                            await supabase.auth.signOut();
-                                            Alert.alert(
-                                                "Sign up complete!",
-                                                "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
-                                            );
-                                            navigation.navigate("Login");
-                                        } else {
-                                            navigation.navigate("EnterTeamEmail");
-                                        }
-                                    }
                                 }}
                             >
                                 <View style={styles.teamContainer}>

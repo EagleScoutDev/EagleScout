@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
+import { useMutation } from "@tanstack/react-query";
+import { adminMutations } from "@/lib/mutations/admin";
 import { type MatchBet, MatchBets } from "@/lib/database/MatchBets";
-import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
@@ -141,6 +142,8 @@ export function ManageBets() {
         }[]
     >([]);
     const { colors } = useTheme();
+    const { mutate: confirmBet } = useMutation(adminMutations.confirmBet);
+
     const refresh = () => {
         MatchBets.getMatchBets().then((bets) => {
             const matchesReduced = bets.reduce(
@@ -187,11 +190,15 @@ export function ManageBets() {
                 {matches.map(({ matchNumber, matchId }) => (
                     <BetCard
                         matchNumber={matchNumber}
-                        onConfirm={async (result) => {
-                            await supabase.functions.invoke("confirm-bet", {
-                                body: JSON.stringify({ matchId, result }),
-                            });
-                            refresh();
+                        onConfirm={(result) => {
+                            confirmBet(
+                                { matchId, result },
+                                {
+                                    onSuccess: () => {
+                                        refresh();
+                                    },
+                                },
+                            );
                         }}
                         key={matchId}
                     />

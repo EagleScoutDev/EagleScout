@@ -5,6 +5,7 @@ import { TBA } from "@/lib/frc/tba/TBA";
 import { UIForm } from "@/ui/components/UIForm";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { adminMutations } from "@/lib/mutations/admin";
 
 interface CompetitionData {
     name: string;
@@ -46,21 +47,7 @@ export const AddCompetitionModal = UISheetModal.HOC<AddCompetitionModalParams>(
                     return { forms, matchFormIds, pitFormIds };
                 },
             });
-        const submit = useMutation({
-            mutationKey: ["addCompetition"],
-            async mutationFn(comp: CompetitionData) {
-                const { error } = await supabase.from("competitions").insert({
-                    name: comp.name,
-                    start_time: comp.start,
-                    end_time: comp.end,
-                    form_id: comp.matchForm,
-                    pit_scout_form_id: comp.pitForm,
-                    tba_event_id: comp.tbaEventId,
-                });
-                if (error) throw error;
-            },
-            onSettled: () => queryClient.invalidateQueries({ queryKey: ["competitions"] }),
-        });
+        const submit = useMutation(adminMutations.createCompetition);
 
         const [name, setName] = useState("");
         const [start, setStart] = useState(new Date());
@@ -93,11 +80,11 @@ export const AddCompetitionModal = UISheetModal.HOC<AddCompetitionModalParams>(
 
             await submit.mutateAsync({
                 name,
-                start,
-                end,
+                startTime: start,
+                endTime: end,
                 tbaEventId: eventData.id,
-                matchForm,
-                pitForm,
+                matchFormId: matchForm,
+                pitFormId: pitForm,
             });
 
             ref.current?.dismiss();
@@ -108,7 +95,7 @@ export const AddCompetitionModal = UISheetModal.HOC<AddCompetitionModalParams>(
                 <UISheetModal.Header
                     title="New Competition"
                     left={[{ role: "cancel", onPress: () => ref.current?.dismiss() }]}
-                    right={[{ role: "done", onPress: onSubmit }]}
+                    right={[{ role: "done", onPress: onSubmit, loading: submit.isPending }]}
                 />
                 <UIForm>
                     <UIForm.Section>

@@ -1,5 +1,6 @@
 import { View } from "react-native";
-import { supabase } from "@/lib/supabase";
+import { useMutation } from "@tanstack/react-query";
+import { scoutcoinMutations } from "@/lib/mutations/scoutcoin";
 import { type ShopItem } from "./ScoutcoinShop";
 import { useProfile } from "@/lib/hooks/useProfile";
 import * as Bs from "@/ui/icons";
@@ -17,25 +18,28 @@ export interface ConfirmPurchaseModalProps {
 export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProps) {
     const { colors } = useTheme();
     const { profile } = useProfile();
+    const { mutate: purchaseItem, isPending } = useMutation(scoutcoinMutations.purchaseItem);
 
-    async function purchaseItem() {
+    function handlePurchase() {
         if (!profile) return;
 
         if (profile.scoutcoins < item.cost) {
-            await AsyncAlert.alert("You do not have enough scoutcoins!");
+            AsyncAlert.alert("You do not have enough scoutcoins!");
             return;
         }
 
-        const { data } = await supabase.functions.invoke("purchase-item", {
-            body: JSON.stringify({
-                itemName: item.id,
-            }),
-        });
-        if (data !== "Success") {
-            await AsyncAlert.alert(data);
-            onClose(true);
-        }
-        onClose(true);
+        purchaseItem(
+            { itemName: item.id },
+            {
+                onSuccess: () => {
+                    onClose(true);
+                },
+                onError: async (error: any) => {
+                    await AsyncAlert.alert(error.message || "Purchase failed");
+                    onClose(true);
+                },
+            },
+        );
     }
 
     return (
@@ -57,7 +61,7 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
                 </UIText>
             </View>
             <View style={{ width: "100%" }}>
-                <UIButton size={UIButtonSize.xl} style={UIButtonStyle.fill} onPress={purchaseItem}>
+                <UIButton size={UIButtonSize.xl} style={UIButtonStyle.fill} loading={isPending} onPress={handlePurchase}>
                     <UIText size={20} color={colors.primary.fg} style={{ marginRight: 16 }}>
                         Buy
                     </UIText>

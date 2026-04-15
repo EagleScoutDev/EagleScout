@@ -9,6 +9,8 @@ interface RawUIToolbarItem {
     icon?: UIIconName | { [K in typeof Platform.OS]?: UIIconName };
     iosTint?: Color | null;
     onPress?: (() => void | Promise<void>) | undefined;
+    loading?: boolean;
+    disabled?: boolean;
 }
 export type UIToolbarItem =
     | ({ role: RawUIToolbarItem["role"] } & Partial<RawUIToolbarItem>)

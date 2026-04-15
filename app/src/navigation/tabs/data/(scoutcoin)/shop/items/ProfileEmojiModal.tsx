@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
+import { useMutation } from "@tanstack/react-query";
+import { profileMutations } from "@/lib/mutations/profiles";
 import { useProfile } from "@/lib/hooks/useProfile";
-import { supabase } from "@/lib/supabase";
 import AsyncStorage from "expo-sqlite/kv-store";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
@@ -18,10 +19,36 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const { profile } = useProfile();
     const [emojiModalVisible, setEmojiModalVisible] = useState(false);
+    const { mutate: updateEmoji } = useMutation(profileMutations.updateEmoji);
 
     if (!profile) {
         return null;
     }
+
+    const handleEmojiSelect = async (e: any) => {
+        onClose();
+        updateEmoji(
+            { emoji: e.emoji },
+            {
+                onSuccess: async () => {
+                    const currentUserObj = JSON.parse(
+                        (await AsyncStorage.getItem("user")) as string,
+                    );
+                    await AsyncStorage.setItem(
+                        "user",
+                        JSON.stringify({
+                            ...currentUserObj,
+                            emoji: e.emoji,
+                        }),
+                    );
+                    AsyncAlert.alert(`Emoji updated to ${e.emoji}`);
+                },
+                onError: () => {
+                    Alert.alert("Error updating your profile");
+                },
+            },
+        );
+    };
 
     return (
         <UIModal
@@ -37,28 +64,7 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
                 <UIText style={styles.emoji}>{profile?.emoji}</UIText>
             </TouchableOpacity>
             <EmojiPicker
-                onEmojiSelected={async (e) => {
-                    onClose();
-                    const { error } = await supabase
-                        .from("profiles")
-                        .update({ emoji: e.emoji })
-                        .eq("id", profile?.id);
-                    if (error) {
-                        console.error(error);
-                        Alert.alert("Error updating your profile");
-                    }
-                    const currentUserObj = JSON.parse(
-                        (await AsyncStorage.getItem("user")) as string,
-                    );
-                    await AsyncStorage.setItem(
-                        "user",
-                        JSON.stringify({
-                            ...currentUserObj,
-                            emoji: e.emoji,
-                        }),
-                    );
-                    AsyncAlert.alert(`Emoji updated to ${e.emoji}`);
-                }}
+                onEmojiSelected={handleEmojiSelect}
                 open={emojiModalVisible}
                 onClose={() => setEmojiModalVisible(false)}
             />

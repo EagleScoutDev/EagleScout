@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useMutation } from "@tanstack/react-query";
+import { adminMutations } from "@/lib/mutations/admin";
 import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
 import * as Bs from "@/ui/icons";
-import { supabase } from "@/lib/supabase";
 import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
@@ -14,6 +15,8 @@ import { Alert } from "react-native";
 export function ManageCompetitions() {
     const [internetError, setInternetError] = useState(false);
     const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
+    const { mutate: updateCompetition } = useMutation(adminMutations.updateCompetition);
+    const { mutate: deleteCompetition } = useMutation(adminMutations.deleteCompetition);
 
     async function refreshCompetitions() {
         try {
@@ -56,43 +59,44 @@ export function ManageCompetitions() {
                                         start: comp.startTime,
                                         end: comp.endTime,
                                     },
-                                    onSubmit: async (compPatch) => {
-                                        const { error } = await supabase
-                                            .from("competitions")
-                                            .update({
+                                    onSubmit: (compPatch) => {
+                                        updateCompetition(
+                                            {
+                                                competitionId: compPatch.id,
                                                 name: compPatch.name,
-                                                start_time: compPatch.start,
-                                                end_time: compPatch.end,
-                                            })
-                                            .eq("id", compPatch.id);
-                                        if (error !== null) {
-                                            console.error(error);
-                                            Alert.alert(
-                                                "Error",
-                                                "An error occurred, please try again later.",
-                                            );
-                                        } else {
-                                            editSheetRef.current?.dismiss();
-                                        }
-
-                                        void refreshCompetitions();
+                                                startTime: compPatch.start,
+                                                endTime: compPatch.end,
+                                            },
+                                            {
+                                                onSuccess: () => {
+                                                    editSheetRef.current?.dismiss();
+                                                    void refreshCompetitions();
+                                                },
+                                                onError: () => {
+                                                    Alert.alert(
+                                                        "Error",
+                                                        "An error occurred, please try again later.",
+                                                    );
+                                                },
+                                            },
+                                        );
                                     },
-                                    onDelete: async (compPatch) => {
-                                        const { error } = await supabase
-                                            .from("competitions")
-                                            .delete()
-                                            .eq("id", compPatch.id);
-                                        if (error !== null) {
-                                            console.error(error);
-                                            Alert.alert(
-                                                "Error",
-                                                "An error occurred, please try again later.",
-                                            );
-                                        } else {
-                                            editSheetRef.current?.dismiss();
-                                        }
-
-                                        void refreshCompetitions();
+                                    onDelete: (compPatch) => {
+                                        deleteCompetition(
+                                            { competitionId: compPatch.id },
+                                            {
+                                                onSuccess: () => {
+                                                    editSheetRef.current?.dismiss();
+                                                    void refreshCompetitions();
+                                                },
+                                                onError: () => {
+                                                    Alert.alert(
+                                                        "Error",
+                                                        "An error occurred, please try again later.",
+                                                    );
+                                                },
+                                            },
+                                        );
                                     },
                                 });
                             }}
