@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import { CompetitionsDB } from "./Competitions";
-import { ProfilesDB } from "./Profiles";
+import { CompetitionsDB } from "./Competition";
+import { ProfilesDB } from "./Profile";
 
 export interface MatchBet {
     id: number;

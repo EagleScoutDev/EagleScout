@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
+import { MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import * as Rebuilt from "@/frc/rebuilt";
 import type { RootStackScreenProps } from "../index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";

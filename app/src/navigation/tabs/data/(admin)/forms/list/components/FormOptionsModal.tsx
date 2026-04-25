@@ -1,4 +1,4 @@
-import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
+import { type FormReturnData, FormsDB } from "@/lib/db/models/Form";
 import { UIForm } from "@/ui/components/UIForm";
 import { UIList } from "@/ui/components/UIList";
 import { Alert } from "react-native";

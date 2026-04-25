@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
+import { type FormReturnData, FormsDB } from "@/lib/db/models/Form";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "@/navigation/tabs/data";
 import { FormOptionsModal } from "./components/FormOptionsModal";

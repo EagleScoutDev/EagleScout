@@ -1,4 +1,4 @@
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
 import { useEffect, useState } from "react";
 import { useRootNavigation } from "@/navigation/hooks";
 

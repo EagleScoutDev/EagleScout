@@ -1,9 +1,9 @@
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { useEffect, useState } from "react";
 import { QuestionSummary } from "./QuestionSummary";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import { isTablet } from "@/lib/deviceType";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";

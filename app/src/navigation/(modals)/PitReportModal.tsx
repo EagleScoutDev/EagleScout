@@ -1,7 +1,7 @@
 import { FlatList, Pressable, View } from "react-native";
 import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
-import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
+import { type PitReportReturnData, PitReportsDB } from "@/lib/db/models/ScoutPitReport";
 import { UIText } from "@/ui/components/UIText";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";

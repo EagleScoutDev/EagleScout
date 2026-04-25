@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { decode } from "base64-arraybuffer";
-import { UserAttributesDB } from "./UserAttributes";
+import { UserAttributesDB } from "./User";
 
 export interface PitReport {
     reportId: number;

@@ -21,14 +21,14 @@ import { TagColorChangeModal } from "./TagColorChangeModal";
 import { DoNotPickModal } from "./DoNotPickModal";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Haptics from "expo-haptics";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import {
     PicklistsDB,
     type PicklistStructure,
     type PicklistTeam,
     type SimpleTeam,
-} from "@/lib/database/Picklists";
-import { ProfilesDB } from "@/lib/database/Profiles";
+} from "@/lib/db/models/Picklist";
+import { ProfilesDB } from "@/lib/db/models/Profile";
 import { TagsDB, type TagStructure } from "@/lib/database/Tags";
 import * as Bs from "@/ui/icons";
 import type { Setter } from "@/lib/util/react/types";

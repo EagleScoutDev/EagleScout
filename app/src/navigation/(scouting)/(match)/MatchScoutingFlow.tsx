@@ -1,7 +1,7 @@
 import { Alert, StyleSheet, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
-import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import type { RootStackScreenProps } from "@/navigation";

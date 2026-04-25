@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import {
     ScoutcoinLedger as ScoutcoinLedgerDB,
     type ScoutcoinLedgerItem,
-} from "@/lib/database/ScoutcoinLedger";
+} from "@/lib/db/models/Scoutcoin";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UITextInput } from "@/ui/components/UITextInput";
 import { UIText } from "@/ui/components/UIText";

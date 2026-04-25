@@ -1,9 +1,9 @@
 import { Dimensions, Pressable, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { useEffect, useState } from "react";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
+import { type FormReturnData, FormsDB } from "@/lib/db/models/Form";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";

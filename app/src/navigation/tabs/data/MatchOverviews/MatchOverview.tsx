@@ -7,10 +7,10 @@ import {
     View,
 } from 'react-native';
 import {useCurrentCompetitionMatches} from '@/lib/hooks/useCurrentCompetitionMatches';
-import {CompetitionsDB} from '@/lib/database/Competitions';
+import {CompetitionsDB} from '@/lib/db/models/Competition';
 import {useTheme} from '@react-navigation/native';
 import {MatchReportsDB
-} from '@/lib/database/ScoutMatchReports';
+} from '@/lib/db/models/ScoutMatchReport';
 import AllianceSummaryCard from './AllianceSummaryCard';
 import {type RootStackScreenProps} from "@/navigation";
 import {useRootNavigation} from "@/navigation/hooks";

@@ -1,5 +1,5 @@
-import { type TBAMatch, TBAMatches } from "@/lib/database/TBAMatches";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { type TBAMatch, TBAMatches } from "@/lib/db/models/Match";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import { useCallback, useEffect, useState } from "react";
 
 export function useCurrentCompetitionMatches() {

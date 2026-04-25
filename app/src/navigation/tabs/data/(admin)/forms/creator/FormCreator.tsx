@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FormsDB } from "@/lib/database/Forms";
+import { FormsDB } from "@/lib/db/models/Form";
 import { Form } from "@/lib/forms";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
 import { key } from "@/lib/util/react/key";

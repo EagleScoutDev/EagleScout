@@ -6,7 +6,7 @@ import {
     View,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { NotesDB } from "@/lib/database/ScoutNotes";
+import { NotesDB } from "@/lib/db/models/ScoutNote";
 import { NoteInputModal } from "./NoteInputModal";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";

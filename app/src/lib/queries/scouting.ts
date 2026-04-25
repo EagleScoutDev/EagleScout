@@ -1,5 +1,5 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory";
-import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 
 export const matchReports = createQueryKeys("matchReports", {
     forComp: ({ id }: { id: number }) => ({

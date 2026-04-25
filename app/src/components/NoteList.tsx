@@ -1,6 +1,6 @@
 import { FlatList, TextInput, View } from "react-native";
 import { useState } from "react";
-import { type NoteWithMatch } from "@/lib/database/ScoutNotes";
+import { type NoteWithMatch } from "@/lib/db/models/ScoutNote";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 

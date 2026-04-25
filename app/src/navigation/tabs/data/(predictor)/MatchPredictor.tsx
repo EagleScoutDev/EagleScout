@@ -8,9 +8,9 @@ import {
     View,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
-import { type TBAMatch, TBAMatches } from "@/lib/database/TBAMatches";
-import { type MatchPredictionResults, TeamAggregation } from "@/lib/database/TeamAggregation";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
+import { type TBAMatch, TBAMatches } from "@/lib/db/models/Match";
+import { type MatchPredictionResults, TeamAggregation } from "@/lib/TeamAggregation";
 import { PredictionConfidence } from "@/lib/PredictionConfidence";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import { PredictionExplainerModal } from "./PredictionExplainerModal";

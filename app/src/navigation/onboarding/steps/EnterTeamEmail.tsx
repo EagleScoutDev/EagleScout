@@ -10,7 +10,7 @@ import {
 import { styles } from "../styles";
 import { supabase } from "@/lib/supabase";
 import { type OnboardingScreenProps } from "..";
-import { UserAttributesDB } from "@/lib/database/UserAttributes";
+import { UserAttributesDB } from "@/lib/db/models/User";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";

@@ -1,8 +1,8 @@
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";

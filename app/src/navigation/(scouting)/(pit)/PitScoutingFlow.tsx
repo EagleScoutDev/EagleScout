@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { TeamInformation } from "@/navigation/(scouting)/components/TeamInformation";
-import { PitReportsDB, type PitReportWithoutId } from "@/lib/database/ScoutPitReports";
+import { PitReportsDB, type PitReportWithoutId } from "@/lib/db/models/ScoutPitReport";
 import type { RootStackScreenProps } from "@/navigation";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { Form } from "@/lib/forms";

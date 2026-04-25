@@ -1,7 +1,7 @@
 import { Alert } from "react-native";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import type { CompetitionReturnData } from "@/lib/database/Competitions";
-import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
+import type { CompetitionReturnData } from "@/lib/db/models/Competition";
+import { type PitReportReturnData, PitReportsDB } from "@/lib/db/models/ScoutPitReport";
 import Sharing from "expo-sharing";
 import FS, { Paths } from "expo-file-system";
 import { CSVBuilder } from "@/lib/csv";

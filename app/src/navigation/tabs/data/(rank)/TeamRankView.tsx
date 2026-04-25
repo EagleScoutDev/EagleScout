@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { DataTabScreenProps } from "../index";
-import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 

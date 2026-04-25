@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
 import * as Bs from "@/ui/icons";
 import { supabase } from "@/lib/supabase";
 import { NoInternet } from "@/ui/NoInternet";

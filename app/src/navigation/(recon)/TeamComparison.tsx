@@ -7,10 +7,10 @@ import {
     View,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import { isTablet } from "@/lib/deviceType";
 import { LineChart } from "react-native-chart-kit";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import type { SimpleTeam } from "@/lib/db/tba";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";

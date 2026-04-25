@@ -1,10 +1,10 @@
 import { MatchReportList } from "@/components/MatchReportList";
 import { useEffect, useState } from "react";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import { NotesDB, type NoteWithMatch } from "@/lib/database/ScoutNotes";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
+import { NotesDB, type NoteWithMatch } from "@/lib/db/models/ScoutNote";
 import { NoteList } from "@/components/NoteList";
-import { type PitReportReturnData, PitReportsDB } from "@/lib/database/ScoutPitReports";
+import { type PitReportReturnData, PitReportsDB } from "@/lib/db/models/ScoutPitReport";
 import { PitReportList } from "@/components/PitReportList";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import type { RootStackScreenProps } from "@/navigation";

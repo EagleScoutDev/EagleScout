@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, View } from "react-native";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { PicklistsDB, type PicklistStructure } from "@/lib/database/Picklists";
-import { ProfilesDB } from "@/lib/database/Profiles";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
+import { PicklistsDB, type PicklistStructure } from "@/lib/db/models/Picklist";
+import { ProfilesDB } from "@/lib/db/models/Profile";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "../index";
 import { useTheme } from "@/ui/context/ThemeContext";

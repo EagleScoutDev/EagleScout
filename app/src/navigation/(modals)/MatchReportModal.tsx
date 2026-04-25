@@ -1,4 +1,4 @@
-import { type MatchReportReturnData } from "@/lib/database/ScoutMatchReports";
+import { type MatchReportReturnData } from "@/lib/db/models/ScoutMatchReport";
 import { FlatList, Pressable, View } from "react-native";
 import { UIText } from "@/ui/components/UIText";
 import React from "react";

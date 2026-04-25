@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { ProfilesDB } from "@/lib/database/Profiles";
+import { ProfilesDB } from "@/lib/db/models/Profile";
 import { SendScoutcoinModal } from "./components/SendScoutcoinModal";
 import { useProfile } from "@/lib/hooks/useProfile";
 import * as Bs from "@/ui/icons";

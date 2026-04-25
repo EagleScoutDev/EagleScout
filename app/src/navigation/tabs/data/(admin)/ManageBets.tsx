@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
-import { type MatchBet, MatchBets } from "@/lib/database/MatchBets";
+import { type MatchBet, MatchBets } from "@/lib/db/models/Betting";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";

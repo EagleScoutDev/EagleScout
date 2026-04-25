@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as Bs from "@/ui/icons";
 import { Alert, FlatList, Modal, Pressable, TextInput, View } from "react-native";
 import { TeamAddingModal } from "./TeamAddingModal";
-import type { PicklistTeam, SimpleTeam } from "@/lib/database/Picklists";
+import type { PicklistTeam, SimpleTeam } from "@/lib/db/models/Picklist";
 import { StandardButton } from "@/ui/StandardButton";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";

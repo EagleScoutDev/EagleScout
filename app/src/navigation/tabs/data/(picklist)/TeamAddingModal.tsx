@@ -1,6 +1,6 @@
 import { Alert, FlatList, Modal, Pressable, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import type { PicklistTeam, SimpleTeam } from "@/lib/database/Picklists";
+import type { PicklistTeam, SimpleTeam } from "@/lib/db/models/Picklist";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";

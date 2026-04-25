@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";

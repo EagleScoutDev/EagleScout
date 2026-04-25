@@ -2,7 +2,7 @@ import { ActivityIndicator, Alert, Linking, View } from "react-native";
 import { useEffect, useState } from "react";
 import { type SettingsTabScreenProps } from "./index";
 import { useProfile } from "@/lib/hooks/useProfile";
-import { ScoutcoinLedger } from "@/lib/database/ScoutcoinLedger";
+import { ScoutcoinLedger } from "@/lib/db/models/Scoutcoin";
 import { useUserStore } from "@/lib/stores/user";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { type Account, AccountRole } from "@/lib/user/account";

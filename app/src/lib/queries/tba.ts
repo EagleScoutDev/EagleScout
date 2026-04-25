@@ -1,5 +1,5 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import { TBA } from "@/lib/db/tba";
 
 export const tba = createQueryKeys("tba", {

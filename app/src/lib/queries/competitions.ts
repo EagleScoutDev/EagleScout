@@ -1,4 +1,4 @@
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { CompetitionsDB } from "@/lib/db/models/Competition";
 import { createQueryKeys } from "@lukemorales/query-key-factory";
 
 export const competitions = createQueryKeys("competitions", {

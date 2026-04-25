@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MatchReportList } from "@/components/MatchReportList";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
+import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { SettingsTabScreenProps } from "../index";
 

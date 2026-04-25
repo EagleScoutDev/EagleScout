@@ -1,6 +1,6 @@
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { type MatchReportReturnData } from "@/lib/database/ScoutMatchReports";
+import { type MatchReportReturnData } from "@/lib/db/models/ScoutMatchReport";
 import type { BrowseTabScreenProps } from "./index";
 import { useTheme } from "@/ui/context/ThemeContext";
 import * as Bs from "@/ui/icons";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NotesDB, type NoteWithMatch } from "@/lib/database/ScoutNotes";
+import { NotesDB, type NoteWithMatch } from "@/lib/db/models/ScoutNote";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { SettingsTabScreenProps } from "../index";
 import { NoteList } from "@/components/NoteList";

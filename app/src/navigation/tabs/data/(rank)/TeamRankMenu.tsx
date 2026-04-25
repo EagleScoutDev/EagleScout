@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { DataTabScreenProps } from "../index";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
 import { Form } from "@/lib/forms";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";

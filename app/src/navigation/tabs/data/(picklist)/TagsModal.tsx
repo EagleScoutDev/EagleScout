@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
-import type { PicklistTeam } from "@/lib/database/Picklists";
+import type { PicklistTeam } from "@/lib/db/models/Picklist";
 import { TagsDB, type TagStructure } from "@/lib/database/Tags";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";

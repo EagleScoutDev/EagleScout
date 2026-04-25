@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { useEffect, useState } from "react";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { SettingsTabScreenProps } from "../index";
 import { UIList } from "@/ui/components/UIList";
