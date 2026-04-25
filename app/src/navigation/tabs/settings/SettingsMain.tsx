@@ -1,8 +1,6 @@
-import { ActivityIndicator, Alert, Linking, Pressable, View } from "react-native";
-import { InternetStatus } from "@/lib/InternetStatus";
+import { ActivityIndicator, Alert, Linking, View } from "react-native";
 import { useEffect, useState } from "react";
 import { type SettingsTabScreenProps } from "./index";
-import { CompetitionsDB } from "@/lib/database/Competitions";
 import { useProfile } from "@/lib/hooks/useProfile";
 import { ScoutcoinLedger } from "@/lib/database/ScoutcoinLedger";
 import { useUserStore } from "@/lib/stores/user";
@@ -20,9 +18,6 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
     const account = useUserStore((state) => state.account);
     const logout = useUserStore((state) => state.logout);
     const { profile } = useProfile();
-
-    const [internetStatus, setInternetStatus] = useState(InternetStatus.NOT_ATTEMPTED);
-    const offline = internetStatus !== InternetStatus.CONNECTED;
 
     const attemptSignOut = () => {
         Alert.alert(
@@ -44,45 +39,10 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
         });
     };
 
-    const testConnection = () => {
-        // attempt connection to picklist table
-        setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-        CompetitionsDB.getCurrentCompetition()
-            .then(() => {
-                setInternetStatus(InternetStatus.CONNECTED);
-            })
-            .catch(() => {
-                setInternetStatus(InternetStatus.FAILED);
-            });
-    };
-
-    useEffect(() => {
-        testConnection();
-    }, []);
-
     return (
         <SafeAreaProvider>
             <SafeAreaView edges={["top", "left", "right"]}>
                 <TabHeader title={"Settings"} />
-                {internetStatus === InternetStatus.FAILED && (
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
-                            marginHorizontal: "4%",
-                            marginBottom: "4%",
-                        }}
-                    >
-                        <UIText placeholder style={{ flex: 1 }}>
-                            Some features may be disabled until you regain an internet connection.
-                        </UIText>
-                        <Pressable onPress={testConnection}>
-                            <UIText bold style={{ flex: 1 }}>
-                                Try again?
-                            </UIText>
-                        </Pressable>
-                    </View>
-                )}
             </SafeAreaView>
 
             <UIList>
@@ -95,14 +55,12 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                         icon={Bs.Asterisk}
                         label={"Change Password"}
                         caret
-                        disabled={offline}
                         onPress={() => navigation.navigate("Account/ChangePassword")}
                     />
                     <UIList.Row
                         icon={Bs.Ban}
                         label={"Request Account Deletion"}
                         caret
-                        disabled={offline}
                         onPress={() => navigation.navigate("Account/Delete")}
                     />
                     <UIList.Row

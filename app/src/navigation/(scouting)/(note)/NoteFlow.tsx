@@ -8,13 +8,11 @@ import {
 import { useEffect, useState } from "react";
 import { NotesDB } from "@/lib/database/ScoutNotes";
 import { NoteInputModal } from "./NoteInputModal";
-import { CompetitionsDB } from "@/lib/database/Competitions";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Alliance } from "@/frc/common/common";
-import { FormHelper } from "@/lib/FormHelper";
 import { UIText } from "@/ui/components/UIText";
 import { UICard } from "@/ui/components/UICard";
 import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
@@ -69,49 +67,26 @@ export function NoteScreen() {
     const submitNote = async () => {
         setIsLoading(true);
         const promises = [];
-        const internetResponse = await CompetitionsDB.getCurrentCompetition()
-            .then(() => true)
-            .catch(() => false);
         for (const team of Object.keys(noteContents)) {
             if (noteContents[team] === "") {
                 continue;
             }
-            if (internetResponse) {
-                promises.push(
-                    NotesDB.createNote(
-                        noteContents[team],
-                        Number(team),
-                        Number(match),
-                        competitionId,
-                    ),
-                );
-            } else {
-                promises.push(
-                    FormHelper.saveNoteOffline({
-                        content: noteContents[team],
-                        team_number: Number(team),
-                        match_number: Number(match),
-                        comp_id: competitionId,
-                        created_at: new Date(),
-                    }),
-                );
-            }
+            promises.push(
+                NotesDB.createNote(
+                    noteContents[team],
+                    Number(team),
+                    Number(match),
+                    competitionId,
+                ),
+            );
         }
         await Promise.all(promises);
         if (promises.length > 0) {
-            if (internetResponse) {
-                Toast.show({
-                    type: "success",
-                    text1: "Note submitted!",
-                    visibilityTime: 3000,
-                });
-            } else {
-                Toast.show({
-                    type: "success",
-                    text1: "Note saved offline successfully!",
-                    visibilityTime: 3000,
-                });
-            }
+            Toast.show({
+                type: "success",
+                text1: "Note submitted!",
+                visibilityTime: 3000,
+            });
             startConfetti();
         }
         clearAllFields();

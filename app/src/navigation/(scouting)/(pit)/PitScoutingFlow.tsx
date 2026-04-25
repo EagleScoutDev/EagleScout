@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { TeamInformation } from "@/navigation/(scouting)/components/TeamInformation";
-import { CompetitionsDB } from "@/lib/database/Competitions";
 import { PitReportsDB, type PitReportWithoutId } from "@/lib/database/ScoutPitReports";
-import { FormHelper } from "@/lib/FormHelper";
 import type { RootStackScreenProps } from "@/navigation";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { Form } from "@/lib/forms";
@@ -18,7 +16,7 @@ import { UITabView } from "@/ui/components/UITabView";
 
 export interface PitFlowProps extends RootStackScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
-    const { competition, online } = useCurrentCompetition();
+    const { competition } = useCurrentCompetition();
     const formStructure = competition?.pitScoutFormStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
@@ -60,11 +58,8 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
             teamNumber: team,
             competitionId: competition.id,
         };
-        const internetResponse = await CompetitionsDB.getCurrentCompetition()
-            .then(() => true)
-            .catch(() => false);
-        if (!internetResponse) {
-            await FormHelper.savePitFormOffline(
+        try {
+            await PitReportsDB.createOnlinePitScoutReport(
                 data,
                 images.filter((item) => item !== "plus"),
             );
@@ -72,26 +67,12 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
 
             Toast.show({
                 type: "success",
-                text1: "Saved offline successfully!",
+                text1: "Submitted successfully!",
                 visibilityTime: 3000,
             });
-        } else {
-            try {
-                await PitReportsDB.createOnlinePitScoutReport(
-                    data,
-                    images.filter((item) => item !== "plus"),
-                );
-                reset();
-
-                Toast.show({
-                    type: "success",
-                    text1: "Submitted successfully!",
-                    visibilityTime: 3000,
-                });
-            } catch (error) {
-                console.error(error);
-                Alert.alert("Error", "There was an error submitting your pit report.");
-            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Error", "There was an error submitting your pit report.");
         }
     }
 
@@ -99,10 +80,6 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
-
-                {!online && (
-                    <UIText>To check for competitions, please connect to the internet.</UIText>
-                )}
             </View>
         );
     }

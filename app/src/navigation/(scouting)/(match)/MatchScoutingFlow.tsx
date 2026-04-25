@@ -1,8 +1,6 @@
 import { Alert, StyleSheet, View } from "react-native";
-import AsyncStorage from "expo-sqlite/kv-store";
 import { useEffect, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
-import { CompetitionsDB } from "@/lib/database/Competitions";
 import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
@@ -16,7 +14,6 @@ import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
 import * as Rebuilt from "@/frc/rebuilt";
 import { AutoAction, AutoState, type LinkName } from "@/frc/rebuilt";
-import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
 import { HeaderTimer } from "../components/HeaderTimer";
@@ -28,7 +25,7 @@ export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use memo"; // TODO: fix this
 
-    const { competition, online } = useCurrentCompetition();
+    const { competition } = useCurrentCompetition();
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
     const [match, setMatch] = useState<number | null>(null);
     const teamsForMatch = match === null || match > 400 ? [] : getTeamsForMatch(match);
@@ -134,50 +131,20 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             competitionName: competition.name,
         };
 
-        const internetResponse = await CompetitionsDB.getCurrentCompetition()
-            .then(() => true)
-            .catch(() => false);
-        if (!internetResponse) {
-            await FormHelper.saveFormOffline({
-                ...dataToSubmit,
-                form: formStructure,
-                formId: competition?.formId,
+        try {
+            console.log(dataToSubmit);
+            await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
+            Toast.show({
+                type: "success",
+                text1: "Scouting report submitted!",
+                visibilityTime: 3000,
             });
             reset();
 
-            Toast.show({
-                type: "success",
-                text1: "Saved offline successfully!",
-                visibilityTime: 3000,
-            });
-
-            const currentAssignments = await AsyncStorage.getItem("scout-assignments");
-            if (currentAssignments !== null) {
-                const newAssignments = JSON.parse(currentAssignments).filter(
-                    (a) =>
-                        !(
-                            a.matchNumber === match &&
-                            (a.team === null || a.team.substring(3) === team)
-                        ),
-                );
-                await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
-            }
-        } else {
-            try {
-                console.log(dataToSubmit);
-                await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
-                Toast.show({
-                    type: "success",
-                    text1: "Scouting report submitted!",
-                    visibilityTime: 3000,
-                });
-                reset();
-
-                useConfetti.current?.startConfetti();
-            } catch (error) {
-                console.error(error);
-                Alert.alert("Error", "There was an error submitting your scouting report.");
-            }
+            useConfetti.current?.startConfetti();
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Error", "There was an error submitting your scouting report.");
         }
 
         navigation.navigate("Match");
@@ -187,10 +154,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
-
-                {!online && (
-                    <UIText>To check for competitions, please connect to the internet.</UIText>
-                )}
             </View>
         );
     }

@@ -18,14 +18,6 @@ export interface NoteWithMatch extends Note {
     competition_name?: string;
 }
 
-export interface OfflineNote {
-    content: string;
-    team_number: number;
-    comp_id: number;
-    match_number: number;
-    created_at: Date;
-}
-
 export class NotesDB {
     /**
      * Checks if a match exists in the database. If it does, return the match id.
@@ -241,26 +233,5 @@ export class NotesDB {
             }
         }
         return res;
-    }
-
-    static async createOfflineNote(note: OfflineNote): Promise<void> {
-        let { exists: matchExists, id: matchId } = await this.checkIfMatchExists(
-            note.match_number,
-            note.comp_id,
-        );
-
-        if (!matchExists) {
-            matchId = await this.createMatch(note.match_number, note.comp_id);
-        }
-        const { data, error } = await supabase.from("notes").insert([
-            {
-                content: note.content,
-                team_number: note.team_number,
-                match_id: matchId,
-            },
-        ]);
-        if (error) {
-            throw error;
-        }
     }
 }

@@ -1,11 +1,11 @@
 import { FlatList, TextInput, View } from "react-native";
 import { useState } from "react";
-import { type NoteWithMatch, type OfflineNote } from "@/lib/database/ScoutNotes";
+import { type NoteWithMatch } from "@/lib/database/ScoutNotes";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 
 export interface NoteListProps {
-    notes: (NoteWithMatch | OfflineNote)[];
+    notes: NoteWithMatch[];
 }
 export function NoteList({ notes }: NoteListProps) {
     const { colors } = useTheme();

@@ -23,8 +23,6 @@ export interface PitReportReturnData extends PitReportWithDate {
     imageUrls?: string[];
 }
 
-export type PitReportWithoutIdWithDate = Omit<PitReportWithDate, "reportId">;
-
 export class PitReportsDB {
     /**
      * Upload images for a pit scout report
@@ -70,30 +68,6 @@ export class PitReportsDB {
                 user_id: user.user?.id,
                 data: report.data,
                 competition_id: report.competitionId,
-                online: true,
-            })
-            .select("id")
-            .single();
-        if (error) {
-            throw error;
-        }
-        await this.uploadImages(report.teamNumber, returnData.id, images);
-    }
-
-    /**
-     * Creates a new pit scout report
-     */
-    static async createOfflinePitScoutReport(report: PitReportWithoutIdWithDate, images: string[]) {
-        const { data: user } = await supabase.auth.getUser();
-        const { data: returnData, error } = await supabase
-            .from("pit_scout_reports")
-            .insert({
-                team_id: report.teamNumber,
-                user_id: user.user?.id,
-                data: report.data,
-                competition_id: report.competitionId,
-                created_at: report.createdAt,
-                online: false,
             })
             .select("id")
             .single();

@@ -166,23 +166,6 @@ export class MatchReportsDB {
         }
     }
 
-    static async createOfflineScoutReport(report: MatchReportWithDate): Promise<void> {
-        const { data, error } = await supabase.rpc("add_offline_scout_report", {
-            competition_id_arg: report.competitionId,
-            match_number_arg: report.matchNumber,
-            team_number_arg: report.teamNumber,
-            data_arg: report.data,
-            created_at_arg: report.createdAt,
-            timeline_data: report.timelineData,
-            auto_path: report.autoPath,
-        });
-        if (error) {
-            throw error;
-        } else {
-            return data;
-        }
-    }
-
     static async editOnlineScoutReport(reportId: number, newData: []): Promise<void> {
         const { error } = await supabase.rpc("edit_online_scout_report", {
             report_id_arg: reportId,
