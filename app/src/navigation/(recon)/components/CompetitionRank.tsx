@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import * as Bs from "@/ui/icons";
-import { type SimpleEvent, TBA } from "@/lib/frc/tba/TBA";
+import { type SimpleEvent, TBA } from "@/lib/db/tba";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 

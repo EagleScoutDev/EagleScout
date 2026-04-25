@@ -1,6 +1,6 @@
 import { type PropsWithChildren, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Statbotics } from "@/lib/frc/statbotics";
+import { Statbotics } from "@/lib/db/statbotics";
 import { UIText } from "@/ui/components/UIText";
 import { useTheme } from "@/ui/context/ThemeContext";
 

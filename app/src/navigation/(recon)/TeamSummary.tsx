@@ -13,7 +13,7 @@ import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
 import { useQuery } from "@tanstack/react-query";
-import { type SimpleTeam, TBA } from "@/lib/frc/tba/TBA";
+import { type SimpleTeam, TBA } from "@/lib/db/tba";
 
 export interface TeamSummaryParams {
     teamId: number;

@@ -34,7 +34,7 @@ import * as Bs from "@/ui/icons";
 import type { Setter } from "@/lib/util/react/types";
 import type { DataTabScreenProps } from "../index";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { TBA } from "@/lib/frc/tba/TBA";
+import { TBA } from "@/lib/db/tba";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
 import { UITextInput } from "@/ui/components/UITextInput";

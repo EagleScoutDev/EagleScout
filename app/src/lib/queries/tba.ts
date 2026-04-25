@@ -1,6 +1,6 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory";
 import { CompetitionsDB } from "@/lib/database/Competitions";
-import { TBA } from "@/lib/frc/tba/TBA";
+import { TBA } from "@/lib/db/tba";
 
 export const tba = createQueryKeys("tba", {
     teamsAtCompetition: ({ id }: { id: number }) => ({

@@ -11,7 +11,7 @@ import { CompetitionsDB } from "@/lib/database/Competitions";
 import { isTablet } from "@/lib/deviceType";
 import { LineChart } from "react-native-chart-kit";
 import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import type { SimpleTeam } from "@/lib/frc/tba/TBA";
+import type { SimpleTeam } from "@/lib/db/tba";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UIModal } from "@/ui/components/UIModal";
