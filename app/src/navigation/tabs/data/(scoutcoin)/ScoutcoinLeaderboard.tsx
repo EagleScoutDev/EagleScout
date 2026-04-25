@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { ProfilesDB } from "@/lib/db/models/Profile";
 import { SendScoutcoinModal } from "./components/SendScoutcoinModal";
-import { useProfile } from "@/lib/hooks/useProfile";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import type { Theme } from "@/ui/lib/theme";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
-interface LeaderboardUser {
+export interface LeaderboardUser {
     id: string;
-    name: string;
+    name: string | null;
     emoji: string;
     scoutcoins: number;
 }
@@ -26,7 +26,8 @@ const LeaderboardUserItem = ({
     setSendingScoutcoinUser: (user: LeaderboardUser) => void;
 }) => {
     const { colors } = useTheme();
-    const { profile } = useProfile();
+    const { data: profile = null } = useQuery(queries.profiles.current);
+
     const styles = StyleSheet.create({
         container: {
             flexDirection: "row",
@@ -92,52 +93,42 @@ const LeaderboardUserItem = ({
 export function ScoutcoinLeaderboard() {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
-    const [leaderboardUsers, setLeaderboardUsers] = useState<LeaderboardUser[]>([]);
-    const [filteredLeaderboardUsers, setFilteredLeaderboardUsers] = useState<
-        {
-            user: LeaderboardUser;
-            place: number;
-        }[]
-    >([]);
     const [sendingScoutcoinUser, setSendingScoutcoinUser] = useState<LeaderboardUser | null>(null);
+    const [searchText, setSearchText] = useState("");
 
-    useEffect(() => {
-        ProfilesDB.getAllProfiles().then((profiles) => {
-            const leaderboardProfiles = profiles
+    const leaderboardUsers = useQueries({
+        queries: [queries.scoutcoinLedger.balanceForAll, queries.profiles.all],
+        combine: ([balances, profiles]): LeaderboardUser[] => {
+            if (balances.data === undefined || profiles.data === undefined) {
+                return [];
+            }
+
+            const bals = new Map(balances.data.map((b) => [b.userId, b.balance]));
+            return profiles.data
                 .map((profile) => ({
                     id: profile.id,
                     name: profile.name,
                     emoji: profile.emoji,
-                    scoutcoins: profile.scoutcoins,
+                    scoutcoins: bals.get(profile.id)!,
                 }))
-                .sort((a, b) => b.scoutcoins - a.scoutcoins);
-            setLeaderboardUsers(leaderboardProfiles);
-            setFilteredLeaderboardUsers(
-                leaderboardProfiles.map((user, index) => ({
-                    user,
-                    place: index + 1,
-                })),
-            );
-        });
-    }, []);
+                .sort((a, b) => a.scoutcoins - b.scoutcoins);
+        },
+    });
+
+    const filteredLeaderboardUsers = useMemo(() => {
+        const ranked = leaderboardUsers.map((user, index) => ({ user, place: index + 1 }));
+        if (!searchText) return ranked;
+        return ranked.filter(({ user }) =>
+            user.name?.toLowerCase().includes(searchText.toLowerCase()),
+        );
+    }, [leaderboardUsers, searchText]);
 
     return (
         <View style={styles.container}>
             <View style={styles.filter}>
                 <TextInput
                     placeholder="Search people"
-                    onChangeText={(text) => {
-                        setFilteredLeaderboardUsers(
-                            leaderboardUsers
-                                .map((user, index) => ({
-                                    user,
-                                    place: index + 1,
-                                }))
-                                .filter(({ user }) =>
-                                    user.name.toLowerCase().includes(text.toLowerCase()),
-                                ),
-                        );
-                    }}
+                    onChangeText={setSearchText}
                     style={styles.filterText}
                     selectionColor={theme.colors.fg.hex}
                     cursorColor={theme.colors.fg.hex}

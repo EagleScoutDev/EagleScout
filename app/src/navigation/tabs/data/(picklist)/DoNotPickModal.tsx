@@ -2,18 +2,19 @@ import { useState } from "react";
 import * as Bs from "@/ui/icons";
 import { Alert, FlatList, Modal, Pressable, TextInput, View } from "react-native";
 import { TeamAddingModal } from "./TeamAddingModal";
-import type { PicklistTeam, SimpleTeam } from "@/lib/db/models/Picklist";
+import type { PicklistTeam } from "@/lib/db/models/Picklist";
 import { StandardButton } from "@/ui/StandardButton";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
+import type { TBATeam } from "@/lib/db/tba";
 
 export interface DoNotPickModalProps {
     visible: boolean;
     setVisible: (arg0: boolean) => void;
     teams: PicklistTeam[] | undefined;
-    teamsAtCompetition: SimpleTeam[];
+    teamsAtCompetition: TBATeam[];
     numbersToNames: Map<number, string>;
-    addToDNP: (team: SimpleTeam) => void;
+    addToDNP: (team: PicklistTeam) => void;
 }
 export function DoNotPickModal({
     visible,
@@ -27,14 +28,18 @@ export function DoNotPickModal({
     const [searchTerm, setSearchTerm] = useState("");
     const [addingTeams, setAddingTeams] = useState<boolean>(false);
 
-    const addOrRemoveTeam = (team: SimpleTeam) => {
+    const addOrRemoveTeam = (team: TBATeam) => {
         console.log("Adding team to DNP:", team, teams);
-        addToDNP(team);
+        addToDNP({
+            dnp: true,
+            notes: "",
+            tags: [],
+            teamNumber: team.team_number,
+        });
     };
 
     const addOrRemovePicklistTeam = (team: PicklistTeam) => {
-        // wacky ts workaround because im too lazy to recreate a SimpleTeam
-        addToDNP(team as unknown as SimpleTeam);
+        addToDNP(team);
     };
 
     return (
@@ -109,14 +114,14 @@ export function DoNotPickModal({
                     <FlatList
                         data={teams
                             ?.filter((a) => a.dnp)
-                            .filter((a) => a.team_number.toString().includes(searchTerm))
-                            .sort((a, b) => a.team_number - b.team_number)}
+                            .filter((a) => a.teamNumber.toString().includes(searchTerm))
+                            .sort((a, b) => a.teamNumber - b.teamNumber)}
                         renderItem={({ item }) => {
                             return (
                                 <Pressable
                                     onPress={() => {
                                         Alert.alert(
-                                            `Would you like to remove Team ${item.team_number} from the Do Not Pick list?`,
+                                            `Would you like to remove Team ${item.teamNumber} from the Do Not Pick list?`,
                                             "",
                                             [
                                                 {
@@ -142,9 +147,9 @@ export function DoNotPickModal({
                                     }}
                                 >
                                     <UIText size={20}>
-                                        {item.team_number}
+                                        {item.teamNumber}
                                         {numbersToNames.size === 0 ? "" : " "}
-                                        {numbersToNames.get(item.team_number)}
+                                        {numbersToNames.get(item.teamNumber)}
                                     </UIText>
                                     <UIText size={20}>{item.notes}</UIText>
                                 </Pressable>
@@ -165,7 +170,7 @@ export function DoNotPickModal({
             <TeamAddingModal
                 visible={addingTeams}
                 setVisible={setAddingTeams}
-                teams_list={teams!}
+                teamsList={teams!}
                 teamsAtCompetition={teamsAtCompetition}
                 addOrRemoveTeam={addOrRemoveTeam}
             />

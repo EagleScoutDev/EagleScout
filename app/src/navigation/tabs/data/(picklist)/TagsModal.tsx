@@ -8,20 +8,22 @@ import {
     TextInput,
     View,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
-import type { PicklistTeam } from "@/lib/db/models/Picklist";
-import { TagsDB, type TagStructure } from "@/lib/database/Tags";
+import type { PicklistTeam, Tag } from "@/lib/db/models/Picklist";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+import { tagMutations } from "@/lib/mutations/tags";
 
 export interface TagsModalProps {
     visible: boolean;
     setVisible: Setter<boolean>;
-    picklist_id: number;
-    selected_team: PicklistTeam | null;
+    picklistId: number;
+    selectedTeam: PicklistTeam | null;
     addTag: (team: PicklistTeam, tag_id: number) => void;
     removeTag: (team: PicklistTeam, tag_id: number) => void;
     issueDeleteCommand: (tag_id: number) => void;
@@ -29,31 +31,38 @@ export interface TagsModalProps {
 export function TagsModal({
     visible,
     setVisible,
-    picklist_id,
-    selected_team,
+    picklistId,
+    selectedTeam,
     addTag,
     removeTag,
     issueDeleteCommand,
 }: TagsModalProps) {
     const { colors } = useTheme();
-    const [listOfTags, setListOfTags] = useState<TagStructure[]>([]);
+    const queryClient = useQueryClient();
+
+    const { data: listOfTags = [] } = useQuery(
+        queries.tags.forPicklist({ picklistId: picklistId }),
+    );
 
     const [newTagName, setNewTagName] = useState("");
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
     const [deletionActive, setDeletionActive] = useState(false);
-    const [selectedTag, setSelectedTag] = useState<TagStructure | null>(null);
+    const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
-    const onSelectColor = ({ hex }) => {
+    const updateTagColor = useMutation(tagMutations.updateColor);
+    const createTag = useMutation(tagMutations.create);
+
+    const onSelectColor = async ({ hex }: { hex: string }) => {
         console.log("Selected color: ", hex);
-        TagsDB.updateColorOfTag(selectedTag!.id!, hex).then(() => {
-            TagsDB.getTagsForPicklist(picklist_id).then((tags) => {
-                setListOfTags(tags);
-            });
-        });
-        setSelectedTag(null);
+        try {
+            await updateTagColor.mutateAsync({ tagId: Number(selectedTag!.id!), color: hex });
+            setSelectedTag(null);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const attemptDeleteTag = (tag: TagStructure) => {
+    const attemptDeleteTag = (tag: Tag) => {
         Alert.alert(
             `Delete "${tag.name}"?`,
             "Are you sure you want to delete this tag? This action is irreversible.",
@@ -66,7 +75,7 @@ export function TagsModal({
                     text: "Delete",
                     onPress: () => {
                         if (tag.id !== null) {
-                            issueDeleteCommand(Number.parseInt(tag.id ?? "", 10));
+                            issueDeleteCommand(tag.id);
                             setVisible(false);
                         }
                     },
@@ -76,38 +85,27 @@ export function TagsModal({
         );
     };
 
-    const onTagPress = (item: TagStructure) => {
-        if (selected_team === null) {
+    const onTagPress = (item: Tag) => {
+        if (selectedTeam === null) {
             return;
         }
         console.log("tag id: ", item.id);
         // print type of tag id
         console.log("tag id type: ", typeof item.id);
-        if (selectedTags.includes(Number.parseInt(item.id ?? "", 10))) {
-            setSelectedTags(
-                selectedTags.filter((tag_id) => tag_id !== Number.parseInt(item.id ?? "", 10)),
-            );
-            removeTag(selected_team!, Number.parseInt(item.id ?? "", 10));
+        if (selectedTags.includes(item.id, 10)) {
+            setSelectedTags(selectedTags.filter((tag_id) => tag_id !== item.id));
+            removeTag(selectedTeam!, item.id);
         } else {
-            setSelectedTags([...selectedTags, Number.parseInt(item.id ?? "", 10)]);
-            addTag(selected_team!, Number.parseInt(item.id ?? "", 10));
+            setSelectedTags([...selectedTags, item.id]);
+            addTag(selectedTeam!, item.id);
         }
     };
 
-    useEffect(() => {
-        console.log("picklist_id: ", picklist_id);
-        if (picklist_id !== -1) {
-            TagsDB.getTagsForPicklist(picklist_id).then((tags) => {
-                setListOfTags(tags);
-            });
+    if (selectedTeam !== null && visible) {
+        if (JSON.stringify(selectedTags) !== JSON.stringify(selectedTeam.tags ?? [])) {
+            setSelectedTags(selectedTeam.tags ?? []);
         }
-    }, [picklist_id, visible]);
-
-    useEffect(() => {
-        if (selected_team !== null) {
-            setSelectedTags(selected_team.tags);
-        }
-    }, [visible]);
+    }
 
     return (
         <Modal
@@ -144,11 +142,11 @@ export function TagsModal({
                         }}
                     >
                         <UIText size={20} bold style={{ flex: 1 }}>
-                            {selected_team !== null
-                                ? "Tags for Team " + selected_team.team_number
+                            {selectedTeam !== null
+                                ? "Tags for Team " + selectedTeam.teamNumber
                                 : "Tags"}
                         </UIText>
-                        {selected_team === null && (
+                        {selectedTeam === null && (
                             <Pressable
                                 onPress={() => setDeletionActive((prev) => !prev)}
                                 style={{ flex: 0.2 }}
@@ -171,7 +169,7 @@ export function TagsModal({
                             style={{ flex: 1 }}
                             data={listOfTags}
                             scrollEnabled={true}
-                            keyExtractor={(item) => item.id ?? ""}
+                            keyExtractor={(item) => String(item.id)}
                             renderItem={({ item }) => (
                                 <View
                                     style={{
@@ -180,11 +178,11 @@ export function TagsModal({
                                         alignItems: "center",
                                     }}
                                 >
-                                    {selected_team !== null && (
+                                    {selectedTeam !== null && (
                                         <View style={{ flex: 0.1 }}>
-                                            {selectedTags.includes(
-                                                Number.parseInt(item.id ?? "", 10),
-                                            ) && <Bs.CheckLg size="16" fill="currentColor" />}
+                                            {selectedTags.includes(item.id) && (
+                                                <Bs.CheckLg size="16" fill="currentColor" />
+                                            )}
                                         </View>
                                     )}
                                     <Pressable
@@ -200,10 +198,8 @@ export function TagsModal({
 
                                             borderWidth: 1,
                                             borderColor:
-                                                selected_team !== null
-                                                    ? selectedTags.includes(
-                                                          Number.parseInt(item.id ?? "", 10),
-                                                      )
+                                                selectedTeam !== null
+                                                    ? selectedTags.includes(item.id)
                                                         ? colors.primary.hex
                                                         : colors.border.hex
                                                     : colors.border.hex,
@@ -285,13 +281,16 @@ export function TagsModal({
                         />
                         <Pressable
                             disabled={newTagName === ""}
-                            onPress={() => {
-                                TagsDB.createTag(picklist_id, newTagName).then(() => {
-                                    TagsDB.getTagsForPicklist(picklist_id).then((tags) => {
-                                        setListOfTags(tags);
-                                        setNewTagName("");
+                            onPress={async () => {
+                                try {
+                                    await createTag.mutateAsync({
+                                        picklistId: picklistId,
+                                        name: newTagName,
                                     });
-                                });
+                                    setNewTagName("");
+                                } catch (error) {
+                                    console.error(error);
+                                }
                             }}
                             style={{
                                 backgroundColor: newTagName === "" ? "gray" : colors.primary.hex,

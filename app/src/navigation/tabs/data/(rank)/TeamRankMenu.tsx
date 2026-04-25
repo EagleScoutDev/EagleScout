@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { DataTabScreenProps } from "../index";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
+import { type CompetitionReturnData } from "@/lib/db/models/Competition";
 import { Form } from "@/lib/forms";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 interface Question {
     question: string;
@@ -14,51 +16,27 @@ interface Question {
 
 export interface TeamRankMenuProps extends DataTabScreenProps<"TeamRank"> {}
 export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
-    // competition form
-    const [currForm, setCurrForm] = useState<Form.Structure>();
+    const { data: currentCompetition } = useQuery(queries.competitions.current);
+    const { data: allCompetitions = [] } = useQuery({
+        ...queries.competitions.all,
+        enabled: !currentCompetition,
+    });
 
-    // used to get data for the competition
-    const [compID, setCompID] = useState<number>();
+    const [manualComp, setManualComp] = useState<CompetitionReturnData | null>(null);
 
-    const [compName, setCompName] = useState<string>();
-
-    const [noActiveCompetition, setNoActiveCompetition] = useState<boolean>(false);
-
-    const [fullCompetitionsList, setFullCompetitionsList] = useState<CompetitionReturnData[]>([]);
-
-    useEffect(() => {
-        CompetitionsDB.getCurrentCompetition().then((competition) => {
-            if (!competition) {
-                setNoActiveCompetition(true);
-                CompetitionsDB.getCompetitions().then((c) => {
-                    setFullCompetitionsList(c);
-                });
-                return;
-            }
-
-            setCurrForm(competition.form as Form.Structure);
-            setCompID(competition.id);
-            setCompName(competition.name);
-        });
-    }, []);
+    const activeComp = manualComp ?? currentCompetition ?? null;
 
     const onPress = (index: number, question: string) => {
-        if (!compID) return;
-        const payload: Question & { compId: number; compName?: string | undefined } = {
-            index,
-            question,
-            compId: compID,
-            compName: compName,
-        };
+        if (!activeComp) return;
         navigation.navigate("TeamRank/View", {
-            compId: payload.compId,
-            compName: payload.compName,
-            questionIndex: payload.index,
-            questionText: payload.question,
+            compId: activeComp.id,
+            compName: activeComp.name,
+            questionIndex: index,
+            questionText: question,
         });
     };
 
-    if (noActiveCompetition) {
+    if (!activeComp) {
         return (
             <SafeAreaProvider>
                 <UIList>
@@ -71,16 +49,11 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                         </UIText>
                     </View>
                     <UIList.Section>
-                        {fullCompetitionsList.map((item, i) => (
+                        {allCompetitions.map((item, i) => (
                             <UIList.Row
                                 key={i}
                                 label={item.name}
-                                onPress={() => {
-                                    setNoActiveCompetition(false);
-                                    setCurrForm(item.form as Form.Structure);
-                                    setCompID(item.id);
-                                    setCompName(item.name);
-                                }}
+                                onPress={() => setManualComp(item)}
                             />
                         ))}
                     </UIList.Section>
@@ -89,6 +62,7 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
         );
     }
 
+    const currForm = activeComp.form as Form.Structure;
     const formSections = currForm ? Form.splitSections(currForm) : [];
 
     return (
@@ -96,7 +70,7 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
             <UIList>
                 <View style={{ padding: 16 }}>
                     <UIText size={24} bold style={{ marginBottom: 8 }}>
-                        {compName ? compName : "No Competition Selected"}
+                        {activeComp.name}
                     </UIText>
                     <UIText size={12} placeholder>
                         Choose a question to begin.
@@ -104,7 +78,7 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
                 </View>
                 {formSections.map((section, i) => {
                     const items: { item: Form.Question; i: number }[] = [];
-                    let currentIndex = section.start + 1; // Start after the heading
+                    let currentIndex = section.start + 1;
 
                     for (const item of section.items) {
                         if (item.type === Form.ItemType.number) {

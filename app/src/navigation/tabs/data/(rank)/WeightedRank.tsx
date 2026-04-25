@@ -1,11 +1,13 @@
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
+import { type CompetitionReturnData } from "@/lib/db/models/Competition";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+import { queryClient } from "@/lib/queryClient";
 
 enum WeightedRankStatus {
     CHOOSING_WEIGHTS,
@@ -25,43 +27,26 @@ export function WeightedRank() {
     const [originalWeights, setOriginalWeights] = useState<number[]>([]);
 
     const [status, setStatus] = useState<WeightedRankStatus>(WeightedRankStatus.CHOOSING_WEIGHTS);
-
     const [numberQuestions, setNumberQuestions] = useState<object[]>([]);
-
-    const [allReports, setAllReports] = useState<MatchReportReturnData[]>([]);
-
     const [teamMap, setTeamMap] = useState<Map<number, MapValue>>(new Map());
 
-    // competition form
-    const [currForm, setCurrForm] = useState<object[]>();
-    const [compId, setCompID] = useState<number>(-1);
+    const [manualComp, setManualComp] = useState<CompetitionReturnData | null>(null);
+    const { data: currentCompetition } = useQuery(queries.competitions.current);
+    const { data: allCompetitions = [] } = useQuery({
+        ...queries.competitions.all,
+        enabled: !currentCompetition,
+    });
 
-    const [noActiveCompetition, setNoActiveCompetition] = useState<boolean>(true);
+    const activeComp = manualComp ?? currentCompetition ?? null;
+    const compId = activeComp?.id ?? -1;
+    const currForm = activeComp?.form as object[] | undefined;
 
-    const [fullCompetitionsList, setFullCompetitionsList] = useState<CompetitionReturnData[]>([]);
-
-    useEffect(() => {
-        CompetitionsDB.getCurrentCompetition().then((competition) => {
-            if (!competition) {
-                console.log("no active competition for weighted rank");
-                setNoActiveCompetition(true);
-                CompetitionsDB.getCompetitions().then((c) => {
-                    setFullCompetitionsList(c);
-                });
-                return;
-            }
-            console.log("active competition found for weighted rank");
-
-            setCurrForm(competition.form);
-            setCompID(competition.id);
-            setNoActiveCompetition(false);
-        });
-    }, []);
+    const noActiveCompetition = !activeComp;
 
     useEffect(() => {
         if (currForm) {
-            let temp: object[] = [];
-            for (let i = 0; i < currForm?.length; i++) {
+            const temp: object[] = [];
+            for (let i = 0; i < currForm.length; i++) {
                 if (currForm[i].type === "number") {
                     temp.push(currForm[i]);
                 }
@@ -72,7 +57,7 @@ export function WeightedRank() {
 
     useEffect(() => {
         if (numberQuestions.length > 0 && currForm) {
-            let temp: number[] = [];
+            const temp: number[] = [];
             for (let i = 0; i < currForm.length; i++) {
                 temp.push(0);
             }
@@ -81,60 +66,36 @@ export function WeightedRank() {
         }
     }, [numberQuestions]);
 
-    const generateRankings = () => {
-        setStatus(WeightedRankStatus.FETCHING_REPORTS);
-        fetchAllReports();
-        console.log("num scout reports: " + allReports.length);
-        // let weights_total = listOfWeights.reduce((a, b) => a + b, 0);
-        // console.log('total weights: ' + weights_total);
-    };
-
-    const processData = () => {
+    const processData = (reports: any[]) => {
         setStatus(WeightedRankStatus.PROCESSING);
-        let temp_map = new Map<number, MapValue>();
-        for (let i = 0; i < allReports.length; i++) {
-            let report = allReports[i];
+        const temp_map = new Map<number, MapValue>();
+        for (let i = 0; i < reports.length; i++) {
+            const report = reports[i];
             let sum = 0;
-            let count = 1;
+            const count = 1;
             for (let j = 0; j < numberQuestions.length; j++) {
                 sum += report.data[j] * listOfWeights[j];
             }
             if (temp_map.has(report.teamNumber)) {
-                let temp = temp_map.get(report.teamNumber);
+                const temp = temp_map.get(report.teamNumber);
                 if (temp) {
                     temp.sum += sum;
                     temp.count += count;
                     temp_map.set(report.teamNumber, temp);
                 }
             } else {
-                temp_map.set(report.teamNumber, { sum: sum, count: count });
+                temp_map.set(report.teamNumber, { sum, count });
             }
         }
-        // nicely print out the map
-        temp_map.forEach((value, key) => {
-            console.log("team " + key + " : " + value.sum / value.count);
-        });
         setTeamMap(temp_map);
         setStatus(WeightedRankStatus.PRESENTING_RANKINGS);
     };
 
-    useEffect(() => {}, []);
-
-    useEffect(() => {
-        if (allReports.length > 0) {
-            processData();
-        }
-    }, [allReports]);
-
-    const fetchAllReports = () => {
-        if (compId === -1) {
-            return;
-        }
-
+    const generateRankings = async () => {
+        if (compId === -1) return;
         setStatus(WeightedRankStatus.FETCHING_REPORTS);
-        MatchReportsDB.getReportsForCompetition(compId).then((reports) => {
-            setAllReports(reports);
-        });
+        const reports = await queryClient.fetchQuery(queries.matchReports.forComp({ id: compId }));
+        processData(reports);
     };
 
     const styles = StyleSheet.create({
@@ -186,16 +147,8 @@ export function WeightedRank() {
             >
                 <UIText style={styles.header}>No Active Competition</UIText>
                 <UIText>Please choose which competition you would like to view data for.</UIText>
-                {fullCompetitionsList.map((item, index) => (
-                    <Pressable
-                        key={index}
-                        onPress={() => {
-                            setNoActiveCompetition(false);
-                            setCurrForm(item.form);
-                            setCompID(item.id);
-                            setCompName(item.name);
-                        }}
-                    >
+                {allCompetitions.map((item, index) => (
+                    <Pressable key={index} onPress={() => setManualComp(item)}>
                         <View style={styles.list_item}>
                             <UIText style={styles.list_text}>{item.name}</UIText>
                         </View>

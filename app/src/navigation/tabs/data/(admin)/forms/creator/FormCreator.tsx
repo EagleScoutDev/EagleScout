@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { FormsDB } from "@/lib/db/models/Form";
 import { Form } from "@/lib/forms";
+import { useMutation } from "@tanstack/react-query";
+import { formMutations } from "@/lib/mutations/forms";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
 import { key } from "@/lib/util/react/key";
 import type { DataTabScreenProps } from "@/navigation/tabs/data";
@@ -44,6 +45,7 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [editKey, setEditKey] = useState<keyof typeof ITEM_MAP | null>(null);
     const isNewItem = editIndex === items.length;
+    const addForm = useMutation(formMutations.add);
 
     usePreventRemove(dirty, ({ data }) => {
         Alert.alert("Unsaved changes", "Are you sure you want to leave? Your work will be lost!", [
@@ -60,7 +62,7 @@ export function FormCreator({ route, navigation }: DataTabScreenProps<"Forms/Edi
         try {
             if (title === "") return Alert.alert("Error", "Please enter a form title.");
 
-            await FormsDB.addForm({
+            await addForm.mutateAsync({
                 name: title,
                 formStructure: items,
                 pitScouting: isPit,

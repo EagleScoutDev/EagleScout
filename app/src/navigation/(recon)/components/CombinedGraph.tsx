@@ -1,14 +1,14 @@
 import { Dimensions, Pressable, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import { useEffect, useState } from "react";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
-import { type FormReturnData, FormsDB } from "@/lib/db/models/Form";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
+import { useState } from "react";
+import { type FormReturnData } from "@/lib/db/models/Form";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
 import { Form } from "@/lib/forms";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export interface CombinedGraphProps {
     modalActive: boolean;
@@ -37,37 +37,43 @@ export function CombinedGraph({
         useShadowColorFromDataset: false,
         fillShadowGradient: colors.bg1.hex,
     };
-    const [relevantReports, setRelevantReports] = useState<MatchReportReturnData[]>([]);
-    const [form, setForm] = useState<FormReturnData>();
+
+    const { data: relevantReports = [] } = useQuery({
+        ...queries.matchReports.forTeamAtComp({
+            teamNumber: team_number,
+            compId: competitionId,
+        }),
+        select: (reports) => reports.sort((a, b) => a.matchNumber - b.matchNumber),
+        enabled: modalActive,
+    });
+
+    const { data: competition } = useQuery({
+        ...queries.competitions.forId({ id: competitionId }),
+        enabled: modalActive,
+    });
+
+    const { data: form } = useQuery({
+        ...queries.forms.forId({ id: competition?.formId ?? -1 }),
+        enabled: modalActive && !!competition?.formId,
+    });
+
     const [questionToColor, setQuestionToColor] = useState<Map<string, string>>(new Map());
 
-    useEffect(() => {
-        if (modalActive) {
-            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competitionId).then(
-                (reports) => {
-                    setRelevantReports(reports.sort((a, b) => a.matchNumber - b.matchNumber));
-                    CompetitionsDB.getCompetitionById(competitionId).then((comp) => {
-                        FormsDB.getForm(comp.formId).then((form) => {
-                            setForm(form);
-                        });
-                    });
-                },
-            );
-        }
-    }, [team_number, competitionId, modalActive]);
-
-    useEffect(() => {
-        if (form !== undefined) {
-            const newMap = new Map<string, string>();
-            for(let index of questionIndices) {
-                const item = form.formStructure[index]
-                if(Form.Item.isQuestion(item)) {
-                    newMap.set(item.question, `rgba(${(index * 100) % 255}, ${(index * 50) % 255}, ${(index * 25) % 255}, 1.0)`);
-                }
+    if (form !== undefined) {
+        const newMap = new Map<string, string>();
+        for (let index of questionIndices) {
+            const item = form.formStructure[index];
+            if (Form.Item.isQuestion(item)) {
+                newMap.set(
+                    item.question,
+                    `rgba(${(index * 100) % 255}, ${(index * 50) % 255}, ${(index * 25) % 255}, 1.0)`,
+                );
             }
+        }
+        if (JSON.stringify(Array.from(newMap.entries())) !== JSON.stringify(Array.from(questionToColor.entries()))) {
             setQuestionToColor(newMap);
         }
-    }, [questionIndices, form]);
+    }
 
     return (
         <UIModal

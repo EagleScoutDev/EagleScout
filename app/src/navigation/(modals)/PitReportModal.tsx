@@ -1,12 +1,14 @@
 import { FlatList, Pressable, View } from "react-native";
 import { Image } from "expo-image";
-import React, { useEffect, useState } from "react";
-import { type PitReportReturnData, PitReportsDB } from "@/lib/db/models/ScoutPitReport";
+import React from "react";
+import { type PitReportReturnData } from "@/lib/db/models/ScoutPitReport";
 import { UIText } from "@/ui/components/UIText";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { FormDataView } from "@/navigation/(modals)/components/FormDataView";
 import { useRootNavigation } from "@/navigation/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export interface PitReportModalParams {
     report: PitReportReturnData;
@@ -16,12 +18,12 @@ export const PitReportModal = UISheetModal.HOC<PitReportModalParams>(function Pi
     ref,
     data: { report },
 }) {
-    const [images, setImages] = useState<string[]>([]);
-    useEffect(() => {
-        PitReportsDB.getImagesForReport(report.teamNumber, report.reportId).then((images) => {
-            setImages(images);
-        });
-    }, [report]);
+    const { data: images = [] } = useQuery(
+        queries.pitReports.imagesForReport({
+            teamNumber: report.teamNumber,
+            reportId: report.reportId,
+        }),
+    );
 
     return (
         <>

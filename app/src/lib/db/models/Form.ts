@@ -5,9 +5,31 @@ export interface FormReturnData extends Form {
     id: number;
 }
 
-export class FormsDB {
-    static async addForm(form: Form): Promise<void> {
-        const { data, error } = await supabase.from("forms").insert({
+export namespace Forms {
+    const query = () =>
+        supabase.from("forms").select(`
+            id,
+            formStructure:  form_structure,
+            pitScouting:    pit_scouting,
+            name
+        `);
+
+    export async function get(id: number): Promise<FormReturnData> {
+        const { data, error } = await query().eq("id", id).single();
+        if (error) throw error;
+
+        return data;
+    }
+
+    export async function getAll(): Promise<FormReturnData[]> {
+        const { data, error } = await query();
+        if (error) throw error;
+
+        return data;
+    }
+
+    export async function create(form: Form): Promise<void> {
+        const { error } = await supabase.from("forms").insert({
             form_structure: form.formStructure,
             pit_scouting: form.pitScouting,
             name: form.name,
@@ -15,44 +37,8 @@ export class FormsDB {
         if (error) throw error;
     }
 
-    static async deleteForm(form: FormReturnData): Promise<void> {
-        const { error } = await supabase.from("forms").delete().eq("id", form.id);
+    export async function remove(id: number): Promise<void> {
+        const { error } = await supabase.from("forms").delete().eq("id", id);
         if (error) throw error;
-    }
-
-    static async getForm(id: number): Promise<FormReturnData> {
-        const { data, error } = await supabase.from("forms").select("*").eq("id", id);
-        if (error) {
-            throw error;
-        } else {
-            if (data.length === 0) {
-                throw new Error("Form not found");
-            } else {
-                return {
-                    id: data[0].id,
-                    formStructure: data[0].form_structure,
-                    pitScouting: data[0].pit_scouting,
-                    name: data[0].name,
-                };
-            }
-        }
-    }
-
-    static async getAllForms(): Promise<FormReturnData[]> {
-        const res: FormReturnData[] = [];
-        const { data, error } = await supabase.from("forms").select("*");
-        if (error) {
-            throw error;
-        } else {
-            for (let i = 0; i < data.length; i += 1) {
-                res.push({
-                    id: data[i].id,
-                    formStructure: data[i].form_structure,
-                    pitScouting: data[i].pit_scouting,
-                    name: data[i].name,
-                });
-            }
-        }
-        return res;
     }
 }

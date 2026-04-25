@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Alert,
     Keyboard,
@@ -10,25 +10,19 @@ import {
 import { styles } from "../styles";
 import { supabase } from "@/lib/supabase";
 import { type OnboardingScreenProps } from "..";
-import { UserAttributesDB } from "@/lib/db/models/User";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
+import { useUserStore } from "@/lib/stores/user";
+import { Account } from "@/lib/db/account";
 
 interface EnterTeamEmailProps extends OnboardingScreenProps<"EnterTeamEmail"> {}
 export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
     const { colors } = useTheme();
-    const [orgId, setOrgId] = useState<number | null>();
     const [email, setEmail] = useState<string>("");
-
-    useEffect(() => {
-        UserAttributesDB.getCurrentUserAttribute().then((r) => {
-            if (r) {
-                setOrgId(r.organization_id);
-            }
-        });
-    }, []);
+    const userAttribute = useUserStore((state) => state.account);
+    const orgId = userAttribute?.orgId ?? null;
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -63,13 +57,17 @@ export function EnterTeamEmail({ navigation }: EnterTeamEmailProps) {
                                     "Unable to set team email. Please try again later.",
                                 );
                             }
+                            // FIXME: don't do a full resync
+                            await useUserStore.getState().sync();
+                            const currentUser =
+                                await Account.ensure();
                             const { error: userAdminError } = await supabase
                                 .from("user_attributes")
                                 .update({
                                     scouter: true,
                                     admin: true,
                                 })
-                                .eq("id", (await UserAttributesDB.getCurrentUserAttribute()).id);
+                                .eq("id", currentUser.id);
                             if (userAdminError) {
                                 console.error(userAdminError);
                                 Alert.alert(

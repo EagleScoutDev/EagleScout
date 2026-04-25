@@ -8,8 +8,6 @@ import {
     View,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/db/models/Competition";
-import { type TBAMatch, TBAMatches } from "@/lib/db/models/Match";
 import { type MatchPredictionResults, TeamAggregation } from "@/lib/TeamAggregation";
 import { PredictionConfidence } from "@/lib/PredictionConfidence";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
@@ -21,6 +19,10 @@ import { useTheme } from "@/ui/context/ThemeContext";
 import { Alliance } from "@/frc/common/common";
 import { UIText } from "@/ui/components/UIText";
 import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+
+import type { TBAMatch } from "@/lib/db/tba";
 
 export function MatchPredictor() {
     const { colors } = useTheme();
@@ -49,13 +51,9 @@ export function MatchPredictor() {
     const [allianceBreakdown, setAllianceBreakdown] = useState<MatchPredictionResults>([]);
     const [winningAllianceColor, setWinningAllianceColor] = useState<Alliance | null>(null);
 
-    const [compId, setCompID] = useState<number>(-1);
     const [currForm, setCurrForm] = useState<Form.Structure | null>();
     const [compName, setCompName] = useState<string>();
-
-    const [noActiveCompetition, setNoActiveCompetition] = useState<boolean>(true);
-    const [ongoingCompetition, setOngoingCompetition] = useState<boolean>(false);
-    const [fullCompetitionsList, setFullCompetitionsList] = useState<CompetitionReturnData[]>([]);
+    const [selectedCompId, setSelectedCompId] = useState<number | null>(null);
 
     const [calculatedMeanStdev, setCalculatedMeanStdev] = useState<{
         blueMean: number;
@@ -72,26 +70,31 @@ export function MatchPredictor() {
     const [onlineMatches, setOnlineMatches] = useState<TBAMatch[]>([]);
     const [breakdownVisible, setBreakdownVisible] = useState<boolean>(false);
 
-    useEffect(() => {
-        CompetitionsDB.getCurrentCompetition().then((competition) => {
-            if (!competition) {
-                console.log("no active competition for weighted rank");
-                setNoActiveCompetition(true);
-                setOngoingCompetition(false);
-                CompetitionsDB.getCompetitions().then((c) => {
-                    setFullCompetitionsList(c);
-                });
-                return;
-            }
-            console.log("active competition found for weighted rank");
+    const { data: currentCompetition } = useQuery(queries.competitions.current);
+    const { data: allCompetitions = [] } = useQuery(queries.competitions.all);
 
-            setOngoingCompetition(true);
-            setCurrForm(competition.form);
-            setCompID(competition.id);
-            setCompName(competition.name);
-            setNoActiveCompetition(false);
-        });
-    }, []);
+    const activeCompId = selectedCompId ?? currentCompetition?.id ?? null;
+    const { data: tbaMatchesData = [] } = useQuery({
+        ...queries.tbaMatches.forComp({ id: activeCompId! }),
+        enabled: activeCompId != null && !currentCompetition,
+    });
+
+    const noActiveCompetition = !currentCompetition && selectedCompId == null;
+    const ongoingCompetition = !!currentCompetition || selectedCompId != null;
+    const compId = activeCompId ?? -1;
+
+    useEffect(() => {
+        if (currentCompetition && selectedCompId == null) {
+            setCurrForm(currentCompetition.form);
+            setCompName(currentCompetition.name);
+        }
+    }, [currentCompetition]);
+
+    useEffect(() => {
+        if (tbaMatchesData && tbaMatchesData.length > 0) {
+            setOnlineMatches(tbaMatchesData);
+        }
+    }, [tbaMatchesData]);
 
     // uses local cache to get the teams in the match
     async function getTeamsInMatch() {
@@ -316,18 +319,13 @@ export function MatchPredictor() {
             >
                 <UIText style={styles.header}>No Active Competition</UIText>
                 <UIText>Please choose which competition you would like to view data for.</UIText>
-                {fullCompetitionsList.map((item, index) => (
+                {allCompetitions.map((item, index) => (
                     <Pressable
                         key={index}
                         onPress={() => {
-                            setNoActiveCompetition(false);
-                            setOngoingCompetition(false);
                             setCurrForm(item.form);
-                            setCompID(item.id);
                             setCompName(item.name);
-                            TBAMatches.getMatchesForCompetition(String(item.id)).then((matches) => {
-                                setOnlineMatches(matches);
-                            });
+                            setSelectedCompId(item.id);
                         }}
                     >
                         <View style={styles.list_item}>
@@ -372,10 +370,8 @@ export function MatchPredictor() {
             >
                 <Pressable
                     onPress={() => {
-                        setNoActiveCompetition(true);
-                        setOngoingCompetition(false);
+                        setSelectedCompId(null);
                         setCurrForm(undefined);
-                        setCompID(-1);
                         setCompName("");
                     }}
                 >

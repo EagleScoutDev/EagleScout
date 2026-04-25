@@ -6,7 +6,6 @@ import {
     View,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { NotesDB } from "@/lib/db/models/ScoutNote";
 import { NoteInputModal } from "./NoteInputModal";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
@@ -16,6 +15,8 @@ import { Alliance } from "@/frc/common/common";
 import { UIText } from "@/ui/components/UIText";
 import { UICard } from "@/ui/components/UICard";
 import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
+import { useMutation } from "@tanstack/react-query";
+import { noteMutations } from "@/lib/mutations/notes";
 
 export function NoteScreen() {
     const [match, setMatch] = useState<number | null>(null);
@@ -35,6 +36,7 @@ export function NoteScreen() {
     const [confettiView, setConfettiView] = useState<any>(null);
 
     const { competitionId, getTeamsForMatch } = useCurrentCompetitionMatches();
+    const createNote = useMutation(noteMutations.create);
 
     useEffect(() => {
         if (match === null) return;
@@ -66,18 +68,20 @@ export function NoteScreen() {
 
     const submitNote = async () => {
         setIsLoading(true);
+        if (competitionId === null) throw new Error("No active competition");
+
         const promises = [];
         for (const team of Object.keys(noteContents)) {
             if (noteContents[team] === "") {
                 continue;
             }
             promises.push(
-                NotesDB.createNote(
-                    noteContents[team],
-                    Number(team),
-                    Number(match),
+                createNote.mutateAsync({
+                    content: noteContents[team],
+                    teamNumber: Number(team),
+                    matchNumber: Number(match),
                     competitionId,
-                ),
+                }),
             );
         }
         await Promise.all(promises);

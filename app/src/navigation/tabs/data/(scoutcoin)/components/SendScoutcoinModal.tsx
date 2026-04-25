@@ -1,17 +1,13 @@
 import { useState } from "react";
 import { Alert, Modal, StyleSheet, TextInput, View } from "react-native";
-import { supabase } from "@/lib/supabase";
-import { useProfile } from "@/lib/hooks/useProfile";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { scoutcoinMutations } from "@/lib/mutations/scoutcoin";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { StandardButton } from "@/ui/StandardButton";
 import * as Bs from "@/ui/icons";
-
-interface LeaderboardUser {
-    id: string;
-    name: string;
-    scoutcoins: number;
-}
+import { queries } from "@/lib/queries";
+import type { LeaderboardUser } from "@/navigation/tabs/data/(scoutcoin)/ScoutcoinLeaderboard";
 
 export function SendScoutcoinModal({
     targetUser,
@@ -22,44 +18,45 @@ export function SendScoutcoinModal({
 }) {
     const [amount, setAmount] = useState("");
     const [description, setDescription] = useState("");
-    const [sending, setSending] = useState(false);
-    const { profile } = useProfile();
+    const { data: profile } = useQuery(queries.profiles.current);
+    const { data: balance } = useQuery({
+        ...queries.scoutcoinLedger.balanceForId(profile! && { id: profile.id }),
+        enabled: !!profile,
+    });
     const { colors } = useTheme();
+    const sendScoutcoin = useMutation(scoutcoinMutations.send);
 
-    const sendScoutcoin = async () => {
+    const handleSend = async () => {
         if (!profile) {
             return;
         }
-        setSending(true);
         if (description === "") {
             Alert.alert("Please enter a reason!");
-            setSending(false);
             return;
         }
         if (amount === "") {
             Alert.alert("Please enter an amount!");
-            setSending(false);
             return;
         }
-        if (parseInt(amount, 10) <= 0) {
+        const parsedAmount = parseInt(amount, 10);
+        if (parsedAmount <= 0) {
             Alert.alert("Please enter a positive amount!");
-            setSending(false);
             return;
         }
-        if (parseInt(amount, 10) > profile.scoutcoins) {
+        if (balance !== undefined && parsedAmount > balance) {
             Alert.alert("You do not have enough scoutcoins!");
-            setSending(false);
             return;
         }
-        await supabase.functions.invoke("send-scoutcoin", {
-            body: JSON.stringify({
-                targetUserId: targetUser.id,
-                amount: parseInt(amount, 10),
-                description,
-            }),
-        });
-        setSending(false);
-        onClose();
+        try {
+            await sendScoutcoin.mutateAsync({
+                recipientId: targetUser.id,
+                amount: parsedAmount,
+                reason: description,
+            });
+            onClose();
+        } catch (error: any) {
+            Alert.alert("Error", error.message || "Failed to send scoutcoin");
+        }
     };
 
     const styles = StyleSheet.create({
@@ -121,7 +118,7 @@ export function SendScoutcoinModal({
                 <View style={styles.modalView}>
                     <UIText style={styles.modalText}>Send Scoutcoin to {targetUser.name}</UIText>
                     <View style={styles.coinContainer}>
-                        <UIText style={styles.text}>Your Scoutcoin: {profile?.scoutcoins}</UIText>
+                        <UIText style={styles.text}>Your Scoutcoin: {balance}</UIText>
                         <Bs.Coin size="12" fill={colors.fg.hex} />
                     </View>
                     <TextInput
@@ -148,14 +145,14 @@ export function SendScoutcoinModal({
                             width="40%"
                             text="Cancel"
                             onPress={onClose}
-                            disabled={sending}
+                            disabled={sendScoutcoin.isPending}
                             color={colors.danger.hex}
                         />
                         <StandardButton
                             width="50%"
                             text="Send"
-                            onPress={sendScoutcoin}
-                            disabled={sending}
+                            onPress={handleSend}
+                            isLoading={sendScoutcoin.isPending}
                             color={colors.primary.hex}
                         />
                     </View>

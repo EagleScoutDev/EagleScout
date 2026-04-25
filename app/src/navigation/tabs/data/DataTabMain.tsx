@@ -1,5 +1,4 @@
 import { useUserStore } from "@/lib/stores/user";
-import { AccountRole } from "@/lib/user/account";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "./index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -78,7 +77,7 @@ export function DataTabMain({ navigation }: DataTabMainProps) {
                     />
                 </UIList.Section>
 
-                {user?.role === AccountRole.Admin && (
+                {user?.admin && (
                     <UIList.Section title="Administrative">
                         <UIList.Row
                             icon={Bs.TrophyFill}

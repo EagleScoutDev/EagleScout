@@ -1,21 +1,18 @@
 import { supabase } from "@/lib/supabase";
+import { Account } from "@/lib/db/account";
 import { decode } from "base64-arraybuffer";
-import { UserAttributesDB } from "./User";
 
 export interface PitReport {
-    reportId: number;
     teamNumber: number;
     data: any[];
     competitionId: number;
-}
 
-export type PitReportWithoutId = Omit<PitReport, "reportId">;
-
-export interface PitReportWithDate extends PitReport {
     createdAt: Date;
 }
 
-export interface PitReportReturnData extends PitReportWithDate {
+export interface PitReportReturnData extends PitReport {
+    reportId: number;
+
     formStructure: any[];
     competitionName: string;
     submittedId: string;
@@ -23,18 +20,119 @@ export interface PitReportReturnData extends PitReportWithDate {
     imageUrls?: string[];
 }
 
-export class PitReportsDB {
-    /**
-     * Upload images for a pit scout report
-     * @param teamId
-     * @param reportId
-     * @param images
-     */
-    static async uploadImages(teamId: number, reportId: number, images: string[]) {
-        const orgId = (await UserAttributesDB.getCurrentUserAttribute()).organization_id;
+export namespace ScoutPitReports {
+    const reportQuery = () =>
+        supabase.from("pit_scout_reports").select(`
+            reportId:   id,
+            teamNumber: team_id,
+            data,
+            createdAt:  created_at,
+            ...competitions(
+                competitionId:      id,
+                competitionName:    name,
+                ...forms!competitions_pit_scout_form_id_fkey(
+                    formStructure:  form_structure
+                )
+            ),
+            ...profiles(
+                submittedName:  name,
+                submittedId:    id
+            )
+        `);
+
+    export async function getAllForTeam(
+        teamNumber: number,
+        competitionId: number,
+    ): Promise<PitReportReturnData[]> {
+        const { data, error } = await reportQuery()
+            .eq("team_id", teamNumber)
+            .eq("competition_id", competitionId);
+        if (error) throw error;
+
+        return data.map((report) => ({
+            ...report,
+            createdAt: new Date(report.createdAt),
+        }));
+    }
+
+    // FIXME: impure queries are below
+
+    export async function getImageUrls(
+        organizationId: number,
+        teamNumber: number,
+        reportId: number,
+    ): Promise<string[]> {
+        const bucket = supabase.storage.from("organizations");
+        const { data: images, error } = await bucket.list(
+            `${organizationId}/${teamNumber}/pit_images/${reportId}`,
+        );
+        if (error) throw error;
+        if (images.length === 0) return [];
+
+        const { data: urls, error: urlError } = await bucket.createSignedUrls(
+            images.map(
+                (img) =>
+                    `${organizationId}/${teamNumber}/pit_images/${reportId}/${img.name}`,
+            ),
+            60 * 60 * 24,
+        );
+        if (urlError) throw urlError;
+
+        return urls.map((u) => u.signedUrl);
+    }
+
+    export async function getAllForComp(
+        competitionId: number,
+    ): Promise<PitReportReturnData[]> {
+        const { data, error } = await reportQuery().eq(
+            "competition_id",
+            competitionId,
+        );
+        if (error) throw error;
+
+        const { orgId } = await Account.ensure();
+
+        return await Promise.all(
+            data.map(async (report) => ({
+                ...report,
+                createdAt: new Date(report.createdAt),
+                imageUrls: await getImageUrls(
+                    orgId,
+                    report.teamNumber,
+                    report.reportId,
+                ),
+            })),
+        );
+    }
+
+    export async function getImages(
+        teamNumber: number,
+        reportId: number,
+    ): Promise<string[]> {
+        const { orgId } = await Account.ensure();
+        const bucket = supabase.storage.from("organizations");
+        const { data: images, error } = await bucket.list(
+            `${orgId}/${teamNumber}/pit_images/${reportId}`,
+        );
+        if (error) throw error;
+
+        const { data: urls, error: signedError } =
+            await bucket.createSignedUrls(
+                images.map(
+                    (img) =>
+                        `${orgId}/${teamNumber}/pit_images/${reportId}/${img.name}`,
+                ),
+                60 * 5,
+            );
+        if (signedError) throw signedError;
+
+        return urls?.map((u) => u.signedUrl) ?? [];
+    }
+
+    async function uploadImages(teamId: number, reportId: number, images: string[]): Promise<void> {
+        const { orgId } = await Account.ensure();
         const bucket = supabase.storage.from("organizations");
         for (let i = 0; i < images.length; i++) {
-            // https://github.com/NiketanG/instaclone/blob/main/src/app/utils/uploadToSupabase.ts
             const base64Image = images[i];
             const base64Str = base64Image.includes("base64,")
                 ? base64Image.substring(base64Image.indexOf("base64,") + "base64,".length)
@@ -44,22 +142,13 @@ export class PitReportsDB {
             const { error } = await bucket.upload(
                 `${orgId}/${teamId}/pit_images/${reportId}/${i}.jpg`,
                 res,
-                {
-                    contentType: "image/jpg",
-                },
+                { contentType: "image/jpg" },
             );
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
         }
     }
 
-    /**
-     * Creates a new pit scout report
-     * @param report
-     * @param images - an array of base64 encoded images
-     */
-    static async createOnlinePitScoutReport(report: PitReportWithoutId, images: string[]) {
+    export async function create(report: PitReport, images: string[]): Promise<number> {
         const { data: user } = await supabase.auth.getUser();
         const { data: returnData, error } = await supabase
             .from("pit_scout_reports")
@@ -71,119 +160,9 @@ export class PitReportsDB {
             })
             .select("id")
             .single();
-        if (error) {
-            throw error;
-        }
-        await this.uploadImages(report.teamNumber, returnData.id, images);
-    }
+        if (error) throw error;
+        await uploadImages(report.teamNumber, returnData.id, images);
 
-    /**
-     * Gets all pit scout reports for a team
-     * @param teamId
-     * @param competitionId
-     */
-    static async getReportsForTeamAtCompetition(
-        teamId: number,
-        competitionId: number,
-    ): Promise<PitReportReturnData[]> {
-        const { data, error } = await supabase
-            .from("pit_scout_reports")
-            .select(
-                "id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name), profiles(name, id)",
-            )
-            .eq("team_id", teamId)
-            .eq("competition_id", competitionId);
-        if (error) {
-            throw error;
-        }
-        return data.map((report) => ({
-            reportId: report.id,
-            teamNumber: teamId,
-            data: report.data,
-            competitionId: report.competitions.id,
-            createdAt: new Date(report.created_at),
-            formStructure: report.competitions.forms.form_structure,
-            competitionName: report.competitions.name,
-            submittedName: report.profiles.name,
-            submittedId: report.profiles.id,
-        }));
-    }
-
-    /**
-     * Gets images for a pit scout report
-     * @param teamId
-     * @param reportId
-     */
-    static async getImagesForReport(teamId: number, reportId: number) {
-        const orgId = (await UserAttributesDB.getCurrentUserAttribute()).organization_id;
-        const bucket = supabase.storage.from("organizations");
-        const { data: images, error } = await bucket.list(
-            `${orgId}/${teamId}/pit_images/${reportId}`,
-        );
-        if (error) {
-            throw error;
-        }
-        const { data: signedData, error: signedError } = await supabase.storage.from("organizations").createSignedUrls(
-            images.map((img) => `${orgId}/${teamId}/pit_images/${reportId}/${img.name}`),
-            60*5
-        );
-        if (signedError) {
-            throw signedError;
-        }
-        return signedData?.map((url) => url.signedUrl);
-    }
-
-    static async getImageUrlsForReport(orgId: number, teamId: number, reportId: number) {
-        const bucket = supabase.storage.from("organizations");
-        const { data: images, error } = await bucket.list(
-            `${orgId}/${teamId}/pit_images/${reportId}`,
-        );
-        if (error) {
-            throw error;
-        }
-        if (images.length === 0) {
-            return [];
-        }
-        const { data: urls, error: urlError } = await bucket.createSignedUrls(
-            images.map((image) => `${orgId}/${teamId}/pit_images/${reportId}/${image.name}`),
-            60 * 60 * 24,
-        );
-        if (urlError) {
-            throw urlError;
-        }
-        return urls.map((url) => url.signedUrl);
-    }
-
-    static async getReportsForCompetition(competitionId: number): Promise<PitReportReturnData[]> {
-        const { data, error } = await supabase
-            .from("pit_scout_reports")
-            .select(
-                "id, team_id, data, created_at, competitions(forms!competitions_pit_scout_form_id_fkey(form_structure), id, name), profiles(name, id)",
-            )
-            .eq("competition_id", competitionId);
-        if (error) {
-            throw error;
-        }
-        const imageUrls = await Promise.all(
-            data.map(async (report) =>
-                this.getImageUrlsForReport(
-                    (await UserAttributesDB.getCurrentUserAttribute()).organization_id,
-                    report.team_id,
-                    report.id,
-                ),
-            ),
-        );
-        return data.map((report) => ({
-            reportId: report.id,
-            teamNumber: report.team_id,
-            data: report.data,
-            competitionId: report.competitions.id,
-            createdAt: new Date(report.created_at),
-            formStructure: report.competitions.forms.form_structure,
-            competitionName: report.competitions.name,
-            submittedName: report.profiles.name,
-            submittedId: report.profiles.id,
-            imageUrls: imageUrls.shift(),
-        }));
+        return returnData.id;
     }
 }

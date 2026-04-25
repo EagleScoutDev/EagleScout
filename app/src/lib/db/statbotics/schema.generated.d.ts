@@ -1164,7 +1164,19 @@ export interface components {
         /** @description Two-letter state code (e.g., `NC`, `CA`, `TX`) */
         StateQuery: string;
         /** @description District code */
-        DistrictQuery: "fma" | "fnc" | "fsc" | "fit" | "fin" | "fim" | "ne" | "chs" | "ont" | "pnw" | "pch" | "isr";
+        DistrictQuery:
+            | "fma"
+            | "fnc"
+            | "fsc"
+            | "fit"
+            | "fin"
+            | "fim"
+            | "ne"
+            | "chs"
+            | "ont"
+            | "pnw"
+            | "pch"
+            | "isr";
         /** @description Whether the team has played in the last year */
         ActiveQuery: boolean;
         /** @description Event key (e.g., `2024ncwak`) */

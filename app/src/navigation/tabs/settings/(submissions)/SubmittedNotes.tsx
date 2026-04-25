@@ -1,18 +1,13 @@
-import { useEffect, useState } from "react";
-import { NotesDB, type NoteWithMatch } from "@/lib/db/models/ScoutNote";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { SettingsTabScreenProps } from "../index";
 import { NoteList } from "@/components/NoteList";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export function SubmittedNotes({ route }: SettingsTabScreenProps<"Scout/ViewNotes">) {
     const { competitionId } = route.params;
 
-    const [onlineNotes, setOnlineNotes] = useState<NoteWithMatch[]>([]);
-
-    async function refresh() {
-        setOnlineNotes(await NotesDB.getNotesForSelf(competitionId));
-    }
-    useEffect(() => void refresh(), [competitionId]);
+    const { data: onlineNotes = [] } = useQuery(queries.notes.forSelf({ competitionId }));
 
     return (
         <SafeAreaProvider>

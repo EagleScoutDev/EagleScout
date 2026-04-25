@@ -2,18 +2,21 @@ import { useState } from "react";
 import { Alert, Keyboard, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
-import { supabase } from "@/lib/supabase";
 import { type OnboardingScreenProps } from ".";
 import { UIText } from "@/ui/components/UIText";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
+import { useMutation } from "@tanstack/react-query";
+import { Account } from "@/lib/db/account";
 
 export interface SetNewPasswordProps extends OnboardingScreenProps<"SetNewPassword"> {}
 
 export function SetNewPassword({ navigation }: SetNewPasswordProps) {
     const { colors } = useTheme();
     const [password, setPassword] = useState("");
+    const updatePassword = useMutation({ mutationFn: Account.updatePassword });
+    const signOut = useMutation({ mutationFn: Account.signOut });
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -37,50 +40,39 @@ export function SetNewPassword({ navigation }: SetNewPasswordProps) {
                             text={"Set New Password"}
                             textColor={password === "" ? "dimgray" : colors.primary.hex}
                             disabled={password === ""}
+                            isLoading={updatePassword.isPending}
                             onPress={async () => {
                                 if (password === "") {
                                     Alert.alert(
                                         "Password cannot be blank.",
                                         "Please try again",
-                                        [
-                                            {
-                                                text: "OK",
-                                                onPress: () => console.log("OK Pressed"),
-                                            },
-                                        ],
+                                        [{ text: "OK" }],
                                         { cancelable: false },
                                     );
                                     return;
                                 }
-                                const { error } = await supabase.auth.updateUser({
-                                    password,
-                                });
-                                if (error) {
-                                    Alert.alert(
-                                        "Error resetting password",
-                                        "Please try again",
-                                        [
-                                            {
-                                                text: "OK",
-                                                onPress: () => console.log("OK Pressed"),
-                                            },
-                                        ],
-                                        { cancelable: false },
-                                    );
-                                } else {
+                                try {
+                                    await updatePassword.mutateAsync({ password });
                                     Alert.alert(
                                         "Successfully reset password",
                                         "Please log in again to continue",
                                         [
                                             {
                                                 text: "OK",
-                                                onPress: () => {
-                                                    supabase.auth.signOut();
+                                                onPress: async () => {
+                                                    await signOut.mutateAsync();
                                                     navigation.navigate("Login");
                                                     setPassword("");
                                                 },
                                             },
                                         ],
+                                        { cancelable: false },
+                                    );
+                                } catch (error: any) {
+                                    Alert.alert(
+                                        "Error resetting password",
+                                        "Please try again",
+                                        [{ text: "OK" }],
                                         { cancelable: false },
                                     );
                                 }

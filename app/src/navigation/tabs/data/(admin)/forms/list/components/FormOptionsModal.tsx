@@ -1,9 +1,11 @@
-import { type FormReturnData, FormsDB } from "@/lib/db/models/Form";
+import { type FormReturnData } from "@/lib/db/models/Form";
 import { UIForm } from "@/ui/components/UIForm";
 import { UIList } from "@/ui/components/UIList";
 import { Alert } from "react-native";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { useTheme } from "@/ui/context/ThemeContext";
+import { useMutation } from "@tanstack/react-query";
+import { formMutations } from "@/lib/mutations/forms";
 
 export interface FormOptionsModalParams {
     form: FormReturnData;
@@ -13,6 +15,7 @@ export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
     function FormOptionsModalContent({ ref, data: { form } }) {
         "use memo";
         const { colors } = useTheme();
+        const deleteForm = useMutation(formMutations.delete);
 
         return (
             <>
@@ -36,13 +39,15 @@ export const FormOptionsModal = UISheetModal.HOC<FormOptionsModalParams>(
                         <UIForm.Button
                             label="Delete"
                             color={colors.danger}
-                            onPress={() => {
-                                FormsDB.deleteForm(form)
-                                    .catch((e) => {
-                                        console.error(e);
-                                        Alert.alert("Error", "Failed to delete form.");
-                                    })
-                                    .finally(() => ref.current?.dismiss());
+                            onPress={async () => {
+                                try {
+                                    await deleteForm.mutateAsync(form.id);
+                                } catch (e) {
+                                    console.error(e);
+                                    Alert.alert("Error", "Failed to delete form.");
+                                } finally {
+                                    ref.current?.dismiss();
+                                }
                             }}
                         />
                     </UIForm.Section>

@@ -1,13 +1,10 @@
 import { Alert, StyleSheet, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
-import { MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import Confetti from "react-native-confetti";
 import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import type { RootStackScreenProps } from "@/navigation";
 import { Form } from "@/lib/forms";
-import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
-import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { MatchInformation } from "@/navigation/(scouting)/components/MatchInformation";
 import { Arrays } from "@/lib/util/Arrays";
@@ -19,14 +16,18 @@ import { UIText } from "@/ui/components/UIText";
 import { HeaderTimer } from "../components/HeaderTimer";
 import { UITabView } from "@/ui/components/UITabView";
 import { FormView } from "@/components/FormView";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { matchReportMutations } from "@/lib/mutations/matchReports";
+import { queries } from "@/lib/queries";
 
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use memo"; // TODO: fix this
 
-    const { competition } = useCurrentCompetition();
+    const { data: competition = null, isSuccess } = useQuery(queries.competitions.current);
     const { getTeamsForMatch } = useCurrentCompetitionMatches();
+    const submitMatchReport = useMutation(matchReportMutations.create);
     const [match, setMatch] = useState<number | null>(null);
     const teamsForMatch = match === null || match > 400 ? [] : getTeamsForMatch(match);
     const [team, setTeam] = useState<number | null>(null);
@@ -101,12 +102,12 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (competition === null || formStructure === null) return;
 
         if (match === null || match > 400) {
-            await AsyncAlert.alert("Invalid Match Number", "Please enter a valid match number");
+            Alert.alert("Invalid Match Number", "Please enter a valid match number");
             navigation.navigate("Match");
             return;
         }
         if (team === null) {
-            await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
+            Alert.alert("Invalid Team Number", "Please enter a valid team number");
             navigation.navigate("Match");
             return;
         }
@@ -131,29 +132,31 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             competitionName: competition.name,
         };
 
+        console.log(dataToSubmit);
         try {
-            console.log(dataToSubmit);
-            await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
+            await submitMatchReport.mutateAsync(dataToSubmit);
             Toast.show({
                 type: "success",
                 text1: "Scouting report submitted!",
                 visibilityTime: 3000,
             });
             reset();
-
             useConfetti.current?.startConfetti();
+            navigation.navigate("Match");
         } catch (error) {
             console.error(error);
             Alert.alert("Error", "There was an error submitting your scouting report.");
         }
-
-        navigation.navigate("Match");
     }
 
     if (competition === null) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
+
+                {!isSuccess && (
+                    <UIText>To check for competitions, please connect to the internet.</UIText>
+                )}
             </View>
         );
     }

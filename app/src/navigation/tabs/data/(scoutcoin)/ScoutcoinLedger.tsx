@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import {
-    ScoutcoinLedger as ScoutcoinLedgerDB,
-    type ScoutcoinLedgerItem,
-} from "@/lib/db/models/Scoutcoin";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UITextInput } from "@/ui/components/UITextInput";
 import { UIText } from "@/ui/components/UIText";
 import type { Theme } from "@/ui/lib/theme";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 const formatDate = (date: Date) => {
     const month = date.toLocaleString("default", { month: "short" });
@@ -23,36 +21,26 @@ const boughtRegex = /Bought item: /;
 export function ScoutcoinLedger() {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
-    const [scoutcoinLedger, setScoutcoinLedger] = useState<ScoutcoinLedgerItem[]>([]);
-    const [filteredScoutcoinLedger, setFilteredScoutcoinLedger] = useState<ScoutcoinLedgerItem[]>(
-        [],
-    );
-    useEffect(() => {
-        ScoutcoinLedgerDB.getLogs().then((logs) => {
-            setScoutcoinLedger(logs);
-            setFilteredScoutcoinLedger(logs);
-        });
-    }, []);
+    const { data: scoutcoinLedger = [] } = useQuery(queries.scoutcoinLedger.logs);
+    const [searchText, setSearchText] = useState("");
+
+    const filteredScoutcoinLedger = useMemo(() => {
+        if (!searchText) return scoutcoinLedger;
+        const lower = searchText.toLowerCase();
+        return scoutcoinLedger.filter(
+            (ledger) =>
+                ledger.description.toLowerCase().includes(lower) ||
+                ledger.sourceUserName?.toLowerCase().includes(lower) ||
+                ledger.destinationUserName?.toLowerCase().includes(lower),
+        );
+    }, [scoutcoinLedger, searchText]);
 
     return (
         <View style={styles.container}>
             <View style={styles.filterContainer}>
                 <UITextInput
                     placeholder="Search ledger"
-                    onChangeText={(text) => {
-                        setFilteredScoutcoinLedger(
-                            scoutcoinLedger.filter(
-                                (ledger) =>
-                                    ledger.description.toLowerCase().includes(text.toLowerCase()) ||
-                                    ledger.src_user_name
-                                        ?.toLowerCase()
-                                        .includes(text.toLowerCase()) ||
-                                    ledger.dest_user_name
-                                        ?.toLowerCase()
-                                        .includes(text.toLowerCase()),
-                            ),
-                        );
-                    }}
+                    onChangeText={setSearchText}
                     style={styles.filterBox}
                 />
             </View>
@@ -60,40 +48,40 @@ export function ScoutcoinLedger() {
                 data={filteredScoutcoinLedger}
                 renderItem={({ item }) => (
                     <View style={styles.row}>
-                        <UIText style={styles.date}>{formatDate(item.created_at)}</UIText>
+                        <UIText style={styles.date}>{formatDate(item.createdAt)}</UIText>
                         <UIText style={styles.description}>
                             {item.description}
                             {"\n"}
                             {item.description.match(betRegex) ? (
                                 <>
-                                    {item.amount_change < 0 ? (
+                                    {item.amountChange < 0 ? (
                                         <UIText>
                                             <UIText color={theme.colors.loss}>Lost by</UIText>{" "}
-                                            {item.src_user_name || item.dest_user_name}
+                                            {item.sourceUserName || item.destinationUserName}
                                         </UIText>
                                     ) : (
                                         <UIText>
                                             <UIText color={theme.colors.win}>Won by</UIText>{" "}
-                                            {item.dest_user_name || item.src_user_name}
+                                            {item.destinationUserName || item.sourceUserName}
                                         </UIText>
                                     )}
                                 </>
                             ) : item.description.match(boughtRegex) ? (
                                 <UIText>
                                     <UIText color={theme.colors.loss}>Bought by</UIText>{" "}
-                                    {item.src_user_name}
+                                    {item.sourceUserName}
                                 </UIText>
                             ) : (
                                 <>
                                     <UIText>
                                         <UIText color={theme.colors.win}>Sent by</UIText>{" "}
-                                        {item.amount_change < 0
-                                            ? item.src_user_name
-                                            : item.dest_user_name}{" "}
+                                        {item.amountChange < 0
+                                            ? item.sourceUserName
+                                            : item.destinationUserName}{" "}
                                         <UIText color={theme.colors.loss}>to</UIText>{" "}
-                                        {item.amount_change < 0
-                                            ? item.dest_user_name
-                                            : item.src_user_name}
+                                        {item.amountChange < 0
+                                            ? item.destinationUserName
+                                            : item.sourceUserName}
                                     </UIText>
                                 </>
                             )}

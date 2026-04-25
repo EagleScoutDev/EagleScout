@@ -15,109 +15,123 @@ export interface CompetitionReturnData extends Competition {
     pitScoutFormStructure: Form.Structure;
 }
 
-export class CompetitionsDB {
-    static async getCompetitions(): Promise<CompetitionReturnData[]> {
-        const { data, error } = await supabase.rpc("list_all_competitions");
-        if (error) {
-            throw error;
-        } else {
-            return data.map((competition) => {
-                return {
-                    id: competition.competition_id,
-                    name: competition.competition_name,
-                    startTime: competition.start_time,
-                    endTime: competition.end_time,
-                    formId: competition.form_id,
-                    form: competition.form_structure,
-                    pitScoutFormId: competition.pit_scout_form_id,
-                    pitScoutFormStructure: competition.pit_scout_form_structure,
-                };
-            });
-        }
+export namespace Competitions {
+    const query = () =>
+        supabase.from("competitions").select(`
+            id,
+            name,
+            startTime:      start_time,
+            endTime:        end_time,
+            formId:         form_id,
+            pitScoutFormId: pit_scout_form_id,
+            ...forms!competitions_form_id_fkey(
+                form:   form_structure
+            ),
+            ...forms!competitions_pit_scout_form_id_fkey(
+                pitScoutFormStructure: form_structure
+            )
+        `);
+
+    export async function get(id: number): Promise<CompetitionReturnData> {
+        const { data, error } = await query().eq("id", id).single();
+        if (error) throw error;
+
+        return {
+            ...data,
+            startTime: new Date(data.startTime),
+            endTime: new Date(data.endTime),
+        };
     }
 
-    static async getCurrentCompetition(): Promise<CompetitionReturnData | null> {
-        const { data, error } = await supabase.rpc("get_current_competition");
-        if (error) {
-            throw error;
-        } else {
-            if (data.length === 0) {
-                return null;
-            } else {
-                return {
-                    id: data[0].competition_id,
-                    name: data[0].competition_name,
-                    startTime: data[0].start_time,
-                    endTime: data[0].end_time,
-                    formId: data[0].form_id,
-                    form: data[0].form_structure,
-                    pitScoutFormId: data[0].pit_scout_form_id,
-                    pitScoutFormStructure: data[0].pit_scout_form_structure,
-                };
-            }
-        }
+    export async function getAll(): Promise<CompetitionReturnData[]> {
+        const { data, error } = await query();
+        if (error) throw error;
+
+        return data.map((row) => ({
+            ...row,
+            startTime: new Date(row.startTime),
+            endTime: new Date(row.endTime),
+        }));
     }
 
-    static async createCompetition(competition: Competition): Promise<void> {
-        const { data, error } = await supabase.from("competitions").insert({
-            name: competition.name,
-            start_time: competition.startTime,
-            end_time: competition.endTime,
-            form_id: competition.formId,
-        });
-        if (error) {
-            throw error;
-        }
-    }
-
-    static async getCompetitionTeams(competitionId: number): Promise<number[]> {
+    export async function getTeams(compId: number): Promise<number[]> {
         const { data, error } = await supabase
             .from("competitions")
             .select("tba_events ( teams )")
-            .eq("id", competitionId)
+            .eq("id", compId)
             .single();
-        if (error) {
-            throw error;
-        } else {
-            console.log(data);
-            return data.tba_events.teams;
-        }
+        if (error) throw error;
+
+        return data.tba_events.teams;
     }
 
-    static async getCompetitionTBAKey(competitionId: number): Promise<string> {
+    export async function getTBAKey(compId: number): Promise<string> {
         const { data, error } = await supabase
             .from("competitions")
             .select("tba_events ( event_key )")
-            .eq("id", competitionId)
+            .eq("id", compId)
             .single();
-        if (error) {
-            throw error;
-        } else {
-            return data.tba_events.event_key;
-        }
+        if (error) throw error;
+
+        return data.tba_events.event_key;
     }
 
-    static async getCompetitionById(competitionId: number): Promise<CompetitionReturnData> {
-        const { data, error } = await supabase.rpc("get_competition_by_id", {
-            id_arg: competitionId,
+    export async function getCurrent(): Promise<CompetitionReturnData | null> {
+        const now = new Date().toISOString();
+        const { data, error } = await query()
+            .lte("start_time", now)
+            .gte("end_time", now)
+            .maybeSingle();
+        if (error) throw error;
+
+        if (data === null) return null;
+        return {
+            ...data,
+            startTime: new Date(data.startTime),
+            endTime: new Date(data.endTime),
+        };
+    }
+
+    // FIXME: impure queries are below
+
+    export async function create(
+        name: string,
+        startTime: Date,
+        endTime: Date,
+        tbaEventId: number,
+        matchFormId: number,
+        pitFormId: number,
+    ): Promise<void> {
+        const { error } = await supabase.from("competitions").insert({
+            name: name,
+            start_time: startTime,
+            end_time: endTime,
+            tba_event_id: tbaEventId,
+            form_id: matchFormId,
+            pit_scout_form_id: pitFormId,
         });
-        // .from('competitions')
-        // .select('*, forms( form_structure )')
-        // .eq('id', competitionId)
-        // .single();
-        if (error) {
-            throw error;
-        } else {
-            return {
-                id: data[0].competition_id,
-                name: data[0].competition_name,
-                startTime: data[0].start_time,
-                endTime: data[0].end_time,
-                formId: data[0].form_id,
-                form: data[0].form_structure,
-                pitScoutFormId: data[0].pit_scout_form_id,
-                pitScoutFormStructure: data[0].pit_scout_form_structure,
-            };
-        }
+        if (error) throw error;
+    }
+
+    export async function update(
+        competitionId: number,
+        name: string,
+        startTime: Date,
+        endTime: Date,
+    ): Promise<void> {
+        const { error } = await supabase
+            .from("competitions")
+            .update({
+                name: name,
+                start_time: startTime,
+                end_time: endTime,
+            })
+            .eq("id", competitionId);
+        if (error) throw error;
+    }
+
+    export async function remove(competitionId: number): Promise<void> {
+        const { error } = await supabase.from("competitions").delete().eq("id", competitionId);
+        if (error) throw error;
     }
 }

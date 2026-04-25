@@ -1,4 +1,4 @@
-import { type MatchReportReturnData } from "@/lib/db/models/ScoutMatchReport";
+import { type MatchReportReturnData, ScoutMatchReports } from "@/lib/db/models/ScoutMatchReport";
 import { FlatList, Pressable, View } from "react-native";
 import { UIText } from "@/ui/components/UIText";
 import React from "react";
@@ -22,7 +22,7 @@ export function MatchReportModal({ navigation, route }: MatchReportModalProps) {
     // const account = useUserStore((state) => state.account);
     // const { data: history } = useQuery({
     //     queryKey: ["matchReportHistory", report.reportId],
-    //     queryFn: () => MatchReportsDB.getReportHistory(report.reportId),
+    //     queryFn: () => ScoutMatchReports.getHistory(report.reportId),
     //     throwOnError: true,
     //     enabled: !isOfflineForm,
     // });

@@ -1,44 +1,20 @@
-import { type TBAMatch, TBAMatches } from "@/lib/db/models/Match";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export function useCurrentCompetitionMatches() {
-    const [competitionId, setCompetitionId] = useState<number>(-1);
-    const [matches, setMatches] = useState<TBAMatch[]>([]);
+    const { data: currentComp = null } = useQuery(queries.competitions.current);
+    const { data: matches = null } = useQuery({
+        ...queries.tbaMatches.forComp({ id: currentComp?.id! }),
+        enabled: currentComp !== null,
+    });
 
-    const loadMatches = async (competitionId: number) => {
-        try {
-            const dbMatches = await TBAMatches.getMatchesForCompetition(competitionId.toString());
-            if (dbMatches != null) {
-                setMatches(dbMatches);
-            }
-        } catch (e) {
-            // ignore
-        }
-    };
-
-    const loadCompetition = async () => {
-        try {
-            const dbCompetition = await CompetitionsDB.getCurrentCompetition();
-            if (dbCompetition != null) {
-                setCompetitionId(dbCompetition.id);
-                return dbCompetition.id;
-            }
-        } catch (e) {
-            // ignore
-        }
-    };
-
-    useEffect(() => {
-        loadCompetition().then((competitionId) => {
-            if (competitionId != null) {
-                loadMatches(competitionId);
-            }
-        });
-    }, []);
+    const competitionId = currentComp?.id ?? null;
 
     const getTeamsForMatch = useCallback(
         (matchNumber: number) => {
+            if (matches === null) return [];
+
             return matches
                 .filter((match) => match.compLevel === "qm")
                 .filter((match) => match.match === matchNumber)
@@ -52,13 +28,19 @@ export function useCurrentCompetitionMatches() {
 
     const getTeamsForMatchDetailed = useCallback(
         (matchNumber: number) => {
+            if (matches === null) return [];
+
             return matches
-                .filter(match => match.compLevel === 'qm')
-                .filter(match => match.match === matchNumber);
-            // .filter(match => match.alliance === alliance);
+                .filter((match) => match.compLevel === "qm")
+                .filter((match) => match.match === matchNumber);
         },
         [matches],
     );
 
-    return { matches, competitionId, getTeamsForMatch, getTeamsForMatchDetailed };
+    return {
+        matches,
+        competitionId,
+        getTeamsForMatch,
+        getTeamsForMatchDetailed,
+    };
 }

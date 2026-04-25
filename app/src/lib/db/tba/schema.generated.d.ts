@@ -2141,12 +2141,14 @@ export interface components {
                 name: string;
             }[];
             /** @description List of year-specific values provided in the `sort_orders` array for each team. */
-            sort_order_info: {
-                /** @description Integer expressing the number of digits of precision in the number provided in `sort_orders`. */
-                precision: number;
-                /** @description Name of the field used in the `sort_order` array. */
-                name: string;
-            }[] | null;
+            sort_order_info:
+                | {
+                      /** @description Integer expressing the number of digits of precision in the number provided in `sort_orders`. */
+                      precision: number;
+                      /** @description Name of the field used in the `sort_order` array. */
+                      name: string;
+                  }[]
+                | null;
         };
         Event_Simple: {
             /** @description TBA event key with the format yyyy[EVENT_CODE], where yyyy is the year, and EVENT_CODE is the event code of the event. */
@@ -2245,7 +2247,19 @@ export interface components {
              */
             post_result_time: number | null;
             /** @description Score breakdown for auto, teleop, etc. points. Varies from year to year. May be null. */
-            score_breakdown: components["schemas"]["Match_Score_Breakdown_2015"] | components["schemas"]["Match_Score_Breakdown_2016"] | components["schemas"]["Match_Score_Breakdown_2017"] | components["schemas"]["Match_Score_Breakdown_2018"] | components["schemas"]["Match_Score_Breakdown_2019"] | components["schemas"]["Match_Score_Breakdown_2020"] | components["schemas"]["Match_Score_Breakdown_2022"] | components["schemas"]["Match_Score_Breakdown_2023"] | components["schemas"]["Match_Score_Breakdown_2024"] | components["schemas"]["Match_Score_Breakdown_2025"] | components["schemas"]["Match_Score_Breakdown_2026"] | null;
+            score_breakdown:
+                | components["schemas"]["Match_Score_Breakdown_2015"]
+                | components["schemas"]["Match_Score_Breakdown_2016"]
+                | components["schemas"]["Match_Score_Breakdown_2017"]
+                | components["schemas"]["Match_Score_Breakdown_2018"]
+                | components["schemas"]["Match_Score_Breakdown_2019"]
+                | components["schemas"]["Match_Score_Breakdown_2020"]
+                | components["schemas"]["Match_Score_Breakdown_2022"]
+                | components["schemas"]["Match_Score_Breakdown_2023"]
+                | components["schemas"]["Match_Score_Breakdown_2024"]
+                | components["schemas"]["Match_Score_Breakdown_2025"]
+                | components["schemas"]["Match_Score_Breakdown_2026"]
+                | null;
             /** @description Array of video objects associated with this match. */
             videos: {
                 /** @description Can be one of 'youtube' or 'tba' */
@@ -2612,11 +2626,13 @@ export interface components {
             foulPoints: number;
             techFoulCount: number;
             linkPoints?: number;
-            links?: {
-                nodes: ("None" | "Cone" | "Cube")[];
-                /** @enum {string} */
-                row: "Bottom" | "Mid" | "Top";
-            }[] | null;
+            links?:
+                | {
+                      nodes: ("None" | "Cone" | "Cube")[];
+                      /** @enum {string} */
+                      row: "Bottom" | "Mid" | "Top";
+                  }[]
+                | null;
             sustainabilityBonusAchieved?: boolean;
             teleopCommunity?: {
                 B: ("None" | "Cone" | "Cube")[];
@@ -2899,44 +2915,66 @@ export interface components {
              * @description String type of the media element.
              * @enum {string}
              */
-            type: "youtube" | "cdphotothread" | "imgur" | "facebook-profile" | "youtube-channel" | "twitter-profile" | "github-profile" | "instagram-profile" | "periscope-profile" | "gitlab-profile" | "grabcad" | "instagram-image" | "external-link" | "avatar" | "onshape" | "cd-thread";
+            type:
+                | "youtube"
+                | "cdphotothread"
+                | "imgur"
+                | "facebook-profile"
+                | "youtube-channel"
+                | "twitter-profile"
+                | "github-profile"
+                | "instagram-profile"
+                | "periscope-profile"
+                | "gitlab-profile"
+                | "grabcad"
+                | "instagram-image"
+                | "external-link"
+                | "avatar"
+                | "onshape"
+                | "cd-thread";
             /** @description The key used to identify this media on the media site. */
             foreign_key: string;
             /** @description If required, a JSON dict of additional media information. */
-            details?: Record<string, never> | {
-                base64Image: string;
-            } | {
-                author_id: number;
-                author_name: string;
-                /** Format: uri */
-                author_url: string;
-                height: number | null;
-                html: string;
-                media_id: string;
-                provider_name: string;
-                /** Format: uri */
-                provider_url: string;
-                thumbnail_height: number;
-                /** Format: uri */
-                thumbnail_url: string;
-                thumbnail_width: number;
-                title: string;
-                type: string;
-                version: string;
-                width: number;
-            } | {
-                /** Format: date-time */
-                model_created: string;
-                model_description: string | null;
-                /** Format: uri */
-                model_image: string;
-                model_name: string;
-            } | {
-                image_partial: string;
-            } | {
-                thread_title: string;
-                image_url: string | null;
-            };
+            details?:
+                | Record<string, never>
+                | {
+                      base64Image: string;
+                  }
+                | {
+                      author_id: number;
+                      author_name: string;
+                      /** Format: uri */
+                      author_url: string;
+                      height: number | null;
+                      html: string;
+                      media_id: string;
+                      provider_name: string;
+                      /** Format: uri */
+                      provider_url: string;
+                      thumbnail_height: number;
+                      /** Format: uri */
+                      thumbnail_url: string;
+                      thumbnail_width: number;
+                      title: string;
+                      type: string;
+                      version: string;
+                      width: number;
+                  }
+                | {
+                      /** Format: date-time */
+                      model_created: string;
+                      model_description: string | null;
+                      /** Format: uri */
+                      model_image: string;
+                      model_name: string;
+                  }
+                | {
+                      image_partial: string;
+                  }
+                | {
+                      thread_title: string;
+                      image_url: string | null;
+                  };
             /** @description True if the media is of high quality. */
             preferred?: boolean;
             /** @description List of teams that this media belongs to. Most likely length 1. */
@@ -2960,7 +2998,17 @@ export interface components {
             year: number;
         };
         /** @enum {string} */
-        Position_2016: "" | "A_ChevalDeFrise" | "A_Portcullis" | "B_Moat" | "B_Ramparts" | "C_Drawbridge" | "C_SallyPort" | "D_RockWall" | "D_RoughTerrain" | "NotSpecified";
+        Position_2016:
+            | ""
+            | "A_ChevalDeFrise"
+            | "A_Portcullis"
+            | "B_Moat"
+            | "B_Ramparts"
+            | "C_Drawbridge"
+            | "C_SallyPort"
+            | "D_RockWall"
+            | "D_RoughTerrain"
+            | "NotSpecified";
         /** @enum {string} */
         PreMatchBay_2019: "Cargo" | "Panel" | "Unknown";
         ReefRow_2025: {
@@ -2982,7 +3030,12 @@ export interface components {
             /** @description Whether or not the team qualified for Championship. */
             cmp: boolean;
             /** @enum {string} */
-            cmp_status: "NotInvited" | "PreQualified" | "EventQualified" | "PoolQualified" | "Declined";
+            cmp_status:
+                | "NotInvited"
+                | "PreQualified"
+                | "EventQualified"
+                | "PoolQualified"
+                | "Declined";
             /** @description The event key at which the team qualified */
             qualifying_event?: string;
             /** @description The name of the award which qualified the team */
@@ -3159,12 +3212,14 @@ export interface components {
                 team_key?: string;
             } | null;
             /** @description Ordered list of names corresponding to the elements of the `sort_orders` array. */
-            sort_order_info?: {
-                /** @description The number of digits of precision used for this value, eg `2` would correspond to a value of `101.11` while `0` would correspond to `101`. */
-                precision?: number;
-                /** @description The descriptive name of the value used to sort the ranking. */
-                name?: string;
-            }[] | null;
+            sort_order_info?:
+                | {
+                      /** @description The number of digits of precision used for this value, eg `2` would correspond to a value of `101.11` while `0` would correspond to `101`. */
+                      precision?: number;
+                      /** @description The descriptive name of the value used to sort the ranking. */
+                      name?: string;
+                  }[]
+                | null;
             status?: string;
         };
         Team_Robot: {
@@ -3211,7 +3266,19 @@ export interface components {
              * @description Type of webcast, typically descriptive of the streaming provider.
              * @enum {string}
              */
-            type: "youtube" | "twitch" | "ustream" | "iframe" | "html5" | "rtmp" | "livestream" | "direct_link" | "mms" | "justin" | "stemtv" | "dacast";
+            type:
+                | "youtube"
+                | "twitch"
+                | "ustream"
+                | "iframe"
+                | "html5"
+                | "rtmp"
+                | "livestream"
+                | "direct_link"
+                | "mms"
+                | "justin"
+                | "stemtv"
+                | "dacast";
             /** @description Type specific channel information. May be the YouTube stream, or Twitch channel name. In the case of iframe types, contains HTML to embed the stream in an HTML iframe. */
             channel: string;
             /** @description The date for the webcast in `yyyy-mm-dd` format. May be null. */

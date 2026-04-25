@@ -21,112 +21,109 @@ import { TagColorChangeModal } from "./TagColorChangeModal";
 import { DoNotPickModal } from "./DoNotPickModal";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Haptics from "expo-haptics";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
-import {
-    PicklistsDB,
-    type PicklistStructure,
-    type PicklistTeam,
-    type SimpleTeam,
-} from "@/lib/db/models/Picklist";
-import { ProfilesDB } from "@/lib/db/models/Profile";
-import { TagsDB, type TagStructure } from "@/lib/database/Tags";
+import { type Picklist, type PicklistTeam, type Tag } from "@/lib/db/models/Picklist";
 import * as Bs from "@/ui/icons";
 import type { Setter } from "@/lib/util/react/types";
 import type { DataTabScreenProps } from "../index";
 import { useTheme } from "@/ui/context/ThemeContext";
-import { TBA } from "@/lib/db/tba";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
 import { UITextInput } from "@/ui/components/UITextInput";
 import { useRootNavigation } from "@/navigation/hooks";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+import { picklistMutations } from "@/lib/mutations/picklists";
+import { tagMutations } from "@/lib/mutations/tags";
+import type { TBATeam } from "@/lib/db/tba";
 
 export interface PicklistCreatorParams {
-    picklist_id: number;
+    picklistId: number;
     currentCompID: number;
 }
 export interface PicklistCreatorProps extends DataTabScreenProps<"Picklists/Create"> {}
 export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     const { colors } = useTheme();
     const rootNavigation = useRootNavigation();
+    const queryClient = useQueryClient();
 
     const [name, setName] = useState<string | undefined>(undefined);
-    const [creatorName, setCreatorName] = useState<string>("");
 
-    // used to display the team name next to the team number
     const [teamNumberToNameMap, setTeamNumberToNameMap] = useState<Map<number, string>>(new Map());
 
-    // screen config
-    const [dragging_active, setDraggingActive] = useState(false);
+    const [draggingActive, setDraggingActive] = useState(false);
     const [syncing, setSyncing] = useState(false);
 
-    // modals
     const [teamAddingModalVisible, setTeamAddingModalVisible] = useState(false);
     const [createTagModal, setCreateTagModal] = useState(false);
     const [showDNPModal, setShowDNPModal] = useState(false);
 
-    // list of teams at the current competition
-    const [tbaSimpleTeams, setTBASimpleTeams] = useState<SimpleTeam[]>([]);
+    const [teamsList, setTeamsList] = useState<PicklistTeam[]>([]);
 
-    // list of teams in the picklist -- this is the actual picklist
-    const [teams_list, setTeamsList] = useState<PicklistTeam[]>([]);
+    const { picklistId, currentCompID } = route.params;
 
-    // id holds the id of the picklist to be edited, or -1 if a new picklist is being created
-    const { picklist_id, currentCompID } = route.params;
+    const [presetPicklist, setPresetPicklist] = useState<Picklist>();
 
-    // used to store the picklist that is being edited, or undefined if a new picklist is being created
-    const [presetPicklist, setPresetPicklist] = useState<PicklistStructure>();
+    const [removedTeams, setRemovedTeams] = useState<PicklistTeam[]>([]);
 
-    // used to track which teams have been selected already
-    const [removed_teams, setRemovedTeams] = useState<PicklistTeam[]>([]);
-
-    // currently highlighted team
     const [selectedTeam, setSelectedTeam] = useState<PicklistTeam | null>(null);
 
-    // set of tags
     const [uniqueTags, setUniqueTags] = useState<Set<number>>(new Set());
-    const [allTags, setAllTags] = useState<TagStructure[]>([]);
     const [filteredTags, setFilteredTags] = useState<Set<number>>(new Set());
     const [tagColorChangeModalVisible, setTagColorChangeModalVisible] = useState(false);
-    const [selectedTagForColorChange, setSelectedTagForColorChange] = useState<
-        TagStructure | undefined
-    >(undefined);
+    const [selectedTagForColorChange, setSelectedTagForColorChange] = useState<Tag | undefined>(
+        undefined,
+    );
+
+    const { data: currentCompetition } = useQuery(queries.competitions.current);
+
+    const { data: tbaKey } = useQuery({
+        ...queries.competitions.tbaKey({ id: currentCompetition?.id ?? -1 }),
+        enabled: !!currentCompetition?.id && currentCompetition.id !== -1,
+    });
+
+    const { data: tbaSimpleTeams = [] } = useQuery({
+        ...queries.tbaTeams.forCompetition({ tbaKey: tbaKey ?? "" }),
+        enabled: !!tbaKey && tbaKey !== "",
+    });
+
+    const { data: allTags = [] } = useQuery({
+        ...queries.tags.forPicklist({ picklistId: picklistId }),
+        enabled: picklistId !== -1,
+    });
+
+    const { data: picklistData } = useQuery({
+        ...queries.picklists.forId({ picklistId: picklistId }),
+        enabled: picklistId !== -1,
+    });
+
+    const { data: creatorProfile } = useQuery({
+        ...queries.profiles.forId({ id: presetPicklist?.createdBy ?? "" }),
+        enabled: !!presetPicklist?.createdBy,
+    });
+
+    const updatePicklistMut = useMutation(picklistMutations.update);
+    const createPicklistMut = useMutation(picklistMutations.create);
+    const deleteTagMut = useMutation(tagMutations.delete);
 
     useEffect(() => {
-        console.log("picklist_id: ", picklist_id);
-        if (picklist_id !== -1) {
-            TagsDB.getTagsForPicklist(picklist_id).then((tags) => {
-                setAllTags(tags);
+        if (picklistData) {
+            setPresetPicklist(picklistData);
+            setName(picklistData.name);
+            setTeamsList(picklistData.teams);
+
+            let temp = new Set<number>();
+            picklistData.teams.forEach((t) => {
+                t.tags.forEach((tag) => {
+                    temp.add(tag);
+                });
             });
+            setUniqueTags(temp);
         }
-    }, [createTagModal, tagColorChangeModalVisible]);
+    }, [picklistData]);
 
-    // fetches all teams at the current competition for use in the team adding modal, name map
     useEffect(() => {
-        CompetitionsDB.getCurrentCompetition()
-            .then((competition) => {
-                if (!competition) {
-                    console.error("No current competition found");
-                    return;
-                }
-                CompetitionsDB.getCompetitionTBAKey(competition.id)
-                    .then((tba_key) => {
-                        TBA.getTeamsAtCompetition(tba_key)
-                            .then((teams) => {
-                                setTBASimpleTeams(teams);
-                                initializeNumberToNameMap(teams);
-                            })
-                            .catch((error) => {
-                                console.error("Error getting teams at competition:", error);
-                            });
-                    })
-                    .catch((error) => {
-                        console.error("Error getting TBA key for competition:", error);
-                    });
-            })
-            .catch((error) => {
-                console.error("Error getting current competition:", error);
-            });
-    }, []);
+        initializeNumberToNameMap(tbaSimpleTeams);
+    }, [tbaSimpleTeams]);
 
     useEffect(() => {
         if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -134,32 +131,23 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         }
     }, []);
 
-    const setSelectedTeamWithAnimation = (team: Setter<PicklistTeam | null>) => {
+    const setSelectedTeamWithAnimation = (team: PicklistTeam | null) => {
         if (team) {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         }
         setSelectedTeam(team);
     };
 
-    // sets up the map that will be used to display team names next to team numbers
-    const initializeNumberToNameMap = (teams: SimpleTeam[]) => {
-        let temp_map = new Map();
+    const initializeNumberToNameMap = (teams: TBATeam[]) => {
+        let tempMap = new Map();
 
         for (let i = 0; i < teams.length; i++) {
-            temp_map.set(teams[i].team_number, teams[i].nickname);
+            tempMap.set(teams[i].team_number, teams[i].nickname);
         }
 
-        setTeamNumberToNameMap(temp_map);
+        setTeamNumberToNameMap(tempMap);
     };
 
-    // if a picklist is being edited, fetches the picklist from the database
-    useEffect(() => {
-        if (picklist_id !== -1) {
-            fetchPicklist();
-        }
-    }, []);
-
-    // adds header button to fetch picklist from database
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -174,15 +162,6 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                     {presetPicklist && syncing && (
                         <ActivityIndicator size="small" color={colors.primary.hex} />
                     )}
-                    {presetPicklist && !syncing && (
-                        <Pressable onPress={() => fetchPicklist()}>
-                            <Bs.ArrowClockwise
-                                size="30"
-                                fill="gray"
-                                style={{ marginRight: "5%" }}
-                            />
-                        </Pressable>
-                    )}
                     {!presetPicklist && (
                         <Pressable onPress={() => prepareUpload()}>
                             <Bs.CloudArrowUp size="32" fill="gray" />
@@ -191,96 +170,74 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                     <Pressable onPress={() => setDraggingActive((prev) => !prev)}>
                         <Bs.PencilSquare
                             size="24"
-                            fill={dragging_active ? colors.primary.hex : "dimgray"}
+                            fill={draggingActive ? colors.primary.hex : "dimgray"}
                         />
                     </Pressable>
                 </View>
             ),
         });
-    }, [dragging_active, syncing]);
+    }, [draggingActive, syncing, presetPicklist]);
 
-    // when the picklist is being edited, ensures that the picklist has been uploaded before trying a save
     useEffect(() => {
-        saveIfExists();
-    }, [teams_list]);
-
-    // gets latest picklist from db
-    async function fetchPicklist() {
-        try {
-            const picklist = await PicklistsDB.getPicklist(String(picklist_id));
-            setPresetPicklist(picklist);
-            setName(picklist.name);
-            setTeamsList(picklist.teams);
-            ProfilesDB.getProfile(picklist.created_by).then((profile) => {
-                setCreatorName(profile.name);
-            });
-
-            let temp = new Set<number>();
-            picklist.teams.forEach((t) => {
-                t.tags.forEach((tag) => {
-                    temp.add(tag);
-                });
-            });
-            setUniqueTags(temp);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    const saveIfExists = () => {
         if (presetPicklist) {
             savePicklistToDB();
         }
-    };
+    }, [teamsList]);
 
-    const savePicklistToDB = () => {
+    const savePicklistToDB = async () => {
         setSyncing(true);
         if (presetPicklist) {
-            console.log("user has opted to update picklist");
-            PicklistsDB.updatePicklist(picklist_id, teams_list).then((r) => {
-                console.log("response after updating picklist: " + r);
+            try {
+                await updatePicklistMut.mutateAsync({ id: picklistId, teams: teamsList });
                 setSyncing(false);
-            });
+            } catch (error) {
+                setSyncing(false);
+            }
         } else {
-            console.log("saving picklist to db");
-            PicklistsDB.createPicklist(name ?? "Picklist", teams_list, currentCompID).then((r) => {
-                console.log("response after submitting picklist to db: " + r);
+            try {
+                await createPicklistMut.mutateAsync({
+                    name: name ?? "Picklist",
+                    teams: teamsList,
+                    competitionId: currentCompID,
+                });
                 setSyncing(false);
-            });
+            } catch (error) {
+                setSyncing(false);
+            }
         }
     };
 
     const prepareUpload = () => {
-        if (teams_list === presetPicklist?.teams) {
+        if (teamsList === presetPicklist?.teams) {
             Alert.alert("No Changes", "You have not made any changes to this picklist.", [
                 {
-                    label: "OK",
+                    text: "OK",
                     style: "cancel",
                 },
             ]);
             return;
         }
 
-        if (teams_list.length === 0) {
+        if (teamsList.length === 0) {
             Alert.alert("Error: Empty Picklist", "You have not added any teams to this picklist.", [
                 {
-                    label: "OK",
+                    text: "OK",
                     style: "cancel",
                 },
             ]);
             return;
         }
 
-        const additional_message = presetPicklist
+        const additionalMessage = presetPicklist
             ? ' This will overwrite the picklist "' +
               presetPicklist.name +
               '" by ' +
-              creatorName +
+              (creatorProfile?.name || "Unknown") +
               "."
             : "";
         Alert.alert(
             "Upload Picklist",
-            "Are you sure you want to upload this picklist?" + additional_message,
+            "Are you sure you want to upload this picklist?" + additionalMessage,
             [
                 {
                     text: "Cancel",
@@ -290,7 +247,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                     text: "Upload",
                     onPress: () => {
                         savePicklistToDB();
-                        navigation.navigate("Manager");
+                        navigation.navigate("Picklists");
                     },
                 },
             ],
@@ -301,19 +258,18 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         let newTeam: PicklistTeam = {
             dnp: false,
             tags: [],
-            team_number: team,
+            teamNumber: team,
             notes: "",
         };
         setTeamsList((prevTeams) => [...prevTeams, newTeam]);
     };
 
     const removeTeam = (team: number) => {
-        setTeamsList((prevTeams) => prevTeams.filter((t) => t.team_number !== team));
+        setTeamsList((prevTeams) => prevTeams.filter((t) => t.teamNumber !== team));
     };
 
-    // only used by TeamAddingModal
-    const addOrRemoveTeam = (team: SimpleTeam) => {
-        if (teams_list.some((t) => t.team_number === team.team_number)) {
+    const addOrRemoveTeam = (team: TBATeam) => {
+        if (teamsList.some((t) => t.teamNumber === team.team_number)) {
             removeTeam(team.team_number);
         } else {
             addTeam(team.team_number);
@@ -321,7 +277,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     };
 
     const addOrRemoveTeamLiveMode = (team: PicklistTeam) => {
-        if (removed_teams.includes(team)) {
+        if (removedTeams.includes(team)) {
             setRemovedTeams((prev) => prev.filter((t) => t !== team));
         } else {
             setRemovedTeams((prev) => [...prev, team]);
@@ -329,9 +285,9 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     };
 
     const addTag = (team: PicklistTeam, tag: number) => {
-        let newTeams = teams_list.map((t) => {
+        let newTeams = teamsList.map((t) => {
             if (t === team && !t.tags.includes(tag)) {
-                t.tags.push(tag);
+                return { ...t, tags: [...t.tags, tag] };
             }
             return t;
         });
@@ -343,21 +299,20 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     };
 
     const removeTag = (team: PicklistTeam, tag: number) => {
-        let newTeams = teams_list.map((t) => {
+        let newTeams = teamsList.map((t) => {
             if (t === team) {
-                t.tags = t.tags.filter((a) => a !== tag);
+                return { ...t, tags: t.tags.filter((a) => a !== tag) };
             }
             return t;
         });
         setTeamsList(newTeams);
 
-        fillUniqueTags();
+        fillUniqueTags(newTeams);
     };
 
-    // sets up the set of unique tags
-    const fillUniqueTags = () => {
+    const fillUniqueTags = (currentTeams: PicklistTeam[]) => {
         let temp = new Set<number>();
-        teams_list.forEach((t) => {
+        currentTeams.forEach((t) => {
             t.tags.forEach((tag) => {
                 temp.add(tag);
             });
@@ -365,37 +320,34 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
         setUniqueTags(temp);
     };
 
-    const deleteTag = (tag: number) => {
-        for (let team of teams_list) {
-            removeTag(team, tag);
-        }
+    const handleDeleteTag = async (tag: number) => {
+        let newTeams = teamsList.map((t) => ({
+            ...t,
+            tags: t.tags.filter((a) => a !== tag),
+        }));
+        setTeamsList(newTeams);
+        fillUniqueTags(newTeams);
 
-        TagsDB.deleteTag(tag).then(() => {
-            TagsDB.getTagsForPicklist(picklist_id).then((tags) => {
-                setAllTags(tags);
-            });
-        });
+        try {
+            await deleteTagMut.mutateAsync(tag);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const getTagFromTagId = (tagId: number) => {
-        return allTags.find((tag) => Number.parseInt(tag.id ?? "", 10) === tagId);
+        return (allTags as Tag[]).find(
+            (tag) => Number.parseInt(tag.id?.toString() ?? "", 10) === tagId,
+        );
     };
 
-    const addToDNP = (team: SimpleTeam) => {
-        let newTeams = teams_list;
-
-        let specificTeam = teams_list.find((t) => t.team_number === team.team_number);
-        if (!specificTeam) {
-            newTeams.push({
-                team_number: team.team_number,
-                dnp: true,
-                tags: [],
-                notes: "",
-            });
-        } else {
-            newTeams = newTeams.filter((t) => t.team_number !== team.team_number);
-        }
-
+    const addToDNP = (team: PicklistTeam) => {
+        let newTeams = teamsList.map((t) => {
+            if (t.teamNumber === team.teamNumber) {
+                return { ...t, dnp: !t.dnp };
+            }
+            return t;
+        });
         setTeamsList(newTeams);
     };
 
@@ -425,16 +377,15 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             borderRadius: 10,
             marginVertical: 8,
         },
-        // the style taken on by every team item in the list that is not selected, when a team has been selected
         team_item_in_list_not_selected: {
             padding: "2%",
             flexDirection: "column",
             alignItems: "center",
             opacity: 0.4,
         },
-        team_number_strikethrough: {
+        team_number_displayed: {
             flex: 1,
-            color: "gray",
+            color: colors.fg.hex,
             fontSize: 18,
             marginLeft: "5%",
         },
@@ -469,11 +420,11 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                         }}
                     >
                         <BouncyCheckbox isChecked={false} disabled fillColor={colors.primary.hex} />
-                        <UIText placeholder>{teams_list.indexOf(item) + 1}</UIText>
+                        <UIText placeholder>{teamsList.indexOf(item) + 1}</UIText>
                         <UIText size={18} style={{ flex: 1, marginLeft: "5%" }}>
-                            {item.team_number}
+                            {item.teamNumber}
                             {teamNumberToNameMap.size === 0 ? "" : " "}
-                            {teamNumberToNameMap.get(item.team_number)}
+                            {teamNumberToNameMap.get(item.teamNumber)}
                         </UIText>
                         <View
                             style={{
@@ -485,13 +436,14 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 item.tags.map((tag) => {
                                     return (
                                         <View
+                                            key={tag}
                                             style={{
                                                 borderRadius: 10,
                                                 backgroundColor: getTagFromTagId(tag)?.color,
                                                 width: 14,
                                                 height: 14,
                                                 margin: "2%",
-                                                opacity: removed_teams.includes(item) ? 0.4 : 1,
+                                                opacity: removedTeams.includes(item) ? 0.4 : 1,
                                             }}
                                         />
                                     );
@@ -505,11 +457,10 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
 
     return (
         <Pressable style={styles.container} onPress={() => setSelectedTeamWithAnimation(null)}>
-            {/*  if the picklist was made by someone else, show the name and title. else, let the user enter a title */}
             {presetPicklist ? (
                 <View>
                     <UIText style={styles.name_input}>{presetPicklist.name}</UIText>
-                    <UIText placeholder>By {creatorName}</UIText>
+                    <UIText placeholder>By {creatorProfile?.name || "Unknown"}</UIText>
                 </View>
             ) : (
                 <TextInput
@@ -550,25 +501,24 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                 >
                     <Bs.ExclamationTriangle
                         size="16"
-                        fill={teams_list.some((a) => a.dnp) ? "red" : "gray"}
+                        fill={teamsList.some((a) => a.dnp) ? "red" : "gray"}
                     />
                 </Pressable>
             </View>
             <View
                 style={{
                     flexDirection: "row",
-                    // if the contents of the view are too wide, they will be wrapped and placed below the previous line
                     flexWrap: "wrap",
-                    // the contents of the view are centered along the horizontal axis
                 }}
             >
                 {[...uniqueTags].map((tag) => {
+                    const tagObj = getTagFromTagId(tag);
                     return (
                         <Pressable
                             key={tag}
                             onLongPress={() => {
                                 setTagColorChangeModalVisible(true);
-                                setSelectedTagForColorChange(getTagFromTagId(tag));
+                                setSelectedTagForColorChange(tagObj);
                             }}
                             onPress={() => {
                                 if (filteredTags.has(tag)) {
@@ -583,7 +533,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                             }}
                             style={{
                                 backgroundColor: filteredTags.has(tag)
-                                    ? getTagFromTagId(tag)?.color
+                                    ? tagObj?.color
                                     : colors.bg1.hex,
                                 paddingHorizontal: "4%",
                                 paddingVertical: "2%",
@@ -592,19 +542,18 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                                 borderWidth: 2,
-                                borderColor: getTagFromTagId(tag)?.color,
+                                borderColor: tagObj?.color,
                             }}
                         >
                             <UIText
                                 style={{
                                     color: filteredTags.has(tag)
-                                        ? Color.parse(getTagFromTagId(tag)?.color ?? "").fg.hex
+                                        ? Color.parse(tagObj?.color ?? "").fg.hex
                                         : colors.fg.hex,
                                     fontWeight: filteredTags.has(tag) ? "bold" : "normal",
                                 }}
                             >
-                                {allTags.find((t) => Number.parseInt(t.id ?? "", 10) === tag)
-                                    ?.name ?? "Unknown"}
+                                {tagObj?.name ?? "Unknown"}
                             </UIText>
                         </Pressable>
                     );
@@ -613,18 +562,18 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             <TagsModal
                 visible={createTagModal}
                 setVisible={setCreateTagModal}
-                picklist_id={picklist_id}
-                selected_team={selectedTeam}
+                picklistId={picklistId}
+                selectedTeam={selectedTeam}
                 addTag={addTag}
                 removeTag={removeTag}
-                issueDeleteCommand={deleteTag}
+                issueDeleteCommand={handleDeleteTag}
             />
             <TagColorChangeModal
                 visible={tagColorChangeModalVisible}
                 setVisible={setTagColorChangeModalVisible}
                 tag={selectedTagForColorChange}
             />
-            {teams_list.length === 0 && (
+            {teamsList.length === 0 && (
                 <Pressable onPress={() => setTeamAddingModalVisible(true)}>
                     <UIText
                         style={{
@@ -642,28 +591,28 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
             <TeamAddingModal
                 visible={teamAddingModalVisible}
                 setVisible={setTeamAddingModalVisible}
-                teams_list={teams_list}
+                teamsList={teamsList}
                 teamsAtCompetition={tbaSimpleTeams}
                 addOrRemoveTeam={addOrRemoveTeam}
             />
             <DoNotPickModal
                 visible={showDNPModal}
                 setVisible={setShowDNPModal}
-                teams={teams_list}
+                teams={teamsList}
                 teamsAtCompetition={tbaSimpleTeams}
                 numbersToNames={teamNumberToNameMap}
                 addToDNP={addToDNP}
             />
-            {dragging_active ? (
+            {draggingActive ? (
                 <DraggableFlatList
-                    data={teams_list}
+                    data={teamsList}
                     onDragEnd={({ data }) => setTeamsList(data)}
-                    keyExtractor={(item) => String(item.team_number)}
+                    keyExtractor={(item) => String(item.teamNumber)}
                     renderItem={renderItemDraggable}
                 />
             ) : (
                 <FlatList
-                    data={teams_list.filter(
+                    data={teamsList.filter(
                         (t) =>
                             filteredTags.size === 0 ||
                             filteredTags.size ===
@@ -696,13 +645,11 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                         style={{
                                             flexDirection: "row",
                                             alignItems: "center",
-                                            // alignSelf: 'flex-start',
-                                            // alignContent: 'flex-start',
                                             alignSelf: "flex-start",
                                         }}
                                     >
                                         <BouncyCheckbox
-                                            isChecked={removed_teams.includes(item)}
+                                            isChecked={removedTeams.includes(item)}
                                             disabled={
                                                 item !== selectedTeam && selectedTeam !== null
                                             }
@@ -714,10 +661,10 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                 );
                                             }}
                                         />
-                                        <UIText placeholder>{teams_list.indexOf(item) + 1}</UIText>
+                                        <UIText placeholder>{teamsList.indexOf(item) + 1}</UIText>
                                         <UIText
                                             style={
-                                                removed_teams.includes(item)
+                                                removedTeams.includes(item)
                                                     ? {
                                                           ...styles.team_number_displayed,
                                                           color: colors.fg.hex,
@@ -728,14 +675,14 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                     : item.dnp
                                                       ? {
                                                             ...styles.team_number_displayed,
-                                                            color: colors.danger,
+                                                            color: colors.danger.hex,
                                                         }
                                                       : styles.team_number_displayed
                                             }
                                         >
-                                            {item.team_number}
+                                            {item.teamNumber}
                                             {teamNumberToNameMap.size === 0 ? "" : " - "}
-                                            {teamNumberToNameMap.get(item.team_number)}
+                                            {teamNumberToNameMap.get(item.teamNumber)}
                                         </UIText>
                                         <View
                                             style={{
@@ -748,6 +695,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                 item.tags.map((tag) => {
                                                     return (
                                                         <View
+                                                            key={tag}
                                                             style={{
                                                                 borderRadius: 10,
                                                                 backgroundColor:
@@ -755,9 +703,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                                 width: 14,
                                                                 height: 14,
                                                                 margin: "2%",
-                                                                opacity: removed_teams.includes(
-                                                                    item,
-                                                                )
+                                                                opacity: removedTeams.includes(item)
                                                                     ? 0.4
                                                                     : 1,
                                                             }}
@@ -770,9 +716,9 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                         <UITextInput
                                             placeholder={"Notes"}
                                             onChangeText={(text) => {
-                                                let newTeams = teams_list.map((t) => {
+                                                let newTeams = teamsList.map((t) => {
                                                     if (t === item) {
-                                                        t.notes = text;
+                                                        return { ...t, notes: text };
                                                     }
                                                     return t;
                                                 });
@@ -816,7 +762,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                             style={{ paddingHorizontal: "4%", flex: 0 }}
                                             onPress={() => {
                                                 rootNavigation.push("TeamSummary", {
-                                                    teamId: item.team_number,
+                                                    teamId: item.teamNumber,
                                                     competitionId: currentCompID,
                                                 });
                                             }}
@@ -837,7 +783,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                                                         {
                                                             text: "Remove",
                                                             onPress: () => {
-                                                                removeTeam(item.team_number);
+                                                                removeTeam(item.teamNumber);
                                                                 setSelectedTeamWithAnimation(null);
                                                             },
                                                         },
@@ -852,7 +798,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                             </Pressable>
                         );
                     }}
-                    keyExtractor={(item) => String(item.team_number)}
+                    keyExtractor={(item) => String(item.teamNumber)}
                 />
             )}
         </Pressable>

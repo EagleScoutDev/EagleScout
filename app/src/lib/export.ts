@@ -1,16 +1,18 @@
 import { Alert } from "react-native";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
+import { type MatchReportReturnData } from "@/lib/db/models/ScoutMatchReport";
 import type { CompetitionReturnData } from "@/lib/db/models/Competition";
-import { type PitReportReturnData, PitReportsDB } from "@/lib/db/models/ScoutPitReport";
+import { type PitReportReturnData } from "@/lib/db/models/ScoutPitReport";
 import Sharing from "expo-sharing";
 import FS, { Paths } from "expo-file-system";
 import { CSVBuilder } from "@/lib/csv";
 import { Form } from "@/lib/forms";
+import { queryClient } from "@/lib/queryClient";
+import { queries } from "@/lib/queries";
 
 export async function exportScoutReportsToCsv(comp: CompetitionReturnData) {
     let reports: MatchReportReturnData[];
     try {
-        reports = await MatchReportsDB.getReportsForCompetition(comp.id);
+        reports = await queryClient.fetchQuery(queries.matchReports.forComp({ id: comp.id }));
     } catch (error) {
         console.error(error);
         Alert.alert(
@@ -47,7 +49,7 @@ export async function exportScoutReportsToCsv(comp: CompetitionReturnData) {
 export async function exportPitReportsToCsv(comp: CompetitionReturnData) {
     let reports: PitReportReturnData[];
     try {
-        reports = await PitReportsDB.getReportsForCompetition(comp.id);
+        reports = await queryClient.fetchQuery(queries.pitReports.forComp({ compId: comp.id }));
     } catch (error) {
         console.error(error);
         Alert.alert(

@@ -1,13 +1,10 @@
 import { MatchReportList } from "@/components/MatchReportList";
-import { useEffect, useState } from "react";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
-import { NotesDB, type NoteWithMatch } from "@/lib/db/models/ScoutNote";
 import { NoteList } from "@/components/NoteList";
-import { type PitReportReturnData, PitReportsDB } from "@/lib/db/models/ScoutPitReport";
 import { PitReportList } from "@/components/PitReportList";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import type { RootStackScreenProps } from "@/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 const Tab = createMaterialTopTabNavigator<ReportsForTeamParamList>();
 type ReportsForTeamParamList = {
@@ -26,23 +23,15 @@ export function TeamReports({
         params: { team_number, competitionId },
     },
 }: TeamReportsProps) {
-    const [scoutReports, setScoutReports] = useState<MatchReportReturnData[] | null>(null);
-    const [notes, setNotes] = useState<NoteWithMatch[]>([]);
-    const [pitResponses, setPitResponses] = useState<PitReportReturnData[] | null>(null);
-
-    useEffect(() => {
-        CompetitionsDB.getCompetitionById(competitionId).then((competition) => {
-            if (!competition) return;
-
-            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(
-                setScoutReports,
-            );
-            PitReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(
-                setPitResponses,
-            );
-            NotesDB.getNotesForTeamAtCompetition(team_number, competition.id).then(setNotes);
-        });
-    }, [competitionId, team_number]);
+    const { data: scoutReports = [] } = useQuery(
+        queries.matchReports.forTeamAtComp({ teamNumber: team_number, compId: competitionId }),
+    );
+    const { data: pitResponses = [] } = useQuery(
+        queries.pitReports.forTeamAtComp({ teamNumber: team_number, compId: competitionId }),
+    );
+    const { data: notes = [] } = useQuery(
+        queries.notes.forTeamAtComp({ teamNumber: team_number, compId: competitionId }),
+    );
 
     return (
         <Tab.Navigator>
@@ -52,7 +41,7 @@ export function TeamReports({
                     title: "Matches",
                 }}
                 children={() => (
-                    <MatchReportList reports={scoutReports ?? []} reportsAreOffline={false} />
+                    <MatchReportList reports={scoutReports} reportsAreOffline={false} />
                 )}
             />
 

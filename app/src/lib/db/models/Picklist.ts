@@ -1,103 +1,143 @@
 import { supabase } from "@/lib/supabase";
 
-export interface SimpleTeam {
-    key: string;
-    team_number: number;
-    nickname: string;
-    name: string;
-    city: string;
-    state_prov: string;
-    country: string;
-}
-
-export interface PicklistStructure {
-    id: number;
-    teams: PicklistTeam[];
-    created_at: Date;
-    name: string;
-    created_by: string;
-    competition_id: string;
-}
-
 export interface PicklistTeam {
-    team_number: number;
+    teamNumber: number;
     tags: number[]; // tag ids
     dnp: boolean;
     notes: string;
 }
 
-export class PicklistsDB {
-    static async getPicklists(competition_id: any): Promise<PicklistStructure[]> {
-        const { data, error } = await supabase
+export interface Picklist {
+    id: number;
+    teams: PicklistTeam[];
+    createdAt: Date;
+    name: string;
+    createdBy: string;
+    competitionId: number;
+}
+
+export interface Tag {
+    id: number;
+    name: string;
+    createdAt: Date;
+    picklistId: number;
+    color?: string; // hex color
+}
+
+export namespace Picklists {
+    const picklistQuery = () =>
+        supabase.from("picklist").select(`
+            id,
+            teams,
+            createdAt:      created_at,
+            name,
+            createdBy:      created_by,
+            competitionId:  competition_id
+        `);
+
+    const tagQuery = () =>
+        supabase.from("tags").select(`
+            id,
+            name,
+            createdAt:   created_at,
+            picklistId:  picklist_id,
+            color
+        `);
+
+    export async function get(id: number): Promise<Picklist> {
+        const { data, error } = await picklistQuery().eq("id", id).single();
+        if (error) throw error;
+
+        return {
+            ...data,
+            createdAt: new Date(data.createdAt),
+        };
+    }
+
+    export async function getAllForComp(
+        competitionId: number,
+    ): Promise<Picklist[]> {
+        const { data, error } = await picklistQuery().eq(
+            "competitionId",
+            competitionId,
+        );
+        if (error) throw error;
+
+        return data.map((picklist) => ({
+            ...picklist,
+            createdAt: new Date(picklist.createdAt),
+        }));
+    }
+
+    export async function getAllTags(picklistId: number): Promise<Tag[]> {
+        const { data, error } = await tagQuery().eq("picklistId", picklistId);
+        if (error) throw error;
+
+        return data.map((tag) => ({
+            ...tag,
+            createdAt: new Date(tag.createdAt),
+        }));
+    }
+
+    export async function create(name: string, teams: PicklistTeam[], competitionId: number): Promise<number> {
+        const { data, error } = await supabase.from("picklist").insert({
+            teams: teams.map((t) => ({
+                team_number: t.teamNumber,
+                tags: t.tags,
+                dnp: t.dnp,
+                notes: t.notes,
+            })),
+            created_at: new Date(),
+            name: name,
+            competition_id: competitionId,
+        }).select("id").single();
+        if (error) throw error;
+
+        return data.id;
+    }
+
+    export async function update(id: number, teams: PicklistTeam[]): Promise<void> {
+        const { error } = await supabase
             .from("picklist")
-            .select("*")
-            .eq("competition_id", competition_id);
-        if (error) {
-            throw error;
-        } else {
-            return data;
-        }
-    }
-
-    static async getPicklist(picklist_id: number): Promise<PicklistStructure> {
-        const { data, error } = await supabase.from("picklist").select("*").eq("id", picklist_id);
-        if (error) {
-            throw error;
-        } else {
-            return data[0];
-        }
-    }
-
-    static async deletePicklist(picklist_id: any) {
-        const { data, error, count } = await supabase
-            .from("picklist")
-            .delete()
-            .eq("id", picklist_id);
-        if (error) {
-            throw error;
-        } else {
-            return data;
-        }
-    }
-
-    static async createPicklist(name: string, teams: PicklistTeam[], cmpId: any) {
-        try {
-            // Before creating a picklist, confirm that user_id is not null and exists in the user table
-            // Your logic for checking if the user exists in your 'users' table can go here
-            // For now, we proceed to insert assuming user_id is valid since we've got it from auth state
-
-            const { data, error } = await supabase.from("picklist").insert([
-                {
-                    teams: teams,
-                    created_at: new Date(),
-                    name: name,
-                    competition_id: cmpId,
-                },
-            ]);
-
-            if (error) {
-                throw error;
-            }
-            return data; // assuming 'data' contains the array of inserted rows
-        } catch (error) {
-            console.error("Error in picklist creation:", error);
-            throw error;
-        }
-    }
-
-    static async updatePicklist(id: number, new_teams: PicklistTeam[]) {
-        console.log("updating picklist, id using is:", id);
-        console.log("new teams list: ", new_teams);
-        const { data, error } = await supabase
-            .from("picklist")
-            .update({ teams: new_teams })
+            .update({
+                teams: teams.map((t) => ({
+                    team_number: t.teamNumber,
+                    tags: t.tags,
+                    dnp: t.dnp,
+                    notes: t.notes,
+                })),
+            })
             .eq("id", id);
-        if (error) {
-            console.log("Picklist not updated, error");
-            throw error;
-        } else {
-            console.log("Picklist updated successfully");
-            return data;
-        }
+        if (error) throw error;
+    }
+
+    export async function remove(id: number): Promise<void> {
+        const { error } = await supabase.from("picklist").delete().eq("id", id);
+        if (error) throw error;
+    }
+
+    export async function createTag(picklistId: number, name: string, color?: string): Promise<number> {
+        const { data, error } = await supabase
+            .from("tags")
+            .insert({
+                name: name,
+                picklist_id: picklistId,
+                color: color,
+            })
+            .select("id")
+            .single();
+        if (error) throw error;
+
+        return data.id;
+    }
+
+    export async function updateTagColor(tagId: number, color: string): Promise<void> {
+        const { error } = await supabase.from("tags").update({ color }).eq("id", tagId);
+        if (error) throw error;
+    }
+
+    export async function removeTag(tagId: number): Promise<void> {
+        const { error } = await supabase.from("tags").delete().eq("id", tagId);
+        if (error) throw error;
     }
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
     Pressable,
     ScrollView,
@@ -7,14 +7,13 @@ import {
     View,
 } from 'react-native';
 import {useCurrentCompetitionMatches} from '@/lib/hooks/useCurrentCompetitionMatches';
-import {CompetitionsDB} from '@/lib/db/models/Competition';
 import {useTheme} from '@react-navigation/native';
-import {MatchReportsDB
-} from '@/lib/db/models/ScoutMatchReport';
 import AllianceSummaryCard from './AllianceSummaryCard';
 import {type RootStackScreenProps} from "@/navigation";
 import {useRootNavigation} from "@/navigation/hooks";
-import type {SimpleTeam} from "@/lib/db/tba";
+import type {TBATeam} from "@/lib/db/tba";
+import {useQuery} from '@tanstack/react-query';
+import {queries} from '@/lib/queries';
 
 export interface MatchOverviewParams{
     matchNumber: number;
@@ -58,11 +57,6 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
     });
 
     const {competitionId, matches} = useCurrentCompetitionMatches();
-    const [formStructure, setFormStructure] = useState<Array<Object> | null>(
-        null,
-    );
-
-    const [teamCleaned, setTeamCleaned] = useState<any[][]>([]);
 
     const teamsInMatch = useMemo(() => {
         return matches
@@ -81,89 +75,79 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                     city: 'Unknown',
                     state_prov: 'Unknown',
                     country: 'Unknown',
-                } as SimpleTeam),
+                } as TBATeam),
         );
     }, [matches, matchNumber]);
 
-    useEffect(() => {
-        if (competitionId === -1) {
-            return;
-        }
-        (async () => {
-            const competition = await CompetitionsDB.getCompetitionById(
-                competitionId,
-            );
-            if (!competition) {
-                return;
-            }
-            console.log('STARTING USE EFFECT');
-            const allianceReports = await MatchReportsDB.getAllianceReports(
-                teamsInMatch.map(team => team.team_number),
-                competition.id,
-            );
-            setFormStructure(competition.form);
-            if (!formStructure || !allianceReports) {
-                return;
-            }
-            // console.log(allianceReports);
-            // console.log(teamsInMatch);
-            const data = allianceReports.map((teamData, sus) => {
-                console.log('Getting data for team: ', teamsInMatch[sus].team_number);
-                console.log(teamData.map(data => data.data));
-                return formStructure.map((item, index) => {
-                    if (item.title) {
-                        console.log(item.title);
-                    }
-                    if (item.question) {
-                        console.log(item.question);
-                    }
-                    if (item.type === 'number') {
-                        const temp = [
-                            Math.max(...teamData.map(datum => datum.data[index])),
-                            teamData
-                                .map(datum => datum.data[index])
-                                .reduce((a, b) => a + b, 0) / teamData.length,
-                            Math.min(...teamData.map(datum => datum.data[index])),
-                        ];
-                        console.log(temp);
-                        return temp;
-                    } else if (item.type === 'radio') {
-                        let counts: number[] = [];
-                        for (let i = 0; i < item.options.length; i++) {
-                            counts.push(
-                                (teamData.filter(datum => datum.data[index] === i).length *
-                                    100) /
-                                teamData.length,
-                            );
-                        }
-                        return counts;
-                    } else if (item.type === 'checkboxes') {
-                        const freq = new Map<string, number>(
-                            item.options.map((option: string) => [option, 0]),
-                        );
-                        for (const {data: matchData} of teamData) {
-                            for (const selected of matchData[index]) {
-                                freq.set(selected, freq.get(selected)! + 1);
-                            }
-                        }
-                        const numbers = Array.from(freq.values());
-                        console.log('amogi', freq);
-                        console.log(numbers);
+    const { data: competition } = useQuery({
+        ...queries.competitions.forId({ id: competitionId }),
+        enabled: competitionId !== -1,
+    });
 
-                        return numbers.map(number => (number * 100) / teamData.length);
-                    } else {
-                        return 'undef';
+    const { data: allianceReports = [] } = useQuery({
+        ...queries.matchReports.forTeamsAtComp({
+            teamNumbers: teamsInMatch.map(team => team.team_number),
+            compId: competitionId,
+        }),
+        enabled: competitionId !== -1 && teamsInMatch.length > 0,
+    });
+
+    const teamCleaned = useMemo(() => {
+        if (!competition?.form || !allianceReports || allianceReports.length === 0) {
+            return [];
+        }
+
+        const formStructure = competition.form;
+        return allianceReports.map((teamData, sus) => {
+            console.log('Getting data for team: ', teamsInMatch[sus].team_number);
+            console.log(teamData.map(data => data.data));
+            return formStructure.map((item, index) => {
+                if (item.title) {
+                    console.log(item.title);
+                }
+                if (item.question) {
+                    console.log(item.question);
+                }
+                if (item.type === 'number') {
+                    const temp = [
+                        Math.max(...teamData.map(datum => datum.data[index])),
+                        teamData
+                            .map(datum => datum.data[index])
+                            .reduce((a, b) => a + b, 0) / teamData.length,
+                        Math.min(...teamData.map(datum => datum.data[index])),
+                    ];
+                    console.log(temp);
+                    return temp;
+                } else if (item.type === 'radio') {
+                    let counts: number[] = [];
+                    for (let i = 0; i < item.options.length; i++) {
+                        counts.push(
+                            (teamData.filter(datum => datum.data[index] === i).length *
+                                100) /
+                            teamData.length,
+                        );
                     }
-                });
+                    return counts;
+                } else if (item.type === 'checkboxes') {
+                    const freq = new Map<string, number>(
+                        item.options.map((option: string) => [option, 0]),
+                    );
+                    for (const {data: matchData} of teamData) {
+                        for (const selected of matchData[index]) {
+                            freq.set(selected, freq.get(selected)! + 1);
+                        }
+                    }
+                    const numbers = Array.from(freq.values());
+                    console.log('amogi', freq);
+                    console.log(numbers);
+
+                    return numbers.map(number => (number * 100) / teamData.length);
+                } else {
+                    return 'undef';
+                }
             });
-            setTeamCleaned(data);
-            console.log('final: ', data);
-            // console.log(formStructure.question);
-            // console.log('temp', temp);
-            // console.log(teamCleaned);
-        })();
-        // console.log(teamCleaned);
-    }, [competitionId, teamsInMatch]);
+        });
+    }, [competition?.form, allianceReports, teamsInMatch]);
 
     // for every THING in formstructure
     // get the average of each of the THINGS in the sub arrays
@@ -182,7 +166,7 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                 <Text style={styles.text}>This match doesn&#39;t have teams in it</Text>
             </View>
         );
-    } else if (formStructure && teamCleaned.length > 0) {
+    } else if (competition?.form && teamCleaned.length > 0) {
         return (
             <ScrollView  style={{ paddingTop: 50 }}>
                 <Text style={styles.titleText}> Match Overview {matchNumber}</Text>
@@ -238,7 +222,7 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                 </View>
 
                 <View>
-                    {formStructure.map((item, index) => {
+                    {competition.form.map((item, index) => {
                         return (
                             <AllianceSummaryCard
                                 key={index}
@@ -288,7 +272,7 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                                     console.log("pressed");
                                     rootNavigation.push("MatchOverview", {
                                         matchNumber: Number(matchNumber),
-                                        alliance: selectedAlliance
+                                        alliance: alliance
                                     });
                                 }}>
                                 <View

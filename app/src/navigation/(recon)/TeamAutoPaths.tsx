@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Pressable, View } from "react-native";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
-import { MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import * as Rebuilt from "@/frc/rebuilt";
 import type { RootStackScreenProps } from "../index";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export interface TeamAutoPathsParams {
     team_number: number;
@@ -17,26 +17,15 @@ export function TeamAutoPaths({ route }: TeamAutoPathsProps) {
     const { team_number, competitionId } = route.params;
     const { colors } = useTheme();
 
-    const [autoPaths, setAutoPaths] = useState<Rebuilt.AutoPath[] | undefined>();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-    useEffect(() => {
-        CompetitionsDB.getCompetitionById(competitionId).then(async (competition) => {
-            if (!competition) {
-                return;
-            }
-            const reports = await MatchReportsDB.getReportsForTeamAtCompetition(
-                team_number,
-                competition.id,
-            );
-            if (!reports){return;}
-            setAutoPaths(
-                reports
-                    .map((report) => report.autoPath)
-                    .filter((autoPath) => autoPath) as Rebuilt.AutoPath[],
-            );
-        });
-    }, [team_number]);
+    const { data: autoPaths = [] } = useQuery({
+        ...queries.matchReports.forTeamAtComp({ teamNumber: team_number, compId: competitionId }),
+        select: (reports) =>
+            reports
+                .map((report) => report.autoPath)
+                .filter((autoPath) => autoPath) as Rebuilt.AutoPath[],
+    });
 
     return (
         <SafeAreaProvider>

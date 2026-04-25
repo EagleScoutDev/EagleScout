@@ -1,12 +1,12 @@
 import { ActivityIndicator, Pressable, View } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { QuestionSummary } from "./QuestionSummary";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
 import { isTablet } from "@/lib/deviceType";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/db/models/ScoutMatchReport";
 import * as Bs from "@/ui/icons";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export function TeamReportSummary({
     team_number,
@@ -16,28 +16,16 @@ export function TeamReportSummary({
     competitionId: number;
 }) {
     const { colors } = useTheme();
-    const [formStructure, setFormStructure] = useState<object[] | null>(null);
-    const [responses, setResponses] = useState<MatchReportReturnData[] | null>(null);
-
     const [generateSummary, setGenerateSummary] = useState<boolean>(false);
 
-    useEffect(() => {
-        CompetitionsDB.getCompetitionById(competitionId).then((competition) => {
-            if (!competition) {
-                return;
-            }
-            MatchReportsDB.getReportsForTeamAtCompetition(team_number, competition.id).then(
-                (reports) => {
-                    setResponses(reports);
-                    console.log("scout reports for team " + team_number + " : " + reports);
-                    console.log("no reports? " + (reports.length === 0));
-                },
-            );
-            setFormStructure(competition.form);
-        });
-    }, [competitionId, team_number]);
+    const { data: competition } = useQuery(queries.competitions.forId({ id: competitionId }));
+    const { data: responses = [] } = useQuery(
+        queries.matchReports.forTeamAtComp({ teamNumber: team_number, compId: competitionId }),
+    );
 
-    if (responses && responses.length === 0) {
+    const formStructure = competition?.form;
+
+    if (responses.length === 0) {
         return (
             <View
                 style={{
@@ -71,7 +59,7 @@ export function TeamReportSummary({
                 flexWrap: isTablet() ? "wrap" : "nowrap",
             }}
         >
-            {formStructure && responses ? (
+            {formStructure ? (
                 formStructure.map((item, index) => {
                     return (
                         <QuestionSummary

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
-    Alert,
     FlatList,
     Keyboard,
     SafeAreaView,
@@ -10,23 +9,24 @@ import {
     TouchableWithoutFeedback,
     View,
 } from "react-native";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { styles as sharedStyles } from "../styles";
-import { type TBATeam, TBATeams } from "@/lib/database/TBATeams";
-import { supabase } from "@/lib/supabase";
 import type { OnboardingScreenProps } from "@/navigation/onboarding";
 import { UIText } from "@/ui/components/UIText";
+import { onboardingMutations } from "@/lib/mutations/onboarding";
+import { authMutations } from "@/lib/mutations/session";
+import { queries } from "@/lib/queries";
+import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 
-export interface SelectTeamProps extends OnboardingScreenProps<"SelectTeam"> {}
+export interface SelectTeamProps extends OnboardingScreenProps<"SelectTeam"> { }
 export function SelectTeam({ navigation }: SelectTeamProps) {
     const [team, setTeam] = useState("");
-    const [queriedTeams, setQueriedTeams] = useState<TBATeam[]>([]);
-
-    useEffect(() => {
-        (async () => {
-            const teams = await TBATeams.searchTeams(team);
-            setQueriedTeams(teams);
-        })();
-    }, [team]);
+    const { data: queriedTeams = [] } = useQuery({
+        ...queries.tbaTeams.search({ query: team }),
+        enabled: team.length > 0,
+    });
+    const registerTeam = useMutation(onboardingMutations.registerUserWithOrganization);
+    const signOut = useMutation(authMutations.signOut);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -45,22 +45,11 @@ export function SelectTeam({ navigation }: SelectTeamProps) {
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 onPress={async () => {
-                                    const { data, error } = await supabase.rpc(
-                                        "register_user_with_organization",
-                                        {
-                                            team_number: item.number,
-                                        },
-                                    );
-                                    if (error) {
-                                        console.error(error);
-                                        Alert.alert(
-                                            "Error registering with team",
-                                            "Unable to register you with the team provided. Please try again later.",
-                                        );
-                                    } else {
+                                    try {
+                                        const data = await registerTeam.mutateAsync({ teamNumber: item.number });
                                         if (data === "team-exists") {
-                                            await supabase.auth.signOut();
-                                            Alert.alert(
+                                            await signOut.mutateAsync();
+                                            await AsyncAlert.alert(
                                                 "Sign up complete!",
                                                 "You have completed sign up. You will be able to log in when one of the team's captains approve you.",
                                             );
@@ -68,6 +57,12 @@ export function SelectTeam({ navigation }: SelectTeamProps) {
                                         } else {
                                             navigation.navigate("EnterTeamEmail");
                                         }
+                                    } catch (error: any) {
+                                        console.error(error);
+                                        await AsyncAlert.alert(
+                                            "Error registering with team",
+                                            "Unable to register you with the team provided. Please try again later.",
+                                        );
                                     }
                                 }}
                             >

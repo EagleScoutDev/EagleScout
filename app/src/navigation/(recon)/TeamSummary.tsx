@@ -7,13 +7,12 @@ import { CombinedGraph } from "./components/CombinedGraph";
 import type { RootStackScreenProps } from "../index";
 import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { CompetitionsDB } from "@/lib/db/models/Competition";
-import { FormsDB } from "@/lib/db/models/Form";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
 import { useQuery } from "@tanstack/react-query";
-import { type SimpleTeam, TBA } from "@/lib/db/tba";
+import { type TBATeam } from "@/lib/db/tba";
+import { queries } from "@/lib/queries";
 
 export interface TeamSummaryParams {
     teamId: number;
@@ -26,21 +25,17 @@ export function TeamSummary({
     },
     navigation,
 }: TeamSummaryProps) {
-    const { data: competition, refetch: refetchCompetition } = useQuery({
-        queryKey: ["competitions", competitionId],
-        queryFn: () => CompetitionsDB.getCompetitionById(competitionId),
-    });
+    const { data: competition, refetch: refetchCompetition } = useQuery(
+        queries.competitions.forId({ id: competitionId }),
+    );
     const { data: form, refetch: refetchForm } = useQuery({
-        queryKey: ["forms", competition?.formId],
-        queryFn: () => FormsDB.getForm(competition!.formId),
+        ...queries.forms.forId({ id: competition?.formId ?? 0 }),
         enabled: !!competition && competition.formId !== undefined,
     });
     const { data: team, refetch: refetchTeam } = useQuery({
-        queryKey: ["tba", "competition", { competitionId }, "teams"],
-        queryFn: () =>
-            CompetitionsDB.getCompetitionTBAKey(competitionId).then(TBA.getTeamsAtCompetition),
+        ...queries.tba.teamsAtCompetition({ id: competitionId }),
         select: useCallback(
-            (teams: SimpleTeam[]) => teams.find((team) => team.team_number === teamId),
+            (teams: TBATeam[]) => teams.find((team) => team.team_number === teamId),
             [teamId],
         ),
         enabled: competitionId !== null,

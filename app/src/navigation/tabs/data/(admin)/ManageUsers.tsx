@@ -2,14 +2,14 @@ import React, { useMemo, useState } from "react";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { supabase } from "@/lib/supabase";
-import { AccountRole } from "@/lib/user/account";
+import { AccountRole } from "@/lib/db/account";
+import { type AdminUser } from "@/lib/queries/users";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UIChip } from "@/ui/components/UIChip";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queries } from "@/lib/queries";
-import type { UserProfileWithName } from "@/lib/queries/users";
 import { userMutations } from "@/lib/mutations/users";
 
 export function ManageUsers() {
@@ -31,20 +31,8 @@ export function ManageUsers() {
         return users;
     }, [users, sort]);
 
-    const updateApproveStatus = useMutation({
-        ...userMutations.updateApproveStatus,
-        onError: (error) => {
-            console.error(error);
-            Alert.alert("Error updating user status");
-        },
-    });
-    const updateAdminStatus = useMutation({
-        ...userMutations.updateAdminStatus,
-        onError: (error) => {
-            console.error(error);
-            Alert.alert("Error updating user status");
-        },
-    });
+    const updateApproveStatus = useMutation(userMutations.updateApproveStatus);
+    const updateAdminStatus = useMutation(userMutations.updateAdminStatus);
 
     function successAlert() {
         Toast.show({
@@ -54,10 +42,10 @@ export function ManageUsers() {
         });
     }
 
-    function toggleApproved(user: UserProfileWithName) {
+    function toggleApproved(user: AdminUser) {
         if (user.scouter) {
             Alert.alert(
-                "Unapprove " + user.name + "?",
+                "Unapprove " + user.profile.name + "?",
                 "Are you sure you want to unapprove this user? This will remove their access from creating and viewing scouting reports.",
                 [
                     {
@@ -68,27 +56,32 @@ export function ManageUsers() {
                     {
                         text: "OK",
                         async onPress() {
-                            if (user.admin) {
-                                const res = await supabase.auth.getUser();
-                                const currentUser = res.data.user;
-                                if (currentUser && user.id === currentUser.id) {
-                                    Alert.alert(
-                                        "Cannot unapprove yourself",
-                                        "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
-                                    );
-                                    return;
+                            try {
+                                if (user.admin) {
+                                    const res = await supabase.auth.getUser();
+                                    const currentUser = res.data.user;
+                                    if (currentUser && user.id === currentUser.id) {
+                                        Alert.alert(
+                                            "Cannot unapprove yourself",
+                                            "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
+                                        );
+                                        return;
+                                    }
                                 }
-                            }
 
-                            await updateApproveStatus.mutateAsync({
-                                userId: user.id,
-                                approved: false,
-                            });
-                            await updateAdminStatus.mutateAsync({
-                                userId: user.id,
-                                isAdmin: false,
-                            });
-                            successAlert();
+                                await updateApproveStatus.mutateAsync({
+                                    userId: user.id,
+                                    approved: false,
+                                });
+                                await updateAdminStatus.mutateAsync({
+                                    userId: user.id,
+                                    isAdmin: false,
+                                });
+                                successAlert();
+                            } catch (e) {
+                                console.error(e);
+                                Alert.alert("Error updating user status");
+                            }
                         },
                     },
                 ],
@@ -96,7 +89,7 @@ export function ManageUsers() {
             );
         } else {
             Alert.alert(
-                "Approve " + user.name + "?",
+                "Approve " + user.profile.name + "?",
                 "Are you sure you want to approve this user?",
                 [
                     {
@@ -107,11 +100,16 @@ export function ManageUsers() {
                     {
                         text: "OK",
                         async onPress() {
-                            await updateApproveStatus.mutateAsync({
-                                userId: user.id,
-                                approved: true,
-                            });
-                            successAlert();
+                            try {
+                                await updateApproveStatus.mutateAsync({
+                                    userId: user.id,
+                                    approved: true,
+                                });
+                                successAlert();
+                            } catch (e) {
+                                console.error(e);
+                                Alert.alert("Error updating user status");
+                            }
                         },
                     },
                 ],
@@ -119,10 +117,10 @@ export function ManageUsers() {
             );
         }
     }
-    function toggleAdmin(user: UserProfileWithName) {
+    function toggleAdmin(user: AdminUser) {
         if (user.admin) {
             Alert.alert(
-                "Remove " + user.name + " as admin?",
+                "Remove " + user.profile.name + " as admin?",
                 "Are you sure you want to remove this user as admin?",
                 [
                     {
@@ -133,19 +131,24 @@ export function ManageUsers() {
                     {
                         text: "OK",
                         async onPress() {
-                            const res = await supabase.auth.getUser();
-                            const currentUser = res.data.user;
-                            if (currentUser && user.id === currentUser.id) {
-                                Alert.alert(
-                                    "Cannot unapprove yourself",
-                                    "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
-                                );
-                            } else {
-                                await updateAdminStatus.mutateAsync({
-                                    userId: user.id,
-                                    isAdmin: false,
-                                });
-                                successAlert();
+                            try {
+                                const res = await supabase.auth.getUser();
+                                const currentUser = res.data.user;
+                                if (currentUser && user.id === currentUser.id) {
+                                    Alert.alert(
+                                        "Cannot unapprove yourself",
+                                        "For security purposes, you cannot unapprove yourself. Please contact another admin to unapprove you.",
+                                    );
+                                } else {
+                                    await updateAdminStatus.mutateAsync({
+                                        userId: user.id,
+                                        isAdmin: false,
+                                    });
+                                    successAlert();
+                                }
+                            } catch (e) {
+                                console.error(e);
+                                Alert.alert("Error updating user status");
                             }
                         },
                     },
@@ -154,7 +157,7 @@ export function ManageUsers() {
             );
         } else {
             Alert.alert(
-                "Make " + user.name + " an admin?",
+                "Make " + user.profile.name + " an admin?",
                 "Are you sure you want to make this user an admin?",
                 [
                     {
@@ -165,12 +168,17 @@ export function ManageUsers() {
                     {
                         text: "OK",
                         async onPress() {
-                            await updateAdminStatus.mutateAsync({ userId: user.id, isAdmin: true });
-                            await updateApproveStatus.mutateAsync({
-                                userId: user.id,
-                                approved: true,
-                            });
-                            successAlert();
+                            try {
+                                await updateAdminStatus.mutateAsync({ userId: user.id, isAdmin: true });
+                                await updateApproveStatus.mutateAsync({
+                                    userId: user.id,
+                                    approved: true,
+                                });
+                                successAlert();
+                            } catch (e) {
+                                console.error(e);
+                                Alert.alert("Error updating user status");
+                            }
                         },
                     },
                 ],
@@ -238,7 +246,7 @@ export function ManageUsers() {
                         }}
                     >
                         <UIText size={20} bold>
-                            {user.name}
+                            {user.profile.name}
                         </UIText>
                         <UIText>{user.email}</UIText>
 
@@ -252,7 +260,7 @@ export function ManageUsers() {
                             }}
                         >
                             <UIText
-                                style={user.scouter ? styles.option : styles.chosenRejected}
+                                style={user.account.role === AccountRole.Scouter ? styles.option : styles.chosenRejected}
                                 onPress={() => {
                                     if (user.scouter) {
                                         toggleApproved(user);
