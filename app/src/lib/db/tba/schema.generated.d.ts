@@ -1396,6 +1396,12 @@ export interface components {
             /** @description Internal use - Latest application version available. */
             latest_app_version: number;
         };
+        /**
+         * AllianceColor
+         * @description The color of an alliance, or an empty string when there is no winning alliance (e.g. tie or no result). See https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/alliance_color.py for red/blue definitions.
+         * @enum {string}
+         */
+        AllianceColor: "red" | "blue" | "";
         /** @enum {string} */
         AutoChargeStationRobot_2023: "Docked" | "None";
         /** @enum {string} */
@@ -1405,8 +1411,7 @@ export interface components {
         Award: {
             /** @description The name of the award as provided by FIRST. May vary for the same award type. */
             name: string;
-            /** @description Type of award given. See https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/award_type.py#L8 */
-            award_type: number;
+            award_type: components["schemas"]["AwardType"];
             /** @description The event_key of the event the award was won at. */
             event_key: string;
             /** @description A list of recipients of the award at the event. May have either a team_key or an awardee, both, or neither (in the case the award wasn't awarded at the event). */
@@ -1430,6 +1435,24 @@ export interface components {
          * @enum {string}
          */
         Comp_Level: "qm" | "ef" | "qf" | "sf" | "f";
+        /**
+         * AwardType
+         * @description Type of award given. See https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/award_type.py for full definitions.
+         * @enum {integer}
+         */
+        AwardType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83;
+        /**
+         * EventType
+         * @description Event Type. See https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/event_type.py for definitions.
+         * @enum {integer}
+         */
+        EventType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 99 | 100 | -1;
+        /**
+         * PlayoffType
+         * @description Playoff bracket format. See https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/playoff_type.py for definitions.
+         * @enum {integer}
+         */
+        PlayoffType: 1 | 0 | 2 | 9 | 3 | 4 | 5 | 10 | 11 | 6 | 7 | 8;
         District: {
             /** @description The short identifier for the district. */
             abbreviation: string;
@@ -1554,11 +1577,8 @@ export interface components {
                  * @description Average match score during playoffs. Year specific. May be null.
                  */
                 playoff_average?: number | null;
-                /**
-                 * Format: int64
-                 * @description Playoff type, may be null.
-                 */
-                playoff_type: number | null;
+                /** @description Playoff type, may be null. */
+                playoff_type: components["schemas"]["PlayoffType"] | null;
                 /** @description Match level, qm/ef/qf/sf/f. */
                 level: components["schemas"]["Comp_Level"];
                 /** @description W-L-T record for the alliance, may be null. */
@@ -1622,8 +1642,7 @@ export interface components {
             name: string;
             /** @description Event short code, as provided by FIRST. */
             event_code: string;
-            /** @description Event Type, as defined here: https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/event_type.py#L8 */
-            event_type: number;
+            event_type: components["schemas"]["EventType"];
             district: components["schemas"]["District"] | null;
             /** @description City, town, village, etc. the event is located in. */
             city: string | null;
@@ -1685,8 +1704,8 @@ export interface components {
             division_keys: string[];
             /** @description The TBA Event key that represents the event's parent. Used to link back to the event from a division event. It is also the inverse relation of `divison_keys`. */
             parent_event_key: string | null;
-            /** @description Playoff Type, as defined under `PlayoffType`: https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/playoff_type.py#L37, or null. */
-            playoff_type: number | null;
+            /** @description Playoff Type, or null. */
+            playoff_type: components["schemas"]["PlayoffType"] | null;
             /** @description String representation of the `playoff_type`, or null. */
             playoff_type_string: string | null;
             /** @description Map of temporary "off-season demo" team numbers to pre-rookie and B teams. Both keys and values are team keys in the format 'frc####'. Key is the old team key ('frc' + numeric only), value is the new team key ('frc' + numeric + may include a letter suffix). */
@@ -1719,7 +1738,7 @@ export interface components {
             /** @description Tiebreaker values for each team at the event. Stored as a key-value pair with the team key as the key, and an object describing the tiebreaker elements as its value. */
             tiebreakers?: {
                 [key: string]: {
-                    highest_qual_scores?: number[];
+                    highest_match_scores?: number[];
                     qual_wins?: number;
                 };
             };
@@ -2141,14 +2160,12 @@ export interface components {
                 name: string;
             }[];
             /** @description List of year-specific values provided in the `sort_orders` array for each team. */
-            sort_order_info:
-                | {
-                      /** @description Integer expressing the number of digits of precision in the number provided in `sort_orders`. */
-                      precision: number;
-                      /** @description Name of the field used in the `sort_order` array. */
-                      name: string;
-                  }[]
-                | null;
+            sort_order_info: {
+                /** @description Integer expressing the number of digits of precision in the number provided in `sort_orders`. */
+                precision: number;
+                /** @description Name of the field used in the `sort_order` array. */
+                name: string;
+            }[] | null;
         };
         Event_Simple: {
             /** @description TBA event key with the format yyyy[EVENT_CODE], where yyyy is the year, and EVENT_CODE is the event code of the event. */
@@ -2157,8 +2174,7 @@ export interface components {
             name: string;
             /** @description Event short code, as provided by FIRST. */
             event_code: string;
-            /** @description Event Type, as defined here: https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/event_type.py#L8 */
-            event_type: number;
+            event_type: components["schemas"]["EventType"];
             district: components["schemas"]["District"] | null;
             /** @description City, town, village, etc. the event is located in. */
             city: string | null;
@@ -2219,11 +2235,8 @@ export interface components {
                 red: components["schemas"]["Match_alliance"];
                 blue: components["schemas"]["Match_alliance"];
             };
-            /**
-             * @description The color (red/blue) of the winning alliance. Will contain an empty string in the event of no winner, or a tie.
-             * @enum {string}
-             */
-            winning_alliance: "red" | "blue" | "";
+            /** @description The color (red/blue) of the winning alliance. Will contain an empty string in the event of no winner, or a tie. */
+            winning_alliance: components["schemas"]["AllianceColor"];
             /** @description Event key of the event the match was played at. */
             event_key: string;
             /**
@@ -2247,19 +2260,7 @@ export interface components {
              */
             post_result_time: number | null;
             /** @description Score breakdown for auto, teleop, etc. points. Varies from year to year. May be null. */
-            score_breakdown:
-                | components["schemas"]["Match_Score_Breakdown_2015"]
-                | components["schemas"]["Match_Score_Breakdown_2016"]
-                | components["schemas"]["Match_Score_Breakdown_2017"]
-                | components["schemas"]["Match_Score_Breakdown_2018"]
-                | components["schemas"]["Match_Score_Breakdown_2019"]
-                | components["schemas"]["Match_Score_Breakdown_2020"]
-                | components["schemas"]["Match_Score_Breakdown_2022"]
-                | components["schemas"]["Match_Score_Breakdown_2023"]
-                | components["schemas"]["Match_Score_Breakdown_2024"]
-                | components["schemas"]["Match_Score_Breakdown_2025"]
-                | components["schemas"]["Match_Score_Breakdown_2026"]
-                | null;
+            score_breakdown: components["schemas"]["Match_Score_Breakdown_2015"] | components["schemas"]["Match_Score_Breakdown_2016"] | components["schemas"]["Match_Score_Breakdown_2017"] | components["schemas"]["Match_Score_Breakdown_2018"] | components["schemas"]["Match_Score_Breakdown_2019"] | components["schemas"]["Match_Score_Breakdown_2020"] | components["schemas"]["Match_Score_Breakdown_2022"] | components["schemas"]["Match_Score_Breakdown_2023"] | components["schemas"]["Match_Score_Breakdown_2024"] | components["schemas"]["Match_Score_Breakdown_2025"] | components["schemas"]["Match_Score_Breakdown_2026"] | null;
             /** @description Array of video objects associated with this match. */
             videos: {
                 /** @description Can be one of 'youtube' or 'tba' */
@@ -2626,13 +2627,11 @@ export interface components {
             foulPoints: number;
             techFoulCount: number;
             linkPoints?: number;
-            links?:
-                | {
-                      nodes: ("None" | "Cone" | "Cube")[];
-                      /** @enum {string} */
-                      row: "Bottom" | "Mid" | "Top";
-                  }[]
-                | null;
+            links?: {
+                nodes: ("None" | "Cone" | "Cube")[];
+                /** @enum {string} */
+                row: "Bottom" | "Mid" | "Top";
+            }[] | null;
             sustainabilityBonusAchieved?: boolean;
             teleopCommunity?: {
                 B: ("None" | "Cone" | "Cube")[];
@@ -2809,11 +2808,8 @@ export interface components {
                 red: components["schemas"]["Match_alliance"];
                 blue: components["schemas"]["Match_alliance"];
             };
-            /**
-             * @description The color (red/blue) of the winning alliance. Will contain an empty string in the event of no winner, or a tie.
-             * @enum {string}
-             */
-            winning_alliance: "red" | "blue" | "";
+            /** @description The color (red/blue) of the winning alliance. Will contain an empty string in the event of no winner, or a tie. */
+            winning_alliance: components["schemas"]["AllianceColor"];
             /** @description Event key of the event the match was played at. */
             event_key: string;
             /**
@@ -2910,71 +2906,29 @@ export interface components {
             dq_team_keys: string[];
         };
         /** @description The `Media` object contains a reference for most any media associated with a team or event on TBA. */
-        Media: {
+        Media: components["schemas"]["Media_Avatar"] | components["schemas"]["Media_CdPhotoThread"] | components["schemas"]["Media_CdThread"] | components["schemas"]["Media_GrabCad"] | components["schemas"]["Media_NoDetails"] | components["schemas"]["Media_Onshape"];
+        Media_Avatar: components["schemas"]["Media_Base"] & components["schemas"]["Media_Avatar_Extras"] & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "avatar";
+        };
+        Media_Avatar_Extras: {
+            /** @constant */
+            type?: "avatar";
+            details?: {
+                base64Image: string;
+            };
+        };
+        Media_Base: {
             /**
              * @description String type of the media element.
              * @enum {string}
              */
-            type:
-                | "youtube"
-                | "cdphotothread"
-                | "imgur"
-                | "facebook-profile"
-                | "youtube-channel"
-                | "twitter-profile"
-                | "github-profile"
-                | "instagram-profile"
-                | "periscope-profile"
-                | "gitlab-profile"
-                | "grabcad"
-                | "instagram-image"
-                | "external-link"
-                | "avatar"
-                | "onshape"
-                | "cd-thread";
+            type: "youtube" | "cdphotothread" | "imgur" | "facebook-profile" | "youtube-channel" | "twitter-profile" | "github-profile" | "instagram-profile" | "periscope-profile" | "gitlab-profile" | "grabcad" | "instagram-image" | "external-link" | "avatar" | "onshape" | "cd-thread";
             /** @description The key used to identify this media on the media site. */
             foreign_key: string;
-            /** @description If required, a JSON dict of additional media information. */
-            details?:
-                | Record<string, never>
-                | {
-                      base64Image: string;
-                  }
-                | {
-                      author_id: number;
-                      author_name: string;
-                      /** Format: uri */
-                      author_url: string;
-                      height: number | null;
-                      html: string;
-                      media_id: string;
-                      provider_name: string;
-                      /** Format: uri */
-                      provider_url: string;
-                      thumbnail_height: number;
-                      /** Format: uri */
-                      thumbnail_url: string;
-                      thumbnail_width: number;
-                      title: string;
-                      type: string;
-                      version: string;
-                      width: number;
-                  }
-                | {
-                      /** Format: date-time */
-                      model_created: string;
-                      model_description: string | null;
-                      /** Format: uri */
-                      model_image: string;
-                      model_name: string;
-                  }
-                | {
-                      image_partial: string;
-                  }
-                | {
-                      thread_title: string;
-                      image_url: string | null;
-                  };
             /** @description True if the media is of high quality. */
             preferred?: boolean;
             /** @description List of teams that this media belongs to. Most likely length 1. */
@@ -2983,6 +2937,80 @@ export interface components {
             direct_url?: string;
             /** @description The URL that leads to the full web page for the media, if one exists. */
             view_url?: string;
+        };
+        Media_CdPhotoThread: components["schemas"]["Media_Base"] & {
+            /** @constant */
+            type?: "cdphotothread";
+            details?: {
+                image_partial: string;
+            };
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "cdphotothread";
+        };
+        Media_CdThread: components["schemas"]["Media_Base"] & {
+            /** @constant */
+            type?: "cd-thread";
+            details?: {
+                thread_title: string;
+                image_url: string | null;
+            };
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "cd-thread";
+        };
+        Media_GrabCad: components["schemas"]["Media_Base"] & {
+            /** @constant */
+            type?: "grabcad";
+            details?: {
+                /** Format: date-time */
+                model_created: string;
+                model_description: string | null;
+                /** Format: uri */
+                model_image: string;
+                model_name: string;
+            };
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "grabcad";
+        };
+        Media_NoDetails: components["schemas"]["Media_Base"] & {
+            /** @enum {string} */
+            type?: "youtube" | "imgur" | "facebook-profile" | "youtube-channel" | "twitter-profile" | "github-profile" | "instagram-profile" | "periscope-profile" | "gitlab-profile" | "instagram-image" | "external-link";
+            details?: Record<string, never>;
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "youtube" | "imgur" | "facebook-profile" | "youtube-channel" | "twitter-profile" | "github-profile" | "instagram-profile" | "periscope-profile" | "gitlab-profile" | "instagram-image" | "external-link";
+        };
+        Media_Onshape: components["schemas"]["Media_Base"] & {
+            /** @constant */
+            type?: "onshape";
+            details?: {
+                /** Format: date-time */
+                model_created: string;
+                model_description: string | null;
+                /** Format: uri */
+                model_image: string;
+                model_name: string;
+            };
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "onshape";
         };
         /** @enum {string} */
         MobilityRobot_2023: "No" | "Yes";
@@ -2998,17 +3026,7 @@ export interface components {
             year: number;
         };
         /** @enum {string} */
-        Position_2016:
-            | ""
-            | "A_ChevalDeFrise"
-            | "A_Portcullis"
-            | "B_Moat"
-            | "B_Ramparts"
-            | "C_Drawbridge"
-            | "C_SallyPort"
-            | "D_RockWall"
-            | "D_RoughTerrain"
-            | "NotSpecified";
+        Position_2016: "" | "A_ChevalDeFrise" | "A_Portcullis" | "B_Moat" | "B_Ramparts" | "C_Drawbridge" | "C_SallyPort" | "D_RockWall" | "D_RoughTerrain" | "NotSpecified";
         /** @enum {string} */
         PreMatchBay_2019: "Cargo" | "Panel" | "Unknown";
         ReefRow_2025: {
@@ -3030,12 +3048,7 @@ export interface components {
             /** @description Whether or not the team qualified for Championship. */
             cmp: boolean;
             /** @enum {string} */
-            cmp_status:
-                | "NotInvited"
-                | "PreQualified"
-                | "EventQualified"
-                | "PoolQualified"
-                | "Declined";
+            cmp_status: "NotInvited" | "PreQualified" | "EventQualified" | "PoolQualified" | "Declined";
             /** @description The event key at which the team qualified */
             qualifying_event?: string;
             /** @description The name of the award which qualified the team */
@@ -3212,14 +3225,12 @@ export interface components {
                 team_key?: string;
             } | null;
             /** @description Ordered list of names corresponding to the elements of the `sort_orders` array. */
-            sort_order_info?:
-                | {
-                      /** @description The number of digits of precision used for this value, eg `2` would correspond to a value of `101.11` while `0` would correspond to `101`. */
-                      precision?: number;
-                      /** @description The descriptive name of the value used to sort the ranking. */
-                      name?: string;
-                  }[]
-                | null;
+            sort_order_info?: {
+                /** @description The number of digits of precision used for this value, eg `2` would correspond to a value of `101.11` while `0` would correspond to `101`. */
+                precision?: number;
+                /** @description The descriptive name of the value used to sort the ranking. */
+                name?: string;
+            }[] | null;
             status?: string;
         };
         Team_Robot: {
@@ -3261,35 +3272,26 @@ export interface components {
             /** @description Number of ties. */
             ties: number;
         };
+        /**
+         * WebcastStatus
+         * @description Online status of a webcast. See https://github.com/the-blue-alliance/the-blue-alliance/blob/main/src/backend/common/consts/webcast_status.py for full definitions.
+         * @enum {string}
+         */
+        WebcastStatus: "unknown" | "online" | "offline";
         Webcast: {
             /**
              * @description Type of webcast, typically descriptive of the streaming provider.
              * @enum {string}
              */
-            type:
-                | "youtube"
-                | "twitch"
-                | "ustream"
-                | "iframe"
-                | "html5"
-                | "rtmp"
-                | "livestream"
-                | "direct_link"
-                | "mms"
-                | "justin"
-                | "stemtv"
-                | "dacast";
+            type: "youtube" | "twitch" | "ustream" | "iframe" | "html5" | "rtmp" | "livestream" | "direct_link" | "mms" | "justin" | "stemtv" | "dacast";
             /** @description Type specific channel information. May be the YouTube stream, or Twitch channel name. In the case of iframe types, contains HTML to embed the stream in an HTML iframe. */
             channel: string;
             /** @description The date for the webcast in `yyyy-mm-dd` format. May be null. */
             date?: string | null;
             /** @description File identification as may be required for some types. May be null. */
             file?: string | null;
-            /**
-             * @description The online status of the webcast, fetched from the streaming provider's API. May be null if not available.
-             * @enum {string|null}
-             */
-            status?: "unknown" | "online" | "offline" | null;
+            /** @description The online status of the webcast, fetched from the streaming provider's API. May be null if not available. */
+            status?: components["schemas"]["WebcastStatus"] | null;
             /** @description The title of the stream from the streaming provider. May be null. */
             stream_title?: string | null;
             /** @description The current viewer count from the streaming provider. May be null. */
