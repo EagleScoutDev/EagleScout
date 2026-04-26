@@ -44,7 +44,7 @@ export function OnboardingFlow({ navigation }: OnboardingFlowProps) {
 
     async function doLogin(username: string, password: string) {
         try {
-            await login(username, password);
+            await login({ username, password });
         } catch (e) {
             console.error(e);
             setError(e instanceof Error ? e.message : "An error occurred");
