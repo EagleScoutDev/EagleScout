@@ -62,7 +62,7 @@ export function TeamRankMenu({ navigation }: TeamRankMenuProps) {
         );
     }
 
-    const currForm = activeComp.form as Form.Structure;
+    const currForm = activeComp.matchForm.formStructure as Form.Structure;
     const formSections = currForm ? Form.splitSections(currForm) : [];
 
     return (

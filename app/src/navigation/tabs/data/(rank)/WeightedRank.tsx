@@ -39,7 +39,7 @@ export function WeightedRank() {
 
     const activeComp = manualComp ?? currentCompetition ?? null;
     const compId = activeComp?.id ?? -1;
-    const currForm = activeComp?.form as object[] | undefined;
+    const currForm = activeComp?.matchForm.formStructure as object[] | undefined;
 
     const noActiveCompetition = !activeComp;
 

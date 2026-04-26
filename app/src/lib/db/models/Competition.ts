@@ -1,5 +1,5 @@
+import type { FormReturnData } from "@/lib/db/models/Form";
 import { supabase } from "@/lib/supabase";
-import { Form } from "@/lib/forms";
 
 interface Competition {
     name: string;
@@ -11,8 +11,8 @@ interface Competition {
 
 export interface CompetitionReturnData extends Competition {
     id: number;
-    form: Form.Structure;
-    pitScoutFormStructure: Form.Structure;
+    matchForm: FormReturnData;
+    pitForm: FormReturnData;
 }
 
 export namespace Competitions {
@@ -24,11 +24,15 @@ export namespace Competitions {
             endTime:        end_time,
             formId:         form_id,
             pitScoutFormId: pit_scout_form_id,
-            ...forms!competitions_form_id_fkey(
-                form:   form_structure
+            matchForm:      forms!competitions_form_id_fkey(
+                id,
+                formStructure:  form_structure,
+                pitScouting:    pit_scouting
             ),
-            ...forms!competitions_pit_scout_form_id_fkey(
-                pitScoutFormStructure: form_structure
+            pitForm:        forms!competitions_pit_scout_form_id_fkey(
+                id,
+                formStructure:  form_structure,
+                pitScouting:    pit_scouting
             )
         `);
 
@@ -123,8 +127,8 @@ export namespace Competitions {
             .from("competitions")
             .update({
                 name: name,
-                start_time: startTime,
-                end_time: endTime,
+                start_time: startTime.toISOString(),
+                end_time: endTime.toISOString()
             })
             .eq("id", competitionId);
         if (error) throw error;

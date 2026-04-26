@@ -19,7 +19,7 @@ export interface PitFlowProps extends RootStackScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
     const { data: competition = null, isSuccess } = useQuery(queries.competitions.current);
     const submitPitReport = useMutation(pitReportMutations.create);
-    const formStructure = competition?.pitScoutFormStructure ?? null;
+    const formStructure = competition?.pitForm.formStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
     const [currentTab, setCurrentTab] = useState("Match");

@@ -57,7 +57,7 @@ const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(
             await writeToFile(`${competition.name}.csv`, data);
         }
         async function exportPitReports() {
-            if (!competition.pitScoutFormId) {
+            if (!competition.pitForm.id) {
                 await AsyncAlert.alert(
                     "No Pit Scout Form",
                     "This competition does not have a pit scout form",

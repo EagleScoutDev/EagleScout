@@ -32,7 +32,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     const teamsForMatch = match === null || match > 400 ? [] : getTeamsForMatch(match);
     const [team, setTeam] = useState<number | null>(null);
 
-    const formStructure = competition?.form ?? null;
+    const formStructure = competition?.matchForm.formStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
     const [currentTab, setCurrentTab] = useState("Setup");

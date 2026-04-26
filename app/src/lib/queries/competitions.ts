@@ -1,4 +1,4 @@
-import { Competitions } from "@/lib/db/models/Competition";
+import { type CompetitionReturnData, Competitions } from "@/lib/db/models/Competition";
 import { createQueryKeys } from "@/lib/util/defs";
 
 export const competitions = createQueryKeys(["competitions"], {
@@ -18,6 +18,12 @@ export const competitions = createQueryKeys(["competitions"], {
     current: {
         queryKey: [],
         queryFn: Competitions.getCurrent,
+        staleTime: (query) => {
+            const comp = query.state.data;
+            if (!comp?.endTime) return 0;
+            return Math.max(0, comp.endTime.getTime() - Date.now());
+        },
+        gcTime: 7 * 24 * 60 * 60 * 1000,
     },
     teams: ({ id }: { id: number }) => ({
         queryKey: [{ id }, "teams"],
