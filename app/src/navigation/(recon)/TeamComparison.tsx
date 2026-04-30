@@ -44,7 +44,7 @@ export function TeamComparison({ route }: TeamComparisonProps) {
         queries.matchReports.forComp({ id: compId }),
     );
 
-    const formStructure = competition?.form;
+    const formStructure = competition?.matchForm.formStructure;
     const uniqueTeams = allReports
         .map((report) => report.teamNumber)
         .filter((teamNum, index, array) => array.indexOf(teamNum) === index && teamNum !== team.team_number)

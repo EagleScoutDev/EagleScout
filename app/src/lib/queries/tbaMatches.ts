@@ -6,4 +6,8 @@ export const tbaMatches = createQueryKeys(["tbaMatches"], {
         queryKey: [{ compId: id }],
         queryFn: TBA.getAllMatchesForComp.bind(null, id),
     }),
+    forCompFr: ({ compKey }: { compKey: string }) => ({
+        queryKey: [{ compKey }],
+        queryFn: TBA.getMatchesByComp.bind(null, compKey),
+    }),
 });

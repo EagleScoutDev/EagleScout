@@ -63,6 +63,7 @@ export function OnboardingFlow({ navigation }: OnboardingFlowProps) {
                 navigation.replace("Onboarding", { screen: "Entrypoint" });
             }
         } else if (!account.onboarded) {
+            console.log(account.onboarded, account.orgId !== null);
             setError("");
             if (currentOnboardingScreen !== "EnterUserInfo") {
                 navigation.navigate("Onboarding", { screen: "EnterUserInfo" });

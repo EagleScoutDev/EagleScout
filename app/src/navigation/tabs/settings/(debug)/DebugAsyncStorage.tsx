@@ -1,7 +1,7 @@
 import { ScrollView, View } from "react-native";
 import * as Bs from "@/ui/icons";
 import { useEffect, useState } from "react";
-import AsyncStorage from "expo-sqlite/kv-store";
+import { AsyncStorage } from "expo-sqlite/kv-store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import Animated, { useSharedValue } from "react-native-reanimated";
@@ -10,7 +10,7 @@ import { PressableOpacity } from "@/components/PressableOpacity";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
-import Clipboard from "expo-clipboard";
+import * as Clipboard from "expo-clipboard";
 
 export function DebugAsyncStorage() {
     const [keys, setKeys] = useState<readonly string[]>([]);
@@ -32,18 +32,17 @@ export function DebugAsyncStorage() {
     useEffect(() => {
         getAllKeys();
     }, []);
-    useEffect(() => {
-        console.log(keys);
-    }, [keys]);
 
     async function selectKey(key: string) {
         setCurrentKey(key);
         setCurrentValue(await AsyncStorage.getItem(key));
     }
+
     async function deleteKey(key: string) {
         await AsyncStorage.removeItem(key);
         setCurrentKey(null);
         setCurrentValue(null);
+        await getAllKeys();
     }
 
     return (
@@ -61,7 +60,7 @@ export function DebugAsyncStorage() {
                                 label={key}
                                 body={() => (
                                     <PressableOpacity onPress={() => deleteKey(key)}>
-                                        <Bs.Trash size={20} color={colors.danger.hex} />
+                                        <Bs.Trash size={20} fill={colors.danger.hex} />
                                     </PressableOpacity>
                                 )}
                             />
@@ -99,9 +98,9 @@ export function DebugAsyncStorage() {
                         <UIText
                             size={16}
                             style={{ fontFamily: "monospace" }}
-                            onPress={() => {
+                            onPress={async () => {
                                 if (currentKey === null) return;
-                                Clipboard.setString(currentKey);
+                                await Clipboard.setStringAsync(currentKey);
                                 Toast.show({
                                     text1: "Copied to clipboard!",
                                 });
@@ -113,9 +112,9 @@ export function DebugAsyncStorage() {
                     <ScrollView style={{ padding: 8 }}>
                         <UIText
                             style={{ fontFamily: "monospace" }}
-                            onPress={() => {
+                            onPress={async () => {
                                 if (currentValue === null) return;
-                                Clipboard.setString(currentValue);
+                                await Clipboard.setStringAsync(currentValue);
                                 Toast.show({
                                     text1: "Copied to clipboard!",
                                 });

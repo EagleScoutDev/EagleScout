@@ -1,18 +1,18 @@
-import { useCallback, useRef, useState } from "react";
-import { View } from "react-native";
 import { StatboticsSummary } from "@/components/StatboticsSummary";
-import { CompetitionRank } from "./components/CompetitionRank";
-import { TeamReportSummary } from "./components/TeamReportSummary";
-import { CombinedGraph } from "./components/CombinedGraph";
-import type { RootStackScreenProps } from "../index";
+import { type TBATeam } from "@/lib/db/tba";
+import { queries } from "@/lib/queries";
 import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
 import { useQuery } from "@tanstack/react-query";
-import { type TBATeam } from "@/lib/db/tba";
-import { queries } from "@/lib/queries";
+import { useCallback, useRef, useState } from "react";
+import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import type { RootStackScreenProps } from "../index";
+import { CombinedGraph } from "./components/CombinedGraph";
+import { CompetitionRank } from "./components/CompetitionRank";
+import { TeamReportSummary } from "./components/TeamReportSummary";
 
 export interface TeamSummaryParams {
     teamId: number;
@@ -29,8 +29,8 @@ export function TeamSummary({
         queries.competitions.forId({ id: competitionId }),
     );
     const { data: form, refetch: refetchForm } = useQuery({
-        ...queries.forms.forId({ id: competition?.formId ?? 0 }),
-        enabled: !!competition && competition.formId !== undefined,
+        ...queries.forms.forId({ id: competition?.matchForm.id ?? 0 }),
+        enabled: !!competition && competition.matchForm.id !== undefined,
     });
     const { data: team, refetch: refetchTeam } = useQuery({
         ...queries.tba.teamsAtCompetition({ id: competitionId }),

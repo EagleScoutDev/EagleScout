@@ -23,7 +23,7 @@ export function TeamReportSummary({
         queries.matchReports.forTeamAtComp({ teamNumber: team_number, compId: competitionId }),
     );
 
-    const formStructure = competition?.form;
+    const formStructure = competition?.matchForm.formStructure;
 
     if (responses.length === 0) {
         return (

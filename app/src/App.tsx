@@ -16,11 +16,10 @@ import { Appearance } from "react-native";
 import { withStallion } from "react-native-stallion";
 import * as SystemUI from "expo-system-ui";
 import { RootNavigator } from "@/navigation";
-import { QueryClient } from "@tanstack/query-core";
+import { queryClient } from "@/lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
-const queryClient = new QueryClient();
 
 function App() {
     const themePreference = useLocalStore((state) => state.theme) ?? ThemeOption.system;

@@ -1,5 +1,4 @@
 import { Alert } from "react-native";
-import AsyncStorage from "expo-sqlite/kv-store";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { profileMutations } from "@/lib/mutations/profiles";
@@ -45,14 +44,6 @@ export function AccountEditProfile({ navigation, route }: AccountEditProfileProp
                         onPress={async () => {
                             try {
                                 await updateProfile.mutateAsync({ firstName, lastName });
-                                await AsyncStorage.setItem(
-                                    "user",
-                                    JSON.stringify({
-                                        ...JSON.parse((await AsyncStorage.getItem("user"))!),
-                                        first_name: firstName,
-                                        last_name: lastName,
-                                    }),
-                                );
 
                                 setFirstName("");
                                 setLastName("");

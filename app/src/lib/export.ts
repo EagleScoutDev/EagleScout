@@ -1,13 +1,13 @@
-import { Alert } from "react-native";
-import { type MatchReportReturnData } from "@/lib/db/models/ScoutMatchReport";
-import type { CompetitionReturnData } from "@/lib/db/models/Competition";
-import { type PitReportReturnData } from "@/lib/db/models/ScoutPitReport";
-import Sharing from "expo-sharing";
-import FS, { Paths } from "expo-file-system";
 import { CSVBuilder } from "@/lib/csv";
+import type { CompetitionReturnData } from "@/lib/db/models/Competition";
+import { type MatchReportReturnData } from "@/lib/db/models/ScoutMatchReport";
+import { type PitReportReturnData } from "@/lib/db/models/ScoutPitReport";
 import { Form } from "@/lib/forms";
-import { queryClient } from "@/lib/queryClient";
 import { queries } from "@/lib/queries";
+import { queryClient } from "@/lib/queryClient";
+import FS, { Paths } from "expo-file-system";
+import Sharing from "expo-sharing";
+import { Alert } from "react-native";
 
 export async function exportScoutReportsToCsv(comp: CompetitionReturnData) {
     let reports: MatchReportReturnData[];
@@ -24,13 +24,13 @@ export async function exportScoutReportsToCsv(comp: CompetitionReturnData) {
 
     return new CSVBuilder()
         .header("user id", "user name", "match number", "team number")
-        .header(...comp.form.filter(Form.Item.isQuestion).map((q) => q.question))
+        .header(...comp.matchForm.formStructure.filter(Form.Item.isQuestion).map((q) => q.question))
         .map(reports, (report) => [
             report.userId,
             report.userName,
             report.matchNumber,
             report.teamNumber,
-            ...comp.form.map((q, i) => {
+            ...comp.matchForm.formStructure.map((q, i) => {
                 switch (q.type) {
                     case Form.ItemType.radio:
                         return q.options[report.data[i]];
@@ -61,13 +61,13 @@ export async function exportPitReportsToCsv(comp: CompetitionReturnData) {
 
     return new CSVBuilder()
         .header("user id", "user name", "team number")
-        .header(...comp.pitScoutFormStructure.filter(Form.Item.isQuestion).map((q) => q.question))
+        .header(...comp.pitForm.formStructure.filter(Form.Item.isQuestion).map((q) => q.question))
         .header("images")
         .map(reports, (report) => [
             report.submittedId,
             report.submittedName,
             report.teamNumber,
-            ...comp.pitScoutFormStructure.map((q, i) => {
+            ...comp.pitForm.formStructure.map((q, i) => {
                 switch (q.type) {
                     case Form.ItemType.radio:
                         return q.options[report.data[i]];

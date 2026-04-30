@@ -1,106 +1,106 @@
-import React, {useMemo, useState} from 'react';
-import {
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import {useCurrentCompetitionMatches} from '@/lib/hooks/useCurrentCompetitionMatches';
-import {useTheme} from '@react-navigation/native';
-import AllianceSummaryCard from './AllianceSummaryCard';
-import {type RootStackScreenProps} from "@/navigation";
-import {useRootNavigation} from "@/navigation/hooks";
-import type {TBATeam} from "@/lib/db/tba";
-import {useQuery} from '@tanstack/react-query';
-import {queries} from '@/lib/queries';
+import type { TBATeam } from "@/lib/db/tba";
+import { queries } from "@/lib/queries";
+import { type RootStackScreenProps } from "@/navigation";
+import { useRootNavigation } from "@/navigation/hooks";
+import { useTheme } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import React, { useMemo } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import AllianceSummaryCard from "./AllianceSummaryCard";
 
-export interface MatchOverviewParams{
+export interface MatchOverviewParams {
     matchNumber: number;
     alliance: string;
 }
 export interface MatchOverviewProps extends RootStackScreenProps<"MatchOverview"> {}
 
-export function MatchOverview ({route: {params: {matchNumber, alliance}}, navigation}: MatchOverviewProps) {
+export function MatchOverview({
+    route: {
+        params: { matchNumber, alliance },
+    },
+    navigation,
+}: MatchOverviewProps) {
     const rootNavigation = useRootNavigation();
-    const {colors} = useTheme();
+    const { colors } = useTheme();
     const styles = StyleSheet.create({
         text: {
             fontSize: 18,
             color: colors.text,
-            paddingTop: '3%',
-            paddingLeft: '2%',
+            paddingTop: "3%",
+            paddingLeft: "2%",
         },
         titleText: {
-            textAlign: 'left',
-            paddingTop: '5%',
-            paddingBottom: '1%',
-            paddingLeft: '2%',
+            textAlign: "left",
+            paddingTop: "5%",
+            paddingBottom: "1%",
+            paddingLeft: "2%",
             fontSize: 30,
-            fontWeight: 'bold',
+            fontWeight: "bold",
             color: colors.text,
             // marginVertical: 20,
         },
         button: {
             flex: 1,
-            aspectRatio: '3/2',
+            aspectRatio: "3/2",
             paddingTop: 17,
             paddingBottom: 17,
-            textAlign: 'center',
+            textAlign: "center",
             fontSize: 18,
-            fontWeight: 'bold',
+            fontWeight: "bold",
             color: colors.text,
             borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: "center",
+            justifyContent: "center",
         },
     });
 
-    const {competitionId, matches} = useCurrentCompetitionMatches();
-
-    const teamsInMatch = useMemo(() => {
-        return matches
-            .filter(match => match.compLevel === 'qm')
-            .filter(match => match.match === matchNumber)
-            .filter(match => match.alliance === alliance)
-            .map(match => match.team.replace('frc', ''))
-            .map(team => team.replace(/[A-Za-z]/g, ' '))
-            .map(team => Number(team))
-            .map(teamNumber =>
-                ({
-                    key: `frc${teamNumber}`,
-                    team_number: teamNumber,
-                    nickname: `Team ${teamNumber}`,
-                    name: `FRC Team ${teamNumber}`,
-                    city: 'Unknown',
-                    state_prov: 'Unknown',
-                    country: 'Unknown',
-                } as TBATeam),
-        );
-    }, [matches, matchNumber]);
-
-    const { data: competition } = useQuery({
-        ...queries.competitions.forId({ id: competitionId }),
-        enabled: competitionId !== -1,
+    const { data: competition = null } = useQuery(queries.competitions.current);
+    const { data: matches = [] } = useQuery({
+        ...queries.tbaMatches.forComp({ id: competition?.id! }),
+        enabled: competition !== null,
     });
+
+    const teamsInMatch = matches
+        .filter(
+            (match) =>
+                match.compLevel === "qm" &&
+                match.match === matchNumber &&
+                match.alliance === alliance,
+        )
+        .map((match) => {
+            const teamNumber = Number(match.team.replace("frc", "").replace(/[A-Za-z]/g, " "));
+            return {
+                key: `frc${teamNumber}`,
+                team_number: teamNumber,
+                nickname: `Team ${teamNumber}`,
+                name: `FRC Team ${teamNumber}`,
+                city: "Unknown",
+                state_prov: "Unknown",
+                country: "Unknown",
+            } as TBATeam;
+        });
 
     const { data: allianceReports = [] } = useQuery({
         ...queries.matchReports.forTeamsAtComp({
-            teamNumbers: teamsInMatch.map(team => team.team_number),
-            compId: competitionId,
+            teamNumbers: teamsInMatch.map((team) => team.team_number),
+            compId: competition?.id!,
         }),
-        enabled: competitionId !== -1 && teamsInMatch.length > 0,
+        enabled: competition?.id !== -1 && teamsInMatch.length > 0,
     });
 
     const teamCleaned = useMemo(() => {
-        if (!competition?.form || !allianceReports || allianceReports.length === 0) {
+        if (
+            !competition?.matchForm.formStructure ||
+            !allianceReports ||
+            allianceReports.length === 0
+        ) {
             return [];
         }
 
-        const formStructure = competition.form;
+        const formStructure = competition.matchForm.formStructure;
         return allianceReports.map((teamData, sus) => {
-            console.log('Getting data for team: ', teamsInMatch[sus].team_number);
-            console.log(teamData.map(data => data.data));
+            console.log("Getting data for team: ", teamsInMatch[sus].team_number);
+            console.log(teamData.map((data) => data.data));
             return formStructure.map((item, index) => {
                 if (item.title) {
                     console.log(item.title);
@@ -108,111 +108,113 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                 if (item.question) {
                     console.log(item.question);
                 }
-                if (item.type === 'number') {
+                if (item.type === "number") {
                     const temp = [
-                        Math.max(...teamData.map(datum => datum.data[index])),
-                        teamData
-                            .map(datum => datum.data[index])
-                            .reduce((a, b) => a + b, 0) / teamData.length,
-                        Math.min(...teamData.map(datum => datum.data[index])),
+                        Math.max(...teamData.map((datum) => datum.data[index])),
+                        teamData.map((datum) => datum.data[index]).reduce((a, b) => a + b, 0) /
+                            teamData.length,
+                        Math.min(...teamData.map((datum) => datum.data[index])),
                     ];
                     console.log(temp);
                     return temp;
-                } else if (item.type === 'radio') {
+                } else if (item.type === "radio") {
                     let counts: number[] = [];
                     for (let i = 0; i < item.options.length; i++) {
                         counts.push(
-                            (teamData.filter(datum => datum.data[index] === i).length *
-                                100) /
-                            teamData.length,
+                            (teamData.filter((datum) => datum.data[index] === i).length * 100) /
+                                teamData.length,
                         );
                     }
                     return counts;
-                } else if (item.type === 'checkboxes') {
+                } else if (item.type === "checkboxes") {
                     const freq = new Map<string, number>(
                         item.options.map((option: string) => [option, 0]),
                     );
-                    for (const {data: matchData} of teamData) {
+                    for (const { data: matchData } of teamData) {
                         for (const selected of matchData[index]) {
                             freq.set(selected, freq.get(selected)! + 1);
                         }
                     }
                     const numbers = Array.from(freq.values());
-                    console.log('amogi', freq);
+                    console.log("amogi", freq);
                     console.log(numbers);
 
-                    return numbers.map(number => (number * 100) / teamData.length);
+                    return numbers.map((number) => (number * 100) / teamData.length);
                 } else {
-                    return 'undef';
+                    return "undef";
                 }
             });
         });
-    }, [competition?.form, allianceReports, teamsInMatch]);
+    }, [competition?.matchForm.formStructure, allianceReports, teamsInMatch]);
 
     // for every THING in formstructure
     // get the average of each of the THINGS in the sub arrays
     // and put them into a new array of data STFUFF
-    if (!competitionId) {
+    if (!competition?.id) {
         return (
-            <View style={{paddingTop:70}}>
+            <View style={{ paddingTop: 70 }}>
                 <Text style={styles.titleText}>Invalid Match</Text>
                 <Text style={styles.text}>There is no competition happening currently.</Text>
             </View>
-        );}
-    else if (teamsInMatch.length === 0) {
+        );
+    } else if (teamsInMatch.length === 0) {
         return (
-            <View style={{paddingTop:70}}>
+            <View style={{ paddingTop: 70 }}>
                 <Text style={styles.titleText}>Not a valid match</Text>
                 <Text style={styles.text}>This match doesn&#39;t have teams in it</Text>
             </View>
         );
-    } else if (competition?.form && teamCleaned.length > 0) {
+    } else if (competition?.matchForm.formStructure && teamCleaned.length > 0) {
         return (
-            <ScrollView  style={{ paddingTop: 50 }}>
+            <ScrollView style={{ paddingTop: 50 }}>
                 <Text style={styles.titleText}> Match Overview {matchNumber}</Text>
                 <View
                     style={{
-                        flexDirection: 'column',
-                        width: '95%',
-                        alignSelf: 'center',
+                        flexDirection: "column",
+                        width: "95%",
+                        alignSelf: "center",
                         backgroundColor: colors.card,
                         margin: 10,
                         padding: 15,
                         borderRadius: 10,
                         borderColor: colors.border,
                         borderWidth: 0.5,
-                    }}>
-                    <Text style={{fontSize: 17, color: colors.text, paddingVertical: 5}}>
+                    }}
+                >
+                    <Text style={{ fontSize: 17, color: colors.text, paddingVertical: 5 }}>
                         Teams in match:
                     </Text>
                     <View
                         style={{
-                            flexDirection: 'row',
+                            flexDirection: "row",
                             gap: 30,
-                            justifyContent: 'center',
-                            alignContent: 'center',
-                            width: '100%',
+                            justifyContent: "center",
+                            alignContent: "center",
+                            width: "100%",
                             marginTop: 5,
-                        }}>
-                        {teamsInMatch.map(team => (
+                        }}
+                    >
+                        {teamsInMatch.map((team) => (
                             <Pressable
                                 key={team.key}
                                 onPress={() => {
                                     console.log("pressed");
                                     rootNavigation.push("TeamSummary", {
                                         teamId: Number(team.team_number),
-                                        competitionId: competitionId
+                                        competitionId: competition?.id,
                                     });
-                                }}>
+                                }}
+                            >
                                 <View
                                     style={[
                                         styles.button,
                                         {
                                             backgroundColor:
-                                                alliance === 'red' ? '#e43737' : '#0b6fdf',
+                                                alliance === "red" ? "#e43737" : "#0b6fdf",
                                         },
-                                    ]}>
-                                    <Text style={{fontSize: 20, color: 'white'}}>
+                                    ]}
+                                >
+                                    <Text style={{ fontSize: 20, color: "white" }}>
                                         {team.team_number}
                                     </Text>
                                 </View>
@@ -222,15 +224,15 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                 </View>
 
                 <View>
-                    {competition.form.map((item, index) => {
+                    {competition.matchForm.formStructure.map((item, index) => {
                         return (
                             <AllianceSummaryCard
                                 key={index}
                                 form={item}
-                                data={teamCleaned.map(teamData => {
+                                data={teamCleaned.map((teamData) => {
                                     return teamData[index];
                                 })}
-                                teams={teamsInMatch.map(team => team.team_number)}
+                                teams={teamsInMatch.map((team) => team.team_number)}
                             />
                         );
                     })}
@@ -243,47 +245,51 @@ export function MatchOverview ({route: {params: {matchNumber, alliance}}, naviga
                 <Text style={styles.titleText}> Match Overview {matchNumber} Loading...</Text>
                 <View
                     style={{
-                        flexDirection: 'column',
-                        width: '95%',
-                        alignSelf: 'center',
+                        flexDirection: "column",
+                        width: "95%",
+                        alignSelf: "center",
                         backgroundColor: colors.card,
                         margin: 10,
                         padding: 15,
                         borderRadius: 10,
                         borderColor: colors.border,
                         borderWidth: 0.5,
-                    }}>
-                    <Text style={{fontSize: 17, color: colors.text, paddingVertical: 5}}>
+                    }}
+                >
+                    <Text style={{ fontSize: 17, color: colors.text, paddingVertical: 5 }}>
                         Teams in match:
                     </Text>
                     <View
                         style={{
-                            flexDirection: 'row',
+                            flexDirection: "row",
                             gap: 30,
-                            justifyContent: 'center',
-                            alignContent: 'center',
-                            width: '100%',
+                            justifyContent: "center",
+                            alignContent: "center",
+                            width: "100%",
                             marginTop: 5,
-                        }}>
-                        {teamsInMatch.map(team => (
+                        }}
+                    >
+                        {teamsInMatch.map((team) => (
                             <Pressable
                                 key={team.key}
                                 onPress={() => {
                                     console.log("pressed");
                                     rootNavigation.push("MatchOverview", {
                                         matchNumber: Number(matchNumber),
-                                        alliance: alliance
+                                        alliance: alliance,
                                     });
-                                }}>
+                                }}
+                            >
                                 <View
                                     style={[
                                         styles.button,
                                         {
                                             backgroundColor:
-                                                alliance === 'red' ? '#e43737' : '#0b6fdf',
+                                                alliance === "red" ? "#e43737" : "#0b6fdf",
                                         },
-                                    ]}>
-                                    <Text style={{fontSize: 20, color: 'white'}}>
+                                    ]}
+                                >
+                                    <Text style={{ fontSize: 20, color: "white" }}>
                                         {team.team_number}
                                     </Text>
                                 </View>

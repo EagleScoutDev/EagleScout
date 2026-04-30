@@ -2,7 +2,6 @@ import { Alert, StyleSheet, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
-import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import type { RootStackScreenProps } from "@/navigation";
 import { Form } from "@/lib/forms";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
@@ -16,20 +15,19 @@ import { UIText } from "@/ui/components/UIText";
 import { HeaderTimer } from "../components/HeaderTimer";
 import { UITabView } from "@/ui/components/UITabView";
 import { FormView } from "@/components/FormView";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { matchReportMutations } from "@/lib/mutations/matchReports";
-import { queries } from "@/lib/queries";
+import { useCurrentCompetition } from "@/lib/stores/currentComp";
 
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use memo"; // TODO: fix this
 
-    const { data: competition = null, isSuccess } = useQuery(queries.competitions.current);
-    const { getTeamsForMatch } = useCurrentCompetitionMatches();
+    const { comp: competition, online } = useCurrentCompetition(true);
     const submitMatchReport = useMutation(matchReportMutations.create);
+
     const [match, setMatch] = useState<number | null>(null);
-    const teamsForMatch = match === null || match > 400 ? [] : getTeamsForMatch(match);
     const [team, setTeam] = useState<number | null>(null);
 
     const formStructure = competition?.matchForm.formStructure ?? null;
@@ -154,7 +152,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
 
-                {!isSuccess && (
+                {!online && (
                     <UIText>To check for competitions, please connect to the internet.</UIText>
                 )}
             </View>
@@ -180,7 +178,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         setOrientation={setOrientation}
                         alliance={alliance}
                         setAlliance={setAlliance}
-                        teamsForMatch={teamsForMatch}
                     />
                 </ScoutingFlowTab>
             ),

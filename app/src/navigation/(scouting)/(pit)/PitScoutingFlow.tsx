@@ -10,14 +10,14 @@ import { PitScoutingImageList } from "./PitScoutingImageList";
 import { FormView } from "@/components/FormView";
 import { UIText } from "@/ui/components/UIText";
 import { UITabView } from "@/ui/components/UITabView";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { pitReportMutations } from "@/lib/mutations/pitReports";
 import type { PitReport } from "@/lib/db/models/ScoutPitReport";
-import { queries } from "@/lib/queries";
+import { useCurrentCompetition } from "@/lib/stores/currentComp";
 
 export interface PitFlowProps extends RootStackScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
-    const { data: competition = null, isSuccess } = useQuery(queries.competitions.current);
+    const { comp: competition, online } = useCurrentCompetition(true);
     const submitPitReport = useMutation(pitReportMutations.create);
     const formStructure = competition?.pitForm.formStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
@@ -84,7 +84,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <UIText>There is no competition happening currently.</UIText>
 
-                {!isSuccess && (
+                {!online && (
                     <UIText>To check for competitions, please connect to the internet.</UIText>
                 )}
             </View>

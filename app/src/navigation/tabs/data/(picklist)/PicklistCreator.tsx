@@ -23,14 +23,13 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Haptics from "expo-haptics";
 import { type Picklist, type PicklistTeam, type Tag } from "@/lib/db/models/Picklist";
 import * as Bs from "@/ui/icons";
-import type { Setter } from "@/lib/util/react/types";
 import type { DataTabScreenProps } from "../index";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
 import { UITextInput } from "@/ui/components/UITextInput";
 import { useRootNavigation } from "@/navigation/hooks";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { queries } from "@/lib/queries";
 import { picklistMutations } from "@/lib/mutations/picklists";
 import { tagMutations } from "@/lib/mutations/tags";
@@ -44,7 +43,6 @@ export interface PicklistCreatorProps extends DataTabScreenProps<"Picklists/Crea
 export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
     const { colors } = useTheme();
     const rootNavigation = useRootNavigation();
-    const queryClient = useQueryClient();
 
     const [name, setName] = useState<string | undefined>(undefined);
 
@@ -175,7 +173,7 @@ export function PicklistCreator({ route, navigation }: PicklistCreatorProps) {
                     </Pressable>
                 </View>
             ),
-        });
+        })
     }, [draggingActive, syncing, presetPicklist]);
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert, FlatList, Pressable, View } from "react-native";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "../index";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -8,13 +8,14 @@ import { UIText } from "@/ui/components/UIText";
 import { StandardButton } from "@/ui/StandardButton";
 import { queries } from "@/lib/queries";
 import { picklistMutations } from "@/lib/mutations/picklists";
+import { useCurrentCompetition } from "@/lib/stores/currentComp";
 
 export interface PicklistsProps extends DataTabScreenProps<"Picklists"> {}
 export function Picklists({ navigation }: PicklistsProps) {
     const { colors } = useTheme();
     const [hoveredPicklistID, setHoveredPicklistID] = useState<number | null>(null);
 
-    const { data: currentCompetition } = useQuery(queries.competitions.current);
+    const { comp: currentCompetition } = useCurrentCompetition(true);
 
     const { data: picklists = [] } = useQuery({
         ...queries.picklists.forCompetition({ competitionId: currentCompetition?.id ?? -1 }),

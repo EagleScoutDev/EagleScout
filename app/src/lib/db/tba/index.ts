@@ -3,13 +3,14 @@ import type { components } from "./schema.generated";
 
 export type TBAEvent = { rank: number | null } & components["schemas"]["Event_Simple"];
 export type TBATeam = components["schemas"]["Team_Simple"];
+export type TBAMatch = components["schemas"]["Match_Simple"];
 
 export interface FRCTeam {
     number: number;
     name: string;
 }
 
-export interface TBAMatch {
+export interface FRCMatch {
     id: number;
     team: string;
     match: number;
@@ -39,6 +40,15 @@ export namespace TBA {
     export async function getTeamsAtCompetition(comp_id: string): Promise<TBATeam[]> {
         const { data, error } = await supabase.functions.invoke("tba-api", {
             body: { endpoint: `/event/${comp_id}/teams/simple` },
+        });
+        if (error) throw error;
+
+        return data;
+    }
+
+    export async function getMatchesByComp(comp_id: string): Promise<TBAMatch[]> {
+        const { data, error } = await supabase.functions.invoke("tba-api", {
+            body: { endpoint: `/event/${comp_id}/matches/simple` },
         });
         if (error) throw error;
 
@@ -128,7 +138,7 @@ export namespace TBA {
         }));
     }
 
-    export async function getAllMatchesForComp(competitionId: number): Promise<TBAMatch[]> {
+    export async function getAllMatchesForComp(competitionId: number): Promise<FRCMatch[]> {
         const { data: compData, error: compError } = await supabase
             .from("competitions")
             .select("tba_event_id")

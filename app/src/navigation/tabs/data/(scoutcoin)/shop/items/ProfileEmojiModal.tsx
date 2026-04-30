@@ -3,7 +3,6 @@ import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { profileMutations } from "@/lib/mutations/profiles";
-import AsyncStorage from "expo-sqlite/kv-store";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
@@ -14,6 +13,7 @@ import { queries } from "@/lib/queries";
 export interface ProfileEmojiModalProps {
     onClose: () => void;
 }
+
 export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
@@ -29,16 +29,6 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
         onClose();
         try {
             await updateEmoji.mutateAsync({ emoji: e.emoji });
-            const currentUserObj = JSON.parse(
-                (await AsyncStorage.getItem("user")) as string,
-            );
-            await AsyncStorage.setItem(
-                "user",
-                JSON.stringify({
-                    ...currentUserObj,
-                    emoji: e.emoji,
-                }),
-            );
             await AsyncAlert.alert(`Emoji updated to ${e.emoji}`);
         } catch (error) {
             Alert.alert("Error updating your profile");
@@ -74,16 +64,16 @@ const makeStyles = ({ colors }: Theme) =>
             fontWeight: "bold",
             marginBottom: 20,
             textAlign: "center",
-            color: colors.fg.hex,
+            color: colors.fg.hex
         },
         emojiContainer: {
             alignItems: "center",
             justifyContent: "center",
             padding: 10,
             borderRadius: 10,
-            backgroundColor: colors.primary.hex,
+            backgroundColor: colors.primary.hex
         },
         emoji: {
-            fontSize: 60,
-        },
+            fontSize: 60
+        }
     });

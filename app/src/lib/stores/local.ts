@@ -24,6 +24,17 @@ export const useLocalStore = createSelectors(
             {
                 name: "local",
                 storage,
+                version: 0,
+                migrate(old, version) {
+                    switch (version) {
+                        default: {
+                            console.warn(
+                                `Unrecognized local store version ${version}; clearing storage!`,
+                            );
+                            return {};
+                        }
+                    }
+                },
             },
         ),
     ),

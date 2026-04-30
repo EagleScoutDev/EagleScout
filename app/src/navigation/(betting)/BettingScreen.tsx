@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { Image, ImageBackground } from "expo-image";
 import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet";
-import AsyncStorage from "expo-sqlite/kv-store";
+import { AsyncStorage } from "expo-sqlite/kv-store";
 import * as Bs from "@/ui/icons";
 import Slider from "@react-native-community/slider";
 import { useTheme } from "@/ui/context/ThemeContext";
@@ -190,12 +190,12 @@ export function BettingScreen({ route }: BettingScreenProps) {
     }, [subscribed, supabaseChannel, selectedAlliance, betAmount]);
 
     useEffect(() => {
-        AsyncStorage.getItem("bettingTutorialCompleted").then((value) => {
+        AsyncStorage.getItemAsync("bettingTutorialCompleted").then((value) => {
             if (value === "true") {
                 setShowBottomSheet(false);
             } else {
                 setShowBottomSheet(true);
-                AsyncStorage.setItem("bettingTutorialCompleted", "true");
+                AsyncStorage.setItemAsync("bettingTutorialCompleted", "true");
             }
         });
     }, []);

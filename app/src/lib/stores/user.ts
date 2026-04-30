@@ -3,10 +3,6 @@ import { combine, persist, subscribeWithSelector } from "zustand/middleware";
 import { Account } from "@/lib/db/account";
 import { supabase } from "../supabase";
 import { storage } from "./persist";
-import { type CompetitionReturnData, Competitions } from "@/lib/db/models/Competition";
-import { useQuery } from "@tanstack/react-query";
-import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
-import AsyncStorage from "expo-sqlite/kv-store";
 
 export interface UserStoreState {
     account: Account | null;
@@ -32,19 +28,27 @@ export const useUserStore = create(
 
                     async sync() {
                         const account = await Account.fetch();
-                        if (account === null) {
-                            set({
-                                account: null,
-                            });
-                            return;
-                        }
+                        set({
+                            account,
+                        });
                     },
                 }),
             ),
         ),
         {
-            name: "sync",
+            name: "user",
             storage,
+            version: 0,
+            migrate(old, version) {
+                switch (version) {
+                    default: {
+                        console.warn(
+                            `Unrecognized user store version ${version}; clearing storage!`,
+                        );
+                        return {};
+                    }
+                }
+            },
         },
     ),
 );

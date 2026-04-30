@@ -5,6 +5,7 @@ interface Competition {
     name: string;
     startTime: Date;
     endTime: Date;
+    tbaKey: string;
     formId: number;
     pitScoutFormId: number;
 }
@@ -22,6 +23,9 @@ export namespace Competitions {
             name,
             startTime:      start_time,
             endTime:        end_time,
+            ...tba_events(
+                tbaKey:     event_key
+            ),
             formId:         form_id,
             pitScoutFormId: pit_scout_form_id,
             matchForm:      forms!competitions_form_id_fkey(

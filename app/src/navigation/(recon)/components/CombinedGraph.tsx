@@ -1,14 +1,13 @@
-import { Dimensions, Pressable, View } from "react-native";
-import { LineChart } from "react-native-chart-kit";
-import { useState } from "react";
-import { type FormReturnData } from "@/lib/db/models/Form";
+import { Form } from "@/lib/forms";
+import { queries } from "@/lib/queries";
 import type { Setter } from "@/lib/util/react/types";
-import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
-import { Form } from "@/lib/forms";
+import { useTheme } from "@/ui/context/ThemeContext";
 import { useQuery } from "@tanstack/react-query";
-import { queries } from "@/lib/queries";
+import { useState } from "react";
+import { Dimensions, Pressable, View } from "react-native";
+import { LineChart } from "react-native-chart-kit";
 
 export interface CombinedGraphProps {
     modalActive: boolean;
@@ -53,8 +52,8 @@ export function CombinedGraph({
     });
 
     const { data: form } = useQuery({
-        ...queries.forms.forId({ id: competition?.formId ?? -1 }),
-        enabled: modalActive && !!competition?.formId,
+        ...queries.forms.forId({ id: competition?.matchForm.id ?? -1 }),
+        enabled: modalActive && !!competition?.matchForm.id,
     });
 
     const [questionToColor, setQuestionToColor] = useState<Map<string, string>>(new Map());

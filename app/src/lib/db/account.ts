@@ -7,18 +7,6 @@ export enum AccountRole {
     Admin = "admin",
     Rejected = "rejected",
 }
-export namespace AccountRole {
-    export function getName(type: AccountRole): string {
-        switch (type) {
-            case AccountRole.Admin:
-                return "Admin";
-            case AccountRole.Scouter:
-                return "Scouter";
-            case AccountRole.Rejected:
-                return "Rejected";
-        }
-    }
-}
 
 export interface Account extends User {
     deleted: boolean;
@@ -54,7 +42,14 @@ export namespace Account {
             data: { user },
             error,
         } = await supabase.auth.getUser();
-        if (error) throw error;
+        if (error) {
+            switch (error.code) {
+                case "session_not_found":
+                case "session_expired":
+                    return null;
+            }
+            throw error;
+        }
         if (user === null) return null;
 
         return {

@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { NoteInputModal } from "./NoteInputModal";
 import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
-import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Alliance } from "@/frc/common/common";
 import { UIText } from "@/ui/components/UIText";
@@ -17,6 +16,7 @@ import { UICard } from "@/ui/components/UICard";
 import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
 import { useMutation } from "@tanstack/react-query";
 import { noteMutations } from "@/lib/mutations/notes";
+import { useCurrentCompetition } from "@/lib/stores/currentComp";
 
 export function NoteScreen() {
     const [match, setMatch] = useState<number | null>(null);
@@ -35,18 +35,24 @@ export function NoteScreen() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [confettiView, setConfettiView] = useState<any>(null);
 
-    const { competitionId, getTeamsForMatch } = useCurrentCompetitionMatches();
+    const { active: compActive, comp: competition, matches, teams } = useCurrentCompetition(true);
     const createNote = useMutation(noteMutations.create);
 
     useEffect(() => {
         if (match === null) return;
+        if (!compActive) return;
 
-        const teams = getTeamsForMatch(match);
-        if (teams.length !== 6) setMatchNumberValid(false);
+        // TODO: support other match types
+        const matchInfo = matches
+            .values()
+            .find((m) => m.comp_level === "qm" && m.match_number === match);
+
+        // TODO: we cannot assume #teams = 6 <==> matchNumberValid?
+        if (matchInfo === undefined) setMatchNumberValid(false);
         else {
             setAlliances({
-                red: teams.slice(0, 3),
-                blue: teams.slice(3, 6),
+                red: matchInfo.alliances.red.team_keys.map((k) => teams.get(k)!.team_number),
+                blue: matchInfo.alliances.blue.team_keys.map((k) => teams.get(k)!.team_number),
             });
             setMatchNumberValid(true);
         }
@@ -68,7 +74,7 @@ export function NoteScreen() {
 
     const submitNote = async () => {
         setIsLoading(true);
-        if (competitionId === null) throw new Error("No active competition");
+        if (!compActive) throw new Error("No active competition");
 
         const promises = [];
         for (const team of Object.keys(noteContents)) {
@@ -80,7 +86,7 @@ export function NoteScreen() {
                     content: noteContents[team],
                     teamNumber: Number(team),
                     matchNumber: Number(match),
-                    competitionId,
+                    competitionId: competition.id,
                 }),
             );
         }
@@ -103,7 +109,7 @@ export function NoteScreen() {
         setNoteContents({});
     };
 
-    if (competitionId === -1) {
+    if (!compActive) {
         return (
             <View
                 style={{

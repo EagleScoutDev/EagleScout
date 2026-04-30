@@ -1,3 +1,13 @@
+import { Alliance } from "@/frc/common/common";
+import { PredictionConfidence } from "@/lib/PredictionConfidence";
+import { type MatchPredictionResults, TeamAggregation } from "@/lib/TeamAggregation";
+import type { Form } from "@/lib/forms";
+import { queries } from "@/lib/queries";
+import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
+import { UIText } from "@/ui/components/UIText";
+import { useTheme } from "@/ui/context/ThemeContext";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Keyboard,
@@ -7,30 +17,17 @@ import {
     TextInput,
     View,
 } from "react-native";
-import { useEffect, useRef, useState } from "react";
-import { type MatchPredictionResults, TeamAggregation } from "@/lib/TeamAggregation";
-import { PredictionConfidence } from "@/lib/PredictionConfidence";
-import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
-import { PredictionExplainerModal } from "./PredictionExplainerModal";
 import { PercentageWinBar } from "./PercentageWinBar";
 import { PredictionConfidenceTag } from "./PredictionConfidenceTag";
-import type { Form } from "@/lib/forms";
-import { useTheme } from "@/ui/context/ThemeContext";
-import { Alliance } from "@/frc/common/common";
-import { UIText } from "@/ui/components/UIText";
-import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
-import { useQuery } from "@tanstack/react-query";
-import { queries } from "@/lib/queries";
+import { PredictionExplainerModal } from "./PredictionExplainerModal";
 
-import type { TBAMatch } from "@/lib/db/tba";
+import type { FRCMatch } from "@/lib/db/tba";
 
 export function MatchPredictor() {
     const { colors } = useTheme();
     const [matchNumber, setMatchNumber] = useState<number>(0);
     const [bluePercentage, setBluePercentage] = useState<number>(51);
     const [redPercentage, setRedPercentage] = useState<number>(49);
-
-    const { competitionId, matches, getTeamsForMatch } = useCurrentCompetitionMatches();
 
     // teams in the match, from cache. no data except team number
     const [teamsWithoutData, setTeamsWithoutData] = useState<number[]>([]);
@@ -67,25 +64,32 @@ export function MatchPredictor() {
         redStdev: 0,
     });
 
-    const [onlineMatches, setOnlineMatches] = useState<TBAMatch[]>([]);
+    const [onlineMatches, setOnlineMatches] = useState<FRCMatch[]>([]);
     const [breakdownVisible, setBreakdownVisible] = useState<boolean>(false);
 
     const { data: currentCompetition } = useQuery(queries.competitions.current);
     const { data: allCompetitions = [] } = useQuery(queries.competitions.all);
 
     const activeCompId = selectedCompId ?? currentCompetition?.id ?? null;
-    const { data: tbaMatchesData = [] } = useQuery({
-        ...queries.tbaMatches.forComp({ id: activeCompId! }),
-        enabled: activeCompId != null && !currentCompetition,
-    });
-
     const noActiveCompetition = !currentCompetition && selectedCompId == null;
     const ongoingCompetition = !!currentCompetition || selectedCompId != null;
     const compId = activeCompId ?? -1;
 
+    const { data: tbaMatchesData = [] } = useQuery({
+        ...queries.tbaMatches.forComp({ id: activeCompId! }),
+        enabled: ongoingCompetition,
+    });
+    const teamsForMatch = tbaMatchesData
+        .filter((match) => match.compLevel === "qm")
+        .filter((match) => match.match === matchNumber)
+        .sort((a, _) => (a.alliance === "red" ? -1 : 1))
+        .map((match) => match.team.replace("frc", ""))
+        .map((match) => match.replace(/[A-Za-z]/g, " "))
+        .map((match) => Number(match));
+
     useEffect(() => {
         if (currentCompetition && selectedCompId == null) {
-            setCurrForm(currentCompetition.form);
+            setCurrForm(currentCompetition.matchForm.formStructure);
             setCompName(currentCompetition.name);
         }
     }, [currentCompetition]);
@@ -99,15 +103,13 @@ export function MatchPredictor() {
     // uses local cache to get the teams in the match
     async function getTeamsInMatch() {
         if (ongoingCompetition) {
-            const teams = getTeamsForMatch(Number(matchNumber)) || [];
-            console.log("teams for match " + matchNumber + ": " + teams);
-            if (teams.length > 0) {
-                let temp = teams.map((team) => ({
+            if (teamsForMatch.length > 0) {
+                let temp = teamsForMatch.map((team) => ({
                     team_number: team,
                     mean: -1,
                     stdev: -1,
                 }));
-                setTeamsWithoutData(teams);
+                setTeamsWithoutData(teamsForMatch);
                 return temp;
             }
             return [];
@@ -323,7 +325,7 @@ export function MatchPredictor() {
                     <Pressable
                         key={index}
                         onPress={() => {
-                            setCurrForm(item.form);
+                            setCurrForm(item.matchForm.formStructure);
                             setCompName(item.name);
                             setSelectedCompId(item.id);
                         }}
