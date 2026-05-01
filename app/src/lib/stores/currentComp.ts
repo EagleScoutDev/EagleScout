@@ -26,23 +26,29 @@ export interface CompInactiveState {
     teams: null;
     matches: null;
 }
-export interface CurrentCompActions {}
+export interface CurrentCompActions {
+    reset: () => void;
+}
+
+const initialState: CompInactiveState = {
+    lastTried: null,
+    lastFetched: null,
+
+    active: false,
+    comp: null,
+    teams: null,
+    matches: null,
+};
 export type CurrentCompStore = ReturnType<typeof useCurrentCompStore.getState>;
 
 export const useCurrentCompStore = create(
     persist(
         subscribeWithSelector(
             combine<CurrentCompState, CurrentCompActions>(
-                {
-                    lastTried: null,
-                    lastFetched: null,
-
-                    active: false,
-                    comp: null,
-                    teams: null,
-                    matches: null,
-                },
-                (set, get) => ({}),
+                initialState,
+                (set) => ({
+                    reset: () => set(initialState),
+                }),
             ),
         ),
         {
@@ -145,8 +151,6 @@ export function useCurrentCompetition(stable: boolean): CurrentCompInfo {
                 teams,
                 matches,
             });
-        } else {
-            console.log(comp, teams, matches);
         }
     }, [comp, error, teams, matches]);
 

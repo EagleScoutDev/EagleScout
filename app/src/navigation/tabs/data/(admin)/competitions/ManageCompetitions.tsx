@@ -21,7 +21,6 @@ export function ManageCompetitions() {
         refetch,
     } = useQuery(queries.competitions.all);
 
-    console.log(competitionList, internetError);
     const editSheetRef = useRef<EditCompetitionModal>(null);
     const addSheetRef = useRef<AddCompetitionModal>(null);
 

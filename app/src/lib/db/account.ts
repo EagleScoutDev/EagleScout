@@ -1,6 +1,7 @@
 import { supabase } from "../supabase";
 import { type User, Users } from "@/lib/db/models/User";
 import { useUserStore } from "@/lib/stores/user";
+import { isAuthSessionMissingError } from "@supabase/auth-js";
 
 export enum AccountRole {
     Scouter = "scouter",
@@ -47,6 +48,9 @@ export namespace Account {
                 case "session_not_found":
                 case "session_expired":
                     return null;
+            }
+            if (isAuthSessionMissingError(error)) {
+                return null;
             }
             throw error;
         }

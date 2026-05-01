@@ -1,6 +1,5 @@
 import { Alert, StyleSheet, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import Toast from "react-native-toast-message";
 import Confetti from "react-native-confetti";
 import type { RootStackScreenProps } from "@/navigation";
 import { Form } from "@/lib/forms";
@@ -18,6 +17,7 @@ import { FormView } from "@/components/FormView";
 import { useMutation } from "@tanstack/react-query";
 import { matchReportMutations } from "@/lib/mutations/matchReports";
 import { useCurrentCompetition } from "@/lib/stores/currentComp";
+import Toast from "react-native-toast-message";
 
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
@@ -119,7 +119,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             return;
         }
 
-        let dataToSubmit = {
+        await submitMatchReport.mutateAsync({
             data: Form.packSectionData(sectionData),
             timelineData: [], // TODO: either implement this or purge it
             autoPath: autoState.path,
@@ -127,24 +127,17 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             matchNumber: match,
             teamNumber: team,
             competitionId: competition.id,
-            competitionName: competition.name,
-        };
+            createdAt: new Date().toISOString(),
+        });
+        Toast.show({
+            type: "success",
+            text1: "Report Saved",
+            text2: "Reports will upload in the background; please keep the app open.",
 
-        console.log(dataToSubmit);
-        try {
-            await submitMatchReport.mutateAsync(dataToSubmit);
-            Toast.show({
-                type: "success",
-                text1: "Scouting report submitted!",
-                visibilityTime: 3000,
-            });
-            reset();
-            useConfetti.current?.startConfetti();
-            navigation.navigate("Match");
-        } catch (error) {
-            console.error(error);
-            Alert.alert("Error", "There was an error submitting your scouting report.");
-        }
+        })
+        reset();
+        useConfetti.current?.startConfetti();
+        navigation.navigate("Match");
     }
 
     if (competition === null) {

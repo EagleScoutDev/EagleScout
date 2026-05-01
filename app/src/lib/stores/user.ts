@@ -3,6 +3,8 @@ import { combine, persist, subscribeWithSelector } from "zustand/middleware";
 import { Account } from "@/lib/db/account";
 import { supabase } from "../supabase";
 import { storage } from "./persist";
+import { SyncStore } from "./sync";
+import { useCurrentCompStore } from "./currentComp";
 
 export interface UserStoreState {
     account: Account | null;
@@ -54,3 +56,13 @@ export const useUserStore = create(
 );
 
 supabase.auth.onAuthStateChange(() => void useUserStore.getState().sync());
+
+useUserStore.subscribe(
+    (state) => state.account,
+    (account) => {
+        if (account === null) {
+            void SyncStore.clear();
+            useCurrentCompStore.getState().reset();
+        }
+    },
+);

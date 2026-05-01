@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import * as Rebuilt from "@/frc/rebuilt";
 import { Form } from "@/lib/forms";
+import { SyncStore } from "@/lib/stores/sync";
 
 export interface TimelineElement {
     time: number;
@@ -8,21 +9,20 @@ export interface TimelineElement {
 }
 
 export interface MatchReport {
-    reportId: number;
     matchNumber: number;
     teamNumber: number;
     data: any[];
     competitionId: number;
     timelineData?: TimelineElement[];
     autoPath?: Rebuilt.AutoPath;
-}
 
-export interface MatchReportWithDate extends MatchReport {
     createdAt: string;
 }
 
-export interface MatchReportReturnData extends MatchReportWithDate {
+export interface MatchReportReturnData extends MatchReport {
+    reportId: number;
     form: Form.Structure;
+
     userId: string;
     userName?: string;
     competitionName: string;
@@ -85,13 +85,8 @@ export namespace ScoutMatchReports {
         return teams.map((team) => data.filter((r) => r.teamNumber === team));
     }
 
-    export async function getAllForComp(
-        competitionId: number,
-    ): Promise<MatchReportReturnData[]> {
-        const { data, error } = await reportQuery().eq(
-            "matches.competition_id",
-            competitionId,
-        );
+    export async function getAllForComp(competitionId: number): Promise<MatchReportReturnData[]> {
+        const { data, error } = await reportQuery().eq("matches.competition_id", competitionId);
         if (error) throw error;
 
         return data;
@@ -99,9 +94,7 @@ export namespace ScoutMatchReports {
 
     // FIXME: impure queries are below
 
-    export async function getHistory(
-        reportId: number,
-    ): Promise<MatchReportHistory[]> {
+    export async function getHistory(reportId: number): Promise<MatchReportHistory[]> {
         // FIXME: the .edited_by_id column of scout_report_history joins to auth.users, so we can't query it from the client
         const { data, error } = await supabase.rpc("get_scout_report_history", {
             report_id_arg: reportId,
@@ -117,9 +110,7 @@ export namespace ScoutMatchReports {
         }));
     }
 
-    export async function getAllForSelf(
-        competitionId: number,
-    ): Promise<MatchReportReturnData[]> {
+    export async function getAllForSelf(competitionId: number): Promise<MatchReportReturnData[]> {
         const {
             data: { user },
         } = await supabase.auth.getUser();
@@ -135,14 +126,15 @@ export namespace ScoutMatchReports {
 
     // FIXME: impure queries are below
 
-    export async function create(
-        matchNumber: number,
-        teamNumber: number,
-        data: any[],
-        competitionId: number,
-        timelineData?: TimelineElement[],
-        autoPath?: Rebuilt.AutoPath,
-    ): Promise<void> {
+    export async function submit({
+        matchNumber,
+        teamNumber,
+        data,
+        competitionId,
+        timelineData,
+        autoPath,
+    }: MatchReport): Promise<void> {
+        // TODO: use the user-provided createdAt date
         const { error } = await supabase.rpc("add_online_scout_report", {
             competition_id_arg: competitionId,
             match_number_arg: matchNumber,
@@ -154,10 +146,7 @@ export namespace ScoutMatchReports {
         if (error) throw error;
     }
 
-    export async function edit(
-        reportId: number,
-        newData: any[],
-    ): Promise<void> {
+    export async function edit(reportId: number, newData: any[]): Promise<void> {
         const { error } = await supabase.rpc("edit_online_scout_report", {
             report_id_arg: reportId,
             data_arg: newData,
