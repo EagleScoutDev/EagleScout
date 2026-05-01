@@ -1,53 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { DataTabScreenProps } from "../index";
-import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export interface TeamRankViewProps extends DataTabScreenProps<"TeamRank/View"> {}
 export function TeamRankView({ route }: TeamRankViewProps) {
     const { compId, compName, questionIndex, questionText } = route.params;
 
-    const [processing, setProcessing] = useState<boolean>(true);
-    const [data, setData] = useState<{ team: number; average: number }[] | null>(null);
+    const { data: reports = [], isLoading } = useQuery(queries.matchReports.forComp({ id: compId }));
 
-    useEffect(() => {
+    const data = useMemo(() => {
         const byTeam = new Map<number, number[]>();
         const averages = new Map<number, number>();
 
-        setProcessing(true);
-        MatchReportsDB.getReportsForCompetition(compId)
-            .then((reports) => {
-                for (let report of reports) {
-                    const team = report.teamNumber;
-                    const value = report.data[questionIndex];
+        for (const report of reports) {
+            const team = report.teamNumber;
+            const value = report.data[questionIndex];
+            if (byTeam.has(team)) byTeam.get(team)!.push(value);
+            else byTeam.set(team, [value]);
+        }
 
-                    if (byTeam.has(team)) byTeam.get(team)!.push(value);
-                    else byTeam.set(team, [value]);
-                }
+        byTeam.forEach((value, team) => {
+            const sum = value.reduce((a, x) => a + x, 0);
+            averages.set(team, sum / value.length);
+        });
 
-                byTeam.forEach((value, team) => {
-                    const sum = value.reduce((a, x) => a + x, 0);
-                    averages.set(team, sum / value.length);
-                });
-
-                setData(
-                    Array.from(averages.entries())
-                        .map(([team, average]) => ({ team, average }))
-                        .sort((a, b) => b.average - a.average),
-                );
-            })
-            .finally(() => {
-                setProcessing(false);
-            });
-    }, [compId, questionIndex]);
+        return Array.from(averages.entries())
+            .map(([team, average]) => ({ team, average }))
+            .sort((a, b) => b.average - a.average);
+    }, [reports, questionIndex]);
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1 }}>
-                {!processing && (
-                    <UIList loading={processing}>
+                {!isLoading && (
+                    <UIList loading={isLoading}>
                         {data && (
                             <UIList.Section>
                                 {data.map(({ team, average }, i) => (
@@ -59,12 +49,6 @@ export function TeamRankView({ route }: TeamRankViewProps) {
                                 ))}
                             </UIList.Section>
                         )}
-
-                        {/*{!data && (*/}
-                        {/*    <View style={{ alignItems: "center" }}>*/}
-                        {/*        <UIText size={16}>No data available.</UIText>*/}
-                        {/*    </View>*/}
-                        {/*)}*/}
                     </UIList>
                 )}
             </SafeAreaView>

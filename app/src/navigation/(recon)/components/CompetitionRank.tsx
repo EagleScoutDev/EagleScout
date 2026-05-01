@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import * as Bs from "@/ui/icons";
-import { type SimpleEvent, TBA } from "@/lib/frc/tba/TBA";
+import { type TBAEvent, TBA } from "@/lib/db/tba";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 
@@ -10,15 +10,15 @@ import { UIText } from "@/ui/components/UIText";
 export function CompetitionRank({ team_number }: { team_number: number }) {
     const { colors } = useTheme();
 
-    const [currentCompetition, setCurrentCompetition] = useState<SimpleEvent | null>(null);
+    const [currentCompetition, setCurrentCompetition] = useState<TBAEvent | null>(null);
     const [currentCompetitionRank, setCurrentCompetitionRank] = useState<number | null>(null);
-    const [allCompetitions, setAllCompetitions] = useState<SimpleEvent[]>([]);
+    const [allCompetitions, setAllCompetitions] = useState<TBAEvent[]>([]);
     const [historyVisible, setHistoryVisible] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         setLoading(true);
-        let all_competitions: SimpleEvent[] = [];
+        let all_competitions: TBAEvent[] = [];
 
         const fetchTeamRankings = async () => {
             try {
@@ -53,7 +53,7 @@ export function CompetitionRank({ team_number }: { team_number: number }) {
             return false;
         };
 
-        const findClosestDate = (events: SimpleEvent[]) => {
+        const findClosestDate = (events: TBAEvent[]) => {
             const dateDiff = (date: Date, startDate: Date, endDate: Date) => {
                 // if the date is between start and end date return 0
                 if (date >= startDate && date <= endDate) {

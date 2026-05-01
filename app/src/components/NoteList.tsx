@@ -1,11 +1,11 @@
 import { FlatList, TextInput, View } from "react-native";
 import { useState } from "react";
-import { type NoteWithMatch, type OfflineNote } from "@/lib/database/ScoutNotes";
+import { type NoteReturnData } from "@/lib/db/models/ScoutNote";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 
 export interface NoteListProps {
-    notes: (NoteWithMatch | OfflineNote)[];
+    notes: NoteReturnData[];
 }
 export function NoteList({ notes }: NoteListProps) {
     const { colors } = useTheme();
@@ -16,8 +16,8 @@ export function NoteList({ notes }: NoteListProps) {
             ? notes
             : notes.filter(
                   (note) =>
-                      note.match_number?.toString().includes(searchTerm) ||
-                      note.team_number.toString().includes(searchTerm) ||
+                      note.matchNumber?.toString().includes(searchTerm) ||
+                      note.teamNumber.toString().includes(searchTerm) ||
                       note.content.toLowerCase().includes(searchTerm.toLowerCase()),
               );
 
@@ -63,7 +63,7 @@ export function NoteList({ notes }: NoteListProps) {
                             }}
                         >
                             <UIText bold>
-                                Team {item.team_number} in Match {item.match_number}
+                                Team {item.teamNumber} in Match {item.matchNumber}
                                 {"competition_name" in item ? ` of ${item.competition_name}` : ""}
                             </UIText>
                             <UIText>{"scouter_name" in item ? `${item.scouter_name}` : ""}</UIText>

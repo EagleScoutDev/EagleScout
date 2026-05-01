@@ -1,5 +1,5 @@
-import { supabase } from "@/lib/supabase";
-import type { MutationOptions } from "@tanstack/react-query";
+import { Scoutcoin } from "@/lib/db/models/Scoutcoin";
+import type { MutationOptions } from "@tanstack/query-core";
 
 export interface SendScoutcoinParams {
     recipientId: string;
@@ -14,35 +14,16 @@ export interface PurchaseItemParams {
 export const scoutcoinMutations = {
     send: {
         mutationKey: ["sendScoutcoin"],
-        async mutationFn({ recipientId, amount, reason }: SendScoutcoinParams) {
-            const { data, error } = await supabase.functions.invoke("send-scoutcoin", {
-                body: JSON.stringify({
-                    recipientId,
-                    amount,
-                    reason,
-                }),
-            });
-
-            if (error) throw error;
-            return data;
-        },
+        mutationFn: ({ recipientId, amount, reason }: SendScoutcoinParams) =>
+            Scoutcoin.send(recipientId, amount, reason),
         onSuccess(_data, _variables, _onMutateResult, { client }) {
             return client.invalidateQueries({ queryKey: ["profile"] });
         },
     },
     purchaseItem: {
         mutationKey: ["purchaseScoutcoinItem"],
-        async mutationFn({ itemName }: PurchaseItemParams) {
-            const { data, error } = await supabase.functions.invoke("purchase-item", {
-                body: JSON.stringify({
-                    itemName,
-                }),
-            });
-
-            if (error) throw error;
-            if (data !== "Success") throw new Error(data);
-            return data;
-        },
+        mutationFn: ({ itemName }: PurchaseItemParams) =>
+            Scoutcoin.purchaseItem(itemName),
         onSuccess(_data, _variables, _onMutateResult, { client }) {
             return client.invalidateQueries({ queryKey: ["profile"] });
         },

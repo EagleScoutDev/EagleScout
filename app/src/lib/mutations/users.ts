@@ -1,5 +1,5 @@
-import { supabase } from "@/lib/supabase";
-import type { MutationOptions } from "@tanstack/react-query";
+import { Users } from "@/lib/db/models/User";
+import type { MutationOptions } from "@tanstack/query-core";
 
 export interface UpdateApproveStatusParams {
     userId: string;
@@ -14,30 +14,18 @@ export interface UpdateAdminStatusParams {
 export const userMutations = {
     updateApproveStatus: {
         mutationKey: ["updateApproveStatus"],
-        async mutationFn({ userId, approved }: UpdateApproveStatusParams) {
-            const { error } = await supabase
-                .from("user_attributes")
-                .update({ scouter: approved })
-                .eq("id", userId);
-
-            if (error) throw error;
-        },
+        mutationFn: ({ userId, approved }: UpdateApproveStatusParams) =>
+            Users.updateApproveStatus(userId, approved),
         onSuccess(_data, _variables, _onMutateResult, { client }) {
-            client.invalidateQueries({ queryKey: ["users"] });
+            return client.invalidateQueries({ queryKey: ["users"] });
         },
     },
     updateAdminStatus: {
         mutationKey: ["updateAdminStatus"],
-        async mutationFn({ userId, isAdmin }: UpdateAdminStatusParams) {
-            const { error } = await supabase
-                .from("user_attributes")
-                .update({ admin: isAdmin })
-                .eq("id", userId);
-
-            if (error) throw error;
-        },
+        mutationFn: ({ userId, isAdmin }: UpdateAdminStatusParams) =>
+            Users.updateAdminStatus(userId, isAdmin),
         onSuccess(_data, _variables, _onMutateResult, { client }) {
-            client.invalidateQueries({ queryKey: ["users"] });
+            return client.invalidateQueries({ queryKey: ["users"] });
         },
     },
 } as const satisfies Record<string, MutationOptions<any, any, any, any>>;

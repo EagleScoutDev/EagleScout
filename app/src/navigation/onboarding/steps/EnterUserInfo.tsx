@@ -21,7 +21,7 @@ export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const { colors } = useTheme();
-    const { mutateAsync: updateProfile, isPending } = useMutation(profileMutations.updateProfile);
+    const updateProfile = useMutation(profileMutations.updateProfile);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -56,10 +56,10 @@ export function EnterUserInfo({ navigation }: EnterUserInfoProps) {
                             firstName === "" || lastName === "" ? "dimgray" : colors.primary.hex
                         }
                         disabled={firstName === "" || lastName === ""}
-                        isLoading={isPending}
+                        isLoading={updateProfile.isPending}
                         onPress={async () => {
                             try {
-                                await updateProfile({ firstName, lastName });
+                                await updateProfile.mutateAsync({ firstName, lastName });
                                 navigation.navigate("SelectTeam");
                             } catch (error: any) {
                                 console.error(error);

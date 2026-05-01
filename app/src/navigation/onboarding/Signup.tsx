@@ -15,14 +15,15 @@ import { UIText } from "@/ui/components/UIText";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { StandardButton } from "@/ui/StandardButton";
 import { useMutation } from "@tanstack/react-query";
-import { authMutations } from "@/lib/mutations/auth";
+import { authMutations } from "@/lib/mutations/session";
+import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 
 export interface SignupProps extends OnboardingScreenProps<"Signup"> {}
 export function Signup({ navigation }: SignupProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const { mutateAsync: signUp, isPending } = useMutation(authMutations.signUp);
+    const signUp = useMutation(authMutations.signUp);
 
     const formComplete = useMemo(
         () => email !== "" || password !== "" || confirmPassword !== "",
@@ -73,10 +74,10 @@ export function Signup({ navigation }: SignupProps) {
                             text="Register"
                             textColor={!formComplete ? "dimgray" : colors.primary.hex}
                             disabled={!formComplete}
-                            isLoading={isPending}
+                            isLoading={signUp.isPending}
                             onPress={async () => {
                                 if (password !== confirmPassword) {
-                                    Alert.alert(
+                                    await AsyncAlert.alert(
                                         "Passwords do not match",
                                         "Please try again",
                                         [{ text: "OK" }],
@@ -86,12 +87,12 @@ export function Signup({ navigation }: SignupProps) {
                                 }
 
                                 try {
-                                    await signUp({
+                                    await signUp.mutateAsync({
                                         email,
                                         password,
                                         emailRedirectTo: "eaglescout://confirm-signup",
                                     });
-                                    Alert.alert(
+                                    await AsyncAlert.alert(
                                         "Success!",
                                         "You received an email to confirm your account. Please follow the instructions in the email for next steps.",
                                     );

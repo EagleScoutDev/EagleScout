@@ -1,29 +1,36 @@
 import { useEffect, useState } from "react";
 import { Modal, Pressable, View } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
-import { TagsDB, type TagStructure } from "@/lib/database/Tags";
+import { type Tag } from "@/lib/db/models/Picklist";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
+import { useMutation } from "@tanstack/react-query";
+import { tagMutations } from "@/lib/mutations/tags";
 
 export interface TagColorChangeModalProps {
     visible: boolean;
     setVisible: Setter<boolean>;
-    tag: TagStructure | undefined;
+    tag: Tag | undefined;
 }
 export function TagColorChangeModal({ visible, setVisible, tag }: TagColorChangeModalProps) {
     const { colors } = useTheme();
     const [color, setColor] = useState(tag?.color ?? "#FF0000");
 
+    const updateTagColor = useMutation(tagMutations.updateColor);
+
     useEffect(() => {
         setColor(tag?.color ?? "#FF0000");
     }, [visible, tag]);
 
-    const saveColor = () => {
-        TagsDB.updateColorOfTag(tag.id!, color!).then((r) => {
+    const saveColor = async () => {
+        try {
+            await updateTagColor.mutateAsync({ tagId: tag!.id!, color: color! });
             console.log("finished updating color of tag");
-        });
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const onChangeColor = ({ hex }: { hex: string }) => {

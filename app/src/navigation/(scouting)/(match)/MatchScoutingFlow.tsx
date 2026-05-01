@@ -1,40 +1,36 @@
 import { Alert, StyleSheet, View } from "react-native";
-import AsyncStorage from "expo-sqlite/kv-store";
 import { useEffect, useRef, useState } from "react";
-import Toast from "react-native-toast-message";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { MatchReportsDB } from "@/lib/database/ScoutMatchReports";
 import Confetti from "react-native-confetti";
-import { useCurrentCompetitionMatches } from "@/lib/hooks/useCurrentCompetitionMatches";
 import type { RootStackScreenProps } from "@/navigation";
 import { Form } from "@/lib/forms";
-import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
-import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { MatchInformation } from "@/navigation/(scouting)/components/MatchInformation";
 import { Arrays } from "@/lib/util/Arrays";
 import { Alliance, Orientation } from "@/frc/common/common";
 import * as Rebuilt from "@/frc/rebuilt";
 import { AutoAction, AutoState, type LinkName } from "@/frc/rebuilt";
-import { FormHelper } from "@/lib/FormHelper";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { UIText } from "@/ui/components/UIText";
 import { HeaderTimer } from "../components/HeaderTimer";
 import { UITabView } from "@/ui/components/UITabView";
 import { FormView } from "@/components/FormView";
+import { useMutation } from "@tanstack/react-query";
+import { matchReportMutations } from "@/lib/mutations/matchReports";
+import { useCurrentCompetition } from "@/lib/stores/currentComp";
+import Toast from "react-native-toast-message";
 
 export interface MatchScoutingFlowProps extends RootStackScreenProps<"Match"> {}
 
 export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
     "use memo"; // TODO: fix this
 
-    const { competition, online } = useCurrentCompetition();
-    const { getTeamsForMatch } = useCurrentCompetitionMatches();
+    const { comp: competition, online } = useCurrentCompetition(true);
+    const submitMatchReport = useMutation(matchReportMutations.create);
+
     const [match, setMatch] = useState<number | null>(null);
-    const teamsForMatch = match === null || match > 400 ? [] : getTeamsForMatch(match);
     const [team, setTeam] = useState<number | null>(null);
 
-    const formStructure = competition?.form ?? null;
+    const formStructure = competition?.matchForm.formStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
     const [currentTab, setCurrentTab] = useState("Setup");
@@ -104,12 +100,12 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
         if (competition === null || formStructure === null) return;
 
         if (match === null || match > 400) {
-            await AsyncAlert.alert("Invalid Match Number", "Please enter a valid match number");
+            Alert.alert("Invalid Match Number", "Please enter a valid match number");
             navigation.navigate("Match");
             return;
         }
         if (team === null) {
-            await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
+            Alert.alert("Invalid Team Number", "Please enter a valid team number");
             navigation.navigate("Match");
             return;
         }
@@ -123,7 +119,7 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             return;
         }
 
-        let dataToSubmit = {
+        await submitMatchReport.mutateAsync({
             data: Form.packSectionData(sectionData),
             timelineData: [], // TODO: either implement this or purge it
             autoPath: autoState.path,
@@ -131,55 +127,16 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
             matchNumber: match,
             teamNumber: team,
             competitionId: competition.id,
-            competitionName: competition.name,
-        };
+            createdAt: new Date().toISOString(),
+        });
+        Toast.show({
+            type: "success",
+            text1: "Report Saved",
+            text2: "Reports will upload in the background; please keep the app open.",
 
-        const internetResponse = await CompetitionsDB.getCurrentCompetition()
-            .then(() => true)
-            .catch(() => false);
-        if (!internetResponse) {
-            await FormHelper.saveFormOffline({
-                ...dataToSubmit,
-                form: formStructure,
-                formId: competition?.formId,
-            });
-            reset();
-
-            Toast.show({
-                type: "success",
-                text1: "Saved offline successfully!",
-                visibilityTime: 3000,
-            });
-
-            const currentAssignments = await AsyncStorage.getItem("scout-assignments");
-            if (currentAssignments !== null) {
-                const newAssignments = JSON.parse(currentAssignments).filter(
-                    (a) =>
-                        !(
-                            a.matchNumber === match &&
-                            (a.team === null || a.team.substring(3) === team)
-                        ),
-                );
-                await AsyncStorage.setItem("scout-assignments", JSON.stringify(newAssignments));
-            }
-        } else {
-            try {
-                console.log(dataToSubmit);
-                await MatchReportsDB.createOnlineScoutReport(dataToSubmit);
-                Toast.show({
-                    type: "success",
-                    text1: "Scouting report submitted!",
-                    visibilityTime: 3000,
-                });
-                reset();
-
-                useConfetti.current?.startConfetti();
-            } catch (error) {
-                console.error(error);
-                Alert.alert("Error", "There was an error submitting your scouting report.");
-            }
-        }
-
+        })
+        reset();
+        useConfetti.current?.startConfetti();
         navigation.navigate("Match");
     }
 
@@ -214,7 +171,6 @@ export function MatchScoutingFlow({ navigation }: MatchScoutingFlowProps) {
                         setOrientation={setOrientation}
                         alliance={alliance}
                         setAlliance={setAlliance}
-                        teamsForMatch={teamsForMatch}
                     />
                 </ScoutingFlowTab>
             ),

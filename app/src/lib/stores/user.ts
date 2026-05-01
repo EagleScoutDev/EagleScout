@@ -1,41 +1,68 @@
 import { create } from "zustand/react";
-import { combine, persist } from "zustand/middleware";
-import { type Account, Accounts } from "../user/account";
+import { combine, persist, subscribeWithSelector } from "zustand/middleware";
+import { Account } from "@/lib/db/account";
 import { supabase } from "../supabase";
 import { storage } from "./persist";
+import { SyncStore } from "./sync";
+import { useCurrentCompStore } from "./currentComp";
 
 export interface UserStoreState {
     account: Account | null;
-    // profile: Profile | null;
 }
 export interface UserStoreActions {
-    login(email: string, password: string): Promise<void>;
-    logout(): Promise<void>;
-    update(): Promise<void>;
+    signInWithPassword(creds: { email: string; password: string }): Promise<void>;
+    signOut(): Promise<void>;
+
+    sync(): Promise<void>;
 }
 // FIXME: (12/20/2025) zustand's auto-generated selectors confuse react-compiler.
 //        see https://github.com/pmndrs/zustand/discussions/2562 for more info
 export const useUserStore = create(
     persist(
-        combine<UserStoreState, UserStoreActions>(
-            {
-                account: null,
-                // profile: null,
-            },
-            (set, _) => ({
-                login: Accounts.login,
-                logout: Accounts.logout,
-                async update() {
-                    const account = await Accounts.update();
-                    set({ account });
+        subscribeWithSelector(
+            combine<UserStoreState, UserStoreActions>(
+                {
+                    account: null,
                 },
-            }),
+                (set) => ({
+                    signInWithPassword: Account.signInWithPassword,
+                    signOut: Account.signOut,
+
+                    async sync() {
+                        const account = await Account.fetch();
+                        set({
+                            account,
+                        });
+                    },
+                }),
+            ),
         ),
         {
-            name: "account",
+            name: "user",
             storage,
+            version: 0,
+            migrate(old, version) {
+                switch (version) {
+                    default: {
+                        console.warn(
+                            `Unrecognized user store version ${version}; clearing storage!`,
+                        );
+                        return {};
+                    }
+                }
+            },
         },
     ),
 );
 
-supabase.auth.onAuthStateChange(() => void useUserStore.getState().update());
+supabase.auth.onAuthStateChange(() => void useUserStore.getState().sync());
+
+useUserStore.subscribe(
+    (state) => state.account,
+    (account) => {
+        if (account === null) {
+            void SyncStore.clear();
+            useCurrentCompStore.getState().reset();
+        }
+    },
+);

@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-import { type FormReturnData, FormsDB } from "@/lib/database/Forms";
+import { useRef } from "react";
 import * as Bs from "@/ui/icons";
 import type { DataTabScreenProps } from "@/navigation/tabs/data";
 import { FormOptionsModal } from "./components/FormOptionsModal";
@@ -7,21 +6,13 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 import { UIFab } from "@/ui/components/UIFab";
-import { useFocusEffect } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export interface FormListProps extends DataTabScreenProps<"Forms"> {}
 export function FormList({ navigation }: FormListProps) {
-    const [formList, setFormList] = useState<FormReturnData[]>([]);
+    const { data: formList = [], refetch } = useQuery(queries.forms.all);
     const optionsSheetRef = useRef<FormOptionsModal>(null);
-
-    async function fetchForms() {
-        const forms = await FormsDB.getAllForms();
-        setFormList(forms);
-    }
-
-    useFocusEffect(() => {
-        fetchForms();
-    });
 
     return (
         <SafeAreaProvider>
@@ -29,7 +20,7 @@ export function FormList({ navigation }: FormListProps) {
                 <TabHeader title={"Forms"} />
             </SafeAreaView>
 
-            <UIList onRefresh={fetchForms}>
+            <UIList onRefresh={refetch}>
                 <UIList.Section>
                     {formList.map((form) => (
                         <UIList.Row

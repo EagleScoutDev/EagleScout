@@ -15,13 +15,13 @@ import { UIText } from "@/ui/components/UIText";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
 import { useMutation } from "@tanstack/react-query";
-import { authMutations } from "@/lib/mutations/auth";
+import { authMutations } from "@/lib/mutations/session";
 
 export interface ResetPasswordProps extends OnboardingScreenProps<"ResetPassword"> {}
 export function ResetPassword({ navigation }: ResetPasswordProps) {
     const { colors } = useTheme();
     const [email, setEmail] = useState("");
-    const { mutateAsync: resetPassword, isPending } = useMutation(authMutations.resetPassword);
+    const resetPassword = useMutation(authMutations.resetPassword);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -46,14 +46,14 @@ export function ResetPassword({ navigation }: ResetPasswordProps) {
                             text={"Reset Password"}
                             textColor={email === "" ? "dimgray" : colors.primary.hex}
                             disabled={email === ""}
-                            isLoading={isPending}
+                            isLoading={resetPassword.isPending}
                             onPress={async () => {
                                 if (email === "") {
                                     Alert.alert("Email cannot be blank.", "Please try again", [{ text: "OK" }], { cancelable: false });
                                     return;
                                 }
                                 try {
-                                    await resetPassword({ email });
+                                    await resetPassword.mutateAsync({ email });
                                     Alert.alert("Password reset email sent", "Please check your email", [{ text: "OK" }], { cancelable: false });
                                 } catch (error: any) {
                                     console.error("Error resetting password:", error);

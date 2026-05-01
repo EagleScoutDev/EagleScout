@@ -2,24 +2,24 @@ import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { TeamInformation } from "@/navigation/(scouting)/components/TeamInformation";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { PitReportsDB, type PitReportWithoutId } from "@/lib/database/ScoutPitReports";
-import { FormHelper } from "@/lib/FormHelper";
 import type { RootStackScreenProps } from "@/navigation";
 import { ScoutingFlowTab } from "@/navigation/(scouting)/components/ScoutingFlowTab";
 import { Form } from "@/lib/forms";
-import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
-import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { Arrays } from "@/lib/util/Arrays";
 import { PitScoutingImageList } from "./PitScoutingImageList";
 import { FormView } from "@/components/FormView";
 import { UIText } from "@/ui/components/UIText";
 import { UITabView } from "@/ui/components/UITabView";
+import { useMutation } from "@tanstack/react-query";
+import { pitReportMutations } from "@/lib/mutations/pitReports";
+import type { PitReport } from "@/lib/db/models/ScoutPitReport";
+import { useCurrentCompetition } from "@/lib/stores/currentComp";
 
 export interface PitFlowProps extends RootStackScreenProps<"Pit"> {}
 export function PitScoutingFlow({ navigation }: PitFlowProps) {
-    const { competition, online } = useCurrentCompetition();
-    const formStructure = competition?.pitScoutFormStructure ?? null;
+    const { comp: competition, online } = useCurrentCompetition(true);
+    const submitPitReport = useMutation(pitReportMutations.create);
+    const formStructure = competition?.pitForm.formStructure ?? null;
     const formSections = formStructure === null ? [] : Form.splitSections(formStructure);
 
     const [currentTab, setCurrentTab] = useState("Match");
@@ -42,7 +42,7 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         if (competition === null || formStructure === null) return;
 
         if (team === null) {
-            await AsyncAlert.alert("Invalid Team Number", "Please enter a valid team number");
+            Alert.alert("Invalid Team Number", "Please enter a valid team number");
             return;
         }
 
@@ -55,43 +55,27 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
             return;
         }
 
-        const data: PitReportWithoutId = {
+        const data: PitReport = {
             data: Form.packSectionData(sectionData),
             teamNumber: team,
             competitionId: competition.id,
+            createdAt: new Date(),
         };
-        const internetResponse = await CompetitionsDB.getCurrentCompetition()
-            .then(() => true)
-            .catch(() => false);
-        if (!internetResponse) {
-            await FormHelper.savePitFormOffline(
-                data,
-                images.filter((item) => item !== "plus"),
-            );
-            reset();
 
+        try {
+            await submitPitReport.mutateAsync({
+                report: data,
+                images: images.filter((item) => item !== "plus"),
+            });
+            reset();
             Toast.show({
                 type: "success",
-                text1: "Saved offline successfully!",
+                text1: "Submitted successfully!",
                 visibilityTime: 3000,
             });
-        } else {
-            try {
-                await PitReportsDB.createOnlinePitScoutReport(
-                    data,
-                    images.filter((item) => item !== "plus"),
-                );
-                reset();
-
-                Toast.show({
-                    type: "success",
-                    text1: "Submitted successfully!",
-                    visibilityTime: 3000,
-                });
-            } catch (error) {
-                console.error(error);
-                Alert.alert("Error", "There was an error submitting your pit report.");
-            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Error", "There was an error submitting your pit report.");
         }
     }
 
@@ -107,49 +91,51 @@ export function PitScoutingFlow({ navigation }: PitFlowProps) {
         );
     }
 
-    return <>
-        <UITabView currentKey={currentTab} onTabChange={setCurrentTab}>
-            <UITabView.Tab tabKey="Match" title="Match">
-                <ScoutingFlowTab
-                    title={competition.name}
-                    buttonText={"Next"}
-                    onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
-                >
-                    <TeamInformation team={team} setTeam={setTeam} />
-                </ScoutingFlowTab>
-            </UITabView.Tab>
+    return (
+        <>
+            <UITabView currentKey={currentTab} onTabChange={setCurrentTab}>
+                <UITabView.Tab tabKey="Match" title="Match">
+                    <ScoutingFlowTab
+                        title={competition.name}
+                        buttonText={"Next"}
+                        onNext={() => setCurrentTab(`Form/${formSections[0].title}`)}
+                    >
+                        <TeamInformation team={team} setTeam={setTeam} />
+                    </ScoutingFlowTab>
+                </UITabView.Tab>
 
-            {formSections.map(({ title, items }, i) => {
-                const isLast = i === formSections.length - 1;
+                {formSections.map(({ title, items }, i) => {
+                    const isLast = i === formSections.length - 1;
 
-                return (
-                    <UITabView.Tab key={`Form/${title}`} tabKey={`Form/${title}`} title={title}>
-                        <ScoutingFlowTab
-                            buttonText={"Next"}
-                            title={title}
-                            onNext={() => {
-                                setCurrentTab(
-                                    isLast ? "Images" : `Form/${formSections[i + 1].title}`,
-                                );
-                            }}
-                        >
-                            <FormView
-                                items={items}
-                                data={sectionData[i]}
-                                onInput={(data) =>
-                                    setSectionData(Arrays.set(sectionData, i, data))
-                                }
-                            />
-                        </ScoutingFlowTab>
-                    </UITabView.Tab>
-                );
-            })}
+                    return (
+                        <UITabView.Tab key={`Form/${title}`} tabKey={`Form/${title}`} title={title}>
+                            <ScoutingFlowTab
+                                buttonText={"Next"}
+                                title={title}
+                                onNext={() => {
+                                    setCurrentTab(
+                                        isLast ? "Images" : `Form/${formSections[i + 1].title}`,
+                                    );
+                                }}
+                            >
+                                <FormView
+                                    items={items}
+                                    data={sectionData[i]}
+                                    onInput={(data) =>
+                                        setSectionData(Arrays.set(sectionData, i, data))
+                                    }
+                                />
+                            </ScoutingFlowTab>
+                        </UITabView.Tab>
+                    );
+                })}
 
-            <UITabView.Tab tabKey="Images" title="Images">
-                <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
-                    <PitScoutingImageList images={images} setImages={setImages} />
-                </ScoutingFlowTab>
-            </UITabView.Tab>
-        </UITabView>
-    </>;
+                <UITabView.Tab tabKey="Images" title="Images">
+                    <ScoutingFlowTab title={"Images"} buttonText="Submit" onNext={submitForm}>
+                        <PitScoutingImageList images={images} setImages={setImages} />
+                    </ScoutingFlowTab>
+                </UITabView.Tab>
+            </UITabView>
+        </>
+    );
 }

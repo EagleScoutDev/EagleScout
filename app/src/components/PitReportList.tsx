@@ -1,7 +1,7 @@
-import { type PitReportReturnData } from "@/lib/database/ScoutPitReports";
+import { type PitReportReturnData } from "@/lib/db/models/ScoutPitReport";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { PitReportModal } from "@/navigation/(modals)/PitReportModal";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 

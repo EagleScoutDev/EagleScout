@@ -7,7 +7,6 @@ export interface MatchInformationProps {
     setMatch: Setter<number | null>;
     team: number | null;
     setTeam: Setter<number | null>;
-    teamsForMatch: number[];
 
     orientation: Orientation;
     setOrientation: Setter<Orientation>;
@@ -19,7 +18,6 @@ export function MatchInformation({
     setMatch,
     team,
     setTeam,
-    teamsForMatch,
     orientation,
     setOrientation,
     alliance,
@@ -49,11 +47,6 @@ export function MatchInformation({
                 max={99999}
                 value={team}
                 onInput={setTeam}
-                error={
-                    team !== null && !teamsForMatch.includes(team)
-                        ? `Warning: Team ${team} is not in this match`
-                        : null
-                }
             />
             <UICard.OrientationChooser
                 label={"Field Orientation"}

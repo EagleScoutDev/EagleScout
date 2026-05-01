@@ -1,19 +1,18 @@
-import { useCallback, useRef, useState } from "react";
-import { View } from "react-native";
 import { StatboticsSummary } from "@/components/StatboticsSummary";
-import { CompetitionRank } from "./components/CompetitionRank";
-import { TeamReportSummary } from "./components/TeamReportSummary";
-import { CombinedGraph } from "./components/CombinedGraph";
-import type { RootStackScreenProps } from "../index";
+import { type TBATeam } from "@/lib/db/tba";
+import { queries } from "@/lib/queries";
 import { FormQuestionPicker } from "@/navigation/tabs/data/components/FormQuestionPicker";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { FormsDB } from "@/lib/database/Forms";
 import { UIList } from "@/ui/components/UIList";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
 import { useQuery } from "@tanstack/react-query";
-import { type SimpleTeam, TBA } from "@/lib/frc/tba/TBA";
+import { useCallback, useRef, useState } from "react";
+import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import type { RootStackScreenProps } from "../index";
+import { CombinedGraph } from "./components/CombinedGraph";
+import { CompetitionRank } from "./components/CompetitionRank";
+import { TeamReportSummary } from "./components/TeamReportSummary";
 
 export interface TeamSummaryParams {
     teamId: number;
@@ -26,21 +25,17 @@ export function TeamSummary({
     },
     navigation,
 }: TeamSummaryProps) {
-    const { data: competition, refetch: refetchCompetition } = useQuery({
-        queryKey: ["competitions", competitionId],
-        queryFn: () => CompetitionsDB.getCompetitionById(competitionId),
-    });
+    const { data: competition, refetch: refetchCompetition } = useQuery(
+        queries.competitions.forId({ id: competitionId }),
+    );
     const { data: form, refetch: refetchForm } = useQuery({
-        queryKey: ["forms", competition?.formId],
-        queryFn: () => FormsDB.getForm(competition!.formId),
-        enabled: !!competition && competition.formId !== undefined,
+        ...queries.forms.forId({ id: competition?.matchForm.id ?? 0 }),
+        enabled: !!competition && competition.matchForm.id !== undefined,
     });
     const { data: team, refetch: refetchTeam } = useQuery({
-        queryKey: ["tba", "competition", { competitionId }, "teams"],
-        queryFn: () =>
-            CompetitionsDB.getCompetitionTBAKey(competitionId).then(TBA.getTeamsAtCompetition),
+        ...queries.tba.teamsAtCompetition({ id: competitionId }),
         select: useCallback(
-            (teams: SimpleTeam[]) => teams.find((team) => team.team_number === teamId),
+            (teams: TBATeam[]) => teams.find((team) => team.team_number === teamId),
             [teamId],
         ),
         enabled: competitionId !== null,

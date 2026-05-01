@@ -1,25 +1,25 @@
 import { useMemo, useState } from "react";
 import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { profileMutations } from "@/lib/mutations/profiles";
-import { useProfile } from "@/lib/hooks/useProfile";
-import AsyncStorage from "expo-sqlite/kv-store";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import type { Theme } from "@/ui/lib/theme";
+import { queries } from "@/lib/queries";
 
 export interface ProfileEmojiModalProps {
     onClose: () => void;
 }
+
 export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
-    const { profile } = useProfile();
+    const { data: profile = null } = useQuery(queries.profiles.current);
     const [emojiModalVisible, setEmojiModalVisible] = useState(false);
-    const { mutate: updateEmoji } = useMutation(profileMutations.updateEmoji);
+    const updateEmoji = useMutation(profileMutations.updateEmoji);
 
     if (!profile) {
         return null;
@@ -27,33 +27,18 @@ export function ProfileEmojiModal({ onClose }: ProfileEmojiModalProps) {
 
     const handleEmojiSelect = async (e: any) => {
         onClose();
-        updateEmoji(
-            { emoji: e.emoji },
-            {
-                onSuccess: async () => {
-                    const currentUserObj = JSON.parse(
-                        (await AsyncStorage.getItem("user")) as string,
-                    );
-                    await AsyncStorage.setItem(
-                        "user",
-                        JSON.stringify({
-                            ...currentUserObj,
-                            emoji: e.emoji,
-                        }),
-                    );
-                    AsyncAlert.alert(`Emoji updated to ${e.emoji}`);
-                },
-                onError: () => {
-                    Alert.alert("Error updating your profile");
-                },
-            },
-        );
+        try {
+            await updateEmoji.mutateAsync({ emoji: e.emoji });
+            await AsyncAlert.alert(`Emoji updated to ${e.emoji}`);
+        } catch (error) {
+            Alert.alert("Error updating your profile");
+        }
     };
 
     return (
         <UIModal
             visible
-            onClose={onClose}
+            onDismiss={onClose}
             backdropPressBehavior={"none"}
             title={"Select New Emoji"}
         >
@@ -79,16 +64,16 @@ const makeStyles = ({ colors }: Theme) =>
             fontWeight: "bold",
             marginBottom: 20,
             textAlign: "center",
-            color: colors.fg.hex,
+            color: colors.fg.hex
         },
         emojiContainer: {
             alignItems: "center",
             justifyContent: "center",
             padding: 10,
             borderRadius: 10,
-            backgroundColor: colors.primary.hex,
+            backgroundColor: colors.primary.hex
         },
         emoji: {
-            fontSize: 60,
-        },
+            fontSize: 60
+        }
     });

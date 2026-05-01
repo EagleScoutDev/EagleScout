@@ -6,21 +6,21 @@ import {
     StyleSheet,
     View,
 } from "react-native";
-import { useEffect, useState } from "react";
-import { CompetitionsDB } from "@/lib/database/Competitions";
+import { useState } from "react";
 import { isTablet } from "@/lib/deviceType";
 import { LineChart } from "react-native-chart-kit";
-import { type MatchReportReturnData, MatchReportsDB } from "@/lib/database/ScoutMatchReports";
-import type { SimpleTeam } from "@/lib/frc/tba/TBA";
+import type { TBATeam } from "@/lib/db/tba";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UIModal } from "@/ui/components/UIModal";
 import type { RootStackScreenProps } from "@/navigation";
 import { CompetitionRank } from "./components/CompetitionRank";
 import { QuestionSummary } from "@/navigation/(recon)/components/QuestionSummary";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export interface TeamComparisonParams {
-    team: SimpleTeam;
+    team: TBATeam;
     compId: number;
 }
 export interface TeamComparisonProps extends RootStackScreenProps<"TeamComparison"> {}
@@ -29,19 +29,26 @@ export function TeamComparison({ route }: TeamComparisonProps) {
     const { colors, dark } = useTheme();
     const [secondTeam, setSecondTeam] = useState<number | null>(null);
 
-    const [uniqueTeams, setUniqueTeams] = useState<number[]>([]);
-
-    const [formStructure, setFormStructure] = useState<object[] | null>(null);
-
-    const [firstTeamScoutData, setFirstTeamScoutData] = useState<MatchReportReturnData[] | null>(
-        [],
-    );
-    const [secondTeamScoutData, setSecondTeamScoutData] = useState<MatchReportReturnData[] | null>(
-        [],
-    );
-
     const [graphActive, setGraphActive] = useState(false);
     const [chosenQuestionIndex, setChosenQuestionIndex] = useState<number>(0);
+
+    const { data: competition } = useQuery(queries.competitions.forId({ id: compId }));
+    const { data: firstTeamScoutData = [] } = useQuery(
+        queries.matchReports.forTeamAtComp({ teamNumber: team.team_number, compId }),
+    );
+    const { data: secondTeamScoutData = [] } = useQuery({
+        ...queries.matchReports.forTeamAtComp({ teamNumber: secondTeam ?? 0, compId }),
+        enabled: secondTeam !== null,
+    });
+    const { data: allReports = [] } = useQuery(
+        queries.matchReports.forComp({ id: compId }),
+    );
+
+    const formStructure = competition?.matchForm.formStructure;
+    const uniqueTeams = allReports
+        .map((report) => report.teamNumber)
+        .filter((teamNum, index, array) => array.indexOf(teamNum) === index && teamNum !== team.team_number)
+        .sort((a, b) => a - b);
 
     const chartConfig = {
         backgroundGradientFrom: colors.bg1.hex,
@@ -55,45 +62,6 @@ export function TeamComparison({ route }: TeamComparisonProps) {
         useShadowColorFromDataset: false, // optional
         fillShadowGradient: colors.bg1.hex,
     };
-
-    // initialization
-    useEffect(() => {
-        CompetitionsDB.getCompetitionById(compId).then((competition) => {
-            if (!competition) {
-                return;
-            }
-            MatchReportsDB.getReportsForTeamAtCompetition(team.team_number, competition.id).then(
-                (reports) => {
-                    setFirstTeamScoutData(reports);
-                },
-            );
-            setFormStructure(competition.form);
-        });
-    }, [compId, team]);
-
-    // fetch second team data
-    useEffect(() => {
-        if (secondTeam === null) {
-            return;
-        }
-
-        MatchReportsDB.getReportsForTeamAtCompetition(secondTeam, compId).then((reports) => {
-            setSecondTeamScoutData(reports);
-        });
-    }, [secondTeam, compId]);
-
-    // fetch teams at competition that have a scout report filled out
-    useEffect(() => {
-        MatchReportsDB.getReportsForCompetition(compId).then((reports) => {
-            // setReports(reports);
-            const teams = reports.map((report) => report.teamNumber);
-            let set = new Set(teams);
-            set.delete(team.team_number);
-            let array_version = Array.from(set);
-            array_version.sort((a, b) => a - b);
-            setUniqueTeams(array_version);
-        });
-    }, []);
 
     const styles = StyleSheet.create({
         container: {
@@ -130,14 +98,14 @@ export function TeamComparison({ route }: TeamComparisonProps) {
     });
 
     // let the user choose a second team to compare
-    if (secondTeam === null || secondTeamScoutData === null) {
+    if (secondTeam === null) {
         return (
             <View style={styles.container}>
                 <View style={{ flex: 1, alignItems: "center" }}>
                     <UIText size={20}>Team 1</UIText>
                     <UIText size={50}>{team.team_number}</UIText>
                 </View>
-                {(secondTeamScoutData === null) !== (secondTeam === null) ? (
+                {secondTeamScoutData.length > 0 ? (
                     <View style={{ height: "90%", width: 1, backgroundColor: colors.border.hex }} />
                 ) : (
                     <ActivityIndicator size={"large"} />

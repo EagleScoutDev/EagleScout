@@ -1,25 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
-import { UserAttributesDB } from "@/lib/database/UserAttributes";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { UICard } from "@/ui/components/UICard";
 import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
 import type { RootStackScreenProps } from "@/navigation";
+import { useUserStore } from "@/lib/stores/user";
 
 export interface MatchBettingProps extends RootStackScreenProps<"MatchBetting"> {}
 export function MatchBetting({ navigation }: MatchBettingProps) {
     const { colors } = useTheme();
     const [matchNumber, setMatchNumber] = useState<number | null>(null);
-    const [orgId, setOrgId] = useState<number | null>(null);
-
-    useEffect(() => {
-        UserAttributesDB.getCurrentUserAttribute().then((userAttribute) => {
-            if (userAttribute) {
-                setOrgId(userAttribute.organization_id);
-            }
-        });
-    }, []);
+    const userAttribute = useUserStore((state) => state.account);
+    const orgId = userAttribute?.orgId ?? null;
 
     if (orgId === null) return null;
 

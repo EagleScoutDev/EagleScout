@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { adminMutations } from "@/lib/mutations/admin";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import { queries } from "@/lib/queries";
 import * as Bs from "@/ui/icons";
 import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";
@@ -13,30 +13,19 @@ import { AddCompetitionModal } from "@/navigation/(modals)/AddCompetitionModal";
 import { Alert } from "react-native";
 
 export function ManageCompetitions() {
-    const [internetError, setInternetError] = useState(false);
-    const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
-    const { mutate: updateCompetition } = useMutation(adminMutations.updateCompetition);
-    const { mutate: deleteCompetition } = useMutation(adminMutations.deleteCompetition);
-
-    async function refreshCompetitions() {
-        try {
-            const data = await CompetitionsDB.getCompetitions();
-            // sort the data by start time
-            data.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
-            setCompetitionList(data);
-            setInternetError(false);
-        } catch (error) {
-            console.error(error);
-            setInternetError(true);
-        }
-    }
-    useEffect(() => void refreshCompetitions(), []);
+    const updateCompetition = useMutation(adminMutations.updateCompetition);
+    const deleteCompetition = useMutation(adminMutations.deleteCompetition);
+    const {
+        data: competitionList = [],
+        isError: internetError,
+        refetch,
+    } = useQuery(queries.competitions.all);
 
     const editSheetRef = useRef<EditCompetitionModal>(null);
     const addSheetRef = useRef<AddCompetitionModal>(null);
 
     if (internetError) {
-        return <NoInternet onRefresh={() => refreshCompetitions()} />;
+        return <NoInternet onRefresh={() => refetch()} />;
     }
 
     return (
@@ -45,7 +34,7 @@ export function ManageCompetitions() {
                 <TabHeader title={"Competitions"} />
             </SafeAreaView>
 
-            <UIList onRefresh={refreshCompetitions}>
+            <UIList onRefresh={refetch}>
                 <UIList.Section>
                     {competitionList.map((comp) => (
                         <UIList.Row
@@ -59,44 +48,34 @@ export function ManageCompetitions() {
                                         start: comp.startTime,
                                         end: comp.endTime,
                                     },
-                                    onSubmit: (compPatch) => {
-                                        updateCompetition(
-                                            {
+                                    onSubmit: async (compPatch) => {
+                                        try {
+                                            await updateCompetition.mutateAsync({
                                                 competitionId: compPatch.id,
                                                 name: compPatch.name,
                                                 startTime: compPatch.start,
                                                 endTime: compPatch.end,
-                                            },
-                                            {
-                                                onSuccess: () => {
-                                                    editSheetRef.current?.dismiss();
-                                                    void refreshCompetitions();
-                                                },
-                                                onError: () => {
-                                                    Alert.alert(
-                                                        "Error",
-                                                        "An error occurred, please try again later.",
-                                                    );
-                                                },
-                                            },
-                                        );
+                                            });
+                                            editSheetRef.current?.dismiss();
+                                            void refetch();
+                                        } catch (error) {
+                                            Alert.alert(
+                                                "Error",
+                                                "An error occurred, please try again later.",
+                                            );
+                                        }
                                     },
-                                    onDelete: (compPatch) => {
-                                        deleteCompetition(
-                                            { competitionId: compPatch.id },
-                                            {
-                                                onSuccess: () => {
-                                                    editSheetRef.current?.dismiss();
-                                                    void refreshCompetitions();
-                                                },
-                                                onError: () => {
-                                                    Alert.alert(
-                                                        "Error",
-                                                        "An error occurred, please try again later.",
-                                                    );
-                                                },
-                                            },
-                                        );
+                                    onDelete: async (compPatch) => {
+                                        try {
+                                            await deleteCompetition.mutateAsync({ competitionId: compPatch.id });
+                                            editSheetRef.current?.dismiss();
+                                            void refetch();
+                                        } catch (error) {
+                                            Alert.alert(
+                                                "Error",
+                                                "An error occurred, please try again later.",
+                                            );
+                                        }
                                     },
                                 });
                             }}

@@ -3,19 +3,19 @@ import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
-import { UserAttributesDB } from "@/lib/database/UserAttributes";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { Image, ImageBackground } from "expo-image";
-import { MatchBets } from "@/lib/database/MatchBets";
 import { BettingInfoBottomSheet } from "./components/BettingInfoBottomSheet";
-import { ProfilesDB } from "@/lib/database/Profiles";
-import AsyncStorage from "expo-sqlite/kv-store";
-import type { Profile } from "@/lib/user/profile";
+import { AsyncStorage } from "expo-sqlite/kv-store";
 import * as Bs from "@/ui/icons";
 import Slider from "@react-native-community/slider";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import type { RootStackScreenProps } from "@/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+import { matchBetMutations } from "@/lib/mutations/betting";
+import { useUserStore } from "@/lib/stores/user";
 
 interface Player {
     id: string;
@@ -38,125 +38,133 @@ export function BettingScreen({ route }: BettingScreenProps) {
     const [players, setPlayers] = useState<Player[]>([]);
     const [selectedAlliance, setSelectedAlliance] = useState<string>();
     const [betAmount, setBetAmount] = useState(0);
-    const [userProfile, setUserProfile] = useState<Profile | null>(null);
-    const [matchOver, setMatchOver] = useState(false);
-
     const [betActive, setBetActive] = useState(false);
     const [currentBet, setCurrentBet] = useState(0);
-
     const [subscribed, setSubscribed] = useState(false);
     const [supabaseChannel, setSupabaseChannel] = useState<RealtimeChannel | null>(null);
-
     const [showBottomSheet, setShowBottomSheet] = useState(false);
 
+    const { data: matchOver = false } = useQuery(queries.matchBets.isMatchOver({ matchNumber }));
+    const userAttribute = useUserStore((state) => state.account);
+    const { data: userBalance } = useQuery({
+        ...queries.scoutcoinLedger.balanceForId({ id: userAttribute! && userAttribute.id }),
+        enabled: userAttribute !== null,
+    });
+    const { data: userProfile } = useQuery({
+        ...queries.profiles.forId({ id: userAttribute! && userAttribute.id }),
+        enabled: userAttribute !== null,
+    });
+    const { data: existingBets = [] } = useQuery(queries.matchBets.forMatch({ matchNumber }));
+
     useEffect(() => {
-        (async () => {
-            const isMatchOver = await MatchBets.isMatchOver(matchNumber);
-            setMatchOver(isMatchOver);
-            if (isMatchOver) {
-                return;
-            }
-            const user = await UserAttributesDB.getCurrentUserAttribute();
-            if (!user) {
-                return;
-            }
-            const profile = await ProfilesDB.getProfile(user.id);
-            setUserProfile(profile);
-            const existingData = await MatchBets.getMatchBetsForMatch(matchNumber);
-            const userExistingData = existingData.find((data) => data.user_id === user.id);
-            if (userExistingData) {
-                setBetAmount(userExistingData.amount);
-                setSelectedAlliance(userExistingData.alliance);
-            }
-            const channel = supabase.channel(`match-betting-${matchNumber}`, {
-                config: {
-                    presence: {
-                        key: user.id,
-                    },
+        if (matchOver || !userAttribute) {
+            return;
+        }
+        const existingData = existingBets;
+        const userExistingData = existingData.find(
+            (data) => data.createdBy.id === userAttribute.id,
+        );
+        if (userExistingData) {
+            setBetAmount(userExistingData.amount);
+            setSelectedAlliance(userExistingData.alliance);
+        }
+        const channel = supabase.channel(`match-betting-${matchNumber}`, {
+            config: {
+                presence: {
+                    key: userAttribute.id,
                 },
-            });
-            setSupabaseChannel(channel);
-            channel
-                .on("presence", { event: "sync" }, () => {
-                    const newState = channel.presenceState();
-                    console.log("sync", newState);
-                    const newPlayers = Object.entries(newState).map(
-                        ([key, [value]]: [string, any]) => ({
-                            id: key,
-                            name: value.user_name,
-                            emoji: value.user_emoji,
-                            betAmount: value.bet_amount,
-                            betAlliance: value.bet_alliance,
-                        }),
+            },
+        });
+        setSupabaseChannel(channel);
+        channel
+            .on("presence", { event: "sync" }, () => {
+                const newState = channel.presenceState();
+                console.log("sync", newState);
+                const newPlayers = Object.entries(newState).map(
+                    ([key, [value]]: [string, any]) => ({
+                        id: key,
+                        name: value.user_name,
+                        emoji: value.user_emoji,
+                        betAmount: value.bet_amount,
+                        betAlliance: value.bet_alliance,
+                    }),
+                );
+                for (const player of existingData) {
+                    const existingPlayer = existingData.find(
+                        (p) => p.createdBy.id === player.createdBy.id,
                     );
-                    for (const player of existingData) {
-                        const existingPlayer = existingData.find(
-                            (p) => p.user_id === player.user_id,
-                        );
-                        if (!newPlayers.find((p) => p.id === player.user_id)) {
-                            newPlayers.push({
-                                id: player.user_id,
-                                name: player.user_name,
-                                emoji: player.user_emoji,
-                                betAmount: existingPlayer?.amount || 0,
-                                betAlliance: existingPlayer?.alliance || "",
-                            });
-                        } else {
-                            newPlayers.map((p) => {
-                                if (p.id === player.user_id) {
-                                    return {
-                                        ...p,
-                                        betAmount: existingPlayer?.amount || 0,
-                                        betAlliance: existingPlayer?.alliance || "",
-                                    };
-                                }
-                                return p;
-                            });
-                        }
-                    }
-                    setPlayers(newPlayers);
-                })
-                .on("broadcast", { event: "bet" }, ({ payload }) => {
-                    console.log("broadcast", payload);
-                    setPlayers((prev) =>
-                        prev.map((player) => {
-                            if (player.id === payload.user_id) {
+                    if (!newPlayers.find((p) => p.id === player.createdBy.id)) {
+                        newPlayers.push({
+                            id: player.createdBy.id,
+                            name: player.createdBy.name,
+                            emoji: player.createdBy.emoji,
+                            betAmount: existingPlayer?.amount || 0,
+                            betAlliance: existingPlayer?.alliance || "",
+                        });
+                    } else {
+                        newPlayers.map((p) => {
+                            if (p.id === player.createdBy.id) {
                                 return {
-                                    ...player,
-                                    betAmount: payload.bet_amount,
-                                    betAlliance: payload.bet_alliance,
+                                    ...p,
+                                    betAmount: existingPlayer?.amount || 0,
+                                    betAlliance: existingPlayer?.alliance || "",
                                 };
                             }
-                            return player;
-                        }),
-                    );
-                })
-                .subscribe(async (status) => {
-                    console.log("status", status);
-                    if (status !== "SUBSCRIBED") {
-                        return;
+                            return p;
+                        });
                     }
-                    console.log("sending track");
-                    const presenceTrackStatus = await channel.track({
-                        user_id: user.id,
-                        user_name: profile?.name,
-                        user_emoji: profile?.emoji,
-                        bet_amount: userExistingData?.amount || 0,
-                        bet_alliance: userExistingData?.alliance || "",
-                    });
-                    console.log("presenceTrackStatus", presenceTrackStatus);
-                    setSubscribed(true);
+                }
+                setPlayers(newPlayers);
+            })
+            .on("broadcast", { event: "bet" }, ({ payload }) => {
+                console.log("broadcast", payload);
+                setPlayers((prev) =>
+                    prev.map((player) => {
+                        if (player.id === payload.userId) {
+                            return {
+                                ...player,
+                                betAmount: payload.bet_amount,
+                                betAlliance: payload.bet_alliance,
+                            };
+                        }
+                        return player;
+                    }),
+                );
+            })
+            .subscribe(async (status) => {
+                console.log("status", status);
+                if (status !== "SUBSCRIBED") {
+                    return;
+                }
+                console.log("sending track");
+                const userExistingData = existingData.find(
+                    (data) => data.createdBy.id === userAttribute.id,
+                );
+                const presenceTrackStatus = await channel.track({
+                    userId: userAttribute.id,
+                    user_name: userProfile?.name,
+                    user_emoji: userProfile?.emoji,
+                    bet_amount: userExistingData?.amount || 0,
+                    bet_alliance: userExistingData?.alliance || "",
                 });
-        })();
+                console.log("presenceTrackStatus", presenceTrackStatus);
+                setSubscribed(true);
+            });
         return () => {
             if (supabaseChannel) {
                 supabaseChannel.untrack().catch((e) => console.error("error untracking", e));
                 supabaseChannel.unsubscribe().catch((e) => console.error("error unsubscribing", e));
             }
         };
-        // supabaseChannel is not a dependency because it is not used in the effect. if set, will result in inf loop
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [matchNumber]);
+    }, [
+        matchNumber,
+        matchOver,
+        userAttribute,
+        existingBets,
+        userProfile?.name,
+        userProfile?.emoji,
+    ]);
 
     useEffect(() => {
         console.log("effect", subscribed, !!supabaseChannel, selectedAlliance);
@@ -169,7 +177,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                 type: "broadcast",
                 event: "bet",
                 payload: {
-                    user_id: userProfile?.id,
+                    userId: userProfile?.id,
                     user_name: userProfile?.name,
                     user_emoji: userProfile?.emoji,
                     bet_amount: betAmount,
@@ -182,15 +190,18 @@ export function BettingScreen({ route }: BettingScreenProps) {
     }, [subscribed, supabaseChannel, selectedAlliance, betAmount]);
 
     useEffect(() => {
-        AsyncStorage.getItem("bettingTutorialCompleted").then((value) => {
+        AsyncStorage.getItemAsync("bettingTutorialCompleted").then((value) => {
             if (value === "true") {
                 setShowBottomSheet(false);
             } else {
                 setShowBottomSheet(true);
-                AsyncStorage.setItem("bettingTutorialCompleted", "true");
+                AsyncStorage.setItemAsync("bettingTutorialCompleted", "true");
             }
         });
     }, []);
+
+    const createBet = useMutation(matchBetMutations.create);
+    const updateBet = useMutation(matchBetMutations.update);
 
     if (matchOver) {
         return (
@@ -225,7 +236,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                             textAlign: "center",
                         }}
                     >
-                        Hey, you! Don't try to bet on a match that's over 😉
+                        Hey, you! Don&#39;t try to bet on a match that&#39;s over 😉
                     </UIText>
                 </View>
             </SafeAreaView>
@@ -383,7 +394,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                 {currentBet}
                             </UIText>
                             <Slider
-                                containerStyle={{
+                                style={{
                                     flex: 1,
                                     alignSelf: "center",
                                 }}
@@ -399,24 +410,24 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     borderRadius: 99,
                                     padding: 20,
                                 }}
-                                onPress={async () => {
+                                onPress={() => {
                                     setBetActive(false);
                                     setCurrentBet(0);
                                     setBetAmount((prev: number) => prev + Number(currentBet));
                                     console.log("BET AMOUNT", betAmount, currentBet);
                                     if (betAmount === 0) {
-                                        await MatchBets.createMatchBet(
-                                            userProfile.id,
+                                        createBet.mutate({
+                                            userId: userProfile.id,
                                             matchNumber,
-                                            selectedAlliance!,
-                                            Number(currentBet),
-                                        );
+                                            alliance: selectedAlliance!,
+                                            amount: Number(currentBet),
+                                        });
                                     } else {
-                                        await MatchBets.updateMatchBet(
-                                            userProfile.id,
+                                        updateBet.mutate({
+                                            userId: userProfile.id,
                                             matchNumber,
-                                            Number(currentBet) + betAmount,
-                                        );
+                                            amount: Number(currentBet) + betAmount,
+                                        });
                                     }
                                 }}
                             >
@@ -460,14 +471,14 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                         width: "100%",
                                         opacity:
                                             selectedAlliance &&
-                                            userProfile.scoutcoins > 0 &&
+                                            userBalance > 0 &&
                                             players.length >= 2
                                                 ? 0.5
                                                 : 1,
                                     }}
                                     onPress={() => {
                                         if (
-                                            userProfile.scoutcoins < 0 ||
+                                            userBalance < 0 ||
                                             !selectedAlliance ||
                                             players.length < 2
                                         ) {
@@ -487,8 +498,7 @@ export function BettingScreen({ route }: BettingScreenProps) {
                                     </UIText>
                                 </Pressable>
                             </ImageBackground>
-                            {/* TODO: query scoutcoins properly (please don't use userProfile because that will be cached and account balance should never be cached) */}
-                            <UIText>Your balance: {userProfile.scoutcoins}</UIText>
+                            <UIText>Your balance: {userBalance}</UIText>
                         </View>
                         <View
                             style={{

@@ -1,5 +1,5 @@
 import { useTheme } from "@/ui/context/ThemeContext";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { queries } from "@/lib/queries";
 import { ActivityIndicator, TextInput, View } from "react-native";
@@ -9,7 +9,6 @@ import { UIListPicker } from "@/ui/components/UIListPicker";
 import { KeyboardController } from "react-native-keyboard-controller";
 import { UIText } from "@/ui/components/UIText";
 import { PressableOpacity } from "@/components/PressableOpacity";
-import { useCurrentCompetition } from "@/lib/hooks/useCurrentCompetition";
 
 export interface HeaderProps {
     query: string | null;
@@ -108,11 +107,13 @@ function CompetitionSelector({ activeComp, setActiveComp }: CompetitionSelectorP
         throwOnError: true,
     });
 
+    const { data: currentCompetition = null } = useQuery(queries.competitions.current);
+
     // TODO: don't use a separate fetch for this
-    const { competition: currentCompetition } = useCurrentCompetition();
     useEffect(() => {
-        if(activeComp === null && currentCompetition !== null) {
-            setActiveComp(currentCompetition.id)
+        // default to current competition
+        if (activeComp === null && currentCompetition !== null) {
+            setActiveComp(currentCompetition.id);
         }
     }, [currentCompetition]);
 

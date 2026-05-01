@@ -1,8 +1,7 @@
 import { View } from "react-native";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { scoutcoinMutations } from "@/lib/mutations/scoutcoin";
 import { type ShopItem } from "./ScoutcoinShop";
-import { useProfile } from "@/lib/hooks/useProfile";
 import * as Bs from "@/ui/icons";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
 import { PressableOpacity } from "@/components/PressableOpacity";
@@ -10,6 +9,7 @@ import { useTheme } from "@/ui/context/ThemeContext";
 import { UIModal } from "@/ui/components/UIModal";
 import { UIText } from "@/ui/components/UIText";
 import { UIButton, UIButtonSize, UIButtonStyle } from "@/ui/components/UIButton";
+import { queries } from "@/lib/queries";
 
 export interface ConfirmPurchaseModalProps {
     item: ShopItem;
@@ -17,29 +17,32 @@ export interface ConfirmPurchaseModalProps {
 }
 export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProps) {
     const { colors } = useTheme();
-    const { profile } = useProfile();
-    const { mutate: purchaseItem, isPending } = useMutation(scoutcoinMutations.purchaseItem);
+    const { data: profile = null } = useQuery(queries.profiles.current);
+    const { data: balance } = useQuery({
+        ...queries.scoutcoinLedger.balanceForId({ id: profile! && profile.id }),
+        enabled: !!profile,
+    });
+    const purchaseItem = useMutation(scoutcoinMutations.purchaseItem);
 
     function handlePurchase() {
         if (!profile) return;
 
-        if (profile.scoutcoins < item.cost) {
+        if (balance !== undefined && balance < item.cost) {
             AsyncAlert.alert("You do not have enough scoutcoins!");
             return;
         }
 
-        purchaseItem(
-            { itemName: item.id },
-            {
-                onSuccess: () => {
-                    onClose(true);
-                },
-                onError: async (error: any) => {
-                    await AsyncAlert.alert(error.message || "Purchase failed");
-                    onClose(true);
-                },
-            },
-        );
+        handlePurchaseAsync();
+    }
+
+    async function handlePurchaseAsync() {
+        try {
+            await purchaseItem.mutateAsync({ itemName: item.id });
+            onClose(true);
+        } catch (error: any) {
+            await AsyncAlert.alert(error.message || "Purchase failed");
+            onClose(true);
+        }
     }
 
     return (
@@ -61,7 +64,12 @@ export function ConfirmPurchaseModal({ item, onClose }: ConfirmPurchaseModalProp
                 </UIText>
             </View>
             <View style={{ width: "100%" }}>
-                <UIButton size={UIButtonSize.xl} style={UIButtonStyle.fill} loading={isPending} onPress={handlePurchase}>
+                <UIButton
+                    size={UIButtonSize.xl}
+                    style={UIButtonStyle.fill}
+                    loading={purchaseItem.isPending}
+                    onPress={handlePurchase}
+                >
                     <UIText size={20} color={colors.primary.fg} style={{ marginRight: 16 }}>
                         Buy
                     </UIText>

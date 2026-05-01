@@ -1,7 +1,7 @@
 import { Alert, Keyboard } from "react-native";
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { TBA } from "@/lib/frc/tba/TBA";
+import { TBA } from "@/lib/db/tba";
 import { UIForm } from "@/ui/components/UIForm";
 import { UISheetModal } from "@/ui/components/UISheetModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

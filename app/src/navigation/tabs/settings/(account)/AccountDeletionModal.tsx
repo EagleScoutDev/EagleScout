@@ -15,8 +15,8 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
     const [password, setPassword] = useState("");
     const [reason, setReason] = useState("");
     const { colors } = useTheme();
-    const logout = useUserStore((state) => state.logout);
-    const { mutate: requestDeletion, isPending } = useMutation(adminMutations.requestDeletion);
+    const signOut = useUserStore((state) => state.signOut);
+    const requestDeletion = useMutation(adminMutations.requestDeletion);
 
     const styles = StyleSheet.create({
         text_input: {
@@ -96,34 +96,29 @@ export function AccountDeletionModal({ navigation }: AccountDeletionModalProps) 
                         },
                         {
                             text: "Delete",
-                            onPress: () => {
-                                requestDeletion(
-                                    { password, reason },
-                                    {
-                                        onSuccess: async () => {
-                                            await logout();
-                                            Alert.alert("Success", "Account delete requested.");
-                                        },
-                                        onError: async (error: any) => {
-                                            if (error.message === "Invalid password") {
-                                                Alert.alert(
-                                                    "Error",
-                                                    "Invalid password. Your account has not been deleted. Log in again to request deletion.",
-                                                );
-                                                await logout();
-                                            } else {
-                                                Alert.alert("Error", error.message || "Failed to delete account");
-                                            }
-                                        },
-                                    },
-                                );
+                            onPress: async () => {
+                                try {
+                                    await requestDeletion.mutateAsync({ password, reason });
+                                    await signOut();
+                                    Alert.alert("Success", "Account delete requested.");
+                                } catch (error: any) {
+                                    if (error.message === "Invalid password") {
+                                        Alert.alert(
+                                            "Error",
+                                            "Invalid password. Your account has not been deleted. Log in again to request deletion.",
+                                        );
+                                        await signOut();
+                                    } else {
+                                        Alert.alert("Error", error.message || "Failed to delete account");
+                                    }
+                                }
                             },
                         },
                     ]);
                 }}
                 text={"Delete Account"}
                 width={"60%"}
-                isLoading={isPending}
+                isLoading={requestDeletion.isPending}
             />
             <UIText placeholder style={{ alignSelf: "center", textAlign: "center", marginTop: 10 }}>
                 Account deletion requests may take up to 30 days to process.

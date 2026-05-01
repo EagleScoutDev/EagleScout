@@ -1,22 +1,23 @@
 import { Alert, FlatList, Modal, Pressable, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import type { PicklistTeam, SimpleTeam } from "@/lib/database/Picklists";
+import type { PicklistTeam } from "@/lib/db/models/Picklist";
 import type { Setter } from "@/lib/util/react/types";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import * as Bs from "@/ui/icons";
+import type { TBATeam } from "@/lib/db/tba";
 
 export interface TeamAddingModalProps {
     visible: boolean;
     setVisible: Setter<boolean>;
-    teams_list: PicklistTeam[];
-    teamsAtCompetition: SimpleTeam[];
-    addOrRemoveTeam: (team: SimpleTeam) => void;
+    teamsList: PicklistTeam[];
+    teamsAtCompetition: TBATeam[];
+    addOrRemoveTeam: (team: TBATeam) => void;
 }
 export function TeamAddingModal({
     visible,
     setVisible,
-    teams_list,
+    teamsList,
     teamsAtCompetition,
     addOrRemoveTeam,
 }: TeamAddingModalProps) {
@@ -70,7 +71,7 @@ export function TeamAddingModal({
                         <Bs.CheckTwoCircle
                             size="24"
                             fill={
-                                teams_list.length === teamsAtCompetition.length
+                                teamsList.length === teamsAtCompetition.length
                                     ? "gray"
                                     : colors.primary.hex
                             }
@@ -111,8 +112,8 @@ export function TeamAddingModal({
                                         fontSize: 20,
                                         textDecorationLine: "none",
                                     }}
-                                    isChecked={teams_list.some(
-                                        (team) => team.team_number === item.team_number,
+                                    isChecked={teamsList.some(
+                                        (team) => team.teamNumber === item.team_number,
                                     )}
                                     onPress={() => {
                                         addOrRemoveTeam(item);

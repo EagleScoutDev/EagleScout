@@ -8,15 +8,15 @@ import { useTheme } from "@/ui/context/ThemeContext";
 import { MinimalSectionHeader } from "@/ui/MinimalSectionHeader";
 import { StandardButton } from "@/ui/StandardButton";
 import { useMutation } from "@tanstack/react-query";
-import { authMutations } from "@/lib/mutations/auth";
+import { Account } from "@/lib/db/account";
 
 export interface SetNewPasswordProps extends OnboardingScreenProps<"SetNewPassword"> {}
 
 export function SetNewPassword({ navigation }: SetNewPasswordProps) {
     const { colors } = useTheme();
     const [password, setPassword] = useState("");
-    const { mutateAsync: updatePassword, isPending } = useMutation(authMutations.updatePassword);
-    const { mutateAsync: signOut } = useMutation(authMutations.signOut);
+    const updatePassword = useMutation({ mutationFn: Account.updatePassword });
+    const signOut = useMutation({ mutationFn: Account.signOut });
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -40,14 +40,19 @@ export function SetNewPassword({ navigation }: SetNewPasswordProps) {
                             text={"Set New Password"}
                             textColor={password === "" ? "dimgray" : colors.primary.hex}
                             disabled={password === ""}
-                            isLoading={isPending}
+                            isLoading={updatePassword.isPending}
                             onPress={async () => {
                                 if (password === "") {
-                                    Alert.alert("Password cannot be blank.", "Please try again", [{ text: "OK" }], { cancelable: false });
+                                    Alert.alert(
+                                        "Password cannot be blank.",
+                                        "Please try again",
+                                        [{ text: "OK" }],
+                                        { cancelable: false },
+                                    );
                                     return;
                                 }
                                 try {
-                                    await updatePassword({ password });
+                                    await updatePassword.mutateAsync({ password });
                                     Alert.alert(
                                         "Successfully reset password",
                                         "Please log in again to continue",
@@ -55,7 +60,7 @@ export function SetNewPassword({ navigation }: SetNewPasswordProps) {
                                             {
                                                 text: "OK",
                                                 onPress: async () => {
-                                                    await signOut();
+                                                    await signOut.mutateAsync();
                                                     navigation.navigate("Login");
                                                     setPassword("");
                                                 },
@@ -64,7 +69,12 @@ export function SetNewPassword({ navigation }: SetNewPasswordProps) {
                                         { cancelable: false },
                                     );
                                 } catch (error: any) {
-                                    Alert.alert("Error resetting password", "Please try again", [{ text: "OK" }], { cancelable: false });
+                                    Alert.alert(
+                                        "Error resetting password",
+                                        "Please try again",
+                                        [{ text: "OK" }],
+                                        { cancelable: false },
+                                    );
                                 }
                             }}
                         />

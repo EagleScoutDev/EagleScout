@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import type { MutationOptions } from "@tanstack/react-query";
+import { Competitions } from "@/lib/db/models/Competition";
+import type { MutationOptions } from "@tanstack/query-core";
 
 export interface ConfirmBetParams {
     matchId: number;
@@ -35,18 +36,21 @@ export const adminMutations = {
     confirmBet: {
         mutationKey: ["confirmBet"],
         async mutationFn({ matchId, result }: ConfirmBetParams) {
-            const { data, error } = await supabase.functions.invoke("confirm-bet", {
-                body: JSON.stringify({
-                    matchId,
-                    result,
-                }),
-            });
-
+            const { data, error } = await supabase.functions.invoke(
+                "confirm-bet",
+                {
+                    body: JSON.stringify({
+                        matchId,
+                        result,
+                    }),
+                },
+            );
             if (error) throw error;
+
             return data;
         },
-        async onSuccess(_data, _variables, _onMutateResult, { client }) {
-            await Promise.all([
+        onSuccess(_data, _variables, _onMutateResult, { client }) {
+            return Promise.all([
                 client.invalidateQueries({ queryKey: ["bets"] }),
                 client.invalidateQueries({ queryKey: ["matchBets"] }),
             ]);
@@ -54,57 +58,35 @@ export const adminMutations = {
     },
     createCompetition: {
         mutationKey: ["createCompetition"],
-        async mutationFn({ name, startTime, endTime, tbaEventId, matchFormId, pitFormId }: CreateCompetitionParams) {
-            const { error } = await supabase
-                .from("competitions")
-                .insert({
-                    name,
-                    start_time: startTime,
-                    end_time: endTime,
-                    tba_event_id: tbaEventId,
-                    form_id: matchFormId,
-                    pit_scout_form_id: pitFormId,
-                });
-
-            if (error) throw error;
-        },
+        mutationFn: (comp: CreateCompetitionParams) =>
+            Competitions.create(
+                comp.name,
+                comp.startTime,
+                comp.endTime,
+                comp.tbaEventId,
+                comp.matchFormId,
+                comp.pitFormId,
+            ),
         onSuccess(_data, _variables, _onMutateResult, { client }) {
             return client.invalidateQueries({ queryKey: ["competitions"] });
         },
     },
     updateCompetition: {
         mutationKey: ["updateCompetition"],
-        async mutationFn({
-            competitionId,
-            name,
-            startTime,
-            endTime,
-        }: UpdateCompetitionParams) {
-            const { error } = await supabase
-                .from("competitions")
-                .update({
-                    name,
-                    start_time: startTime,
-                    end_time: endTime,
-                })
-                .eq("id", competitionId);
-
-            if (error) throw error;
-        },
+        mutationFn: (comp: UpdateCompetitionParams) =>
+            Competitions.update(
+                comp.competitionId,
+                comp.name,
+                comp.startTime,
+                comp.endTime,
+            ),
         onSuccess(_data, _variables, _onMutateResult, { client }) {
             return client.invalidateQueries({ queryKey: ["competitions"] });
         },
     },
     deleteCompetition: {
         mutationKey: ["deleteCompetition"],
-        async mutationFn({ competitionId }: DeleteCompetitionParams) {
-            const { error } = await supabase
-                .from("competitions")
-                .delete()
-                .eq("id", competitionId);
-
-            if (error) throw error;
-        },
+        mutationFn: Competitions.remove,
         onSuccess(_data, _variables, _onMutateResult, { client }) {
             return client.invalidateQueries({ queryKey: ["competitions"] });
         },
@@ -112,14 +94,16 @@ export const adminMutations = {
     requestDeletion: {
         mutationKey: ["requestDeletion"],
         async mutationFn({ password, reason }: RequestDeletionParams) {
-            const { data: userData, error: getUserError } = await supabase.auth.getUser();
+            // TODO: move to rpc function
+            const { data: userData, error: getUserError } =
+                await supabase.auth.getUser();
             if (getUserError) throw getUserError;
-            if (!userData.user) throw new Error("No user logged in");
 
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-                email: userData.user.email!,
-                password,
-            });
+            const { error: signInError } =
+                await supabase.auth.signInWithPassword({
+                    email: userData.user.email!,
+                    password,
+                });
 
             if (signInError) {
                 if ((signInError as any).status === 400) {
@@ -136,11 +120,13 @@ export const adminMutations = {
 
             if (updateError) throw updateError;
 
-            const { error: insertError } = await supabase.from("deletion_requests").insert({
-                user_id: userData.user.id,
-                reason: reason || "No reason given",
-                processed: false,
-            });
+            const { error: insertError } = await supabase
+                .from("deletion_requests")
+                .insert({
+                    user_id: userData.user.id,
+                    reason: reason || "No reason given",
+                    processed: false,
+                });
 
             if (insertError) throw insertError;
         },

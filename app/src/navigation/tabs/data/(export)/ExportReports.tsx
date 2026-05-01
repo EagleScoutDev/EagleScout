@@ -1,40 +1,20 @@
 import { View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { type CompetitionReturnData, CompetitionsDB } from "@/lib/database/Competitions";
+import React, { useRef } from "react";
+import { type CompetitionReturnData } from "@/lib/db/models/Competition";
 import { UISheetModal } from "@/ui/components/UISheetModal";
-import { NoInternet } from "@/ui/NoInternet";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIList } from "@/ui/components/UIList";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UISheet } from "@/ui/components/UISheet";
 import { exportPitReportsToCsv, exportScoutReportsToCsv, writeToFile } from "@/lib/export";
 import { AsyncAlert } from "@/lib/util/react/AsyncAlert";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
 
 export function ExportReports() {
-    const [internetError, setInternetError] = useState(false);
-    const [competitionList, setCompetitionList] = useState<CompetitionReturnData[]>([]);
-    const [loading, setLoading] = useState(false);
+    const { data: competitionList = [], isLoading, isError, refetch } = useQuery(queries.competitions.all);
 
     const modalRef = useRef<ExportCompetitionSheet>(null);
-
-    async function refreshCompetitions() {
-        setLoading(true);
-        try {
-            const data = await CompetitionsDB.getCompetitions();
-            data.sort((a, b) => a.startTime.valueOf() - b.startTime.valueOf());
-            setCompetitionList(data);
-            setInternetError(false);
-        } catch (error) {
-            console.error(error);
-            setInternetError(true);
-        }
-        setLoading(false);
-    }
-    useEffect(() => void refreshCompetitions(), []);
-
-    if (internetError) {
-        return <NoInternet onRefresh={() => refreshCompetitions()} />;
-    }
 
     return (
         <>
@@ -43,7 +23,7 @@ export function ExportReports() {
                     title={"Export CSV"}
                     description={"Choose a competition to export the scout reports to a CSV file"}
                 />
-                <UIList loading={loading} onRefresh={refreshCompetitions}>
+                <UIList loading={isLoading} onRefresh={refetch}>
                     <UIList.Section>
                         {competitionList.map((comp) => (
                             <UIList.Row
@@ -77,7 +57,7 @@ const ExportCompetitionSheet = UISheetModal.HOC<ExportCompetitionSheetParams>(
             await writeToFile(`${competition.name}.csv`, data);
         }
         async function exportPitReports() {
-            if (!competition.pitScoutFormId) {
+            if (!competition.pitForm.id) {
                 await AsyncAlert.alert(
                     "No Pit Scout Form",
                     "This competition does not have a pit scout form",

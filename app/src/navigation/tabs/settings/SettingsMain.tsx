@@ -1,28 +1,22 @@
-import { ActivityIndicator, Alert, Linking, Pressable, View } from "react-native";
-import { InternetStatus } from "@/lib/InternetStatus";
-import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Linking, View } from "react-native";
 import { type SettingsTabScreenProps } from "./index";
-import { CompetitionsDB } from "@/lib/database/Competitions";
-import { useProfile } from "@/lib/hooks/useProfile";
-import { ScoutcoinLedger } from "@/lib/database/ScoutcoinLedger";
 import { useUserStore } from "@/lib/stores/user";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { type Account, AccountRole } from "@/lib/user/account";
+import { type Account } from "@/lib/db/account";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { TabHeader } from "@/ui/components/TabHeader";
 import { UIText } from "@/ui/components/UIText";
 import { UIList } from "@/ui/components/UIList";
 import * as Bs from "@/ui/icons";
-import type { Profile } from "@/lib/user/profile";
+import { useQuery } from "@tanstack/react-query";
+import { queries } from "@/lib/queries";
+import type { Profile } from "@/lib/db/models/Profile";
 
 export interface SettingsHomeProps extends SettingsTabScreenProps<"Main"> {}
 export function SettingsMain({ navigation }: SettingsHomeProps) {
     const account = useUserStore((state) => state.account);
-    const logout = useUserStore((state) => state.logout);
-    const { profile } = useProfile();
-
-    const [internetStatus, setInternetStatus] = useState(InternetStatus.NOT_ATTEMPTED);
-    const offline = internetStatus !== InternetStatus.CONNECTED;
+    const signOut = useUserStore((state) => state.signOut);
+    const { data: profile = null } = useQuery(queries.profiles.current);
 
     const attemptSignOut = () => {
         Alert.alert(
@@ -39,50 +33,15 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
     };
 
     const signOutFunction = () => {
-        logout().then(() => {
+        signOut().then(() => {
             console.log("Sign out successful");
         });
     };
-
-    const testConnection = () => {
-        // attempt connection to picklist table
-        setInternetStatus(InternetStatus.ATTEMPTING_TO_CONNECT);
-        CompetitionsDB.getCurrentCompetition()
-            .then(() => {
-                setInternetStatus(InternetStatus.CONNECTED);
-            })
-            .catch(() => {
-                setInternetStatus(InternetStatus.FAILED);
-            });
-    };
-
-    useEffect(() => {
-        testConnection();
-    }, []);
 
     return (
         <SafeAreaProvider>
             <SafeAreaView edges={["top", "left", "right"]}>
                 <TabHeader title={"Settings"} />
-                {internetStatus === InternetStatus.FAILED && (
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
-                            marginHorizontal: "4%",
-                            marginBottom: "4%",
-                        }}
-                    >
-                        <UIText placeholder style={{ flex: 1 }}>
-                            Some features may be disabled until you regain an internet connection.
-                        </UIText>
-                        <Pressable onPress={testConnection}>
-                            <UIText bold style={{ flex: 1 }}>
-                                Try again?
-                            </UIText>
-                        </Pressable>
-                    </View>
-                )}
             </SafeAreaView>
 
             <UIList>
@@ -95,14 +54,12 @@ export function SettingsMain({ navigation }: SettingsHomeProps) {
                         icon={Bs.Asterisk}
                         label={"Change Password"}
                         caret
-                        disabled={offline}
                         onPress={() => navigation.navigate("Account/ChangePassword")}
                     />
                     <UIList.Row
                         icon={Bs.Ban}
                         label={"Request Account Deletion"}
                         caret
-                        disabled={offline}
                         onPress={() => navigation.navigate("Account/Delete")}
                     />
                     <UIList.Row
@@ -158,11 +115,10 @@ interface AccountCardProps {
 function AccountCard({ account, profile }: AccountCardProps) {
     const { colors } = useTheme();
 
-    const [scoutcoins, setScoutcoins] = useState<number | null>(null);
-    useEffect(() => {
-        if (profile) ScoutcoinLedger.getBalance(profile.id).then(setScoutcoins);
-        else setScoutcoins(null);
-    }, [profile]);
+    const { data: scoutcoins = null } = useQuery({
+        ...queries.scoutcoinLedger.balanceForId({ id: profile?.id ?? "" }),
+        enabled: !!profile,
+    });
 
     return (
         <View
@@ -194,7 +150,9 @@ function AccountCard({ account, profile }: AccountCardProps) {
                         >
                             {profile.name}
                         </UIText>
-                        <UIText>{AccountRole.getName(account.role)}</UIText>
+                        <UIText>
+                            {account.scouter ? "Scouter" : account.admin ? "Admin" : "Unknown Role"}
+                        </UIText>
                     </View>
                     <View
                         style={{

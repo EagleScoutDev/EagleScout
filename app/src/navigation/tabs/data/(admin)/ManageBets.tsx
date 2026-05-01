@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { adminMutations } from "@/lib/mutations/admin";
-import { type MatchBet, MatchBets } from "@/lib/database/MatchBets";
+import { type MatchBetReturnData } from "@/lib/db/models/Betting";
+import { queries } from "@/lib/queries";
 import { useTheme } from "@/ui/context/ThemeContext";
 import { UIText } from "@/ui/components/UIText";
 import { Color } from "@/ui/lib/color";
@@ -135,33 +136,21 @@ const BetCard = ({
 };
 
 export function ManageBets() {
-    const [matches, setMatches] = useState<
-        {
-            matchNumber: number;
-            matchId: number;
-        }[]
-    >([]);
     const { colors } = useTheme();
-    const { mutate: confirmBet } = useMutation(adminMutations.confirmBet);
-
-    const refresh = () => {
-        MatchBets.getMatchBets().then((bets) => {
-            const matchesReduced = bets.reduce(
-                (acc, bet: MatchBet) => {
-                    if (!acc.find((m) => m.matchId === bet.match_id)) {
-                        acc.push({ matchNumber: bet.match_number!, matchId: bet.match_id });
+    const confirmBet = useMutation(adminMutations.confirmBet);
+    const { data: matches = [], refetch } = useQuery({
+        ...queries.matchBets.all,
+        select: (bets: MatchBetReturnData[]) =>
+            bets.reduce(
+                (acc, bet) => {
+                    if (!acc.find((m) => m.matchId === bet.matchId)) {
+                        acc.push({ matchNumber: bet.matchNumber!, matchId: bet.matchId });
                     }
                     return acc;
                 },
                 [] as { matchNumber: number; matchId: number }[],
-            );
-            console.log(matchesReduced);
-            setMatches(matchesReduced);
-        });
-    };
-    useEffect(() => {
-        refresh();
-    }, []);
+            ),
+    });
     return (
         <View
             style={{
@@ -190,15 +179,13 @@ export function ManageBets() {
                 {matches.map(({ matchNumber, matchId }) => (
                     <BetCard
                         matchNumber={matchNumber}
-                        onConfirm={(result) => {
-                            confirmBet(
-                                { matchId, result },
-                                {
-                                    onSuccess: () => {
-                                        refresh();
-                                    },
-                                },
-                            );
+                        onConfirm={async (result) => {
+                            try {
+                                await confirmBet.mutateAsync({ matchId, result });
+                                await refetch();
+                            } catch (error) {
+                                console.error(error);
+                            }
                         }}
                         key={matchId}
                     />
